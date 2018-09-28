@@ -1,0 +1,1431 @@
+﻿STILL ALIVE 1.1.8.0 (30/8/2017) [Author: MP]
+-------------------
+
+In-game changes:
+-Added option to disable Sanity loss, which decreases the score multiplier (default: enabled)
+-Added option to show/hide corpses in STD game mode, for flavour only (default: show)
+-All 'uncommon' items (eg weapons) are now dropped upon NPC death (was 50%)
+-Minor tweaks to which items are generated in various location types (slightly more realistic)
+-Nerfed those damned warrior rats
+-50% increased sanity reward from undead kills
+-Disabled blood splatter dissipation over time
+-Minor UI tweaks (eg removed new character random choice confirmations)
+-Updated and also trimmed the manual to make it more concise
+-Incorporated some of Deon's 'Deonapocalypse' tileset, and modified a few other bits myself
+-Other minor tweaks (eg merged some excessive hints, changed NPC descriptions)
+
+Development:
+-Minor improvements: code comments, optimizations, spelling corrections
+-Added a quasi-god mode trigger to debug for testing
+
+Note: versioning = [major release].[major feature].[minor feature].[bugfix]
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+NOTE: CHANGES BELOW ARE THE ORIGNAL WORK OF RoguedJack PRIOR TO RELEASE AS OPEN-SOURCE
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 9 CHANGES (28th April 2012: http://roguesurvivor.blogspot.com.au/2012/04/alpha-9-release.html)
+---------------
+
+Undead hunger and rotting.
+Living sanity and insanity, cannibalism.
+Medics can try to revive recently deceased people.
+
+FIXED BUGS
+1 (Rules) Cannot fire at or make an enemy of an indirect enemy.
+2 (Item) Scent killer is not equipable anymore and the NPCs never use them.
+3 (Options) Supplies drop option effect is reversed.
+4 (Options) Some options are irrelevant to VTG mode but still enabled and used in computing difficulty.
+5 (Wtf) Can drag more than one corpse but not really, causing bugs.
+6 (Inventory) Partial stacks do not stack correctly in some situations : more is added than what isdropped.
+7 (Murder) Cops can murder without consequences. Consequences will never be the same.
+
+NEW GAMEPLAY : UNDEAD ROT
+- Most undeads slowly rot away and have to eat flesh, similar to how livings have to eat food.
+- Bite/eat people/corpses to recover points.
+- When Hungry an undead may loose a skill each turn.
+- When Starved an undead may loose 1 HP per turn.
+
+NEW GAMEPLAY : SANITY
+- Livings should try to keep their Sanity.
+- Sanity slowly decays.
+- There are 3 levels of Sanity :
+    - Sane : nothing happens.
+    - Disturbed : nightmares.
+    - Insane : nightmares plus insanity sometimes taking control of the living actions and doing random things.
+- Livings seeing or doing disturbing actions take a sanity hit.
+    - butchering a corpse.
+    - eating a corpse (living cannibalism is worse).
+    - eating someone alive.
+    - zombification and corpse rising.
+    - death of follower/leader with whom the living had a bond (see below)
+- Recover sanity by:
+    - forming and keeping a bond with followers/leaders (see below)
+    - using entertainment items (see blow).
+    - taking some meds (yellow pills).
+    - killing undeads.
+
+NEW GAMEPLAY : CANNIBALISM
+- Livings can eat corpses when starving or insane.
+- Eating corpse recovers a bit of food points but transmit infection and is disturbing for sanity.
+- Nutrition value is low, Light Eater helps a bit.
+
+NEW GAMEPLAY : REVIVE
+- Can try to revive corpses.
+- Need : medic skill, a medikit, the corpse must be fresh.
+- Chances depends on the skill level and the state of the corpse.
+- A revive attempt consumes the medikit even if failed.
+- Big boost in trust if not enemies.
+
+NEW ITEMS : ENTERTAINMENT
+- Using recovers sanity.
+- Have a chance to become "boring" after each use.
+- A "boring" item has no value anymore to the character who found it boring (but may still have value for other people).
+- Books : good entertainment value.
+- Magazines : stackable but low value and discarded once read.
+
+FOLLOWERS
+- Bond:
+    - when max trust is reached, a "bond" is formed between the leader and the follower.
+    - a bond helps both livings recovering sanity, it is reassuring to know there is someone you can count on in this insane world.
+    - however, when the "bonded one" dies, the living takes a sanity hit.
+- Followers remember the trust they had in their previous leader(s). Eg: leave a follower behind and he will remember the trust he had in you if you lead him again.
+
+GAMEPLAY
+- Trees are now breakable and give wood.
+- Wood from broken objects is not limited to one full stack of planks. Eg: trees = 10 planks (4,4,2).
+- Trap: small actors (rats) have 90% chance to avoid triggering a trap.
+- Murder: killing an agressor of a leader/mate count as self-defence and is not a murder.
+- Indirect enemies: extended to include relations with respective leaders.
+
+SKILLS
+- New Z-Skill : Z-Light Eater, similar to living Light-Eater.
+- Modified skill zombification : Light Eater becomes Z-Light Eater; Z-Eater has to be learned as zombie.
+- New Skill : Strong Psyche - stay sane longer and recover more san.
+
+AI
+- Followers: When fleeing/retreating, try to avoid stepping into their leader line of fire.
+- Improved speed advantage evaluation : intelligent NPCs are much better at controlling range when they have a ranged weapon or are fighting a slower enemy (less stupid deaths).
+- Starved or Insane hungry livings will eat corpses.
+- Some livings use entertainment items.
+- Intelligent NPCs will avoid stepping into traps that could kill instantly them unless starving or courageous/wreckless (gangs).
+- Civilians will temporarily loose interest in an item stack they can't reach (eg:blocked by deadly traps).
+- Not afraid anymore of stepping on empty cans ^^
+- Not interested in ranged weapons if already have one.
+- Civilians will trade with each other, but they won't annoy the player and remember with who they traded recently as to not spam trade offers.
+- Civilians with medic skill will revive others.
+
+MODDING
+- Meds can recover San.
+- Items_Entertainment.csv
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 8 CHANGES (4th February 2012 : http://roguesurvivor.blogspot.com.au/2012/02/alpha-80-release.html)
+---------------
+
+Traps and Z-Skills.
+Self-defence. A bit more useful followers.
+Gangs that act as looters and CHAR Guards that act as guards, rather than them being just another enemy to kill.
+Armors helps or hinder escaping Gangs and Police attention.
+New shop.
+
+FIXED BUGS
+1 (Crash) Destroying a dragged corpse and then moving.
+2 (AI) Trying to get an item in a large fortification.
+3 (Glitch) Flaslights out of batteries still functioning.
+4 (AI) Won't equip a ranged weapon out of ammos even if has ammo in inventory (noticable when you change AI fire directives).
+5 (Typos) Various.
+6 (Gfx) GDI+ doesn't display some 32 bits PNG properly (fucked up some mods like Deon Apocalypse).
+7 (Lack of Nazis) Every decent game should have Nazis.
+8 (Glitch) Invading Zombiefieds incorrectly have spawn time 0.
+9 (Glitch) Overlays were sometimes not displayed (damage icons, blue popups..)
+10 (Trolling) The readme is outdated and mentions a "RS Install.exe". Idiot.
+11 (Glitch) PostMortem: difficulty inflation.
+12 (Glitch) PostMortem: follower skill upgrade logged as yours.
+13 (UI) Sometimes misses a combination of keys (Shift/Ctrl/Alt + key).
+
+
+GAMEPLAY
+- Personal enemies: Self-Defence and Indirect Enemies.
+    - Makes the distinction between being the Aggressor or acting in Self-Defence.
+    - If X attacks or declares Y as a personal enemy, X is the aggressor and Y is acting in Self-Defence (duh).
+    - Killing in Self-Defence is not a murder.
+    - Indirect enemies: X is not an aggressor or being aggressed by Y, but they are enemies through their relations (leader or followers are enemies).
+    - Indirect enemies are enemies as long as the cause is there (eg: respective leaders or mates are enemies). Once it is gone they are no more enemies.    
+- Undead: separate set of upgrade skills for undeads. See skills below.
+  When a living is zombified, some of its skills are zombified too.
+- Corpses: rising zombies have starting HP proportional to the corpse state.
+- Gangs: 
+    - Start neutral with civilians, but still enemies to Police and Army.
+    - Attack people who have items they want.
+- Wearing some armors modify the chances to move unnoticed by Police and Gangs.
+  - The effect cumulates with the Unsuspicious skill.
+  - Hostile outfits = +50% chances; Friendly outfits = -50% chances.
+  - Police: Hostile = all bikers armors; Friendly = all police armors.
+  - Bikers: Hostile = all police armors and rival gang armor; Friendly = same gang armors.
+  - Gangstas: Hostile = all police and bikers armors; Friendly = none.
+- CHAR Guards: they now act more like guards.
+    - Start neutral to Civilians, Police and Army.
+    - But attack anyone who trespass CHAR offices or the CUF.
+- Refugees: 
+    - Some of them arrive in the subway and the sewers too.
+    - They get one skill per day - after all, they are supposed to have survived up to this day just like you.
+    - More varied items - everything you can find in shops and houses.
+    - After Day 7 they might bring more rare items like grenades, army ammo...
+- Survivors: the van guys get more skills.
+- New Shop: Hunting Shop.
+- Standing/climbing on top of cars/fences increase view range.
+- VTG: since VTG has no evolution by definition the option is turned off to compute the difficulty properly; to get 100% again setting ZUp Days to 1 is fair.
+- Bikers, Gangstas and Soldiers get additional skills depending on the day they arrive.
+- Living player starts game with Food and Sleep not maximized, just like NPCs.
+
+NEW GAMEPLAY : Z-SKILLS
+- Undead set of skills
+  Z-Agile, Z-Strong, Z-Tough: like their living counterpart but lower values.
+  Z-Eater: regen more HP from bites/eating corpses.
+  Z-Grab: % of chance to prevent any adjacent enemy from moving (passive skill)
+  Z-Infector: more infection damage from bites.
+  Z-Tracker: improve smell - do not confuse with the item.
+- Zombification of skills is straightforward:
+    Agile/Strong/Though -> Z-Agile/Z-Strong/Z-Tough
+    Light Eater -> Z-Eater
+    Light Feet -> Z-LightFeet
+- Z-Grab, Z-Infector and Z-Tracker must be learned as zombie.
+
+NEW GAMEPLAY : TRAPS
+- Traps are items. 
+- Activate a trap, drop it on the floor and anyone/anything who/which enters the tile might trigger the trap (even yourself).
+- Stacks: activating/dropping only activates/drop one trap of the stack.
+- A triggered trap can deal damage and/or make loud noises and/or trap the victim in the tile.
+- Some traps need to be manually activated (use), other traps activates automatically when dropped on the ground.
+- Some traps desactivate when triggered, they have to be re-activated.
+- Some traps can be stacked together.
+- Since traps are just items, you can put many of them in the same tile.
+- To escape a trap, just try to move.
+- Armors do not protect from traps!
+- Some map objects allows you to safely move over traps.
+- Pushing some map objects on traps triggers them.
+- 4 Traps available : Empty Cans, Spikes, Barbed Wire and Bear Trap.
+
+SKILLS
+- new Light Feet/Z-Light Feet: improve chances to avoid/escape a trap.
+- Unsuspicious : helps evade gangs attention too (in addition to help avoiding the police)
+- Z-Agile: undeads can jump (Agile too).
+- Z-Strong: undeads can push (Strong too).
+
+FOLLOWERS
+- New Order: Sleep Now - they will sleep right where they are until fully rested.
+- New Order: Start/Stop following.
+- New Order: Where are you?
+- Pushing help: followers will automatically help pushing objects. 
+    - They must be idle or following you, awake and adjacent to the pushed object.
+    - Each helping follower takes a share of the stamina cost and spend normal action points.
+    - Eg: pushing a 100 weight object with the help of one follower = 50 sta cost you and him.
+
+OPTIONS
+- new options to control undead skill upgrades
+    - "Undead Upgrade Days" which days the zombifieds get a new skill, or disable it entirely.
+    - "Rats Skill Upgrade" whether rats do get skills upgrade or not...
+    - "Skeleton Skill Upgrade" ...skeletons...
+    - "Shamblers Skill Upgrade" ...and shamblers.
+- Difficulty: population density is a much more important factor as larger maps are easier.
+
+UI
+- Armor description: say to which faction/gangs the armor looks hostile/friendly.
+- Options screen: renamed and reorganized stuff.
+- Infection not displayed for undeads.
+
+ITEMS
+- Grenade stacking limit upped to 6.
+- New Armor: Hunter Vest. Pretty crappy but neutral.
+
+AI
+- Undeads: Pursuing undeads will try to move around a local obstacle.
+- Civilians: Setup traps in spots they think are interesting and emote why they chose this spot. 
+- Livings: Sometimes try to avoid stepping on damaging activated traps. Sometimes not.
+- Livings: Improved ranged weapon selection logic.
+- Livings: Improved melee weapon selection logic.
+- Livings: Tweaked large fortification spot selection logic.
+- Exploration: slight bias to prefer exploring outside during the day, and inside during the night.
+- Improved Fight or Flee logic.
+
+GFX
+- Redraw melee/ranged hit icons and draw damage value in the center of the tile.
+- Blood splatters are cleaned up after some time.
+- Blood on corpses.
+
+OPTIMIZATION
+- Data size.
+
+MODDING
+- Skills.csv: the new skills.
+- Traps.csv: have fun; careful not to create inescapable traps...
+- Note: The 3 new skins gfx are not used yet...
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 7 CHANGES (14th January 2012 : http://roguesurvivor.blogspot.com.au/2012/01/alpha-7-release.html)
+---------------
+
+Lots of new stuff most notably : Game modes with Infection and Corpses.
+
+FIXED BUGS
+- (n/a)
+
+NEW GAMEPLAY - GAME MODES
+- When starting a new game you choose a game mode...
+- STD - Standard - the standard game like in previous versions
+    recap:
+    - evolution.
+    - different types of zombies.
+    - instant zombification.
+- C&I - Corpses & Infection
+    - disabled instant zombification. 
+    - livings are infected by some undead bites (the ones who regain their hp when they hit you). see below for details on infection.
+    - when a living dies it becomes a corpse. see below for details on corpses.
+    - there are still evolution and different types of zombies, if you want to be more hardcore, see VTG.
+- VTG - Vintage - the must for hardcore classic zombies fans
+    - all the features of C&I.
+    - no different types of zombies, only zombified man and woman.
+    - no zombie evolution.
+- In vintage you can still start the game as another type of zombie if you want.
+- Special case for the player : will immediatly turn into a zombie if dying infected (no corpse).
+
+NEW GAMEPLAY - INFECTION (if game mode has it)
+- Infection rated as % of actor resistance to infection.
+- Resistance to infection = infection "hitpoints" = actor max Hitpoints + max Stamina.
+- As infection % increase there are ill effects.
+- 100% or more infection can trigger death.
+- Does not increase or decrease by itself over time : heal with meds, worsen with bites.
+
+NEW GAMEPLAY - CORPSES (if game mode has them)
+- A corpse will slowly decay to finally turn into dust and disapear.
+- A corpse might raise to become a zombie, with a delay of 6 hours (the infection takes some time to revive the dead).
+- Chances to raise depends on a number of factors :
+    - the time since death.
+    - the infection level of the living who died.
+    - corpses are much more likely to raise at night.
+- Explosions (grenades) damage corpses.
+- I'm sure you guys will find all kinds of funny exploits/bugs with corpses ^^
+
+ACTIONS
+- New Action: Drag Corpse.
+    - move a corpse with you.
+    - slows you down and is a tiring action.
+- New Action: Butcher Corpse (living)
+    - inflict damage to the corpse to accelerate the decay and eventually destroy it.
+- New Action: Eat Corpse (undead)
+    - inflict damage to the corpse and regen hp.
+
+SKILLS
+- New Skill : Necrology
+    - damage bonus vs undeads and corpses when butchering them.
+    - examining corpses will give you more info :
+        at level 1 = estimation of date of death.
+        at level 3 = estimation of infection.
+        at level 5 = estimation of chances to rise as a zombie.
+
+FACTIONS
+- new Gangs: There are now 2 gangs of Bikers & 2 gangs of Gangsta. 
+  Each gang is an enemy of the other one and they will fight each other.
+
+ACTORS
+- Zombifieds: with the AGILE skill can jump like the ZM does.
+- Zombifieds: with the STRONG skill can push like the ZM does.
+- Zombifieds: keep half of their past life skills (previously was only 1 skill at level 1).
+- Zombifieds: spawned zombifieds (invasion) start with some random skills, half of what a living would get.
+- Undeads: undeads gain a skill every two nights (night 1, 3...) from a limited set.
+- Each unique survivor has a unique weapon.
+
+ITEMS
+- New Armors: The 2 biker gangs have a different jacket with different stats; Police Riot armor.
+- New Light: Big Flashlight -for a lack of a better name- FoV+2 but spent fast.
+- New Med: Antiviral pills in Hospital & CUF.
+- Medkit heal a bit of infection.
+- Grenade deals more damage.
+- New unique weapons for BB, SM and RJ.
+
+EVENTS
+- Gangs: smaller squads but a bit more likely to come (to take advantage of the rival gangs feature)
+
+AI
+- Zombies & Rats eat corpses.
+- Livings AIs use meds to cure their infection when appropriate.
+- All Undeads AIs will push objects around if they are able to.
+- Hungry angry civilians will push all kinds of objects around (tables...).
+
+POST-MORTEM
+- Removed useless "The weather stayed XXX" entries.
+
+GFX
+- New gfx for different stages of rotting corpses (flies).
+  Note to modders: 
+    - the gfx has 2 frames for each 5 stages of rot and moves by +-2 pixels.
+    - the corpses are rotated and scaled gfxs of actors.
+
+SFX
+- Sfx when a corpse rise.
+- Sfw when an undead eat a corpse.
+
+PERFORMANCE
+- Dead undeads(sic) don't drop remains gfx anymore, while it was nice it made saved game unecessary larger as days passed. 
+  Blood is still in though cause it's fun and be useful to the player.
+
+MODDING
+- Meds: Added INF for infection.
+- Meds: All meds stats are now moddable (ex:bandages can help regain STA or whatever).
+- Lights: added FOV bonus.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 6.3 CHANGES (7th January 2012 : http://roguesurvivor.blogspot.com.au/2012/01/alpha-63-release.html)
+-----------------
+
+New improved armor (protection) system. Most Stats doubled to allow more items and skills variation.
+
+FIXED BUGS
+1. (Glitch) Random number generator might go insane when "Synchronous Simulation" is enabled (noone can hit anybody, Agile is always rolled etc...)
+--> I never had this one happen to me, need players feedback to confirm it fixed or not!
+2. (Glitch) Could not redefine some keys.
+3. (Typo) Fun facts.
+4. (Glitch) Player can see scents when sleeping.
+
+GAMEPLAY
+- New improved armor/protection system.
+  Armors have now 4 stats:
+  - Protection vs Hits : damage absorbed in melee.
+  - Protection vs Shots : damage absorbed when shot.
+  - Encumbrance : penalty to Defence value.
+  - Weight : penalty to Speed value.
+  Protection vs blasts (explosions like grenades) is the average of the two protection values.
+- Unique refugee NPCs arrive with other refugees rather than being there at the start of the game.
+- Famu Fataru has a unique Katana.
+
+UI
+- Actor description shows armor rating.
+- new options: "Show Targets" and "Always Show Player Targets"
+  "Show Targets": when mouse over an actor, will show which actor this actor is targetting and if the actor is being targetted.
+  "Always Show Player Targets": will "Show Targets" on the player; in practice this is helpfull to notice when you are being targetted as players can easily fail to notice the "targetting you!" icons.
+
+AI
+- AIs are now allowed to pickup,trade or use unique items like JM Axe and FF Katana.
+  The subway badge is the exception and still forbidden to AIs.
+
+DATA
+- A bunch of stats have been doubled. Ex: double hit points, double damages etc... This will allow more variation in items and skills.
+- Armors stats redone for new system.
+- Modified some weapons stats.
+- Modified skills stats.
+- New unique item Famu Fataru katana.
+
+MUSIC
+- More fitting theme song for our favorite super hero.
+- Short themes for all the unique refugee NPCs.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 6.2.1 CHANGES (1st January 2012 : http://roguesurvivor.blogspot.com.au/2012/01/alpha-621-release.html)
+-------------------
+
+Bug fix.
+
+FIXED BUGS
+1. (Crash) Might crash when displaying overlays (when mouse over stuff).
+
+OPTIONS
+- new: "Music Volume".
+
+UI/GFX
+- Some texts have a shadow effect.
+
+DATA
+- Zombie Master branch speed lowered to shambler level. Balance effect: weaker individually but more likely to be closely followed by a horde.
+
+SYSTEM
+- Small pause added when the player is sleeping to allow the sim to catch up.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 6.2 CHANGES (31st December 2011 : http://roguesurvivor.blogspot.com.au/2011/12/alpha-62-release.html)
+-----------------
+
+Much better simulation, bug fixes and a couple of goodies.
+
+FIXED BUGS
+1. (Crash) ESC might crash the game.
+2. (Glitch) Simulation timer wasn't checked properly.
+
+OPTIONS
+- new: "Synchronous Simulation" (enabled by default)
+  If on, the simulation on the nearby districts runs while you are playing in your district.
+  That means when changing district you probably won't have to wait at all.
+  Disable this option if the game feels less responsive or sluggish, especially on low end computers.
+- "District Simulation" by default up to FULL to take advantage of the new sim feature.
+- Limited reincarnation turned off by default (was on).
+
+GAMEPLAY
+- Stench killer : nearby stench killer odor is now visible to living players (pink circle), so you can easily see where you or AIs used the sprays (its rare but yes the AI does spray).
+- New Action: Recharge battery powered items - equip the item and bump into a powered generator, recharge 1 hour worth of battery.
+  Careful not to drop items out of battery you want to recharge later, they are still discarded!
+- Difficulty: doesn't factor in Districts Simulation option anymore.
+- 1 new unique NPC and its errr "theme song".
+
+AIs
+- Martial artists not interested in melee weapons.
+- Civilians: More likely to use stench killer and improved use logic.
+
+DEATH
+- Post-Mortem: failed achievements tease.
+- "Tip Of The Dead".
+
+DATA
+- Stench killer power/duration increased to 3h (was 1h) and double uses to 40 (was 20).
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 6.1CHRISTMAS CHANGES (24th December 2011 : http://roguesurvivor.blogspot.com.au/2011/12/alpha-61christmas-release.html)
+--------------------------
+This version is a 6.0 bugfix.
+Computer died. Lost sources to 6.1 but retrieved 6.0. 
+That means forget 6.1 changes including the infamous armor bug!
+Let's pretend 6.1 never existed.
+
+FIXED BUGS
+1. (Engine) Player long-waiting was sometimes not interrupted when attacked.
+2. (Manual) Incorrectly mentioned 3 skill levels.
+3. (Reincarnation) Difficulty was not updated when switching sides (remember difficulty is divived by life number).
+4. (Undead) Starting a new game as Zombified Male prevented you from starting new games as Female Zombified.
+5. (Crash) Crash on Win7 with DirectX gfx engine when minimizing/switching windows.
+
+GAMEPLAY
+Actors
+- 2 new unique NPCs.
+Death
+- Dead people always drop their ammo and food.
+
+INSTALL
+- All game user data now located in the game installation directory rather than user documents.
+- Removed installer, the game ships as a zip.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 6.1 CHANGES (10th May 2011 : http://roguesurvivor.blogspot.com.au/2011/05/alpha-61-release.html)
+-----------------
+Minor update.
+
+FIXED BUGS
+1. (Engine) Player long-waiting was not interrupted by attacks through exits.
+2. (Manual) Incorrectly mentioned 3 skill levels.
+3. (Reincarnation) Difficulty was not updated when switching sides.
+4. (Undead) Starting a new game as Zombified Male prevented you from starting new games as Female Zombified. 
+Various typos ingame & in manual.
+
+INSTALL
+- All game user data now located in the game installation directory rather than user documents.
+- Config : select game font - limitations :
+  - style is ignored.
+  - the ui DOES NOT adapt to font settings, so changing too much will mess up the interface.
+  - so yes, this is a rather limited and useless option. doh.
+
+GAMEPLAY
+Map Generation
+- New building : Warehouse, filled with crates.
+Map Objects
+- New object : Crate - break them to loot random content or use them as mobile barricade.
+Melee
+- Disarm : when fighting in melee attacker/defender has a small chance to disarm opponent on a succesfull hit/defence (5%).
+Skills
+- Martial Arts increase chances to disarm opponent.
+Death
+- Dead people always drop their ammo and food.
+
+INTERFACE & MANUAL
+- Removed Exit/Cancel binding, ESC is the universal exit key.
+
+MOD
+- Skills.csv : Martial Arts 3rd value = disarm bonus.
+- New gfx for crates.
+
+KNOWN BUGS AND GLITCHES
+- Asymetric FoV.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 6 CHANGES (11th December 2010 : http://roguesurvivor.blogspot.com.au/2010/12/alpha-6-release.html)
+---------------
+New major concepts : personal enemies, murders and murderers, law enforcers and followers trust.
+Bunch of bug fixes.
+Modified how smell works.
+Rebalanced skills and upgrade.
+Flavor : Fun Facts, NPC emotes.
+Various rebalancing, fixes and AI improvements.
+
+FIXED BUGS
+1 Zombified male was created as a zombified female instead.
+2 Soldier followers bumped into generators.
+3 Player could always break stuff with the break command.    
+4 Dying in the sewers with a follower crashed reincarnation if option "Can Reincarnate to Sewers" is off.
+5 If you spawned as a slow actor (eg: undead zm) you will not get messages for actions done by actors who get to act before you on turn 0 (eg: getting shot by cop).
+6 Flawed spawn logic for undead player.
+7 Follower selection menu did not work properly.
+8 Looking at a live grenade crashed the game.
+9 Armor now drawn on top of torso decoration; might give some funky looks (eg: armor on top of coat).
+10 Policeman and male civilians were both named as "man" in post-mortems.
+11 Manual : default key for city information is "i" not "m".
+12 System.InvalidOperationException: killing deadGuy that is already dead.
+13 Reincarnation messed up CUF script. (eg: a zombie could block the stairs forever). 
+14 Shoving allowed an actor to enter an otherwise unpassable tile.
+15 Simulating did not check properly for events.
+16 Actors with natural speed over 100% who sleeps can act right after starting to sleep.
+
+GAMEPLAY
+New: Personal Enemies!
+- Read the manual.
+New : Murders and Law Enforcers!
+- Read the manual.
+Followers
+- New Order : "give me...".
+- New concept : Trust. Read the manual.
+Smell sense
+- Smell only adjacent and center tiles (FoS/smell = 1 in old system).
+- Smell rating now means lowest scent detectable as % of strongest scent possible.
+  eg: 100% means will smell all scents.
+       50% means will smell only scents above 50% of max value, that is quite fresh scents.
+       10% will almost be "scent blind".
+- This means :
+  - no more "x-ray scent scan".
+  - undeads with poor smell will be more susceptible to loose track of their prey.
+  - undeads with poor smell rely more on the noses of ZMs/rats.
+  - ...and so more packs led by ZM.
+  - importance of clever use of rain & stench killer increased.
+  - slightly better undead AI performance, since needs to scan only adjacent tiles.
+Map Generation
+- Rebalanced Housing rooms type distribution.
+- Much more food in houses.
+- All Shops start with shelves full of goodies.
+- CHAR Offices have canned food only rather than a mix of canned food and army rations.
+- Less cars.
+- Hospital storage has also some canned food, all items there are full stack.
+- Zombie rats in basements.
+- Building zones extended to cover doors/windows (good for ai & orders).
+- Walkway around buildings are zones (good for ai & orders).
+- Try to spawn zombies outside (so most of the initial wave will most probably get shot by cops)
+Events
+- All gangs size down to 8 (was 10).
+- Gangsta will show up a bit longer.
+- Rebalanced and redone army supplies logic - will be less frequent and drop smaller packages.
+- Rebalanced and redone refugees logic - more on city borders, less in center, default everywhere else.
+- National Guard less likey to intervene.
+Skills & Upgrading
+- Max skill level up to 5 (was 3) - only exception is Hauler.
+- Upgrade : choose from 5 skills (was 3).
+- Rebalanced skills to account for the new max.
+- New Skill : Charismatic - gain trust faster and get more trade offers.
+- New Skill : Unsuspicious - law enforcers might ignore you.
+- All living actors always upgrade each morning (was previously limited to civilians with a % chance).
+Attacks
+- Double potential damage when attacking a sleeping target.
+Actors
+- Rats NPCs can use exits (see AI).
+- "Zombie" branch renamed "Shambler" to avoid confusion.
+- Rebalanced undeads.
+- 2 new unique actors.
+Items
+- Pills stacking limit increased to 20 (was 10).
+- New Item : Police Radio - see all the police on the map.
+Post-mortem
+- Tells how many actors you murdered.
+- Death reason is "murdered" if you happen to be... well murdered.
+- Fun Facts.
+Reincarnation
+- Fun Facts.
+Engine
+- Optimized actor turn ordering.
+- Optimized memory usage.
+- New simulation algorithm - faster & more accurate.
+
+INTERFACE & MANUAL
+- New command : Make personal enemies (default Ctrl-E); designate actors as personal enemies.
+- Player personal enemies are highlighted on the map :
+  red    : mutual enemies.
+  orange : the other actor considers the player as enemy, but the player do not.
+  yellow : the player considers the other actor as enemy, but the actor do not. 
+- Break/Attack through exits with the wait key when asked for a direction (NumPad5 by default).
+- Player or follower actor description say if made personal enemies.
+- Trusting follower : light blue; Untrusting follower : dark blue.
+- Follower actor description shows trust level and if trusting murders committed.
+- PC cops can see number of murders in actor description.
+- Yes/No prompts : ESC key also works for No.
+- When simulating refresh screen only 1 time per second.
+- Simulating show turns simulated per second, as a performance counter - keep in mind that lower sim rate means higher tps.
+- Colored say and emotes messages so they are more noticable.
+- "Barricade mode" says "Barricade/repair" - some players might have overlook that you can repair fortifications!
+- New gfx for new stuff.
+- Updated manual.
+
+OPTIONS
+- New option : "Aggressive Hungry Civs" - enable or disable aggressive behavior of hungry civilians (default is on).
+- New option : "Event - National Guard" - how likely the NG is to show up. See the manual for exact meaning.
+- New option : "Event - Supplies Drop" - how likely are supplies drop to happen. See the manual for exact meaning.
+
+AI
+- CivilianAI : hungry civilians without food will attack people for food (carrying or standing on food); followers never do this on their own.
+- CivilianAI : more aggressive, now charge enemies if they want to.
+- CivilianAI : don't wait for starvation to push objects/attack barricades, they start doing it when hungry.
+- CivilianAI : reordered behaviors so followers close doors and windows behind them.
+- ZombieAI : attack enemies blocking exits (in addition to already attacking blocking objects) - no more "sleeping on stairs" exploit.
+- ZombieAI : will explore stairs/ladders more.
+- ZombieAI : ZMs will more actively push objects, opening up paths for other zombies.
+- RatsAI : will now follow living scents through exits - means they will leave sewers to chase livings.
+- SkeletonAI : has a chance to passively wait rather than wandering.
+- AI leaders try not to leave followers behind - npc groups have better cohesion.
+- Bikers are not interested in trading or picking up ranged weapons - melee fighters.
+- JM is free to wander and is more dangerous.
+- Improved FightOrFlee and ChargeEnemy behaviors.
+- Modified exploration behavior.
+- Rewrote smell & tracking related AI due to rules change.
+- AIs won't flee through exit if their leader is not on the destination map (eg: they won't left you behind when fleeing).
+- AIs will use exits to follow someone.
+- AIs warning message for sleeping friends more explicit : "wake up !" instead of "warning!".
+- AIs won't warn someone if it is itself adjacent to an enemy.
+- Improved skill upgrade choice.
+- Improved use of pills.
+- Improved large fortification build logic - will tend to make lines anchored on walls.
+- AIs might emote (saying stuff or posturing) in some situations; funny and might help understanding what those retards think they are doing.
+- AIs more interested in expired food. 
+
+MOD
+- All actor graphics (Actors and Actors\Decoration) are now 32x32 rather than 24x24.
+- Data files incompatible with previous versions due to changes : Skills.csv, Actors.csv, Items_Trackers.csv.
+- Better modding readme doc.
+
+KNOWN BUGS AND GLITCHES
+- Asymetric FoV.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 5 CHANGES (27th November 2010 : http://roguesurvivor.blogspot.com.au/2010/11/alpha-5-release.html)
+---------------
+
+Two new HUGE features : undead mode and reincarnation.
+You can use or abuse the reincarnation feature... or not. Its up to you.
+There are also some modifications to gameplay, balance and AI.
+
+FIXED BUGS
+- Subway small maintenance room will not overlap platform anymore.
+- Post-mortem option "simulate when sleeping" shows properly.
+- Attacker icon won't display in odd places when the attacker is out of map (eg: zombie bashing from another map).
+- Long names in HiScore table are now truncated.
+- Actors who can't talk cannot shout either (eg: undeads).
+
+GAMEPLAY
+New : Play as an Undead!
+- Choose your race from Skeleton to Zombie Master.
+- All undead rules apply to you, so know your abilities and limitations.
+- You can see living and zombie masters scents - if ability.
+- Scoring comes mostly from killing, no achievement to reach.
+- Difficulty rating as undead is opposite to difficulty as survivor.
+- No access to the city map.
+- Does not get notified of events.
+New : Reincarnate!
+- When your current character dies you get the choice to reincarnate or not, if the option is activated.
+- Continue playing in the game world as you left it.
+- After dying you can choose between different reincarnations avatars :
+  - Random Actor.
+  - Random Living.
+  - Random Undead.
+  - Random Follower (of yours).
+  - Your Killer.
+  - Your Zombified Self.  
+- You loose everything related to your previous character (scoring, memory etc...).
+- Reincarnation as living can be limited to civilians only (an option, on by default).
+- Reincarnation as undead can exclude zombie rats (an option, on by default).
+- Reincarnation can exclude avatars in the sewers (an option, on by default).
+- Some rare reincarnation unique places or actors are forbidden.
+- Difficulty value for scoring is divided by each successive reincarnation.
+Map Objects
+- Iron Gates (subway, hospital, prison) are now breakable but are very resistant.
+- Large fortifications are now opaque.
+Trading
+- Followers are always willing to trade with their leader, even uninteresting or silly deals.
+- Gangs can trade with friends.
+Leading
+- Relaxed faction leadership restrictions a bit, so civilians can be lead by anyone friendly (eg: civilians led by cops or army).
+Items
+- Item batteries duration and stench killer capacity increased.
+Ligthing
+- Flashlights improves FoV only if it is dark (in other words, they are useless during the day).
+Map Generation 
+- Shops might have a window.
+- No zombie start in the subway.
+Event
+- Zombies do not spawn in subway anymore.
+Zombification
+- Zombifieds keep one level of a random skill of their ex-living form - skill which might now be useless to them.
+Actors
+- Undeads may stumble while jumping and loose action points (eg: ZMs).
+- Rats have the "Small" ability which allows them to slip through any objects except closed doors.
+Pushing
+- Pushing is a loud noise.
+
+INTERFACE & MANUAL
+- Undead : view scents.
+- Undead : status line show "Field Of Smelling" range (FoS).
+- UI does not display stats irrelevant to your current avatar (eg: food for zombies).
+- Reincarnation screens.
+- Leaders have a "L" icon.
+- NPC/objects in action messages will show up as "someone/something" if when not visible to the player.
+- Refugees and Midnight Invasion event won't pause the game anymore - this get annoying after a while.
+- Updated the manual.
+
+GRAPHICS & MUSIC
+- New gfx : scents icons for undead mode; leader icon.
+- 2 new musics (well one is a sfx actually).
+
+OPTIONS
+- Difficulty : Show separate difficulty for undead mode.
+- New option : Max number of reincarnations allowed (1 by default).
+- New option : Allow to reincarnate as zombie rat or not - as they are numerous and quite boring to play (no by default).
+- New option : Allow to reincarnate to the sewers or not (no by default).
+- New option : Restrict livings reincarnation to civilians (yes by default) - some actors like char guards are not meant to be played, but can be fun 
+- New option : Permadeath - delete saved game on death, doubles difficulty rating (off by default).
+- New option : Death Screenshot - automatically takes a screenshot of your death (on by default).
+- Default Zombification up to 100% (was 80%).
+- Default Max Undeads up to 100 (was 90).
+
+AI
+- Followers : when Guarding or Patroling, mimick leader cellphone usage.
+- CivilianAI : desperate starving civilians will push objects around and attack barricades in the hope of finding hidden stashes of food.
+- CivilianAI : now interested in stench killers and will use them.
+- ZombieAI : reordered behaviors to give more priority to following ZM.
+- ZombieAI : ZMs and evolved Zombifieds can and will push objects in various situations.
+- ZombieAI : do not attack objects and barricades on sight anymore.
+- Soldiers & Civilians will now build large fortifications too.
+- Tuned Fleeing logic.
+- Updated living AIs to handle being led by the player.
+
+KNOWN BUGS AND GLITCHES
+- Asymetric FoV.
+
+A NOTE ON REINCARNATION
+Playing as a civilian survivor is still the main focus of the game.
+If you play a non-civilian leader, keep in mind non civilians-AI are pretty much limited. 
+Some living actors do not need to eat, but most have to sleep.
+The ability the play other actors has been tested but is not guaranted to work 100% fine yet.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 4.3 CHANGES (13th November 2010 : http://roguesurvivor.blogspot.com.au/2010/11/alpha-43-release.html)
+-----------------
+Mostly a HUGE bug fix and a couple of new sweet features.
+Everyone who got crashes should be able to play the game and get sound now!
+Fix the crash bug for Win7 and some other configs!
+Config program to choose between different Video and Sound engines!
+
+FIXED BUGS
+- Some people couldn't run the game at all because of Managed DirectX crashing.
+- No music on some computers.
+- Modding some items stacklimit down to 1 crashes a new game.
+- Rapid Fire taking two turns.
+
+CONFIG
+- Run "RSConfig". 
+- Video : 
+  - Managed DirectX : default, but might crash on some computers.
+  - GDI+            : slower and a bit less good looking, but safer.
+- Audio : 
+  - Managed DirectX : default, plays the mp3 files, but might crash or get no sound on some computers.
+  - SFML 1.6        : plays the ogg files.
+  - No Sound        : if all else fails, at least it won't crash...
+  
+MODDING
+- Pills stacking limit can now be changed properly.
+- All melee weapons can now be made stackable, except uniques.
+
+GAMEPLAY
+Pushing
+- New Action : Shove people around - kick survivors out of your base or rush through zombies.
+Weather
+- Rain has a chance to put out fires (eg: burning cars).
+
+INTERFACE & MANUAL
+- Updated manual.
+
+GRAPHICS & MUSIC
+- Musics in ogg format for SFML audio support.
+
+KNOWN BUGS AND GLITCHES
+- Asymetric FoV along walls.
+- GDI+ : some differences from default Managed DirectX rendering.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 4.2 CHANGES (9th October 2010 : http://roguesurvivor.blogspot.com.au/2010/10/alpha-42-release.html)
+-----------------
+Main new feature : stats modding.
+
+FIXED BUGS
+- CHAR Guard, Soldiers and Gangs could fire at targets out of their FoV if they saw them previously.
+- Typos : plural of Combat Knife, plural of Female Disciple.
+- Breaking objects use skills for computing damage.
+- AI can now use sewers maintenance building ladders.
+- Break action on barricaded broken windows now works properly.
+- Firing through something (eg: glass doors) did not spent ammo.
+- Fix attempt for people reporting 100% CPU usage and overheating - does this work?
+- Fix attempt for crash on Vista when launching from task manager - does this work?
+
+MODDING
+- Mod all actors stats.
+- Mod all items stats.
+- Mod all skills stats.
+All stats file in Resources\Data.
+
+GAMEPLAY
+Actors
+- Slight stats differences between Male and Female undeads.
+Breaking
+- Breaking wooden objects might drop improvised weapons in addition to planks.
+Items
+- Fragile melee weapons have more chances to break (3% vs 1% per use).
+- New Item : Iron Golf Club.
+- New Item : Short Shovel.
+- New Item : Small Hammer.
+- New Item : Improvised Club.
+- New Item : Improvised Spear.
+Followers
+- New fighting directive : Coward - always flee.
+Stamina
+- Stamina can go well below 0.
+- Vomitting waste 50 stamina.
+Pushing
+- Cars can now be pushed, but are very heavy. Burning cars cannot be pushed.
+Firing
+- Rapid Fire : fire twice in a turn but with horrid accuracy (50% for first shot, 30% for the second).
+
+INTERFACE & MANUAL
+- New : Combat Assistant, to help new players.
+- All advisor hints readable in game.
+- Advisor hints status are now persistant between games rather than separatly for each game - it will give you a hint only once.
+- Advisor can be reset - gives you all the hints from the start again. 
+- New keyboard shortcuts for managing items - you can still use the mouse.
+  Ctrl-  = equip/unequip/use item from inventory;
+  Shift- = take item from ground;
+  Alt-   = drop item from inventory.
+- Updated manual.
+
+GRAPHICS & MUSIC
+- New gfx for new stuff.
+
+OPTIONS
+- Combat Assistant, off by default.
+- Tuned difficulty computation formula.
+
+AI
+- Improved and fixed CHAR Guards, Soldiers and Gang chase logic.
+- Improved Fight or Flee behavior.
+
+KNOWN BUGS AND GLITCHES
+- Asymetric FoV along walls.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 4.11 CHANGES (31st August 2010 : http://roguesurvivor.blogspot.com.au/2010/08/alpha-411-release.html)
+------------------
+Bug fix with AI improvements.
+
+FIXED BUGS
+- Stopped NPCs equip-unequip obsessive behavior that froze the game.
+- Can change Cautious directive again.
+- Beds don't block stairs exit anymore.
+- Tracker targets won't show when sleeping anymore.
+
+GAMEPLAY
+- New Item: Kolt Revolver, K for Kolt.
+  
+AI
+Slightly more CPU spent on AI, but hopefully worth it.
+- Improved CivilianAI scavanging behavior : consider all items stacks rather than just the nearest one.
+- Improved fortification building logic : less spam in stupid places.
+- Improved eat logic : less waste, consider perishable vs non perishable.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 4.1 CHANGES (26th August 2010 : http://roguesurvivor.blogspot.com.au/2010/08/alpha-41-release.html)
+-----------------
+Overview:
+- Intel fix.
+- Ingame help for new players (advisor, item ui help)
+- The Hospital (building, map).
+- Grenades (action, item).
+- Canned Food (item).
+- Civilians tips (AI).
+- Hardy (skill).
+- Late game ally (actor).
+- Order to: build fortifications, report events (follower).
+- Initiate trade (action).
+- Share flashlight FoV bonus (rules).
+- Various AI improvements.
+- Redone difficulty computation (options).
+- Log file to help bugs fixing.
+
+
+FIXED BUGS
+- Fixed crash and missing minimap on Intel video cards! Hurray!
+- Fixed crash when attempting to build fortifications on walls.
+- Gangstas raid was never triggered.
+- Quit quits.
+- Day 28 is Day 28.
+- Modified starved zombification chance option appears in post mortem.
+- Resized skill table so it always fits the screen.
+- Jumpables objects do not block exits for actor who can jump.
+- Fixed UI glitch where you could look at your inventory when pointing the mouse out of the map.
+- Police Station TPWSNB won't trigger if he/she is sleeping.
+- Crossbows won't jam anymore.
+- Various bugs related to loading a game within a game (achievements, ghost characters...)
+- When you die, doesn't wait for the turn to end to go back to the main menu.
+
+PERFORMANCE
+- Reduced average save and load time by 20% to 30%.
+  Remember that pushing the options too far, especially city and district size, has a significant impact on performance.
+
+GAMEPLAY
+Map
+- New Unique Maps & building : Hospital.
+- Some civilians have stored weapons in their basements (rare).
+Actor
+- New Unique enemy.
+- New recruitable late game ally.
+- 2 new factions for the new actors.
+Action 
+- New Action : throw grenades - blow up people and objects. Watch out for chain reactions.
+- New Action : initiate trade - offer an item to trade.
+Items
+- New Item : Grenade. 
+- New Item : Canned Food.
+- New Item : Combat Knife.
+- New Unique Item.
+- Some rare items are unbreakable and never get destroyed.
+- Unique items are never destroyed.
+- Wooden planks stacking limit up to 4 (was 3).
+Sleeping
+- Increased chances to heal when on sleeping a couch (5% vs 3%).
+Skill 
+- New Skill : Hardy - Sleep can heal anywhere (no bed needed), more chances to heal when sleeping (1% per level).
+Followers
+- New Order : build small/large fortification.
+- New Order : report events - which is equivalent to forcing them to tell you their tips.
+- New Directive : throw/don't throw grenades - AIs is very cautious when throwing grenades, but you might want another fail-safe :p
+FoV
+- Standing next to someone with a flashlight on gives the same bonus has having one - you "share" the light.
+Difficulty
+- More complex calculation, with some parameters effects depending on other parameters (eg: nb of civilians vs zombification % and starving).
+  Hard to predict the % effect of changing an option, but the basic effects make sense.
+  As reference, min difficulty is 0% (!) and max difficulty 519%.
+
+..And various minor tweaks.
+
+INTERFACE & MANUAL
+- In game advisor gives hints to help new players learn the basics - it's on by default.
+- Bunch of advisor hints.
+- Dying by ranged weapons says "shot" instead of "hit".
+- Ranged weapons short description tells how many ammo left (eg: in other people inventory and on the ground).
+- Shotgun "shells" not "cartridges".
+- Items description in player inventory reminds of special keys or actions (fire, give...).
+- Shows a "healing" icon when an actor is healing while sleeping (helpful for new players).
+- Updated manual.
+- Updated readme to mention the logfile.
+
+GRAPHICS & MUSIC
+- New gfx for new stuff.
+- New activity icon for NPCs fleeing from explosives (see AI section).
+- 3 new musics (total 15 musics).
+
+OPTIONS
+- New : Show Minimap on/off - special old school 4.0 emulation mode for hardcore Intel people :p
+- City Size min:3 max:6.
+- Enabled/Disable Advisor.
+
+AI
+- Civilians give tips about enemies, items, soldiers or raids they recently saw/heard. Keep your ears open!
+- Followers told to not fire weapons will switch to melee weapons (or barehands) - so you can easily set them to melee or ranged fighter role.
+- NPCs raising the alarm say which enemy they sighted.
+- Leaders can switch place with their Followers - followers AI won't block leaders AI anymore.
+- GangAI and CivilianAI followers stay closer to their Leaders.
+- Trading AI refuse deals that makes no sense (eg: "my baseball bat for your baseball bat", "my pistol for your pistol ammo").
+  You'll get a "has no interesting deal to offer." message.
+- AI use blue pills more often.
+- AI sleep more often.
+- Improved sleep behavior for GangAI and SoldierAI.
+- SoldierAI use medecines.
+- Improved AI inventory management logic with weapons.
+- Civilians make room for food items by dropping stuff when needed.
+- Improved AI gear preference (doesn't affect trade)
+  - equip best armor.
+  - equip ranged weapons over melee weapons.
+  - melee weapons preference : most damage first, then least STA penalty.
+- CivilianAI and SoldierAI run away from primed explosives (eg: grenades).
+- CivilianAI and SoldierAI *cautiously* throw grenades when appropriate : hurt group of ennemies, don't hurt friends.
+- "CUF" map : once you visit the map, AIs will be able to use the exit/entry stairs - carefully choose when to open the pandora box ;)
+
+KNOWN BUGS AND GLITCHES
+- If you have a bug, mail the logfile.
+- FoV is asymetric along walls.
+- Rare crash at map generation complains about a missing CHAR Office.
+- When changing some options the difficulty will go up, then slightly down, then resume up again.
+- Long messages can be hard to read, use the Message Log command to read them in fullscreen (default Shift-M).
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 4 CHANGES (18th July 2010 : http://roguesurvivor.blogspot.com.au/2010/07/alpha-4-release.html)
+---------------
+Previous version focussed on Bugs and AI, this version focus on adding new content and new gameplay.
+You can consider having winning this version of the game when completing all the Achievements.
+
+FIXED BUGS
+- Melee weapon Stamina penalty was not used properly.
+- AI tried to get items where an actor was standing.
+- Fleeing AI standing still and getting hammered when escape blocked (they now turn to fight).
+
+GAMEPLAY
+Maps
+- New map : Sewers.
+- New map : Subways.
+- New map : House Basements.
+- New map : Shop Basements.
+- New building : Sewers Maintenance.
+- New building : Subway Station.
+- New building : CHAR Agency.
+- New unique building & maps : Police Station.
+- Switch on the power in the subway stations to open the gates to the platform and turn the lights on.
+- Sewers & Subways Undeads invade their maps frequently and you never know when it happens. It's always dangerous down there.
+- More links between districts on surface.
+- Districts more specialized.
+- Tuned map generation to better fit new default map size.
+- New secret unique map. Do stuff there for Achievements.
+Leaving Maps
+- Entering maps/districts is a free action for the player - much less instant-death when entering districts/maps.
+- Followers can abandon you only when changing district - eg: they won't leave if they can't follow you in the sewers, subway etc...
+Player
+- Different possible start positions, not just in your bed.
+Action
+- New : Build small/large fortification - need Carpentry skill.
+- Barricading also repair fortifications - no skill needed.
+- New : Spray scent - add/erase odors, read the manual, use them sparringly.
+Skills
+- New Skill : Martial Arts - improves fighting when unarmed.
+- Carpentry at level 3 allows you to use one less barricading material when building fortifications.
+Undeads
+- New undead : Zombie Rats, found in sewers.
+- New 3rd tier zombie.
+- New unique : A local urban legend about something that lives in the city sewers. Kill it for an Achievement.
+Food
+- Fresh, Expired (75% nutrition) and Spoiled (33% nutrition, vomitting chance) food.
+Firing
+- Rebalanced penalty when Firing respective to Stamina.
+- Ranged weapons have more chances to jam under the rain.
+Items
+- New : 4 spraypaint colors to tag with.
+- New : Unique item to find in the Subway.
+- New : Police Jacket.
+- New : Stench Killer, erase parts of your stinking tracks.
+- Bolts Amo item increased to 30.
+- Dropping empty spraypaint discard it.
+- Rebalanced Huge Hammer STA cost (since it is now actually used).
+Map Objects
+- New : Power Generator, switch all them On to restore power to a map or activate something.
+- New : Fortifications.
+FoV
+- Modified FoV shape.
+- Increased minimal FoV.
+Scents
+- Faster decay in sewers.
+Misc
+- Eater Egg moved to one of the Sewers map...
+Scoring
+- There are 8 achievements possible.
+
+INTERFACE & MANUAL
+- Actors description tells since when they are undead/still alive.
+- Effects in Sewers.
+- When an exit is blocked, tell who/what is the blocker.
+- City Information shows notable known locations.
+- Trackers display icons on map if spotted target not visible (in addition to minimap dots).
+- Updated manual.
+
+GRAPHICS & MUSIC
+- New gfxs for new stuff.
+- New eyes : Big nerdy glasses ^^
+- 4 new musics.
+
+OPTIONS
+- Resized Maps down and decreased Populations.
+- Simulate when Sleeping disabled by default - prevent "sleeping lags :(" complains, re-enable it if you change districts often.
+
+AI
+- New AI for new actors.
+- Improved AI inventory handling of ranged weapons (no more insane stacking).
+- Some AIs will use some exits (ladders, stairs...) when appropriate (wander, track, flee).
+- Undead AIs can follow scents through the exits - they can track prey/master between maps.
+- Zombie AI : fixed problem with using memorized smell sensors data - this improves their scent tracking ability a lot.
+- CivilianAI and SoldierAI with carpentry skill : will sometimes build small fortifications on their own.
+- AI not interested in Spray items.
+
+KNOWN BUGS AND GLITCHES
+- FoV is assymetric in some situations (eg: when standing along walls).
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALPHA 3.21 CHANGES (30th June 2010 : http://roguesurvivor.blogspot.com.au/2010/06/alpha-32.html)
+------------------
+
+FIXED BUGS
+- Bunch of random player skills upgrade. Nice but not intended.
+
+ALPHA 3.2 CHANGES
+-----------------
+Bug/exploits fixes, gameplay and balance, noticeable AI improvements for acceptable CPU cost.
+
+FIXED BUGS
+- Crash: Giving stackable items would crash the game in certain situations.
+- Crash: CHAR Guard AI attempting Shout action while they weren't allowed to.
+- Crash: Attempt to fix DirectX error D3DERR_DEVICELOST. A stab in the dark since I can't test the fix myself, tell me if it works.
+- Correct difficulty rating in post mortem and hi scores.
+- AI considered only the top item in item stacks.
+- AI wasn't switching weapon when out of ammo and no reload available.
+- AI now resets directives and orders when has no leader.
+- AI sensors memory incorrectly used global game time rather than local map time (this affected simulation only).
+- Sleeping now illegal if not enough sleep points spent (fixes exploit).
+- Equipping an item with batteries now spend one energy unit as you turn it on (fixes exploit).
+- Trackers out of batteries were still working.
+
+GAMEPLAY
+Followers
+- Choose the upgrading skills for your followers.
+- New order : Drop all items.
+NPCs
+- Civilians & Police have a 75% chance to upgrade on mornings on their own (player followers have 100% chance).
+Food
+- Food has a best-before date, nutrition value is divided by 3 when expired.
+- Eating expired food can cause vomitting.
+- Army rations no more stackable, but they last longer that groceries.
+Dying
+- Dead people don't drop all their items, some can be destroyed.
+Items
+- Dropping an useless item (tracker or light out of batteries) discard it (destroy it).
+- Items with batteries are not automatically equipped.
+- Ranged weapons can jam when you fire (insert curses here).
+Undeads
+- Undeads level progression back to 3.0 rate (faster).
+- Invasion event will progressively spawn hi level undeads (if undead evolution option enabled).
+- Zombie Lords now assault breakables too (like Neophytes and Disciples already do).
+- Zombie Lords and Disciples will not appear before Day 7.
+- Scents life time increased A LOT - Zombies will chase living a lot longer.
+- Some undeads smell distance increased.
+Breaking
+- Breaking fences drop planks.
+- Breaking stronger objects drop more planks.
+Firing
+- Firing accuracy penalty is now given if tired (big penalty) or stamina bar not full (light penalty) (was if running).
+Other Bad Guys
+- Rebalanced "those guys".
+- 2 new items carried by "those guys", one of them is very useful against them.
+- Can find two special items in CHAR Offices if lucky (one new, one old). Good reason to visit them.
+National Guards
+- National Guard leaders now bring one special item after a certain time (was previously carried by "those guys").
+- National Guard only comes before Day 10 - no National Guard after that.
+- National Guard squad size reduced.
+
+INTERFACE & MANUAL
+- New actors icon when they have 3h or less left before becoming hungry/sleepy (green icons).
+- Expired food has an icon in inventories.
+- Removed cheat keys. Sorry guys.
+- Changed some messages.
+- Updated manual.
+
+GRAPHICS & MUSIC
+- A couple of new graphics (items, icons).
+
+OPTIONS
+- Increased default Starving Zombification.
+- Increased default Max Undeads.
+  
+AI
+- Several specific CivilianAI improvements :
+  - New : Close door/window behind them.
+  - New : Close doors and barricade windows near them before going to sleep.
+  - New : Map exploration.  
+  - Mod : Trade only for interesting items, but will still trade anything with the leader.
+  - Restricted use of flashlights (again).            
+  - Improved Firing logic when in contact with enemy.
+- Fleeing AI try to close/barricade door/window between them and the enemy.
+- Fleeing followers prefer to flee toward leader.
+- NPCs leveling up try to choose usefull skills (they still have to choose from 3 random skills like you).
+- AI only interested in ammo items compatible with carried weapons.
+- AI only interested in expired food if lacking food.
+- AI will use blue pills more often.
+- CharGuardAI and SoldierAI now use Fight or Flee logic (less stupid melee deaths).
+- Soldiers and Gangs explore the map too.
+- All undeads -except Skeletons- explore the map.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Alpha 3.1 changes (16th June 2010 : http://roguesurvivor.blogspot.com.au/2010/06/alpha-31.html)
+-----------------
+
+INSTALLER
+New safe and easy to use installer.
+Remember to uninstall your previous version with the old method (see Game FAQ on the blog if you have problems).
+
+FIXED BUGS
+- Graveyard shows correct starting skill.
+- Can't give items to sleeping people anymore.
+- Breaking a stackable weapon does not break the whole stack (eg: crowbars).
+- Actors activity when moving to a bed was incorrectly set to "Sleeping".
+- Order : barricading max was barricading only once.
+
+GAMEPLAY
+- Humans HP increased to 15.
+- Loud noises can wake up nearby sleeping actors.
+- People dying from starvation can turn into zombies (option).
+- New skill : Light Sleeper, increase sensibility to loud noises.
+- New items : Ammo items.
+- New action : Reload weapons.
+- New action : Shout, try to wake up nearby sleepers (default key S).
+- New command : City Information, shows city layout (default key I).
+- New command : Messages log, view more recent messages (default key Shift-M).
+- New order : Guard (position).
+- New order : Patrol (zone).
+- Exhausted actors have a chance to collapse (forced sleep).
+- 1 new ally.
+- 3 new enemies - for middle and late game.
+- Some undeads evolution slowed down.
+- Disciple HP slightly weakened.
+- Scents duration increased (undeads using smell tracking will chase longer).
+- Trackers items now have batteries (eg: cellphones).
+- Long wait interrupts more often.
+- Starting Food and Sleep points of civilians randomized.
+- Achievements.
+- 1 Easter Egg to find.
+- Rebalanced items Shotgun and Crossbows.
+- Rebalanced skills Light Eater and Awake.
+- Increasing civilians increase difficulty rating rather than decreasing it.
+- More items variety in Parks.
+- A rare but very useful item available in late game.
+- Various minor changes.
+- As a result of changes, early game is MUCH easier, difficulty is more progressive and fighting is more viable.
+
+INTERFACE & MANUAL
+- Removed "pull" in "push/pull", some people expected to be able to pull on their own tile.
+- Scoring and Difficulty shown in game.
+- "Sunny" weather changed to "Clear".
+- Batteries displayed as hours left.
+- Player Sleep/Food points also displayed as hours left until Sleepy/Hungry.
+- Graveyard shows options modified.
+- Switch place command default key Control-S (S rebinded to the new Shout command).
+- The game prevents you from wasting food and meds when you don't need them.
+- Updated manual.
+
+GRAPHICS & MUSIC
+- 3 new musics.
+- Access to graphics and music files - no "official" content modding support yet, this will come later.
+  *** Warning : Looking at the resource files will spoil the game secrets for you ***
+
+OPTIONS
+Bunch of new options to control the gameplay.
+- New option : Zombification rate, control chances of living victims zombification.
+- New option : Starved Zombification, control chances of starved livings turning into zombies.
+- New option : Reveal starting district, yes/no.
+- New option : Simulate while sleeping, yes/no.
+- New option : Allow undeads evolution, yes/no.
+- New option : Day Zero percent of undeads.
+- New option : Daily increase of zombie invasion.
+- Max number of undeads limit raised to 300.
+- Rebalanced default settings.
+- Rebalanced difficulty computation.
+
+AI
+- Improved AI use of cellphones.
+- Improved AI use of lights.
+- AI make use of the Shout action to wake up nearby sleeping friends when seeing enemies (that includes your followers).
+- Improved AI fight or flee logic (yes again).
+- Improved AI item management (yes again).
+- Changed Cautious vs Courageous directives effects.
+- As a result of changes, Civilians should be more slightly competent in melee fighting and followers more useful as fighters/guards/mules.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Alpha 3 changes (5th June 2010 : http://roguesurvivor.blogspot.com.au/2010/06/alpha-3_05.html)
+---------------
+
+FIXED BUGS
+- Stacking items in full inventory works properly.
+- Dropping items on full ground inventory try to stack then remove oldest item.
+- Post mortem on more than one page works correctly.
+- Barricading when there is someone there is not allowed.
+- Undeads now correctly see Army as enemies.
+- Fixed a rare crash in map generation caused by bad rng.
+- Attacking a door don't bypass the barricade anymore.
+- Various typos.
+
+GAMEPLAY
+- Give orders and directives to your followers.
+- Weather : sunny, cloudy, rain and heavy rain.
+- Scoring with difficulty rating based on game options.
+- Hi Scores table in game and in a text file.
+- New action : Wait for one hour, can be interrupted.
+- New action : Give items to someone.
+- Smaller maps by default, more action.
+- 2 new events.
+- Zombie Invasions grow larger as time passes.
+- Some undeads can level up by killing.
+- 7 new enemies, both undeads and alive.
+- Some undeads actively try to break everything in sight.
+- Skeleton speed increased to 1.
+- CHAR Guards now warn once before attacking.
+- New item type : lights, increase your view distance.
+- New skill and item type : Bows.
+- Sleeping now keep sleeping until fully restored.
+- Food items are less nutritive but more common.
+- Light Eater skill also decrease hungry threshold.
+- Awake skill also increase sleep regeneration speed.
+- Ranged weapons have an efficient range.
+- Firing while running gives penalties to hit chances.
+- Much less district exits, some neighbouring districts might even not be linked at all.
+- Various new items.
+- Various map generation, items, actors, skills and rules balancing.
+- As a result of changes and default options, this should be a harder game.
+
+INTERFACE & MANUAL
+- Look at the map and manage items directly with the mouse, no more Look/Inventory mode.
+- Dying goes back to the main menu rather than exiting.
+- New action : Abandon game, kill yourself.
+- Abort district simulation if it is taking too long for your liking.
+- Keyboard should be more responsive.
+- Added missing elements in manual.
+- Added a hint section in the manual for beginners.
+
+GRAPHICS & MUSIC
+- 2 new musics.
+- National Guards and CHAR Guards have names and are dolls like civilians.
+
+OPTIONS
+- Enable/Disable animations delay.
+- Control accuracy of district simulation.
+- Enable/disable NPCs death by starvation.
+- Smaller maps by default (75x75) but bigger city (4x4).
+- Option screen shows difficulty rating.
+
+AI
+- Improved civilian AI items management.
+- Improved civilian AI fight or flee logic.
+- Improved civilian AI follower behavior.
+- Improved civilian AI sleep behavior.
+- Improved civilian AI run logic.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Alpha 2 (19th May 2010 : http://roguesurvivor.blogspot.com.au/2010/05/alpha-2-released.html)
+-------
+
+More stable, more user friendly (keys, manual and options) and more fun (more interaction with the environement, more than one map, post mortem and more stuff).
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Alpha (15th April 2010 : http://roguesurvivor.blogspot.com.au/2010/04/changelog.html)
+-----
+new Feature - Inflicting HP damage now cause damage to STA too.
+new UI      - Quit game asks for a confirmation.
+mod Items   - Baseball bat +4a/+3d instead of +3a/+4d.
+new Feature - Progressive Day/Night phases, with gradual FoV penalty.
+new UI      - Game now announces Day/night phases.
+new Feature - Actors with ability CanZombifyKilled now also regen HPs from the damage they inflict on livings.
+new Feature - Trading : people chat with each other to exchange items (my item vs yours, deal yes/no). The player has to initiate trade with Ais (as to not get spammed by Ais offers).
+new AI      - BehaviorEquipWeapon: equips weapon from inventory if none equiped (used by Civilian AI).
+new AI      - BehaviorRestIfTired: wait if tired (used by Civilian AI).
+new UI      - Icon for actors who can actually trade with the player, so the player don't waste time with useless trade demands.
+mod Data    - changed Item.Quantity from int to short for memory and consistency.
+mod AI      - Zombies AI now chase visible enemies first.
+fix Rules   - Fixed an awfull typo-induced bug in isAdjacent(). Mistaking a X for a Y gives funny results...
+new UI      - When upgrade time, added a popup on top of screen like other modes to make it more noticable.
