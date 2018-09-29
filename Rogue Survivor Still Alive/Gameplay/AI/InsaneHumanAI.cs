@@ -106,20 +106,33 @@ namespace djack.RogueSurvivor.Gameplay.AI
             List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
             ///////////////////////////////////////////////////////////////////////
-            // 1 equip weapon
+            // alpha10 OBSOLETE 1 equip weapon
+            // 1 equip best items //alpha10
             // 2 (chance) move closer to an enemy, nearest & visible enemies first
             // 3 (chance) shout insanities.
             // 4 (chance) use exit.
             // 5 wander
             ///////////////////////////////////////////////////////////////////////
 
-            // 1 equip weapon
+            // alpha10
+            m_Actor.IsRunning = false;
+
+            // 1 equip best items
+            #region
+            ActorAction bestEquip = BehaviorEquipBestItems(game, false, false);
+            if (bestEquip != null)
+            {
+                return bestEquip;
+            }
+
+            /*// 1 equip weapon //alpha 10 replaced
             ActorAction equipWpnAction = BehaviorEquipWeapon(game);
             if (equipWpnAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return equipWpnAction;
-            }
+            }*/
+            #endregion
 
             // 2 (chance) move closer to an enemy, nearest & visible enemies first
             #region
@@ -141,7 +154,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             float distance = game.Rules.GridDistance(m_Actor.Location.Position, enemyP.Location.Position);
                             if (distance < closest)
                             {
-                                ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position);
+                                ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position, true, true);
                                 if (bumpAction != null)
                                 {
                                     closest = distance;
@@ -172,7 +185,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             float distance = game.Rules.GridDistance(m_Actor.Location.Position, enemyP.Location.Position);
                             if (distance < closest)
                             {
-                                ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position);
+                                ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position, true, true);
                                 if (bumpAction != null)
                                 {
                                     closest = distance;
@@ -199,7 +212,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 string insanity = INSANITIES[game.Rules.Roll(0, INSANITIES.Length)];
                 m_Actor.Activity = Activity.IDLE;
-                game.DoEmote(m_Actor, insanity);
+                game.DoEmote(m_Actor, insanity, true);
             }
             #endregion
 

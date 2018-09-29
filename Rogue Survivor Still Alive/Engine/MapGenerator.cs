@@ -346,8 +346,7 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Remove all Actors, MapOjects, Items, Decorations and Zones in a rect.
         /// </summary>
-        /// <param name="rect"></param>
-        protected static void ClearRectangle(Map map, Rectangle rect) //@@MP - made static (Release 5-7)
+        protected static void ClearRectangle(Map map, Rectangle rect, bool clearZones = true) //@@MP - made static (Release 5-7), added clearZones parameter (alpha 10)
         {
             for(int x = rect.Left; x <rect.Right;x++)
                 for (int y = rect.Top; y < rect.Bottom; y++)
@@ -362,8 +361,9 @@ namespace djack.RogueSurvivor.Engine
                     }
 
                     map.GetTileAt(x, y).RemoveAllDecorations();
-
-                    map.RemoveAllZonesAt(x, y);
+                    
+                    if (clearZones) // alpha 10
+                        map.RemoveAllZonesAt(x, y);
 
                     Actor actorThere = map.GetActorAt(x, y);
                     if (actorThere != null)

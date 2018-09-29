@@ -1,17 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace djack.RogueSurvivor.Engine
 {
+    // alpha10 Added concept of music priority, can play only one music at a time, renamed to MusicManager and
+    // some cleanup. Concrete classes updated.
+
+    static class AudioPriority
+    {
+        /// <summary>
+        /// Lowest priority when not playing any music.
+        /// </summary>
+        public const int PRIORITY_NULL = 0;  // must be 0!
+
+        /// <summary>
+        /// Medium priority for background musics.
+        /// </summary>
+        public const int PRIORITY_BGM = 1;
+
+        /// <summary>
+        /// High priority for events musics.
+        /// </summary>
+        public const int PRIORITY_EVENT = 2;
+    }
+
     interface ISoundManager : IDisposable
     {
         #region Properties
         bool IsAudioEnabled { get; set; } //@@MP renamed (Release 2)
         int Volume { get; set; }
+        // alpha10
+        int Priority { get; }
+        string Track { get; }
         #endregion
-
 
         #region Loading music
         bool Load(string musicname, string filename);
@@ -23,20 +44,17 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Restart playing a music from the beginning if music is enabled.
         /// </summary>
-        /// <param name="musicname"></param>
-        void Play(string musicname);
+        void Play(string musicname, int priority);
 
         /// <summary>
         /// Start playing a music from the beginning if not already playing and if music is enabled.
         /// </summary>
-        /// <param name="musicname"></param>
-        void PlayIfNotAlreadyPlaying(string musicname);
+        void PlayIfNotAlreadyPlaying(string musicname, int priority);
 
         /// <summary>
         /// Restart playing in a loop a music from the beginning if music is enabled.
         /// </summary>
-        /// <param name="musicname"></param>
-        void PlayLooping(string musicname);
+        void PlayLooping(string musicname, int priority);
 
         void ResumeLooping(string musicname);
 
@@ -49,6 +67,11 @@ namespace djack.RogueSurvivor.Engine
         bool IsPaused(string musicname);
 
         bool HasEnded(string musicname);
+
+        /// <summary>
+        /// Give me a list of track names and I'll pick one at random to play
+        /// </summary>
+        void PlayRandom(IEnumerable<string> playlist, int priority); //@@MP (Release 6-1)
         #endregion
     }
 }

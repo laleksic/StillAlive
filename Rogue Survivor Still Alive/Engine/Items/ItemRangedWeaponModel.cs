@@ -34,6 +34,17 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             get { return m_AmmoType; }
         }
+
+        // alpha10
+        public int RapidFireHit1Value
+        {
+            get { return Attack.Hit2Value; }
+        }
+
+        public int RapidFireHit2Value
+        {
+            get { return Attack.Hit3Value; }
+        }
         #endregion
 
         #region Init

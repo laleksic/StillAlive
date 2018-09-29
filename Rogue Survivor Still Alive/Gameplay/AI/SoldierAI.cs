@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;   // Point
 
 using djack.RogueSurvivor.Data;
@@ -9,6 +7,7 @@ using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Engine.Actions;
 using djack.RogueSurvivor.Engine.AI;
 using djack.RogueSurvivor.Gameplay.AI.Sensors;
+using djack.RogueSurvivor.Gameplay.AI.Tools; //alpha 10
 
 namespace djack.RogueSurvivor.Gameplay.AI
 {
@@ -70,6 +69,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
         {
             List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
+            // alpha10
+            // don't run by default.
+            m_Actor.IsRunning = false;
+
+            // 0. Equip best item
+            ActorAction bestEquip = BehaviorEquipBestItems(game, false, true);
+            if (bestEquip != null)
+            {
+                return bestEquip;
+            }
+            // end alpha10
+
             // 1. Follow order
             #region
             if (this.Order != null)
@@ -88,10 +99,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             /////////////////////////////////////
             // 0 run away from primed explosives (and fires //@@MP (Release 5-2)).
             // 1 throw grenades at enemies.
-            // 2 equip weapon/armor.
+            // alpha10 OBSOLETE 2 equip weapon/armor.
             // 3 shout, fire/hit at nearest enemy.
             // 4 rest if tired
-            // 5 charge enemy.
+            // alpha10 obsolete and redundant with rule 3! 5 charge enemy.
             // 6 use med.
             // 7 sleep.
             // 8 chase old enemy.
@@ -101,9 +112,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 12 explore.
             // 13 wander.
             ////////////////////////////////////
-
-            // don't run by default.
-            m_Actor.IsRunning = false;
 
             // get data.
             List<Percept> allEnemies = FilterEnemies(game, mapPercepts);
@@ -144,9 +152,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 2 equip weapon/armor
+            // 2 equip weapon/armor //alpha 10 obsolete
             #region
-            ActorAction equipWpnAction = BehaviorEquipWeapon(game);
+            /*ActorAction equipWpnAction = BehaviorEquipWeapon(game);
             if (equipWpnAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
@@ -157,7 +165,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 m_Actor.Activity = Activity.IDLE;
                 return equipArmAction;
-            }
+            }*/
             #endregion
 
             // 3 shout, fire/hit at nearest enemy.
@@ -166,10 +174,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             List<Percept> friends = FilterNonEnemies(game, mapPercepts);
             if (friends != null)
             {
+                Map map = m_Actor.Location.Map; //@@MP (Release 6-1)
                 HashSet<Point> FOV = m_LOSSensor.FOV;
                 foreach (Point p in FOV)
                 {
-                    if (Map.IsAnyTileFireThere(m_Actor.Location.Map, p))
+                    if (map.IsAnyTileFireThere(m_Actor.Location.Map, p))
                     {
                         // shout
                         ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, friends);
@@ -214,7 +223,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
 
                 // fight or flee?
-                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, true, ActorCourage.COURAGEOUS, FIGHT_EMOTES); //@@MP - unused parameter (Release 5-7)
+                RouteFinder.SpecialActions allowedChargeActions = RouteFinder.SpecialActions.JUMP | RouteFinder.SpecialActions.DOORS; // alpha10
+                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, true, ActorCourage.COURAGEOUS, FIGHT_EMOTES, allowedChargeActions); //@@MP - unused parameter (Release 5-7), alpha01 added allowedChargeActions
                 if (fightOrFlee != null)
                 {
                     return fightOrFlee;
@@ -232,9 +242,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 5 charge enemy
+            // 5 charge enemy //alpha10 obsolete
             #region
-            if (hasAnyEnemies)
+            /*if (hasAnyEnemies)
             {
                 Percept nearestEnemy = FilterNearest(game, allEnemies);
                 ActorAction chargeAction = BehaviorChargeEnemy(game, nearestEnemy);
@@ -244,12 +254,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     m_Actor.TargetActor = nearestEnemy.Percepted as Actor;
                     return chargeAction;
                 }
-            }
+            }*/
             #endregion
 
             // 6 use medicine
             #region
-            ActorAction useMedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
+            ActorAction useMedAction = BehaviorUseMedicine(game, 2, 1, 2, 4, 2);
             if (useMedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
@@ -296,7 +306,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
 
                 // chase.
-                ActorAction chargeAction = BehaviorChargeEnemy(game, chasePercept);
+                ActorAction chargeAction = BehaviorChargeEnemy(game, chasePercept, false, false);
                 if (chargeAction != null)
                 {
                     m_Actor.Activity = Activity.FIGHTING;

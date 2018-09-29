@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace djack.RogueSurvivor.Gameplay
 {
     static class GameMusics
@@ -17,6 +13,9 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string BIKER = "biker";
         public const string BIKER_FILE = PATH + "RS - Biker";
+
+        public const string BLACK_OPS = "blackops"; //@@MP (Release 6-1)
+        public const string BLACK_OPS_FILE = PATH + "Black Ops"; //@@MP (Release 6-1)
 
         public const string CHAR_UNDERGROUND_FACILITY = "char underground facility";
         public const string CHAR_UNDERGROUND_FACILITY_FILE = PATH + "RS - CUF";
@@ -57,9 +56,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string PLAYER_DEATH = "playerdeath";
         public const string PLAYER_DEATH_FILE = PATH + "RS - Post Mortem";
 
-        public const string REINCARNATE = "reincarnate";
-        public const string REINCARNATE_FILE = PATH + "RS - Reincarnate";
-
         public const string ROGUEDJACK_THEME_SONG = "roguedjack theme song";
         public const string ROGUEDJACK_THEME_SONG_FILE = PATH + "RS - Roguedjack Theme Song";
 
@@ -74,6 +70,9 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string SUBWAY = "subway";
         public const string SUBWAY_FILE = PATH + "RS - Subway";
+
+        public const string SURFACE = "surface"; // alpha10
+        public const string SURFACE_FILE = PATH + "RS - Surface"; // alpha10
 
         public const string SURVIVORS = "survivors";
         public const string SURVIVORS_FILE = PATH + "RS - Survivors";

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace djack.RogueSurvivor.Gameplay
 {
     static class GameSounds
@@ -204,10 +200,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string BREAK_GLASSDOOR_PLAYER_FILE = PATH + "break_glassdoor_player";
         public const string BREAK_GLASSDOOR_NEARBY = "glass door breaks nearby";
         public const string BREAK_GLASSDOOR_NEARBY_FILE = PATH + "break_glassdoor_nearby";
-        public const string RAIN_OUTSIDE = "outside whilst raining";
-        public const string RAIN_OUTSIDE_FILE = PATH + "rain_outside_looped";
-        public const string RAIN_INSIDE = "inside whilst raining";
-        public const string RAIN_INSIDE_FILE = PATH + "rain_inside_looped";
 
         //@@MP (Release 5-4)
         public const string BREAK_METALDOOR_PLAYER = "break metal door";
@@ -230,5 +222,9 @@ namespace djack.RogueSurvivor.Gameplay
         public const string PUSH_WOODEN_OBJECT_VISIBLE_FILE = PATH + "push_wooden_object_visible";
         public const string PUSH_WOODEN_OBJECT_AUDIBLE = "pushes audible wooden object";
         public const string PUSH_WOODEN_OBJECT_AUDIBLE_FILE = PATH + "push_wooden_object_audible";
+
+        //@@MP - relocated from music to sfx (Release 6-1)
+        public const string REINCARNATE = "reincarnate";
+        public const string REINCARNATE_FILE = PATH + "RS - Reincarnate";
     }
 }

@@ -38,6 +38,7 @@ namespace djack.RogueSurvivor.Engine.Items
         #region Fields
         TrackingFlags m_Tracking;
         int m_MaxBatteries;
+        bool m_HasClock;  // alpha10
         #endregion
 
         #region Properties
@@ -50,14 +51,21 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             get { return m_MaxBatteries; }
         }
+
+        // alpha10
+        public bool HasClock
+        {
+            get { return m_HasClock; }
+        }
         #endregion
 
         #region Init
-        public ItemTrackerModel(string aName, string theNames, string imageID, TrackingFlags tracking, int maxBatteries)
+        public ItemTrackerModel(string aName, string theNames, string imageID, TrackingFlags tracking, int maxBatteries, bool hasClock)  // alpha10 hasClock
             : base(aName, theNames, imageID)
         {
             m_Tracking = tracking;
             m_MaxBatteries = maxBatteries;
+            m_HasClock = hasClock;  // alpha10
             this.DontAutoEquip = true;
         }
         #endregion

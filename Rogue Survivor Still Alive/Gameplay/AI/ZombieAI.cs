@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
@@ -125,7 +122,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         float distance = game.Rules.GridDistance(m_Actor.Location.Position, enemyP.Location.Position);
                         if (distance < closest)
                         {
-                            ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position);
+                            ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position, true, true);
                             if (bumpAction != null)
                             {
                                 closest = distance;
@@ -156,7 +153,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         float distance = game.Rules.GridDistance(m_Actor.Location.Position, enemyP.Location.Position);
                         if (distance < closest)
                         {
-                            ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position);
+                            ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position, true, true);
                             if (bumpAction != null)
                             {
                                 closest = distance;
@@ -211,7 +208,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 Percept nearestMaster = FilterNearest(game, FilterActors(mapPercepts, (a) => a.Model.Abilities.IsUndeadMaster)); //@@MP - unused parameter (Release 5-7)
                 if (nearestMaster != null)
                 {
-                    ActorAction bumpAction = BehaviorStupidBumpToward(game, RandomPositionNear(game.Rules, m_Actor.Location.Map, nearestMaster.Location.Position, 3));
+                    Map map = m_Actor.Location.Map; //@@MP (Release 6-1)
+                    ActorAction bumpAction = BehaviorStupidBumpToward(game, map.RandomPositionNear(game.Rules, m_Actor.Location.Map, nearestMaster.Location.Position, 3), true, true);
                     if (bumpAction != null)
                     {
                         // MAASTEERRR!

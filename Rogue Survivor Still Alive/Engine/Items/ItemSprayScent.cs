@@ -11,6 +11,8 @@ namespace djack.RogueSurvivor.Engine.Items
     {
         #region Properties
         public int SprayQuantity { get; set; }
+        public Odor Odor { get { return (this.Model as ItemSprayScentModel).Odor; } } // alpha10
+        public int Strength { get { return (this.Model as ItemSprayScentModel).Strength; } } // alpha10
         #endregion
 
         #region Init

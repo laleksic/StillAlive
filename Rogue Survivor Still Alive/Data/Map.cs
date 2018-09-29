@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
-using System.Data;
 using djack.RogueSurvivor.Engine.MapObjects; //@@MP - for IsClosestDoorInDirectionOpen (Release 5-1)
 using djack.RogueSurvivor.Gameplay; //@@MP - for TileAlreadyHasScorchDecoration (Release 5-2)
 using djack.RogueSurvivor.Engine.Items;
@@ -54,6 +51,7 @@ namespace djack.RogueSurvivor.Data
         int m_Seed;
         District m_District;
         string m_Name;
+        string m_BgMusic;  // alpha10
         Lighting m_Lighting;
         WorldTime m_LocalTime;
 
@@ -119,6 +117,12 @@ namespace djack.RogueSurvivor.Data
         public int Seed
         {
             get { return m_Seed; }
+        }
+
+        public string BgMusic // alpha10
+        {
+            get { return m_BgMusic; }
+            set { m_BgMusic = value; }
         }
 
         public bool IsSecret
@@ -315,11 +319,18 @@ namespace djack.RogueSurvivor.Data
         #region Tiles
         public Tile GetTileAt(int x, int y)
         {
+            Point p = new Point(x, y); //@@MP (Release 6-1)
+            if (!IsInBounds(p))
+                return null;
+
             return m_Tiles[x, y];
         }
 
         public Tile GetTileAt(Point p)
         {
+            if (!IsInBounds(p)) //@@MP (Release 6-1)
+                return null;
+
             return m_Tiles[p.X, p.Y];
         }
 
@@ -333,7 +344,7 @@ namespace djack.RogueSurvivor.Data
             m_Tiles[x, y].Model = model;
         }
 
-        public bool IsBuildingFloorTileAt(int x, int y) //@@MP - check whether there's a non-road, non-grass floor tile here (Release 3)
+        public bool IsBuildingFloorTileAt(int x, int y) //@@MP - check whether there's a structural floor tile here (Release 3)
         {
             Point pt = new Point(x, y);
             Tile tile = GetTileAt(pt);
@@ -352,6 +363,15 @@ namespace djack.RogueSurvivor.Data
                 case @"Tiles\floor_sewer_water_anim2":
                 case @"Tiles\floor_sewer_water_anim3":
                 case @"Tiles\floor_sewer_water_cover":
+                case @"Tiles\floor_pond_center": //@@MP (Release 6-1)
+                case @"Tiles\floor_pond_north-edge": //@@MP (Release 6-1)
+                case @"Tiles\floor_pond_ne-corner": //@@MP (Release 6-1)
+                case @"Tiles\floor_pond_east-edge": //@@MP (Release 6-1)
+                case @"Tiles\floor_pond_se-corner": //@@MP (Release 6-1)
+                case @"Tiles\floor_pond_south-edge": //@@MP (Release 6-1)
+                case @"Tiles\floor_pond_sw-corner": //@@MP (Release 6-1)
+                case @"Tiles\floor_pond_west-edge": //@@MP (Release 6-1)
+                case  @"Tiles\floor_pond_nw-corner": //@@MP (Release 6-1)
                     return true;
                 default:
                     return false;
@@ -367,20 +387,55 @@ namespace djack.RogueSurvivor.Data
                 return false;
         }
 
-        public static bool IsAnyActivatedTrapThere(Map map, Point pos)
+        public bool IsAnyUnsafeDamagingTrapThere(Engine.RogueGame game, Map map, Point pos, Actor actor) //@@MP - was IsAnyActivatedTrapThere(). removed static (Release 6-1)
         {
             Inventory inv = map.GetItemsAt(pos);
             if (inv == null || inv.IsEmpty) return false;
-            return inv.GetFirstMatching((it) => { ItemTrap trap = it as ItemTrap; return trap != null && trap.IsActivated; }) != null;
+            return inv.GetFirstMatching((it) => { //alpha 10 revised
+                ItemTrap trap = it as ItemTrap;
+                return trap != null && trap.IsActivated && trap.TrapModel.Damage > 0 && !game.Rules.IsSafeFromTrap(trap, actor);
+            }) != null;
         }
 
-        public static bool IsAnyTileFireThere(Map map, Point pos) //@@MP - check for fires on particular tiles (Release 4)
+        public bool IsAnyPrimedExplosiveThere(Map map, Point pos) // alpha10 //@@MP - removed static (Release 6-1)
+        {
+            Inventory inv = map.GetItemsAt(pos);
+            if (inv == null || inv.IsEmpty) return false;
+            return inv.GetFirstMatching((it) => { ItemPrimedExplosive ex = it as ItemPrimedExplosive; return ex != null; }) != null;
+        }
+
+        /// <summary>
+        /// check for fires on a particular tile
+        /// </summary>
+        public bool IsAnyTileFireThere(Map map, Point pos) //@@MP added (Release 4), changed to a property of tile (Release 6-1)
         {
             Tile tile = map.GetTileAt(pos.X, pos.Y);
-            if (tile.HasDecoration(GameImages.EFFECT_ONFIRE))
-                return true;
-            else
+            if (tile == null || !tile.IsOnFire)
                 return false;
+            else
+                return true;
+        }
+
+        /// <summary>
+        /// check for tiles that are water eg ponds
+        /// </summary>
+        public bool IsAnyTileWaterThere(Map map, Point pos) //@@MP added (Release 6-1)
+        {
+            Tile tile = map.GetTileAt(pos.X, pos.Y);
+            if (tile == null || !tile.Model.IsWater)
+                return false;
+            else
+                return true;
+        }
+
+        public Point RandomPositionNear(Engine.Rules rules, Map map, Point goal, int range) //@@MP moved from BaseAI, made public, can't be static (Release 6-1)
+        {
+            int x = goal.X + rules.Roll(-range, +range);
+            int y = goal.Y + rules.Roll(-range, +range);
+
+            map.TrimToBounds(ref x, ref y);
+
+            return new Point(x, y);
         }
         #endregion
 
@@ -1299,10 +1354,10 @@ namespace djack.RogueSurvivor.Data
         /// Determine if the closest iron gate in any direction (clockwise from N) is closed. True = yes
         /// </summary>
         /// <param name="direction">8 ways: N,NE,SE,E,SW,etc</param>
-        public bool IsClosestIronGateClosed(Point position) //@@MP - initially created to check the cell door of the Prisoner Who's Not Named (Release 5-6)
+        public bool IsClosestIronGateClosed(Point position) //@@MP - created solely as a dodgy way to check the cell door of The Prisoner (Release 5-6)
         {
             Point next;
-            foreach (Direction d in Direction.COMPASS)
+            foreach (Direction d in Direction.COMPASS_4) //made it only NSEW because the door will always be S (Release 6-1)
             {
                 next = position + d;
 
@@ -1312,7 +1367,10 @@ namespace djack.RogueSurvivor.Data
                 MapObject mapObj = GetMapObjectAt(next);
                 if (mapObj != null && mapObj.AName == "an iron gate")
                 {
-                    return true;
+                    if (mapObj.ImageID == GameImages.OBJ_GATE_OPEN) //added open/closed check (Release 6-1)
+                        return false;
+                    else if (mapObj.ImageID == GameImages.OBJ_GATE_CLOSED)
+                        return true;
                 }
 
             }
@@ -1350,10 +1408,45 @@ namespace djack.RogueSurvivor.Data
                 tile.HasDecoration(GameImages.TILE_WALL_HOSPITAL) | tile.HasDecoration(GameImages.TILE_WALL_STONE))*/
         }
 
-        public bool IsFlammableTileAt(int x, int y) //@@MP - check whether there's a flammable type of tile here (Release 5-2)
+        /// <summary>
+        /// Certain tiles may not be flammable at any given time
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="checkForScorching">In case you want to set fire to tiles already scorched</param>
+        public bool IsInflammableTile(int x, int y, bool checkForScorching) //@@MP - check whether there's a flammable type of tile here (Release 5-2), (Release 6-1)
         {
             Point pt = new Point(x, y);
             Tile tile = GetTileAt(pt);
+
+            if (tile.Model.IsWater) //@@MP (Release 6-1)
+                return true;
+
+            if (checkForScorching && tile.IsScorched)
+                return true; //it's already been burnt, no flammable material left (Release 6-1)
+
+            if (tile.IsOnFire) //added (Release 6-1)
+                return true;
+
+            //moved tile type check to CanFireSpreadToTile() (Release 6-1)
+
+            return false;
+        }
+
+        /// <summary>
+        /// Fire can't spread to tiles that don't provide any fuel (eg concrete)
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="checkForScorching">In case you want to set fire to tiles already scorched</param>
+        public bool CanFireSpreadToTile(int x, int y, bool checkForScorching) //@@MP (Release 6-1)
+        {
+            Point pt = new Point(x, y);
+            Tile tile = GetTileAt(pt);
+
+            if (IsInflammableTile(x, y, checkForScorching))
+                return false;
+
             switch (tile.Model.ImageID)
             {
                 case @"Tiles\floor_grass":
@@ -1395,6 +1488,7 @@ namespace djack.RogueSurvivor.Data
             m_Lighting = (Lighting)info.GetValue("m_Lighting", typeof(Lighting));
             m_Scents = (List<OdorScent>)info.GetValue("m_Scents", typeof(List<OdorScent>));
             m_Timers = (List<TimedTask>)info.GetValue("m_Timers", typeof(List<TimedTask>));
+            m_BgMusic = (string)info.GetValue("m_BgMusic", typeof(string)); // alpha10
         }
 
         public void ReconstructAuxiliaryFields()
@@ -1463,6 +1557,7 @@ namespace djack.RogueSurvivor.Data
             info.AddValue("m_Lighting", m_Lighting);
             info.AddValue("m_Scents", m_Scents);
             info.AddValue("m_Timers", m_Timers);
+            info.AddValue("m_BgMusic", m_BgMusic); // alpha10
         }
 
         #region Pre-saving
@@ -1472,6 +1567,10 @@ namespace djack.RogueSurvivor.Data
             for (int x = 0; x < m_Width; x++)
                 for (int y = 0; y < m_Height; y++)
                     m_Tiles[x, y].OptimizeBeforeSaving();
+
+            // items stacks - alpha 10
+            foreach (Inventory stack in m_GroundItemsByPosition.Values)
+                stack.OptimizeBeforeSaving();
 
             // actors
             foreach (Actor a in m_ActorsList)

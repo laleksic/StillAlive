@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using djack.RogueSurvivor.Gameplay;
+using djack.RogueSurvivor.Engine.Items;
 
 namespace djack.RogueSurvivor.Data
 {
@@ -28,7 +27,8 @@ namespace djack.RogueSurvivor.Data
             IS_DEAD = (1 << 3),
             IS_RUNNING = (1 << 4),
             IS_SLEEPING = (1 << 5),
-            IS_ONFIRE = (1 << 6) //@@MP (Release 5-7)
+            IS_ONFIRE = (1 << 6), //@@MP (Release 5-7)
+            IS_INWATER = (1 << 7) //@@MP (Release 6-1)
         }
         #endregion
 
@@ -80,7 +80,9 @@ namespace djack.RogueSurvivor.Data
         int m_MurdersCounter;
         int m_Infection;
         Corpse m_DraggedCorpse;
-        List<Item> m_BoringItems = null;
+        //List<Item> m_BoringItems = null; // alpha10 moved out of Actor
+        bool m_IsInvincible; //alpha 10
+        int m_OdorSuppressorCounter; //alpha 10
         #endregion
         #endregion
 
@@ -224,6 +226,12 @@ namespace djack.RogueSurvivor.Data
             set { SetFlag(Flags.IS_ONFIRE, value); }
         }
 
+        public bool IsInWater //@@MP (Release 6-1)
+        {
+            get { return GetFlag(Flags.IS_INWATER); }
+            set { SetFlag(Flags.IS_INWATER, value); }
+        }
+
         public Inventory Inventory
         {
             get { return m_Inventory; }
@@ -233,7 +241,12 @@ namespace djack.RogueSurvivor.Data
         public int HitPoints
         {
             get { return m_HitPoints; }
-            set { m_HitPoints = value; }
+            set
+            {
+                if (m_IsInvincible && value < m_HitPoints) // alpha10
+                    return;
+                m_HitPoints = value;
+            }
         }
 
         public int PreviousHitPoints
@@ -245,7 +258,12 @@ namespace djack.RogueSurvivor.Data
         public int StaminaPoints
         {
             get { return m_StaminaPoints; }
-            set { m_StaminaPoints = value; }
+            set
+            {
+                if (m_IsInvincible && value < m_StaminaPoints) // alpha10
+                    return;
+                m_StaminaPoints = value;
+            }
         }
 
         public int PreviousStaminaPoints
@@ -257,7 +275,12 @@ namespace djack.RogueSurvivor.Data
         public int FoodPoints
         {
             get { return m_FoodPoints; }
-            set { m_FoodPoints = value; }
+            set
+            {
+                if (m_IsInvincible && value < m_FoodPoints) // alpha10
+                    return;
+                m_FoodPoints = value;
+            }
         }
 
         public int PreviousFoodPoints
@@ -269,7 +292,12 @@ namespace djack.RogueSurvivor.Data
         public int SleepPoints
         {
             get { return m_SleepPoints; }
-            set { m_SleepPoints = value; }
+            set
+            {
+                if (m_IsInvincible && value < m_SleepPoints) // alpha10
+                    return;
+                m_SleepPoints = value;
+            }
         }
 
         public int PreviousSleepPoints
@@ -441,6 +469,19 @@ namespace djack.RogueSurvivor.Data
             get { return m_DraggedCorpse; }
             set { m_DraggedCorpse = value; }
         }
+
+        // alpha 10 from here down
+        public bool IsInvincible
+        {
+            get { return m_IsInvincible; }
+            set { m_IsInvincible = value; }
+        }
+
+        public int OdorSuppressorCounter
+        {
+            get { return m_OdorSuppressorCounter; }
+            set { m_OdorSuppressorCounter = value; }
+        }
         #endregion
         #endregion
 
@@ -461,6 +502,7 @@ namespace djack.RogueSurvivor.Data
             this.IsProperName = isProperName;
             this.IsPluralName = isPluralName;
             this.IsOnFire = false; //@@MP (Release 5-7)
+            this.IsInWater = false; //@@MP (Release 6-1)
             m_Location = new Location();
             m_SpawnTime = spawnTime;
             this.IsUnique = false;
@@ -583,6 +625,28 @@ namespace djack.RogueSurvivor.Data
             }
             return 0;
         }
+
+        /// <summary>
+        /// Is this other actor our leader, a follower or a mate.
+        /// </summary>
+        public bool IsInGroupWith(Actor other)  // alpha10
+        {
+            // my leader?
+            if (HasLeader && m_Leader == other)
+                return true;
+
+            // a mate?
+            if (other.HasLeader && other.Leader == m_Leader)
+                return true;
+
+            // a follower?
+            if (m_Followers != null)
+                if (m_Followers.Contains(other))
+                    return true;
+
+            // nope
+            return false;
+        }
         #endregion
 
         #region Aggressor & Self Defence
@@ -658,7 +722,10 @@ namespace djack.RogueSurvivor.Data
             }
         }
 
-        public bool AreDirectEnemies(Actor other)
+        /// <summary>
+        /// Check for agressor/self defence relation.
+        /// </summary>
+        /*public bool AreDirectEnemies(Actor other) // alpha10 obsolete, moved to Rules
         {
             if (other == null || other.IsDead)
                 return false;
@@ -681,9 +748,12 @@ namespace djack.RogueSurvivor.Data
 
             // nope.
             return false;
-        }
+        }*/
 
-        public bool AreIndirectEnemies(Actor other)
+        /// <summary>
+        /// Check for direct enemies through leader/followers.
+        /// </summary>
+        /*public bool AreIndirectEnemies(Actor other) // alpha10 obsolete, moved to Rules
         {
             if (other == null || other.IsDead)
                 return false;
@@ -726,7 +796,7 @@ namespace djack.RogueSurvivor.Data
 
             // nope.
             return false;
-        }
+        }*/
 
 #if false
         /// <summary>
@@ -872,8 +942,8 @@ namespace djack.RogueSurvivor.Data
 #endif
         #endregion
 
-        #region Boring items
-        public void AddBoringItem(Item it)
+        #region Boring items // alpha10 made item centric: moved out of Actor to ItemEntertainment
+        /*public void AddBoringItem(Item it)
         {
             if (m_BoringItems == null) m_BoringItems = new List<Item>(1);
             if (m_BoringItems.Contains(it)) return;
@@ -884,7 +954,7 @@ namespace djack.RogueSurvivor.Data
         {
             if (m_BoringItems == null) return false;
             return m_BoringItems.Contains(it);
-        }
+        }*/
         #endregion
 
         #region Equipment helpers
@@ -908,6 +978,26 @@ namespace djack.RogueSurvivor.Data
         {
             return GetEquippedItem(DollPart.RIGHT_HAND);
         }
+
+        // alpha10
+        /// <summary>
+        /// Assumed to be equiped at Right hand.
+        /// </summary>
+        /// <returns></returns>
+        public ItemMeleeWeapon GetEquippedMeleeWeapon()
+        {
+            return GetEquippedItem(DollPart.RIGHT_HAND) as ItemMeleeWeapon;
+        }
+
+        // alpha10
+        /// <summary>
+        /// Assumed to be equiped at Right hand.
+        /// </summary>
+        /// <returns></returns>
+        public ItemRangedWeapon GetEquippedRangedWeapon()
+        {
+            return GetEquippedItem(DollPart.RIGHT_HAND) as ItemRangedWeapon;
+        }
         #endregion
 
         #region Flags helpers
@@ -923,8 +1013,59 @@ namespace djack.RogueSurvivor.Data
             // remove dead target.
             if (m_TargetActor != null && m_TargetActor.IsDead) m_TargetActor = null;
 
-            // trim.
-            if (m_BoringItems != null) m_BoringItems.TrimExcess();
+
+            //// trim. // alpha10 moved out of Actor
+            //if (m_BoringItems != null) m_BoringItems.TrimExcess();
+
+            // alpha10
+            // remove trust entries with dead actors.
+            // side effect: this means revived actor will forget their trust after a save game!
+            if (m_TrustList != null)
+            {
+                for (int i = 0; i < m_TrustList.Count;)
+                {
+                    if (m_TrustList[i].Actor.IsDead)
+                        m_TrustList.RemoveAt(i);
+                    else
+                        i++;
+                }
+                if (m_TrustList.Count == 0)
+                    m_TrustList = null;
+            }
+            // remove & trim agressor/self-defence entries with dead actors.
+            // side effect: this means revived actor will forget their agressor/self-defence after a save game!
+            if (m_AggressorOf != null)
+            {
+                for (int i = 0; i < m_AggressorOf.Count;)
+                {
+                    if (m_AggressorOf[i].IsDead)
+                        m_AggressorOf.RemoveAt(i);
+                    else
+                        i++;
+                }
+                if (m_AggressorOf.Count == 0)
+                    m_AggressorOf = null;
+                else
+                    m_AggressorOf.TrimExcess();
+            }
+            if (m_SelfDefenceFrom != null)
+            {
+                for (int i = 0; i < m_SelfDefenceFrom.Count;)
+                {
+                    if (m_SelfDefenceFrom[i].IsDead)
+                        m_SelfDefenceFrom.RemoveAt(i);
+                    else
+                        i++;
+                }
+                if (m_SelfDefenceFrom.Count == 0)
+                    m_SelfDefenceFrom = null;
+                else
+                    m_SelfDefenceFrom.TrimExcess();
+            }
+
+            // alpha10 inventory
+            if (m_Inventory != null)
+                m_Inventory.OptimizeBeforeSaving();
         }
         #endregion
     }

@@ -40,12 +40,14 @@ namespace djack.RogueSurvivor.Engine
         EAT_CORPSE,
         FIRE_MODE,
         GIVE_ITEM,
-        INITIATE_TRADE,
+        ICONS_LEGEND, //@@MP (Release 6-1)
+        NEGOTIATE_TRADE, // alpha 10 renamed
         LEAD_MODE,
         MAKE_MOLOTOV, //@@MP (Release 4)
         MARK_ENEMIES_MODE,
         ORDER_MODE,
         PLANT_SEEDS, //@@MP (Release 5-5)
+        PULL_MODE, // alpha 10
         PUSH_MODE,
         REVIVE_CORPSE,
         SHOUT,

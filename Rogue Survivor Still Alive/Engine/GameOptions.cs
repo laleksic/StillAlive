@@ -18,6 +18,8 @@ namespace djack.RogueSurvivor.Engine
             UI_MUSIC_VOLUME,
             UI_SFXS, //@@MP (Release 2)
             UI_SFXS_VOLUME, //@@MP (Release 2)
+            UI_AMBIENTSFXS, //@@MP (Release 6-1)
+            UI_AMBIENTSFXS_VOLUME, //@@MP (Release 6-1)
             //UI_SHOW_PLAYER_TAG_ON_MINIMAP, //@@MP (Release 5-7)
             UI_ANIM_DELAY,
             UI_SHOW_MINIMAP,
@@ -26,6 +28,7 @@ namespace djack.RogueSurvivor.Engine
             UI_COMBAT_ASSISTANT,
             UI_SHOW_TARGETS,
             UI_SHOW_PLAYER_TARGETS,
+            UI_AUTOSAVE, //@@MP (Release 6-1)
 
             GAME_DISTRICT_SIZE,
             GAME_MAX_CIVILIANS,
@@ -40,7 +43,7 @@ namespace djack.RogueSurvivor.Engine
             GAME_CITY_SIZE,
             GAME_NPC_CAN_STARVE_TO_DEATH,
             GAME_ZOMBIFICATION_CHANCE,
-            GAME_REVEAL_STARTING_DISTRICT,
+            //GAME_REVEAL_STARTING_DISTRICT, //@@MP (Release 6-1)
             GAME_ALLOW_UNDEADS_EVOLUTION,
             GAME_DAY_ZERO_UNDEADS_PERCENT,
             GAME_ZOMBIE_INVASION_DAILY_INCREASE,
@@ -138,9 +141,12 @@ namespace djack.RogueSurvivor.Engine
         int m_MusicVolume;
         bool m_PlaySFXs; //@@MP (Release 2)
         int m_SFXVolume; //@@MP (Release 2)
+        bool m_PlayAmbientSFXs; //@@MP (Release 6-1)
+        int m_AmbientSFXVolume; //@@MP (Release 6-1)
         bool m_AnimDelay;
         bool m_ShowMinimap;
         bool m_ShowCorpses; //@@MP - drop corpses even in standard game mode (Release 1)
+        bool m_Autosaving; //@@MP (Release 6-1)
         bool m_EnabledAdvisor;
         bool m_CombatAssistant;
         SimRatio m_SimulateDistricts;
@@ -154,7 +160,7 @@ namespace djack.RogueSurvivor.Engine
         int m_CitySize;
         bool m_NPCCanStarveToDeath;
         int m_ZombificationChance;
-        bool m_RevealStartingDistrict;
+        //bool m_RevealStartingDistrict; //@@MP (Release 6-1)
         bool m_AllowUndeadsEvolution;
         int m_DayZeroUndeadsPercent;
         int m_ZombieInvasionDailyIncrease;
@@ -225,10 +231,39 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        public bool ShowCorpses
+        /// <summary>
+        /// Disables ambient sound effects
+        /// </summary>
+        public bool PlayAmbientSFXs //@@MP (Release 6-1)
+        {
+            get { return m_PlayAmbientSFXs; }
+            set { m_PlayAmbientSFXs = value; }
+        }
+
+        /// <summary>
+        /// Volume for ambient sound effects (eg weather)
+        /// </summary>
+        public int AmbientSFXVolume //@@MP (Release 6-1)
+        {
+            get { return m_AmbientSFXVolume; }
+            set
+            {
+                if (value < 0) value = 0;
+                if (value > 100) value = 100;
+                m_AmbientSFXVolume = value;
+            }
+        }
+
+        public bool ShowCorpses //@@MP (Release 1)
         {
             get { return m_ShowCorpses; }
             set { m_ShowCorpses = value; }
+        }
+
+        public bool Autosaving //@@MP (Release 6-1)
+        {
+            get { return m_Autosaving; }
+            set { m_Autosaving = value; }
         }
 
         /*public bool ShowPlayerTagsOnMinimap //@@MP (Release 5-7)
@@ -267,7 +302,7 @@ namespace djack.RogueSurvivor.Engine
             set
             {
                 if (value < 3) value = 3;
-                if (value > 6) value = 6;
+                if (value > 7) value = 7;
                 m_CitySize = value;
             }
         }
@@ -398,11 +433,11 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        public bool RevealStartingDistrict
+        /*public bool RevealStartingDistrict //@@MP (Release 6-1)
         {
             get { return m_RevealStartingDistrict; }
             set { m_RevealStartingDistrict = value; }
-        }
+        }*/
 
         public bool AllowUndeadsEvolution
         {
@@ -579,6 +614,8 @@ namespace djack.RogueSurvivor.Engine
             m_MusicVolume = 100;
             m_PlaySFXs = true; //@@MP (Release 2)
             m_SFXVolume = 100; //@@MP (Release 2)
+            m_PlayAmbientSFXs = true; //@@MP (Release 6-1)
+            m_AmbientSFXVolume = 100; //@@MP (Release 6-1)
             m_AnimDelay = true;
             m_ShowMinimap = true;
             //m_ShowPlayerTagsOnMinimap = true; //@@MP (Release 5-7)
@@ -593,14 +630,15 @@ namespace djack.RogueSurvivor.Engine
             m_CitySize = DEFAULT_CITY_SIZE;
             m_NPCCanStarveToDeath = true;
             m_ZombificationChance = DEFAULT_ZOMBIFICATION_CHANCE;
-            m_RevealStartingDistrict = true;
+            //m_RevealStartingDistrict = true; //@@MP (Release 6-1)
             m_AllowUndeadsEvolution = true;
             m_DayZeroUndeadsPercent = DEFAULT_DAY_ZERO_UNDEADS_PERCENT;
             m_ZombieInvasionDailyIncrease = DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE;
             m_StarvedZombificationChance = DEFAULT_STARVED_ZOMBIFICATION_CHANCE;
             m_MaxReincarnations = DEFAULT_MAX_REINCARNATIONS;
             m_Sanity = true;
-            m_ShowCorpses = true;
+            m_ShowCorpses = true; //@@MP (Release 1)
+            m_Autosaving = true; //@@MP (Release 6-1)
             //m_CanReincarnateAsRat = false; //@@MP (Release 5-7)
             //m_CanReincarnateToSewers = false; //@@MP (Release 5-7)
             //m_IsLivingReincRestricted = false; //@@MP (Release 5-7)
@@ -616,14 +654,14 @@ namespace djack.RogueSurvivor.Engine
             m_ShamblersUpgrade = false;
             m_VTGAntiviralPills = true; //@@MP (Release 5-2)
 #if DEBUG
-            m_Permadeath = true; //@@MP - enabled by default (Release 5-7)
+            m_Permadeath = false; //@@MP - for playtesting (Release 5-7), fixed (Release 6-1)
 #else
-            m_Permadeath = false; //@@MP - for playtesting (Release 5-7)
+            m_Permadeath = true; //@@MP - enabled by default (Release 5-7), fixed (Release 6-1)
 #endif
         }
-#endregion
+        #endregion
 
-#region Helpers
+        #region Helpers
         public static string Name(IDs option)
         {
             switch (option)
@@ -642,7 +680,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_NPC_CAN_STARVE_TO_DEATH:          return "(Living) NPCs can Starve to Death";
                 case IDs.GAME_PERMADEATH:                       return " (Death) Permadeath";
                 //case IDs.GAME_RATS_UPGRADE:                     return "(Undead) Rats Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2), removed (Release 5-6)
-                case IDs.GAME_REVEAL_STARTING_DISTRICT:         return "   (Map) Reveal Starting District";
+                //case IDs.GAME_REVEAL_STARTING_DISTRICT:         return "   (Map) Reveal Starting District"; //@@MP (Release 6-1)
                 //case IDs.GAME_REINC_LIVING_RESTRICTED:          return " (Reinc) Civilians-only Reincarnation"; //@@MP (Release 5-7)
                 //case IDs.GAME_REINCARNATE_AS_RAT:               return " (Reinc) Can Reincarnate as Rat (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2), removed (Release 5-6)
                 //case IDs.GAME_REINCARNATE_TO_SEWERS:            return " (Reinc) Can Reincarnate to Sewers"; //@@MP (Release 5-7)
@@ -650,8 +688,8 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_SHAMBLERS_UPGRADE:                return "(Undead) Shamblers Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
                 case IDs.GAME_SKELETONS_UPGRADE:                return "(Undead) Skeletons Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
                 case IDs.GAME_SIMULATE_DISTRICTS:               return "   (Sim) Districts Simulation";
-                case IDs.GAME_SIMULATE_SLEEP:                   return "   (Sim) Simulate when Sleeping >";
-                case IDs.GAME_SIM_THREAD:                       return "   (Sim) Synchronous Simulation <";
+                case IDs.GAME_SIM_THREAD:                       return "   (Sim) > Synchronous Simulation <";
+                case IDs.GAME_SIMULATE_SLEEP:                   return "   (Sim) < Simulate when Sleeping >";
                 case IDs.GAME_SPAWN_SKELETON_CHANCE:            return "(Undead) Spawn Skeleton chance";
                 case IDs.GAME_SPAWN_ZOMBIE_CHANCE:              return "(Undead) Spawn Zombie chance";
                 case IDs.GAME_SPAWN_ZOMBIE_MASTER_CHANCE:       return "(Undead) Spawn Zombie Master chance";
@@ -666,16 +704,125 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.UI_MUSIC_VOLUME:                       return "   (Sfx) Music Volume";
                 case IDs.UI_SFXS:                               return "   (Sfx) Sound Effects"; //@@MP (Release 2)
                 case IDs.UI_SFXS_VOLUME:                        return "   (Sfx) Sound Effects Volume"; //@@MP (Release 2)
+                case IDs.UI_AMBIENTSFXS:                        return "   (Sfx) Ambient Sounds (eg weather)"; //@@MP (Release 6-1)
+                case IDs.UI_AMBIENTSFXS_VOLUME:                 return "   (Sfx) Ambient Sound Effects Volume"; //@@MP (Release 6-1)
                 case IDs.UI_SHOW_MINIMAP:                       return "   (Gfx) Show Minimap";
                 //case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:         return "   (Gfx) Show Tags on Minimap"; //@@MP (Release 5-7)
                 case IDs.UI_SHOW_CORPSES:                       return "   (Gfx) Show Corpses in STD Game Mode";
                 case IDs.UI_ADVISOR:                            return "  (Help) Enable Advisor";
                 case IDs.UI_COMBAT_ASSISTANT:                   return "  (Help) Combat Assistant";
-                case IDs.UI_SHOW_TARGETS:                       return "  (Help) Show Actor Targets";
+                case IDs.UI_SHOW_TARGETS:                       return "  (Help) Show Other Actors Targets"; // alpha 10
                 case IDs.UI_SHOW_PLAYER_TARGETS:                return "  (Help) Always Show Player Targets";
+                case IDs.UI_AUTOSAVE:                           return "  (Help) Autosave every 12 game-hours"; //@@MP (Release 6-1)
 
                 default:
                     throw new ArgumentOutOfRangeException("option","unhandled option");
+            }
+        }
+
+        // alpha10
+        public static string Describe(IDs option)
+        {
+            switch (option)
+            {
+                case IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS:
+                    return "Allows hungry civilians to attack other people for food.";
+                case IDs.GAME_ALLOW_UNDEADS_EVOLUTION:
+                    return "ALWAYS OFF IN VTG-VINTAGE MODE.\nAllows undeads to evolve into stronger forms.";
+                case IDs.GAME_CITY_SIZE:
+                    return "Size of the city grid. The city is a square grid of districts.\nLarger cities are more fun but rapidly increases game saves size and loading time.";
+                case IDs.GAME_DAY_ZERO_UNDEADS_PERCENT:
+                    return "Percentage of the maximum undeads cap spawned when the game starts.";
+                case IDs.GAME_DEATH_SCREENSHOT:
+                    return "Automatically saves a screenshot when you die (to \\My Documents\\Rogue Survivor\\Still Alive\\Config\\Screenshots folder).";
+                case IDs.GAME_DISTRICT_SIZE:
+                    return "How large are the districts in terms of tiles. Larger districts are more fun but increase game saves size, loading and processing time.";
+                case IDs.GAME_MAX_CIVILIANS:
+                    return "Maximum number of civilians on a map. More civilians makes the game easier for livings, but slows the game down.";
+                case IDs.GAME_MAX_DOGS:
+                    return "OPTION IS UNUSED YOU SHOULDNT BE READING THIS :)";
+                case IDs.GAME_MAX_REINCARNATIONS:
+                    return "Number of times you can reincarnate in a game after your character dies.\nSet it to 0 to disable reincarnation altogether.";
+                case IDs.GAME_MAX_UNDEADS:
+                    return "Maximum number of undeads on a map. More undeads makes the game more challenging for livings, but slows the game down.";
+                case IDs.GAME_NATGUARD_FACTOR:
+                    return "Affects how likely the National Guard event happens.\n100 is default, 0 to disable.";
+                case IDs.GAME_NPC_CAN_STARVE_TO_DEATH:
+                    return "When NPCs are starving they can die. When disabled, AI characters will never die from hunger.";
+                case IDs.GAME_PERMADEATH:
+                    return "Deletes your saved game when you die. Extra challenge and tension.";
+                /*case IDs.GAME_RATS_UPGRADE:
+                    return "ALWAYS OFF IN VTG-VINTAGE MODE.\nCan Rats type of undeads upgrade their skills like other undeads.\nNot recommended unless you want super annoying rats.";*/
+                /*case IDs.GAME_REVEAL_STARTING_DISTRICT: //@@MP (Release 6-1)
+                    return "You start the game with full knowledge of the district you start in.";*/
+                /*case IDs.GAME_REINC_LIVING_RESTRICTED:
+                    return "Limit choices of reincarnations as livings to civilians only. If disabled allow you to reincarnte into all kinds of livings.";
+                case IDs.GAME_REINCARNATE_AS_RAT:
+                    return "Enables the possibility to reincarnate into a zombie rat.";
+                case IDs.GAME_REINCARNATE_TO_SEWERS:
+                    return "Enables the possibility to reincarnate into the sewers.";*/
+                case IDs.GAME_SHAMBLERS_UPGRADE:
+                    return "ALWAYS OFF IN VTG-VINTAGE MODE.\nCan Shamblers type of undeads upgrade their skills like other undeads.";
+                case IDs.GAME_SKELETONS_UPGRADE:
+                    return "ALWAYS OFF IN VTG-VINTAGE MODE.\nCan Skeletons type of undeads upgrade their skills like other undeads.";
+                case IDs.GAME_SIMULATE_DISTRICTS:
+                    return "The game simulates what is happening in districts around you. You should keep this option maxed for better gameplay.\nWhen the simulation happens depends on other sim options.";
+                case IDs.GAME_SIM_THREAD:
+                    return "Performs simulation in a separate thread while you are playing. Recommended unless the game is unstable.\nWhen enabled, Simulate When Sleeping is not applicable and therefore disabled.";
+                case IDs.GAME_SIMULATE_SLEEP:
+                    return "Performs simulation when you are sleeping. Recommended if Synchronous Simulation is off.\nOnly applicable when Synchronous Simulation is disabled.";
+                case IDs.GAME_SPAWN_SKELETON_CHANCE:
+                    return "YOU SHOULDNT BE READING THIS :)";
+                case IDs.GAME_SPAWN_ZOMBIE_CHANCE:
+                    return "YOU SHOULDNT BE READING THIS :)";
+                case IDs.GAME_SPAWN_ZOMBIE_MASTER_CHANCE:
+                    return "YOU SHOULDNT BE READING THIS :)";
+                case IDs.GAME_STARVED_ZOMBIFICATION_CHANCE:
+                    return "ONLY APPLIES TO STD-STANDARD MODE.\nIf NPCs can starve to death, chances of turning into a zombie.";
+                case IDs.GAME_SUPPLIESDROP_FACTOR:
+                    return "Affects how likely the Supplies Drop event happens.\n100 is default, 0 to disable.";
+                case IDs.GAME_UNDEADS_UPGRADE_DAYS:
+                    return "How often can undeads upgrade their skills. They usually upgrade at a slower pace than livings.";
+                case IDs.GAME_ZOMBIFICATION_CHANCE:
+                    return "ONLY APPLIES TO STD-STANDARD MODE.\nSome undeads have the ability to turn their living victims into zombies after killing them.\nThis option controls the chances of zombification. Changing this value has a large impact on game difficulty.\nException: the player is always checked for zombification when killed in all game modes.";
+                case IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE:
+                    return "The zombies invasion increases in size each day, to fill up to Maximum Undeads on a map.";
+                case IDs.UI_ANIM_DELAY:
+                    return "Enable or disable UI delays when showing actions or events on the map.\nYou should keep it on when learning the game and then disable it for a faster play.";
+                case IDs.UI_MUSIC:
+                    return "Enable or disable music. Musics are not essential for gameplay.\nIf you can't hear music, try using RSConfig from the game folder.";
+                case IDs.UI_MUSIC_VOLUME:
+                    return "Music volume.";
+                case IDs.UI_SHOW_MINIMAP:
+                    return "Display or hide the minimap.\nThe minimap could potentially crash the game on some very old graphics cards.";
+                /*case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:
+                    return "Highlight tags painted by the player as yellow dots in the minimap.";*/
+                case IDs.UI_ADVISOR:
+                    return "Enable or disable the in-game hints system. The advisor helps you learn the game as a living.\nIt will only give you hints it hasn't already shown you.\nAll hints are also available from the main menu.";
+                case IDs.UI_COMBAT_ASSISTANT:
+                    return "Draws a colored circle icon on your enemies when enabled, indicating when they will next act.\nGreen = you can act twice before your enemy will\nYellow = your enemy will act after you\nRed = your enemy will act twice after you";
+                case IDs.UI_SHOW_TARGETS:
+                    return "When mousing over an actor, will draw icons on actors that are targeting, are targeted or are in group with this actor.";
+                case IDs.UI_SHOW_PLAYER_TARGETS:
+                    return "Will draw icons on actors that are targeting you.";
+                case IDs.GAME_VTG_ANTIVIRAL_PILLS: //@@MP
+                    return "ONLY APPLIES TO VTG-VINTAGE MODE.\nDisable antiviral pills for a more authenticate (and challenging) zombie experience. Death will come sooner if you aren't very careful.";
+                case IDs.UI_SFXS: //@@MP
+                    return "Enable or disable sound effects. SFXs are not essential for gameplay, though it is recommended you keep them enabled.\nIf you can't hear SFXs, try using RSConfig from the game folder.";
+                case IDs.UI_SFXS_VOLUME: //@@MP
+                    return "Sound effects volume (gunfire, screams, etc)";
+                case IDs.GAME_SANITY: //@@MP
+                    return "Enabled or disable sanity. Low sanity causes a living to become restless and unpredicatable.";
+                case IDs.UI_AMBIENTSFXS: //@@MP
+                    return "Enable or disable ambient sounds. SFXs are not essential for gameplay, though it is recommended you keep them enabled.\nIf you can't hear SFXs, try using RSConfig from the game folder.";
+                case IDs.UI_AMBIENTSFXS_VOLUME: //@@MP
+                    return "Ambient sounds volume (rain, etc)";
+                case IDs.UI_SHOW_CORPSES: //@@MP
+                    return "Show corpses in STD Game Mode. Adds to the immersion.";
+                case IDs.UI_AUTOSAVE: //@@MP
+                    return "Automatically saves your game every 12 in-game hours, equivalent to every 360 turns.";
+                default:
+                    throw new ArgumentOutOfRangeException("opyion","unhandled option");
             }
         }
 
@@ -805,8 +952,8 @@ namespace djack.RogueSurvivor.Engine
                     return CanReincarnateAsRat ? "YES   (default NO)" : "NO    (default NO)";*/  //@@MP (Release 5-7)
                 /*case IDs.GAME_REINCARNATE_TO_SEWERS:
                     return CanReincarnateToSewers ? "YES   (default NO)" : "NO    (default NO)";*/  //@@MP (Release 5-7)
-                case IDs.GAME_REVEAL_STARTING_DISTRICT:
-                    return RevealStartingDistrict ? "YES   (default YES)" : "NO    (default YES)";
+                /*case IDs.GAME_REVEAL_STARTING_DISTRICT: //@@MP (Release 6-1)
+                    return RevealStartingDistrict ? "YES   (default YES)" : "NO    (default YES)";*/
                 case IDs.GAME_SANITY://@@MP (Release 1)
                     return IsSanityEnabled ? "ON    (default ON)" : "OFF   (default ON)";
                 case IDs.GAME_SHAMBLERS_UPGRADE:
@@ -851,9 +998,13 @@ namespace djack.RogueSurvivor.Engine
                     return PlaySFXs ? "ON " : "OFF";
                 case IDs.UI_SFXS_VOLUME: //@@MP (Release 2)
                     return SFXVolume.ToString() + "%";
+                case IDs.UI_AMBIENTSFXS: //@@MP (Release 6-1)
+                    return PlayAmbientSFXs ? "ON " : "OFF";
+                case IDs.UI_AMBIENTSFXS_VOLUME: //@@MP (Release 6-1)
+                    return AmbientSFXVolume.ToString() + "%";
                 case IDs.UI_SHOW_MINIMAP:
                     return IsMinimapOn ? "ON " : "OFF";
-                case IDs.UI_SHOW_CORPSES:
+                case IDs.UI_SHOW_CORPSES: //@@MP (Release 1)
                     return ShowCorpses ? "ON*   (default ON)" : "OFF*  (default ON)";
                 /*case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:   //@@MP (Release 5-7)
                     return ShowPlayerTagsOnMinimap ? "YES" : "NO ";*/
@@ -861,6 +1012,8 @@ namespace djack.RogueSurvivor.Engine
                     return ShowPlayerTargets ? "ON    (default ON)" : "OFF   (default ON)";
                 case IDs.UI_SHOW_TARGETS:
                     return ShowTargets ? "ON    (default ON)" : "OFF   (default ON)";
+                case IDs.UI_AUTOSAVE: //@@MP (Release 6-1)
+                    return Autosaving ? "ON    (default ON)" : "OFF   (default ON)";
                 default:
                     return "???";
             }

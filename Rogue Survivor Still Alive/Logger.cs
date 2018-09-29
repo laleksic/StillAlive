@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
-
-using djack.RogueSurvivor.Engine;
 
 namespace djack.RogueSurvivor
 {
@@ -27,7 +24,7 @@ namespace djack.RogueSurvivor
 
         static List<string> s_Lines = new List<string>();
 
-        static Object s_Mutex = new Object();  // for thread safe writing
+        static readonly Object s_Mutex = new Object();  // alpha10 use lock() {} instead of Monitor
 
         public static IEnumerable<string> Lines
         {
@@ -36,63 +33,54 @@ namespace djack.RogueSurvivor
 
         public static void Clear()
         {
-            // get lock.
-            Monitor.Enter(s_Mutex);
-
-            // clear lines.
-            s_Lines.Clear();
-
-            // release lock.
-            Monitor.Exit(s_Mutex);
+            lock (s_Mutex)
+            {
+                // clear lines.
+                s_Lines.Clear();
+            }
         }
 
         public static void CreateFile()
         {
-            // get lock.
-            Monitor.Enter(s_Mutex);
-
-            // delete previous file.
-            if (File.Exists(LogFilePath()))
+            lock (s_Mutex)
             {
-                File.Delete(LogFilePath());
-            }
+                // delete previous file.
+                if (File.Exists(LogFilePath()))
+                {
+                    File.Delete(LogFilePath());
+                }
 
-            // create new one.
-            Directory.CreateDirectory(SetupConfig.DirPath);// Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Rogue Survivor\" + SetupConfig.GAME_VERSION);
-            using (StreamWriter emptyFile = File.CreateText(LogFilePath()))
-            {
-                //emptyFile.Close();
+                // create new one.
+                Directory.CreateDirectory(SetupConfig.DirPath);
+                using (StreamWriter emptyFile = File.CreateText(LogFilePath()))
+                {
+                    //emptyFile.Close();
+                }
             }
-
-            // release lock.
-            Monitor.Exit(s_Mutex);
         }     
        
 
         public static void WriteLine(Stage stage, string text)
         {
-            // get lock.
-            Monitor.Enter(s_Mutex);
-
-            // format.
-            string s = String.Format("{0} {1} : {2}", s_Lines.Count, StageToString(stage), text);
-
-            // add line.
-            s_Lines.Add(s);
-
-            // print to console.
-            Console.Out.WriteLine(s);
-
-            // write to log file.
-            using (StreamWriter stream = File.AppendText(LogFilePath()))
+            lock (s_Mutex)
             {
-                stream.WriteLine(s);
-                stream.Flush();
-                //stream.Close();
-            }
+                // format.
+                string s = String.Format("{0} {1} : {2}", s_Lines.Count, StageToString(stage), text);
 
-            // release lock.
-            Monitor.Exit(s_Mutex);
+                // add line.
+                s_Lines.Add(s);
+
+                // print to console.
+                Console.Out.WriteLine(s);
+
+                // write to log file.
+                using (StreamWriter stream = File.AppendText(LogFilePath()))
+                {
+                    stream.WriteLine(s);
+                    stream.Flush();
+                    //stream.Close();
+                }
+            }
         }
 
         static string LogFilePath()

@@ -10,14 +10,14 @@
 7. FOLLOWERS
 8. FRIENDS & FOES
 9. OPTIONS & HINTS
-*************
+*******************
 
 0. DEFAULT HOTKEYS
 ---------------
 
 MOVE : Numpad 1-4,6-9           ITEM SLOTS : 1-10               RUN : R		
 SLEEP : Z                       WAIT 1 TURN : Numpad 5          WAIT 1 HOUR : W
-CITY INFO : I                   MESSAGES LOG : Shift + M
+CITY INFO : I                   MESSAGES LOG : Shift + M        ICONS LEGEND : F1
 FIRE : F                        MARK ENEMIES : E                MAKE MOLOTOVS : M
 CLOSE : C                       USE LADDER/STAIRS : X           USE SPRAY : A
 BREAK : K                       PUSH : P                        PLANT SEEDS: J
@@ -46,7 +46,7 @@ Your town is known for being the headquarters of the world famous C.H.A.R. Corpo
  ---------
 There are 3 different game modes, each enabling or disabling some aspects of the game.
 STANDARD (STD) : The default game setting
-CORPSES AND INFECTION (C&I) : Add infection and corpses
+CORPSES AND INFECTION (C&I) : Adds infection and corpses
 VINTAGE (VTG) : C&I and a limited selection of zombie types for a more classic feel
 
 
@@ -321,6 +321,10 @@ You can redefine the keys in game (default Shift-K).
 Read this manual in-game.
 
 
+> ICONS LEGEND  (default F1)
+Popup a legend showing what the in-game icons indicate.
+
+
 > LOOKING  (mouse)
 Move the mouse over things to get useful descriptions.
 
@@ -372,11 +376,22 @@ The game performs some simulations while you sleep if you have the option enable
 Jump or climb on something that is marked as jumpable. Jumping is a tiring action and cost some STA.
 
 
-> TRADING  (Bumping)
-The actor must be willing to trade and have an item to offer. Look for the "can trade" icon on the actor.
+> QUICK-TRADING  (Bumping)
+The actor must be willing to trade and have an item to offer. Look for the "can trade" ($) icon on the actor.
 They will offer you an exchange of items and you can accept or decline the deal.
-Before trading you should look at the actor to see what items they are carrying.
+Before trading you should inspect the person to see what items they are carrying.
 You can try trading as many times as you want. Some actors will not be interested in any of your items and will refuse to trade.
+It's a fast and easy way to trade, but the items you are offered might not be ideal.
+Use the negociating trade command if you want more control and better deals.
+
+
+> NEGOTIATING TRADE WITH AN ACTOR (default E)
+You can initiate a more controlled trade negotiation with this command.
+Press the hotkey and with the direction keys select an adjacent person to trade with.
+This works like normal trading, except you chose which items you want to exhange instead of getting a semi-random offer from the other person.
+You can select an item to offer and see what items you can ask for in exhange, or the other way around.
+If you have the Charismatic skill you have better chances to convince the actor to give up items it would not give away otherwise.
+If you are the leader of the actor and he trusts you, he will accept all your offers.
 
 
 > ATTACKING AN ACTOR  (Bumping)
@@ -389,14 +404,15 @@ Perform a melee attack on a barricade to eventually break it. The material used 
 
 
 > FIRING  (default F)
-Use the fire mode. You need to have an available ranged attack, such as a ranged weapon.
+Enter the Fire Mode. You need to have an available ranged weapon of some sort.
 You usually need a clear line of fire to your target. You can only shoot through some objects such as windows or fences.
-A ranged weapon has an Efficient Range which is usually half its maximum range.
 When firing the line of fire is drawn:
 - in red if you have no clear line of fire.
 - in yellow when the target is beyond the efficient range and harder to hit.
 - in green when the target is within the efficient range and easier to hit.
+A ranged weapon has an Efficient Range which is usually half its maximum range.
 Your aiming accuracy is penalized if you are sleepy, exhausted, tired, or your stamina bar is not full.
+You can switch fire mode to "rapid". In rapid fire mode you shoot twice with the same action but each shot has less chance of hitting, depending on the weapon used.
 
 
 > THROWING EXPLOSIVES  (Firing)
@@ -420,12 +436,6 @@ To use/equip/unquip an item, left-click it in your inventory. Equiping/unequipin
 > GIVING ITEMS  (mouse, then default G)
 Move the mouse over the item in your inventory, press the key, then choose someone next to you in a direction.
 Giving item ends both your turn and the other actor's turn. The other actor must be awake and not an enemy.
-
-
-> INITIATING TRADE  (default E)
-You can initiate a trade deal by offering an item.
-This works like normal trading, except you chose which the items you want to exhange.
-Move the mouse over the item, press the key, then choose someone next to you in a direction.
 
 
 > BARRICADING OBJECTS  (default B)
@@ -604,11 +614,12 @@ More prone to waking up. When sleeping, increases distance at which you notice l
 
 
 > MARTIAL ARTS
-Helps you fight better when unarmed. Increase your unarmed melee Atk and Dmg.
+Helps you fight better when unarmed, and increases your chance to disarm your opponent.
 
 
 > MEDIC
 Improves the benefits of medicine. Increases the values of medicine items you use.
+Allows you to revive corpse with a medikit.
 
 
 > NECROLOGY
@@ -620,7 +631,7 @@ Get more information on corpses :
 
 
 > STRONG
-Increases your Dmg for Melee attacks. Increase your throwing range.
+Increases your DMG of Melee attacks. Increase your throwing range. Reduced chance of being disarmed.
 
 
 > TOUGH
@@ -805,16 +816,12 @@ You might encounter some other people. Friendly or hostile, it's for you to find
 OPTIONS
 -------
 
-> "Music" and "Sound Effects"
+> "Music", "Ambient" and "Sound Effects"
 Audio is not essential for gameplay. If you can't hear audio, try the configuration program in the installation directory.
 
 
 > "Animations Delay"
 Enable or disable pauses when showing actions or events on the map. Disable for a faster interface.
-
-
-> "Show tags on minimap"
-Show or hide tags (created using spray paint) on the minimap as small yellow dots.
 
 
 > "Enable advisor"
@@ -886,10 +893,6 @@ don't want to use "Synchronous Simulation", as it will speed up changing distric
 This option is unnecessary when using "Synchronous Simulation" and will therefore be disabled.
 
 
-> "Reveal Starting District"
-Start the game with knowledge of the whole the district layout.
-
-
 > "Allow undeads evolution"
 Allow undeads to evolve into more powerful beings. Disabling this option makes the game much easier for the livings.
 This option is not relevant to Vintage mode, where it is permanently disabled.
@@ -899,21 +902,12 @@ This option is not relevant to Vintage mode, where it is permanently disabled.
 Number of times you can reincarnate in a game. Set it to 0 to disable reincarnation altogether.
 
 
-> "Can Reincarnate to Sewers"
-Enable the possibility to reincarnate in an avatar located in the sewers.
-
-
-> "Civilians-only Reinc."
-When reincarnating, restrict choices to living civilians.
-Disable this if you want to be able to reincarnate as a cop, biker, soldier, etc.
-
-
 > "Permadeath"
-Deletes your saved game when your character dies. Gives a x2 scoring bonus.
+Deletes your saved game when your character dies. Gives a significant scoring bonus.
 
 
 > "Death Screenshot"
-Automatically takes a screenshot upon your death. Stored within your installation directory\Config\Screenshots\
+Automatically takes a screenshot upon your death. Stored within your My Documents\Rogue Survivor\Still Alive\Config\Screenshots\
 
 
 > "Antiviral Pills"
@@ -942,28 +936,69 @@ This makes the living game easier.
 HINTS FOR BEGINNERS
 -------------------
 
-* LIVING
->  Suggested character builds:
-1. "Basher" : Male, Strong.  - Extra melee damage; helpful to see you to your first weapon
-2. "Tough guy" : Male, Tough.  - Extra HP, always nice to have
-3. "Dancer" : Male or Female, Hauler.  - Carry an extra item straight away
-4. "Leader" : Male or Female, Leadership. - Get followers straight away
-
 > Beginner strategy
 A simple early strategy to prioritise vital items : food, medikits and protection.
-- Avoid combat or use hit-and-run tactics against slower enemies.
-- Explore the city to find a Shopping District.
+- Avoid combat, especially against stronger, faster and intelligent enemies.
+- Explore the city to find a Shopping District and scavenge a ranged weapon.
 - Get plenty of food : visit kitchens, grocery stores or trade for food.
 - Make a base of operations in a shop, pushing shelves to block or open the entrance.
 - Loot items from various buildings and store them in your base.
-- Find a ranged weapon like a rifle or pistol.
-- When food is becoming scarce, grab some seeds and a shovel and plant vegies.
+- Secure your base with traps. Use the Stench Killer to cover your tracks.
+- Before food becomes scarce, grab some seeds and a shovel and plant vegies (they only grow every 2 days!).
+- Explore places like the Police Station and the Hospital.
+- When you are ready, explore the CHAR Offices.
 
 * UNDEAD
-The game is much harder early on; you can die very easily, but you need kills to evolve.
+This is not the main mode of the game, merely a novelty to enjoy things from the 'other side'.
+The game is much harder as undead. Early on you can die very easily, but you need kills to evolve and become stronger.
 Your best bet is to keep a low profile and go only for the easy kills. You have to think like a predator!
-- Lay traps by lurking, or follow other undeads and move in packs.
+- Follow a Zombie Master to form a horde and steal finishing blows.
+- Lay traps by lurking. Basements in high traffic areas are good.
 - Try to avoid actors carrying ranged weapons at all cost - cops in the early game are your worst enemies.
 - Use the night and dark places to your advantage.
+
+* LIVING
+A few typical good starting builds. Note that the suggested 2nd skills may not be available when it's time to upgrade.
+
+1. "Solo Survivalist"
+   Male/Female, Hauler
+   Your plan is to hide in your base and survive alone, making raids outside for loot.
+   The extra starting inventory slot is very useful to carry more loot.
+   2nd skill: 
+     Light Eater to start economizing on food.
+     Hauler to hoard even more.
+     Hardy to be able sleep heal in your base.
+     Carpentry to build up your base.
+     Strong Psyche to help surviving alone.
+
+2. "Social"
+   Male/Female, Leadership
+   Rely on other people to increase your survival chances.   
+   Go get a follower as soon as the game starts to level him/her up early.
+   You can try to care for your followers to build them up or just use them as disposable meat shields.
+   2nd skill: 
+     Charismatic to gain trust faster and get better trade deals.
+     High Stamina to run away from bad situations.
+     Leadership to get even more people in your group.
+     Hauler to give them items.
+
+3. "Ranged Assassin"
+   Female, Firearms
+   Female for the extra defence. 
+   Get your hands on a rifle with plenty of ammo and kill from afar.
+   2nd skill: 
+     Hauler to carry the ammos.
+     Firearms to keep improving your attacks.
+     Agile to dodge other people bullets.
+     High Stamina to run to keep your distance.
+
+4. "Melee Fighter"
+   Male, Strong or Martial Arts
+   Male for the extra hp and melee damage.
+   A melee-only character. It is risky, but the idea is you will have free slots by not lugging ammo around.
+   Choose Strong for weapon damage, and Martial Arts in case your melee weapon breaks.
+   2nd skill: 
+     High Stamina to keep fighting or running.
+     Any of Strong/Martial Arts/Agile/Though to improve your attack or durability.
 
 <end of manual>

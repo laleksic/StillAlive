@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.IO;
 
@@ -250,7 +248,12 @@ namespace djack.RogueSurvivor.Gameplay
                 DATA_SKELETON.NAME, DATA_SKELETON.PLURAL,
                 DATA_SKELETON.SCORE,
                 new DollBody(true, DATA_SKELETON.SPD),
-                new Abilities() { IsUndead = true },
+                new Abilities()
+                {
+                    IsUndead = true,
+                    CanDisarm = false, // alpha10 new disarm mechanic
+                    AI_CanUseAIExits = true  // alpha10
+                },
                 new ActorSheet(DATA_SKELETON.HP, DATA_SKELETON.STA, NO_FOOD, NO_SLEEP, NO_SANITY,
                     new Attack(AttackKind.PHYSICAL, new Verb("claw"), DATA_SKELETON.ATK, DATA_SKELETON.DMG),
                     new Defence(DATA_SKELETON.DEF, DATA_SKELETON.PRO_HIT, DATA_SKELETON.PRO_SHOT),
@@ -264,7 +267,12 @@ namespace djack.RogueSurvivor.Gameplay
                 DATA_RED_EYED_SKELETON.NAME, DATA_RED_EYED_SKELETON.PLURAL,
                 DATA_RED_EYED_SKELETON.SCORE,
                 new DollBody(true, DATA_RED_EYED_SKELETON.SPD),
-                new Abilities() { IsUndead = true },
+                new Abilities()
+                {
+                    IsUndead = true,
+                    CanDisarm = false, // alpha10 new disarm mechanic
+                    AI_CanUseAIExits = true  // alpha10
+                },
                 new ActorSheet(DATA_RED_EYED_SKELETON.HP, DATA_RED_EYED_SKELETON.STA, NO_FOOD, NO_SLEEP, NO_SANITY,
                     new Attack(AttackKind.PHYSICAL, new Verb("claw"), DATA_RED_EYED_SKELETON.ATK, DATA_RED_EYED_SKELETON.DMG),
                     new Defence(DATA_RED_EYED_SKELETON.DEF, DATA_RED_EYED_SKELETON.PRO_HIT, DATA_RED_EYED_SKELETON.PRO_SHOT),
@@ -278,7 +286,12 @@ namespace djack.RogueSurvivor.Gameplay
                 DATA_RED_SKELETON.NAME, DATA_RED_SKELETON.PLURAL,
                 DATA_RED_SKELETON.SCORE,
                 new DollBody(true, DATA_RED_SKELETON.SPD),
-                new Abilities() { IsUndead = true },
+                new Abilities()
+                {
+                    IsUndead = true,
+                    CanDisarm = false, // alpha10 new disarm mechanic
+                    AI_CanUseAIExits = true  // alpha10
+                },
                 new ActorSheet(DATA_RED_SKELETON.HP, DATA_RED_SKELETON.STA, NO_FOOD, NO_SLEEP, NO_SANITY,
                     new Attack(AttackKind.PHYSICAL, new Verb("claw"), DATA_RED_SKELETON.ATK, DATA_RED_SKELETON.DMG),
                     new Defence(DATA_RED_SKELETON.DEF, DATA_RED_SKELETON.PRO_HIT, DATA_RED_SKELETON.PRO_SHOT),
@@ -421,7 +434,7 @@ namespace djack.RogueSurvivor.Gameplay
                         CanBashDoors = true,
                         CanBreakObjects = true,
                         CanPush = true,
-                        ZombieAI_AssaultBreakables = true,
+                        //ZombieAI_AssaultBreakables // alpha10 obsolete and was unused anyway = true,
                         ZombieAI_Explore = true,
                         AI_CanUseAIExits = true
                     },
@@ -446,7 +459,7 @@ namespace djack.RogueSurvivor.Gameplay
                         CanBashDoors = true,
                         CanBreakObjects = true,
                         CanPush = true,
-                        ZombieAI_AssaultBreakables = true,
+                        //ZombieAI_AssaultBreakables // alpha10 obsolete and was unused anyway = true,
                         ZombieAI_Explore = true,
                         AI_CanUseAIExits = true
                     },
@@ -471,7 +484,7 @@ namespace djack.RogueSurvivor.Gameplay
                         CanBashDoors = true,
                         CanBreakObjects = true,
                         CanPush = true,
-                        ZombieAI_AssaultBreakables = true,
+                        //ZombieAI_AssaultBreakables // alpha10 obsolete and was unused anyway = true,
                         ZombieAI_Explore = true,
                         AI_CanUseAIExits = true
                     },
@@ -496,7 +509,7 @@ namespace djack.RogueSurvivor.Gameplay
                         CanBashDoors = true,
                         CanBreakObjects = true,
                         CanPush = true,
-                        ZombieAI_AssaultBreakables = true,
+                        //ZombieAI_AssaultBreakables // alpha10 obsolete and was unused anyway = true,
                         ZombieAI_Explore = true,
                         AI_CanUseAIExits = true
                     },
@@ -555,7 +568,7 @@ namespace djack.RogueSurvivor.Gameplay
                         CanJump = true,
                         CanJumpStumble = true,
                         CanPush = true,
-                        ZombieAI_AssaultBreakables = true,
+                        //ZombieAI_AssaultBreakables // alpha10 obsolete and was unused anyway = true,
                         ZombieAI_Explore = true,
                         AI_CanUseAIExits = true
                     },
@@ -584,7 +597,7 @@ namespace djack.RogueSurvivor.Gameplay
                         CanJump = true,
                         CanJumpStumble = true,
                         CanPush = true,
-                        ZombieAI_AssaultBreakables = true,
+                        //ZombieAI_AssaultBreakables // alpha10 obsolete and was unused anyway = true,
                         ZombieAI_Explore = true,
                         AI_CanUseAIExits = true
                     },
@@ -604,7 +617,7 @@ namespace djack.RogueSurvivor.Gameplay
                DATA_RAT_ZOMBIE.NAME, DATA_RAT_ZOMBIE.PLURAL,
                DATA_RAT_ZOMBIE.SCORE,
                 new DollBody(true, DATA_RAT_ZOMBIE.SPD),
-                new Abilities() { IsUndead = true, IsSmall = true, AI_CanUseAIExits = true },
+                new Abilities() { IsUndead = true, IsSmall = true, AI_CanUseAIExits = true, CanDisarm = false}, // alpha10 new disarm mechanic
                 new ActorSheet(DATA_RAT_ZOMBIE.HP, DATA_RAT_ZOMBIE.STA, NO_FOOD, NO_SLEEP, NO_SANITY,
                     new Attack(AttackKind.PHYSICAL, new Verb("bite"), DATA_RAT_ZOMBIE.ATK, DATA_RAT_ZOMBIE.DMG),
                     new Defence(DATA_RAT_ZOMBIE.DEF, DATA_RAT_ZOMBIE.PRO_HIT, DATA_RAT_ZOMBIE.PRO_SHOT),

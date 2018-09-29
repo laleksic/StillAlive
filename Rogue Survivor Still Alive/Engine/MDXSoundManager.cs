@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.DirectX.AudioVideoPlayback;
 using Microsoft.DirectX;
+using System.Linq;
 
 namespace djack.RogueSurvivor.Engine
 {
@@ -14,6 +13,7 @@ namespace djack.RogueSurvivor.Engine
         int m_Volume;
         int m_Attenuation;
         Dictionary<string, Audio> m_Musics;
+        Audio m_CurrentAudio; // alpha10
         #endregion
 
         #region Properties
@@ -31,6 +31,10 @@ namespace djack.RogueSurvivor.Engine
                 OnVolumeChange();
             }
         }
+
+        // alpha10
+        public string Track { get; private set; }
+        public int Priority { get; private set; }
         #endregion
 
         #region Init
@@ -38,6 +42,7 @@ namespace djack.RogueSurvivor.Engine
         {
             m_Musics = new Dictionary<string, Audio>();
             this.Volume = 100;
+            this.Priority = AudioPriority.PRIORITY_NULL; //alpha 10
         }
 
         static string FullName(string fileName) //@@MP - made static (Release 5-7)
@@ -103,7 +108,7 @@ namespace djack.RogueSurvivor.Engine
         /// Restart playing a music from the beginning if music is enabled.
         /// </summary>
         /// <param name="musicname"></param>
-        public void Play(string musicname)
+        public void Play(string musicname, int priority)
         {
             if (!m_IsAudioEnabled)
                 return;
@@ -113,6 +118,8 @@ namespace djack.RogueSurvivor.Engine
             {
                 Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing music {0}.", musicname));
                 Play(music);
+                this.Track = musicname;
+                this.Priority = priority;
             }
         }
 
@@ -120,7 +127,7 @@ namespace djack.RogueSurvivor.Engine
         /// Start playing a music from the beginning if not already playing and if music is enabled.
         /// </summary>
         /// <param name="musicname"></param>
-        public void PlayIfNotAlreadyPlaying(string musicname)
+        public void PlayIfNotAlreadyPlaying(string musicname, int priority)
         {
             if (!m_IsAudioEnabled)
                 return;
@@ -129,7 +136,11 @@ namespace djack.RogueSurvivor.Engine
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 if (!IsPlaying(music))
+                {
                     Play(music);
+                    this.Track = musicname;
+                    this.Priority = priority;
+                }
             }
         }
 
@@ -137,7 +148,7 @@ namespace djack.RogueSurvivor.Engine
         /// Restart playing in a loop a music from the beginning if music is enabled.
         /// </summary>
         /// <param name="musicname"></param>
-        public void PlayLooping(string musicname)
+        public void PlayLooping(string musicname, int priority)
         {
             if (!m_IsAudioEnabled)
                 return;
@@ -146,8 +157,10 @@ namespace djack.RogueSurvivor.Engine
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping music {0}.", musicname));
-                music.Ending += new EventHandler(music_Ending);
+                music.Ending += new EventHandler(MusicEnding);
                 Play(music);
+                this.Track = musicname;
+                this.Priority = priority;
             }
         }
 
@@ -164,7 +177,7 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        void music_Ending(object sender, EventArgs e)
+        void MusicEnding(object sender, EventArgs e)
         {
             Audio music = (Audio)sender;
             Play(music);
@@ -178,6 +191,8 @@ namespace djack.RogueSurvivor.Engine
                 Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("stopping music {0}.", musicname));
                 Stop(music);
             }
+            this.Track = "";
+            this.Priority = AudioPriority.PRIORITY_NULL;
         }
 
         public void StopAll()
@@ -187,6 +202,8 @@ namespace djack.RogueSurvivor.Engine
             {
                 Stop(a);
             }
+            this.Track = "";
+            this.Priority = AudioPriority.PRIORITY_NULL;
         }
 
         public bool IsPlaying(string musicname)
@@ -224,8 +241,9 @@ namespace djack.RogueSurvivor.Engine
 
         void Stop(Audio audio)
         {
-            audio.Ending -= music_Ending;
+            audio.Ending -= MusicEnding;
             //audio.Pause(); //@@MP (Release 2)
+            m_CurrentAudio = null; //alpha 10
             if (audio.Playing)
                 audio.Stop();
         }
@@ -236,6 +254,7 @@ namespace djack.RogueSurvivor.Engine
             audio.SeekCurrentPosition(0, SeekPositionFlags.AbsolutePositioning);
             audio.Volume = -m_Attenuation;
             audio.Play();
+            m_CurrentAudio = audio; //alpha 10
         }
 
         static void Resume(Audio audio) //@@MP - made static (Release 5-7)
@@ -257,11 +276,28 @@ namespace djack.RogueSurvivor.Engine
         {
             return audio.CurrentPosition >= audio.Duration;
         }
+
+        public void PlayRandom(IEnumerable<string> playlist, int priority) //@@MP (Release 6-1)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            if (!playlist.Any()) //the list is empty
+            {
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("empty playlist provided to Audio.PlayRandom"));
+                return;
+            }
+
+            string trackName = playlist.ElementAt(new Random(DateTime.Now.Millisecond).Next(playlist.Count())); // https://stackoverflow.com/questions/2019417/access-random-item-in-list
+            PlayIfNotAlreadyPlaying(trackName, priority);
+        }
         #endregion
 
         #region IDisposable
         public void Dispose()
         {
+            StopAll(); // alpha10
+
             Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing MDXMusicManager...");
             foreach (string musicname in m_Musics.Keys)
             {

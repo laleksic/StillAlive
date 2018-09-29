@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
-using System.Drawing;
-using System.Xml;
 using System.Xml.Serialization;
 
 using djack.RogueSurvivor.Data;
@@ -187,7 +182,7 @@ namespace djack.RogueSurvivor.Engine
         DOORWINDOW_CLOSE,
 
         /// <summary>
-        /// Pushing objects.
+        /// Pushing/Pulling objects/actors.
         /// </summary>
         OBJECT_PUSH,
 
@@ -272,24 +267,14 @@ namespace djack.RogueSurvivor.Engine
         CITY_INFORMATION,
 
         /// <summary>
-        /// Butchering corpses.
+        /// Butchering and dragging corpses.
         /// </summary>
-        CORPSE_BUTCHER,
+        CORPSE, // alpha10 merged corpse hints
 
         /// <summary>
-        /// Eating corpses.
+        /// Eating corpses (undead).
         /// </summary>
         CORPSE_EAT,
-
-        /// <summary>
-        /// Dragging corpses.
-        /// </summary>
-        CORPSE_DRAG_START,
-
-        /// <summary>
-        /// Moving dragged corpses.
-        /// </summary>
-        CORPSE_DRAG_MOVE,
 
         /// <summary>
         /// Turn liquor into molotov.
@@ -300,6 +285,22 @@ namespace djack.RogueSurvivor.Engine
         /// Plant seeds using a shovel or pickaxe.
         /// </summary>
         PLANT_SEEDS, //@@MP (Release 5-5)
+
+        // alpha10 new hints from here down
+        /// <summary>
+        /// Sanity.
+        /// </summary>
+        SANITY,
+
+        /// <summary>
+        /// Infection.
+        /// </summary>
+        INFECTION,
+
+        /// <summary>
+        /// Traps.
+        /// </summary>
+        TRAPS,
 
         _COUNT
     }
@@ -327,9 +328,12 @@ namespace djack.RogueSurvivor.Engine
         public UniqueActor Santaman { get; set; }
         public UniqueActor TheSewersThing { get; set; }
 
-        public UniqueActor[] ToArray()
+        /// <summary>
+        /// Allocate a new array each call don't overuse it...
+        /// </summary>
+        public UniqueActor[] ToArray() // TODO -- consider caching it.
         {
-            return new UniqueActor[] { BigBear, Duckman, FamuFataru, HansVonHanz, PoliceStationPrisonner, Roguedjack, Santaman, TheSewersThing };
+            return new UniqueActor[] { BigBear, Duckman, FamuFataru, HansVonHanz, PoliceStationPrisonner, Roguedjack, Santaman, TheSewersThing, JasonMyers }; // JasonMyers (alpha 10)
         }
     }
 
@@ -483,6 +487,19 @@ namespace djack.RogueSurvivor.Engine
             get;
             set;
         }
+
+        // alpha10
+        public FireMode Player_CurrentFireMode
+        {
+            get;
+            set;
+        }
+        
+        /*public int Player_TurnCharismaRoll //@@MP - I prefer to do it differently (Release 6-1)
+        {
+            get;
+            set;
+        }*/
         #endregion
 
         #endregion
@@ -522,6 +539,9 @@ namespace djack.RogueSurvivor.Engine
             this.UniqueActors = new UniqueActors();
             this.UniqueItems = new UniqueItems();
             this.UniqueMaps = new UniqueMaps();
+            // alpha10
+            this.Player_CurrentFireMode = FireMode.DEFAULT;
+            //this.Player_TurnCharismaRoll = 0; //@@MP (Release 6-1)
         }
         #endregion
 
@@ -826,6 +846,19 @@ namespace djack.RogueSurvivor.Engine
                 case GameMode.GM_VINTAGE: return "VTG";
                 default: throw new ArgumentException("unhandled game mode", "mode");
             }
+        }
+
+        // alpha10
+        public UniqueActor ActorToUniqueActor(Actor a)
+        {
+            if (!a.IsUnique)
+                throw new ArgumentException("actor is not unique");
+            foreach (UniqueActor unique in UniqueActors.ToArray())
+            {
+                if (unique.TheActor == a)
+                    return unique;
+            }
+            throw new ArgumentException("actor is flaged as unique but did not find it!");
         }
         #endregion
 

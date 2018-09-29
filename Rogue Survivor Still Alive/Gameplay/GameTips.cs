@@ -31,10 +31,10 @@ namespace djack.RogueSurvivor.Gameplay
             "...you can try to revive people using the Medic skill?",
             "...reviving a living completely restores one's sanity?",
             // misc rules
-        	"...scents decay faster under the rain and in the sewers?",
+        	"...scents decay faster under the rain?",
         	"...firearms are more likely to jam in the rain?",
             "...wearing some outfits change the chances to get noticed by cops and gangs?",
-            "...books, magazines and friends are good for your sanity?",
+            "...trading with people and having friends are good for your sanity?",
             // followers
             "...you can use cellphones to keep contact with your followers?",
             "...followers will help you push objects?",

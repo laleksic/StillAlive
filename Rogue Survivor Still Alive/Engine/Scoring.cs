@@ -441,7 +441,7 @@ namespace djack.RogueSurvivor.Engine
             ///////////////////
             // Constant factors.
             // Harder:
-            // - Don't reveal starting map : +10%
+            // /////- Don't reveal starting map : +10% //@@MP - removed option (Release 6-1)
             // Survivor Easier/Undead Harder:
             // - Disable NPC starvation    : -10%/+10%
             // Harder/Easier:
@@ -450,9 +450,10 @@ namespace djack.RogueSurvivor.Engine
             // - Zombifieds UpDay 
             //////////////////
             #region
+            /*  //@@MP -removed option (Release 6-1)
             // - Don't reveal starting map: +10%
             if (!options.RevealStartingDistrict)
-                rating += 0.10f;
+                rating += 0.10f;*/
 
             // - Disable NPC starvation: -10%
             if (!options.NPCCanStarveToDeath)

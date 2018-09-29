@@ -43,7 +43,7 @@ namespace djack.RogueSurvivor.Engine.Actions
 
         public override void Perform()
         {
-            m_Game.DoSingleRangedAttack(m_Actor, m_Target, m_LoF, m_Mode);
+            m_Game.DoRangedAttack(m_Actor, m_Target, m_LoF, m_Mode);
         }
         #endregion
     }

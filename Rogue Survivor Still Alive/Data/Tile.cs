@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace djack.RogueSurvivor.Data
 {
@@ -15,7 +13,9 @@ namespace djack.RogueSurvivor.Data
             NONE = 0,
             IS_INSIDE = (1 << 0),
             IS_IN_VIEW = (1 << 1),
-            IS_VISITED = (1 << 2)
+            IS_VISITED = (1 << 2),
+            IS_ON_FIRE = (1 << 3), //@MP (Release 6-1)
+            IS_SCORCHED = (1 << 4) //@MP (Release 6-1)
         }
         #endregion
 
@@ -48,6 +48,21 @@ namespace djack.RogueSurvivor.Data
         {
             get { return (m_Flags & Flags.IS_VISITED) != 0; }
             set { if (value) m_Flags |= Flags.IS_VISITED; else m_Flags &= ~Flags.IS_VISITED; }
+        }
+
+        public bool IsOnFire //@MP (Release 6-1)
+        {
+            get { return (m_Flags & Flags.IS_ON_FIRE) != 0; }
+            set { if (value) m_Flags |= Flags.IS_ON_FIRE; else m_Flags &= ~Flags.IS_ON_FIRE; }
+        }
+
+        /// <summary>
+        /// Is currently or has previously been on fire
+        /// </summary>
+        public bool IsScorched //@MP (Release 6-1)
+        {
+            get { return (m_Flags & Flags.IS_SCORCHED) != 0; }
+            set { if (value) m_Flags |= Flags.IS_SCORCHED; else m_Flags &= ~Flags.IS_SCORCHED; }
         }
 
         public bool HasDecorations

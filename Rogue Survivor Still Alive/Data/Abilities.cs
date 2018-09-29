@@ -130,6 +130,9 @@ namespace djack.RogueSurvivor.Data
         /// </summary>
         public bool IsRotting { get; set; }
 
+        // alpha10
+        public bool CanDisarm { get; set; }
+
         #region AI flags
         /// <summary>
         /// AI flag : tell some AIs t can use Exits with flag Exit.IsAnAIExit.
@@ -141,10 +144,11 @@ namespace djack.RogueSurvivor.Data
         /// </summary>
         public bool AI_NotInterestedInRangedWeapons { get; set; }
 
+        /*// alpha10 obsolete, was unused in alpha9
         /// <summary>
         /// AI flag : tell some AIs to use the assault barricades behavior.
         /// </summary>
-        public bool ZombieAI_AssaultBreakables { get; set; }
+        public bool ZombieAI_AssaultBreakables { get; set; }*/
 
         /// <summary>
         /// AI flag : tell some AIs to use the explore behavior.
@@ -153,5 +157,12 @@ namespace djack.RogueSurvivor.Data
         #endregion
 
         #endregion
+
+        // alpha10
+        // CanDisarm by default.
+        public Abilities()
+        {
+            this.CanDisarm = true;
+        }
     }
 }

@@ -10,6 +10,10 @@ namespace djack.RogueSurvivor.Engine.Items
     [Serializable]
     class ItemEntertainment : Item
     {
+        #region Fields
+        List<Actor> m_BoringFor = null; // alpha10 boring items moved out of Actor
+        #endregion
+
         #region Properties
         public ItemEntertainmentModel EntertainmentModel { get { return this.Model as ItemEntertainmentModel; } }
         #endregion
@@ -20,6 +24,45 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             if (!(model is ItemEntertainmentModel))
                 throw new ArgumentException("model is not a EntertainmentModel");
+        }
+        #endregion
+
+        // alpha10 boring items moved out of Actor
+        #region Boring items
+        public void AddBoringFor(Actor a)
+        {
+            if (m_BoringFor == null) m_BoringFor = new List<Actor>(1);
+            if (m_BoringFor.Contains(a)) return;
+            m_BoringFor.Add(a);
+        }
+
+        public bool IsBoringFor(Actor a)
+        {
+            if (m_BoringFor == null) return false;
+            return m_BoringFor.Contains(a);
+        }
+        #endregion
+
+
+        #region Pre-saving // alpha10 added
+        public override void OptimizeBeforeSaving()
+        {
+            base.OptimizeBeforeSaving();
+
+            // clean up dead actors refs
+            // side effect: actors revived after save will forget about boring items
+            if (m_BoringFor != null)
+            {
+                for (int i = 0; i < m_BoringFor.Count;)
+                {
+                    if (m_BoringFor[i].IsDead)
+                        m_BoringFor.RemoveAt(i);
+                    else
+                        i++;
+                }
+                if (m_BoringFor.Count == 0)
+                    m_BoringFor = null;
+            }
         }
         #endregion
     }

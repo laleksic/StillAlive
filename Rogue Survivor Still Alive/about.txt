@@ -43,7 +43,7 @@ Learn, customize and mod
 
 SOUND CREDITS
 
-Each file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant link below.
+Each file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links below.
 All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
 
 -Melee attack : https://freesound.org/people/Pinball_Wiz/sounds/394874/ by Pinball_Wiz
@@ -97,14 +97,15 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Bash 'other' objects : https://freesound.org/people/newagesoup/sounds/348243/ by newagesoup
 -Break metal door : https://freesound.org/people/TheSoundcatcher/sounds/144912/ by TheSoundcatcher
 -Push wooden object : https://freesound.org/people/D%20W/sounds/146998/ by D W
+-Helicopter : https://freesound.org/people/UnderlinedDesigns/sounds/172667/ by UnderlinedDesigns
 
 
 IMAGE CREDITS
 
-Each file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant link below.
+Each and every file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links below.
 All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
 
--Vat (modified potion) : https://opengameart.org/content/potion-phial by TCRChi3ftan / Jao247
+-Vat : https://opengameart.org/content/potion-phial by TCRChi3ftan / Jao247
 -Computer : https://opengameart.org/content/object-icons-approx-20px by qubodup
 -CHAR document : https://opengameart.org/content/lpc-tabletop-rpg-pizza by pennomi
 -Tennis racket and TV : https://opengameart.org/content/application-silk-icon-set-13 by Mark James
@@ -115,3 +116,12 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Tombstones : https://opengameart.org/content/roguelike-dungeonworld-tiles by Joe Williamson (Twitter= @JoeCreates)
 -Church wall hangings : https://opengameart.org/content/2d-castle-platformer-assets-2 by pudman
 -Bush : https://opengameart.org/content/bushes-2 by SpiderDave
+
+
+MUSIC CREDITS
+
+Each and every file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links below.
+All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
+
+-Black Ops : https://opengameart.org/content/commando-team-action-loop-cut by Grégoire Lourme
+	> Copyright 2012 "Commando Team (Action)" Grégoire Lourme <http://www.jamendo.com/en/artist/560/gregoire-lourme> Copyright 2012 Iwan Gabovitch "Commando Team (Action) [loop cut]" (editing to make it loop)

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using djack.RogueSurvivor.Engine;
 
 namespace djack.RogueSurvivor.Data
@@ -215,8 +213,9 @@ namespace djack.RogueSurvivor.Data
 
             // Inventory full.
             // Can we stack at least one?
-            int stackedQuantity;
-            return GetItemsStackableWith(it, out stackedQuantity) != null;
+            return HasAtLeastOneStackableWith(it); // alpha10 small speed improvement
+            /*int stackedQuantity;
+            return GetItemsStackableWith(it, out stackedQuantity) != null;*/
         }
 
 #if false
@@ -336,11 +335,27 @@ namespace djack.RogueSurvivor.Data
             return stackList;
         }
 
+        // alpha10
+        bool HasAtLeastOneStackableWith(Item it)
+        {
+            if (!it.Model.IsStackable)
+                return false;
+
+            foreach (Item other in m_Items)
+            {
+                if (other != it &&
+                    other.Model == it.Model &&
+                    other.CanStackMore &&
+                    !other.IsEquipped)
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Gets smallest stack this item can be destacked from.
         /// </summary>
-        /// <param name="it"></param>
-        /// <returns></returns>
         Item GetBestDestackable(Item it)
         {
             if (!it.Model.IsStackable)
@@ -362,6 +377,63 @@ namespace djack.RogueSurvivor.Data
             return m_Items.Contains(it);
         }
 
+        // alpha10
+        /// <summary>
+        /// Defragment the inventory : consolidate smaller stacks into bigger ones. 
+        /// Improves AI inventory management, not meant for the player as it can change the inventory and confuses him.
+        /// TODO -- Maybe later add a special "defrag" command for the player to the interface, players would probably
+        /// like to be able to merge stacks too.
+        /// Don't abuse it, nice O^2...
+        /// </summary>
+        public void Defrag()
+        {
+            int countEmptyStacksToRemove;
+
+            // iterate over all stackable items to see if we can "steal" quantity from other stacks.
+            // since we iterate from left to right and steal from the right, the leftmost stacks will always be
+            // the biggest one.
+            countEmptyStacksToRemove = 0;
+            int n = m_Items.Count;
+            for (int i = 0; i < n; i++)
+            {
+                Item mergeWith = m_Items[i];
+                if (mergeWith.Quantity > 0 && mergeWith.CanStackMore)
+                {
+                    for (int j = i + 1; j < n && mergeWith.CanStackMore; j++)
+                    {
+                        Item stealFrom = m_Items[j];
+                        if (stealFrom.Model == mergeWith.Model && stealFrom.Quantity > 0)
+                        {
+                            int steal = Math.Min(mergeWith.Model.StackingLimit - mergeWith.Quantity, stealFrom.Quantity);
+                            mergeWith.Quantity += steal;
+                            stealFrom.Quantity -= steal;
+                            if (stealFrom.Quantity <= 0)
+                                countEmptyStacksToRemove++;
+                        }
+                    }
+                }
+            }
+
+            // some smaller stacks might now be empty, delete them now.
+            if (countEmptyStacksToRemove > 0)
+            {
+                int i = 0;
+                do
+                {
+                    if (m_Items[i].Quantity <= 0)
+                    {
+                        --countEmptyStacksToRemove;
+                        m_Items.RemoveAt(i);
+                    }
+                    else
+                        i++;
+                }
+                while (i < m_Items.Count && countEmptyStacksToRemove > 0);
+            }
+        }
+        #endregion
+
+        #region Helpers
         public Item GetFirstByModel(ItemModel model)
         {
             foreach (Item it in m_Items)
@@ -406,9 +478,7 @@ namespace djack.RogueSurvivor.Data
                     return it;
             return null;
         }
-        #endregion
 
-        #region Helpers
         public int CountItemsMatching(Predicate<Item> fn)
         {
             int count = 0;
@@ -422,6 +492,73 @@ namespace djack.RogueSurvivor.Data
             foreach (Item it in m_Items)
                 if (fn(it)) return true;
             return false;
+        }
+
+        // alpha10 below here
+
+        public Item GetSmallestStackByType(Type tt, bool allowZeroQuantity = false)
+        {
+            Item smallest = null;
+            int smallestQuantity = 0;
+
+            foreach (Item it in m_Items)
+                if (it.GetType() == tt)
+                {
+                    int q = it.Quantity;
+                    if (smallest == null || (q < smallestQuantity && (allowZeroQuantity || q > 0)))
+                    {
+                        smallest = it;
+                        smallestQuantity = q;
+                    }
+                }
+
+            return smallest;
+        }
+
+        public Item GetSmallestStackByModel(ItemModel m, bool allowZeroQuantity = false)
+        {
+            Item smallest = null;
+            int smallestQuantity = 0;
+
+            foreach (Item it in m_Items)
+                if (it.Model == m)
+                {
+                    int q = it.Quantity;
+                    if (smallest == null || (q < smallestQuantity && (allowZeroQuantity || q > 0)))
+                    {
+                        smallest = it;
+                        smallestQuantity = q;
+                    }
+                }
+
+            return smallest;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>never null</returns>
+        public List<Item> Filter(Predicate<Item> fn)
+        {
+            List<Item> list = new List<Item>(m_Items.Count);
+            foreach (Item it in m_Items)
+                if (fn(it)) list.Add(it);
+            return list;
+        }
+
+        public void ForEach(Action<Item> fn)
+        {
+            foreach (Item it in m_Items)
+                fn(it);
+        }
+        #endregion
+
+        #region Pre-saving
+        // alpha10
+        public void OptimizeBeforeSaving()
+        {
+            foreach (Item it in m_Items)
+                it.OptimizeBeforeSaving();
         }
         #endregion
     }

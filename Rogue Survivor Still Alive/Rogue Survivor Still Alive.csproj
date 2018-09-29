@@ -168,6 +168,7 @@
     <Compile Include="Engine\Actions\ActionMeleeAttack.cs" />
     <Compile Include="Engine\Actions\ActionMoveStep.cs" />
     <Compile Include="Engine\Actions\ActionOpenDoor.cs" />
+    <Compile Include="Engine\Actions\ActionPull.cs" />
     <Compile Include="Engine\Actions\ActionPush.cs" />
     <Compile Include="Engine\Actions\ActionRangedAttack.cs" />
     <Compile Include="Engine\Actions\ActionRechargeItemBattery.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Engine\Actions\ActionSay.cs" />
     <Compile Include="Engine\Actions\ActionShout.cs" />
     <Compile Include="Engine\Actions\ActionSleep.cs" />
+    <Compile Include="Engine\Actions\ActionSprayOdorSuppressor.cs" />
     <Compile Include="Engine\Actions\ActionStartDragCorpse.cs" />
     <Compile Include="Engine\Actions\ActionStopDragCorpse.cs" />
     <Compile Include="Engine\Actions\ActionSwitchPlace.cs" />
@@ -267,6 +269,7 @@
     <Compile Include="Gameplay\AI\SewersThingAI.cs" />
     <Compile Include="Gameplay\AI\SkeletonAI.cs" />
     <Compile Include="Gameplay\AI\SoldierAI.cs" />
+    <Compile Include="Gameplay\AI\Tools\RouteFinder.cs" />
     <Compile Include="Gameplay\AI\ZombieAI.cs" />
     <Compile Include="Gameplay\GameActors.cs" />
     <Compile Include="Gameplay\GameFactions.cs" />
@@ -274,6 +277,7 @@
     <Compile Include="Gameplay\GameImages.cs" />
     <Compile Include="Gameplay\GameItems.cs" />
     <Compile Include="Gameplay\GameMusics.cs" />
+    <Compile Include="Gameplay\GameAmbients.cs" />
     <Compile Include="Gameplay\GameSounds.cs" />
     <Compile Include="Gameplay\GameTiles.cs" />
     <Compile Include="Gameplay\GameTips.cs" />
@@ -316,6 +320,9 @@
     <Content Include="openal32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Images\Activities\following_leader.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Images\Actors\Decoration\female_on_fire.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -328,16 +335,76 @@
     <Content Include="Resources\Images\Actors\Decoration\zombie_on_fire.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Images\Icons\is_in_group.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Icons\is_targeting.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Icons\odor_suppressed.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Icons\trap_activated_safe_group.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Icons\trap_activated_safe_player.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Icons\trap_triggered_safe_group.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Icons\trap_triggered_safe_player.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Icons\zgrab.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\icons_legend.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Images\Items\item_vegetables.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Images\Items\item_vegetable_seeds.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Images\MapObjects\picket_fence.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Images\Tiles\Decoration\rat_zombie_remains.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Images\Tiles\floor_planted.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_center.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_east-edge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_ne-corner.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_north-edge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_nw-corner.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_se-corner.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_south-edge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_sw-corner.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_water_cover.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Tiles\floor_pond_west-edge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="SFML.NET license.txt">
@@ -722,7 +789,7 @@
     <Content Include="Resources\Music\RS - Post mortem.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Music\RS - Reincarnate.ogg">
+    <Content Include="Resources\Sfx\RS - Reincarnate.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Music\RS - Roguedjack Theme Song.ogg">
@@ -989,10 +1056,10 @@
     <Content Include="Resources\Sfx\break_glassdoor_player.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\rain_inside_looped.ogg">
+    <Content Include="Resources\Ambients\rain_inside_looped.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\rain_outside_looped.ogg">
+    <Content Include="Resources\Ambients\rain_outside_looped.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sfx\bash_metaldoor_nearby.ogg">
@@ -1023,6 +1090,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sfx\push_wooden_object_visible.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\RS - Surface.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Ambients\helicopter_flyover.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Music\Black Ops.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -1528,9 +1604,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Images\Icons\scent_living.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Images\Icons\scent_living_supressor.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Images\Icons\scent_zm.png">

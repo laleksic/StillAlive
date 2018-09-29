@@ -49,13 +49,16 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     base.ActorPlace(m_DiceRoller, maxTries, map, civilian, (pt) => map.GetTileAt(pt.X, pt.Y).IsInside);
                 }
             }
-            // dogs
+
+            // alpha 10 dogs entirely disabled for now, much more work to do on them.
+            /*// dogs
             for (int i = 0; i < RogueGame.Options.MaxDogs; i++)
             {
                 // feral.
                 Actor dog = CreateNewFeralDog(0);
                 base.ActorPlace(m_DiceRoller, maxTries, map, dog, (pt) => !map.GetTileAt(pt.X, pt.Y).IsInside);
-            }
+            }*/
+
 #if true
             // start with day zero nb of undeads.
             int nbUndeads = (RogueGame.Options.MaxUndeads * RogueGame.Options.DayZeroUndeadsPercent) / 100;

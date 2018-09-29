@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 
 using djack.RogueSurvivor.Data;
@@ -99,11 +98,15 @@ namespace djack.RogueSurvivor.Engine
         #region Weapons & Firing
         public const int MELEE_WEAPON_BREAK_CHANCE = 1;
         public const int MELEE_WEAPON_FRAGILE_BREAK_CHANCE = 25; //@@MP - upped from 3 to make fragility realistic (Release 4)
+        public const int MELEE_DISARM_BASE_CHANCE = 5;  // alpha10
         public const int FIREARM_JAM_CHANCE_NO_RAIN = 1;
         public const int FIREARM_JAM_CHANCE_RAIN = 3;
-        const int FIRE_DISTANCE_VS_RANGE_MODIFIER = 2;
+        //const int FIRE_DISTANCE_VS_RANGE_MODIFIER = 2; // alpha 10 removed
         const float FIRING_WHEN_STA_TIRED = 0.75f;     // -25%
         const float FIRING_WHEN_STA_NOT_FULL = 0.90f;  // -10%
+        // alpha10 made into constants
+        const float FIRING_WHEN_SLP_EXHAUSTED = 0.50f; // -50%
+        const float FIRING_WHEN_SLP_SLEEPY = 0.75f; // -25%
         #endregion
 
         #region Body armors
@@ -125,6 +128,7 @@ namespace djack.RogueSurvivor.Engine
         public const int SANITY_NIGHTMARE_CHANCE = 2;
         public const int SANITY_NIGHTMARE_SLP_LOSS = 2 * WorldTime.TURNS_PER_HOUR;
         public const int SANITY_NIGHTMARE_SAN_LOSS = WorldTime.TURNS_PER_HOUR;
+        public const int SANITY_NIGHTMARE_STA_LOSS = 10 * STAMINA_COST_RUNNING;  // alpha10 -- worth running for 10 turns
         public const int SANITY_INSANE_ACTION_CHANCE = 5;
 
         public const int SANITY_HIT_BUTCHERING_CORPSE = WorldTime.TURNS_PER_HOUR;
@@ -134,9 +138,11 @@ namespace djack.RogueSurvivor.Engine
         public const int SANITY_HIT_ZOMBIFY = 2 * WorldTime.TURNS_PER_HOUR;
         public const int SANITY_HIT_BOND_DEATH = 8 * WorldTime.TURNS_PER_HOUR;
 
-        public const int SANITY_RECOVER_KILL_UNDEAD = 3 * WorldTime.TURNS_PER_HOUR; //@@MP vanilla = 2*, Staying Alive = 3*
+        public const int SANITY_RECOVER_KILL_UNDEAD = 3 * WorldTime.TURNS_PER_HOUR; //@@MP vanilla = 2*, Staying Alive = 3*, alpha 10 = 3*
         public const int SANITY_RECOVER_BOND_CHANCE = 5;
-        public const int SANITY_RECOVER_BOND = WorldTime.TURNS_PER_HOUR;
+        public const int SANITY_RECOVER_BOND = 4 * WorldTime.TURNS_PER_HOUR;  //alpha 10. was 1h
+        public const int SANITY_RECOVER_CHAT_OR_TRADE = 3 * WorldTime.TURNS_PER_HOUR; //alpha 10 added
+        // alpha10 increased san recovery; chating & trading also recover san
 
         /// <summary>
         /// When starving, chance of dying from starvation each turn.
@@ -206,10 +212,12 @@ namespace djack.RogueSurvivor.Engine
         public const int IMPROVED_WEAPONS_FROM_BROKEN_WOOD_CHANCE = 25;
         #endregion
 
+        /* alpha10 replaced with rapid fire attacks property of ranged weapons
         #region Rapid fire
-        public const float RAPID_FIRE_FIRST_SHOT_ACCURACY = 0.50f;
-        public const float RAPID_FIRE_SECOND_SHOT_ACCURACY = 0.30f;
+        public const float RAPID_FIRE_FIRST_SHOT_ACCURACY = 0.70f;  // alpha9 was 0.50f;
+        public const float RAPID_FIRE_SECOND_SHOT_ACCURACY = 0.50f;  // alpha9 was 0.30f;
         #endregion
+        */
 
         #region Trackers
         public const int ZTRACKINGRADIUS = 6;
@@ -286,52 +294,59 @@ namespace djack.RogueSurvivor.Engine
         public const int GIVE_RARE_ITEM_CHANCE = 5;
         #endregion
 
+        #region Traps // alpha10
+        public const int TRAP_UNDEAD_ACTOR_TRIGGER_PENALTY = 30;
+        public const int TRAP_SMALL_ACTOR_AVOID_BONUS = 90;
+        #endregion
+
         #region Skills limits & bonuses per level
-        public static int UPGRADE_SKILLS_TO_CHOOSE_FROM = 5;
-        public static int UNDEAD_UPGRADE_SKILLS_TO_CHOOSE_FROM = 2;
+        public const int UPGRADE_SKILLS_TO_CHOOSE_FROM = 5; //alpha 10, was static
+        public const int UNDEAD_UPGRADE_SKILLS_TO_CHOOSE_FROM = 2; //alpha 10, was static
 
         /**
-         * All these values are default ones, pre-modding.
+         * Here down are only defaults. Actual skill values will be read from Skills.csv so they are not const.
          */
+        // alpha10 updated default values to their current values in Skills.csv, was confusing.
         #region Livings
 
         public static int SKILL_AGILE_ATK_BONUS = 2;
-        public static int SKILL_AGILE_DEF_BONUS = 2;
+        public static int SKILL_AGILE_DEF_BONUS = 4;
 
-        public static float SKILL_AWAKE_SLEEP_BONUS = 0.15f;
-        public static float SKILL_AWAKE_SLEEP_REGEN_BONUS = 0.20f;
+        public static float SKILL_AWAKE_SLEEP_BONUS = 0.10f;
+        public static float SKILL_AWAKE_SLEEP_REGEN_BONUS = 0.15f;
 
-        public static int SKILL_BOWS_ATK_BONUS = 5;
-        public static int SKILL_BOWS_DMG_BONUS = 2;
+        public static int SKILL_BOWS_ATK_BONUS = 10;
+        public static int SKILL_BOWS_DMG_BONUS = 4;
 
-        public static float SKILL_CARPENTRY_BARRICADING_BONUS = 0.20f;
+        public static float SKILL_CARPENTRY_BARRICADING_BONUS = 0.15f;
         public static int SKILL_CARPENTRY_LEVEL3_BUILD_BONUS = 1;
 
-        public static int SKILL_CHARISMATIC_TRUST_BONUS = 1;
+        public static int SKILL_CHARISMATIC_TRUST_BONUS = 2;
         public static int SKILL_CHARISMATIC_TRADE_BONUS = 10;
 
-        public static int SKILL_FIREARMS_ATK_BONUS = 5;
+        public static int SKILL_FIREARMS_ATK_BONUS = 10;
         public static int SKILL_FIREARMS_DMG_BONUS = 2;
 
         public static int SKILL_HARDY_HEAL_CHANCE_BONUS = 1;
 
         public static int SKILL_HAULER_INV_BONUS = 1;
 
-        public static int SKILL_HIGH_STAMINA_STA_BONUS = 5;
+        public static int SKILL_HIGH_STAMINA_STA_BONUS = 8;
 
         public static int SKILL_LEADERSHIP_FOLLOWER_BONUS = 1;
 
-        public static float SKILL_LIGHT_EATER_FOOD_BONUS = 0.20f;
-        public static float SKILL_LIGHT_EATER_MAXFOOD_BONUS = 0.15f;
+        public static float SKILL_LIGHT_EATER_FOOD_BONUS = 0.15f;
+        public static float SKILL_LIGHT_EATER_MAXFOOD_BONUS = 0.10f;
 
-        public static int SKILL_LIGHT_FEET_TRAP_BONUS = 5;
+        public static int SKILL_LIGHT_FEET_TRAP_BONUS = 15; // alpha 10, was 5
 
-        public static int SKILL_LIGHT_SLEEPER_WAKEUP_CHANCE_BONUS = 10;
+        public static int SKILL_LIGHT_SLEEPER_WAKEUP_CHANCE_BONUS = 20; // alpha 10, was 10
 
-        public static int SKILL_MARTIAL_ARTS_ATK_BONUS = 3;
-        public static int SKILL_MARTIAL_ARTS_DMG_BONUS = 1;
+        public static int SKILL_MARTIAL_ARTS_ATK_BONUS = 6;
+        public static int SKILL_MARTIAL_ARTS_DMG_BONUS = 2;
+        public static int SKILL_MARTIAL_ARTS_DISARM_BONUS = 10;  // alpha10
 
-        public static float SKILL_MEDIC_BONUS = 0.20f;
+        public static float SKILL_MEDIC_BONUS = 0.30f;
         public static int SKILL_MEDIC_REVIVE_BONUS = 10;
         public static int SKILL_MEDIC_LEVEL_FOR_REVIVE_EST = 1;
 
@@ -345,13 +360,14 @@ namespace djack.RogueSurvivor.Engine
 
         public static int SKILL_STRONG_DMG_BONUS = 2;
         public static int SKILL_STRONG_THROW_BONUS = 1;
+        public static int SKILL_STRONG_RESIST_DISARM_BONUS = 5;  // alpha10
 
-        public static int SKILL_TOUGH_HP_BONUS = 3;
+        public static int SKILL_TOUGH_HP_BONUS = 6;
 
-        public static int SKILL_UNSUSPICIOUS_BONUS = 25;
+        public static int SKILL_UNSUSPICIOUS_BONUS = 25;  // alpha 10 made it 20, but was 25 in-code, 15 Skills.csv
 
-        public static int UNSUSPICIOUS_BAD_OUTFIT_PENALTY = 50;
-        public static int UNSUSPICIOUS_GOOD_OUTFIT_BONUS = 50;
+        public static int UNSUSPICIOUS_BAD_OUTFIT_PENALTY = 75;  // alpha10 ; prev was 50
+        public static int UNSUSPICIOUS_GOOD_OUTFIT_BONUS = 75; // alpha10 ; prev was 50
 
         #endregion
 
@@ -369,9 +385,9 @@ namespace djack.RogueSurvivor.Engine
 
         public static int SKILL_ZLIGHT_FEET_TRAP_BONUS = 3;
 
-        public static int SKILL_ZGRAB_CHANCE = 2;
+        public static int SKILL_ZGRAB_CHANCE = 4; // alpha 10, was 2
 
-        public static float SKILL_ZINFECTOR_BONUS = 0.10f;
+        public static float SKILL_ZINFECTOR_BONUS = 0.15f;
 
         public static float SKILL_ZLIGHT_EATER_FOOD_BONUS = 0.10f;
         public static float SKILL_ZLIGHT_EATER_MAXFOOD_BONUS = 0.15f;
@@ -872,7 +888,7 @@ namespace djack.RogueSurvivor.Engine
                 }
                 // fine!
             }
-            else if (it is ItemSprayScent)
+            /*else if (it is ItemSprayScent) // alpha10 changed way to use spray scent
             {
                 ItemSprayScent spray = it as ItemSprayScent;
                 // can't if empty.
@@ -882,7 +898,7 @@ namespace djack.RogueSurvivor.Engine
                     return false;
                 }
                 // fine!
-            }
+            }*/
             else if (it is ItemTrap)
             {
                 ItemTrap trap = it as ItemTrap;
@@ -899,7 +915,7 @@ namespace djack.RogueSurvivor.Engine
                     reason = "not intelligent";
                     return false;
                 }
-                if (actor.IsBoredOf(it))
+                if ((it as ItemEntertainment).IsBoringFor(actor)) // alpha10 boring items item centric
                 {
                     reason = "bored by this";
                     return false;
@@ -1030,7 +1046,7 @@ namespace djack.RogueSurvivor.Engine
             /////////////////////////////////
 
             // 1. Target is enemy.
-            if (IsEnemyOf(actor, target))
+            if (AreEnemies(actor, target))
             {
                 reason = "enemy";
                 return false;
@@ -1060,6 +1076,71 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
+        // alpha10
+        public bool CanActorSprayOdorSuppressor(Actor actor, ItemSprayScent suppressor, Actor sprayOn)
+        {
+            string reason;
+            return CanActorSprayOdorSuppressor(actor, suppressor, sprayOn, out reason);
+        }
+
+        // alpha10
+        public bool CanActorSprayOdorSuppressor(Actor actor, ItemSprayScent suppressor, Actor sprayOn, out string reason)
+        {
+            if (actor == null)
+                throw new ArgumentNullException("actor","null actor");
+            if (suppressor == null)
+                throw new ArgumentNullException("suppressor","null suppressor");
+            if (sprayOn == null)
+                throw new ArgumentNullException("sprayon","null target");
+
+            ////////////////////////////////////////////////////////
+            // Cant if any is true:
+            // 1. Actor cannot use items
+            // 2. Not an odor suppressor
+            // 3. Spray is not equiped by actor or has no spray left.
+            // 4. SprayOn is not self or adjacent.
+            ////////////////////////////////////////////////////////
+
+            // 1. Actor cannot use items
+            if (!actor.Model.Abilities.CanUseItems)
+            {
+                reason = "cannot use items";
+                return false;
+            }
+
+            // 2. Not an odor suppressor
+            if (suppressor.Odor != Odor.SUPPRESSOR)
+            {
+                reason = "not an odor suppressor";
+                return false;
+            }
+
+            // 2. Spray is not equiped by actor or has no spray left.
+            if (suppressor.SprayQuantity <= 0)
+            {
+                reason = "no spray left";
+                return false;
+            }
+            if (!(suppressor.IsEquipped && (actor.Inventory != null && actor.Inventory.Contains(suppressor))))
+            {
+                reason = "spray not equipped";
+                return false;
+            }
+
+            // 3. SprayOn is not self or adjacent.
+            if (sprayOn != actor)
+            {
+                if (!(actor.Location.Map == sprayOn.Location.Map && IsAdjacent(actor.Location.Position, sprayOn.Location.Position)))
+                {
+                    reason = "not adjacent";
+                    return false;
+                }
+            }
+
+            // all clear.
+            reason = "";
+            return true;
+        }
         #endregion
 
         #region Movement/Melee
@@ -1339,7 +1420,7 @@ namespace djack.RogueSurvivor.Engine
             if (targetActor != null)
             {
                 // attacking?
-                if (IsEnemyOf(actor, targetActor))
+                if (AreEnemies(actor, targetActor))
                 {
                     if (CanActorMeleeAttack(actor, targetActor, out reason))
                         return new ActionMeleeAttack(actor, game, targetActor);
@@ -1634,7 +1715,7 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            if (IsEnemyOf(speaker, target))
+            if (AreEnemies(speaker, target))
             {
                 reason = "is an enemy";
                 return false;
@@ -1965,7 +2046,7 @@ namespace djack.RogueSurvivor.Engine
         }
         #endregion
 
-        #region Pushing objects & Shoving actors
+        #region Pushing/Pulling objects & Shoving actors
         public bool HasActorPushAbility(Actor actor)
         {
             return actor.Model.Abilities.CanPush || 
@@ -1993,6 +2074,7 @@ namespace djack.RogueSurvivor.Engine
             // 3. Map obj is not movable.
             // 4. Another actor there.
             // 5. Map obj is on fire.
+            // 6. Actor is dragging a corpse.  // alpha10
             //////////////////////////////
 
             // 1. Actor cannot push/pull.
@@ -2030,7 +2112,14 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // all clear
+            // 6. Actor is dragging a corpse.  // alpha10
+            if (actor.DraggedCorpse != null)
+            {
+                reason = "dragging a corpse";
+                return false;
+            }
+
+            // otherwise all clear
             reason = "";
             return true;
         }
@@ -2087,6 +2176,66 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
+        // alpha10
+        public bool CanPullObject(Actor actor, MapObject mapObj, Point toPos)
+        {
+            string reason;
+            return CanPullObject(actor, mapObj, toPos, out reason);
+        }
+
+        // alpha10
+        public bool CanPullObject(Actor actor, MapObject mapObj, Point moveToPos, out string reason)
+        {
+            /////////////////////////////////////////////
+            // Basically check if can push and can walk.
+            // 1. Actor cannot push.
+            // 2. Another object already there.
+            // 3. Actor cannot walk to pos.
+            /////////////////////////////////////////////
+
+            // 1. Actor cannot push this object.
+            if (!CanActorPush(actor, mapObj, out reason))
+                return false;
+
+            // 2. Another object already there. eg: actor standing on a bed.
+            MapObject otherMobj = actor.Location.Map.GetMapObjectAt(actor.Location.Position);
+            if (otherMobj != null)
+            {
+                reason = string.Format("{0} is blocking", otherMobj.TheName);
+                return false;
+            }
+
+            // 3. Actor cannot walk to pos.
+            if (!IsWalkableFor(actor, new Location(actor.Location.Map, moveToPos), out reason))
+                return false;
+
+            // all clear
+            reason = "";
+            return true;
+        }
+
+        // alpha10
+        public bool CanPullActor(Actor actor, Actor other, Point moveToPos, out string reason)
+        {
+            /////////////////////////////////////////////
+            // Basically check if can push and can walk.
+            // 1. Actor cannot shove.
+            // 2. Actor cannot walk to pos.
+            /////////////////////////////////////////////
+
+            // 1. Actor cannot shove.
+            if (!CanActorShove(actor, other, out reason))
+                return false;
+
+            // 3. Actor cannot walk to pos.
+            if (!IsWalkableFor(actor, new Location(actor.Location.Map, moveToPos), out reason))
+                return false;
+
+            // all clear
+            reason = "";
+            return true;
+        }
+
         public bool CanActorShove(Actor actor, Actor other, out string reason)
         {
             if (actor == null)
@@ -2098,6 +2247,7 @@ namespace djack.RogueSurvivor.Engine
             // Not "shovable"
             // 1. Actor cannot push/pull.
             // 2. Actor is tired.
+            // 3. Actor is dragging corpse  // alpha10
             ///////////////////////////////
 
             // 1. Actor cannot push/pull.
@@ -2114,10 +2264,17 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
+            // 3. Actor is dragging corpse  // alpha10
+            if (actor.DraggedCorpse != null)
+            {
+                reason = "dragging a corpse";
+                return false;
+            }
+
             // FIXME: in theory, should test if tile is walkable for the pusher. in practice, assume if other can walk here, we can too...
             //        this will cause problems in zombie mode (eg: undead player pushing living down from a car = move on the car...)
 
-            // all clear
+            // otherwise all clear
             reason = "";
             return true;
         }
@@ -2133,6 +2290,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Not walkable.
             // 3. Unwalkable object.
             // 4. An actor there.
+            // 5. Actor is dragging corpse  // alpha10
             ///////////////////////////
 
             Map map = actor.Location.Map;
@@ -2166,7 +2324,14 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // all clear.
+            // 5. Actor is dragging corpse  // alpha10
+            if (actor.DraggedCorpse != null)
+            {
+                reason = "dragging a corpse";
+                return false;
+            }
+
+            // otherwise all clear.
             reason = "";
             return true;
         }
@@ -2195,7 +2360,7 @@ namespace djack.RogueSurvivor.Engine
                     continue;
                 if (other == actor)
                     continue;
-                if (!IsEnemyOf(actor, other))
+                if (!AreEnemies(actor, other))
                     continue;
 
                 if (list == null)
@@ -2471,6 +2636,13 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
+            // 5. Is in water
+            if (actor.Location.Map.GetTileAt(actor.Location.Position).Model.IsWater) //@@MP (Release 6-1)
+            {
+                reason = "can't sleep in water";
+                return false;
+            }
+
             // all clear.
             reason = "";
             return true;
@@ -2537,7 +2709,7 @@ namespace djack.RogueSurvivor.Engine
                 reason = "undead";
                 return false;
             }
-            if (IsEnemyOf(actor, target))
+            if (AreEnemies(actor, target))
             {
                 reason = "enemy";
                 return false;
@@ -3175,24 +3347,126 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Actors relations
-        public bool IsEnemyOf(Actor actor, Actor target)
+        // alpha10 refactored and rewrote
+        /// <summary>
+        /// Check if both actors are enemies.
+        /// - enemy factions
+        /// - enemy gangs
+        /// - personal enemies
+        /// - group enemies (if checkGroups)
+        /// Symetrical, don't need to call for actorB,actorA.
+        /// </summary>
+        /// <param name="actor">usually initiator of action</param>
+        /// <param name="actorB">usually target of action</param>
+        /// <param name="checkGroups"></param>
+        public bool AreEnemies(Actor actorA, Actor actorB, bool checkGroups = true)
         {
-            if (actor == null || target == null)
+            if (actorA == null || actorB == null)
+                return false;
+            if (actorA == actorB)  // alpha10 silly fix
                 return false;
 
-            // Enemy factions?
-            if (actor.Faction.IsEnemyOf(target.Faction))
+            // Enemy factions? (symetrical)
+            if (actorA.Faction.IsEnemyOf(actorB.Faction))
                 return true;
 
-            // Enemy gangs?
-            if (actor.Faction == target.Faction && actor.IsInAGang && target.IsInAGang && actor.GangID != target.GangID)
+            // Enemy gangs? (symetrical)
+            if (actorA.Faction == actorB.Faction && actorA.IsInAGang && actorB.IsInAGang && actorA.GangID != actorB.GangID)
                 return true;
 
-            // Personal enemies?
-            if (actor.AreDirectEnemies(target) || actor.AreIndirectEnemies(target))
+            // alpha10 
+            // Personal enemies? (symetrical)
+            if (ArePersonalEnemies(actorA, actorB))
+                return true;
+
+            // alpha10
+            // Enemy of groups (symetrical)
+            if (checkGroups && AreGroupEnemies(actorA, actorB))
                 return true;
 
             // Not enemies.
+            return false;
+        }
+
+        /// <summary>
+        /// Check if they are in an agressor-selfdefence reliation.
+        /// Symetrical, don't need to call for actorB,actorA.
+        /// </summary>
+        /// <param name="actorA"></param>
+        /// <param name="actorB"></param>
+        /// <returns></returns>
+        public static bool ArePersonalEnemies(Actor actorA, Actor actorB) //alpha10 //@@MP made static (Release 6-1)
+        {
+            if (actorA == null || actorB == null)
+                return false;
+            if (actorA == actorB)
+                return false;
+
+            if (actorA.IsAggressorOf(actorB))
+                return true;
+
+            if (actorA.IsSelfDefenceFrom(actorB))
+                return true;
+
+            // doesnt need to check for target as the relation is symetrical (aggressor of <-> self defence from)
+            return false;
+        }
+
+        /// <summary>
+        /// Check if they are enmemies through group relations : 
+        /// - my leader enemies are my enemies
+        /// - my mates enemies are my enemies.
+        /// - my follower enemies are my enemies.
+        /// Symetrical, don't need to call for actorB,actorA.
+        /// </summary>
+        /// <param name="actorA"></param>
+        /// <param name="actorB"></param>
+        /// <returns></returns>
+        public bool AreGroupEnemies(Actor actorA, Actor actorB) //alpha10
+        {
+            if (actorA == null || actorB == null)
+                return false;
+            if (actorA == actorB)
+                return false;
+
+            // my leader enemies are my enemies.
+            // my mates enemies are my enemies.
+            bool IsEnemyOfMyLeaderOrMates(Actor groupActor, Actor target)
+            {
+                if (AreEnemies(groupActor.Leader, target, false))
+                    return true;
+                foreach (Actor mate in groupActor.Leader.Followers)
+                    if (mate != groupActor && AreEnemies(mate, target, false))
+                        return true;
+                return false;
+            }
+
+            // my followers enemies are my enemies
+            bool IsEnemyOfMyFollowers(Actor groupActor, Actor target)
+            {
+                foreach (Actor follower in groupActor.Followers)
+                    if (AreEnemies(follower, target, false))
+                        return true;
+                return false;
+            }
+
+            // check A group
+            if (actorA.HasLeader)
+                if (IsEnemyOfMyLeaderOrMates(actorA, actorB))
+                    return true;
+            if (actorA.CountFollowers > 0)
+                if (IsEnemyOfMyFollowers(actorA, actorB))
+                    return true;
+
+            // check B group
+            if (actorB.HasLeader)
+                if (IsEnemyOfMyLeaderOrMates(actorB, actorA))
+                    return true;
+            if (actorB.CountFollowers > 0)
+                if (IsEnemyOfMyFollowers(actorB, actorA))
+                    return true;
+
+            // nope
             return false;
         }
 
@@ -3285,7 +3559,6 @@ namespace djack.RogueSurvivor.Engine
             return baseValue + skillBonus;
         }
 
-
         public int ActorSanRegenValue(Actor actor, int baseValue)
         {
             int skillBonus = (int)(baseValue * SKILL_STRONG_PSYCHE_ENT_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.STRONG_PSYCHE));
@@ -3345,10 +3618,12 @@ namespace djack.RogueSurvivor.Engine
             return SKILL_NECROLOGY_UNDEAD_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.NECROLOGY);
         }
 
-        public Attack ActorMeleeAttack(Actor actor, Attack baseAttack, Actor target)
+        // alpha10 added mapobject param
+        public Attack ActorMeleeAttack(Actor actor, Attack baseAttack, Actor target, MapObject objToBreak = null)
         {
             float hit = baseAttack.HitValue;
             float dmg = baseAttack.DamageValue;
+            int disarmBonus = 0;  // alpha10
 
             // skills bonuses.
             int hitBonus = SKILL_AGILE_ATK_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.AGILE) +
@@ -3358,24 +3633,53 @@ namespace djack.RogueSurvivor.Engine
             // martial arts apply only if no weapon equipped.
             if (actor.GetEquippedWeapon() == null)
             {
-                hitBonus += SKILL_MARTIAL_ARTS_ATK_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MARTIAL_ARTS);
-                dmgBonus += SKILL_MARTIAL_ARTS_DMG_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MARTIAL_ARTS);
+                int ma = actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MARTIAL_ARTS); //alpha 10 revised
+                if (ma > 0)
+                {
+                    hitBonus += SKILL_MARTIAL_ARTS_ATK_BONUS * ma;
+                    dmgBonus += SKILL_MARTIAL_ARTS_DMG_BONUS * ma;
+                    disarmBonus += SKILL_MARTIAL_ARTS_DISARM_BONUS * ma;
+                }
             }
+
             // necrology vs undeads.
             if (target != null && target.Model.Abilities.IsUndead)
                 dmgBonus += ActorDamageBonusVsUndeads(actor);
 
+            // add tool damage bonus vs map objects // alpha10
+            if (objToBreak != null)
+            {
+                ItemMeleeWeapon eqMw = actor.GetEquippedMeleeWeapon();
+                if (eqMw != null)
+                {
+                    dmgBonus += eqMw.ToolBashDamageBonus;
+                }
+            }
+
             hit += hitBonus;
             dmg += dmgBonus;
 
-            // sleepiness penalties.
+            // disarm chance. // alpha10
+            float disarmChance = MELEE_DISARM_BASE_CHANCE;
+            disarmChance += disarmBonus;
+            // defender strong resist disarm
+            if (target != null)
+                disarmChance -= SKILL_STRONG_RESIST_DISARM_BONUS * target.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.STRONG);
+
+            // sleepiness penalties. // alpha 10 added disarm chance
             if (IsActorExhausted(actor))
+            {
                 hit /= 2f;
+                disarmChance /= 2f;
+            }
             else if (IsActorSleepy(actor))
+            {
                 hit *= 3f / 4f;
+                disarmChance *= 3f / 4f;
+            }
 
             // done.
-            return new Attack(baseAttack.Kind, baseAttack.Verb, (int)hit, (int)dmg, baseAttack.StaminaPenalty);
+            return Attack.MeleeAttack(baseAttack.Verb, (int)hit, (int)dmg, baseAttack.StaminaPenalty, (int)disarmChance);
         }
 
         public Attack ActorRangedAttack(Actor actor, Attack baseAttack, int distance, Actor target)
@@ -3400,31 +3704,85 @@ namespace djack.RogueSurvivor.Engine
                 dmgBonus += ActorDamageBonusVsUndeads(actor);
 
             // distance vs range penalties/bonus.
-            int efficientRange = (int)baseAttack.EfficientRange;
+            int efficientRange = baseAttack.EfficientRange;
+            // alpha10 distance as % modifier instead of flat bonus
+            float distanceMod = 1;
             if (distance != efficientRange)
             {
-                int dRange = efficientRange - distance;
-                hitMod += dRange * FIRE_DISTANCE_VS_RANGE_MODIFIER;
+                float distanceScale = (efficientRange - distance) / (float)baseAttack.Range;
+                // bigger effect (penalty) beyond efficient range
+                if (distance > efficientRange)
+                    distanceScale *= 2;
+
+                distanceMod = 1 + distanceScale;
             }
 
-            float hit = baseAttack.HitValue + hitMod;
             float dmg = baseAttack.DamageValue + dmgBonus;
+            //alpha 10 - added distance and Rapid Fire shots
+            float hit = (baseAttack.HitValue + hitMod) * distanceMod;
+            float rapidHit1 = (baseAttack.Hit2Value + hitMod) * distanceMod;
+            float rapidHit2 = (baseAttack.Hit3Value + hitMod) * distanceMod;
 
             // sleep penalty.
-            if (IsActorExhausted(actor))
-                hit /= 2f;
-            else if (IsActorSleepy(actor))
-                hit *= 3f / 4f;
+            if (IsActorSleepy(actor))
+            {
+                hit *= FIRING_WHEN_SLP_SLEEPY;
+                rapidHit1 *= FIRING_WHEN_SLP_SLEEPY;
+                rapidHit2 *= FIRING_WHEN_SLP_SLEEPY;
+            }
+            else if (IsActorExhausted(actor))
+            {
+                hit *= FIRING_WHEN_SLP_EXHAUSTED;
+                rapidHit1 *= FIRING_WHEN_SLP_EXHAUSTED;
+                rapidHit2 *= FIRING_WHEN_SLP_EXHAUSTED;
+            }
 
             // stamina penalty.
-            if (IsActorTired(actor))
-                hit *= FIRING_WHEN_STA_TIRED;
-            else if (actor.StaminaPoints < ActorMaxSTA(actor))
+            if (actor.StaminaPoints < ActorMaxSTA(actor))
+            {
                 hit *= FIRING_WHEN_STA_NOT_FULL;
+                rapidHit1 *= FIRING_WHEN_STA_NOT_FULL;
+                rapidHit2 *= FIRING_WHEN_STA_NOT_FULL;
+            }
+            else if (IsActorTired(actor))
+            {
+                hit *= FIRING_WHEN_STA_TIRED;
+                rapidHit1 *= FIRING_WHEN_STA_TIRED;
+                rapidHit2 *= FIRING_WHEN_STA_TIRED;
+            }
 
             // return attack.
-            return new Attack(baseAttack.Kind, baseAttack.Verb, (int)hit, (int)dmg,
-                baseAttack.StaminaPenalty, baseAttack.Range);
+            return Attack.RangedAttack(baseAttack.Kind, baseAttack.Verb, (int)hit, (int)rapidHit1, (int)rapidHit2, (int)dmg, baseAttack.Range);
+        }
+
+        /// <summary>
+        /// Estimate chances to hit with a ranged attack. <br></br>
+        /// Simulate a large number of rolls attack vs defence and returns % of hits.
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="target"></param>
+        /// <param name="shotCounter">0 for normal shot, 1 for 1st rapid fire shot, 2 for 2nd rapid fire shot</param>
+        /// <returns>[0..100]</returns>
+        public int ComputeChancesRangedHit(Actor actor, Actor target, int shotCounter) // alpha10
+        {
+            Attack attack = ActorRangedAttack(actor, actor.CurrentRangedAttack, GridDistance(actor.Location.Position, target.Location.Position), target);
+            Defence defence = ActorDefence(target, target.CurrentDefence);
+
+            int hitValue = (shotCounter == 0 ? attack.HitValue : shotCounter == 1 ? attack.Hit2Value : attack.Hit3Value);
+            int defValue = defence.Value;
+
+            const int ROLLS = 1000;
+            int hits = 0;
+            for (int i = 0; i < ROLLS; i++)
+            {
+                int atkRoll = RollSkill(hitValue);
+                int defRoll = RollSkill(defValue);
+                if (atkRoll > defRoll)
+                    hits++;
+            }
+
+            int percent = (100 * hits) / ROLLS;
+            return percent;
         }
 
         public int ActorMaxThrowRange(Actor actor, int baseRange)
@@ -3469,7 +3827,19 @@ namespace djack.RogueSurvivor.Engine
 
         public int ActorBarricadingPoints(Actor actor, int baseBarricadingPoints)
         {
-            int barBonus = (int)(baseBarricadingPoints * SKILL_CARPENTRY_BARRICADING_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CARPENTRY));
+            int barBonus = 0;
+
+            // carpentry skill
+            barBonus += (int)(baseBarricadingPoints * SKILL_CARPENTRY_BARRICADING_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CARPENTRY));
+
+            // alpha10
+            // tool build bonus
+            ItemMeleeWeapon eqMw = actor.GetEquippedMeleeWeapon();
+            if (eqMw != null && eqMw.ToolBuildBonus != 0)
+            {
+                barBonus += (int)(baseBarricadingPoints * eqMw.ToolBuildBonus);
+            }
+
             return baseBarricadingPoints + barBonus;
         }
 
@@ -3641,10 +4011,37 @@ namespace djack.RogueSurvivor.Engine
 
             return MURDERER_SPOTTING_BASE_CHANCE + spotterBonus - distancePenalty;
         }
+
+#if false
+        // alpha10  previous attempt
+        // FIXME -- needing to pass game as arg is uggly. shouldnt be any reference to game in rules but we need to
+        // call an ai method...
+        public int ScoreNpcItemTradeValue(RogueGame game, Actor npc, Item it, bool fromNpcInventory, Actor otherTrader)
+        {
+            // base score
+            int score = (npc.Controller as BaseAI).ScoreItemValue(game, it, fromNpcInventory);
+
+            // modify by respective charismatic skills
+            // a charismatic actor will make the opposing trader over-estimate the actor items.
+            int addScore = 0;
+            if (fromNpcInventory)
+                addScore = (score * npc.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CHARISMATIC) * SKILL_CHARISMATIC_TRADE_BONUS) / 100;
+            else
+                addScore = (score * otherTrader.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CHARISMATIC) * SKILL_CHARISMATIC_TRADE_BONUS) / 100;
+    
+            score += addScore;
+
+            return score;
+        }
+#endif
         #endregion
 
         #region Day/Night, Weather & Lighting effects
-        static int NightFovPenalty(Actor actor, WorldTime time) //@@MP - made static (Release 5-7)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>penalty as number > 0</returns>
+        public int NightFovPenalty(Actor actor, WorldTime time) //@@MP can't be static
         {
             if (actor.Model.Abilities.IsUndead)
                 return 0;
@@ -3670,7 +4067,11 @@ namespace djack.RogueSurvivor.Engine
                 return NIGHT_STA_PENALTY;
         }
 
-        static int WeatherFovPenalty(Actor actor, Weather weather) //@@MP - made static (Release 5-7)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>penalty as number > 0</returns>
+        public int WeatherFovPenalty(Actor actor, Weather weather) //@@MP - can't be static
         {
             if (actor.Model.Abilities.IsUndead)
                 return 0;
@@ -3699,12 +4100,72 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        int DarknessFov(Actor actor)
+        public int DarknessFov(Actor actor) //alpha 10 made public
         {
             if (actor.Model.Abilities.IsUndead)
                 return actor.Sheet.BaseViewRange;
             else
                 return MINIMAL_FOV;
+        }
+
+        public int OdorsDecay(Map map, Point pos, Weather weather) //alpha 10 //@@MP can't be static
+        {
+            int decay;
+
+            // base decay
+            decay = 1;
+
+            // sewers?
+            if (map == map.District.SewersMap)
+            {
+                decay += 2;
+            }
+            // outside? = weather affected.
+            else if (!map.GetTileAt(pos).IsInside)  // alpha10 weather affect only outside tiles
+            {
+                switch (weather)
+                {
+                    case Weather.CLEAR:
+                    case Weather.CLOUDY:
+                        // default decay.
+                        break;
+                    case Weather.RAIN:
+                        decay += 1;
+                        break;
+                    case Weather.HEAVY_RAIN:
+                        decay += 2;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("weather","unhandled weather");
+                }
+            }
+
+            return decay;
+        }
+
+        public bool CanActorSeeSky(Actor actor) //alpha 10 //@@MP can't be static
+        {
+            if (actor.IsDead)
+                return false;
+            if (actor.IsSleeping)
+                return false;
+            return actor.Location.Map.Lighting == Lighting.OUTSIDE;
+        }
+
+        public bool CanActorKnowTime(Actor actor) //@@MP can't be static
+        {
+            if (actor.IsDead)
+                return false;
+            if (actor.IsSleeping)
+                return false;
+            if (actor.Location.Map.Lighting == Lighting.OUTSIDE)
+                return true;
+
+            ItemTracker eqTracker = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemTracker;
+            if (eqTracker != null && eqTracker.HasClock && eqTracker.Batteries > 0)
+                return true;
+
+            return false;
         }
         #endregion
 
@@ -3867,7 +4328,7 @@ namespace djack.RogueSurvivor.Engine
         {
             if (!CanActorReviveCorpse(actor, corpse))
                 return 0;
-            int baseChance = CorpseFreshnessPercent(corpse) / 2;
+            int baseChance = CorpseFreshnessPercent(corpse) / 2; //@@MP - alpha 10 made this 4, but I think a higher chance is better, to keep the skill from being useless
             int skillBonus = actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MEDIC) * SKILL_MEDIC_REVIVE_BONUS;
             return baseChance + skillBonus;
         }
@@ -3881,27 +4342,37 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Traps
+        public int GetTrapTriggerChance(ItemTrap trap, Actor a) // alpha10 //@@MP can't be static
+        {
+            // owners never trigger their own trap
+            if (trap.Owner == a)
+                return 0;
+
+            int baseChance;
+            int avoidBonus;
+
+            baseChance = trap.TrapModel.TriggerChance * trap.Quantity;
+
+            avoidBonus = 0;
+            if (a.Model.Abilities.IsUndead)
+                avoidBonus -= TRAP_UNDEAD_ACTOR_TRIGGER_PENALTY;
+            if (a.Model.Abilities.IsSmall)
+                avoidBonus += TRAP_SMALL_ACTOR_AVOID_BONUS;
+            avoidBonus += a.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LIGHT_FEET) * SKILL_LIGHT_FEET_TRAP_BONUS;
+            avoidBonus += a.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.Z_LIGHT_FEET) * SKILL_ZLIGHT_FEET_TRAP_BONUS;
+
+            return baseChance - avoidBonus;
+        }
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="trap"></param>
-        /// <param name="a"></param>
         /// <returns>true if trap triggers</returns>
-        public bool CheckTrapTriggers(ItemTrap trap, Actor a)
+        public bool CheckTrapTriggers(ItemTrap trap, Actor actor)
         {
-            // small actors 90% chance to avoid.
-            if (a.Model.Abilities.IsSmall)
-            {
-                if (RollChance(90)) return false;
-            }
-
-            // trigger?
-            int avoidBonus = 0;
-
-            avoidBonus += a.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LIGHT_FEET) * SKILL_LIGHT_FEET_TRAP_BONUS
-                + a.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.Z_LIGHT_FEET) * SKILL_ZLIGHT_FEET_TRAP_BONUS;
-
-            return RollChance(trap.TrapModel.TriggerChance * trap.Quantity - avoidBonus);
+            // alpha10 extracted (to GetTrapTriggerChance()) and modified trigger chance formula
+            int chance = GetTrapTriggerChance(trap, actor);
+            return chance > 0 ? RollChance(chance) : false;
         }
 
         public bool CheckTrapTriggers(ItemTrap trap, MapObject mobj)
@@ -3929,12 +4400,26 @@ namespace djack.RogueSurvivor.Engine
 
         public bool CheckTrapEscape(ItemTrap trap, Actor a)
         {
+            // alpha10
+            if (IsSafeFromTrap(trap, a))
+                return true;
+
             int escapeBonus = 0;
 
             escapeBonus += a.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LIGHT_FEET) * SKILL_LIGHT_FEET_TRAP_BONUS
                 + a.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.Z_LIGHT_FEET) * SKILL_ZLIGHT_FEET_TRAP_BONUS;
 
             return RollChance(escapeBonus + (100 - trap.TrapModel.BlockChance * trap.Quantity));
+        }
+
+        // alpha10
+        public bool IsSafeFromTrap(ItemTrap trap, Actor a) //@@MP can't be static
+        {
+            if (trap.Owner == null)
+                return false;
+            if (trap.Owner == a)
+                return true;
+            return a.IsInGroupWith(trap.Owner);
         }
 
         public bool IsTrapCoveringMapObjectThere(Map map, Point pos)

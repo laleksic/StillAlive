@@ -52,7 +52,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             Percept nearestEnemy = FilterNearest(game, FilterEnemies(game, mapPercepts));
             if (nearestEnemy != null)
             {
-                ActorAction bumpAction = BehaviorStupidBumpToward(game, nearestEnemy.Location.Position);
+                ActorAction bumpAction = BehaviorStupidBumpToward(game, nearestEnemy.Location.Position, true, false);
                 if (bumpAction != null)
                 {
                     m_Actor.Activity = Activity.CHASING;

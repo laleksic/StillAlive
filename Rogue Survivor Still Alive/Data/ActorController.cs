@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using djack.RogueSurvivor.Engine;
 
@@ -12,6 +9,10 @@ namespace djack.RogueSurvivor.Data
     {
         #region Fields
         protected Actor m_Actor;
+        #endregion
+
+        #region Properties
+        public Actor ControlledActor { get { return m_Actor; } } // alpha10
         #endregion
 
         #region Taking control

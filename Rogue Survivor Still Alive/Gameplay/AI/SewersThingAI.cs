@@ -73,7 +73,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         float distance = game.Rules.GridDistance(m_Actor.Location.Position, enemyP.Location.Position);
                         if (distance < closest)
                         {
-                            ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position);
+                            ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position, true, true);
                             if (bumpAction != null)
                             {
                                 closest = distance;
@@ -104,7 +104,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         float distance = game.Rules.GridDistance(m_Actor.Location.Position, enemyP.Location.Position);
                         if (distance < closest)
                         {
-                            ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position);
+                            ActorAction bumpAction = BehaviorStupidBumpToward(game, enemyP.Location.Position, true, true);
                             if (bumpAction != null)
                             {
                                 closest = distance;

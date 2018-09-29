@@ -37,6 +37,12 @@ namespace djack.RogueSurvivor.Engine.Items
             get { return (this.Tracking & ItemTrackerModel.TrackingFlags.POLICE_FACTION) != 0; }
         }
 
+        // alpha10
+        public bool HasClock
+        {
+            get { return (this.Model as ItemTrackerModel).HasClock; }
+        }
+
         public int Batteries 
         {
             get { return m_Batteries; }

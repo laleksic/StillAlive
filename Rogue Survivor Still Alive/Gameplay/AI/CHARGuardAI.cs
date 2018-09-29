@@ -9,6 +9,7 @@ using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Engine.Actions;
 using djack.RogueSurvivor.Engine.AI;
 using djack.RogueSurvivor.Gameplay.AI.Sensors;
+using djack.RogueSurvivor.Gameplay.AI.Tools; //alpha 10
 
 namespace djack.RogueSurvivor.Gameplay.AI
 {
@@ -55,6 +56,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
         {
             List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
+            // alpha10
+            // don't run by default.
+            m_Actor.IsRunning = false;
+
+            // 0. Equip best item
+            ActorAction bestEquip = BehaviorEquipBestItems(game, true, true);
+            if (bestEquip != null)
+            {
+                return bestEquip;
+            }
+            // end alpha10
+
             // 1. Follow order
             #region
             if (this.Order != null)
@@ -72,8 +85,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             ///////////////////////////////////////
             // 0 run away from primed explosives (and fires //@@MP (Release 5-2)).
-            // 1 equip weapon
-            // 2 equip armor
+            // alpha10 OBSOLETE 1 equip weapon
+            // alpha10 OBSOLETE 2 equip armor
             // 3 fire at nearest enemy.
             // 4 hit adjacent enemy.
             // 5 warn trepassers.
@@ -112,24 +125,22 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 1 equip weapon
-            #region
-            ActorAction equipWpnAction = BehaviorEquipWeapon(game);
-            if (equipWpnAction != null)
-            {
-                m_Actor.Activity = Activity.IDLE;
-                return equipWpnAction;
-            }
-            #endregion
+            #region alpha 10 OBSOLETE
+            //// 1 equip weapon
+            //ActorAction equipWpnAction = BehaviorEquipWeapon(game);
+            //if (equipWpnAction != null)
+            //{
+            //    m_Actor.Activity = Activity.IDLE;
+            //    return equipWpnAction;
+            //}
 
-            // 2 equip armor
-            #region
-            ActorAction equipArmAction = BehaviorEquipBodyArmor(game);
-            if (equipArmAction != null)
-            {
-                m_Actor.Activity = Activity.IDLE;
-                return equipArmAction;
-            }
+            //// 2 equip armor
+            //ActorAction equipArmAction = BehaviorEquipBestBodyArmor(game);
+            //if (equipArmAction != null)
+            //{
+            //    m_Actor.Activity = Activity.IDLE;
+            //    return equipArmAction;
+            //}
             #endregion
 
             // 3 fire at nearest enemy.
@@ -162,7 +173,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 //Actor targetActor = nearestEnemy.Percepted as Actor;
 
                 // fight or flee?
-                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, true, ActorCourage.COURAGEOUS, FIGHT_EMOTES); //@@MP - unused parameter (Release 5-7)
+                RouteFinder.SpecialActions allowedChargeActions = RouteFinder.SpecialActions.JUMP | RouteFinder.SpecialActions.DOORS; // alpha10
+                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, true, ActorCourage.COURAGEOUS, FIGHT_EMOTES, allowedChargeActions); //@@MP - unused parameter (Release 5-7), alpha 10 added allowedChargeActions
                 if (fightOrFlee != null)
                 {
                     return fightOrFlee;
@@ -180,6 +192,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     Actor other = (p.Percepted as Actor);
                     if (other.Faction == game.GameFactions.TheCHARCorporation)
                         return false;
+
+                    // alpha10 bug fix only if visible right now!
+                    if (p.Turn != m_Actor.Location.Map.LocalTime.TurnCounter)
+                        return false;
+
                     return game.IsInCHARProperty(other.Location);
                 });
                 if (trespassers != null)
@@ -191,7 +208,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                     m_Actor.Activity = Activity.FIGHTING;
                     m_Actor.TargetActor = trespasser;
-                    return new ActionSay(m_Actor, game, trespasser, "Hey YOU!", RogueGame.Sayflags.IS_IMPORTANT);
+                    return new ActionSay(m_Actor, game, trespasser, "Hey YOU!", RogueGame.Sayflags.IS_IMPORTANT | RogueGame.Sayflags.IS_DANGER);
                 }
             }
             #endregion
@@ -201,10 +218,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             //@@MP - try to wake nearby friends when there's a fire (Release 5-2)
             if (nonEnemies != null)
             {
+                Map map = m_Actor.Location.Map; //@@MP (Release 6-1)
                 HashSet<Point> FOV = m_LOSSensor.FOV;
                 foreach (Point p in FOV)
                 {
-                    if (Map.IsAnyTileFireThere(m_Actor.Location.Map, p))
+                    if (map.IsAnyTileFireThere(m_Actor.Location.Map, p))
                     {
                         // shout
                         ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, nonEnemies);
@@ -255,13 +273,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     chasePercept = new Percept(chasedActor, m_Actor.Location.Map.LocalTime.TurnCounter, chasedActor.Location);
                 }
 
-                // chase.
-                ActorAction chargeAction = BehaviorChargeEnemy(game, chasePercept);
-                if (chargeAction != null)
+                // alpha10 chase only if reachable
+                if (CanReachSimple(game, chasePercept.Location.Position, RouteFinder.SpecialActions.DOORS | RouteFinder.SpecialActions.JUMP))
                 {
-                    m_Actor.Activity = Activity.FIGHTING;
-                    m_Actor.TargetActor = chasePercept.Percepted as Actor;
-                    return chargeAction;
+                    // chase.
+                    ActorAction chargeAction = BehaviorChargeEnemy(game, chasePercept, false, false);
+                    if (chargeAction != null)
+                    {
+                        m_Actor.Activity = Activity.FIGHTING;
+                        m_Actor.TargetActor = chasePercept.Percepted as Actor;
+                        return chargeAction;
+                    }
                 }
             }
             #endregion

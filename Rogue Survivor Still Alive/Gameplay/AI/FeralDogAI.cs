@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 
 using djack.RogueSurvivor.Data;
@@ -8,17 +7,20 @@ using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Engine.Actions;
 using djack.RogueSurvivor.Engine.AI;
 using djack.RogueSurvivor.Gameplay.AI.Sensors;
-
+using djack.RogueSurvivor.Gameplay.AI.Tools;
 
 namespace djack.RogueSurvivor.Gameplay.AI
 {
+    /// <summary>
+    /// alpa10 this unused for now
+    /// </summary>
     [Serializable]
     class FeralDogAI : BaseAI
     {
         #region Constants
         const int FOLLOW_NPCLEADER_MAXDIST = 1;
         const int FOLLOW_PLAYERLEADER_MAXDIST = 1;
-
+        const int RUN_TO_TARGET_DISTANCE = 3;  // dogs run to their target when close enough
 
         static string[] FIGHT_EMOTES = 
         {
@@ -49,71 +51,38 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
-            //HashSet<Point> fov = m_LOSSensor.FOV; //@@MP - unused (Release 5-7)
-            List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
+            HashSet<Point> fov = m_LOSSensor.FOV;
+            List<Percept> mapPercepts = FilterSameMap(percepts);
 
             //////////////////////////////////////////////////////////////
-            // 0 run away from fires or alert sleeping friends //@@MP (Release 5-2)).
             // 1 defend our leader.
             // 2 attack or flee enemies.
             // 3 go eat food on floor if almost hungry
             // 4 go eat corpses if hungry
-            // 5 sleep
+            // 5 rest or sleep
             // 6 follow leader
             // 7 wander
             /////////////////////////////////////////////////////////////
 
-            // 0 run away from fires or alert sleeping friends //@@MP (Release 5-2)
-            #region
-            ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
-            if (runFromFires != null)
-            {
-                m_Actor.Activity = Activity.FLEEING;
-                return runFromFires;
-            }
-            
-            //@@MP - try to wake nearby friends when there's a fire (Release 5-2)
-            List<Percept> friends = FilterNonEnemies(game, mapPercepts);
-            if (friends != null)
-            {
-                HashSet<Point> FOV = m_LOSSensor.FOV;
-                foreach (Point p in FOV)
-                {
-                    if (Map.IsAnyTileFireThere(m_Actor.Location.Map, p))
-                    {
-                        // shout
-                        ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, friends, "WOOF! WOOF! WOOF!");
-                        if (shoutAction != null)
-                        {
-                            m_Actor.Activity = Activity.FLEEING;
-                            return shoutAction;
-                        }
-                    }
-                }
-            }
-            #endregion
-
             // 1 defend our leader
-            #region
             if (m_Actor.HasLeader)
             {
                 Actor target = m_Actor.Leader.TargetActor;
                 if(target != null && target.Location.Map == m_Actor.Location.Map)
                 {
                     // emote: bark
-                    game.DoSay(m_Actor, target, "GRRRRRR!", RogueGame.Sayflags.IS_FREE_ACTION);
+                    game.DoSay(m_Actor, target, "GRRRRRR WAF WAF", RogueGame.Sayflags.IS_FREE_ACTION | RogueGame.Sayflags.IS_DANGER);
                     // charge.
-                    ActorAction chargeEnemy = BehaviorStupidBumpToward(game, target.Location.Position);
+                    ActorAction chargeEnemy = BehaviorStupidBumpToward(game, target.Location.Position, true, false);
                     if (chargeEnemy != null)
                     {
-                        m_Actor.IsRunning = true; // always run!
+                        RunToIfCloseTo(game, target.Location.Position, RUN_TO_TARGET_DISTANCE);
                         m_Actor.Activity = Activity.FIGHTING;
                         m_Actor.TargetActor = target;
                         return chargeEnemy;
                     }
                 }
             }
-            #endregion
 
             List<Percept> enemies = FilterEnemies(game, mapPercepts);
             bool isLeaderVisible = m_Actor.HasLeader && m_LOSSensor.FOV.Contains(m_Actor.Leader.Location.Position);
@@ -123,10 +92,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (enemies != null)
             {
-                ActorAction ff = BehaviorFightOrFlee(game, enemies, isLeaderFighting, Directives.Courage, FIGHT_EMOTES); //@@MP - unused parameter (Release 5-7)
+                RouteFinder.SpecialActions allowedChargeActions = RouteFinder.SpecialActions.JUMP; // alpha10
+                ActorAction ff = BehaviorFightOrFlee(game, enemies, isLeaderVisible, isLeaderFighting, Directives.Courage, FIGHT_EMOTES, allowedChargeActions);
                 if (ff != null)
                 {
-                    m_Actor.IsRunning = true; // always run!
+                    // run to (or away if fleeing) if close.
+                    if (m_Actor.TargetActor != null)
+                        RunToIfCloseTo(game, m_Actor.TargetActor.Location.Position, RUN_TO_TARGET_DISTANCE);
                     return ff;
                 }
             }
@@ -136,13 +108,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.IsAlmostHungry(m_Actor))
             {
-                List<Percept> itemsStack = FilterStacks(mapPercepts); //@@MP - unused parameter (Release 5-7)
+                List<Percept> itemsStack = FilterStacks(mapPercepts);
                 if (itemsStack != null)
                 {
                     ActorAction eatFood = BehaviorGoEatFoodOnGround(game, itemsStack);
                     if (eatFood != null)
                     {
-                        m_Actor.IsRunning = true; // always run!
+                        RunIfPossible(game.Rules);
                         m_Actor.Activity = Activity.IDLE;
                         return eatFood;
                     }
@@ -154,13 +126,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.IsActorHungry(m_Actor))
             {
-                List<Percept> corpses = FilterCorpses(mapPercepts); //@@MP - unused parameter (Release 5-7)
+                List<Percept> corpses = FilterCorpses(mapPercepts);
                 if (corpses != null)
                 {
                     ActorAction eatCorpses = BehaviorGoEatCorpse(game, corpses);
                     if (eatCorpses != null)
                     {
-                        m_Actor.IsRunning = true; // always run!
+                        RunIfPossible(game.Rules);
                         m_Actor.Activity = Activity.IDLE;
                         return eatCorpses;
                     }
@@ -168,8 +140,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 5 sleep
+            // 5 rest or sleep
             #region
+            if (game.Rules.IsActorTired(m_Actor))
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return new ActionWait(m_Actor, game);
+            }
             if (game.Rules.IsActorSleepy(m_Actor))
             {
                 m_Actor.Activity = Activity.SLEEPING;
@@ -186,7 +163,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction followAction = BehaviorFollowActor(game, m_Actor.Leader, lastKnownLeaderPosition, isLeaderVisible, maxDist);
                 if (followAction != null)
                 {
-                    m_Actor.IsRunning = true; // always run!
+                    m_Actor.IsRunning = false;
                     m_Actor.Activity = Activity.FOLLOWING;
                     m_Actor.TargetActor = m_Actor.Leader;
                     return followAction;
@@ -197,6 +174,25 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 7 wander
             m_Actor.Activity = Activity.IDLE;
             return BehaviorWander(game);
+        }
+
+        private static ActorAction BehaviorFightOrFlee(RogueGame game, List<Percept> enemies, bool isLeaderVisible, bool isLeaderFighting, ActorCourage courage, string[] fIGHT_EMOTES, RouteFinder.SpecialActions allowedChargeActions)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region Dogs specifics
+        protected void RunToIfCloseTo(RogueGame game, Point pos, int closeDistance)
+        {
+            if (game.Rules.GridDistance(m_Actor.Location.Position, pos) <= closeDistance)
+            {
+                m_Actor.IsRunning = game.Rules.CanActorRun(m_Actor);
+            }
+            else
+            {
+                m_Actor.IsRunning = false;
+            }
         }
         #endregion
     }

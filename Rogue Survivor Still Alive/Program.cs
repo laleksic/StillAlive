@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using System.Globalization;
-
-using djack.RogueSurvivor.Engine;
 
 namespace djack.RogueSurvivor
 {
@@ -38,10 +34,10 @@ namespace djack.RogueSurvivor
                 // Debug mode : don't catch exceptions, I want to debug them (optionally catch them)
                 // Release mode : catch exceptions cleanly and report.
 #if DEBUG
-                /*try
-                {*/
+                try
+                {
                     Application.Run(form);
-                /*}
+                }
                 catch (Exception e)
                 {
                     using (Bugreport report = new Bugreport(e))
@@ -49,7 +45,7 @@ namespace djack.RogueSurvivor
                         report.ShowDialog();
                     }
                     Application.Exit();
-                }*/
+                }
 #else
                 try
                 {

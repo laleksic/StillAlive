@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;
 using System.IO;
 
@@ -375,6 +374,7 @@ namespace djack.RogueSurvivor.Gameplay
             s = data[(int)IDs.MARTIAL_ARTS];
             Rules.SKILL_MARTIAL_ARTS_ATK_BONUS = (int)s.VALUE1;
             Rules.SKILL_MARTIAL_ARTS_DMG_BONUS = (int)s.VALUE2;
+            Rules.SKILL_MARTIAL_ARTS_DISARM_BONUS = (int)s.VALUE3; // alpha 10
 
             s = data[(int)IDs.MEDIC];
             Rules.SKILL_MEDIC_BONUS = s.VALUE1;

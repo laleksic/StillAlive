@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace djack.RogueSurvivor.Engine
 {
@@ -10,6 +7,9 @@ namespace djack.RogueSurvivor.Engine
         #region Properties
         public bool IsAudioEnabled { get; set; } //@@MP renamed (Release 2)
         public int Volume { get; set; }
+        // alpha10
+        public string Track { get; private set; }
+        public int Priority { get; private set; }
         #endregion
 
         #region Init
@@ -17,18 +17,18 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Loading music
-        public bool Load(string musicname, string filename) { return true;  }
+        public bool Load(string musicname, string filename) { return true; }
 
         public void Unload(string musicname) { }
         #endregion
 
         #region Playing music
 
-        public void Play(string musicname) { }
+        public void Play(string musicname, int priority) { }
 
-        public void PlayIfNotAlreadyPlaying(string musicname) { }
+        public void PlayIfNotAlreadyPlaying(string musicname, int priority) { }
 
-        public void PlayLooping(string musicname) { }
+        public void PlayLooping(string musicname, int priority) { }
 
         public void ResumeLooping(string musicname) { }
 
@@ -38,9 +38,11 @@ namespace djack.RogueSurvivor.Engine
 
         public bool IsPlaying(string musicname) { return false; }
 
-        public bool IsPaused(string musicname) { return false;  }
+        public bool IsPaused(string musicname) { return false; }
 
-        public bool HasEnded(string musicname) { return true;  }
+        public bool HasEnded(string musicname) { return true; }
+
+        public void PlayRandom(IEnumerable<string> playlist, int priority) { } //@@MP (Release 6-1)
         #endregion
 
         #region IDisposable

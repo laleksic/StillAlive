@@ -10,7 +10,7 @@ namespace djack.RogueSurvivor
     {
         //public const string GAME_VERSION = "Still Alive";
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible")]
-        public static string GAME_VERSION = "Still Alive " + System.Windows.Forms.Application.ProductVersion; //@@MP remember to update the Assembly info (Release 1)
+        public static string GAME_VERSION = "Still Alive " + System.Windows.Forms.Application.ProductVersion + " ALPHA"; //@@MP remember to update the Assembly info (Release 1)
 
         public enum eVideo
         {

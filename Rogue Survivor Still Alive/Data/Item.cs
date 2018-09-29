@@ -106,5 +106,9 @@ namespace djack.RogueSurvivor.Data
             m_EquipedPart = DollPart.NONE;
         }
         #endregion
+
+        #region Pre-save
+        public virtual void OptimizeBeforeSaving() { }
+        #endregion
     }
 }

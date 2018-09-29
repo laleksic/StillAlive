@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Engine.Items;
 using djack.RogueSurvivor.Engine.MapObjects;
-using djack.RogueSurvivor.Gameplay;
 using djack.RogueSurvivor.Gameplay.AI;
-using djack.RogueSurvivor.UI;
 
 namespace djack.RogueSurvivor.Gameplay.Generators
 {
@@ -241,6 +237,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             OFFICE
         }
 
+        protected enum HouseOutsideRoomType : byte // alpha10
+        {
+            _FIRST,
+
+            GARDEN = _FIRST,
+            PARKING_LOT,
+
+            _COUNT
+        }
         #endregion
 
         #region Constants
@@ -263,6 +268,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         const int PARK_BENCH_CHANCE = 5;
         const int PARK_ITEM_CHANCE = 5;
         const int PARK_GRAVE_OR_TREE_CHANCE = 33; //@@MP (Release 4)
+        const int PARK_POND_CHANCE = 1000;  // //@@MP - based on alpha 10 (Release 6-1)
+        const int PARK_POND_WIDTH = 5;  // //@@MP (Release 6-1)
+        const int PARK_POND_HEIGHT = 5;  // //@@MP (Release 6-1)
 
         const int MAX_CHAR_GUARDS_PER_OFFICE = 3;
 
@@ -282,6 +290,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         const int HOUSE_BASEMENT_PILAR_CHANCE = 20;
         const int HOUSE_BASEMENT_WEAPONS_CACHE_CHANCE = 20;
         const int HOUSE_BASEMENT_ZOMBIE_RAT_CHANCE = 5; // per tile.
+        // alpha10 new house stuff
+        const int HOUSE_OUTSIDE_ROOM_NEED_MIN_ROOMS = 4;
+        const int HOUSE_OUTSIDE_ROOM_CHANCE = 75;
+        const int HOUSE_GARDEN_TREE_CHANCE = 10;  // per tile
+        const int HOUSE_PARKING_LOT_CAR_CHANCE = 10;  // per tile
 
         const int SHOP_BASEMENT_CHANCE = 30;
         const int SHOP_BASEMENT_SHELF_CHANCE_PER_TILE = 5;
@@ -499,6 +512,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // 7. Objects.
             // 8. Items.
             // 9. Tags.
+            // 10. Music. //alpha 10
             ///////////////////////////////////////////////////
             Map surface = district.EntryMap;
 
@@ -770,6 +784,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 }
             #endregion
 
+            // 10. Music.  // alpha10
+            sewers.BgMusic = GameMusics.SEWERS;
+
             // Done.
             return sewers;
         }
@@ -792,6 +809,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // 3. Small tools room.
             // 4. Tags & Posters almost everywhere.
             // 5. Additional jobs.
+            // 6. Music. //alpha 10
             /////////////////////////////////////
             Map surface = district.EntryMap;
 
@@ -940,12 +958,16 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 }
             #endregion
 
-
             // 5. Additional jobs.
+            #region
             // Mark all the map as inside.
             for (int x = 0; x < subway.Width; x++)
                 for (int y = 0; y < subway.Height; y++)
                     subway.GetTileAt(x, y).IsInside = true;
+            #endregion
+
+            // 6. Music.  // alpha10
+            subway.BgMusic = GameMusics.SUBWAY;
 
             // Done.
             return subway;
@@ -1148,7 +1170,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     if (m_DiceRoller.RollChance(m_Params.WreckedCarChance))
                     {
                         Tile tile = map.GetTileAt(pt.X, pt.Y);
-                        if (!tile.IsInside && tile.Model.IsWalkable && tile.Model != m_Game.GameTiles.FLOOR_GRASS)
+                        if (!tile.IsInside && tile.Model.IsWalkable && tile.Model != m_Game.GameTiles.FLOOR_GRASS && !tile.Model.IsWater) //@@MP - don't put cars in ponds (Release 6-1)
                         {
                             MapObject car = MakeObjWreckedCar(m_DiceRoller);
                             if (m_DiceRoller.RollChance(50))
@@ -1188,7 +1210,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // all clear.
             return false;
         }
-
 
         protected virtual bool MakeShopBuilding(Map map, Block b)
         {
@@ -1473,6 +1494,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                 shopBasement.PlaceActorAt(CreateNewBasementRatZombie(0), pt);
                         }
                     });
+
+                // alpha10 music
+                shopBasement.BgMusic = GameMusics.SEWERS;
 
                 // link maps, stairs in one corner.
                 Point basementCorner = new Point();
@@ -2287,11 +2311,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 case 0:
                 case 1:
-                    nbTables = m_DiceRoller.Roll(Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height), 2 * Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height));
+                    nbTables = m_DiceRoller.Roll(Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height), Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height)); //@@MP - removed the multiplier (Release 6-1)
                     break;
                 case 2:
                 case 3:
-                    nbTables = m_DiceRoller.Roll(Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)), 2 * Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)));
+                    nbTables = m_DiceRoller.Roll(Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)), Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop))); //@@MP - removed the multiplier (Release 6-1)
                     break;
             }
 
@@ -2565,11 +2589,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 case 0:
                 case 1:
-                    nbTables = m_DiceRoller.Roll(Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height), 2 / Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height));
+                    nbTables = m_DiceRoller.Roll(Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height), Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height)); //@@MP - removed multiplier (Release 6-1)
                     break;
                 case 2:
                 case 3:
-                    nbTables = m_DiceRoller.Roll(Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)), 2 / Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)));
+                    nbTables = m_DiceRoller.Roll(Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)), Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop))); //@@MP - removed multiplier (Release 6-1)
                     break;
             }
 
@@ -3602,8 +3626,99 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             map.AddZone(MakeUniqueZone("Park", b.BuildingRect));
             MakeWalkwayZones(map, b);
 
+            ////////////
+            // 6. Pond?  //@@MP - based on alpha 10 shed (Release 6-1)
+            ////////////
+            if (b.InsideRect.Width > PARK_POND_WIDTH + 2 && b.InsideRect.Height > PARK_POND_HEIGHT + 2)
+            {
+                if (m_DiceRoller.RollChance(PARK_POND_CHANCE))
+                {
+                    // roll pond pos - dont put next to park fences!
+                    int pondX = m_DiceRoller.Roll(b.InsideRect.Left + 1, b.InsideRect.Right - PARK_POND_WIDTH);
+                    int pondY = m_DiceRoller.Roll(b.InsideRect.Top + 1, b.InsideRect.Bottom - PARK_POND_HEIGHT);
+                    Rectangle pondRect = new Rectangle(pondX, pondY, PARK_POND_WIDTH, PARK_POND_HEIGHT); //for the edge tiles (a al walls)
+                    Rectangle pondInsideRect = new Rectangle(pondX + 1, pondY + 1, PARK_POND_WIDTH - 2, PARK_POND_HEIGHT - 2); //for the total water tiles (a la floor)
+
+                    // clear everything but zones in pond location
+                    ClearRectangle(map, pondRect, false);
+
+                    // build it
+                    MakeParkPondBuilding(map, "Pond", pondRect);
+                }
+            }
+
             // Done.
             return true;
+        }
+
+        protected virtual void MakeParkPondBuilding(Map map, string baseZoneName, Rectangle pondBuildingRect)  //@@MP - based on alpha 10 shed (Release 6-1)
+        {
+            Rectangle pondInsideRect = new Rectangle(pondBuildingRect.X + 1, pondBuildingRect.Y + 1, pondBuildingRect.Width - 2, pondBuildingRect.Height - 2);
+
+            // build & zone
+            TileFill(map, m_Game.GameTiles.FLOOR_POND_CENTER, pondInsideRect, (tile, prevTileModel, x, y) => tile.IsInside = false); //@@MP made false (Release 6-1)
+            map.AddZone(MakeUniqueZone(baseZoneName, pondInsideRect));
+
+            // place the edges and corners in the right orientation //@@MP - making a pond rather than a shed (Release 6-1)
+            //WEST
+            int westX = pondBuildingRect.Left;
+            int westY = pondBuildingRect.Top;
+            do
+            {
+                if (westY == pondBuildingRect.Bottom - 1) //bottom corner
+                    map.SetTileModelAt(westX, westY, m_Game.GameTiles.FLOOR_POND_SW_CORNER);
+                else if (westY == pondBuildingRect.Top) //top corner
+                    map.SetTileModelAt(westX, westY, m_Game.GameTiles.FLOOR_POND_NW_CORNER);
+                else //not a corner
+                    map.SetTileModelAt(westX, westY, m_Game.GameTiles.FLOOR_POND_W_EDGE);
+
+                westY++;
+            } while (westY <= pondBuildingRect.Bottom - 1);
+
+            //EAST
+            int eastX = pondBuildingRect.Right - 1;
+            int eastY = pondBuildingRect.Top;
+            do
+            {
+                if (eastY == pondBuildingRect.Bottom - 1) //bottom corner
+                    map.SetTileModelAt(eastX, eastY, m_Game.GameTiles.FLOOR_POND_SE_CORNER);
+                else if (eastY == pondBuildingRect.Top) //top corner
+                    map.SetTileModelAt(eastX, eastY, m_Game.GameTiles.FLOOR_POND_NE_CORNER);
+                else //not a corner
+                    map.SetTileModelAt(eastX, eastY, m_Game.GameTiles.FLOOR_POND_E_EDGE);
+
+                eastY++;
+            } while (eastY <= pondBuildingRect.Bottom - 1);
+
+            //NORTH
+            int northX = pondBuildingRect.Left;
+            int northY = pondBuildingRect.Top;
+            do
+            {
+                if (northX == pondBuildingRect.Left) //west corner
+                    map.SetTileModelAt(northX, northY, m_Game.GameTiles.FLOOR_POND_NW_CORNER);
+                else if (northX == pondBuildingRect.Right - 1) //east corner
+                    map.SetTileModelAt(northX, northY, m_Game.GameTiles.FLOOR_POND_NE_CORNER);
+                else //not a corner
+                    map.SetTileModelAt(northX, northY, m_Game.GameTiles.FLOOR_POND_N_EDGE);
+
+                northX++;
+            } while (northX <= pondBuildingRect.Right - 1);
+
+            //SOUTH
+            int southX = pondBuildingRect.Left;
+            int southY = pondBuildingRect.Bottom - 1;
+            do
+            {
+                if (southX == pondBuildingRect.Left) //west corner
+                    map.SetTileModelAt(southX, southY, m_Game.GameTiles.FLOOR_POND_SW_CORNER);
+                else if (southX == pondBuildingRect.Right - 1) //east corner
+                    map.SetTileModelAt(southX, southY, m_Game.GameTiles.FLOOR_POND_SE_CORNER);
+                else //not a corner
+                    map.SetTileModelAt(southX, southY, m_Game.GameTiles.FLOOR_POND_S_EDGE);
+
+                southX++;
+            } while (southX <= pondBuildingRect.Right - 1);
         }
 
         protected virtual bool MakeHousingBuilding(Map map, Block b)
@@ -3630,14 +3745,117 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////
             // 3. Make rooms
             /////////////////
-            foreach (Rectangle roomRect in roomsList)
+            // alpha10 make some housings floor plan non rectangular by randomly chosing not to place one border room
+            // and replace it with a special "outside" room : a garden, a parking lot.
+
+            int iOutsideRoom = -1;
+            HouseOutsideRoomType outsideRoom = HouseOutsideRoomType._FIRST;
+            if (roomsList.Count >= HOUSE_OUTSIDE_ROOM_NEED_MIN_ROOMS && m_DiceRoller.RollChance(HOUSE_OUTSIDE_ROOM_CHANCE))
             {
-                MakeHousingRoom(map, roomRect, m_Game.GameTiles.FLOOR_PLANKS, m_Game.GameTiles.WALL_BRICK);
-                FillHousingRoomContents(map, roomRect);
+                for (; ; )
+                {
+                    iOutsideRoom = m_DiceRoller.Roll(0, roomsList.Count);
+                    Rectangle r = roomsList[iOutsideRoom];
+                    if (r.Left == b.BuildingRect.Left || r.Right == b.BuildingRect.Right || r.Top == b.BuildingRect.Top || r.Bottom == b.BuildingRect.Bottom)
+                        break;
+                }
+                outsideRoom = (HouseOutsideRoomType)m_DiceRoller.Roll((int)HouseOutsideRoomType._FIRST, (int)HouseOutsideRoomType._COUNT);
+            }
+
+            for (int i = 0; i < roomsList.Count; i++)
+            {
+                Rectangle roomRect = roomsList[i];
+                if (iOutsideRoom == i)
+                {
+                    // make sure all tiles are marked as outside
+                    DoForEachTile(roomRect, (pt) => map.GetTileAt(pt).IsInside = false);
+
+                    // then shrink it properly so we dont overlap with tiles from other rooms and mess things up.
+                    if (roomRect.Left != b.BuildingRect.Left)
+                    {
+                        roomRect.X++;
+                        roomRect.Width--;
+                    }
+                    if (roomRect.Right != b.BuildingRect.Right)
+                    {
+                        roomRect.Width--;
+                    }
+                    if (roomRect.Top != b.BuildingRect.Top)
+                    {
+                        roomRect.Y++;
+                        roomRect.Height--;
+                    }
+                    if (roomRect.Bottom != b.BuildingRect.Bottom)
+                    {
+                        roomRect.Height--;
+                    }
+
+                    // then fill the outside room
+                    switch (outsideRoom)
+                    {
+                        case HouseOutsideRoomType.GARDEN:
+                            TileFill(map, m_Game.GameTiles.FLOOR_GRASS, roomRect);
+                            DoForEachTile(roomRect,
+                                (pos) =>
+                                {
+                                    if (map.GetTileAt(pos).Model == m_Game.GameTiles.FLOOR_GRASS && m_DiceRoller.RollChance(HOUSE_GARDEN_TREE_CHANCE))
+                                        map.PlaceMapObjectAt(MakeObjTree(GameImages.OBJ_TREE), pos);
+                                });
+                            break;
+
+                        case HouseOutsideRoomType.PARKING_LOT:
+                            TileFill(map, m_Game.GameTiles.FLOOR_ASPHALT, roomRect);
+                            DoForEachTile(roomRect,
+                                (pos) =>
+                                {
+                                    if (map.GetTileAt(pos).Model == m_Game.GameTiles.FLOOR_ASPHALT && m_DiceRoller.RollChance(HOUSE_PARKING_LOT_CAR_CHANCE))
+                                        map.PlaceMapObjectAt(MakeObjWreckedCar(m_DiceRoller), pos);
+                                });
+                            break;
+                    }
+                }
+                else
+                {
+                    MakeHousingRoom(map, roomRect, m_Game.GameTiles.FLOOR_PLANKS, m_Game.GameTiles.WALL_BRICK);
+                    FillHousingRoomContents(map, roomRect);
+                }
+            }
+
+            // once all rooms are done, enclose the outside room
+            if (iOutsideRoom != -1)
+            {
+                Rectangle roomRect = roomsList[iOutsideRoom];
+                switch (outsideRoom)
+                {
+                    case HouseOutsideRoomType.GARDEN:
+                        DoForEachTile(roomRect,
+                            (pos) =>
+                            {
+                                if ((pos.X == roomRect.Left || pos.X == roomRect.Right - 1 || pos.Y == roomRect.Top || pos.Y == roomRect.Bottom - 1) && map.GetTileAt(pos).Model == m_Game.GameTiles.FLOOR_GRASS)
+                                {
+                                    map.RemoveMapObjectAt(pos.X, pos.Y); // make sure trees are removed
+                                    map.PlaceMapObjectAt(MakeObjWoodenFence(GameImages.OBJ_PICKET_FENCE), pos);
+                                }
+                            });
+                        break;
+
+                    case HouseOutsideRoomType.PARKING_LOT:
+                        DoForEachTile(roomRect,
+                            (pos) =>
+                            {
+                                bool isLotEntry = (pos.X == roomRect.Left + roomRect.Width / 2) || (pos.Y == roomRect.Top + roomRect.Height / 2);
+                                if (!isLotEntry && ((pos.X == roomRect.Left || pos.X == roomRect.Right - 1 || pos.Y == roomRect.Top || pos.Y == roomRect.Bottom - 1) && map.GetTileAt(pos).Model == m_Game.GameTiles.FLOOR_ASPHALT))
+                                {
+                                    map.RemoveMapObjectAt(pos.X, pos.Y); // make sure cars are removed
+                                    map.PlaceMapObjectAt(MakeObjFence(GameImages.OBJ_FENCE), pos);
+                                }
+                            });
+                        break;
+                }
             }
 
             ////////////////////////////
-            // 5. Fix doorless building
+            // 4. Fix door-less building
             ////////////////////////////
             #region
             bool hasOutsideDoor = false;
@@ -3653,29 +3871,44 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 }
             if (!hasOutsideDoor)
             {
-                // replace a random window with a door.
-                do
-                {
-                    // dumb brute force...
-                    int x = m_DiceRoller.Roll(b.BuildingRect.Left, b.BuildingRect.Right);
-                    int y = m_DiceRoller.Roll(b.BuildingRect.Top, b.BuildingRect.Bottom);
-                    if (!map.GetTileAt(x, y).IsInside)
+                // alpha10 list all the exit windows, pick one and replace with a door.
+
+                // list all exit windows
+                List<Point> buildingExits = new List<Point>(8);
+                for (int x = b.BuildingRect.Left; x < b.BuildingRect.Right; x++)
+                    for (int y = b.BuildingRect.Top; y < b.BuildingRect.Bottom; y++)
                     {
-                        DoorWindow door = map.GetMapObjectAt(x, y) as DoorWindow;
-                        if (door != null && door.IsWindow)
+                        if (!map.GetTileAt(x, y).IsInside)
                         {
-                            map.RemoveMapObjectAt(x, y);
-                            map.PlaceMapObjectAt(MakeObjWoodenDoor(), new Point(x, y));
-                            hasOutsideDoor = true;
+                            DoorWindow window = map.GetMapObjectAt(x, y) as DoorWindow;
+                            if (window != null && window.IsWindow)
+                            {
+                                buildingExits.Add(new Point(x, y));
+                            }
                         }
                     }
+
+                // replace an exit window with a door
+                if (buildingExits.Count > 0)
+                {
+                    Point newDoorPos = buildingExits[m_DiceRoller.Roll(0, buildingExits.Count)];
+                    map.RemoveMapObjectAt(newDoorPos.X, newDoorPos.Y);
+                    map.PlaceMapObjectAt(MakeObjWoodenDoor(), newDoorPos);
+                    hasOutsideDoor = true;
                 }
-                while (!hasOutsideDoor);
+
+                // if we did not found an exit window to replace this is a bug, it should never happen.
+                // i'm lazy and assume this never happens and throw an exception.
+                if (hasOutsideDoor == false)
+                {
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "ERROR: house has no exit, should never happen; sector@" + map.District.WorldPosition + " house@" + b.BuildingRect);
+                    throw new InvalidOperationException("house has not exit, should never happen. read the log.");
+                }
             }
             #endregion
 
             ////////////////
-            // 6. Basement?
+            // 5. Basement?
             ////////////////
             #region
             if (m_DiceRoller.RollChance(HOUSE_BASEMENT_CHANCE))
@@ -3686,7 +3919,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             #endregion
 
             ///////////
-            // 7. Zone
+            // 6. Zone
             ///////////
             map.AddZone(MakeUniqueZone("Housing", b.BuildingRect));
             MakeWalkwayZones(map, b);
@@ -4988,12 +5221,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 surfaceStairs.X = m_DiceRoller.Roll(rect.Left, rect.Right);
                 surfaceStairs.Y = m_DiceRoller.Roll(rect.Top, rect.Bottom);
 
-                // valid if walkable & no blocking object.
+                // valid if walkable, inside & no blocking object.
                 if (!map.GetTileAt(surfaceStairs.X,surfaceStairs.Y).Model.IsWalkable)
                     continue;
                 if (map.GetMapObjectAt(surfaceStairs.X, surfaceStairs.Y) != null)
                     continue;
-                
+                if (!map.GetTileAt(surfaceStairs.X, surfaceStairs.Y).IsInside) //alpha 10
+                    continue;
+
                 // good post.
                 break;
             }
@@ -5121,13 +5356,16 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
             #endregion
 
+            // music.  // alpha10
+            basement.BgMusic = GameMusics.SEWERS;
+
             // done.
             return basement;
         }
         #endregion
 
         #region CHAR Underground Facility
-        public Map GenerateUniqueMap_CHARUnderground(Map surfaceMap, Zone officeZone)
+        public Map GenerateUniqueMap_CHARUnderground(Map surfaceMap, Zone officeZone, out Point baseEntryPos) //alpha 10, added baseEntryPos- it's used to mark the CHAR build in City Info
         {
             /////////////////////////
             // 1. Create basic secret map.
@@ -5137,6 +5375,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // 5. Posters & Blood.
             // 6. Populate.
             // 7. Add uniques.
+            // 8. Music.  // alpha10
             /////////////////////////
 
             // 1. Create basic secret map.
@@ -5198,6 +5437,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 // found everything, good!
                 break;
             }
+
+            // remember position // alpha10
+            baseEntryPos = surfaceExit;
 
             // barricade the rooms door.
             DoForEachTile(roomZone.Bounds, //@@MP - unused parameter (Release 5-7)
@@ -5418,7 +5660,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             #region
             #endregion
 
-             // done.
+            // 8. Music.   // alpha10
+            underground.BgMusic = GameMusics.CHAR_UNDERGROUND_FACILITY;
+
+            // done.
             return underground;
         }
 
@@ -5744,6 +5989,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // 4. Generate Jails level (-2).
             Map jailsLevel = GeneratePoliceStation_JailsLevel(officesLevel);
+            
+            // alpha10 music
+            officesLevel.BgMusic = jailsLevel.BgMusic = GameMusics.SURFACE;
 
             // 5. Link maps.
             // surface <-> offices level
@@ -5999,7 +6247,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Rectangle corridor = Rectangle.FromLTRB(1, 1, map.Width, yCells);
             map.AddZone(MakeUniqueZone("cells corridor", corridor));
             // - the switch to open/close the cells.
-            map.PlaceMapObjectAt(MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON), new Point(map.Width - 2, 1));
+            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(map.Width - 3, 1)); //@@MP - added for funneling (Release 6-1)
+            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_BANK_TELLER), new Point(map.Width - 2, 1)); //@@MP - added for blocking (Release 6-1)
+            map.PlaceMapObjectAt(MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON), new Point(map.Width - 2, 2)); //@@MP - moved generator 1 south (Release 6-1)
 
             // 3. Populate.
             // - prisonners in each cell.
@@ -6058,9 +6308,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // 1. Pick a block.
             // 2. Generate surface building.
             // 3. Generate other levels maps.
-            // 5. Link maps.
-            // 6. Add maps to district.
-            // 7. Set unique maps.
+            // 4. Link maps.
+            // 5. Add maps to district.
+            // 6. Set unique maps.
             ////////////////////////////////
 
             // 1. Pick a block.
@@ -6077,7 +6327,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Map storage = GenerateHospital_Storage((map.Seed << 4) ^ map.Seed);
             Map power = GenerateHospital_Power((map.Seed << 5) ^ map.Seed);
 
-            // 5. Link maps.
+            // alpha10 music
+            admissions.BgMusic = offices.BgMusic = patients.BgMusic = storage.BgMusic = power.BgMusic = GameMusics.HOSPITAL;
+
+            // 4. Link maps.
             // entry <-> admissions
             Point entryStairs = new Point(hospitalBlock.InsideRect.Left + hospitalBlock.InsideRect.Width / 2, hospitalBlock.InsideRect.Top);
             Point admissionsUpStairs = new Point(admissions.Width / 2, 1);
@@ -6108,14 +6361,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             AddExit(storage, storageDownStairs, power, powerUpStairs, GameImages.DECO_STAIRS_DOWN, true);
             AddExit(power, powerUpStairs, storage, storageDownStairs, GameImages.DECO_STAIRS_UP, true);
 
-            // 6. Add maps to district.
+            // 5. Add maps to district.
             m_Params.District.AddUniqueMap(admissions);
             m_Params.District.AddUniqueMap(offices);
             m_Params.District.AddUniqueMap(patients);
             m_Params.District.AddUniqueMap(storage);
             m_Params.District.AddUniqueMap(power);
 
-            // 7. Set unique maps.
+            // 6. Set unique maps.
             m_Game.Session.UniqueMaps.Hospital_Admissions = new UniqueMap() { TheMap = admissions };
             m_Game.Session.UniqueMaps.Hospital_Offices = new UniqueMap() { TheMap = offices };
             m_Game.Session.UniqueMaps.Hospital_Patients = new UniqueMap() { TheMap = patients };
@@ -6668,6 +6921,25 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         it.Quantity = it.Model.StackingLimit;
                     map.DropItemAt(it, pt);
                 });
+
+
+            // chance to spawn a nurse             // alpha10 
+            if (m_DiceRoller.RollChance(10))
+            {
+                bool spawnedActor = false;
+                DoForEachTile(room,
+                    (pt) =>
+                    {
+                        if (spawnedActor)
+                            return;
+                        if (!map.IsWalkable(pt))
+                            return;
+                        if (map.GetMapObjectAt(pt) != null)
+                            return;
+                        map.PlaceActorAt(CreateNewHospitalNurse(), pt);
+                        spawnedActor = true;
+                    });
+            }
         }
 
         #endregion
@@ -7043,8 +7315,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             planks.Quantity = m_Game.GameItems.WOODENPLANK.StackingLimit;
             newNat.Inventory.AddAll(planks);
 
-            // skills : carpentry for building small barricades.
-            GiveStartingSkillToActor(newNat, Skills.IDs.CARPENTRY);
+            // starting skills
+            GiveStartingSkillToActor(newNat, Skills.IDs.CARPENTRY); //carpentry for building small barricades.
+            GiveStartingSkillToActor(newNat, Skills.IDs.FIREARMS); //alpha 10
 
             // give skills : 1 per day after min arrival date.
             int nbSkills = new WorldTime(spawnTime).Day - RogueGame.NATGUARD_DAY;

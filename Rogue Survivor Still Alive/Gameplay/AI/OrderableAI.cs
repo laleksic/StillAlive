@@ -117,7 +117,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 2.2 Move closer.
-            ActorAction moveAction = BehaviorIntelligentBumpToward(game, location.Position);
+            ActorAction moveAction = BehaviorIntelligentBumpToward(game, location.Position, false, false);
             if (moveAction != null)
             {
                 RunIfPossible(game.Rules);
@@ -160,7 +160,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 2.2 Move closer.
-            ActorAction moveAction = BehaviorIntelligentBumpToward(game, location.Position);
+            ActorAction moveAction = BehaviorIntelligentBumpToward(game, location.Position, false, false);
             if (moveAction != null)
             {
                 RunIfPossible(game.Rules);
@@ -217,7 +217,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 2. Move to guard position.
             if (m_Actor.Location.Position != location.Position)
             {
-                ActorAction bumpAction = BehaviorIntelligentBumpToward(game, location.Position);
+                ActorAction bumpAction = BehaviorIntelligentBumpToward(game, location.Position, false, false);
                 if (bumpAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
@@ -237,7 +237,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 4. Heal if need to.
-            ActorAction useMedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
+            ActorAction useMedAction = BehaviorUseMedicine(game, 2, 1, 2, 4, 2);
             if (useMedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
@@ -303,7 +303,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 2. Move to patrol position.
             if (!m_ReachedPatrolPoint)
             {
-                ActorAction bumpAction = BehaviorIntelligentBumpToward(game, location.Position);
+                ActorAction bumpAction = BehaviorIntelligentBumpToward(game, location.Position, false, false);
                 if (bumpAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
@@ -323,7 +323,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 4. Heal if need to.
-            ActorAction useMedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
+            ActorAction useMedAction = BehaviorUseMedicine(game, 2, 1, 2, 4, 2);
             if (useMedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
