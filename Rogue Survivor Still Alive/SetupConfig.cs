@@ -28,8 +28,17 @@ namespace djack.RogueSurvivor
             _COUNT
         }
 
+        public enum eWindow //@@MP (Release 5-5)
+        {
+            WINDOW_INVALID,
+            WINDOW_FULLSCREEN,
+            WINDOW_WINDOWED,
+            _COUNT
+        }
+
         public static eVideo Video { get; set; }
         public static eSound Sound { get; set; }
+        public static eWindow Window { get; set; } //@@MP (Release 5-5)
 
         public static string DirPath
         {
@@ -55,6 +64,7 @@ namespace djack.RogueSurvivor
             {
                 sw.WriteLine(toString(SetupConfig.Video));
                 sw.WriteLine(toString(SetupConfig.Sound));
+                sw.WriteLine(toString(SetupConfig.Window)); //@@MP (Release 5-5)
             }
         }
 
@@ -66,15 +76,17 @@ namespace djack.RogueSurvivor
                 {
                     SetupConfig.Video = toVideo(sr.ReadLine());
                     SetupConfig.Sound = toSound(sr.ReadLine());
+                    SetupConfig.Window = toWindow(sr.ReadLine());//@@MP (Release 5-5)
                 }
             }
-            else
+            else //@@MP - defaults for first run
             {
                 if (!Directory.Exists(DirPath))
                     Directory.CreateDirectory(DirPath);
 
                 SetupConfig.Video = eVideo.VIDEO_MANAGED_DIRECTX;
                 SetupConfig.Sound = eSound.SOUND_SFML; //@@MP - changed default to SFML (Release 5-3)
+                SetupConfig.Window = eWindow.WINDOW_FULLSCREEN; //@@MP (Release 5-5)
 
                 Save();
             }
@@ -88,6 +100,11 @@ namespace djack.RogueSurvivor
         public static string toString(eSound s)
         {
             return s.ToString();
+        }
+
+        public static string toString(eWindow w) //@@MP (Release 5-5)
+        {
+            return w.ToString();
         }
 
         public static eVideo toVideo(string s)
@@ -108,6 +125,15 @@ namespace djack.RogueSurvivor
             if (s == eSound.SOUND_NOSOUND.ToString())
                 return eSound.SOUND_NOSOUND;
             return eSound.SOUND_INVALID;
+        }
+
+        public static eWindow toWindow(string w) //@@MP (Release 5-5)
+        {
+            if (w == eWindow.WINDOW_FULLSCREEN.ToString())
+                return eWindow.WINDOW_FULLSCREEN;
+            if (w == eWindow.WINDOW_WINDOWED.ToString())
+                return eWindow.WINDOW_WINDOWED;
+            return eWindow.WINDOW_INVALID;
         }
     }
 }

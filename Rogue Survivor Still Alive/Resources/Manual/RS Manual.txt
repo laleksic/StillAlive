@@ -20,7 +20,7 @@ SLEEP : Z                       WAIT 1 TURN : Numpad 5          WAIT 1 HOUR : W
 CITY INFO : I                   MESSAGES LOG : Shift + M
 FIRE : F                        MARK ENEMIES : E                MAKE MOLOTOVS : M
 CLOSE : C                       USE LADDER/STAIRS : X           USE SPRAY : A
-BREAK : K                       PUSH : P					
+BREAK : K                       PUSH : P					    PLANT SEEDS: J
 BARRICADE : B                   BUILD SMALL FORT. : N           BUILD LARGE FORT : Ctrl + N
 INITIATE TRADE : E              GIVE : G                        SHOUT : S
 LEAD FOLLOWER : L               ORDER FOLLOWER : O              SWITCH PLACE : Ctrl + S
@@ -490,6 +490,11 @@ Press M then the number key that corresponds with the inventory slot containing 
 Press 0 for inventory slot 10. You can now equip and throw the molotov like a grenade (F).
 
 
+> PLANT SEEDS  (default J)
+When you have seeds and a shovel or pickaxe, find some grassy ground and Press J to plant the seeds. Come back the first thing in the morning
+and reap the rewards. But be quick; the early bird gets the worm!
+
+
 > USE SPRAY  (default A)
 Use the spray you have equipped in your left hand. The action depends on the type of spray. See below for the different actions.
 
@@ -635,13 +640,14 @@ Increase the chances for a nearby law enforcer or gang member to ignore you.
 - Barricade Material : reinforce doors and windows; use the barricade action.
 - Body Armor         : reduces damage but can hinder your movements; has a chance to break; use to equip.
 - Food               : use to eat.
-- Light              : see farther in the dark; use to equip.
+- Flashlight         : see farther in the dark; use to equip.
 - Medicines          : use to heal or re-energize.
 - Melee Weapon       : has a chance to break; use to equip.
 - Ranged Weapon      : use to equip; fire action to fire.
   - Firearms         : the best ranged weapons.
   - Bows             : weaker and shorter range but ammunition is more available.
-- Grenades           : have a fuse that last x turns before exploding; fire action to throw.  
+- Seeds              : use a shovel to plant seeds on grassy ground and grow vegetables.
+- Grenades           : have a fuse that last x turns before exploding; fire action to throw. 
 - Spray Paint        : tag places you want to remember; use the tag action.
 - Spray Scent        : neutralize odors, typically to erase your tracks.
 - Tracker            : keep contact with your people; use to equip.
@@ -951,6 +957,7 @@ A simple early strategy to prioritise vital items : food, medikits and protectio
 - Make a base of operations in a shop, pushing shelves to block or open the entrance.
 - Loot items from various buildings and store them in your base.
 - Find a ranged weapon like a rifle or pistol.
+- When food is becoming scarce, grab some seeds and a shovel and plant vegies.
 
 * UNDEAD
 The game is much harder early on; you can die very easily, but you need kills to evolve.

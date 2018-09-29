@@ -569,7 +569,8 @@ namespace djack.RogueSurvivor.Engine
                 // X 2. They're exhausted - MOVED TO RogueGame : DoPlayerBump() (Release 5-3)
                 // X 3. Map object is not a container. - REMOVED, not helpful for the player (Release 5-3)
                 // 4. There is no items there.
-                // 5. Actor cannot take the item.
+                // 5. Inventory is full. //@@MP (Release 5-5)
+                // 6. Actor cannot take the item. (was #5)
                 ////////////////////////////////////
 
                 /* @@MP FIXME: THE FOLLOWING ARE LEFT IN FOR REFERENCE ONLY. CLEAN UP IN THE FUTURE
@@ -603,9 +604,15 @@ namespace djack.RogueSurvivor.Engine
                     return false;
                 }
 
-                // 5. Actor cannot take the item.
-                if (!actor.Model.Abilities.HasInventory || !actor.Model.Abilities.CanUseMapObjects ||
-                    actor.Inventory == null || !CanActorGetItem(actor, invThere.TopItem))
+                // 5. Inventory is full. //@@MP (Release 5-5)
+                if (!CanActorGetItem(actor, invThere.TopItem))
+                {
+                    reason = "your inventory is full";
+                    return false;
+                }
+
+                // 6. Actor cannot take the item. //@@MP - was #5
+                if (!actor.Model.Abilities.HasInventory || !actor.Model.Abilities.CanUseMapObjects || actor.Inventory == null)
                 {
                     reason = "cannot take an item";
                     return false;

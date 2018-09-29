@@ -4544,10 +4544,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeShopGroceryItem()
         {
-            if (m_DiceRoller.RollChance(55))
-                return MakeItemCannedFood();
-            else
-                return MakeItemGroceries();
+            int roll = m_DiceRoller.Roll(0, 3); //@@MP - added vegies and changed roll type (Relase 5-5)
+            switch (roll)
+            {
+                case 0: return MakeItemCannedFood();
+                case 1: return MakeItemGroceries();
+                case 2: return MakeItemVegetables();
+                default:
+                    throw new ArgumentOutOfRangeException("unhandled roll");
+            }
         }
 
         public Item MakeShopPharmacyItem()
@@ -4560,7 +4565,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 2: return MakeItemPillsSLP();
                 case 3: return MakeItemPillsSTA();
                 case 4: //@@MP - if Sanity is disabled generate other (minor) pharmacy items instead (Release 1)
-                    //if (GameOptions.m_SanityGlobal)
                     if (RogueGame.Options.IsSanityEnabled) //@MP - fixed crappy implementation (Release 5-2)
                         return MakeItemPillsSAN();
                     else
@@ -4601,7 +4605,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeShopConstructionItem() //@@MP - split each item into its own single roll (Release 3)
         {
-            int roll = m_DiceRoller.Roll(0, 17);
+            int roll = m_DiceRoller.Roll(0, 18);
             switch (roll)
             {
                 case 0: return MakeItemStandardAxe();
@@ -4621,6 +4625,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 14: return MakeItemShortShovel();
                 case 15: return MakeItemNailGun(); //@@MP (Release 5-1)
                 case 16: return MakeItemNailGunAmmo(); //@@MP (Release 5-1)
+                case 17: return MakeItemVegetableSeeds(); //@@MP (Release 5-5)    
                 default:
                     throw new ArgumentOutOfRangeException("unhandled roll");
             }
@@ -4742,7 +4747,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 2: return MakeItemPillsSLP();
                 case 3: return MakeItemPillsSTA();
                 case 4: //@@MP - if Sanity is disabled generate other (minor) hospital items instead (Release 1)
-                    //if (GameOptions.m_SanityGlobal) //(GameOptions.IsSanityEnabled)
                     if (RogueGame.Options.IsSanityEnabled) //@MP - fixed crappy implementation (Release 5-2)
                         return MakeItemPillsSAN();
                     else
@@ -4771,7 +4775,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 2: return MakeItemPillsSTA();
                 case 3: return MakeItemPillsSLP();
                 case 4: //@@MP - if Sanity is disabled generate homely stuff instead (Release 1)
-                    //if (GameOptions.m_SanityGlobal)
                     if (RogueGame.Options.IsSanityEnabled) //@MP - fixed crappy implem (Release 5-2)
                         return MakeItemPillsSAN();
                     else
@@ -4826,10 +4829,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeRandomKitchenItem()
         {
-            if (m_DiceRoller.RollChance(50))
-                return MakeItemCannedFood();
-            else
-                return MakeItemGroceries();
+            int roll = m_DiceRoller.Roll(0, 3); //@@MP - added vegies and changed roll type (Relase 5-5)
+            switch (roll)
+            {
+                case 0: return MakeItemCannedFood();
+                case 1: return MakeItemGroceries();
+                case 2: return MakeItemVegetables();
+                default:
+                    throw new ArgumentOutOfRangeException("unhandled roll");
+            }
         }
 
         public Item MakeRandomCHAROfficeItem()
@@ -5557,7 +5565,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     {
                         if (!boolPlacedCHARdocument)
                         {
-                            //Item it = new Item(m_Game.GameItems.UNIQUE_CHAR_DOCUMENT) { IsUnique = true, IsForbiddenToAI = true };
                             Item it = null;
                             int roll = m_DiceRoller.Roll(0, 5);
                             switch (roll)

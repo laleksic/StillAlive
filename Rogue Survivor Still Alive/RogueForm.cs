@@ -72,6 +72,20 @@ namespace djack.RogueSurvivor
             //m_GameCanvas.ShowFPS = true;
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form done.");
+
+            //@@MP - optional fullscreen (Release 5-5)
+            switch (SetupConfig.Window)
+            {
+                case SetupConfig.eWindow.WINDOW_FULLSCREEN:
+                    this.WindowState = FormWindowState.Maximized;
+                    this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                    //this.Bounds = Screen.PrimaryScreen.Bounds;
+                    break;
+                case SetupConfig.eWindow.WINDOW_WINDOWED:
+                    this.WindowState = FormWindowState.Maximized;
+                    this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+                    break;
+            }
         }
 
         void LoadResources()
@@ -193,7 +207,6 @@ namespace djack.RogueSurvivor
                 m_Game.Player.FoodPoints = m_Game.Rules.ActorMaxFood(m_Game.Player);
                 m_Game.Player.SleepPoints = m_Game.Rules.ActorMaxSleep(m_Game.Player);
                 if (m_Game.Session.GameMode == GameMode.GM_STANDARD) m_Game.Player.Infection = 0;
-                //if (GameOptions.m_SanityGlobal) m_Game.Player.Sanity = m_Game.Rules.ActorMaxSanity(m_Game.Player);
                 if (RogueGame.Options.IsSanityEnabled) m_Game.Player.Sanity = m_Game.Rules.ActorMaxSanity(m_Game.Player); //@MP - fixed crappy implem (Release 5-2)
                 //m_Game.Player.Inventory.MaxCapacity = 10;
                 /*Tile tile = m_Game.Session.CurrentMap.GetTileAt(m_Game.Player.Location.Position);

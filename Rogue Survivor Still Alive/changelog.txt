@@ -1,4 +1,22 @@
-﻿STILL ALIVE 1.5.30.5 (aka Release 5-4[#2], 5/2/2018) [Author: MP]
+﻿STILL ALIVE 1.5.32.5 (aka Release 5-5, 25/02/2018) [Author: MP]
+--------------------
+
+Features:
+-Game is now fullscreen by default (windowed mode available via RSConfig).
+-Can now use seeds and a shovel/pick to plant vegies.
+
+Fixes:
+-Changed the way berries are grown to avoid stack overflows.
+-When a corpse rises from the dead their body is no longer duplicated.
+-Made rain sfx thread-safe to prevent collision crashes.
+-Adjusted army supplies drop to balance with new food sources.
+-Warning message is more specific for attempts to pick up items with a full inventory.
+-Increased the nutrition value of all foods to varying degrees.
+-Fixed sloppy advisor hints.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.5.30.5 (aka Release 5-4[#2], 5/2/2018) [Author: MP]
 --------------------
 
 Features:

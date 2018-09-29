@@ -1280,7 +1280,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeItemDynamite()
         {
-            return new ItemGrenade(m_Game.GameItems.DYNAMITE, m_Game.GameItems.DYNAMITE_PRIMED);
+            return new ItemGrenade(m_Game.GameItems.DYNAMITE, m_Game.GameItems.DYNAMITE_PRIMED)
+            {
+                IsForbiddenToAI = true //@@MP (Release 5-5)
+            };
         }
 
         public Item MakeItemAlcohol()
@@ -1335,34 +1338,22 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new ItemAmmo(m_Game.GameItems.AMMO_NAILS);
         }
 
-        //@@MP (Release 5-3)
-        public Item MakeItemCarrots()
+        //@@MP (Release 5-5)
+        public Item MakeItemVegetables()
         {
             int timeNow = m_Game.Session.WorldTime.TurnCounter;
-            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.CARROTS.BestBeforeDays);
-            return new ItemFood(m_Game.GameItems.CARROTS, freshUntil)
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.VEGETABLES.BestBeforeDays);
+            return new ItemFood(m_Game.GameItems.VEGETABLES, freshUntil)
             {
                 Quantity = 3
             };
         }
 
-        public Item MakeItemPumpkin()
+        public Item MakeItemVegetableSeeds()
         {
-            int timeNow = m_Game.Session.WorldTime.TurnCounter;
-            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.PUMPKIN.BestBeforeDays);
-            return new ItemFood(m_Game.GameItems.PUMPKIN, freshUntil)
+            return new Item(m_Game.GameItems.VEGETABLE_SEEDS)
             {
-                Quantity = 1
-            };
-        }
-
-        public Item MakeItemTurnips()
-        {
-            int timeNow = m_Game.Session.WorldTime.TurnCounter;
-            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.TURNIP.BestBeforeDays);
-            return new ItemFood(m_Game.GameItems.TURNIP, freshUntil)
-            {
-                Quantity = 3
+                IsForbiddenToAI = true
             };
         }
         #endregion

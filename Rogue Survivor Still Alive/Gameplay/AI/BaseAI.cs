@@ -3337,8 +3337,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 8 Lights.
             // 9 Reject primed explosives!
             // 10 Reject boring items.
-            // 11 Reject dynamite.
-            // 12 Other.
+            // 11 Other.
             /////////////////////////////////////////////////////////////////////////////
 
             bool onlyOneSlotLeft = (m_Actor.Inventory.CountItems == game.Rules.ActorMaxInv(m_Actor) - 1);
@@ -3452,11 +3451,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.IsBoredOf(it))
                 return false;
 
-            // 11 Reject dynamite //@@MP - AI don't want dynamite they can't use (Release 4)
-            if (it.Model.ID == (int)GameItems.IDs.EXPLOSIVE_DYNAMITE)
-                return false;
-
-            // 12 Other
+            // 11 Other
             // if has less than one full stack.
             return !HasAtLeastFullStackOfItemTypeOrModel(it, 1);
         }

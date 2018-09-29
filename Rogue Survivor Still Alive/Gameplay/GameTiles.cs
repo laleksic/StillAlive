@@ -23,6 +23,7 @@ namespace djack.RogueSurvivor.Gameplay
             FLOOR_GRASS,
             FLOOR_OFFICE,
             FLOOR_PLANKS,
+            FLOOR_PLANTED, //@@MP (Release 5-5)
             FLOOR_SEWER_WATER,
             FLOOR_TILES,
             FLOOR_WALKWAY,
@@ -84,6 +85,7 @@ namespace djack.RogueSurvivor.Gameplay
         public TileModel FLOOR_GRASS { get { return this[IDs.FLOOR_GRASS]; } }
         public TileModel FLOOR_OFFICE { get { return this[IDs.FLOOR_OFFICE]; } }
         public TileModel FLOOR_PLANKS { get { return this[IDs.FLOOR_PLANKS]; } }
+        public TileModel FLOOR_PLANTED { get { return this[IDs.FLOOR_PLANTED]; } } //@@MP (Release 5-5)
         public TileModel FLOOR_SEWER_WATER { get { return this[IDs.FLOOR_SEWER_WATER]; } }
         public TileModel FLOOR_TILES { get { return this[IDs.FLOOR_TILES]; } }
         public TileModel FLOOR_WALKWAY { get { return this[IDs.FLOOR_WALKWAY]; } }
@@ -120,6 +122,7 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.FLOOR_GRASS] = new TileModel(GameImages.TILE_FLOOR_GRASS, Color.Green, true, true);
             this[IDs.FLOOR_OFFICE] = new TileModel(GameImages.TILE_FLOOR_OFFICE, LIT_RED, true, true); //@@MP - changed to red minimap colour (Release 4)
             this[IDs.FLOOR_PLANKS] = new TileModel(GameImages.TILE_FLOOR_PLANKS, Color.Chocolate, true, true); //@@MP - changed from LIT_BROWN to Chocolate (Release 4)
+            this[IDs.FLOOR_PLANTED] = new TileModel(GameImages.TILE_FLOOR_PLANTED, Color.Green, true, true); //@@MP (Release 5-5)
             this[IDs.FLOOR_SEWER_WATER] = new TileModel(GameImages.TILE_FLOOR_SEWER_WATER, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_SEWER_WATER_COVER };
             this[IDs.FLOOR_TILES] = new TileModel(GameImages.TILE_FLOOR_TILES, LIT_GRAY2, true, true);
             this[IDs.FLOOR_WALKWAY] = new TileModel(GameImages.TILE_FLOOR_WALKWAY, LIT_GRAY2, true, true);

@@ -160,7 +160,6 @@ namespace djack.RogueSurvivor.Engine
         int m_ZombieInvasionDailyIncrease;
         int m_StarvedZombificationChance;
         bool m_Sanity;  //@@MP (Release 1)
-        //public static bool m_SanityGlobal; //@@MP - so that BaseTownGenerator.cs can know when Sanity is applicable (Release 1), obsolete (Release 5-2)
         int m_MaxReincarnations;
         bool m_CanReincarnateAsRat;
         bool m_CanReincarnateToSewers;
@@ -461,7 +460,6 @@ namespace djack.RogueSurvivor.Engine
             set
             {
                 m_Sanity = value;
-                //m_SanityGlobal = m_Sanity; //@@MP - so that BaseTownGenerator.cs can know when Sanity is applicable. Now obsolete (Release 5-2)
             }
         }
 
@@ -602,7 +600,6 @@ namespace djack.RogueSurvivor.Engine
             m_StarvedZombificationChance = DEFAULT_STARVED_ZOMBIFICATION_CHANCE;
             m_MaxReincarnations = DEFAULT_MAX_REINCARNATIONS;
             m_Sanity = true;
-            //m_SanityGlobal = m_Sanity; //@@MP (Release 1), obsolete (Release 5-2)
             m_ShowCorpses = true;
             m_CanReincarnateAsRat = false;
             m_CanReincarnateToSewers = false;
@@ -903,11 +900,6 @@ namespace djack.RogueSurvivor.Engine
 
                 options = (GameOptions)formatter.Deserialize(stream);
                 stream.Close();
-                /*//@@MP - switch the global Sanity flag, so we don't need to save it to config.dat (Release 1), commented out and moved to RogueGame.ApplyOptions() (Release 2)
-                if (options.IsSanityEnabled)
-                    m_SanityGlobal = true;
-                else
-                    m_SanityGlobal = false;*/
             }
             catch (Exception e)
             {

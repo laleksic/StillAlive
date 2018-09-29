@@ -296,6 +296,11 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         MAKE_MOLOTOV, //@@MP (Release 4)
 
+        /// <summary>
+        /// Plant seeds using a shovel or pickaxe.
+        /// </summary>
+        PLANT_SEEDS, //@@MP (Release 5-5)
+
         _COUNT
     }
 

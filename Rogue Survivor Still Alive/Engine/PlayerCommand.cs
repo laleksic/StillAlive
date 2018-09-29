@@ -45,6 +45,7 @@ namespace djack.RogueSurvivor.Engine
         MAKE_MOLOTOV, //@@MP (Release 4)
         MARK_ENEMIES_MODE,
         ORDER_MODE,
+        PLANT_SEEDS, //@@MP (Release 5-5)
         PUSH_MODE,
         REVIVE_CORPSE,
         SHOUT,

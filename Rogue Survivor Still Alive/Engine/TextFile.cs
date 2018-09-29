@@ -48,7 +48,7 @@ namespace djack.RogueSurvivor.Engine
                 }               
                 inStream.Close();
 
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!", fileName));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!")); //@@MP - removed unused argument (Release 5-5)
                 return true;
             }
             catch (Exception e)
@@ -65,7 +65,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Saving text file {0}...", fileName));
                 File.WriteAllLines(fileName, m_RawLines.ToArray());
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!", fileName));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!")); //@@MP - removed unused argument (Release 5-5)
                 return true;
             }
             catch (Exception e)

@@ -36,10 +36,7 @@ namespace djack.RogueSurvivor.Gameplay
             FOOD_GROCERIES,
             FOOD_CANNED_FOOD,
             FOOD_WILD_BERRIES, //@@MP (Release 4)
-            //@@MP (Release 5-3)
-            FOOD_CARROTS,
-            FOOD_PUMPKIN,
-            FOOD_TURNIPS,
+            FOOD_VEGETABLES, //@@MP (Release 5-3), (Release 5-5)
 
             MELEE_BASEBALLBAT,
             MELEE_COMBAT_KNIFE,
@@ -120,6 +117,7 @@ namespace djack.RogueSurvivor.Gameplay
             UNIQUE_ROGUEDJACK_KEYBOARD,
             UNIQUE_SANTAMAN_SHOTGUN,
             UNIQUE_HANS_VON_HANZ_PISTOL,
+            VEGETABLE_SEEDS, //@@MP (Release 5-3), (Release 5-5)
 
             //@@MP (Release 3)
             UNIQUE_CHAR_DOCUMENT1,
@@ -136,11 +134,6 @@ namespace djack.RogueSurvivor.Gameplay
             MELEE_STANDARD_AXE,
             MELEE_PICKAXE,
             MELEE_PIPE_WRENCH,
-
-            //@@MP (Release 5-3)
-            CARROT_SEEDS,
-            PUMPKIN_SEEDS,
-            TURNIP_SEEDS,
 
             _COUNT
         }
@@ -261,13 +254,8 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemFoodModel CANNED_FOOD { get { return this[IDs.FOOD_CANNED_FOOD] as ItemFoodModel; } }
         FoodData DATA_FOOD_WILD_BERRIES; //@MP (Release 4)
         public ItemFoodModel WILD_BERRIES { get { return this[IDs.FOOD_WILD_BERRIES] as ItemFoodModel; } }
-        //@MP (Release 5-3)
-        FoodData DATA_FOOD_CARROTS;
-        public ItemFoodModel CARROTS { get { return this[IDs.FOOD_CARROTS] as ItemFoodModel; } }
-        FoodData DATA_FOOD_PUMPKIN;
-        public ItemFoodModel PUMPKIN { get { return this[IDs.FOOD_PUMPKIN] as ItemFoodModel; } }
-        FoodData DATA_FOOD_TURNIP;
-        public ItemFoodModel TURNIP { get { return this[IDs.FOOD_TURNIPS] as ItemFoodModel; } }
+        FoodData DATA_FOOD_VEGETABLES; //@MP (Release 5-3), (Release 5-5)
+        public ItemFoodModel VEGETABLES { get { return this[IDs.FOOD_VEGETABLES] as ItemFoodModel; } }
         #endregion
 
         #region Melee weapons
@@ -748,10 +736,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemModel UNIQUE_CHAR_DOCUMENT4 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT4]; } }
         public ItemModel UNIQUE_CHAR_DOCUMENT5 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT5]; } }
         public ItemModel UNIQUE_CHAR_DOCUMENT6 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT6]; } }
-        //@MP (Release 5-3)
-        public ItemModel CARROT_SEEDS { get { return this[IDs.CARROT_SEEDS]; } }
-        public ItemModel PUMPKIN_SEEDS { get { return this[IDs.PUMPKIN_SEEDS]; } }
-        public ItemModel TURNIP_SEEDS { get { return this[IDs.TURNIP_SEEDS]; } }
+        public ItemModel VEGETABLE_SEEDS { get { return this[IDs.VEGETABLE_SEEDS]; } } //@MP (Release 5-5)
         #endregion
 
         #endregion
@@ -925,30 +910,13 @@ namespace djack.RogueSurvivor.Gameplay
                 IsStackable = true,
                 FlavorDescription = DATA_FOOD_WILD_BERRIES.FLAVOR
             };
-            //@MP (Release 5-3)
-            this[IDs.FOOD_CARROTS] = new ItemFoodModel(DATA_FOOD_CARROTS.NAME, DATA_FOOD_CARROTS.PLURAL, GameImages.ITEM_CARROTS, DATA_FOOD_CARROTS.NUTRITION, DATA_FOOD_CARROTS.BESTBEFORE)
-            {
-                IsAn = StartsWithVowel(DATA_FOOD_CARROTS.NAME),
-                IsPlural = CheckPlural(DATA_FOOD_CARROTS.NAME, DATA_FOOD_CARROTS.PLURAL),
-                StackingLimit = DATA_FOOD_CARROTS.STACKINGLIMIT,
+            this[IDs.FOOD_VEGETABLES] = new ItemFoodModel(DATA_FOOD_VEGETABLES.NAME, DATA_FOOD_VEGETABLES.PLURAL, GameImages.ITEM_VEGETABLES, DATA_FOOD_VEGETABLES.NUTRITION, DATA_FOOD_VEGETABLES.BESTBEFORE)
+            { //@MP (Release 5-3), (Release 5-5)
+                IsAn = StartsWithVowel(DATA_FOOD_VEGETABLES.NAME),
+                IsPlural = CheckPlural(DATA_FOOD_VEGETABLES.NAME, DATA_FOOD_VEGETABLES.PLURAL),
+                StackingLimit = DATA_FOOD_VEGETABLES.STACKINGLIMIT,
                 IsStackable = true,
-                FlavorDescription = DATA_FOOD_CARROTS.FLAVOR
-            };
-            this[IDs.FOOD_PUMPKIN] = new ItemFoodModel(DATA_FOOD_PUMPKIN.NAME, DATA_FOOD_PUMPKIN.PLURAL, GameImages.ITEM_PUMPKIN, DATA_FOOD_PUMPKIN.NUTRITION, DATA_FOOD_PUMPKIN.BESTBEFORE)
-            {
-                IsAn = StartsWithVowel(DATA_FOOD_PUMPKIN.NAME),
-                IsPlural = CheckPlural(DATA_FOOD_PUMPKIN.NAME, DATA_FOOD_PUMPKIN.PLURAL),
-                StackingLimit = DATA_FOOD_PUMPKIN.STACKINGLIMIT,
-                IsStackable = false,
-                FlavorDescription = DATA_FOOD_PUMPKIN.FLAVOR
-            };
-            this[IDs.FOOD_TURNIPS] = new ItemFoodModel(DATA_FOOD_TURNIP.NAME, DATA_FOOD_TURNIP.PLURAL, GameImages.ITEM_TURNIPS, DATA_FOOD_TURNIP.NUTRITION, DATA_FOOD_TURNIP.BESTBEFORE)
-            {
-                IsAn = StartsWithVowel(DATA_FOOD_TURNIP.NAME),
-                IsPlural = CheckPlural(DATA_FOOD_TURNIP.NAME, DATA_FOOD_TURNIP.PLURAL),
-                StackingLimit = DATA_FOOD_TURNIP.STACKINGLIMIT,
-                IsStackable = true,
-                FlavorDescription = DATA_FOOD_TURNIP.FLAVOR
+                FlavorDescription = DATA_FOOD_VEGETABLES.FLAVOR
             };
             #endregion
 
@@ -1681,18 +1649,12 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = "Operation manual regarding restoring power to the facility."
             };
 
-            //@@MP (Release 5-3)
-            this[IDs.CARROT_SEEDS] = new ItemModel("bunch of carrot seeds", "bunch of carrot seeds", GameImages.ITEM_CARROT_SEEDS)
+            //@@MP (Release 5-3), (Release 5-5)
+            this[IDs.VEGETABLE_SEEDS] = new ItemModel("bunch of vegie seeds", "bunch of vegie seeds", GameImages.ITEM_VEGETABLE_SEEDS)
             {
-                FlavorDescription = @"""Cultivate the soil then plant these seeds. Return in 24 hours to harvest."""
-            };
-            this[IDs.PUMPKIN_SEEDS] = new ItemModel("bunch of pumpkin seeds", "bunch of pumpkin seeds", GameImages.ITEM_PUMPKIN_SEEDS)
-            {
-                FlavorDescription = @"""Cultivate the soil then plant these seeds. Return in 24 hours to harvest."""
-            };
-            this[IDs.TURNIP_SEEDS] = new ItemModel("bunch of turnip seeds", "bunch of turnip seeds", GameImages.ITEM_TURNIP_SEEDS)
-            {
-                FlavorDescription = @"""Cultivate the soil then plant these seeds. Return in 24 hours to harvest."""
+                FlavorDescription = @"""Cultivate the soil then plant these seeds. Return in the morning to harvest.""",
+                IsStackable = true,
+                StackingLimit = 9,
             };
             #endregion
 
@@ -1840,17 +1802,14 @@ namespace djack.RogueSurvivor.Gameplay
             FoodData[] data;
 
             LoadDataFromCSV<FoodData>(ui, path, "food items", FoodData.COUNT_FIELDS, FoodData.FromCSVLine,
-                new IDs[] { IDs.FOOD_ARMY_RATION, IDs.FOOD_CANNED_FOOD, IDs.FOOD_GROCERIES, IDs.FOOD_WILD_BERRIES, IDs.FOOD_CARROTS, IDs.FOOD_PUMPKIN, IDs.FOOD_TURNIPS }, //MP (Release 4), (Release 5-3)
+                new IDs[] { IDs.FOOD_ARMY_RATION, IDs.FOOD_CANNED_FOOD, IDs.FOOD_GROCERIES, IDs.FOOD_WILD_BERRIES, IDs.FOOD_VEGETABLES, }, //MP (Release 4), (Release 5-3), (Release 5-5)
                 out data);
 
             DATA_FOOD_ARMY_RATION = data[0];
             DATA_FOOD_CANNED_FOOD = data[1];
             DATA_FOOD_GROCERIES = data[2];
             DATA_FOOD_WILD_BERRIES = data[3]; //MP (Release 4)
-            //MP (Release 5-3)
-            DATA_FOOD_CARROTS = data[4];
-            DATA_FOOD_PUMPKIN = data[5];
-            DATA_FOOD_TURNIP = data[6];
+            DATA_FOOD_VEGETABLES = data[4]; //MP (Release 5-5)
 
             return true;
         }

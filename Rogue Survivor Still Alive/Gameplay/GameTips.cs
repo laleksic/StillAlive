@@ -24,7 +24,7 @@ namespace djack.RogueSurvivor.Gameplay
 	        "...you can recharge battery-powered items at powered generators?",
             "...arrows may miss or pierce their target and be reclaimed from nearby?",
             "...you can expore the sewers, the subway and basements?",
-	        "...you can shove people around or push cars, shelves, etc?",
+	        "...you can shove people around or push objects like cars and shelves?",
             "...you can try to wake up other people by shouting near them?",
             "...you may find police radios and various trackers helpful?",
             "...you can eat or butcher corpses? At the cost of sanity though...",
@@ -33,7 +33,6 @@ namespace djack.RogueSurvivor.Gameplay
             // misc rules
         	"...scents decay faster under the rain and in the sewers?",
         	"...firearms are more likely to jam in the rain?",
-            "...rain will put out fires faster?", // semi-trolling there
             "...wearing some outfits change the chances to get noticed by cops and gangs?",
             "...books, magazines and friends are good for your sanity?",
             // followers
@@ -45,6 +44,7 @@ namespace djack.RogueSurvivor.Gameplay
             // misc
             "...nowhere is truly safe? You'll be found sooner or later, so prepare...",
             "...you might stumble on some unique characters? Keep your ear out...",
+            "...you can plant vegie seeds with a shovel and a clear patch of ground?",
         };
     }
 }

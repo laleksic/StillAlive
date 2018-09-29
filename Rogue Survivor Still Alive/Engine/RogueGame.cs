@@ -211,7 +211,7 @@ namespace djack.RogueSurvivor.Engine
         /// Ratio total map food items nutrition / livings below which the army drop supplies event can fire.
         /// Factored by option.
         /// </summary>
-        const float ARMY_SUPPLIES_FACTOR = 0.20f * Rules.FOOD_BASE_POINTS;
+        const float ARMY_SUPPLIES_FACTOR = 0.40f * Rules.FOOD_BASE_POINTS; //@@MP - upped from 0.20f (release 5-5)
 
         /// <summary>
         /// Chances per turn the army will drop supply (if other conditions are met).
@@ -334,7 +334,7 @@ namespace djack.RogueSurvivor.Engine
         const int PLAYER_HEAR_EXPLOSION_CHANCE = 100;
         #endregion
 
-        #region Still Alive additions
+        #region 'Still Alive' additions
         const int BLOOD_WALL_SPLAT_CHANCE = 20; //@@MP (Release 2)
         const int BASE_TILE_FIRE_DAMAGE = 5; //@@MP (Release 5-2)
         #endregion
@@ -1982,7 +1982,6 @@ namespace djack.RogueSurvivor.Engine
             for (int i = (int)Skills.IDs._FIRST_LIVING; i < (int)Skills.IDs._LAST_LIVING + 1; i++)
             {
                 allSkills[i] = (Skills.IDs)i;
-                //if ((!GameOptions.m_SanityGlobal) && (Skills.Name(allSkills[i]) == "Strong Psyche")) //@@MP - check if Sanity is disabled and remove it as an option if so (Release 1)
                 if ((!Options.IsSanityEnabled) && (Skills.Name(allSkills[i]) == "Strong Psyche")) //@@MP - check if Sanity is disabled and remove it as an option if so (Release 1), fixed crappy implem (Release 5-2)
                 {
                     sanitySkillIndex = i + 1; //remember the index location of the array where Strong Psyche would have been
@@ -1994,7 +1993,6 @@ namespace djack.RogueSurvivor.Engine
                     skillDesc[i + 1] = String.Format("{0} max - {1}", Skills.MaxSkillLevel(i), DescribeSkillShort(allSkills[i]));
                 }
             }
-            //if (!GameOptions.m_SanityGlobal) //resize the list of skills to eliminate where Strong Psyche would have been //@@MP (Release 1)
             if (!Options.IsSanityEnabled) //resize the list of skills to eliminate where Strong Psyche would have been //@@MP (Release 1), fixed crappy implem (Release 5-2)
             {
                 menuEntries = menuEntries.Where(w => w != menuEntries[sanitySkillIndex]).ToArray();
@@ -2292,15 +2290,17 @@ namespace djack.RogueSurvivor.Engine
             gy += BOLD_LINE_SPACING;
             m_UI.UI_DrawStringBold(Color.White, "Sound & Music softwares", left, gy); m_UI.UI_DrawString(Color.White, "- GuitarPro 6, Audacity", right, gy);
             gy += BOLD_LINE_SPACING;
-            m_UI.UI_DrawStringBold(Color.White, "Sound samples", left, gy); m_UI.UI_DrawString(Color.White, @"- http://www.sound-fishing.net  http://www.soundsnap.com/", right, gy);
+            m_UI.UI_DrawStringBold(Color.White, "Sound samples", left, gy); m_UI.UI_DrawString(Color.White, @"- http://www.sound-fishing.net  http://www.soundsnap.com", right, gy);
             gy += BOLD_LINE_SPACING;
             m_UI.UI_DrawStringBold(Color.White, "Contact", 0, gy);
+            /*gy += BOLD_LINE_SPACING;
+            m_UI.UI_DrawString(Color.White, @"Email      : roguedjack@yahoo.fr", 0, gy);*/
             gy += BOLD_LINE_SPACING;
-            m_UI.UI_DrawString(Color.White, @"Email      : roguedjack@yahoo.fr", 0, gy);
+            m_UI.UI_DrawString(Color.White, @"Fans Forum : http://roguesurvivor.proboards.com", 0, gy);
             gy += BOLD_LINE_SPACING;
-            m_UI.UI_DrawString(Color.White, @"Blog       : http://roguesurvivor.blogspot.com/", 0, gy);
+            m_UI.UI_DrawString(Color.White, @"Discord : discord.gg/PPGHpDr", 0, gy);
             gy += BOLD_LINE_SPACING;
-            m_UI.UI_DrawString(Color.White, @"Fans Forum : http://roguesurvivor.proboards.com/", 0, gy);
+            m_UI.UI_DrawString(Color.White, @"Original RS blog : http://roguesurvivor.blogspot.com", 0, gy);
             /*gy += BOLD_LINE_SPACING;
             m_UI.UI_DrawStringBold(Color.White, "Thanks to the players for their feedback and eagerness to die!", 0, gy);*/
             gy += 3 * BOLD_LINE_SPACING;
@@ -2315,10 +2315,8 @@ namespace djack.RogueSurvivor.Engine
             m_UI.UI_DrawString(Color.White, @"Incorporates images from https://opengameart.org. For full list of images and their authors please see about.txt in the game directory", 0, gy);
             gy += BOLD_LINE_SPACING;
             m_UI.UI_DrawString(Color.White, @"Incorporates sounds from https://freesound.org. For full list of sounds and their authors please see about.txt in the game directory", 0, gy);
-            gy += BOLD_LINE_SPACING;
-            m_UI.UI_DrawString(Color.White, @"<tba>", 0, gy);
             gy += 2 * BOLD_LINE_SPACING;
-            m_UI.UI_DrawString(Color.White, @"Discuss the mod: <tba>", 0, gy);
+            m_UI.UI_DrawString(Color.White, @"Discuss the mod: http://roguesurvivor.proboards.com/thread/377/", 0, gy);
 
             DrawFootnote(Color.White, "ESC to leave");
             m_UI.UI_Repaint();
@@ -2603,12 +2601,6 @@ namespace djack.RogueSurvivor.Engine
 
             }
             while (loop);
-
-            /*//switch the global Sanity flag //@MP (Release 1), obsolete (Release 5-2)
-            if (s_Options.IsSanityEnabled)
-                GameOptions.m_SanityGlobal = true;
-            else
-                GameOptions.m_SanityGlobal = false;*/
 
             // save.
             SaveOptions();
@@ -2949,7 +2941,7 @@ namespace djack.RogueSurvivor.Engine
 
             // 2. Advance district.
             #region
-            // 2.1. Advance world time if current district.
+            // 2.1. Advance world time if current district, or grow plants if other district and a new day
             #region
             if (district == m_Session.CurrentMap.District)
             {
@@ -2961,6 +2953,8 @@ namespace djack.RogueSurvivor.Engine
                 {
                     AddMessage(new Message("The sun is rising again for you...", m_Session.WorldTime.TurnCounter, DAY_COLOR));
                     OnNewDay();
+                    foreach (Map map in district.Maps) //@@MP (Release 5-5)
+                        CheckIfPlantsFruit(map);
                 }
                 else if (!wasNight && isNight)
                 {
@@ -2971,6 +2965,11 @@ namespace djack.RogueSurvivor.Engine
                 {
                     AddMessage(new Message(String.Format("Time passes, it is now {0}...", DescribeDayPhase(newPhase)), m_Session.WorldTime.TurnCounter, isNight ? NIGHT_COLOR : DAY_COLOR));
                 }
+            }
+            else if (wasNight && !m_Session.WorldTime.IsNight) //@@MP - a new day in the other districts (Release 5-5)
+            { //this won't work for districts checked before the player's one, but that won't occur because the entry point from GameLoop() is m_Session.CurrentMap.District, and then each is simulated from that
+                foreach (Map map in district.Maps)
+                    CheckIfPlantsFruit(map);
             }
             #endregion
 
@@ -3276,7 +3275,7 @@ namespace djack.RogueSurvivor.Engine
 
                                     if (IsVisibleToPlayer(map, c.Position))
                                     {
-                                        AddMessage(new Message(String.Format("The corpse of {0} rise again!!", c.DeadGuy.Name), map.LocalTime.TurnCounter, Color.Red));
+                                        AddMessage(new Message(String.Format("The corpse of {0} rises again!!", c.DeadGuy.Name), map.LocalTime.TurnCounter, Color.Red));
                                         if (zombified.IsPlayer) //@@MP (Release 3)
                                             m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_RISE_PLAYER);
                                         else
@@ -4156,6 +4155,11 @@ namespace djack.RogueSurvivor.Engine
                 foreach (Corpse c in corpses)
                     InflictDamageToCorpse(c, (float)FIRE_DAMAGE);
             }
+
+            //damage crops if present (Release 5-5)
+            Tile tile = map.GetTileAt(point);
+            if (tile.Model.ID == (int)GameTiles.IDs.FLOOR_PLANTED)
+                map.SetTileModelAt(point.X, point.Y, GameTiles.FLOOR_GRASS);
         }
         #endregion
 
@@ -5962,7 +5966,16 @@ namespace djack.RogueSurvivor.Engine
                                     loop = false;
                                     break;
                                 }
-                                loop = !HandlePlayerMakeMolotov(player, mousePos);
+                                loop = !HandlePlayerMakeMolotov(player);//, mousePos); //@@MP - mousePos was unused (Release 5-5)
+                                break;
+
+                            case PlayerCommand.PLANT_SEEDS: //@@MP (Release 5-5)
+                                if (TryPlayerInsanity())
+                                {
+                                    loop = false;
+                                    break;
+                                }
+                                loop = !HandlePlayerPlantSeeds(player);
                                 break;
 
                             #endregion
@@ -6999,7 +7012,7 @@ namespace djack.RogueSurvivor.Engine
             // msg.
             if (isVisible)
             {
-                AddMessage(MakeMessage(a, String.Format("{0} {1} corpse.", Conjugate(a, VERB_FEAST_ON), c.DeadGuy.Name, dmg)));
+                AddMessage(MakeMessage(a, String.Format("{0} {1} corpse.", Conjugate(a, VERB_FEAST_ON), c.DeadGuy.Name)));//dmg))); //@@MP - removed unused argument (Release 5-5)
                 if (a.IsPlayer) //@@MP (Release 3)
                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_PLAYER);
                 else
@@ -7972,7 +7985,7 @@ namespace djack.RogueSurvivor.Engine
             ClearOverlays();
         }
 
-        bool HandlePlayerMakeMolotov(Actor player, Point mousePos) //@@MP (Release 4)
+        bool HandlePlayerMakeMolotov(Actor player)//, Point mousePos) //@@MP (Release 4), mousePos was unused (Release 5-5)
         {
             // 1. check that the player actually has suitable liquor
             bool noliquor = true;
@@ -8358,6 +8371,64 @@ namespace djack.RogueSurvivor.Engine
 
             // return if we did an action.
             return actionDone;
+        }
+
+        bool HandlePlayerPlantSeeds(Actor player) //@@MP (Release 5-5)
+        {
+            // 1. check that a player is standing on grass
+            Tile tile = player.Location.Map.GetTileAt(player.Location.Position);
+            MapObject objectThere = player.Location.Map.GetMapObjectAt(player.Location.Position);
+            if (tile.Model.ID != (int)GameTiles.IDs.FLOOR_GRASS || objectThere != null) //it must be clear grass, empty of objects
+            {
+                AddMessage(new Message("Find a clear, grassy spot to plant seeds.", m_Session.WorldTime.TurnCounter, Color.Red));
+                return false;
+            }
+
+            // 2. check that the player has seeds and a shovel
+            int readytoplant = 0;
+            Item seeds = null;
+            if (!player.Inventory.IsEmpty)
+            {
+                foreach (Item it in player.Inventory.Items)
+                {
+                    if (it.Model.ID == (int)GameItems.IDs.VEGETABLE_SEEDS)
+                    {
+                        readytoplant += 1;
+                        seeds = it;
+                    }
+                    if (readytoplant > 0) break;
+                }
+
+                foreach (Item it in player.Inventory.Items)
+                {
+                    if (it.Model.ID == (int)GameItems.IDs.MELEE_SHORT_SHOVEL || it.Model.ID == (int)GameItems.IDs.MELEE_SHOVEL || it.Model.ID == (int)GameItems.IDs.MELEE_PICKAXE)
+                    {
+                        readytoplant += 2;
+                        break;
+                    }
+                    if (readytoplant > 1) break;
+                }
+            }
+
+            switch (readytoplant)
+            {
+                case 0:
+                    AddMessage(new Message("You need to find seeds and a shovel or pickaxe.", m_Session.WorldTime.TurnCounter, Color.Red));
+                    return false;
+                case 1:
+                    AddMessage(new Message("You need a shovel or pickaxe to plant seeds.", m_Session.WorldTime.TurnCounter, Color.Red));
+                    return false;
+                case 2:
+                    AddMessage(new Message("You need to find seeds to plant.", m_Session.WorldTime.TurnCounter, Color.Red));
+                    return false;
+                case 3: break; //do nothing, we have what's required for planting
+                default: throw new ArgumentOutOfRangeException("unhandled plant_seeds inventory check");
+            }
+
+            // 3. no issues so plant it; swap grass for planted tile
+            player.Location.Map.SetTileModelAt(player.Location.Position.X, player.Location.Position.Y, GameTiles.FLOOR_PLANTED);
+            player.Inventory.Consume(seeds);
+            return true;
         }
 
         bool HandlePlayerPush(Actor player)
@@ -9844,8 +9915,8 @@ namespace djack.RogueSurvivor.Engine
                     return m_Player.Inventory.GetFirstByModel(GameItems.CELL_PHONE) != null;
 
                 case AdvisorHint.CITY_INFORMATION:  // city information, wait a bit...
-                    return false;
                     //return map.LocalTime.Hour >= 12;
+                    return false;
 
                 case AdvisorHint.CORPSE_BUTCHER:
                     return !m_Player.Model.Abilities.IsUndead && map.GetCorpsesAt(pos) != null;
@@ -9858,6 +9929,7 @@ namespace djack.RogueSurvivor.Engine
 
                 case AdvisorHint.CORPSE_DRAG_MOVE:
                     //return m_Player.DraggedCorpse != null;
+                    return false; //@@MP (Release 5-5)
 
                 case AdvisorHint.DOORWINDOW_OPEN:   // can open an adj door/window.
                     return map.HasAnyAdjacentInMap(pos, (pt) =>
@@ -10015,9 +10087,9 @@ namespace djack.RogueSurvivor.Engine
                         if (inv == null || inv.IsEmpty)
                             return false;
                         if (inv.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER))
-                            return inv.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER);
+                            return true; //@MP (Release 5-5)
                         else if (inv.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR))
-                            return inv.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR);
+                            return true; //@MP (Release 5-5)
                         else
                             return false;
                     }
@@ -10097,6 +10169,21 @@ namespace djack.RogueSurvivor.Engine
                             return false;
                         return m_Rules.CanActorPush(m_Player, obj);
                     });
+
+                case AdvisorHint.PLANT_SEEDS: //@@MP - when seeds, shovel or pickaxe is picked up (Release 5-5)
+                    {
+                        Inventory inv = m_Player.Inventory;
+                        if (inv == null || inv.IsEmpty)
+                            return false;
+
+                        foreach (Item it in inv.Items)
+                        {
+                            if (it.Model.ID == (int)GameItems.IDs.VEGETABLE_SEEDS || it.Model.ID == (int)GameItems.IDs.MELEE_SHORT_SHOVEL || it.Model.ID == (int)GameItems.IDs.MELEE_SHOVEL || it.Model.ID == (int)GameItems.IDs.MELEE_PICKAXE)
+                                return true;
+                        }
+
+                        return false;
+                    }
 
                 case AdvisorHint.RAIN:  // rainy weather, wait a bit.
                     return m_Rules.IsWeatherRain(m_Session.World.Weather) && map.LocalTime.TurnCounter >= 2 * WorldTime.TURNS_PER_HOUR;
@@ -15985,7 +16072,7 @@ namespace djack.RogueSurvivor.Engine
             // Remove from map.
             deadGuy.Location.Map.RemoveActor(deadGuy);
 
-            // Drop some inventory items.
+            // Drop inventory items.
             #region
             if (deadGuy.Inventory != null && !deadGuy.Inventory.IsEmpty)
             {
@@ -16015,12 +16102,6 @@ namespace djack.RogueSurvivor.Engine
                 else
                     DropCorpse(deadGuy);
             }
-            //@@MP - commented out and moved it into the above if() (Release 2)
-            /*else if (Rules.HasCorpses(m_Session.GameMode)) // C&I or VTG
-            {
-                if (!deadGuy.Model.Abilities.IsUndead)
-                    DropCorpse(deadGuy);
-            }*/
 
             // One more kill
             if (killer != null)
@@ -16965,6 +17046,93 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
+        void CheckIfPlantsFruit(Map map) //@@MP - called on the start of a new day (Release 5-5)
+        {
+            if (map == null)
+                return;
+
+            #region Fruit edible plants.
+            foreach (MapObject mapObj in map.MapObjects)
+            {
+                int x = mapObj.Location.Position.X;
+                int y = mapObj.Location.Position.Y;
+                //mapObj = map.GetMapObjectAt(x,y);
+                Tile tile = map.GetTileAt(x, y);
+                if (mapObj != null && mapObj.AName == "a berry bush")
+                {
+                    GrowFoodItems(map, x, y, "wild berries");
+                    //AddMessage(new Message(String.Format("Berries timer added by {0}",actor.Name), m_Session.WorldTime.TurnCounter, Color.Magenta)); //troubleshooting only
+                }
+            }
+
+            for (int x = 0; x < map.Width; x++)
+            {
+                for (int y = 0; y < map.Height; y++)
+                {
+                    Tile tile = map.GetTileAt(x, y);
+                    if (tile != null && tile.Model.ID == (int)GameTiles.IDs.FLOOR_PLANTED)
+                    {
+                        GrowFoodItems(map, x, y, "vegetables"); //regrow each day
+                    }
+                }
+            }
+            #endregion
+        }
+
+        void GrowFoodItems(Map map, int x, int y, string m_theNames) //@@MP (Release 5-5)
+        {
+            if (map == null)
+                return;
+
+            System.Drawing.Point pt = new System.Drawing.Point(x, y);
+            int freshUntil;
+            Item food = null, seeds = null;
+            switch (m_theNames)
+            {
+                case "wild berries":
+                    freshUntil = m_Session.WorldTime.TurnCounter + (WorldTime.TURNS_PER_DAY * GameItems.WILD_BERRIES.BestBeforeDays);
+                    food = new ItemFood(GameItems.WILD_BERRIES, freshUntil) { Quantity = 3 };
+                    break;
+                case "vegetables":
+                    freshUntil = m_Session.WorldTime.TurnCounter + (WorldTime.TURNS_PER_DAY * GameItems.VEGETABLES.BestBeforeDays);
+                    food = new ItemFood(GameItems.VEGETABLES, freshUntil) { Quantity = 2 };
+                    int rolledQuantity = m_Rules.RollChance(25) ? 0 : 1; //keeps the seeds down to avoid making it too easy to get food
+                    if (rolledQuantity > 0)
+                    {
+                        seeds = new Item(GameItems.VEGETABLE_SEEDS);
+                        seeds.Quantity = rolledQuantity;
+                    }
+                    break;
+                default: throw new NotImplementedException("GrowFoodItems: unsupported food name");
+            }
+
+            List<Item> itemTypes = new List<Item> { food, seeds };
+            foreach (Item itemType in itemTypes)
+            {
+                if (itemType != null)
+                {
+                    Inventory groundInv = map.GetItemsAt(x, y);
+                    if (groundInv != null) //remove any foods and seeds already there to stop it overflowing, and to prevent foods from expiring
+                    {
+                        Inventory itemsToDelete = new Inventory(groundInv.CountItems); //avoids modifying the inventory collection whilst looping through it, causing an exception
+                        foreach (Item it in groundInv.Items)
+                        {
+                            if (it.Model == itemType.Model)
+                                itemsToDelete.AddAll(it);
+                        }
+                        if (itemsToDelete != null)
+                        {
+                            foreach (Item it in itemsToDelete.Items)
+                            {
+                                groundInv.RemoveAllQuantity(it); //keeps the food down to avoid making it too plentiful
+                            }
+                        }
+                    }
+                    map.DropItemAt(itemType, pt);
+                }
+            }
+        }
+
         void HandlePlayerDecideUpgrade(Actor upgradeActor)
         {
             // roll N skills to updgrade.
@@ -16989,7 +17157,6 @@ namespace djack.RogueSurvivor.Engine
                 int skillUpgradeChoices = upgradeChoices.Count;  //@@MP upgradechoices.count equals how many choices to present to the user (vanilla = 5 for living, 2 for undead)
 
                 //@@MP - if Sanity is disabled, make sure Strong Psyche is not one of the skill upgrades offered (Release 1)
-                //if ((skillUpgradeChoices <= 1) && (!GameOptions.m_SanityGlobal))
                 if ((skillUpgradeChoices <= 1) && (!Options.IsSanityEnabled)) //@MP - fixed crappy implem (Release 5-2)
                     AddMessage(MakeErrorMessage(youName + " fully skilled and can't learn anything new."));
                 else if (skillUpgradeChoices == 0)
@@ -17296,7 +17463,6 @@ namespace djack.RogueSurvivor.Engine
                         return AVG_UTIL;
 
                     case Skills.IDs.STRONG_PSYCHE: //@@MP - another location where disabling sanity has an implication (Release 1)
-                        //if (GameOptions.m_SanityGlobal)
                         if (Options.IsSanityEnabled) //@MP - fixed crappy implementation (Release 5-2)
                             return actor.Model.Abilities.HasSanity ? HI_UTIL : USELESS_UTIL; // useful only if has sanity.
                         else
@@ -17321,7 +17487,6 @@ namespace djack.RogueSurvivor.Engine
             int skID;
             bool isUndead = actor.Model.Abilities.IsUndead;
 
-            //if (GameOptions.m_SanityGlobal)
             if (Options.IsSanityEnabled) //@MP - fixed crappy implementation (Release 5-2)
             {
                 do
@@ -17459,41 +17624,44 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         void CheckRainSFX(Map map) //@@MP - used the music manager because it's an indefinite sound, but should stop when sleeping (Release 5-3)
         {
-            if (m_Rules.IsWeatherRain(m_Session.World.Weather))
+            lock (m_MusicManager) // thread safe //@@MP (Release 5-5)
             {
-                if (m_Session.CurrentMap.Name.Contains("basement") || map == map.District.SubwayMap || map == map.District.SewersMap ||
-                    map == m_Session.UniqueMaps.Hospital_Offices.TheMap || map == m_Session.UniqueMaps.Hospital_Patients.TheMap ||
-                    map == m_Session.UniqueMaps.Hospital_Power.TheMap || map == m_Session.UniqueMaps.Hospital_Storage.TheMap || 
-                    map == m_Session.UniqueMaps.PoliceStation_OfficesLevel.TheMap || map == m_Session.UniqueMaps.PoliceStation_JailsLevel.TheMap ||
-                    map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap)
-                { //in case they're already playing ie the rain stopped this turn
-                    if (m_MusicManager.IsPlaying(GameSounds.RAIN_OUTSIDE))
-                        m_MusicManager.Stop(GameSounds.RAIN_OUTSIDE);
-
-                    if (m_MusicManager.IsPlaying(GameSounds.RAIN_INSIDE))
-                        m_MusicManager.Stop(GameSounds.RAIN_INSIDE);
-
-                    return;
-                }
-
-                Tile tile = map.GetTileAt(Player.Location.Position);
-                if (tile == null)
-                    return;
-                else if (tile.IsInside)
+                if (m_Rules.IsWeatherRain(m_Session.World.Weather))
                 {
-                    if (!m_MusicManager.IsPlaying(GameSounds.RAIN_INSIDE)) //start playing before we stop the other, to make the transition more seamless (no audio gap)
-                        m_MusicManager.PlayLooping(GameSounds.RAIN_INSIDE);
+                    if (m_Session.CurrentMap.Name.Contains("basement") || map == map.District.SubwayMap || map == map.District.SewersMap ||
+                        map == m_Session.UniqueMaps.Hospital_Offices.TheMap || map == m_Session.UniqueMaps.Hospital_Patients.TheMap ||
+                        map == m_Session.UniqueMaps.Hospital_Power.TheMap || map == m_Session.UniqueMaps.Hospital_Storage.TheMap ||
+                        map == m_Session.UniqueMaps.PoliceStation_OfficesLevel.TheMap || map == m_Session.UniqueMaps.PoliceStation_JailsLevel.TheMap ||
+                        map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap)
+                    { //in case they're already playing ie the rain stopped this turn
+                        if (m_MusicManager.IsPlaying(GameSounds.RAIN_OUTSIDE))
+                            m_MusicManager.Stop(GameSounds.RAIN_OUTSIDE);
 
-                    if (m_MusicManager.IsPlaying(GameSounds.RAIN_OUTSIDE))
-                        m_MusicManager.Stop(GameSounds.RAIN_OUTSIDE);
-                }
-                else
-                {
-                    if (!m_MusicManager.IsPlaying(GameSounds.RAIN_OUTSIDE))
-                        m_MusicManager.PlayLooping(GameSounds.RAIN_OUTSIDE);
+                        if (m_MusicManager.IsPlaying(GameSounds.RAIN_INSIDE))
+                            m_MusicManager.Stop(GameSounds.RAIN_INSIDE);
 
-                    if (m_MusicManager.IsPlaying(GameSounds.RAIN_INSIDE))
-                        m_MusicManager.Stop(GameSounds.RAIN_INSIDE);
+                        return;
+                    }
+
+                    Tile tile = map.GetTileAt(Player.Location.Position);
+                    if (tile == null)
+                        return;
+                    else if (tile.IsInside)
+                    {
+                        if (!m_MusicManager.IsPlaying(GameSounds.RAIN_INSIDE)) //start playing before we stop the other, to make the transition more seamless (no audio gap)
+                            m_MusicManager.PlayLooping(GameSounds.RAIN_INSIDE);
+
+                        if (m_MusicManager.IsPlaying(GameSounds.RAIN_OUTSIDE))
+                            m_MusicManager.Stop(GameSounds.RAIN_OUTSIDE);
+                    }
+                    else
+                    {
+                        if (!m_MusicManager.IsPlaying(GameSounds.RAIN_OUTSIDE))
+                            m_MusicManager.PlayLooping(GameSounds.RAIN_OUTSIDE);
+
+                        if (m_MusicManager.IsPlaying(GameSounds.RAIN_INSIDE))
+                            m_MusicManager.Stop(GameSounds.RAIN_INSIDE);
+                    }
                 }
             }
         }
@@ -17518,10 +17686,6 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Zombify an actor during the game or zombify the player at game start.
         /// </summary>
-        /// <param name="zombifier"></param>
-        /// <param name="deadVictim"></param>
-        /// <param name="isStartingGame"></param>
-        /// <returns></returns>
         Actor Zombify(Actor zombifier, Actor deadVictim, bool isStartingGame)
         {
             Actor newZombie = m_TownGenerator.MakeZombified(zombifier, deadVictim, isStartingGame ? 0 : deadVictim.Location.Map.LocalTime.TurnCounter);
@@ -17558,6 +17722,19 @@ namespace djack.RogueSurvivor.Engine
             // cause insanity if the actor sees a zombie rise
             if (!isStartingGame)
                 SeeingCauseInsanity(newZombie.Location, Rules.SANITY_HIT_ZOMBIFY, String.Format("{0} turning into a zombie", deadVictim.Name), newZombie); //@@MP - updated for the change to this method (Release 5-2)
+
+            //remove their corpse //@@MP (Release 5-5)
+            Map map = deadVictim.Location.Map;
+            map.TryRemoveCorpseOf(deadVictim);
+            /*List<Corpse> corpses = map.GetCorpsesAt(newZombie.Location.Position);
+            if (corpses != null && corpses.Count > 0)
+            {
+                foreach (Corpse corpse in corpses)
+                {
+                    if (corpse.DeadGuy.Name == deadVictim.Name)
+                        map.RemoveCorpse(corpse);
+                }
+            }*/
 
             // done.
             return newZombie;
@@ -19328,12 +19505,6 @@ namespace djack.RogueSurvivor.Engine
 
             if (!m_MusicManager.IsAudioEnabled)
                 m_MusicManager.StopAll();
-
-            /*//@@MP - switch the global Sanity flag, so we don't need to save it to config.dat (Release 2), obsolete (Release 5-2)
-            if (Options.IsSanityEnabled)
-                GameOptions.m_SanityGlobal = true;
-            else
-                GameOptions.m_SanityGlobal = false;*/
         }
         #endregion
 

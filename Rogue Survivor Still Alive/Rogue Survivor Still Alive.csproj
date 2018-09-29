@@ -41,6 +41,7 @@
     <LangVersion>7</LangVersion>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>IDE0028;</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -79,15 +80,15 @@
     <Reference Include="Microsoft.VisualC" />
     <Reference Include="sfmlnet-audio-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-audio-2.dll</HintPath>
+      <HintPath>..\..\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-audio-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-system-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-system-2.dll</HintPath>
+      <HintPath>..\..\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-system-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-window-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-window-2.dll</HintPath>
+      <HintPath>..\..\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-window-2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -312,10 +313,21 @@
     <Content Include="openal32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Images\Items\item_vegetables.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Items\item_vegetable_seeds.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Images\Tiles\Decoration\rat_zombie_remains.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SFML.NET license.txt" />
+    <Content Include="Resources\Images\Tiles\floor_planted.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SFML.NET license.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -413,12 +425,6 @@
     <Content Include="Resources\Images\Items\item_beer_can_red.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Images\Items\item_carrots.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Images\Items\item_carrot_seeds.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\Images\Items\item_CHAR_document.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -458,22 +464,10 @@
     <Content Include="Resources\Images\Items\item_pipe_wrench.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Images\Items\item_pumpkin.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Images\Items\item_pumpkin_seeds.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\Images\Items\item_standard_axe.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Images\Items\item_tennis_racket.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Images\Items\item_turnips.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Images\Items\item_turnip_seeds.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Images\Items\item_wild_berries.png">

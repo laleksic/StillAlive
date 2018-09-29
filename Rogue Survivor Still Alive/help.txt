@@ -9,15 +9,12 @@ Disk space: 120mb
 TROUBLESHOOTING
 
 -(crashes) The game crashes on launch
-	Right-click RogueGame.exe and select 'Run as administrator'. Please report the issue on the forums.
+	If it's a 'file not found' error you may need to install DirectX 9.0c. You can get it here: https://www.microsoft.com/en-au/download/details.aspx?id=8109
+	If you installed DirectX 9.0c and it still crashes, try right-clicking RogueGame.exe and select 'Run as administrator'.
+	Please report the issue on the forums if it still doesn't work.
 
--(crashes) Game crash when multitasking
+-(crashes) Random game crashes
 	Run the game configuration utility (RSConfig.exe) and try other the video and audio engines.	
-
--(interface) The game text is blurry
-	If you have an Intel onboard GPU (ie no dedicated graphics card), open the Intel control panel and set "3Dtexture" to "Quality".
-	Dedicated graphics cards provide similar configuration options that are forced at the driver level, and therefore apply to
-	all games. Check the Control Panel for your flavour of grpahics card.
 
 -(sound) I can't hear any sounds or music
 	Run the game configuration utility (RSConfing.exe) and try other the video and audio engine (SFML/MDX).
@@ -25,9 +22,6 @@ TROUBLESHOOTING
 
 -(sound) A sound is stuck playing at the start of every turn
 	Save your progress (Shift+S) and then exit the game. The looping sound will be gone when you restart the game.
-
--(ffdshow) ffdshow spams instances in the task bar
-	Open ffdshow configuration, go to DirectShow and set "Multiple ffdshow instances" to "none".
 
 -(sound) I turned off sound effects but I still hear rain.
 	For technical and indolence reasons rain counts as music. Sorry.
@@ -37,6 +31,14 @@ TROUBLESHOOTING
 
 -(interface) Sometimes the controls stop responding / I'm prompted do something without seeing any pop-up text.
 	This is a deficiency in the video engine and will be address in a future version.
+
+-(interface) The game text is blurry
+	If you have an Intel onboard GPU (ie no dedicated graphics card), open the Intel control panel and set "3Dtexture" to "Quality".
+	Dedicated graphics cards provide similar configuration options that are forced at the driver level, and therefore apply to
+	all games. Check the Control Panel for your flavour of grpahics card.
+
+-(ffdshow) ffdshow spams instances in the task bar
+	Open ffdshow configuration, go to DirectShow and set "Multiple ffdshow instances" to "none".
 
 -(general information)
 	Check the wiki at http://roguesurvivor.wikia.com/wiki/Main_Page
