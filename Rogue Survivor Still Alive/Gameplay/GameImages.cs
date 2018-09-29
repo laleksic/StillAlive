@@ -114,6 +114,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_ZOMBIE_REMAINS = @"Tiles\Decoration\zombie_remains";
         public const string DECO_SKELETON_REMAINS = @"Tiles\Decoration\skeleton_remains"; //@@MP (Release 2)
         public const string DECO_VOMIT = @"Tiles\Decoration\vomit";
+        public const string DECO_RAT_ZOMBIE_REMAINS = @"Tiles\Decoration\rat_zombie_remains"; //@@MP (Release 5-4)
 
         public const string DECO_POSTERS1 = @"Tiles\Decoration\posters1";
         public const string DECO_POSTERS2 = @"Tiles\Decoration\posters2";
@@ -185,6 +186,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_WALL_SEWER_DAMAGED = @"Tiles\Decoration\wall_sewer_damaged";
         public const string DECO_WALL_STONE_DAMAGED = @"Tiles\Decoration\wall_stone_damaged";
         public const string DECO_WALL_LIGHT_BROWN_DAMAGED = @"Tiles\Decoration\wall_light_brown_damaged"; //@@MP (Release 4)
+
         #endregion
 
         #region Map objects
@@ -683,6 +685,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_ZOMBIE_REMAINS);
             Load(DECO_SKELETON_REMAINS); //@@MP (Release 2)
             Load(DECO_VOMIT);
+            Load(DECO_RAT_ZOMBIE_REMAINS); //@@MP (Release 5-4)
 
             Load(DECO_POSTERS1);
             Load(DECO_POSTERS2);

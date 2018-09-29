@@ -1171,16 +1171,16 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.SCREAM_FAR_06, GameSounds.SCREAM_FAR_06_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_07, GameSounds.SCREAM_FAR_07_FILE);
             //@@MP (Release 3)
-            m_SFXManager.Load(GameSounds.BASH_PLAYER, GameSounds.BASH_PLAYER_FILE);
-            m_SFXManager.Load(GameSounds.BASH_NEARBY, GameSounds.BASH_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.BASH_WOOD_PLAYER, GameSounds.BASH_WOOD_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.BASH_WOOD_NEARBY, GameSounds.BASH_WOOD_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.TURN_PAGE, GameSounds.TURN_PAGE_FILE);
             m_SFXManager.Load(GameSounds.UNDEAD_EAT_NEARBY, GameSounds.UNDEAD_EAT_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.UNDEAD_RISE_NEARBY, GameSounds.UNDEAD_RISE_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.VOMIT_NEARBY, GameSounds.VOMIT_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.SHOVE_PLAYER, GameSounds.SHOVE_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.SHOVE_NEARBY, GameSounds.SHOVE_NEARBY_FILE);
-            m_SFXManager.Load(GameSounds.PUSH_OBJECT_VISIBLE, GameSounds.PUSH_OBJECT_VISIBLE_FILE);
-            m_SFXManager.Load(GameSounds.PUSH_OBJECT_AUDIBLE, GameSounds.PUSH_OBJECT_AUDIBLE_FILE);
+            m_SFXManager.Load(GameSounds.PUSH_METAL_OBJECT_VISIBLE, GameSounds.PUSH_METAL_OBJECT_VISIBLE_FILE);
+            m_SFXManager.Load(GameSounds.PUSH_METAL_OBJECT_AUDIBLE, GameSounds.PUSH_METAL_OBJECT_AUDIBLE_FILE);
             m_SFXManager.Load(GameSounds.BUILDING, GameSounds.BUILDING_FILE);
             m_SFXManager.Load(GameSounds.CAN_TRAP_PLAYER, GameSounds.CAN_TRAP_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.BEAR_TRAP_PLAYER, GameSounds.BEAR_TRAP_PLAYER_FILE);
@@ -1202,10 +1202,21 @@ namespace djack.RogueSurvivor.Engine
             //@MP (Release 5-1)
             m_SFXManager.Load(GameSounds.NAIL_GUN, GameSounds.NAIL_GUN_FILE);
             //@MP (Release 5-3)
-            m_SFXManager.Load(GameSounds.BREAKWOODENDOOR_PLAYER, GameSounds.BREAKWOODENDOOR_PLAYER_FILE);
-            m_SFXManager.Load(GameSounds.BREAKWOODENDOOR_NEARBY, GameSounds.BREAKWOODENDOOR_NEARBY_FILE);
-            m_SFXManager.Load(GameSounds.BREAKGLASSDOOR_PLAYER, GameSounds.BREAKGLASSDOOR_PLAYER_FILE);
-            m_SFXManager.Load(GameSounds.BREAKGLASSDOOR_NEARBY, GameSounds.BREAKGLASSDOOR_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.BREAK_WOODENDOOR_PLAYER, GameSounds.BREAK_WOODENDOOR_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.BREAK_WOODENDOOR_NEARBY, GameSounds.BREAK_WOODENDOOR_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.BREAK_GLASSDOOR_PLAYER, GameSounds.BREAK_GLASSDOOR_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.BREAK_GLASSDOOR_NEARBY, GameSounds.BREAK_GLASSDOOR_NEARBY_FILE);
+            //@MP (Release 5-4)
+            m_SFXManager.Load(GameSounds.BREAK_METALDOOR_PLAYER, GameSounds.BREAK_METALDOOR_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.BREAK_METALDOOR_NEARBY, GameSounds.BREAK_METALDOOR_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.BASH_OTHER_OBJECTS_PLAYER, GameSounds.BASH_OTHER_OBJECTS_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.BASH_OTHER_OBJECTS_NEARBY, GameSounds.BASH_OTHER_OBJECTS_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.BREAK_CERAMIC_VISIBLE, GameSounds.BREAK_CERAMIC_VISIBLE_FILE);
+            m_SFXManager.Load(GameSounds.BASH_CERAMIC_VISIBLE, GameSounds.BASH_CERAMIC_VISIBLE_FILE);
+            m_SFXManager.Load(GameSounds.BASH_METALDOOR_PLAYER, GameSounds.BASH_METALDOOR_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.BASH_METALDOOR_NEARBY, GameSounds.BASH_METALDOOR_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.PUSH_WOODEN_OBJECT_VISIBLE, GameSounds.PUSH_WOODEN_OBJECT_VISIBLE_FILE);
+            m_SFXManager.Load(GameSounds.PUSH_WOODEN_OBJECT_AUDIBLE, GameSounds.PUSH_WOODEN_OBJECT_AUDIBLE_FILE);
 
             m_UI.UI_Clear(Color.Black);
             m_UI.UI_DrawStringBold(Color.White, "Loading sfxs... done!", 0, 0);
@@ -11992,30 +12003,26 @@ namespace djack.RogueSurvivor.Engine
                 SpendActorStaminaPoints(actor, Rules.STAMINA_COST_JUMP);
 
                 // show.
-                if (actor.IsPlayer || IsVisibleToPlayer(actor))// || IsAudibleToPlayer(newLocation)) //@@MP (Release 2)
+                if (IsAudibleToPlayer(newLocation, Rules.QUIET_NOISE_RADIUS)) //@@MP - switched to IsVisible (Release 2), changed it back to audible now that it can be supplied a range (Release 5-4)
                 {
-                    if (s_Options.PlaySFXs)
+                    if (mapObj.TheName == "the chain wire fence") //@@MP - allows for other jumped on sounds added as elseifs. order them by most common descending
                     {
-                        if (mapObj.TheName == "the fence") //@@MP - allows for other jumped on sounds added as elseifs. order them by most common descending
-                        {
-                            if (actor.IsPlayer)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_PLAYER);
-                            else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_NEARBY);
-                        }
-                        else if (mapObj.TheName == "the wrecked car")
-                        {
-                            if (actor.IsPlayer)    
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_CAR_PLAYER);
-                            else if (IsVisibleToPlayer(actor))
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_CAR_NEARBY);
-                        }
+                        if (actor.IsPlayer)
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_PLAYER);
+                        else
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_NEARBY);
                     }
-                    else
+                    else if (mapObj.TheName == "the wrecked car")
                     {
-                        AddMessage(MakeMessage(actor, Conjugate(actor, VERB_JUMP_ON), mapObj));
+                        if (actor.IsPlayer)    
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_CAR_PLAYER);
+                        else
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_CAR_NEARBY);
                     }
                 }
+
+                if (IsVisibleToPlayer(actor) && !actor.IsPlayer) //@@MP - moved out of the IsAudible check (Release 5-4)
+                    AddMessage(MakeMessage(actor, Conjugate(actor, VERB_JUMP_ON), mapObj));
 
                 // if CanJumpStumble ability, has a chance to stumble.
                 if (actor.Model.Abilities.CanJumpStumble && m_Rules.RollChance(Rules.JUMP_STUMBLE_CHANCE))
@@ -12058,45 +12065,37 @@ namespace djack.RogueSurvivor.Engine
                 // player hears?
                 DiceRoller roller = new DiceRoller();
                 int screamSelected = roller.Roll(0, 6); //@@MP - there are multiple screams, this will randomise which one is heard
-                if (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && !IsVisibleToPlayer(actor) && IsAudibleToPlayer(actor.Location)) //@@MP - people scream a lot, so I can see why it only had a 10% chance
+                if (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && IsAudibleToPlayer(actor.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP (Release 2), changed it to audible now that it can be supplied a range (Release 5-4)
                 {
-                    if (s_Options.PlaySFXs) //@@MP (Release 2)
+                    switch (screamSelected) //@@MP (Release 2)
                     {
-                        switch (screamSelected)
-                        {
-                            case 0: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_01); break;
-                            case 1: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_02); break;
-                            case 2: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_03); break;
-                            case 3: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_04); break;
-                            case 4: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_05); break;
-                            case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_06); break;
-                            case 6: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_07); break;
-                            default:
-                                throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
-                        }
+                        case 0: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_01); break;
+                        case 1: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_02); break;
+                        case 2: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_03); break;
+                        case 3: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_04); break;
+                        case 4: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_05); break;
+                        case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_06); break;
+                        case 6: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_07); break;
+                        default:
+                            throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
                     }
-                    else
-                        AddMessageIfAudibleForPlayer(actor.Location, MakePlayerCentricMessage("You hear screams of terror", actor.Location.Position));
+                    AddMessageIfAudibleForPlayer(actor.Location, MakePlayerCentricMessage("You hear screams of terror", actor.Location.Position)); //@@MP - originally was either audio or message (Release 5-4)
                 }
-                else if (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && IsVisibleToPlayer(actor)) //@@MP (Release 2)
+                else if (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && IsAudibleToPlayer(actor.Location, Rules.MODERATE_NOISE_RADIUS)) //@@MP - people scream a lot, so I can see why it only had a 10% chance (n/a). Changed it to audible now that it can be supplied a range (Release 5-4)
                 {
-                    if (s_Options.PlaySFXs)
+                    switch (screamSelected) //@@MP (Release 2)
                     {
-                        switch (screamSelected)
-                        {
-                            case 0: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_01); break;
-                            case 1: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_02); break;
-                            case 2: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_03); break;
-                            case 3: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_04); break;
-                            case 4: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_05); break;
-                            case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_06); break;
-                            case 6: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_07); break;
-                            default:
-                                throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
-                        }
+                        case 0: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_01); break;
+                        case 1: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_02); break;
+                        case 2: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_03); break;
+                        case 3: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_04); break;
+                        case 4: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_05); break;
+                        case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_06); break;
+                        case 6: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_07); break;
+                        default:
+                            throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
                     }
-                    else
-                        AddMessageIfAudibleForPlayer(actor.Location, MakePlayerCentricMessage("You hear screams of terror", actor.Location.Position));
+                    AddMessageIfAudibleForPlayer(actor.Location, MakePlayerCentricMessage("You hear screams of terror", actor.Location.Position)); //@@MP - originally was either audio or message (Release 5-4)
                 }
             }
             #endregion
@@ -12354,43 +12353,8 @@ namespace djack.RogueSurvivor.Engine
             // flag.
             trap.IsTriggered = true;
 
-            // effect: damage on victim? (actor)
-            int damage = model.Damage * trap.Quantity;
-            if (damage > 0 && victim != null) //@@MP - victim can be null if an object (eg chair) is pushed onto the tile
-            {
-                InflictDamage(victim, damage, false);
-                switch (trap.TheName.ToString()) //@@MP - ensure at least some blood is dropped for the nastier traps (Release 3)
-                {
-                    case "the bear trap":
-                    case "the spike":
-                        SplatterBlood(map, pos, true);
-                        break;
-                    default: break;
-                }
-                if (visible)
-                {
-                    AddMessage(MakeMessage(victim, String.Format("is hurt by {0} for {1} damage!", trap.AName, damage)));
-                    AddOverlay(new OverlayImage(MapToScreen(victim.Location.Position), GameImages.ICON_MELEE_DAMAGE));
-                    AddOverlay(new OverlayText(MapToScreen(victim.Location.Position).Add(DAMAGE_DX, DAMAGE_DY), Color.White, damage.ToString(), Color.Black));
-                    RedrawPlayScreen();
-                    AnimDelay(victim.IsPlayer ? DELAY_NORMAL : DELAY_SHORT);
-                    ClearOverlays();
-                    RedrawPlayScreen();
-                }
-            }
-            // effect: noise? (actor, mobj)
-            if (model.IsNoisy)
-            {
-                if (visible)
-                {
-                    if (victim != null)
-                        AddMessage(MakeMessage(victim, String.Format("stepping on {0} makes a bunch of noise!", trap.AName)));
-                    else if (mobj != null)
-                        AddMessage(new Message(String.Format("{0} makes a lot of noise!", Capitalize(trap.TheName)), map.LocalTime.TurnCounter));
-                }
-                OnLoudNoise(map, pos, model.NoiseName);
-            }
-
+            // audio
+            Location location = new Location(map, pos); //@@MP (Release 5-4)
             //@@MP - play sounds as relevant (Release 3)
             if (victim != null && victim.IsPlayer)
             {
@@ -12411,7 +12375,7 @@ namespace djack.RogueSurvivor.Engine
                     default: break;
                 }
             }
-            else if (victim != null && visible)
+            else if (victim != null && IsAudibleToPlayer(location,Rules.QUIET_NOISE_RADIUS)) //@@MP - changed from visible to audible now that it can be supplied a range (Release 5-4)
             {
                 bool actorScream = false;
                 switch (trap.TheName.ToString())
@@ -12445,9 +12409,11 @@ namespace djack.RogueSurvivor.Engine
                         default:
                             throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
                     }
+                    if (!IsVisibleToPlayer(victim)) //@@MP (Release 5-4)
+                        AddMessageIfAudibleForPlayer(victim.Location, MakePlayerCentricMessage("You hear screams of terror from someone", victim.Location.Position));
                 }
             }
-            else if (victim != null && IsAudibleToPlayer(victim.Location))
+            else if (victim != null && IsAudibleToPlayer(location, Rules.MODERATE_NOISE_RADIUS)) //@@MP - changed from IsAudibleToPlayer(victim.Location)) to audible with a supplied a range (Release 5-4)
             {
                 bool actorScream = false;
                 switch (trap.TheName.ToString())
@@ -12480,7 +12446,46 @@ namespace djack.RogueSurvivor.Engine
                         default:
                             throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
                     }
+                    if (!IsVisibleToPlayer(victim)) //@@MP (Release 5-4)
+                        AddMessageIfAudibleForPlayer(victim.Location, MakePlayerCentricMessage("You hear screams of terror from someone", victim.Location.Position));
                 }
+            }
+
+            // effect: damage on victim? (actor)  //@MP - moved to after the sfx to make them sync better (Release 5-4)
+            int damage = model.Damage * trap.Quantity;
+            if (damage > 0 && victim != null) //@@MP - victim can be null if an object (eg chair) is pushed onto the tile
+            {
+                InflictDamage(victim, damage, false);
+                switch (trap.TheName.ToString()) //@@MP - ensure at least some blood is dropped for the nastier traps (Release 3)
+                {
+                    case "the bear trap":
+                    case "the spike":
+                        SplatterBlood(map, pos, true);
+                        break;
+                    default: break;
+                }
+                if (visible)
+                {
+                    AddMessage(MakeMessage(victim, String.Format("is hurt by {0} for {1} damage!", trap.AName, damage)));
+                    AddOverlay(new OverlayImage(MapToScreen(victim.Location.Position), GameImages.ICON_MELEE_DAMAGE));
+                    AddOverlay(new OverlayText(MapToScreen(victim.Location.Position).Add(DAMAGE_DX, DAMAGE_DY), Color.White, damage.ToString(), Color.Black));
+                    RedrawPlayScreen();
+                    AnimDelay(victim.IsPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                    ClearOverlays();
+                    RedrawPlayScreen();
+                }
+            }
+            // effect: noise? (actor, mobj)  //@MP - moved to after the sfx to make them sync better (Release 5-4)
+            if (model.IsNoisy)
+            {
+                if (visible)
+                {
+                    if (victim != null)
+                        AddMessage(MakeMessage(victim, String.Format("stepping on {0} makes a bunch of noise!", trap.AName)));
+                    else if (mobj != null)
+                        AddMessage(new Message(String.Format("{0} makes a lot of noise!", Capitalize(trap.TheName)), map.LocalTime.TurnCounter));
+                }
+                OnLoudNoise(map, pos, model.NoiseName);
             }
 
             // if one time trigger = deactivate.
@@ -12822,7 +12827,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             //@@MP - moved from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
-            MapObject mapObj = player.Location.Map.GetMapObjectAt(player.Location.Position + direction);
+            MapObject mapObj = player.Location.Map.GetMapObjectAt(player.Location.Position + direction); 
             if (mapObj != null && !mapObj.IsContainer)
             {
                 AddMessage(MakeErrorMessage("Cannot climb on that"));
@@ -12838,7 +12843,7 @@ namespace djack.RogueSurvivor.Engine
 
             // special cases: unopenable ('locked') doors, tearing down barricades as living.
             DoorWindow door = player.Location.Map.GetMapObjectAt(player.Location.Position + direction) as DoorWindow;
-            if (door != null && !door.IsBarricaded && door.AName == "a locked door" && !player.Model.Abilities.IsUndead) //@@MP - move this check from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
+            if (door != null && !door.IsBarricaded && door.AName == "a locked door" && !player.Model.Abilities.IsUndead) //@@MP - moved this check from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
             {
                 AddMessage(MakeErrorMessage("This door cannot be opened."));
                 RedrawPlayScreen();
@@ -12871,7 +12876,7 @@ namespace djack.RogueSurvivor.Engine
                     return false;
                 }
             }
-
+            
             AddMessage(MakeErrorMessage(String.Format("Cannot do that : {0}.", bump.FailReason)));
             return false;
         }
@@ -13062,7 +13067,7 @@ namespace djack.RogueSurvivor.Engine
             bool isPlayer = attacker.IsPlayer || defender.IsPlayer;
 
             //if (!isDefVisible && !isAttVisible && !isPlayer && m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP (Release 2)
-            if (isDefVisible || isAttVisible)
+            if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS))//(isDefVisible || isAttVisible) //@MP (Release 5-4)
             {
                 if (!isPlayer)
                     AddMessageIfAudibleForPlayer(attacker.Location, MakePlayerCentricMessage("You hear fighting", attacker.Location.Position));
@@ -13081,7 +13086,7 @@ namespace djack.RogueSurvivor.Engine
                 //hear //@@MP (Release 2)
                 if (isPlayer)
                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_PLAYER);
-                else if (isDefVisible || isAttVisible)
+                else if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS))//(isDefVisible || isAttVisible) //@MP (Release 5-4)
                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_NEARBY);
 
                 // roll damage - double potential if def is sleeping.
@@ -13185,13 +13190,13 @@ namespace djack.RogueSurvivor.Engine
             }   // end of hit
             else // miss
             {
-                if (isPlayer || isAttVisible || isDefVisible) //@@MP - moved isPlayer into this if (Release 3)
-                {
-                    if (isPlayer) //hear //@@MP (Release 2)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_MISS_PLAYER);
-                    else
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_MISS_NEARBY);
+                if (isPlayer) //hear //@@MP (Release 2)
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_MISS_PLAYER);
+                else if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP - added range (Release 5 - 4)
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_MISS_NEARBY);
 
+                if (isAttVisible || isDefVisible) //@@MP - moved isPlayer into this if (Release 3), undid (Release 5-4)
+                {
                     // show
                     AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_MISS), defender));
                     AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_MELEE_MISS));
@@ -13337,7 +13342,7 @@ namespace djack.RogueSurvivor.Engine
             bool isAttVisible = IsVisibleToPlayer(attacker.Location);
             bool isPlayer = attacker.IsPlayer || defender.IsPlayer;
 
-            if (isPlayer) //@@MP - the player is shot at or shoots, so play the CQC sound (Release 2)
+            if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS))// || isPlayer) //@@MP - the player is shot at or shoots, so play the CQC sound (Release 2), changed from isVisible to IsAudible with a supplied a range (Release 5-4)
             {
                 switch (weapon.TheName.ToString())
                 {
@@ -13365,37 +13370,7 @@ namespace djack.RogueSurvivor.Engine
                     default: break;
                 }
             }
-            else if (!isDefVisible && !isAttVisible) //&& !isPlayer && m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP - the noise is within earshot somewhere, so play the far-off sound (Release 2)
-            {
-                if (IsAudibleToPlayer(attacker.Location))
-                {
-                    switch (weapon.TheName.ToString())
-                    {
-                        case "the pistol":
-                        case "the Kolt revolver":
-                        case "the army pistol":
-                        case "the Hans von Hanz pistol":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_FIRE_FAR);
-                            break;
-                        case "the hunting rifle":
-                        case "the precision rifle":
-                        case "the army rifle":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_FAR);
-                            break;
-                        case "the shotgun":
-                        case "the Santaman shotgun":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_FAR);
-                            break;
-                        default: break;
-                    }
-                }
-                else
-                {
-                    if (m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP - lower chance to avoid message spam
-                        AddMessageIfAudibleForPlayer(attacker.Location, MakePlayerCentricMessage("You hear gun shots", attacker.Location.Position));
-                }
-        }
-            else if (isAttVisible || isDefVisible)  //@@MP - we see the shooter, so play the nearby sound (Release 2)
+            else if (IsAudibleToPlayer(attacker.Location, Rules.MODERATE_NOISE_RADIUS))  //@@MP - we see the shooter, so play the nearby sound (Release 2), changed from isVisible to IsAudible with a supplied a range (Release 5-4)
             {
                 switch (weapon.TheName.ToString())
                 {
@@ -13419,6 +13394,34 @@ namespace djack.RogueSurvivor.Engine
                         break;
                     default: break;
                 }
+            }
+            else if (IsAudibleToPlayer(attacker.Location, Rules.LOUD_NOISE_RADIUS)) //&& !isPlayer && m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP - the noise is within earshot somewhere, so play the far-off sound (Release 2), changed from isVisible to IsAudible with a supplied a range (Release 5-4)
+            {
+                switch (weapon.TheName.ToString())
+                {
+                    case "the pistol":
+                    case "the Kolt revolver":
+                    case "the army pistol":
+                    case "the Hans von Hanz pistol":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_FIRE_FAR);
+                        break;
+                    case "the hunting rifle":
+                    case "the precision rifle":
+                    case "the army rifle":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_FAR);
+                        break;
+                    case "the shotgun":
+                    case "the Santaman shotgun":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_FAR);
+                        break;
+                    default: break;
+                }
+            }
+
+            if (m_SFXManager.IsAudioEnabled == false || !isAttVisible) //@@MP - moved out of IsAudibleToPlayer:Far if to make it applicable for all (Release 5-4)
+            {
+                if (m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP - lower chance to avoid message spam
+                    AddMessageIfAudibleForPlayer(attacker.Location, MakePlayerCentricMessage("You hear gun shots", attacker.Location.Position));
             }
 
             if (isAttVisible)
@@ -13668,7 +13671,7 @@ namespace djack.RogueSurvivor.Engine
 
             // blast icon vs audio.
             bool isVisible = IsVisibleToPlayer(location);
-            if (isVisible)
+            if (isVisible || IsAudibleToPlayer(location, Rules.MODERATE_NOISE_RADIUS)) //@@MP - changed from isVisible to also IsAudible with a range(Release 5 - 4)
             {
                 ShowBlastImage(MapToScreen(location.Position), blastAttack, blastAttack.Damage[0]);
                 RedrawPlayScreen();
@@ -13688,34 +13691,33 @@ namespace djack.RogueSurvivor.Engine
                         break;
                     default: throw new ArgumentOutOfRangeException("unhandled explosive type");
                 }
+                AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You see an explosion", location.Position)); //@@MP - made applicable whether sfx enabled or not (Release 5-4)
                 RedrawPlayScreen();
             }
-            else if (IsAudibleToPlayer(location)) //(m_Rules.RollChance(PLAYER_HEAR_EXPLOSION_CHANCE)) //@@MP - explosions are rare, so no need to worry about message/sfx spam (Release 2)
+            else if (IsAudibleToPlayer(location, Rules.LOUD_NOISE_RADIUS)) //(m_Rules.RollChance(PLAYER_HEAR_EXPLOSION_CHANCE)) //@@MP - explosions are rare, so no need to worry about message/sfx spam (Release 2), suppiled IsAudible with a range (Release 5-4)
             {
-                if (s_Options.PlaySFXs)
-                    switch (itemModel.ID) //@@MP - play the appropriate sfx for the explosive type (Release 4)
-                    {
-                        case (int)GameItems.IDs.EXPLOSIVE_GRENADE_PRIMED:
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GRENADE_AUDIBLE);
-                            break;
-                        case (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED:
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_AUDIBLE); //@@MP - it's close enough that it would still be super loud
-                            break;
-                        case (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED:
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_VISIBLE);
-                            break;
-                        default: throw new ArgumentOutOfRangeException("unhandled explosive type");
-                    }
-                else
-                    AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You hear an explosion", location.Position));
+                switch (itemModel.ID) //@@MP - play the appropriate sfx for the explosive type (Release 4)
+                {
+                    case (int)GameItems.IDs.EXPLOSIVE_GRENADE_PRIMED:
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GRENADE_AUDIBLE);
+                        break;
+                    case (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED:
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_AUDIBLE); //@@MP - it's close enough that it would still be audible
+                        break;
+                    case (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED:
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_VISIBLE);
+                        break;
+                    default: throw new ArgumentOutOfRangeException("unhandled explosive type");
+                }
+                AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You hear an explosion", location.Position)); //@@MP - made applicable whether sfx enabled or not (Release 5-4)
             }
             else if (location.Map == m_Player.Location.Map)
             {
-                if (s_Options.PlaySFXs)
-                    if (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_AUDIBLE); //@@MP - it's close enough that it would still be super loud
-                else
-                    AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You hear an explosion", location.Position));
+                if (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED)
+                {
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_AUDIBLE); //@@MP - it's close enough that it would still be super loud
+                    AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You hear a huge explosion", location.Position));
+                }
             }
 
             // ground zero explosion.
@@ -14512,17 +14514,6 @@ namespace djack.RogueSurvivor.Engine
                 Inventory itemsThere = map.GetItemsAt(position);
                 if (itemsThere != null && itemsThere.Contains(it))
                     map.RemoveItemAt(it, position);
-
-                //@@MP - set a timer to regrow wild berries, but only if the bush was picked clean (Release 5-3)
-                if (it.Model.ID == (int)GameItems.IDs.FOOD_WILD_BERRIES)
-                {
-                    MapObject mapObj = map.GetMapObjectAt(position);
-                    if (mapObj != null && mapObj.AName == "a berry bush") //check that they actually came from a berry bush
-                    {
-                        //AddMessage(new Message(String.Format("Berries timer added by {0}",actor.Name), m_Session.WorldTime.TurnCounter, Color.Magenta)); //troubleshooting only
-                        map.AddTimer(new TaskRegrowWildBerries(WorldTime.TURNS_PER_DAY, position.X, position.Y, m_Session.WorldTime.TurnCounter, m_GameItems.WILD_BERRIES.BestBeforeDays, m_GameItems.WILD_BERRIES));
-                    }
-                }
             }
 
             // message
@@ -14921,7 +14912,7 @@ namespace djack.RogueSurvivor.Engine
             //@@MP (Release 2)
             if (actor.IsPlayer)
                 m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.VOMIT_PLAYER);
-            else if (IsVisibleToPlayer(actor)) //@@MP (Release 3)
+            else if (IsAudibleToPlayer(actor.Location)) //@@MP (Release 3), changed from IsVisible to IsAudible (Release 5-4)
                 m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.VOMIT_NEARBY);
         }
 
@@ -15322,34 +15313,10 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
 
+            PlayBashOrBreakSFX(mapObj, true); //@@MP - added (Release 5-3), refactored (Release 5-4)
 
-            //@@MP (Release 5-3)
-            int objectMaterial = 0; //0 = other, 1 = wood, 2 = glass. need to know if we have to play a sfx at the end
-            if (mapObj != null) //@@MP (Release 5-3)
-            {
-                if (mapObj.GivesWood)
-                    objectMaterial = 1;
-                else if (door != null && (isWindow || door.IsTransparent))//mapObj.ImageID == GameImages.OBJ_GLASS_DOOR_CLOSED || mapObj.ImageID == GameImages.OBJ_GLASS_DOOR_OPEN || mapObj.ImageID == GameImages.OBJ_WINDOW_CLOSED || mapObj.ImageID == GameImages.OBJ_WINDOW_OPEN)
-                    objectMaterial = 2; //all glass doors are transparent, wood and iron are not. iron gates, like in subways, are not DoorWindow objects so don't count
-                //@@MP - FIXME: need sounds for other materials like concrete (tombstones), ceramic (pot plants), metal (lamps, iron doors). probably need to add more flags and properties to Data\MapObjects
-            }
-            if (IsVisibleToPlayer(mapObj))
-            {
-                if (objectMaterial == 1)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAKWOODENDOOR_PLAYER);
-                else if (objectMaterial == 2)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAKGLASSDOOR_PLAYER);
-            }
-            else if (IsAudibleToPlayer(mapObj.Location, Rules.LOUD_NOISE_RADIUS))
-            {
-                if (objectMaterial == 1)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAKWOODENDOOR_NEARBY);
-                else if (objectMaterial == 2)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAKGLASSDOOR_NEARBY);
-            } 
-
-            // remove object - but not windows.
-            if (isWindow)
+            // remove object - but not doors and windows.
+            if (door != null) //@@MP (Release 5-4)
             {
                 door.SetState(DoorWindow.STATE_BROKEN);
             }
@@ -15368,11 +15335,7 @@ namespace djack.RogueSurvivor.Engine
             #region Attacking a barricaded door.
             if (door != null && door.IsBarricaded)
             {
-                //@@MP - play the appropriate sfx (Release 3), moved/copied from the very start of the method (Release 5-3)
-                if (actor.IsPlayer)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_PLAYER);
-                else if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(mapObj) || IsAudibleToPlayer(mapObj.Location, Rules.LOUD_NOISE_RADIUS)) //@@MP - added audibility check (Release 5-3))
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_NEARBY);
+                PlayBashOrBreakSFX(mapObj, false); //@@MP - play the appropriate sfx (Release 3), moved/copied from the very start of the method (Release 5-3), refactored (Release 5-4)
 
                 // Spend APs & STA.
                 int bashCost = Rules.BASE_ACTION_COST;
@@ -15443,8 +15406,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                     else
                     {
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_PLAYER); //@@MP - play the appropriate sfx (Release 3), moved/copied from the very start of the method (Release 5-3)
-
+                        PlayBashOrBreakSFX(mapObj, isBroken); //@@MP - play the appropriate sfx (Release 3), moved/copied from the very start of the method (Release 5-3), refactored (Release 5-4)
                         AddMessage(MakeMessage(actor, Conjugate(actor, VERB_BASH), mapObj));
                         if (isActorVisible)
                             AddOverlay(new OverlayImage(MapToScreen(actor.Location.Position), GameImages.ICON_MELEE_ATTACK));
@@ -15463,10 +15425,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                     else
                     {
-                        //@@MP - play the appropriate sfx (Release 3), moved/copied from the very start of the method (Release 5-3)
-                        if (IsAudibleToPlayer(mapObj.Location, Rules.LOUD_NOISE_RADIUS)) //@@MP - added audibility check (Release 5-3))
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_NEARBY);
-
+                        PlayBashOrBreakSFX(mapObj, isBroken); //@@MP - play the appropriate sfx (Release 3), moved/copied from the very start of the method (Release 5-3), refactored (Release 5-4)
                         if (m_Rules.RollChance(PLAYER_HEAR_BASH_CHANCE))
                             AddMessageIfAudibleForPlayer(mapObj.Location, MakePlayerCentricMessage("You hear someone bashing furniture", mapObj.Location.Position));
                     }
@@ -15476,26 +15435,83 @@ namespace djack.RogueSurvivor.Engine
                 ClearOverlays();
             }
             #endregion
+        }
 
+        void PlayBashOrBreakSFX(MapObject mapObj, bool isBroken) //@@MP (Release 5-4)
+        {
+            DoorWindow door = mapObj as DoorWindow;
+            string objectMaterial = "other"; //need to know what sfx to play
+            if (mapObj != null)
+            {
+                if (mapObj.GivesWood && mapObj.AName != "a tree")
+                    objectMaterial = "wood";
+                else if (mapObj.AName == "a chain wire fence")
+                    objectMaterial = "chain fence"; //chain fences must get checked before metal, because they are metal
+                else if (mapObj.IsMetal)
+                    objectMaterial = "metal";
+                else if (door != null && door.IsBarricaded) //wooden barricades
+                    objectMaterial = "wood";
+                else if (door != null && (door.IsWindow || door.IsTransparent)) //wood and metal must get checked first because open doors are true for IsTransparent
+                    objectMaterial = "glass"; //all glass doors are transparent, wood and iron are not. iron gates, like in subways, are not DoorWindow objects so don't count
+                else if (mapObj.AName == "a potted plant")
+                    objectMaterial = "ceramic";
+                //@@MP - FIXME: need sounds for other materials i've missed. might need to add more flags and properties to Data\MapObjects
+            }
 
-            /*//@@MP - play the appropriate sfx (Release 3), moved to end of the method (Release 5-3)
             if (isBroken)
             {
-                if (objectMaterial == 1)
+                if (IsVisibleToPlayer(mapObj))
                 {
-                    if (actor.IsPlayer)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAKWOODENDOOR_PLAYER);
-                    else if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(mapObj) || IsAudibleToPlayer(mapObj.Location, Rules.LOUD_NOISE_RADIUS))
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAKWOODENDOOR_NEARBY);
+                    switch (objectMaterial)
+                    {
+                        case "glass": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_GLASSDOOR_PLAYER); break;
+                        case "metal": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_METALDOOR_PLAYER); break;
+                        case "chain fence": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_PLAYER); break;
+                        case "ceramic": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_CERAMIC_VISIBLE); break;
+                        case "wood":
+                        default: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_WOODENDOOR_PLAYER); break;
+                    }
                 }
-                else if (objectMaterial == 2)
+                else if (IsAudibleToPlayer(mapObj.Location, Rules.MODERATE_NOISE_RADIUS))
                 {
-                    if (actor.IsPlayer)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAKGLASSDOOR_PLAYER);
-                    else if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(mapObj) || IsAudibleToPlayer(mapObj.Location, Rules.LOUD_NOISE_RADIUS))
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAKGLASSDOOR_NEARBY);
+                    switch (objectMaterial)
+                    {
+                        case "glass": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_GLASSDOOR_NEARBY); break;
+                        case "metal": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_METALDOOR_NEARBY); break;
+                        case "chain fence": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_NEARBY); break;
+                        case "ceramic": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_CERAMIC_VISIBLE); break;
+                        case "wood":
+                        default: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_WOODENDOOR_NEARBY); break;
+                    }
                 }
-            }*/
+            }
+            else
+            {
+                if (IsVisibleToPlayer(mapObj))
+                {
+                    switch (objectMaterial)
+                    {
+                        case "metal": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_METALDOOR_PLAYER); break;
+                        case "chain fence": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_PLAYER); break;
+                        case "ceramic": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_CERAMIC_VISIBLE); break;
+                        case "wood": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_WOOD_PLAYER); break;
+                        case "glass":
+                        default: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_OTHER_OBJECTS_PLAYER); break;
+                    }
+                }
+                else if (IsAudibleToPlayer(mapObj.Location, Rules.MODERATE_NOISE_RADIUS))
+                {
+                    switch (objectMaterial)
+                    {
+                        case "metal": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_METALDOOR_NEARBY); break;
+                        case "chain fence": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_NEARBY); break;
+                        case "ceramic": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_CERAMIC_VISIBLE); break;
+                        case "wood": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_WOOD_NEARBY); break;
+                        case "glass":
+                        default: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_OTHER_OBJECTS_NEARBY); break;
+                    }
+                }
+            }
         }
         #endregion
 
@@ -15552,20 +15568,28 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // noise/message.
-            if (isVisible)
+            if (IsAudibleToPlayer(mapObj.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP - changed from isVisible, because if it's that close we'd hear it as loud (Release 5-4)
             {
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_OBJECT_VISIBLE); //@@MP (Release 3)
+                if (mapObj.IsMetal) //@@MP - added sound for wooden items (Release 5-4)
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_METAL_OBJECT_VISIBLE); //@@MP (Release 3)
+                else
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_WOODEN_OBJECT_VISIBLE);
+
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_PUSH), mapObj));
                 RedrawPlayScreen();
             }
-            else
+            else if (!isVisible)
             {
                 // loud noise.
                 OnLoudNoise(map, toPos, "Something being pushed");
                 // player hears?  //@@MP - added a distance check, because the default audible range is big (Release 5-3)
-                if (IsAudibleToPlayer(mapObj.Location, Rules.LOUD_NOISE_RADIUS))// && m_Rules.RollChance(PLAYER_HEAR_PUSH_CHANCE)) //@@MP - to ease up on sfx spam, and chance can be used to reduce it even more (Release 5-3)
+                if (IsAudibleToPlayer(mapObj.Location, Rules.MODERATE_NOISE_RADIUS))// && m_Rules.RollChance(PLAYER_HEAR_PUSH_CHANCE)) //@@MP - to ease up on sfx spam, and chance can be used to reduce it even more (Release 5-3), changed to MODERATE from LOUD (Release 5-4)
                 {
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_OBJECT_AUDIBLE); //@@MP (Release 3)
+                    if (mapObj.IsMetal) //@@MP - added sound for wooden items (Release 5-4)
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_METAL_OBJECT_AUDIBLE); //@@MP (Release 3)
+                    else
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_WOODEN_OBJECT_AUDIBLE);
+
                     AddMessageIfAudibleForPlayer(mapObj.Location, MakePlayerCentricMessage("You hear something being pushed", toPos));
                 } 
             }
@@ -15607,15 +15631,19 @@ namespace djack.RogueSurvivor.Engine
                 OnActorEnterTile(actor);
             }
 
-            // message.
-            bool isVisible = IsVisibleToPlayer(actor) || IsVisibleToPlayer(target) || IsVisibleToPlayer(map, toPos);
-            if (isVisible)
+            //hear?
+            if (IsAudibleToPlayer(actor.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP - changed from isVisible, because if it's that close we'd hear it even if not seen (Release 5-4)
             {
                 if (actor.IsPlayer) //@@MP (Release 3)
                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOVE_PLAYER);
-                else
+                else //@@MP - if it's too far away we'd see it but not hear it. another reason for the change to IsAudibleToPlayer
                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOVE_NEARBY);
+            }
 
+            // message. //@@MP - separated from hear (Release 5-4)
+            bool isVisible = IsVisibleToPlayer(actor) || IsVisibleToPlayer(target) || IsVisibleToPlayer(map, toPos);
+            if (isVisible)
+            {
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_SHOVE), target));
                 RedrawPlayScreen();
             }
@@ -16327,6 +16355,11 @@ namespace djack.RogueSurvivor.Engine
                 {
                     if (!tile.HasDecoration(GameImages.DECO_SKELETON_REMAINS))
                         tile.AddDecoration(GameImages.DECO_SKELETON_REMAINS);
+                }
+                else if (thename.Contains("rat")) //@@MP - added rat corpses (Release 5-4)
+                {
+                    if (!tile.HasDecoration(GameImages.DECO_RAT_ZOMBIE_REMAINS))
+                        tile.AddDecoration(GameImages.DECO_RAT_ZOMBIE_REMAINS);
                 }
                 else
                 {

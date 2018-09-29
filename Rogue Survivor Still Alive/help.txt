@@ -8,14 +8,16 @@ Disk space: 120mb
 
 TROUBLESHOOTING
 
--The game crashes on launch
+-(crashes) The game crashes on launch
 	Right-click RogueGame.exe and select 'Run as administrator'. Please report the issue on the forums.
 
--Game crash when multitasking
+-(crashes) Game crash when multitasking
 	Run the game configuration utility (RSConfig.exe) and try other the video and audio engines.	
 
--(Intel onboard GPU) The game text is blurry
-	In your Intel control panel set "3Dtexture" to "Quality".
+-(interface) The game text is blurry
+	If you have an Intel onboard GPU (ie no dedicated graphics card), open the Intel control panel and set "3Dtexture" to "Quality".
+	Dedicated graphics cards provide similar configuration options that are forced at the driver level, and therefore apply to
+	all games. Check the Control Panel for your flavour of grpahics card.
 
 -(sound) I can't hear any sounds or music
 	Run the game configuration utility (RSConfing.exe) and try other the video and audio engine (SFML/MDX).
@@ -29,6 +31,12 @@ TROUBLESHOOTING
 
 -(sound) I turned off sound effects but I still hear rain.
 	For technical and indolence reasons rain counts as music. Sorry.
+
+-(sound) Some sounds don't always play when they should (eg gunshots).
+	This is due to technical limitations, but may be addressed in future versions.
+
+-(interface) Sometimes the controls stop responding / I'm prompted do something without seeing any pop-up text.
+	This is a deficiency in the video engine and will be address in a future version.
 
 -(general information)
 	Check the wiki at http://roguesurvivor.wikia.com/wiki/Main_Page

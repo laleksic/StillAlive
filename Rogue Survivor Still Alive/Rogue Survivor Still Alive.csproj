@@ -77,13 +77,16 @@
       <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2911.0\Microsoft.DirectX.Direct3DX.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualC" />
-    <Reference Include="sfmlnet-audio-2">
+    <Reference Include="sfmlnet-audio-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-audio-2.dll</HintPath>
     </Reference>
-    <Reference Include="sfmlnet-system-2">
+    <Reference Include="sfmlnet-system-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-system-2.dll</HintPath>
     </Reference>
-    <Reference Include="sfmlnet-window-2">
+    <Reference Include="sfmlnet-window-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-window-2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -245,7 +248,6 @@
     <Compile Include="Engine\Session.cs" />
     <Compile Include="Engine\SFMLMusicManager.cs" />
     <Compile Include="Engine\SFMLSoundManager.cs" />
-    <Compile Include="Engine\Tasks\TaskRegrowWildBerries.cs" />
     <Compile Include="Engine\Tasks\TaskRemoveDecoration.cs" />
     <Compile Include="Engine\TextFile.cs" />
     <Compile Include="Gameplay\AI\BaseAI.cs" />
@@ -310,6 +312,9 @@
     <Content Include="openal32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Images\Tiles\Decoration\rat_zombie_remains.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SFML.NET license.txt" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -339,7 +344,9 @@
     <Content Include="about.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="help.txt" />
+    <Content Include="help.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Data\Actors.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -874,10 +881,10 @@
     <Content Include="Resources\Sfx\shotgun-a2_nearby.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\bash_nearby.ogg">
+    <Content Include="Resources\Sfx\bash_wood_nearby.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\bash_player.ogg">
+    <Content Include="Resources\Sfx\bash_wood_player.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sfx\turn_page.ogg">
@@ -895,7 +902,7 @@
     <Content Include="Resources\Sfx\sfx - undead rise player.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\push_object_visible.ogg">
+    <Content Include="Resources\Sfx\push_metal_object_visible.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sfx\shove_nearby.ogg">
@@ -934,7 +941,7 @@
     <Content Include="Resources\Sfx\bear_trap_player.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\push_object_audible.ogg">
+    <Content Include="Resources\Sfx\push_metal_object_audible.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sfx\grenade_audible.ogg">
@@ -961,22 +968,52 @@
     <Content Include="Rogue Survivor Still Alive saves.lnk">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\breakwoodendoor_nearby.ogg">
+    <Content Include="Resources\Sfx\break_woodendoor_nearby.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\breakwoodendoor_player.ogg">
+    <Content Include="Resources\Sfx\break_woodendoor_player.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\breakglassdoor_nearby.ogg">
+    <Content Include="Resources\Sfx\break_glassdoor_nearby.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\breakglassdoor_player.ogg">
+    <Content Include="Resources\Sfx\break_glassdoor_player.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sfx\rain_inside_looped.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Sfx\rain_outside_looped.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\bash_metaldoor_nearby.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\bash_metaldoor_player.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\bash_other_objects_nearby.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\bash_other_objects_player.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\break_metaldoor_nearby.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\break_metaldoor_player.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\bash_ceramic_visible.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\break_ceramic_visible.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\push_wooden_object_audible.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\push_wooden_object_visible.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -39,7 +39,8 @@ namespace djack.RogueSurvivor.Data
             GIVES_WOOD = (1 << 6),
             IS_MOVABLE = (1 << 7),
             BREAKS_WHEN_FIRED_THROUGH = (1 << 8),
-            STANDON_FOV_BONUS = (1<<9)
+            STANDON_FOV_BONUS = (1<<9),
+            IS_METAL = (1 << 10) //@@MP (Release 5-4)
         }
         
         #endregion
@@ -160,6 +161,12 @@ namespace djack.RogueSurvivor.Data
         {
             get { return GetFlag(Flags.IS_COUCH); }
             set { SetFlag(Flags.IS_COUCH, value); }
+        }
+
+        public bool IsMetal //@@MP (Release 5-4)
+        {
+            get { return GetFlag(Flags.IS_METAL); }
+            set { SetFlag(Flags.IS_METAL, value); }
         }
 
         public bool IsBreakable

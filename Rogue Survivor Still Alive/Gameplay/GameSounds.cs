@@ -121,10 +121,10 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string SCREAM_FAR_07_FILE = PATH + "scream_far_07";
 
         //@@MP (Release 3)
-        public static readonly string BASH_PLAYER = "bash something";
-        public static readonly string BASH_PLAYER_FILE = PATH + "bash_player";
-        public static readonly string BASH_NEARBY = "something bashed nearby";
-        public static readonly string BASH_NEARBY_FILE = PATH + "bash_nearby";
+        public static readonly string BASH_WOOD_PLAYER = "bash something wooden";
+        public static readonly string BASH_WOOD_PLAYER_FILE = PATH + "bash_wood_player";
+        public static readonly string BASH_WOOD_NEARBY = "something wooden bashed nearby";
+        public static readonly string BASH_WOOD_NEARBY_FILE = PATH + "bash_wood_nearby";
 
         public static readonly string TURN_PAGE = "turns page";
         public static readonly string TURN_PAGE_FILE = PATH + "turn_page";
@@ -142,10 +142,10 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string SHOVE_NEARBY = "actor shoved nearby";
         public static readonly string SHOVE_NEARBY_FILE = PATH + "shove_nearby";
 
-        public static readonly string PUSH_OBJECT_VISIBLE = "pushes visible object";
-        public static readonly string PUSH_OBJECT_VISIBLE_FILE = PATH + "push_object_visible";
-        public static readonly string PUSH_OBJECT_AUDIBLE = "pushes audible object";
-        public static readonly string PUSH_OBJECT_AUDIBLE_FILE = PATH + "push_object_audible";
+        public static readonly string PUSH_METAL_OBJECT_VISIBLE = "pushes visible metal object";
+        public static readonly string PUSH_METAL_OBJECT_VISIBLE_FILE = PATH + "push_metal_object_visible";
+        public static readonly string PUSH_METAL_OBJECT_AUDIBLE = "pushes audible metal object";
+        public static readonly string PUSH_METAL_OBJECT_AUDIBLE_FILE = PATH + "push_metal_object_audible";
 
         public static readonly string BUILDING = "barricade repair fortify";
         public static readonly string BUILDING_FILE = PATH + "building";
@@ -153,7 +153,7 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string CAN_TRAP_PLAYER = "player steps on can";
         public static readonly string CAN_TRAP_PLAYER_FILE = PATH + "can_trap_player";
         public static readonly string BEAR_TRAP_PLAYER = "player triggers bear trap";
-        public static readonly string BEAR_TRAP_PLAYER_FILE = PATH + "can_trap_player";
+        public static readonly string BEAR_TRAP_PLAYER_FILE = PATH + "bear_trap_player";
         public static readonly string SPIKE_TRAP = "player steps on spikes";
         public static readonly string SPIKE_TRAP_FILE = PATH + "spike_trap";
         public static readonly string BARBED_WIRE_TRAP_PLAYER = "player in barbed wire";
@@ -196,17 +196,39 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string NAIL_GUN_FILE = PATH + "nail_gun";
 
         //@@MP (Release 5-3)
-        public static readonly string BREAKWOODENDOOR_PLAYER = "break wooden door";
-        public static readonly string BREAKWOODENDOOR_PLAYER_FILE = PATH + "breakwoodendoor_player";
-        public static readonly string BREAKWOODENDOOR_NEARBY = "wooden door breaks nearby";
-        public static readonly string BREAKWOODENDOOR_NEARBY_FILE = PATH + "breakwoodendoor_nearby";
-        public static readonly string BREAKGLASSDOOR_PLAYER = "break glass door";
-        public static readonly string BREAKGLASSDOOR_PLAYER_FILE = PATH + "breakglassdoor_player";
-        public static readonly string BREAKGLASSDOOR_NEARBY = "glass door breaks nearby";
-        public static readonly string BREAKGLASSDOOR_NEARBY_FILE = PATH + "breakglassdoor_nearby";
+        public static readonly string BREAK_WOODENDOOR_PLAYER = "break wooden door";
+        public static readonly string BREAK_WOODENDOOR_PLAYER_FILE = PATH + "break_woodendoor_player";
+        public static readonly string BREAK_WOODENDOOR_NEARBY = "wooden door breaks nearby";
+        public static readonly string BREAK_WOODENDOOR_NEARBY_FILE = PATH + "break_woodendoor_nearby";
+        public static readonly string BREAK_GLASSDOOR_PLAYER = "break glass door";
+        public static readonly string BREAK_GLASSDOOR_PLAYER_FILE = PATH + "break_glassdoor_player";
+        public static readonly string BREAK_GLASSDOOR_NEARBY = "glass door breaks nearby";
+        public static readonly string BREAK_GLASSDOOR_NEARBY_FILE = PATH + "break_glassdoor_nearby";
         public static readonly string RAIN_OUTSIDE = "outside whilst raining";
         public static readonly string RAIN_OUTSIDE_FILE = PATH + "rain_outside_looped";
         public static readonly string RAIN_INSIDE = "inside whilst raining";
         public static readonly string RAIN_INSIDE_FILE = PATH + "rain_inside_looped";
+
+        //@@MP (Release 5-4)
+        public static readonly string BREAK_METALDOOR_PLAYER = "break metal door";
+        public static readonly string BREAK_METALDOOR_PLAYER_FILE = PATH + "break_metaldoor_player";
+        public static readonly string BREAK_METALDOOR_NEARBY = "metal door breaks nearby";
+        public static readonly string BREAK_METALDOOR_NEARBY_FILE = PATH + "break_metaldoor_nearby";
+        public static readonly string BREAK_CERAMIC_VISIBLE = "something ceramic breaks";
+        public static readonly string BREAK_CERAMIC_VISIBLE_FILE = PATH + "break_ceramic_visible";
+        public static readonly string BASH_OTHER_OBJECTS_PLAYER = "player bashes other object";
+        public static readonly string BASH_OTHER_OBJECTS_PLAYER_FILE = PATH + "bash_other_objects_player";
+        public static readonly string BASH_OTHER_OBJECTS_NEARBY = "bash other objects nearby";
+        public static readonly string BASH_OTHER_OBJECTS_NEARBY_FILE = PATH + "bash_other_objects_nearby";
+        public static readonly string BASH_CERAMIC_VISIBLE = "something ceramic is bashed";
+        public static readonly string BASH_CERAMIC_VISIBLE_FILE = PATH + "bash_ceramic_visible";
+        public static readonly string BASH_METALDOOR_PLAYER = "bash metal door";
+        public static readonly string BASH_METALDOOR_PLAYER_FILE = PATH + "bash_metaldoor_player";
+        public static readonly string BASH_METALDOOR_NEARBY = "metal door bashed nearby";
+        public static readonly string BASH_METALDOOR_NEARBY_FILE = PATH + "bash_metaldoor_nearby";
+        public static readonly string PUSH_WOODEN_OBJECT_VISIBLE = "pushes visible wooden object";
+        public static readonly string PUSH_WOODEN_OBJECT_VISIBLE_FILE = PATH + "push_wooden_object_visible";
+        public static readonly string PUSH_WOODEN_OBJECT_AUDIBLE = "pushes audible wooden object";
+        public static readonly string PUSH_WOODEN_OBJECT_AUDIBLE_FILE = PATH + "push_wooden_object_audible";
     }
 }

@@ -48,7 +48,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 
 -Melee attack : https://freesound.org/people/Pinball_Wiz/sounds/394874/ by Pinball_Wiz
 -Melee attack miss : https://freesound.org/people/timmy_h123/sounds/160500/ by timmy_h123
--Pistol : https://freesound.org/people/morganpurkis/sounds/391328/ by morganpurkis
+-Pistol : https://opengameart.org/content/q009s-weapon-sounds by Q009 (replaced original)
 -Hunting rifle : https://freesound.org/people/morganpurkis/sounds/387692/ by morganpurkis
 -Shotgun v2 : https://freesound.org/people/Deganoth/sounds/348671/ by Deganoth (replaced original)
 -Crossbow : https://freesound.org/people/Erdie/sounds/65733/ by Erdie
@@ -64,7 +64,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Woman Scream AAA : https://freesound.org/people/thanvannispen/sounds/9429/ by thanvannispen
 -Chain link fence : https://freesound.org/people/RHumphries/sounds/7150/ by RHumphries
 -Zipper : https://freesound.org/people/Q.K./sounds/56274/ by Q.K.
--Bash : https://freesound.org/people/qubodup/sounds/151624/ by qubodup
+-Bash on wooden object : https://freesound.org/people/qubodup/sounds/151624/ by qubodup
 -Vomit : https://freesound.org/people/Anko6/sounds/388525/ by Anko6
 -Eating : https://freesound.org/people/Sethroph/sounds/334209/ by Sethroph
 -Building (barricade, fortify, repair) : https://freesound.org/people/cognito%20perceptu/sounds/17012/ by cognito perceptu
@@ -81,7 +81,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Pills : https://freesound.org/people/gneube/sounds/315836/ by gneube
 -Page turn : https://freesound.org/people/alixgaus/sounds/383542/ by alixgaus
 -Shove : https://freesound.org/people/Reitanna/sounds/344004/ by Reitanna
--Push object : https://freesound.org/people/newagesoup/sounds/337847/ by newagesoup
+-Push metal object : https://freesound.org/people/newagesoup/sounds/337847/ by newagesoup
 -Bear trap : https://freesound.org/people/ThePriest909/sounds/278203/ by ThePriest909
 -Barbed wire trap : https://freesound.org/people/zxz41/sounds/241931/ by zxz41
 -Spikes trap : https://freesound.org/people/Anthousai/sounds/337522/ by Anthousai
@@ -92,6 +92,11 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Breaking wooden door : https://opengameart.org/content/35-wooden-crackshitsdestructions by Independent.nu
 -Breaking glass door/window : https://freesound.org/people/m1a2t3z4/sounds/112213/ by m1a2t3z4
 -Rain : https://freesound.org/people/lennyboy/sounds/244055/ by lennyboy
+-Bash on metal door : https://freesound.org/people/vumseplutten1709/sounds/238923/ by vumseplutten1709
+-Bash & break ceramics  : https://freesound.org/people/Kinoton/sounds/399080/ by Kinoton
+-Bash 'other' objects : https://freesound.org/people/newagesoup/sounds/348243/ by newagesoup
+-Break metal door : https://freesound.org/people/TheSoundcatcher/sounds/144912/ by TheSoundcatcher
+-Push wooden object : https://freesound.org/people/D%20W/sounds/146998/ by D W
 
 
 IMAGE CREDITS

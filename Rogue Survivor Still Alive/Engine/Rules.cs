@@ -190,9 +190,11 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Loud noises
-        public const int LOUD_NOISE_RADIUS = 7; //5; //@@MP (Release 5-3)
+        public const int LOUD_NOISE_RADIUS = 11; //@@MP - eg firing a gun. can be used for Far sfxs (). Prior to R5-3 was 5 (Release 5-3), prior to R5-4 was 7 (Release 5-4)
+        public const int MODERATE_NOISE_RADIUS = 8; //@@MP - eg climbing on a car. can be used for Nearby sfxs (). (Release 5-4)
+        public const int QUIET_NOISE_RADIUS = 5; //@@MP - eg conversation. can be used for Player or Visible sfxs (). (Release 5-4)
         const int LOUD_NOISE_BASE_WAKEUP_CHANCE = 10;
-        const int LOUD_NOISE_DISTANCE_BONUS = 8; //10; //@@MP (Release 5-3)
+        const int LOUD_NOISE_DISTANCE_BONUS = 8; //10; //@@MP - reduced to balance the increase in LOUD_NOISE_RADIUS (Release 5-3)
         #endregion
 
         #region Victims dropping items.
@@ -586,7 +588,7 @@ namespace djack.RogueSurvivor.Engine
                 }
 
                 // 3. Map object is not a container.
-                if (mapObj == null || !mapObj.IsContainer)
+                if (!mapObj.IsContainer) //@@MP - removed null check (Release 5-3)
                 {
                     reason = "object is not a container";
                     return false;
@@ -602,10 +604,8 @@ namespace djack.RogueSurvivor.Engine
                 }
 
                 // 5. Actor cannot take the item.
-                if (!actor.Model.Abilities.HasInventory ||
-                    !actor.Model.Abilities.CanUseMapObjects ||
-                    actor.Inventory == null ||
-                    !CanActorGetItem(actor, invThere.TopItem))
+                if (!actor.Model.Abilities.HasInventory || !actor.Model.Abilities.CanUseMapObjects ||
+                    actor.Inventory == null || !CanActorGetItem(actor, invThere.TopItem))
                 {
                     reason = "cannot take an item";
                     return false;
@@ -1806,10 +1806,17 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // 2. Door is not closed or broken.
-            if (door.State != DoorWindow.STATE_CLOSED && door.State != DoorWindow.STATE_BROKEN)
+            //@MP -  Trying to barricade an open door told the player it was “not open”. Fixed that, and made the Open and Broken checks separate (Release 5-4)
+            // 2a. Door is not broken.
+            if (door.State == DoorWindow.STATE_BROKEN)
             {
-                reason = "not open or broken";
+                reason = "the door is broken";
+                return false;
+            }
+            // 2b. Door is not closed.
+            if (door.State != DoorWindow.STATE_CLOSED)
+            {
+                reason = "the door is open";
                 return false;
             }
 
@@ -1876,7 +1883,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Actor is tired.
             if (IsActorTired(actor))
             {
-                reason = "tired";
+                reason = "out of stamina";
                 return false;
             }
 

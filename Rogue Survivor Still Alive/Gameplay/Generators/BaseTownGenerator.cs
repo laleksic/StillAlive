@@ -2662,7 +2662,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     if (placeFence)
                     {
                         map.SetTileModelAt(pt.X, pt.Y, m_Game.GameTiles.FLOOR_DIRT);
-                        return base.MakeObjFence(GameImages.OBJ_FENCE);
+                        return base.MakeObjFence(GameImages.OBJ_FENCE); //@@MP - standard chain wire fence
                     }
                     else
                         return null;
@@ -3491,9 +3491,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     if (placeFence)
                     {
                         if (!isgraveyard) //@@MP (Release 4)
-                            return base.MakeObjFence(GameImages.OBJ_FENCE);
+                            return base.MakeObjFence(GameImages.OBJ_FENCE); //@@MP - standard chain wire fence
                         else
-                            return base.MakeObjFence(GameImages.OBJ_GRAVEYARD_FENCE);
+                            return base.MakeObjIronFence(GameImages.OBJ_GRAVEYARD_FENCE); //@@MP - corrected to an iron fence (Release 5-4)
                     }
                     else
                         return null;
@@ -4726,6 +4726,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 3: return MakeShopGroceryItem();
                 case 4: return MakeItemMagazines();
                 case 5: return MakeItemCigarettes();
+                case 6: return MakeItemCellPhone(); //@MP - added more phones, because they were too rare (Release 5-4)
                 default: 
                     throw new ArgumentOutOfRangeException("unhandled roll");
             }

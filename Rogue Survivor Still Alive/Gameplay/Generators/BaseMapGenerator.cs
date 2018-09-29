@@ -327,7 +327,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected DoorWindow MakeObjCharDoor()
         {
-            return new DoorWindow("CHAR door", GameImages.OBJ_CHAR_DOOR_CLOSED, GameImages.OBJ_CHAR_DOOR_OPEN, GameImages.OBJ_CHAR_DOOR_BROKEN, 4 * DoorWindow.BASE_HITPOINTS);
+            return new DoorWindow("CHAR door", GameImages.OBJ_CHAR_DOOR_CLOSED, GameImages.OBJ_CHAR_DOOR_OPEN, GameImages.OBJ_CHAR_DOOR_BROKEN, 4 * DoorWindow.BASE_HITPOINTS)
+            {
+                GivesWood = true
+            };
         }
 
         protected DoorWindow MakeObjGlassDoor()
@@ -343,18 +346,25 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new DoorWindow("iron door", GameImages.OBJ_IRON_DOOR_CLOSED, GameImages.OBJ_IRON_DOOR_OPEN, GameImages.OBJ_IRON_DOOR_BROKEN, 8 * DoorWindow.BASE_HITPOINTS)
             {
-                IsAn = true
+                IsAn = true,
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
         protected MapObject MakeObjLockedDoor(string doorImageID) //@@MP (Release 4)
         {
-            return new MapObject("locked door", doorImageID);
+            return new MapObject("locked door", doorImageID)
+            {
+                IsMetal = true //@@MP (Release 5-4)
+            };
         }
 
         protected DoorWindow MakeObjRollerDoor() //@@MP (Release 4)
         {
-            return new DoorWindow("roller door", GameImages.OBJ_ROLLER_DOOR_CLOSED, GameImages.OBJ_ROLLER_DOOR_OPEN, GameImages.OBJ_ROLLER_DOOR_BROKEN, 6 * DoorWindow.BASE_HITPOINTS);
+            return new DoorWindow("roller door", GameImages.OBJ_ROLLER_DOOR_CLOSED, GameImages.OBJ_ROLLER_DOOR_OPEN, GameImages.OBJ_ROLLER_DOOR_BROKEN, 6 * DoorWindow.BASE_HITPOINTS)
+            {
+                IsMetal = true, //@@MP (Release 5-4)
+            };
         }
 
         protected DoorWindow MakeObjWindow()
@@ -371,11 +381,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected MapObject MakeObjFence(string fenceImageID)
         {
-            return new MapObject("fence", fenceImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 10)
+            return new MapObject("chain wire fence", fenceImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 10) //@@MP - appended 'chain wire' for clarity (Release 5-4)
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
-                GivesWood = true,
+                //GivesWood = true, //@@MP - metal fences shouldn't give wood (Release 5-4)
+                IsMetal = true, //@@MP (Release 5-4)
                 StandOnFovBonus = true
             };
         }
@@ -386,6 +397,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 IsMaterialTransparent = true,
                 IsAn = true,
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
@@ -394,7 +406,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new MapObject("iron gate", gateImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 20)
             {
                 IsMaterialTransparent = true,
-                IsAn = true
+                IsAn = true,
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
@@ -453,7 +466,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 JumpLevel = 1,
                 IsMovable = true,
                 Weight = 100,
-                StandOnFovBonus = true
+                StandOnFovBonus = true,
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
@@ -486,7 +500,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
                 IsCouch = true,
-                IsAn = true
+                IsAn = true,
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
@@ -571,7 +586,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 IsContainer = true,
                 IsMovable = true,
-                Weight = 10
+                Weight = 10,
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
@@ -597,13 +613,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsMovable = true,
                 IsContainer = true, //@@MP (Release 5-3)
                 GivesWood = true,
-                Weight = 10
+                Weight = 10,
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
         protected PowerGenerator MakeObjPowerGenerator(string offImageID, string onImageID)
         {
-            return new PowerGenerator("power generator", offImageID, onImageID);
+            return new PowerGenerator("power generator", offImageID, onImageID)
+            {
+                IsMetal = true //@@MP (Release 5-4)
+            };
         }
 
         public MapObject MakeObjBoard(string imageID, string[] text)
@@ -703,7 +723,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new MapObject("stove oven", stoveOvenImageID)
             {
                 IsMaterialTransparent = true,
-                IsContainer = true //@@MP (Release 5-3)
+                IsContainer = true, //@@MP (Release 5-3)
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
@@ -797,7 +818,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new MapObject("bank safe", banksafeImageID)
             {
-                IsContainer = true
+                IsContainer = true,
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
