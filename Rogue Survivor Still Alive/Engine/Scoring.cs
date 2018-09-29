@@ -265,6 +265,12 @@ namespace djack.RogueSurvivor.Engine
             set;
         }
 
+        public string GameMode //@@MP (Release 5-2)
+        {
+            get;
+            set;
+        }
+
         #region Achievements
         public int CompletedAchievementsCount
         {
@@ -290,7 +296,7 @@ namespace djack.RogueSurvivor.Engine
             InitAchievement(Achievement.IDs.CHAR_BROKE_INTO_OFFICE, 
                 new Achievement(Achievement.IDs.CHAR_BROKE_INTO_OFFICE,
                     "Broke into a CHAR Office",
-                    "Did not broke into XXX",
+                    "Did not break into a XXX",
                     new string[] { "Now try not to die too soon..." },
                     GameMusics.HEYTHERE,
                     1000));
@@ -298,7 +304,7 @@ namespace djack.RogueSurvivor.Engine
             InitAchievement(Achievement.IDs.CHAR_FOUND_UNDERGROUND_FACILITY,
                 new Achievement(Achievement.IDs.CHAR_FOUND_UNDERGROUND_FACILITY,
                     "Found the CHAR Underground Facility",
-                    "Did not found XXX",
+                    "Did not find the XXX",
                     new string[] { "Now, where is the light switch?..." },
                     GameMusics.CHAR_UNDERGROUND_FACILITY,
                     2000));
@@ -306,12 +312,10 @@ namespace djack.RogueSurvivor.Engine
             InitAchievement(Achievement.IDs.CHAR_POWER_UNDERGROUND_FACILITY,
                 new Achievement(Achievement.IDs.CHAR_POWER_UNDERGROUND_FACILITY,
                     "Powered the CHAR Underground Facility",
-                    "Did not XXX the XXX",
-                    new string[] { "Personal message from the game developper : ",
-                                   "Sorry, the rest of the plot is missing.",
-                                   "For now its a dead end.",
-                                   "Enjoy the rest of the game.",
-                                   "See you in a next game version :)"},
+                    "Did not power on the XXX",
+                    new string[] { "**Personal message from the game developer : ",
+                                   "Sorry, the end game isn't implemented yet.",
+                                   "I'm aiming for mid-2018 :)"},
                    GameMusics.CHAR_UNDERGROUND_FACILITY,
                    3000));
             #endregion
@@ -329,32 +333,32 @@ namespace djack.RogueSurvivor.Engine
             #region Reaching Day X
             InitAchievement(Achievement.IDs.REACHED_DAY_07,
                 new Achievement(Achievement.IDs.REACHED_DAY_07,
-                    "Reached Day 7",
-                    "Did not reach XXX",
+                    "Reached day 7",
+                    "Did not reach day 7",
                     new string[] { "Keep staying alive!" },
                     GameMusics.HEYTHERE,
                     1000));
 
             InitAchievement(Achievement.IDs.REACHED_DAY_14,
                 new Achievement(Achievement.IDs.REACHED_DAY_14,
-                    "Reached Day 14",
-                    "Did not reach XXX",
+                    "Reached day 14",
+                    "Did not reach day 14",
                     new string[] { "Keep staying alive!" },
                     GameMusics.HEYTHERE,
                     1000));
 
             InitAchievement(Achievement.IDs.REACHED_DAY_21,
                 new Achievement(Achievement.IDs.REACHED_DAY_21,
-                    "Reached Day 21",
-                    "Did not reach XXX",
+                    "Reached day 21",
+                    "Did not reach day 21",
                     new string[] { "Keep staying alive!" },
                     GameMusics.HEYTHERE,
                     1000));
 
             InitAchievement(Achievement.IDs.REACHED_DAY_28,
                 new Achievement(Achievement.IDs.REACHED_DAY_28,
-                    "Reached Day 28",
-                    "Did not reach XXX",
+                    "Reached day 28",
+                    "Did not reach day 28",
                     new string[] { "Is this the end?" },
                     GameMusics.HEYTHERE,
                     1000));
@@ -552,7 +556,7 @@ namespace djack.RogueSurvivor.Engine
             // - Disable undeads evolution  : x0.5 / x2
             // - Enable Combat Assistant    : x0.75
             // - Enable permadeath          : x2
-            // - Disable Sanity             : x0.5 / x0.95 //@@MP
+            // - Disable Sanity             : x0.5 / x0.95 //@@MP (Release 1)
             // - Aggressive Hungry Civs     : x0.5 / x2
             // - Rats Upgrade               : x1.10 / x0.90
             // - Skeletons Upgrade          : x1.20 / x0.80
@@ -576,7 +580,7 @@ namespace djack.RogueSurvivor.Engine
             if (options.IsPermadeathOn)
                 rating *= 2.0f;
 
-            // - Disabled Sanity loss  //@@MP
+            // - Disabled Sanity loss  //@@MP (Release 1)
             if (!options.IsSanityEnabled)
                 if (side == DifficultySide.FOR_SURVIVOR)
                     rating *= 0.5f;

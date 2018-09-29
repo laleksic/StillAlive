@@ -1,4 +1,36 @@
-﻿STILL ALIVE 1.3.23.3 (aka Release 5-1, ??/1/2018) [Author: MP]
+﻿STILL ALIVE 1.4.25.11 (aka Release 5-2, 9/1/2018) [Author: MP]
+---------------------
+
+Features:
+-Fire may now spread on flammable surfaces (wooden floors, grass, carpet).
+-Awake AI now alert sleeping non-enemy livings of nearby fires.
+-Reviving a living fully restores sanity.
+-Antiviral pills can now be disabled for VTG (see Options menu).
+-Revised and added to game tips ('Tip Of The Dead').
+-Added shortcut to Config folder (saves, scores, screenshots) to base game directory.
+
+Fixes:
+-Fires now damage corpses.
+-AI now correctly avoid traps and fires when following a leader.
+-AI now try to avoid traps when fleeing from fires and explosives.
+-Intelligent, non-civilian AI may now flee from fires.
+-Actors caught in a molotov burst no longer have a chance to splatter blood.
+-Removed chain reactions on explosions when carrying explosives, as it was too OP.
+-High scores and graveyard reflect game mode, undead evolution and other previously missing options.
+-VTG mode no longer forces undead evolution options on the user interface (handled in-code instead).
+-Added explanation of 'Synchronous Simulation' option to the manual. Changed the menu to indicate that it's linked to 'Simulate When Sleeping'.
+|I'll fix this properly when all the Options menu is finalised (more planned for later releases).
+-Added a clear to get rid of the prompt, and a message noting it was cancelled, when the player aborts making a molotov.
+-Corrected grammar of the achievements, and improved their teasers.
+
+Development:
+-Checking for sanity loss can now be used for anything, not just where an actor killed another actor.
+-Added a specialised method for inflicting burn damage to actors and corpses.
+-Corrected the original, crappy implementation of the sanity option.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.3.23.3 (aka Release 5-1, 1/1/2018) [Author: MP]
 --------------------
 
 Features:
@@ -48,7 +80,7 @@ Fixes:
 -Chairs and potted plants don't need to be jumped over, but beds do.
 -Alleviated some of the hoarding that AI do, especially pills and ammo.
 
-Developerment:
+Development:
 -Added a check between IsHungry and IsStarving called IsActorReallyHungry.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -129,6 +161,7 @@ Development:
 -Added a quasi-god mode trigger to debug for testing.
 
 Note: versioning = [major release].[major feature].[minor feature].[bugfix/correction]
+Bugfix/correction only applies to the current changelog, reseting with each release.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

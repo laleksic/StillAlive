@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using System.Data;
 using djack.RogueSurvivor.Engine.MapObjects; //@@MP - for IsClosestDoorInDirectionOpen (Release 5-1)
+using djack.RogueSurvivor.Gameplay; //@@MP - for TileAlreadyHasScorchDecoration (Release 5-2)
+using djack.RogueSurvivor.Engine.Items;
 
 namespace djack.RogueSurvivor.Data
 {
@@ -355,6 +357,31 @@ namespace djack.RogueSurvivor.Data
                     return false;
             }
         }
+
+        public bool TileAlreadyHasScorchDecoration(int x, int y) //@@MP - check whether there's already a scorch mark here (Release 5-2)
+        {
+            Tile tile = GetTileAt(x, y);
+            if (tile.HasDecoration(GameImages.DECO_SCORCH_MARK_OUTER) || tile.HasDecoration(GameImages.DECO_SCORCH_MARK_INNER) || tile.HasDecoration(GameImages.DECO_SCORCH_MARK_CENTER))
+                return true;
+            else
+                return false;
+        }
+
+        public static bool IsAnyActivatedTrapThere(Map map, Point pos)
+        {
+            Inventory inv = map.GetItemsAt(pos);
+            if (inv == null || inv.IsEmpty) return false;
+            return inv.GetFirstMatching((it) => { ItemTrap trap = it as ItemTrap; return trap != null && trap.IsActivated; }) != null;
+        }
+
+        public static bool IsAnyTileFireThere(Map map, Point pos) //@@MP - check for fires on particular tiles (Release 4)
+        {
+            Tile tile = map.GetTileAt(pos.X, pos.Y);
+            if (tile.HasDecoration(GameImages.EFFECT_ONFIRE))
+                return true;
+            else
+                return false;
+        }
         #endregion
 
         #region Exits
@@ -464,6 +491,24 @@ namespace djack.RogueSurvivor.Data
                     return true;
 
             return false;
+        }
+
+        public static bool IsZoneChange(Map map, Point pos)
+        {
+            List<Zone> zonesHere = map.GetZonesAt(pos.X, pos.Y);
+            if (zonesHere == null) return false;
+
+            // adjacent to another zone.
+            return map.HasAnyAdjacentInMap(pos, (adj) =>
+            {
+                List<Zone> zonesAdj = map.GetZonesAt(adj.X, adj.Y);
+                if (zonesAdj == null) return false;
+                if (zonesHere == null) return true;
+                foreach (Zone z in zonesAdj)
+                    if (!zonesHere.Contains(z))
+                        return true;
+                return false;
+            });
         }
         #endregion
 
@@ -1279,6 +1324,22 @@ namespace djack.RogueSurvivor.Data
                 return false;
             /*if (tile.HasDecoration(GameImages.TILE_WALL_BRICK) | tile.HasDecoration(GameImages.TILE_WALL_CHAR_OFFICE) | tile.HasDecoration(GameImages.TILE_WALL_SEWER) |
                 tile.HasDecoration(GameImages.TILE_WALL_HOSPITAL) | tile.HasDecoration(GameImages.TILE_WALL_STONE))*/
+        }
+
+        public bool IsFlammableTileAt(int x, int y) //@@MP - check whether there's a flammable type of tile here (Release 5-2)
+        {
+            Point pt = new Point(x, y);
+            Tile tile = GetTileAt(pt);
+            switch (tile.Model.ImageID)
+            {
+                case @"Tiles\floor_grass":
+                case @"Tiles\floor_planks":
+                case @"Tiles\floor_red_carpet":
+                case @"Tiles\floor_blue_carpet":
+                    return true;
+                default:
+                    return false;
+            }
         }
         #endregion
 

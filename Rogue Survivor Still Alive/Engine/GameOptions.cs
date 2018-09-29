@@ -26,7 +26,7 @@ namespace djack.RogueSurvivor.Engine
             UI_COMBAT_ASSISTANT,
             UI_SHOW_TARGETS,
             UI_SHOW_PLAYER_TARGETS,
-            
+
             GAME_DISTRICT_SIZE,
             GAME_MAX_CIVILIANS,
             GAME_MAX_DOGS,
@@ -58,7 +58,8 @@ namespace djack.RogueSurvivor.Engine
             GAME_UNDEADS_UPGRADE_DAYS,
             GAME_RATS_UPGRADE,
             GAME_SKELETONS_UPGRADE,
-            GAME_SHAMBLERS_UPGRADE
+            GAME_SHAMBLERS_UPGRADE,
+            GAME_VTG_ANTIVIRAL_PILLS //@@MP (Release 5-2)
         };
         #endregion
 
@@ -109,10 +110,10 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Default values
-        public const int DEFAULT_DISTRICT_SIZE = 50; 
+        public const int DEFAULT_DISTRICT_SIZE = 50;
         public const int DEFAULT_MAX_CIVILIANS = 25;
         public const int DEFAULT_MAX_DOGS = 0;// 5;
-        public const int DEFAULT_MAX_UNDEADS = 100; 
+        public const int DEFAULT_MAX_UNDEADS = 100;
         public const int DEFAULT_SPAWN_SKELETON_CHANCE = 60;
         public const int DEFAULT_SPAWN_ZOMBIE_CHANCE = 30;
         public const int DEFAULT_SPAWN_ZOMBIE_MASTER_CHANCE = 10;
@@ -149,7 +150,7 @@ namespace djack.RogueSurvivor.Engine
         bool m_ShowPlayerTagsOnMinimap;
         int m_SpawnSkeletonChance;
         int m_SpawnZombieChance;
-        int m_SpawnZombieMasterChance;        
+        int m_SpawnZombieMasterChance;
         int m_CitySize;
         bool m_NPCCanStarveToDeath;
         int m_ZombificationChance;
@@ -159,7 +160,7 @@ namespace djack.RogueSurvivor.Engine
         int m_ZombieInvasionDailyIncrease;
         int m_StarvedZombificationChance;
         bool m_Sanity;  //@@MP (Release 1)
-        public static bool m_SanityGlobal; //@@MP - so that BaseTownGenerator.cs can know when Sanity is applicable (Release 1)
+        //public static bool m_SanityGlobal; //@@MP - so that BaseTownGenerator.cs can know when Sanity is applicable (Release 1), obsolete (Release 5-2)
         int m_MaxReincarnations;
         bool m_CanReincarnateAsRat;
         bool m_CanReincarnateToSewers;
@@ -175,6 +176,7 @@ namespace djack.RogueSurvivor.Engine
         bool m_RatsUpgrade;
         bool m_SkeletonsUpgrade;
         bool m_ShamblersUpgrade;
+        bool m_VTGAntiviralPills; //@@MP (Release 5-2)
         #endregion
 
         #region Properties
@@ -195,8 +197,8 @@ namespace djack.RogueSurvivor.Engine
             get { return m_MusicVolume; }
             set
             {
-                if (value < 0) value = 0; 
-                if (value > 100) value = 100; 
+                if (value < 0) value = 0;
+                if (value > 100) value = 100;
                 m_MusicVolume = value;
             }
         }
@@ -263,15 +265,15 @@ namespace djack.RogueSurvivor.Engine
         public int CitySize
         {
             get { return m_CitySize; }
-            set 
+            set
             {
                 if (value < 3) value = 3;
                 if (value > 6) value = 6;
-                m_CitySize = value; 
+                m_CitySize = value;
             }
         }
 
-        public int MaxCivilians 
+        public int MaxCivilians
         {
             get { return m_MaxCivilians; }
             set
@@ -293,7 +295,7 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        public int MaxUndeads 
+        public int MaxUndeads
         {
             get { return m_MaxUndeads; }
             set
@@ -301,7 +303,7 @@ namespace djack.RogueSurvivor.Engine
                 if (value < 10) value = 10;
                 if (value > 200) value = 200;
                 m_MaxUndeads = value;
-            } 
+            }
         }
 
         public int SpawnSkeletonChance
@@ -459,7 +461,7 @@ namespace djack.RogueSurvivor.Engine
             set
             {
                 m_Sanity = value;
-                m_SanityGlobal = m_Sanity; //@@MP - so that BaseTownGenerator.cs can know when Sanity is applicable
+                //m_SanityGlobal = m_Sanity; //@@MP - so that BaseTownGenerator.cs can know when Sanity is applicable. Now obsolete (Release 5-2)
             }
         }
 
@@ -556,6 +558,12 @@ namespace djack.RogueSurvivor.Engine
             get { return m_ShamblersUpgrade; }
             set { m_ShamblersUpgrade = value; }
         }
+
+        public bool VTGAntiviralPills //@@MP (Release 5-2)
+        {
+            get { return m_VTGAntiviralPills; }
+            set { m_VTGAntiviralPills = value; }
+        }
         #endregion
 
         #region Dev only options (hidden)
@@ -594,7 +602,7 @@ namespace djack.RogueSurvivor.Engine
             m_StarvedZombificationChance = DEFAULT_STARVED_ZOMBIFICATION_CHANCE;
             m_MaxReincarnations = DEFAULT_MAX_REINCARNATIONS;
             m_Sanity = true;
-            m_SanityGlobal = m_Sanity; //@@MP (Release 1)
+            //m_SanityGlobal = m_Sanity; //@@MP (Release 1), obsolete (Release 5-2)
             m_ShowCorpses = true;
             m_CanReincarnateAsRat = false;
             m_CanReincarnateToSewers = false;
@@ -610,6 +618,7 @@ namespace djack.RogueSurvivor.Engine
             m_RatsUpgrade = false;
             m_SkeletonsUpgrade = false;
             m_ShamblersUpgrade = false;
+            m_VTGAntiviralPills = true; //@@MP (Release 5-2)
         }
         #endregion
 
@@ -629,26 +638,27 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_MAX_REINCARNATIONS:               return " (Reinc) Max Reincarnations";
                 case IDs.GAME_MAX_UNDEADS:                      return "(Undead) Max Undeads";
                 case IDs.GAME_NATGUARD_FACTOR:                  return " (Event) National Guard";
-                case IDs.GAME_NPC_CAN_STARVE_TO_DEATH:          return "(Living) NPCs can Starve to death";
+                case IDs.GAME_NPC_CAN_STARVE_TO_DEATH:          return "(Living) NPCs can Starve to Death";
                 case IDs.GAME_PERMADEATH:                       return " (Death) Permadeath";
-                case IDs.GAME_RATS_UPGRADE:                     return "(Undead) Rats Skill Upgrade";
+                case IDs.GAME_RATS_UPGRADE:                     return "(Undead) Rats Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
                 case IDs.GAME_REVEAL_STARTING_DISTRICT:         return "   (Map) Reveal Starting District";
-                case IDs.GAME_REINC_LIVING_RESTRICTED:          return " (Reinc) Civilians only Reinc.";
-                case IDs.GAME_REINCARNATE_AS_RAT:               return " (Reinc) Can Reincarnate as Rat";
+                case IDs.GAME_REINC_LIVING_RESTRICTED:          return " (Reinc) Civilians-only Reinc.";
+                case IDs.GAME_REINCARNATE_AS_RAT:               return " (Reinc) Can Reincarnate as Rat (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
                 case IDs.GAME_REINCARNATE_TO_SEWERS:            return " (Reinc) Can Reincarnate to Sewers";
-                case IDs.GAME_SHAMBLERS_UPGRADE:                return "(Undead) Shamblers Skill Upgrade";
-                case IDs.GAME_SKELETONS_UPGRADE:                return "(Undead) Skeletons Skill Upgrade";
+                case IDs.GAME_SANITY:                           return "(Living) Sanity Loss"; //@@MP (Release 1)
+                case IDs.GAME_SHAMBLERS_UPGRADE:                return "(Undead) Shamblers Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
+                case IDs.GAME_SKELETONS_UPGRADE:                return "(Undead) Skeletons Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
                 case IDs.GAME_SIMULATE_DISTRICTS:               return "   (Sim) Districts Simulation";
-                case IDs.GAME_SIMULATE_SLEEP:                   return "   (Sim) Simulate when Sleeping";
-                case IDs.GAME_SIM_THREAD:                       return "   (Sim) Synchronous Simulation";
+                case IDs.GAME_SIMULATE_SLEEP:                   return "   (Sim) Simulate when Sleeping >";
+                case IDs.GAME_SIM_THREAD:                       return "   (Sim) Synchronous Simulation <";
                 case IDs.GAME_SPAWN_SKELETON_CHANCE:            return "(Undead) Spawn Skeleton chance";
                 case IDs.GAME_SPAWN_ZOMBIE_CHANCE:              return "(Undead) Spawn Zombie chance";
                 case IDs.GAME_SPAWN_ZOMBIE_MASTER_CHANCE:       return "(Undead) Spawn Zombie Master chance";
                 case IDs.GAME_STARVED_ZOMBIFICATION_CHANCE:     return "(Living) Zombify if Starved Chance (STD)";
                 case IDs.GAME_SUPPLIESDROP_FACTOR:              return " (Event) Supplies Drop";
                 case IDs.GAME_UNDEADS_UPGRADE_DAYS:             return "(Undead) Undeads Skills Upgrade Days";
+                case IDs.GAME_VTG_ANTIVIRAL_PILLS:              return "(Living) Antiviral Pills (VTG)"; //@@MP (Release 5-2)
                 case IDs.GAME_ZOMBIFICATION_CHANCE:             return "(Living) Zombification Chance (C&I, VTG)";
-                case IDs.GAME_SANITY:                           return "(Living) Sanity Loss"; //@@MP (Release 1)
                 case IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE:   return "(Undead) Invasion Daily Increase";
                 case IDs.UI_ANIM_DELAY:                         return "   (Gfx) Animations Delay";
                 case IDs.UI_MUSIC:                              return "   (Sfx) Music";
@@ -757,10 +767,10 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS:
                     return IsAggressiveHungryCiviliansOn ? "ON    (default ON)" : "OFF   (default ON)";
                 case IDs.GAME_ALLOW_UNDEADS_EVOLUTION:
-                    if (mode == GameMode.GM_VINTAGE)
+                    /*if (mode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                         return "---";
-                    else
-                        return AllowUndeadsEvolution ? "YES   (default YES)" : "NO    (default YES)";
+                    else*/
+                    return AllowUndeadsEvolution ? "YES   (default YES)" : "NO    (default YES)";
                 case IDs.GAME_CITY_SIZE:
                     return String.Format("{0:D2}*   (default {1:D2})", CitySize, GameOptions.DEFAULT_CITY_SIZE);
                 case IDs.GAME_DAY_ZERO_UNDEADS_PERCENT:
@@ -784,10 +794,10 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_PERMADEATH:
                     return IsPermadeathOn ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_RATS_UPGRADE:
-                    if (mode == GameMode.GM_VINTAGE)
+                    /*if (mode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                         return "---";
-                    else
-                        return RatsUpgrade ? "YES   (default NO)" : "NO    (default NO)";
+                    else*/
+                    return RatsUpgrade ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_REINC_LIVING_RESTRICTED:
                     return IsLivingReincRestricted ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_REINCARNATE_AS_RAT:
@@ -799,31 +809,33 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_SANITY://@@MP (Release 1)
                     return IsSanityEnabled ? "ON    (default ON)" : "OFF   (default ON)";
                 case IDs.GAME_SHAMBLERS_UPGRADE:
-                    if (mode == GameMode.GM_VINTAGE)
+                    /*if (mode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                         return "---";
-                    else
+                    else*/
                         return ShamblersUpgrade ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_SKELETONS_UPGRADE:
-                    if (mode == GameMode.GM_VINTAGE)
+                    /*if (mode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                         return "---";
-                    else
+                    else*/
                         return SkeletonsUpgrade ? "YES   (default NO)" : "NO    (default NO)";
-                case IDs.GAME_SIM_THREAD:
-                    return SimThread ? "YES*  (default YES)" : "NO*   (default YES)";
                 case IDs.GAME_SIMULATE_DISTRICTS:
                     return String.Format("{0,-4}* (default {1})", GameOptions.Name(SimulateDistricts), GameOptions.Name(GameOptions.DEFAULT_SIM_DISTRICTS));
+                case IDs.GAME_SIM_THREAD:
+                    return SimThread ? "YES*  (default YES)" : "NO*   (default YES)";
                 case IDs.GAME_SIMULATE_SLEEP:
                     return SimulateWhenSleeping ? "YES*  (default NO)" : "NO*   (default NO)";
                 case IDs.GAME_STARVED_ZOMBIFICATION_CHANCE:
                     return String.Format("{0:D3}%  (default {1:D3}%)", StarvedZombificationChance, GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE);
                 case IDs.GAME_SUPPLIESDROP_FACTOR:
                     return String.Format("{0:D3}%  (default {1:D3}%)", SuppliesDropFactor, GameOptions.DEFAULT_SUPPLIESDROP_FACTOR);
+                case IDs.GAME_UNDEADS_UPGRADE_DAYS:
+                    return String.Format("{0:D3}   (default {1:D3})", GameOptions.Name(ZombifiedsUpgradeDays), GameOptions.Name(GameOptions.DEFAULT_ZOMBIFIEDS_UPGRADE_DAYS));
+                case IDs.GAME_VTG_ANTIVIRAL_PILLS: //@@MP (Release 5-2)
+                    return VTGAntiviralPills ? "YES   (default YES)" : "NO    (default YES)";
                 case IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE:
                     return String.Format("{0:D3}%  (default {1:D3}%)", ZombieInvasionDailyIncrease, GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE);
                 case IDs.GAME_ZOMBIFICATION_CHANCE:
                     return String.Format("{0:D3}%  (default {1:D3}%)", ZombificationChance, GameOptions.DEFAULT_ZOMBIFICATION_CHANCE);
-                case IDs.GAME_UNDEADS_UPGRADE_DAYS:
-                    return String.Format("{0:D3}   (default {1:D3})", GameOptions.Name(ZombifiedsUpgradeDays), GameOptions.Name(GameOptions.DEFAULT_ZOMBIFIEDS_UPGRADE_DAYS));
                 case IDs.UI_ADVISOR:
                     return IsAdvisorEnabled ? "YES" : "NO ";
                 case IDs.UI_ANIM_DELAY:
@@ -899,7 +911,7 @@ namespace djack.RogueSurvivor.Engine
             }
             catch (Exception e)
             {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load options (no custom options?).");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load options (no custom options, probably first run?).");
 
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
 

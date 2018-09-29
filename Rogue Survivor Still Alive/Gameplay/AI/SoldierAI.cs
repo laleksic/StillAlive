@@ -86,7 +86,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endregion
 
             /////////////////////////////////////
-            // 0 run away from primed explosives.
+            // 0 run away from primed explosives (and fires //@@MP (Release 5-2)).
             // 1 throw grenades at enemies.
             // 2 equip weapon/armor.
             // 3 shout, fire/hit at nearest enemy.
@@ -115,8 +115,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // exploration.
             m_Exploration.Update(m_Actor.Location);
 
-            // 0 run away from primed explosives.
+            // 0 run away from primed explosives //@@MP - and fires added (Release 5-2)
             #region
+            ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
+            if (runFromFires != null)
+            {
+                m_Actor.Activity = Activity.FLEEING;
+                return runFromFires;
+            }
+            
             ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
             if (runFromExplosives != null)
             {
@@ -155,12 +162,32 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 3 shout, fire/hit at nearest enemy.
             #region
+            //@@MP - try to wake nearby friends when there's a fire (Release 5-2)
+            List<Percept> friends = FilterNonEnemies(game, mapPercepts);
+            if (friends != null)
+            {
+                HashSet<Point> FOV = m_LOSSensor.FOV;
+                foreach (Point p in FOV)
+                {
+                    if (Map.IsAnyTileFireThere(m_Actor.Location.Map, p))
+                    {
+                        // shout
+                        ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, friends);
+                        if (shoutAction != null)
+                        {
+                            m_Actor.Activity = Activity.FLEEING;
+                            return shoutAction;
+                        }
+                    }
+                }
+            }
+
+            //@@MP - the Enemies warning below is as was per of vanilla, except with friends moved above for reuse
             if (hasCurrentEnemies)
             {
                 // shout?
                 if (game.Rules.RollChance(50))
                 {
-                    List<Percept> friends = FilterNonEnemies(game, mapPercepts);
                     if (friends != null)
                     {
                         ActorAction shoutAction = BehaviorWarnFriends(game, friends, FilterNearest(game, currentEnemies).Percepted as Actor);

@@ -130,7 +130,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // emotes!
             if (m_Emotes == null)
             {
-                // FIXME: uggly code.
+                // FIXME: ugly code.
                 if (m_Actor.IsUnique)
                 {
                     if (m_Actor == game.Session.UniqueActors.BigBear.TheActor)
@@ -191,7 +191,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 1 throw grenades at enemies.
             // 2 equip weapon/armor
             // 3 fire at nearest (always if has leader, half of the time if not)  - check directives
-            // 4 fight or flee, shout
+            // 4 fight/flee/shout
             // 5 use medicine
             // 6 rest if tired
             // 7 charge enemy if courageous
@@ -260,12 +260,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_LastEnemySaw = enemies[game.Rules.Roll(0, enemies.Count)];
             #endregion
 
-            // 0 run away from primed explosives (and fires //@@MP (Release 4)).
+            // 0 run away from primed explosives //@@MP - and fires added (Release 4).
             #region
             ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
             if (runFromFires != null)
             {
-                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                m_Actor.Activity = Activity.FLEEING;
                 return runFromFires;
             }
 
@@ -359,14 +359,34 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 4 fight or flee, shout
+            // 4 fight/flee/shout
             #region
+            //@@MP - try to wake nearby friends when there's a fire (Release 5-2)
+            List<Percept> friends = FilterNonEnemies(game, mapPercepts);
+            if (friends != null)
+            {
+                HashSet<Point> FOV = m_LOSSensor.FOV;
+                foreach (Point p in FOV)
+                {
+                    if (Map.IsAnyTileFireThere(m_Actor.Location.Map, p))
+                    {
+                        // shout
+                        ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, friends);
+                        if (shoutAction != null)
+                        {
+                            m_Actor.Activity = Activity.FLEEING;
+                            return shoutAction;
+                        }
+                    }
+                }
+            }
+
+            //@@MP - the Enemies warning below is as was per of vanilla, except with friends moved above for reuse
             if (hasEnemies)
             {
                 // shout?
                 if (game.Rules.RollChance(50))
                 {
-                    List<Percept> friends = FilterNonEnemies(game, mapPercepts);
                     if (friends != null)
                     {
                         ActorAction shoutAction = BehaviorWarnFriends(game, friends, FilterNearest(game, enemies).Percepted as Actor);

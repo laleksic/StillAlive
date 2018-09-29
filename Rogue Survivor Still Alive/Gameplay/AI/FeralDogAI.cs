@@ -53,6 +53,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             List<Percept> mapPercepts = FilterSameMap(game, percepts);
 
             //////////////////////////////////////////////////////////////
+            // 0 run away from fires or alert sleeping friends //@@MP (Release 5-2)).
             // 1 defend our leader.
             // 2 attack or flee enemies.
             // 3 go eat food on floor if almost hungry
@@ -62,14 +63,45 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 7 wander
             /////////////////////////////////////////////////////////////
 
+            // 0 run away from fires or alert sleeping friends //@@MP (Release 5-2)
+            #region
+            ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
+            if (runFromFires != null)
+            {
+                m_Actor.Activity = Activity.FLEEING;
+                return runFromFires;
+            }
+            
+            //@@MP - try to wake nearby friends when there's a fire (Release 5-2)
+            List<Percept> friends = FilterNonEnemies(game, mapPercepts);
+            if (friends != null)
+            {
+                HashSet<Point> FOV = m_LOSSensor.FOV;
+                foreach (Point p in FOV)
+                {
+                    if (Map.IsAnyTileFireThere(m_Actor.Location.Map, p))
+                    {
+                        // shout
+                        ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, friends, "WOOF! WOOF! WOOF!");
+                        if (shoutAction != null)
+                        {
+                            m_Actor.Activity = Activity.FLEEING;
+                            return shoutAction;
+                        }
+                    }
+                }
+            }
+            #endregion
+
             // 1 defend our leader
+            #region
             if (m_Actor.HasLeader)
             {
                 Actor target = m_Actor.Leader.TargetActor;
                 if(target != null && target.Location.Map == m_Actor.Location.Map)
                 {
                     // emote: bark
-                    game.DoSay(m_Actor, target, "GRRRRRR WAF WAF", RogueGame.Sayflags.IS_FREE_ACTION);
+                    game.DoSay(m_Actor, target, "GRRRRRR!", RogueGame.Sayflags.IS_FREE_ACTION);
                     // charge.
                     ActorAction chargeEnemy = BehaviorStupidBumpToward(game, target.Location.Position);
                     if (chargeEnemy != null)
@@ -81,6 +113,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
+            #endregion
 
             List<Percept> enemies = FilterEnemies(game, mapPercepts);
             bool isLeaderVisible = m_Actor.HasLeader && m_LOSSensor.FOV.Contains(m_Actor.Leader.Location.Position);

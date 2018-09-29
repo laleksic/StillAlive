@@ -88,9 +88,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // - FLAGS
             // "courageous" : always if not tired.
             // - RULES
+            // 0 run away from primed explosives (and fires //@@MP (Release 5-2)).
             // 1 equip weapon/armor
             // 2 fire at nearest.
-            // 3 shout, fight or flee.
+            // 3 shout/fight/flee.
             // 4 use medecine
             // 5 rest if tired
             // 6 charge enemy if courageous
@@ -123,6 +124,23 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // exploration.
             m_Exploration.Update(m_Actor.Location);
+
+            // 0 run away from primed explosives and fires //@@MP - added (Release 5-2)
+            #region
+            ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
+            if (runFromFires != null)
+            {
+                m_Actor.Activity = Activity.FLEEING;
+                return runFromFires;
+            }
+
+            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
+            if (runFromExplosives != null)
+            {
+                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                return runFromExplosives;
+            }
+            #endregion
 
             // 1 equip weapon/armor
             #region
@@ -159,14 +177,33 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 3 shout, fight or flee
+            // 3 shout/fight/flee
             #region
+            //@@MP - try to wake nearby friends when there's a fire (Release 5-2)
+            List<Percept> friends = FilterNonEnemies(game, mapPercepts);
+            if (friends != null)
+            {
+                foreach (Point p in FOV)
+                {
+                    if (Map.IsAnyTileFireThere(m_Actor.Location.Map, p))
+                    {
+                        // shout
+                        ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, friends);
+                        if (shoutAction != null)
+                        {
+                            m_Actor.Activity = Activity.FLEEING;
+                            return shoutAction;
+                        }
+                    }
+                }
+            }
+
+            //@@MP - the Enemies warning below is as was per of vanilla, except with friends moved above for reuse
             if (hasCurrentEnemies)
             {
                 // shout?
                 if (game.Rules.RollChance(50))
                 {
-                    List<Percept> friends = FilterNonEnemies(game, mapPercepts);
                     if (friends != null)
                     {
                         ActorAction shoutAction = BehaviorWarnFriends(game, friends, FilterNearest(game, currentEnemies).Percepted as Actor);
@@ -375,14 +412,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endregion
 
             // 13 tear down barricade
+            #region
             ActorAction attackBarricadeAction = BehaviorAttackBarricade(game);
             if (attackBarricadeAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return attackBarricadeAction;
             }
+            #endregion
 
             // 14 follow leader
+            #region
             if (checkOurLeader)
             {
                 Point lastKnownLeaderPosition = m_Actor.Leader.Location.Position;
@@ -396,8 +436,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return followAction;
                 }
             }
+            #endregion
 
             // 15 take lead (if leadership)
+            #region
             bool isLeader = m_Actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LEADERSHIP) >= 1;
             bool canLead = !checkOurLeader && isLeader && m_Actor.CountFollowers < game.Rules.ActorMaxFollowers(m_Actor);
             if (canLead)
@@ -414,6 +456,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
+            #endregion
 
             // 16 (leader) don't leave followers behind.
             #region
@@ -445,12 +488,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endregion
 
             // 17 explore
+            #region
             ActorAction exploreAction = BehaviorExplore(game, m_Exploration);
             if (exploreAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return exploreAction;
             }
+            #endregion
 
             // 18 wander
             m_Actor.Activity = Activity.IDLE;

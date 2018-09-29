@@ -2430,7 +2430,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Has not to sleep.
             if (!actor.Model.Abilities.HasToSleep)
             {
-                reason = "no ability to sleep";
+                reason = "you never need to sleep";
                 return false;
             }
 

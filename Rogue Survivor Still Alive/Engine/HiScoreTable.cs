@@ -23,6 +23,7 @@ namespace djack.RogueSurvivor.Engine
         public TimeSpan PlayingTime { get; set; }
         public string SkillsDescription { get; set; }
         public string Death { get; set; }
+        public string GameMode { get; set; } //@MP (Release 5-2)
 
         public static HiScore FromScoring(string name, Scoring sc, string skillsDescription)
         {
@@ -40,7 +41,8 @@ namespace djack.RogueSurvivor.Engine
                 SkillsDescription = skillsDescription,
                 SurvivalPoints = sc.SurvivalPoints,
                 TotalPoints = sc.TotalPoints,
-                TurnSurvived = sc.TurnsSurvived
+                TurnSurvived = sc.TurnsSurvived,
+                GameMode = sc.GameMode //@MP (Release 5-2)
             };
 
             return hi;
@@ -94,7 +96,8 @@ namespace djack.RogueSurvivor.Engine
                     SurvivalPoints = 0,
                     TotalPoints = 0,
                     TurnSurvived = 0,
-                    SkillsDescription = "no skills"
+                    SkillsDescription = "no skills",
+                    GameMode = "" //@MP (Release 5-2)
                 });
         }
         #endregion

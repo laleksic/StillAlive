@@ -547,10 +547,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     int score = game.Rules.Roll(0, 666); 
                     if (m_Actor.Model.Abilities.IsIntelligent)
                     {
-                        if (IsAnyActivatedTrapThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position))
+                        if (Map.IsAnyActivatedTrapThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position))
                             score -= 1000;
 
-                        if (IsAnyTileFireThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position)) //@@MP - avoid fires on walkable tiles (Release 4)
+                        if (Map.IsAnyTileFireThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position)) //@@MP - avoid fires on walkable tiles (Release 4)
                             score -= 2000;
                     }
                     return score;
@@ -660,25 +660,27 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return float.NaN;
 
                     // avoid stepping on damaging traps, unless starving or courageous.
-                    if (m_Actor.Model.Abilities.IsIntelligent && !imStarvingOrCourageous) //@@MP - added intelligence check (Release 4)
+                    if (m_Actor.Model.Abilities.IsIntelligent) //@@MP - added intelligence check (Release 4)
                     {
-                        int trapsDamage = ComputeTrapsMaxDamage(m_Actor.Location.Map, goal); //@@MP - was ptA, not goal. that seemed wrong... (Release 4)
-                        int trapsChance = ComputeTrapsTriggerChance(m_Actor.Location.Map, goal); //@@MP (Release 4)
-                        if (trapsDamage > 0)
-                        {
-                            // if death or a big chunk of health, don't do it.
-                            if (trapsDamage >= (m_Actor.HitPoints / 2)) //@@MP - added division by 2 (Release 4)
-                                return float.NaN;
-                            else if (trapsChance >= 33) //@@MP (Release 4)
-                                return float.NaN;
-
-                            // avoid.
-                            distance += MOVE_DISTANCE_PENALTY;
-                        }
-
                         //@@MP - intelligent AI won't step on fire if it will kill them (Release 4)
-                        if (IsAnyTileFireThere(m_Actor.Location.Map, goal))
+                        if (Map.IsAnyTileFireThere(m_Actor.Location.Map, ptA))
                             return float.NaN;
+
+                        if (!imStarvingOrCourageous)
+                        {
+                            int trapsDamage = ComputeTrapsMaxDamage(m_Actor.Location.Map, ptA); //@@MP - was ptA, not goal. that seemed wrong... (Release 4), oops ptA was correct here (Release 5-2)
+                            int trapsChance = ComputeTrapsTriggerChance(m_Actor.Location.Map, ptA); //@@MP (Release 4), so it was this that needed to be ptA not goal [I was close!] (Release 5-2)
+                            if (trapsDamage > 0)
+                            {
+                                // if death or a big chunk of health, don't do it.
+                                if (trapsDamage >= (m_Actor.HitPoints / 2)) //@@MP - added division by 2 (Release 4)
+                                    return float.NaN;
+                                else if (trapsChance >= 33) //@@MP (Release 4)
+                                    return float.NaN;
+                                else // avoid.
+                                    distance += MOVE_DISTANCE_PENALTY;
+                            }
+                        }
                     }
 
                     return distance;
@@ -733,6 +735,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
                                 safetyValue -= LEADER_LOF_PENALTY;
                         }
                     }
+
+                    if (m_Actor.Model.Abilities.IsIntelligent) //@@MP - avoid fires (Release 5-2)
+                    {
+                        if (Map.IsAnyTileFireThere(m_Actor.Location.Map, next.Position))
+                            safetyValue -= 2;
+                        else if (Map.IsAnyActivatedTrapThere(m_Actor.Location.Map, next.Position))
+                            safetyValue -= 1;
+                    }
+
                     return safetyValue;
                 },
                 (a, b) => a > b);
@@ -2250,7 +2261,34 @@ namespace djack.RogueSurvivor.Gameplay.AI
             else
                 return null;
         }
-        
+
+        protected ActorAction BehaviorWarnFriendsOfFire(RogueGame game, List<Percept> friends, string whatToShout = "") //@@MP - actor has spotted a fire (Release 5-2)
+        {
+            // Shout if we have a friend sleeping.
+            foreach (Percept p in friends)
+            {
+                Actor other = p.Percepted as Actor;
+                if (other == null)
+                    throw new ArgumentException("percept not an actor");
+                if (other == null || other == m_Actor)
+                    continue;
+                if (!other.IsSleeping)
+                    continue;
+                if (game.Rules.IsEnemyOf(m_Actor, other))
+                    continue;
+
+                string shoutText = "";
+                // friend sleeping, wake up!
+                if (whatToShout != "")
+                    shoutText = whatToShout;
+                else
+                    shoutText = String.Format("Wake up {0}!", other.Name);
+                return new ActionShout(m_Actor, game, shoutText);
+            }
+
+            // no one to alert.
+            return null;
+        }
         #endregion
 
         #region Exploring
@@ -2292,7 +2330,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         }
 
                         //@@MP - intelligent AI won't step on fire if it will kill them (Release 4)
-                        if (IsAnyTileFireThere(map, pos)) return float.NaN;
+                        if (Map.IsAnyTileFireThere(map, pos)) return float.NaN;
                     }
 
                     // Heuristic scoring:
@@ -2311,7 +2349,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     const int EXPLORE_INOUT = 50;
                     const int EXPLORE_DIRECTION = 25;
                     const int EXPLORE_RANDOM = 10;
-                    const int AVOID_FIRES = -1500; //@@MP - added (Release 4)
+                    const int AVOID_FIRES = -5000; //@@MP - added (Release 4)
 
                     int score = 0;
                     // 1st Prefer unexplored zones.
@@ -2325,7 +2363,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (mapObj != null && (mapObj.IsMovable || mapObj is DoorWindow))
                         score += EXPLORE_BARRICADES;
                     // 4th Punish stepping on activated traps.
-                    if (m_Actor.Model.Abilities.IsIntelligent && IsAnyActivatedTrapThere(map, pos)) //@@MP - added a check for intelligence, as 'dumb' AI shouldn't consider traps (Release 4)
+                    if (m_Actor.Model.Abilities.IsIntelligent && Map.IsAnyActivatedTrapThere(map, pos)) //@@MP - added a check for intelligence, as 'dumb' AI shouldn't consider traps (Release 4)
                         score += AVOID_TRAPS;
                     // 5th Prefer inside during the night vs outside during the day.
                     bool isInside = map.GetTileAt(pos.X, pos.Y).IsInside;
@@ -2343,7 +2381,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     // 7th Small randomness.
                     score += game.Rules.Roll(0, EXPLORE_RANDOM);
                     // 8th Avoid fires //@@MP - livings and smart undead know that jumping into fire is really stupid (Release 4)
-                    if (m_Actor.Model.Abilities.IsIntelligent && IsAnyTileFireThere(map, pos))
+                    if (m_Actor.Model.Abilities.IsIntelligent && Map.IsAnyTileFireThere(map, pos))
                         score += AVOID_FIRES;
 
                     // done.
@@ -2524,10 +2562,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return runAway;
         }
 
-        protected ActorAction BehaviorFleeFromFires(RogueGame game, Location location) //@@MP - flee from ground (not object) fires (Release 4)
+        protected ActorAction BehaviorFleeFromFires(RogueGame game, Location location) //@@MP - flee from tile (ground, not object) fires (Release 4)
         {
             // if no fire don't bother.
-            if (!IsAnyTileFireThere(location.Map,location.Position))
+            if (!Map.IsAnyTileFireThere(location.Map,location.Position))
                 return null;
 
             ChoiceEval<Direction> bestAwayDir = Choose<Direction>(game,
@@ -2543,7 +2581,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     Location next = m_Actor.Location + dir;
                     // check that the next dir isn't also fire
                     float safetyValue = 1;
-                    if (IsAnyTileFireThere(next.Map,next.Position))
+                    if (Map.IsAnyTileFireThere(next.Map, next.Position))
+                    {
+                        safetyValue -= 2; //@@MP - reduced from 1 to 2 to avoid certain pain from fires than possible pain from traps (Release 5-2)
+                    }
+                    if (Map.IsAnyActivatedTrapThere(next.Map, next.Position)) //@@MP (Release 5-2)
                     {
                         safetyValue -= 1;
                     }
@@ -4256,39 +4298,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #endregion
 
         #region Map
-        public static bool IsAnyActivatedTrapThere(Map map, Point pos)
-        {
-            Inventory inv = map.GetItemsAt(pos);
-            if (inv == null || inv.IsEmpty) return false;
-            return inv.GetFirstMatching((it) => { ItemTrap trap = it as ItemTrap; return trap != null && trap.IsActivated; }) != null;
-        }
-
-        public static bool IsAnyTileFireThere(Map map, Point pos) //@@MP - check for fires on particular tiles (Release 4)
-        {
-            Tile tile = map.GetTileAt(pos.X, pos.Y);
-            if (tile.HasDecoration(GameImages.EFFECT_ONFIRE))
-                return true;
-            else
-                return false;
-        }
-
-        public static bool IsZoneChange(Map map, Point pos)
-        {
-            List<Zone> zonesHere = map.GetZonesAt(pos.X, pos.Y);
-            if (zonesHere == null) return false;
-
-            // adjacent to another zone.
-            return map.HasAnyAdjacentInMap(pos, (adj) =>
-            {
-                List<Zone> zonesAdj = map.GetZonesAt(adj.X, adj.Y);
-                if (zonesAdj == null) return false;
-                if (zonesHere == null) return true;
-                foreach (Zone z in zonesAdj)
-                    if (!zonesHere.Contains(z))
-                        return true;
-                return false;
-            });
-        }
+        //@@MP - moved to Map.cs (Release 5-2)
         #endregion
 
         #region Random position near
@@ -4305,6 +4315,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         #endregion
 
+        #region Taboos
         #region Taboo items
         protected void MarkItemAsTaboo(Item it)
         {
@@ -4375,6 +4386,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         {
             m_TabooTrades = null;
         }
+        #endregion
         #endregion
     }
 }

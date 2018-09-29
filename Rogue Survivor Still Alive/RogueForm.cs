@@ -185,7 +185,8 @@ namespace djack.RogueSurvivor
                 m_Game.Player.FoodPoints = m_Game.Rules.ActorMaxFood(m_Game.Player);
                 m_Game.Player.SleepPoints = m_Game.Rules.ActorMaxSleep(m_Game.Player);
                 if (m_Game.Session.GameMode == GameMode.GM_STANDARD) m_Game.Player.Infection = 0;
-                if (GameOptions.m_SanityGlobal) m_Game.Player.Sanity = m_Game.Rules.ActorMaxSanity(m_Game.Player);
+                //if (GameOptions.m_SanityGlobal) m_Game.Player.Sanity = m_Game.Rules.ActorMaxSanity(m_Game.Player);
+                if (RogueGame.Options.IsSanityEnabled) m_Game.Player.Sanity = m_Game.Rules.ActorMaxSanity(m_Game.Player); //@MP - fixed crappy implem (Release 5-2)
                 //m_Game.Player.Inventory.MaxCapacity = 10;
             }
             // F7 - DEV - toggle FPS

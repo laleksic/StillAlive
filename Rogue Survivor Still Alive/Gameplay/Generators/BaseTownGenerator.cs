@@ -4555,26 +4555,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 2: return MakeItemPillsSLP();
                 case 3: return MakeItemPillsSTA();
                 case 4: //@@MP - if Sanity is disabled generate other (minor) pharmacy items instead (Release 1)
-                    if (GameOptions.m_SanityGlobal)
-                    {
+                    //if (GameOptions.m_SanityGlobal)
+                    if (RogueGame.Options.IsSanityEnabled) //@MP - fixed crappy implementation (Release 5-2)
                         return MakeItemPillsSAN();
-                    }
                     else
                     {
-                        if (m_DiceRoller.RollChance(10))
-                        {
-                            return MakeItemCannedFood();
-                        }
+                        if (m_DiceRoller.RollChance(10)) //@@MP - re-did this section; it was pretty convoluted (Release 5-2)
+                            return (RogueGame.Options.VTGAntiviralPills) ? MakeItemPillsAntiviral() : MakeItemBandages();
                         else
-                        {
-                            if (m_DiceRoller.RollChance(10))
-                                if (GameOptions.m_SanityGlobal)
-                                    return MakeItemPillsSAN();
-                                else
-                                    return MakeItemPillsAntiviral();
-                            else
-                                return MakeItemBandages();
-                        }
+                            return MakeItemBandages();
                     }
                 case 5: return MakeItemStenchKiller();
 
@@ -4747,19 +4736,18 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 2: return MakeItemPillsSLP();
                 case 3: return MakeItemPillsSTA();
                 case 4: //@@MP - if Sanity is disabled generate other (minor) hospital items instead (Release 1)
-                    if (GameOptions.m_SanityGlobal) //(GameOptions.IsSanityEnabled)
-                    {
+                    //if (GameOptions.m_SanityGlobal) //(GameOptions.IsSanityEnabled)
+                    if (RogueGame.Options.IsSanityEnabled) //@MP - fixed crappy implementation (Release 5-2)
                         return MakeItemPillsSAN();
-                    }
                     else
                     {
-                        if (m_DiceRoller.RollChance(50))
-                            return MakeItemMedikit();
-                        else
+                        if (m_DiceRoller.RollChance(50) && (RogueGame.Options.VTGAntiviralPills)) //@MP - handles new antiviral pills option (Release 5-2)
                             return MakeItemPillsAntiviral();
+                        else
+                            return MakeItemMedikit();
                     }
                 case 5: return MakeItemBandages(); //return MakeItemStenchKiller();
-                case 6: return MakeItemPillsAntiviral();
+                case 6: return (RogueGame.Options.VTGAntiviralPills) ? MakeItemPillsAntiviral() : MakeItemCannedFood(); //@MP - handles new antiviral pills option (Release 5-2)
 
                 default:
                     throw new ArgumentOutOfRangeException("unhandled roll");
@@ -4777,10 +4765,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 2: return MakeItemPillsSTA();
                 case 3: return MakeItemPillsSLP();
                 case 4: //@@MP - if Sanity is disabled generate homely stuff instead (Release 1)
-                    if (GameOptions.m_SanityGlobal)
-                    {
+                    //if (GameOptions.m_SanityGlobal)
+                    if (RogueGame.Options.IsSanityEnabled) //@MP - fixed crappy implem (Release 5-2)
                         return MakeItemPillsSAN();
-                    }
                     else
                     {
                         if (m_DiceRoller.RollChance(50))
@@ -4849,10 +4836,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     // - grenade (rare).
                     // - shotgun/ammo
                     if (m_DiceRoller.RollChance(20))
-                    {
-                        // grenade!
                         return MakeItemGrenade();
-                    }
                     else
                     {
                         // shotgun/ammo
@@ -4864,7 +4848,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                 case 1: 
                 case 2:
-                    if (m_DiceRoller.RollChance(50))
+                    if (RogueGame.Options.VTGAntiviralPills) //MP - switched from m_DiceRoller.RollChance(50) to pills unless they are disabled (Release 5-2)
                         return MakeItemPillsAntiviral();
                     else
                         return MakeItemMedikit();
@@ -6693,7 +6677,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     case 1: it = MakeItemArmyBodyArmor(); break;
                     case 2: it = MakeItemHeavyPistolAmmo(); break;
                     case 3: it = MakeItemHeavyRifleAmmo(); break;
-                    case 4: it = MakeItemPillsAntiviral(); break;
+                    case 4: it = RogueGame.Options.VTGAntiviralPills ? MakeItemPillsAntiviral() : MakeItemDynamite(); //@MP - handles new antiviral pills option (Release 5-2)
+                        break;
                     case 5: it = MakeItemCombatKnife(); break;
                     default: it = null; break;
                 }

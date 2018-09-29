@@ -71,6 +71,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endregion
 
             ///////////////////////////////////////
+            // 0 run away from primed explosives (and fires //@@MP (Release 5-2)).
             // 1 equip weapon
             // 2 equip armor
             // 3 fire at nearest enemy.
@@ -94,23 +95,45 @@ namespace djack.RogueSurvivor.Gameplay.AI
             bool checkOurLeader = m_Actor.HasLeader && !DontFollowLeader;
             bool hasAnyEnemies = allEnemies != null;
 
+            // 0 run away from primed explosives and fires //@@MP - added (Release 5-2)
+            #region
+            ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
+            if (runFromFires != null)
+            {
+                m_Actor.Activity = Activity.FLEEING;
+                return runFromFires;
+            }
+
+            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
+            if (runFromExplosives != null)
+            {
+                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                return runFromExplosives;
+            }
+            #endregion
+
             // 1 equip weapon
+            #region
             ActorAction equipWpnAction = BehaviorEquipWeapon(game);
             if (equipWpnAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return equipWpnAction;
             }
+            #endregion
 
             // 2 equip armor
+            #region
             ActorAction equipArmAction = BehaviorEquipBodyArmor(game);
             if (equipArmAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return equipArmAction;
             }
+            #endregion
 
             // 3 fire at nearest enemy.
+            #region
             if (currentEnemies != null)
             {
                 List<Percept> fireTargets = FilterFireTargets(game, currentEnemies);
@@ -128,8 +151,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
+            #endregion
 
             // 4 hit adjacent enemy
+            #region
             if (currentEnemies != null)
             {
                 Percept nearestEnemy = FilterNearest(game, currentEnemies);
@@ -142,8 +167,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return fightOrFlee;
                 }
             }
+            #endregion
 
             // 5 warn trepassers.
+            #region
             List<Percept> nonEnemies = FilterNonEnemies(game, mapPercepts);
             if (nonEnemies != null)
             {
@@ -166,8 +193,29 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return new ActionSay(m_Actor, game, trespasser, "Hey YOU!", RogueGame.Sayflags.IS_IMPORTANT);
                 }
             }
+            #endregion
 
             // 6 shout
+            #region
+            //@@MP - try to wake nearby friends when there's a fire (Release 5-2)
+            if (nonEnemies != null)
+            {
+                HashSet<Point> FOV = m_LOSSensor.FOV;
+                foreach (Point p in FOV)
+                {
+                    if (Map.IsAnyTileFireThere(m_Actor.Location.Map, p))
+                    {
+                        // shout
+                        ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, nonEnemies);
+                        if (shoutAction != null)
+                        {
+                            m_Actor.Activity = Activity.FLEEING;
+                            return shoutAction;
+                        }
+                    }
+                }
+            }
+
             if (hasAnyEnemies)
             {
                 if (nonEnemies != null)
@@ -180,16 +228,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
+            #endregion
 
             // 7 rest if tired
+            #region
             ActorAction restAction = BehaviorRestIfTired(game);
             if (restAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return new ActionWait(m_Actor, game);
             }
+            #endregion
 
             // 8 charge/chase enemy
+            #region
             if (allEnemies != null)
             {
                 Percept chasePercept = FilterNearest(game, allEnemies);
@@ -211,8 +263,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return chargeAction;
                 }
             }
+            #endregion
 
             // 9 sleep when sleepy
+            #region
             if (game.Rules.IsActorSleepy(m_Actor) && !hasAnyEnemies)
             {
                 ActorAction sleepAction = BehaviorSleep(game, m_LOSSensor.FOV);
@@ -223,6 +277,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return sleepAction;
                 }
             }
+            #endregion
 
             // 10 follow leader
             #region
@@ -241,12 +296,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endregion
 
             // 11 wander in CHAR office.
+            #region
             ActorAction wanderInOfficeAction = BehaviorWander(game, (loc) => RogueGame.IsInCHAROffice(loc));
             if (wanderInOfficeAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return wanderInOfficeAction;
             }
+            #endregion
 
             // 12 wander
             m_Actor.Activity = Activity.IDLE;

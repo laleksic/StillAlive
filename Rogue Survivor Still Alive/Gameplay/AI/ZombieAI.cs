@@ -67,6 +67,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             List<Percept> mapPercepts = FilterSameMap(game, percepts);
 
             //////////////////////////////////////////////////////////////
+            // 0 run away from primed explosives (and fires //@@MP (Release 5-2)).
             // 1 move closer to an enemy, nearest & visible enemies first
             // 2 eat corpses.
             // 3 use exits (if ability)
@@ -85,6 +86,26 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // exploration.
                 m_Exploration.Update(m_Actor.Location);
             }
+
+            // 0 run away from primed explosives and fires //@@MP - added (Release 5-2)
+            #region
+            if (m_Actor.Model.Abilities.IsIntelligent)
+            {
+                ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
+                if (runFromFires != null)
+                {
+                    m_Actor.Activity = Activity.FLEEING;
+                    return runFromFires;
+                }
+
+                ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
+                if (runFromExplosives != null)
+                {
+                    m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                    return runFromExplosives;
+                }
+            }
+            #endregion
 
             // 1 move closer to an enemy, nearest & visible enemies first
             #region

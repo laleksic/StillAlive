@@ -106,6 +106,11 @@ namespace djack.RogueSurvivor.Data
             get { return m_IsUnbreakable; }
             set { m_IsUnbreakable = value; }
         }
+
+        public bool IsFlameWeapon //@@MP (Release 5-2)
+        {
+            get { return m_ID == (int)Gameplay.GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED || m_ID == (int)Gameplay.GameItems.IDs.EXPLOSIVE_MOLOTOV; }
+        }
         #endregion
 
         #region Init

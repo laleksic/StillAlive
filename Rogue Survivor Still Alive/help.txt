@@ -20,6 +20,9 @@ TROUBLESHOOTING
 -(sound) I can't hear any sounds or music
 	Run the game configuration utility (RSConfing.exe) and set the audio engine to SFML.
 
+-(sound) A sound is stuck playing at the start of every turn
+	Save your progress (Shift+S) and then exit the game. The looping sound will be gone when you restart the game.
+
 -(ffdshow) ffdshow spams instances in the task bar
 	Open ffdshow configuration, go to DirectShow and set "Multiple ffdshow instances" to "none".
 

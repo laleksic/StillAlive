@@ -186,6 +186,11 @@ namespace djack.RogueSurvivor.Data
         {
             get { return m_GangID != (int)GameGangs.IDs.NONE; }
         }
+
+        public bool IsSkeletonType //@@MP (Release 5-2)
+        {
+            get { return Model.ID == (int)GameActors.IDs.UNDEAD_SKELETON || Model.ID == (int)GameActors.IDs.UNDEAD_RED_EYED_SKELETON || Model.ID == (int)GameActors.IDs.UNDEAD_RED_SKELETON; }
+        }
         #endregion
 
         #region State

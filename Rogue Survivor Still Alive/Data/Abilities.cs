@@ -121,7 +121,7 @@ namespace djack.RogueSurvivor.Data
         public bool IsLawEnforcer { get; set; }
 
         /// <summary>
-        /// Can do intelligent assesments like avoiding traps.
+        /// Can do intelligent assessments like avoiding traps.
         /// </summary>
         public bool IsIntelligent { get; set; }
 

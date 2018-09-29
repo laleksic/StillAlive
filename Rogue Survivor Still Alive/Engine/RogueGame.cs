@@ -334,8 +334,9 @@ namespace djack.RogueSurvivor.Engine
         const int PLAYER_HEAR_EXPLOSION_CHANCE = 100;
         #endregion
 
-        #region Blood splatting
-        const int BLOOD_WALL_SPLAT_CHANCE = 20;
+        #region Still Alive additions
+        const int BLOOD_WALL_SPLAT_CHANCE = 20; //@@MP (Release 2)
+        const int BASE_TILE_FIRE_DAMAGE = 5; //@@MP (Release 5-2)
         #endregion
 
         #region NPC player sleeping snoring message chance
@@ -1511,9 +1512,11 @@ namespace djack.RogueSurvivor.Engine
                             "- All the various types of undeads.",
                             "- Undeads can evolve and gain abilities.",
                             "- Undeads will not infect livings when hurting them.",
-                            "- If enabled, livings may zombify instantly if starved to death.",
-                            "- Otherwise, and by default, corpses will not rise again.",
-                            "> Suited for beginners or those looking for a different take on undeads."
+                            "- If enabled, livings may zombify instantly if starved to death,",
+                            "otherwise - and by default - corpses will not rise again.",
+                            "> Suited for beginners or those looking for a different take on undeads.",
+                            "",
+                            "Note: Undead evolution and starvation-zombification can be disabled from the Options."
                         };
                         break;
                     case 1:
@@ -1523,7 +1526,9 @@ namespace djack.RogueSurvivor.Engine
                             "- Undeads can evolve and gain abilities.",
                             "- Some undeads can infect livings when hurting them.",
                             "- Corpses will slowly rot, but may rise as undead if infected.",
-                            "> Suited for veterans or those looking for more of a challenge."
+                            "> Suited for veterans or those looking for more of a challenge.",
+                            "",
+                            "Note: Undead evolution can be disabled from the Options."
                         };
                         break;
                     case 2:
@@ -1535,8 +1540,11 @@ namespace djack.RogueSurvivor.Engine
                             "- Corpses will slowly rot, but may rise as undead if infected.",
                             "> Suited for those who want the true zombie apocalypse experience",
                             "",
-                            "IMPORTANT: This mode forces undead evolution OFF.",
-                            "Remember to set them back ON again when you play other modes!"
+                             //@@MP (Release 5-2)
+                            //"IMPORTANT: This mode forces undead evolution OFF.",
+                            //"Remember to set them back ON again when you play other modes!",
+                            "Note: You can also choose to disable antiviral pills from the",
+                            "Options, to ensure there is no way to undo infection."
                         };
                         break;
                 }
@@ -1585,12 +1593,12 @@ namespace djack.RogueSurvivor.Engine
                                 case 2: // vintage
                                     m_Session.GameMode = GameMode.GM_VINTAGE;
                                     
-                                    // force some options off.
-                                    s_Options.AllowUndeadsEvolution = false;
+                                    // force some options off. //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
+                                    /*s_Options.AllowUndeadsEvolution = false;
                                     s_Options.ShamblersUpgrade = false;
                                     s_Options.RatsUpgrade = false;
                                     s_Options.SkeletonsUpgrade = false;
-                                    ApplyOptions(false);
+                                    ApplyOptions(false);*/
 
                                     choiceDone = true;
                                     loop = false;
@@ -1946,7 +1954,8 @@ namespace djack.RogueSurvivor.Engine
             for (int i = (int)Skills.IDs._FIRST_LIVING; i < (int)Skills.IDs._LAST_LIVING + 1; i++)
             {
                 allSkills[i] = (Skills.IDs)i;
-                if ((!GameOptions.m_SanityGlobal) && (Skills.Name(allSkills[i]) == "Strong Psyche")) //@@MP - check if Sanity is disabled and remove it as an option if so (Release 1)
+                //if ((!GameOptions.m_SanityGlobal) && (Skills.Name(allSkills[i]) == "Strong Psyche")) //@@MP - check if Sanity is disabled and remove it as an option if so (Release 1)
+                if ((!Options.IsSanityEnabled) && (Skills.Name(allSkills[i]) == "Strong Psyche")) //@@MP - check if Sanity is disabled and remove it as an option if so (Release 1), fixed crappy implem (Release 5-2)
                 {
                     sanitySkillIndex = i + 1; //remember the index location of the array where Strong Psyche would have been
                     continue;   // Skip the remainder of this iteration
@@ -1957,7 +1966,8 @@ namespace djack.RogueSurvivor.Engine
                     skillDesc[i + 1] = String.Format("{0} max - {1}", Skills.MaxSkillLevel(i), DescribeSkillShort(allSkills[i]));
                 }
             }
-            if (!GameOptions.m_SanityGlobal) //resize the list of skills to eliminate where Strong Psyche would have been //@@MP  (Release 1)
+            //if (!GameOptions.m_SanityGlobal) //resize the list of skills to eliminate where Strong Psyche would have been //@@MP (Release 1)
+            if (!Options.IsSanityEnabled) //resize the list of skills to eliminate where Strong Psyche would have been //@@MP (Release 1), fixed crappy implem (Release 5-2)
             {
                 menuEntries = menuEntries.Where(w => w != menuEntries[sanitySkillIndex]).ToArray();
                 skillDesc = skillDesc.Where(w => w != skillDesc[sanitySkillIndex]).ToArray();
@@ -2109,7 +2119,7 @@ namespace djack.RogueSurvivor.Engine
                 gy += BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(rankColor, String.Format("     | {0}.", hi.SkillsDescription), 0, gy);
                 gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(rankColor, String.Format("     | {0}.", hi.Death), 0, gy);
+                m_UI.UI_DrawStringBold(rankColor, String.Format("     | {0}. Game mode: {1}", hi.Death, hi.GameMode), 0, gy); //@MP - added game mode (Release 5-2). FIXME: Add modded flag here in future release
                 gy += BOLD_LINE_SPACING;
 
                 // text.
@@ -2118,7 +2128,7 @@ namespace djack.RogueSurvivor.Engine
                     file.Append("------------------------------------------------------------------------------------------------------------------------");
                     file.Append(line);
                     file.Append(String.Format("     | {0}", hi.SkillsDescription));
-                    file.Append(String.Format("     | {0}", hi.Death));
+                    file.Append(String.Format("     | {0}. Game mode: {1}", hi.Death, hi.GameMode)); //@MP - added game mode (Release 5-2). FIXME: Add modded flag here in future release
                 }
             }
 
@@ -2184,6 +2194,7 @@ namespace djack.RogueSurvivor.Engine
             // scoring : hello there.
             m_Session.Scoring.AddVisit(m_Session.WorldTime.TurnCounter, m_Player.Location.Map);
             m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format(isUndead ? "Rose in {0}." : "Woke up in {0}.", m_Player.Location.Map.Name));
+            m_Session.Scoring.GameMode = Session.DescShortGameMode(m_Session.GameMode); //@@MP (Release 5-2)
 
             // setup proper scoring mode.
             m_Session.Scoring.Side = (isUndead ? DifficultySide.FOR_UNDEAD : DifficultySide.FOR_SURVIVOR);
@@ -2308,8 +2319,8 @@ namespace djack.RogueSurvivor.Engine
                    GameOptions.IDs.UI_SHOW_PLAYER_TARGETS,
                    GameOptions.IDs.UI_SHOW_TARGETS,
                    // sim
-                   GameOptions.IDs.GAME_SIM_THREAD,
                    GameOptions.IDs.GAME_SIMULATE_DISTRICTS,
+                   GameOptions.IDs.GAME_SIM_THREAD,
                    GameOptions.IDs.GAME_SIMULATE_SLEEP,
                    // death
                    GameOptions.IDs.GAME_DEATH_SCREENSHOT,
@@ -2325,6 +2336,7 @@ namespace djack.RogueSurvivor.Engine
                    GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH,
                    GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE,
                    GameOptions.IDs.GAME_SANITY, //@@MP (Release 1)
+                   GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS, //@@MP (Release 5-2)
                    // undeads
                    GameOptions.IDs.GAME_MAX_UNDEADS,
                    GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION,
@@ -2438,10 +2450,10 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE: s_Options.ZombificationChance -= 5; break;
                             case GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT: s_Options.RevealStartingDistrict = !s_Options.RevealStartingDistrict; break;
                             case GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
+                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE)//@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.AllowUndeadsEvolution = false;
-                                else
-                                    s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution; 
+                                else*/
+                                s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution; 
                                break;
                             case GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS:
                                 if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._FIRST)
@@ -2452,27 +2464,28 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS: s_Options.CanReincarnateToSewers = !s_Options.CanReincarnateToSewers; break;
                             case GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED: s_Options.IsLivingReincRestricted = !s_Options.IsLivingReincRestricted; break;
                             case GameOptions.IDs.GAME_PERMADEATH: s_Options.IsPermadeathOn = !s_Options.IsPermadeathOn; break;
-                            case GameOptions.IDs.GAME_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break;
+                            case GameOptions.IDs.GAME_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break; //@@MP (Release 1)
                             case GameOptions.IDs.GAME_DEATH_SCREENSHOT: s_Options.IsDeathScreenshotOn = !s_Options.IsDeathScreenshotOn; break;
                             case GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
                             case GameOptions.IDs.GAME_NATGUARD_FACTOR: s_Options.NatGuardFactor -= 10; break;
                             case GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor -= 10; break;
+                            case GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)
                             case GameOptions.IDs.GAME_RATS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
+                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.RatsUpgrade = false;
-                                else
+                                else*/
                                     s_Options.RatsUpgrade = !s_Options.RatsUpgrade; 
                                 break;
                             case GameOptions.IDs.GAME_SHAMBLERS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
+                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.ShamblersUpgrade = false;
-                                else
+                                else*/
                                     s_Options.ShamblersUpgrade = !s_Options.ShamblersUpgrade; 
                                 break;
                             case GameOptions.IDs.GAME_SKELETONS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
+                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.SkeletonsUpgrade = false;
-                                else
+                                else*/
                                     s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade; 
                                 break;                            
                         }
@@ -2512,10 +2525,10 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE: s_Options.ZombificationChance += 5; break;
                             case GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT: s_Options.RevealStartingDistrict = !s_Options.RevealStartingDistrict; break;
                             case GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
+                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.AllowUndeadsEvolution = false;
-                                else
-                                    s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution; 
+                                else*/
+                                s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution; 
                                 break;
                             case GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS: 
                                 if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._COUNT-1)
@@ -2526,27 +2539,28 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS: s_Options.CanReincarnateToSewers = !s_Options.CanReincarnateToSewers; break;
                             case GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED: s_Options.IsLivingReincRestricted = !s_Options.IsLivingReincRestricted; break;
                             case GameOptions.IDs.GAME_PERMADEATH: s_Options.IsPermadeathOn = !s_Options.IsPermadeathOn; break;
-                            case GameOptions.IDs.GAME_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break;
+                            case GameOptions.IDs.GAME_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break; //@@MP (Release 1)
                             case GameOptions.IDs.GAME_DEATH_SCREENSHOT: s_Options.IsDeathScreenshotOn = !s_Options.IsDeathScreenshotOn; break;
                             case GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
                             case GameOptions.IDs.GAME_NATGUARD_FACTOR: s_Options.NatGuardFactor += 10; break;
                             case GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor += 10; break;
+                            case GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)
                             case GameOptions.IDs.GAME_RATS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
+                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.RatsUpgrade = false;
-                                else
-                                    s_Options.RatsUpgrade = !s_Options.RatsUpgrade; 
+                                else*/
+                                s_Options.RatsUpgrade = !s_Options.RatsUpgrade; 
                                 break;
                             case GameOptions.IDs.GAME_SHAMBLERS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
+                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.ShamblersUpgrade = false;
-                                else
+                                else*/
                                     s_Options.ShamblersUpgrade = !s_Options.ShamblersUpgrade; 
                                 break;
                             case GameOptions.IDs.GAME_SKELETONS_UPGRADE:
-                                if (m_Session.GameMode == GameMode.GM_VINTAGE)
+                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.SkeletonsUpgrade = false;
-                                else
+                                else*/
                                     s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade; 
                                 break;    
                         }
@@ -2562,11 +2576,11 @@ namespace djack.RogueSurvivor.Engine
             }
             while (loop);
 
-            //switch the global Sanity flag
+            /*//switch the global Sanity flag //@MP (Release 1), obsolete (Release 5-2)
             if (s_Options.IsSanityEnabled)
                 GameOptions.m_SanityGlobal = true;
             else
-                GameOptions.m_SanityGlobal = false;
+                GameOptions.m_SanityGlobal = false;*/
 
             // save.
             SaveOptions();
@@ -3694,7 +3708,7 @@ namespace djack.RogueSurvivor.Engine
                         // trust.
                         ModifyActorTrustInLeader(actor, m_Rules.ActorTrustIncrease(actor.Leader), false);
                         // bond with leader.
-                        if (m_Rules.HasActorBondWith(actor, actor.Leader)  && m_Rules.RollChance(Rules.SANITY_RECOVER_BOND_CHANCE))
+                        if (m_Rules.HasActorBondWith(actor, actor.Leader) && m_Rules.RollChance(Rules.SANITY_RECOVER_BOND_CHANCE))
                         {
                             RegenActorSanity(actor, m_Rules.ActorSanRegenValue(actor, Rules.SANITY_RECOVER_BOND));
                             RegenActorSanity(actor.Leader, m_Rules.ActorSanRegenValue(actor.Leader, Rules.SANITY_RECOVER_BOND));
@@ -3936,6 +3950,79 @@ namespace djack.RogueSurvivor.Engine
                 #endregion
             }   // skipped in lodetail turns.
 
+
+            // 7.2 Spread tile fires, and burn victims @@MP - fires on grass, carpet and wood tiles may spread (Release 5-2)
+            #region
+            List<Point> alreadyTestedOrBurntOrBurningPoints = new List<Point>(); //hold each position that rolled a check against for the fire to spread to (whether it caught fire or not, or was already burnt or burning)
+            List<Point> spreadToThisTurnPoints = new List<Point>(); //hold each position the fire spread to this turn, so that if the position is ahead of the outer x and y loops the actor won't be burnt by targettileactor then sourcetileactor on the same turn
+            for (int x = 0; x < map.Width; x++)
+            {
+                for (int y = 0; y < map.Height; y++)
+                {
+                    if (Map.IsAnyTileFireThere(map, new Point(x, y))) //is the tile on fire?
+                    {
+                        #region First burn the actor if they stood in the fire for a turn
+                        alreadyTestedOrBurntOrBurningPoints.Add(new Point { X = x, Y = y }); //already on fire so no need to check if fire will spread to it; just add these coordinates to the list of checked positions
+
+                        Actor sourcetileactor = map.GetActorAt(x, y);
+                        List<Corpse> corpses = map.GetCorpsesAt(x, y);
+                        if ((sourcetileactor != null && !sourcetileactor.IsSkeletonType) || (corpses != null)) //check if there is actually an actor or corpses there to burn [skeletons are invulnerable to fire]. if not, wmove on
+                        {
+                            bool fireSpreadToThisTileThisTurn = false;
+                            for (int z = 0; z < spreadToThisTurnPoints.Count; z++)
+                            {
+                                Point pointbeingchecked = spreadToThisTurnPoints[z];
+                                if (pointbeingchecked.X == x && pointbeingchecked.Y == y)
+                                {
+                                    fireSpreadToThisTileThisTurn = true;
+                                    break;
+                                }
+                            }
+                            //it was already on fire when this turn started, so the fire did not spread here this turn and we must therefore burn the actor (ie they were waiting/sleeping/trapped/silly/molotoved/flamethrowered)
+                            if (!fireSpreadToThisTileThisTurn) ApplyBurnDamage(map, new Point(x, y));
+                        }
+                        #endregion
+
+                        #region Now check if that fire spreads to an adjacent tile/s
+                        Point position = new Point(x, y);
+                        map.ForEachAdjacentInMap(position, (adj) =>
+                        {
+                            //check if we've already tested the adjacent tile this turn
+                            bool checkedForFireSpreadAlready = false;
+                            for (int z = 0; z < alreadyTestedOrBurntOrBurningPoints.Count; z++)
+                            {
+                                Point pointbeingchecked = alreadyTestedOrBurntOrBurningPoints[z]; //walk through the list by position
+                                if (pointbeingchecked.X == adj.X && pointbeingchecked.Y == adj.Y)
+                                {
+                                    checkedForFireSpreadAlready = true;
+                                    break;
+                                }
+                            }
+                            //if the tile hasn't already been tested this turn do so now
+                            if (!checkedForFireSpreadAlready)
+                            {
+                                alreadyTestedOrBurntOrBurningPoints.Add(new Point { X = adj.X, Y = adj.Y }); //add these coordinates to the list of checked positions
+                                if (map.IsFlammableTileAt(adj.X, adj.Y) && !map.TileAlreadyHasScorchDecoration(adj.X, adj.Y)) //if it's on fire it will already have a scorch, so the second parameter checks for both active and extinguished fires here
+                                {
+                                    if (m_Rules.RollChance(7)) //7% chance to spread the fire. often if one adjacent tile is on fire others will be too, so the surrounding tiles have multiple opportunities to catch on fire each turn, and then usually multiple turns, so {7% * adjacent fires * turns until all adjacent extinguished}
+                                    {
+                                        spreadToThisTurnPoints.Add(new Point { X = adj.X, Y = adj.Y }); //add these coordinates to the list of positions already caught on fire this turn
+                                        if (m_Rules.IsWeatherRain(m_Session.World.Weather)) //@@MP - less turns duration if it's raining
+                                            SetTileOnFire(map, 5, adj.X, adj.Y);
+                                        else
+                                            SetTileOnFire(map, 10, adj.X, adj.Y);
+
+                                        ApplyBurnDamage(map, new Point(adj.X, adj.Y)); //if there's an actor or corpse/s on the tile that just caught on fire, burn them
+                                    }
+                                }
+                            }
+                        });
+                        #endregion
+                    }
+                }
+            }
+            #endregion
+
             // -- Check timers.
             #region
             if (map.CountTimers > 0)
@@ -3979,7 +4066,6 @@ namespace djack.RogueSurvivor.Engine
             #endregion
         }
 
-
         void DropActorScent(Actor actor)
         {
             if (actor.Model.Abilities.IsUndead)
@@ -4007,6 +4093,41 @@ namespace djack.RogueSurvivor.Engine
             // if leader is player, message.
             if (addMessage && a.Leader.IsPlayer)
                 AddMessage(new Message(String.Format("({0} trust with {1})", mod, a.TheName), m_Session.WorldTime.TurnCounter, Color.White));
+        }
+
+        void ApplyBurnDamage(Map map, Point point) //@@MP (Release 5-2)
+        {
+            /*flame weapons like molotovs have their own damage values for initial impact (like any other explosion), but NextMapTurn() actually handles all fire damage, so to prevent
+            duplicating damage in NextMapTurn() the difference between base FIRE_DAMAGE and weapon initial impact dmg calculates damage is taken into account by ApplyExplosionDamage().
+            The weapons damage comes from the relevant csv, and this technique (whilst janky) allows players to still mod those values.*/
+
+            //damage actor if present
+            Actor actor = map.GetActorAt(point);
+            if (actor != null && !actor.IsSkeletonType) //skeletons are invulnerable to fire
+            {
+                InflictDamage(actor, FIRE_DAMAGE, false);
+                if (actor.HitPoints <= 0)
+                {
+                    // show.
+                    if (IsVisibleToPlayer(actor))
+                    {
+                        AddMessage(new Message(actor.Name + " died in flames!", m_Session.WorldTime.TurnCounter, OTHER_ACTION_COLOR));
+                        AddOverlay(new OverlayImage(MapToScreen(actor.Location.Position), GameImages.ICON_KILLED));
+                        RedrawPlayScreen();
+                        AnimDelay(DELAY_LONG);
+                    }
+                    KillActor(null, actor, "fire");
+                    SeeingCauseInsanity(actor.Location, Rules.SANITY_HIT_EATEN_ALIVE, String.Format("{0} burnt alive", actor.Name));
+                }
+            }
+
+            //damage corpses if present
+            List<Corpse> corpses = map.GetCorpsesAt(point);
+            if (corpses != null)
+            {
+                foreach (Corpse c in corpses)
+                    InflictDamageToCorpse(c, (float)FIRE_DAMAGE);
+            }
         }
         #endregion
 
@@ -6818,7 +6939,7 @@ namespace djack.RogueSurvivor.Engine
             SpendActorActionPoints(a, Rules.BASE_ACTION_COST);
 
             // cause insanity.
-            SeeingCauseInsanity(a, a.Location, Rules.SANITY_HIT_BUTCHERING_CORPSE, String.Format("{0} butchering {1}", a.Name, c.DeadGuy.Name));
+            SeeingCauseInsanity(a.Location, Rules.SANITY_HIT_BUTCHERING_CORPSE, String.Format("{0} butchering {1}", a.Name, c.DeadGuy.Name), a); //@@MP - updated for the change to this method (Release 5-2)
 
             // damage.
             int dmg = m_Rules.ActorDamageVsCorpses(a);
@@ -6883,8 +7004,8 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // cause insanity.
-            SeeingCauseInsanity(a, a.Location, a.Model.Abilities.IsUndead ? Rules.SANITY_HIT_UNDEAD_EATING_CORPSE : Rules.SANITY_HIT_LIVING_EATING_CORPSE, 
-                String.Format("{0} eating {1}", a.Name, c.DeadGuy.Name));
+            SeeingCauseInsanity(a.Location, a.Model.Abilities.IsUndead ? Rules.SANITY_HIT_UNDEAD_EATING_CORPSE : Rules.SANITY_HIT_LIVING_EATING_CORPSE, 
+                String.Format("{0} eating {1}", a.Name, c.DeadGuy.Name), a); //@@MP - updated for the change to this method (Release 5-2)
         }
 
         public void DoReviveCorpse(Actor actor, Corpse corpse)
@@ -6938,6 +7059,9 @@ namespace djack.RogueSurvivor.Engine
                 // add trust.
                 if (!m_Rules.IsEnemyOf(actor, corpse.DeadGuy))
                     corpse.DeadGuy.AddTrustIn(actor, Rules.TRUST_REVIVE_BONUS);
+                // regen all sanity if applicable //@@MP (Release 5-2)
+                if (actor.Model.Abilities.HasSanity)
+                    RegenActorSanity(actor, (m_Rules.ActorMaxSanity(actor) - actor.Sanity));
             }
             else
             {
@@ -7850,7 +7974,12 @@ namespace djack.RogueSurvivor.Engine
             KeyEventArgs inKey = m_UI.UI_WaitKey(); // 3. Read input
 
             if (inKey.KeyCode == Keys.Escape) // 4. Handle input
+            { //@@MP - added a clear to get rid of the prompt, and a message noting it was cancelled (Release 5-2)
+                AddMessage(new Message("Aborted making a molotov.", m_Session.WorldTime.TurnCounter, Color.White));
+                ClearOverlays();
+                RedrawPlayScreen();
                 return false;
+            }
             else // get choice.
             {
                 int choice = KeyToChoiceNumber(inKey.KeyCode);
@@ -9657,7 +9786,6 @@ namespace djack.RogueSurvivor.Engine
             /////////
             ShowAdvisorHint(hint);
         }
-
 
         bool IsAdvisorHintAppliable(AdvisorHint hint)
         {
@@ -11998,23 +12126,7 @@ namespace djack.RogueSurvivor.Engine
                     if (actor.HitPoints <= 0)
                         KillActor(null, actor, "trap");
                 }
-            }
-
-            //@@MP - check for fire on the ground (eg molotov). this is unlike objects IsOnFire, which aren't walkable. skeletons are invulnerable to fire (Release 4) 
-            if (actor.Model.ID != (int)GameActors.IDs.UNDEAD_SKELETON && actor.Model.ID != (int)GameActors.IDs.UNDEAD_RED_EYED_SKELETON && actor.Model.ID != (int)GameActors.IDs.UNDEAD_RED_SKELETON)
-            {
-                Tile tile = map.GetTileAt(pos.X, pos.Y);
-                if (tile.HasDecoration(GameImages.EFFECT_ONFIRE))
-                {
-                    // reduce HP
-                    InflictDamage(actor, FIRE_DAMAGE);
-
-                    // Kill actor?
-                    if (actor.HitPoints <= 0)
-                        KillActor(null, actor, "fire");
-                }
-            }
-            
+            }          
         }
 
         bool TryActorLeaveTile(Actor actor)
@@ -12227,7 +12339,7 @@ namespace djack.RogueSurvivor.Engine
             int damage = model.Damage * trap.Quantity;
             if (damage > 0 && victim != null) //@@MP - victim can be null if an object (eg chair) is pushed onto the tile
             {
-                InflictDamage(victim, damage);
+                InflictDamage(victim, damage, false);
                 switch (trap.TheName.ToString()) //@@MP - ensure at least some blood is dropped for the nastier traps (Release 3)
                 {
                     case "the bear trap":
@@ -12938,7 +13050,7 @@ namespace djack.RogueSurvivor.Engine
                 if (dmgRoll > 0)
                 {
                     // inflict dmg.
-                    InflictDamage(defender, dmgRoll);
+                    InflictDamage(defender, dmgRoll, true);
 
                     // regen HP/Rot and infection?
                     if (attacker.Model.Abilities.CanZombifyKilled && !defender.Model.Abilities.IsUndead)
@@ -12969,7 +13081,7 @@ namespace djack.RogueSurvivor.Engine
 
                         // cause insanity?
                         if (attacker.Model.Abilities.IsUndead && !defender.Model.Abilities.IsUndead)
-                            SeeingCauseInsanity(attacker, attacker.Location, Rules.SANITY_HIT_EATEN_ALIVE, String.Format("{0} eaten alive", defender.Name));
+                            SeeingCauseInsanity(attacker.Location, Rules.SANITY_HIT_EATEN_ALIVE, String.Format("{0} eaten alive", defender.Name), attacker); //@@MP - updated for the change to this method (Release 5-2)
 
                         // turn victim into zombie; always turn player into zombie NOW if killed by zombifier or if was infected.
                         if (Rules.HasImmediateZombification(m_Session.GameMode) || defender == m_Player)
@@ -13285,7 +13397,7 @@ namespace djack.RogueSurvivor.Engine
                 if (dmgRoll > 0)
                 {
                     // inflict dmg.
-                    InflictDamage(defender, dmgRoll);
+                    InflictDamage(defender, dmgRoll, true);
 
                     //if crossbow shot, chance to retrieve a bolt //@@MP - make bows more useful (Release 2)
                     if (weapon.Model == GameItems.HUNTING_CROSSBOW)
@@ -13652,8 +13764,7 @@ namespace djack.RogueSurvivor.Engine
 
         bool ApplyExplosionWaveSub(Location blastCenter, Point pt, int waveDistance, BlastAttack blast, ItemModel itemModel) //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
         {
-            if (blastCenter.Map.IsInBounds(pt) && 
-                LOS.CanTraceFireLine(blastCenter, pt,waveDistance, null))
+            if (blastCenter.Map.IsInBounds(pt) && LOS.CanTraceFireLine(blastCenter, pt,waveDistance, null))
             {
                 // do damage.
                 int damage = ApplyExplosionDamage(new Location(blastCenter.Map, pt), waveDistance, blast, itemModel); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
@@ -13686,11 +13797,11 @@ namespace djack.RogueSurvivor.Engine
             Actor victim = map.GetActorAt(location.Position);
             if (victim != null)
             {
-                // carried explosives chain reaction.
+                /*// carried explosives chain reaction. //@@MP - disabled because it's OP and didn’t increase the fun factor, especially given that mostly only the player is likely to use or even carry an explosive (Release 5-2)
                 #region
                 Inventory carriedItems = victim.Inventory;
                 ExplosionChainReaction(carriedItems, location);
-                #endregion
+                #endregion*/
 
                 // damage.
                 #region
@@ -13698,7 +13809,13 @@ namespace djack.RogueSurvivor.Engine
                 if (dmgToVictim > 0)
                 {
                     // inflict.
-                    InflictDamage(victim, dmgToVictim);
+                    if (itemModel.IsFlameWeapon) //@@MP - fire damage required something customised, as you'll see below and in 7.2 of NextMapTurn()
+                    {
+                        int resolvedDmgToVicitim = dmgToVictim - FIRE_DAMAGE; //@@MP - NextMapTurn() will inflict base fire damage, so for this initial hit just include and damage over and above (or add health if the eventual damage should be below what NMT() will remove)
+                        InflictDamage(victim, resolvedDmgToVicitim, false); //@@MP - now that InflictDamage doesn't have to cause blood splatter, don't for fires (Release 5-2)
+                    }
+                    else //@@MP - it's a standard explosive, so chance to cause blood splatter (Release 5-2)
+                        InflictDamage(victim, dmgToVictim, true);
 
                     // message.
                     if (IsVisibleToPlayer(victim))
@@ -13807,6 +13924,7 @@ namespace djack.RogueSurvivor.Engine
             #endregion
 
             // destroy walls?
+            #region
             bool wallDestroyed = false;
             if (blast.CanDestroyWalls)
             {
@@ -13820,10 +13938,11 @@ namespace djack.RogueSurvivor.Engine
             }
 
             if (!wallDestroyed) //@@MP - add scorch sprite where ground or surviving wall was blasted (Release 2)
-                ScorchBurntTile(location, modifiedDamage);
+                ScorchBurntTile(map, location.Position.X, location.Position.Y, modifiedDamage);
+            #endregion
 
             //@@MP - molotovs start fires (Release 4)
-            if (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED)
+            if (itemModel.IsFlameWeapon)//(itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED) //@@MP - switched to the new method (Release 5-2)
             {
                 if (m_Rules.IsWeatherRain(m_Session.World.Weather)) //@@MP - less turns duration if it's raining
                     SetTileOnFire(map, 5, location.Position.X, location.Position.Y);
@@ -13889,29 +14008,34 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        void ScorchBurntTile(Location location, int damage) //@@MP - add a burn mark sprite to the ground (Release 2), cater for the new explosives with damage ranges (Release 4)
+        void ScorchBurntTile(Map map, int x, int y, int damage) //@@MP - add a burn mark sprite to the ground (Release 2), cater for the new explosives with damage ranges (Release 4)
         {
-            Map map = location.Map;
-            if (map.GetExitAt(location.Position) != null) //skip if it's stairs
+            if (map.GetExitAt(x, y) != null) //skip if it's stairs
                 return;
 
-            if (damage <= 40) //@@MP - a lazy way of doing it. should go back and calculate based on radius from the center of the blast...
-                map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_SCORCH_MARK_OUTER);
-            else if (damage > 40 && damage <= 120)
-                map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER);
-            else if (damage > 120)
-                map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_SCORCH_MARK_CENTER);
-            /*else //outside the blast wave, do nothing - used for testing
-                map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.UNDEF);*/
+            if (damage > 0 && !map.TileAlreadyHasScorchDecoration(x, y)) //@@MP - so that we don't try to add a new scorch over an existing scorch (Release 5-2)
+            {
+                if (damage <= 40) //@@MP FIXME - a lazy way of doing it. should go back and calculate based on radius from the center of the blast...
+                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_OUTER);
+                else if (damage > 40 && damage <= 120)
+                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER);
+                else if (damage > 120)
+                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_CENTER);
+            }
         }
 
         /// <summary>
         /// Different to mapobj.IsOnFire as it can be used for just empty tiles
         /// </summary>
-        void SetTileOnFire(Map map, int turnstoburn, int x, int y) //@@MP (Release 4)
+        void SetTileOnFire(Map map, int turnsToBurn, int x, int y) //@@MP - new method (Release 4)
         {
-            map.GetTileAt(x, y).AddDecoration(GameImages.EFFECT_ONFIRE);
-            map.AddTimer(new TaskRemoveDecoration(turnstoburn, x, y, GameImages.EFFECT_ONFIRE)); //@@MP - put the fire out after the specified number of turns
+            Point pt = new Point(x, y);
+            if (!Map.IsAnyTileFireThere(map, pt))
+            {
+                ScorchBurntTile(map, x, y, BASE_TILE_FIRE_DAMAGE); //@@MP FIXME? - replace hard-coded damage value with a relevant variable or better constant? (Release 5-2)
+                map.GetTileAt(x, y).AddDecoration(GameImages.EFFECT_ONFIRE);
+                map.AddTimer(new TaskRemoveDecoration(turnsToBurn, x, y, GameImages.EFFECT_ONFIRE)); //@@MP - put the fire out after the specified number of turns
+            }
         }
 
         /// <summary>
@@ -15587,7 +15711,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Damaging & Killing actors
-        void InflictDamage(Actor actor, int dmg)
+        void InflictDamage(Actor actor, int dmg, bool splatterBlood) //@@MP - made blood splatter optional, for times were it doesn't make sense eg fires (Release 5-2)
         {
             // HP.
             actor.HitPoints -= dmg;
@@ -15623,7 +15747,7 @@ namespace djack.RogueSurvivor.Engine
                 DoWakeUp(actor);
 
             //@@MP - splatter bood (Release 2)
-            if ((!actor.Model.Abilities.IsUndead) && (actor.HitPoints > 0))
+            if (splatterBlood && (!actor.Model.Abilities.IsUndead) && (actor.HitPoints > 0)) //@@MP - added check whether we even want to splatter blood (Release 5-2)
             {
                 int randomSplatterChance = m_Rules.Roll(0, 10);
                 /*if (actor.Location.Map.District != m_Player.Location.Map.District)
@@ -16255,7 +16379,7 @@ namespace djack.RogueSurvivor.Engine
             TextFile graveyard = new TextFile();
 
             graveyard.Append(String.Format("ROGUE SURVIVOR {0}", SetupConfig.GAME_VERSION));
-            graveyard.Append("POST MORTEM");
+            graveyard.Append(String.Format("POST MORTEM - {0}", m_Session.Scoring.GameMode)); //m_Session.GameMode.ToString())); //@@MP - added game mode (Release 5-2)
 
             #region Summary
             graveyard.Append(String.Format("{0} was {1} and {2}.", name, AorAn(m_Player.Model.Name), AorAn(m_Player.Faction.MemberName)));
@@ -16268,7 +16392,7 @@ namespace djack.RogueSurvivor.Engine
 
             graveyard.Append("> SCORING");
             #region
-            graveyard.Append(String.Format("{0} scored a total of {1} points.", heOrShe, m_Session.Scoring.TotalPoints));
+            graveyard.Append(String.Format("{0} scored a net total of {1} points.", heOrShe, m_Session.Scoring.TotalPoints));
             graveyard.Append(String.Format("- difficulty rating of {0}%.", (int)(100 * m_Session.Scoring.DifficultyRating)));
             graveyard.Append(String.Format("- {0} base points for survival.", m_Session.Scoring.SurvivalPoints));
             graveyard.Append(String.Format("- {0} base points for kills.", m_Session.Scoring.KillPoints));
@@ -16295,11 +16419,11 @@ namespace djack.RogueSurvivor.Engine
                 graveyard.Append(String.Format("Total : {0}/{1}.", m_Session.Scoring.CompletedAchievementsCount, Scoring.MAX_ACHIEVEMENTS));
                 if (m_Session.Scoring.CompletedAchievementsCount >= Scoring.MAX_ACHIEVEMENTS)
                 {
-                    graveyard.Append("*** You achieved everything! You can consider having 'won' this version of the game! CONGRATULATIONS! ***");
+                    graveyard.Append("*** You achieved everything! You can consider having 'won' this version of the game! Congratulations! ***");
                 }
                 else
                     graveyard.Append("(unlock all the achievements to 'win' this game version)");
-                graveyard.Append("(later versions of the game were to feature real winning conditions and multiple endings...)");
+                graveyard.Append("(later versions of the game will feature real winning conditions and multiple endings...)");
             }
             graveyard.Append(" ");
             #endregion
@@ -16366,7 +16490,7 @@ namespace djack.RogueSurvivor.Engine
             #region
             if (m_Player.Inventory.IsEmpty)
             {
-                graveyard.Append(String.Format("{0} was humble. Or dirt poor.", heOrShe));
+                graveyard.Append(String.Format("{0} travelled light. Or was really bad at scavenging.", heOrShe));
             }
             else
             {
@@ -16457,40 +16581,53 @@ namespace djack.RogueSurvivor.Engine
             graveyard.Append(String.Format("- {0} : yes.", GameOptions.Name(GameOptions.IDs.GAME_PERMADEATH)));
             //if (s_Options.IsSanityEnabled)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SANITY), s_Options.IsSanityEnabled ? "on" : "off"));
-            //if(!s_Options.AllowUndeadsEvolution)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION), s_Options.AllowUndeadsEvolution ? "yes" : "no"));
             //if (s_Options.CitySize != GameOptions.DEFAULT_CITY_SIZE)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_CITY_SIZE), s_Options.CitySize));
-            //if (s_Options.DayZeroUndeadsPercent != GameOptions.DEFAULT_DAY_ZERO_UNDEADS_PERCENT)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT), s_Options.DayZeroUndeadsPercent));
             //if (s_Options.DistrictSize != GameOptions.DEFAULT_DISTRICT_SIZE)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_DISTRICT_SIZE), s_Options.DistrictSize));
+            //if (!s_Options.RevealStartingDistrict)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT), s_Options.RevealStartingDistrict ? "yes" : "no"));
             //if (s_Options.MaxCivilians != GameOptions.DEFAULT_MAX_CIVILIANS)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_CIVILIANS), s_Options.MaxCivilians));
             //if (s_Options.MaxUndeads != GameOptions.DEFAULT_MAX_UNDEADS)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_UNDEADS), s_Options.MaxUndeads));
+            //if (s_Options.DayZeroUndeadsPercent != GameOptions.DEFAULT_DAY_ZERO_UNDEADS_PERCENT)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT), s_Options.DayZeroUndeadsPercent));
+            //if (s_Options.ZombieInvasionDailyIncrease != GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE), s_Options.ZombieInvasionDailyIncrease));
+            if (Rules.HasEvolution(m_Session.GameMode)) //@@MP (Release 5-2)
+            {
+                //if(!s_Options.AllowUndeadsEvolution)
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION), s_Options.AllowUndeadsEvolution ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SKELETONS_UPGRADE), s_Options.SkeletonsUpgrade ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_RATS_UPGRADE), s_Options.RatsUpgrade ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SHAMBLERS_UPGRADE), s_Options.ShamblersUpgrade ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS), s_Options.ZombifiedsUpgradeDays));
+            }
+            else
+            {
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS), s_Options.VTGAntiviralPills ? "yes" : "no"));
+            }
             //if (!s_Options.NPCCanStarveToDeath)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH), s_Options.NPCCanStarveToDeath ? "yes" : "no"));
             //if(s_Options.StarvedZombificationChance != GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE)
             graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE), s_Options.StarvedZombificationChance));
-            //if (!s_Options.RevealStartingDistrict)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT), s_Options.RevealStartingDistrict ? "yes" : "no"));
-            //if (s_Options.SimulateDistricts != GameOptions.DEFAULT_SIM_DISTRICTS)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SIMULATE_DISTRICTS), GameOptions.Name(s_Options.SimulateDistricts)));
-            //if (s_Options.SimulateWhenSleeping)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SIMULATE_SLEEP), s_Options.SimulateWhenSleeping ? "yes" : "no"));
-            //if (s_Options.ZombieInvasionDailyIncrease != GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE), s_Options.ZombieInvasionDailyIncrease));
             //if (s_Options.ZombificationChance != GameOptions.DEFAULT_ZOMBIFICATION_CHANCE)
             graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE), s_Options.ZombificationChance));
-            //if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_REINCARNATIONS), s_Options.MaxReincarnations));
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS), s_Options.IsAggressiveHungryCiviliansOn ? "yes" : "no")); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_NATGUARD_FACTOR), s_Options.NatGuardFactor)); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR), s_Options.SuppliesDropFactor)); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.UI_COMBAT_ASSISTANT), s_Options.IsCombatAssistantOn ? "on" : "off")); //@@MP (Release 5-2)
+            if (s_Options.IsLivingReincRestricted) //if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS) //@@MP (Release 5-2)
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED), s_Options.IsLivingReincRestricted ? "on" : "off"));
+            else
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_REINCARNATIONS), s_Options.MaxReincarnations));
             graveyard.Append(" ");
             #endregion
 
             graveyard.Append("> R.I.P");
             #region
-            graveyard.Append(String.Format("May {0} rest in peace, and not rise again.", HisOrHer(m_Player))); //@@MP - replaced with something better (Release 1)
+            graveyard.Append(String.Format("May {0} rest in peace, and not rise again.", HeOrShe(m_Player))); //@@MP - replaced with something better (Release 1)
             /*graveyard.Append(String.Format("For {0} body is now a meal for evil.", HisOrHer(m_Player)));
             graveyard.Append("The End.");*/
             #endregion
@@ -16729,7 +16866,8 @@ namespace djack.RogueSurvivor.Engine
                 int skillUpgradeChoices = upgradeChoices.Count;  //@@MP upgradechoices.count equals how many choices to present to the user (vanilla = 5 for living, 2 for undead)
 
                 //@@MP - if Sanity is disabled, make sure Strong Psyche is not one of the skill upgrades offered (Release 1)
-                if ((skillUpgradeChoices <= 1) && (!GameOptions.m_SanityGlobal))
+                //if ((skillUpgradeChoices <= 1) && (!GameOptions.m_SanityGlobal))
+                if ((skillUpgradeChoices <= 1) && (!Options.IsSanityEnabled)) //@MP - fixed crappy implem (Release 5-2)
                     AddMessage(MakeErrorMessage(youName + " fully skilled and can't learn anything new."));
                 else if (skillUpgradeChoices == 0)
                     AddMessage(MakeErrorMessage(youName + " fully skilled and can't learn anything new."));
@@ -17035,7 +17173,8 @@ namespace djack.RogueSurvivor.Engine
                         return AVG_UTIL;
 
                     case Skills.IDs.STRONG_PSYCHE: //@@MP - another location where disabling sanity has an implication (Release 1)
-                        if (GameOptions.m_SanityGlobal)
+                        //if (GameOptions.m_SanityGlobal)
+                        if (Options.IsSanityEnabled) //@MP - fixed crappy implementation (Release 5-2)
                             return actor.Model.Abilities.HasSanity ? HI_UTIL : USELESS_UTIL; // useful only if has sanity.
                         else
                             return USELESS_UTIL; //sanity is disabled so this skill is useless, unfortunately it doesn't completely remove the chance to take it
@@ -17059,7 +17198,8 @@ namespace djack.RogueSurvivor.Engine
             int skID;
             bool isUndead = actor.Model.Abilities.IsUndead;
 
-            if (GameOptions.m_SanityGlobal)
+            //if (GameOptions.m_SanityGlobal)
+            if (Options.IsSanityEnabled) //@MP - fixed crappy implementation (Release 5-2)
             {
                 do
                 {
@@ -17249,7 +17389,7 @@ namespace djack.RogueSurvivor.Engine
 
             // cause insanity if the actor sees a zombie rise
             if (!isStartingGame)
-                SeeingCauseInsanity(newZombie, newZombie.Location, Rules.SANITY_HIT_ZOMBIFY, String.Format("{0} turning into a zombie", deadVictim.Name));
+                SeeingCauseInsanity(newZombie.Location, Rules.SANITY_HIT_ZOMBIFY, String.Format("{0} turning into a zombie", deadVictim.Name), newZombie); //@@MP - updated for the change to this method (Release 5-2)
 
             // done.
             return newZombie;
@@ -19021,11 +19161,11 @@ namespace djack.RogueSurvivor.Engine
             if (!m_MusicManager.IsAudioEnabled)
                 m_MusicManager.StopAll();
 
-            //@@MP - switch the global Sanity flag, so we don't need to save it to config.dat (Release 2)
+            /*//@@MP - switch the global Sanity flag, so we don't need to save it to config.dat (Release 2), obsolete (Release 5-2)
             if (Options.IsSanityEnabled)
                 GameOptions.m_SanityGlobal = true;
             else
-                GameOptions.m_SanityGlobal = false;
+                GameOptions.m_SanityGlobal = false;*/
         }
         #endregion
 
@@ -21497,7 +21637,7 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        void SeeingCauseInsanity(Actor whoDoesTheAction, Location loc, int sanCost, string what)
+        void SeeingCauseInsanity(Location loc, int sanCost, string what, Actor whoDoesTheAction = null) //@@MP - made whoDoesTheAction optional (Release 5-2)
         {
             foreach (Actor a in loc.Map.Actors)
             {
@@ -21512,7 +21652,7 @@ namespace djack.RogueSurvivor.Engine
                 SpendActorSanity(a, sanCost);
 
                 // msg.
-                if (whoDoesTheAction == a)
+                if (whoDoesTheAction != null && whoDoesTheAction == a) //@@MP - allowed for cases where whoDoesTheAction was not provided eg deaths in fires (Release 5-2)
                 {
                     if (a.IsPlayer)
                         AddMessage(new Message("That was a very disturbing thing to do...", loc.Map.LocalTime.TurnCounter, Color.Orange));
