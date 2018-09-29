@@ -1,10 +1,56 @@
-﻿STILL ALIVE 1.5.32.11 (aka Release 5-6, 14/04/2018) [Author: MP]
+﻿STILL ALIVE 1.5.37.9 (aka Release 5-7, 20/07/2018) [Author: MP]
 ---------------------
+
+Features:
+-Players can now supply their own character name.
+-Removed rats skill upgrade and reincarnation options.
+-Removed option to hide tags on the minimap.
+-Restored hour-of-day tint.
+-Molotovs now have a chance to set fleshy victims on fire.
+-Each level of Tough increases current HP as well as maximum HP (a la RS Revived)
+-Halved the amount of food and seeds grown by crops.
+-Throwing explosives at survivors will now draw their ire.
+-Survivors are now somewhat more liberal, but also more careful, about using explosives.
+-Survivors now favour multiple targets over tougher targets when using explosives.
+-Enabled permadeath by default (can still be changed).
+-Added reload sfx.
+
+Fixes:
+-Tweaked evolution timeframes restrictions on all undead types.
+-AI won't waste flame weapons on (invulnerable to fire) skeleton types.
+-Fixed bug that prevented undead from being killed by fire when reduced to 0 HP.
+-Reduced molotov damage, and flame duration and damage.
+-Can now drink beer and smoke when sanity is disabled.
+-Reduced the quantity of food grown by planted crops.
+-Civilians followers now correctly obey directives not to use explosives/flame weapons.
+-Restored (albeit delayed) blood splatter cleanup, and added undead corpse cleanup.
+-Fixed bug in saving screenshots.
+-Removed the redundant option for reincarnating in sewers. You can now reinc in sewers.
+
+Known issues:
+-Changing districts performance with simulation enabled decays as the game goes on.
+-Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in later releases.
+
+Development:
+-Minor refactoring of turn processing.
+-Miscellaneous optimizations and housekeeping.
+-Resolved various supressed exceptions and code warnings.
+-Rearrangement/grouping of methods in RogueGame class.
+-Improved optimization of calculating which point is best to throw a flame weapon.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.5.32.11 (aka Release 5-6, 14/04/2018) [Author: MP]
+---------------------
+
+Features:
+-Applied evolution timeframes restrictions to all undead types.
 
 Fixes:
 -Added the missing hint for planting seeds.
 -Fixed a crash upon starting the game as a zombified man/woman.
 -Added keyboard shortcut to tooltips for items related to planting seeds.
+-AI no longer makes silly food trades.
 -PWNN is now detected properly.
 For the following thanks goes to the one-and-only RoguedJack!!:
 -Made iron fences jumpable as AI were getting stuck.

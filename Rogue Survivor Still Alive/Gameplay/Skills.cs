@@ -237,7 +237,7 @@ namespace djack.RogueSurvivor.Gameplay
             return null;
         }
 
-        static _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(IRogueUI ui, CSVTable table, Func<CSVLine, _DATA_TYPE_> fn, IDs skillID)
+        static _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(CSVTable table, Func<CSVLine, _DATA_TYPE_> fn, IDs skillID) //@@MP - unused parameter (Release 5-7)
         {
             // get line for id in table.
             CSVLine line = FindLineForModel(table, skillID);
@@ -280,7 +280,7 @@ namespace djack.RogueSurvivor.Gameplay
                     }
                     allLines.Add(inLine);
                 }
-                reader.Close();
+                //reader.Close();
             }
             // parse all the lines read.
             Notify(ui, kind, "parsing CSV...");
@@ -295,7 +295,7 @@ namespace djack.RogueSurvivor.Gameplay
             data = new _DATA_TYPE_[idsToRead.Length];
             for (int i = 0; i < idsToRead.Length; i++)
             {
-                data[i] = GetDataFromCSVTable<_DATA_TYPE_>(ui, table, fn, idsToRead[i]);
+                data[i] = GetDataFromCSVTable<_DATA_TYPE_>(table, fn, idsToRead[i]); //@@MP - unused parameter (Release 5-7)
             }
 
             //////////////

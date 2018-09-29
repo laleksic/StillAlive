@@ -2,6 +2,10 @@
 {
     partial class GDIPlusGameCanvas
     {
+        /*
+        //@@MP - commented out the dispose method as it's already handled in DXGameCanvas.cs (Release 5-7)
+        //@@MP - see https://stackoverflow.com/questions/16260654/code-analysis-finds-ca2213-error-in-designer-code
+
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -19,6 +23,7 @@
             }
             base.Dispose(disposing);
         }
+        */
 
         #region Component Designer generated code
 
@@ -28,7 +33,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            //components = new System.ComponentModel.Container(); //@@MP - redundant (Release 5-7)
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         }
 

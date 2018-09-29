@@ -558,7 +558,7 @@ namespace djack.RogueSurvivor.Engine
             // - Enable permadeath          : x2
             // - Disable Sanity             : x0.5 / x0.95 //@@MP (Release 1)
             // - Aggressive Hungry Civs     : x0.5 / x2
-            // - Rats Upgrade               : x1.10 / x0.90
+            // - Rats Upgrade               : x1.10 / x0.90 //@@MP - removed this option (Release 5-7)
             // - Skeletons Upgrade          : x1.20 / x0.80
             // - Shamblers Upgrade          : x1.25 / x0.75
             ////////////
@@ -595,14 +595,14 @@ namespace djack.RogueSurvivor.Engine
                 else
                     rating *= 2f;
             }
-            // - Rats Upgrade   
+            /*// - Rats Upgrade    //@@MP (Release 5-7)
             if (options.RatsUpgrade)
             {
                 if (side == DifficultySide.FOR_SURVIVOR)
                     rating *= 1.10f;
                 else
                     rating *= 0.90f;
-            }
+            }*/
             // - Skeletons Upgrade
             if (options.SkeletonsUpgrade)
             {
@@ -636,7 +636,7 @@ namespace djack.RogueSurvivor.Engine
         /// Add kill to record and increase kill points.
         /// Distinguish killing as living vs killing as undead.
         /// </summary>
-        public void AddKill(Actor player, Actor victim, int turn)
+        public void AddKill(Actor victim, int turn) //@@MP - unused parameter (Release 5-7)
         {
             int actorModelID = victim.Model.ID;
 
@@ -684,7 +684,7 @@ namespace djack.RogueSurvivor.Engine
             return m_VisitedMaps.Contains(map);
         }
 
-        public void AddVisit(int turn, Map map)
+        public void AddVisit(Map map) //@@MP - unused parameter (Release 5-7)
         {
             lock (m_VisitedMaps) // thread safe
             {

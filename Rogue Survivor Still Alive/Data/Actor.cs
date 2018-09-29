@@ -27,7 +27,8 @@ namespace djack.RogueSurvivor.Data
             IS_PLURAL_NAME = (1 << 2),
             IS_DEAD = (1 << 3),
             IS_RUNNING = (1 << 4),
-            IS_SLEEPING = (1 << 5)
+            IS_SLEEPING = (1 << 5),
+            IS_ONFIRE = (1 << 6) //@@MP (Release 5-7)
         }
         #endregion
 
@@ -121,7 +122,7 @@ namespace djack.RogueSurvivor.Data
             {
                 m_Name = value;
                 if (value != null)
-                    m_Name.Replace("(YOU) ", "");
+                    m_Name = m_Name.Replace("(YOU) ", "");
             }
         }
 
@@ -215,6 +216,12 @@ namespace djack.RogueSurvivor.Data
         {
             get { return GetFlag(Flags.IS_RUNNING); }
             set { SetFlag(Flags.IS_RUNNING, value); }
+        }
+
+        public bool IsOnFire //@@MP (Release 5-7)
+        {
+            get { return GetFlag(Flags.IS_ONFIRE); }
+            set { SetFlag(Flags.IS_ONFIRE, value); }
         }
 
         public Inventory Inventory
@@ -453,6 +460,7 @@ namespace djack.RogueSurvivor.Data
             m_Name = name;
             this.IsProperName = isProperName;
             this.IsPluralName = isPluralName;
+            this.IsOnFire = false; //@@MP (Release 5-7)
             m_Location = new Location();
             m_SpawnTime = spawnTime;
             this.IsUnique = false;

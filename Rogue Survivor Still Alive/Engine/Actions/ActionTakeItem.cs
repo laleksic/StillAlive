@@ -20,7 +20,7 @@ namespace djack.RogueSurvivor.Engine.Actions
             : base(actor, game)
         {
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it","item");
 
             m_Position = position;
             m_Item = it;

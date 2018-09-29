@@ -21,6 +21,9 @@ namespace djack.RogueSurvivor.Data
         DollPart m_EquipmentSlot;
         bool m_DontAutoEquip;
         bool m_IsUnbreakable;
+        //@@MP (Release 5-7)
+        bool m_IsRecreational;
+        bool m_IsFlameWeapon;
         #endregion
 
         #region Properties
@@ -109,7 +112,14 @@ namespace djack.RogueSurvivor.Data
 
         public bool IsFlameWeapon //@@MP (Release 5-2)
         {
-            get { return m_ID == (int)Gameplay.GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED || m_ID == (int)Gameplay.GameItems.IDs.EXPLOSIVE_MOLOTOV; }
+            get { return m_IsFlameWeapon; } //@@MP - removed the hard-coded model IDs (Release 5-7)
+            set { m_IsFlameWeapon = value; }
+        }
+
+        public bool IsRecreational //@@MP - allows player to use item even if it is wasteful ie RogueGame.DoUseMedicineItem (Release 5-7)
+        {
+            get { return m_IsRecreational; }
+            set { m_IsRecreational = value; }
         }
         #endregion
 

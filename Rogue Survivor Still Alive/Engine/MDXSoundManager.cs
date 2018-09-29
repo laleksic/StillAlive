@@ -40,7 +40,7 @@ namespace djack.RogueSurvivor.Engine
             this.Volume = 100;
         }
 
-        string FullName(string fileName)
+        static string FullName(string fileName) //@@MP - made static (Release 5-7)
         {
             return fileName + ".ogg";//".mp3"; //@@MP (Release 5-3)
         }
@@ -59,9 +59,8 @@ namespace djack.RogueSurvivor.Engine
             catch (Exception e)
             {
                 Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("failed to load music file {0} exception {1}.", filename, e.ToString()));
+                throw;
             }
-
-
             return true;
         }
 
@@ -239,22 +238,22 @@ namespace djack.RogueSurvivor.Engine
             audio.Play();
         }
 
-        void Resume(Audio audio)
+        static void Resume(Audio audio) //@@MP - made static (Release 5-7)
         {
             audio.Play();
         }
 
-        bool IsPlaying(Audio audio)
+        static bool IsPlaying(Audio audio) //@@MP - made static (Release 5-7)
         {
             return audio.CurrentPosition > 0 && audio.CurrentPosition < audio.Duration && audio.State == StateFlags.Running;
         }
 
-        bool IsPaused(Audio audio)
+        static bool IsPaused(Audio audio) //@@MP - made static (Release 5-7)
         {
             return (audio.State & StateFlags.Paused) != 0;
         }
 
-        bool HasEnded(Audio audio)
+        static bool HasEnded(Audio audio)
         {
             return audio.CurrentPosition >= audio.Duration;
         }

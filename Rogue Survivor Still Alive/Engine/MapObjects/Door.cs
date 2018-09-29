@@ -132,7 +132,7 @@ namespace djack.RogueSurvivor.Engine.MapObjects
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException("newState unhandled");
+                    throw new ArgumentOutOfRangeException("newState","newState unhandled");
             }
 
             base.SetState(newState);

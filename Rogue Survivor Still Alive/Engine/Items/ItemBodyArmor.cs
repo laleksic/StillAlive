@@ -22,10 +22,10 @@ namespace djack.RogueSurvivor.Engine.Items
         public ItemBodyArmor(ItemModel model)
             : base(model)
         {
-            if (!(model is ItemBodyArmorModel))
+            ItemBodyArmorModel m = model as ItemBodyArmorModel;
+            if (m == null)
                 throw new ArgumentException("model is not a BodyArmorModel");
 
-            ItemBodyArmorModel m = model as ItemBodyArmorModel;
             this.Protection_Hit = m.Protection_Hit;
             this.Protection_Shot = m.Protection_Shot;
             this.Encumbrance = m.Encumbrance;

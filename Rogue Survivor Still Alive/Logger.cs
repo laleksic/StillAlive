@@ -61,7 +61,7 @@ namespace djack.RogueSurvivor
             Directory.CreateDirectory(SetupConfig.DirPath);// Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Rogue Survivor\" + SetupConfig.GAME_VERSION);
             using (StreamWriter emptyFile = File.CreateText(LogFilePath()))
             {
-                emptyFile.Close();
+                //emptyFile.Close();
             }
 
             // release lock.
@@ -88,7 +88,7 @@ namespace djack.RogueSurvivor
             {
                 stream.WriteLine(s);
                 stream.Flush();
-                stream.Close();
+                //stream.Close();
             }
 
             // release lock.

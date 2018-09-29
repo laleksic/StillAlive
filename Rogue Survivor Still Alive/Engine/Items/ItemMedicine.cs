@@ -22,10 +22,10 @@ namespace djack.RogueSurvivor.Engine.Items
         public ItemMedicine(ItemModel model)
             : base(model)
         {
-            if (!(model is ItemMedicineModel))
+            ItemMedicineModel m = model as ItemMedicineModel;
+            if (m == null)
                 throw new ArgumentException("model is not a MedecineModel");
 
-            ItemMedicineModel m = model as ItemMedicineModel;
             this.Healing = m.Healing;
             this.StaminaBoost = m.StaminaBoost;
             this.SleepBoost = m.SleepBoost;

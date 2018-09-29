@@ -158,7 +158,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
-            List<Percept> mapPercepts = FilterSameMap(game, percepts);
+            List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
             ///////////////////////
             // 1. Follow order
@@ -260,20 +260,23 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_LastEnemySaw = enemies[game.Rules.Roll(0, enemies.Count)];
             #endregion
 
-            // 0 run away from primed explosives //@@MP - and fires added (Release 4).
+            // hold the action that we determine to be applicable
+            ActorAction determinedAction = null; //@@MP - created to reduce local variables, to keep all within this method enregistered (Release 5-7)
+
+            // 0 run away from primed explosives and fires //@@MP - fires added (Release 4).
             #region
-            ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
-            if (runFromFires != null)
+            determinedAction = BehaviorFleeFromFires(game, m_Actor.Location);
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.FLEEING;
-                return runFromFires;
+                return determinedAction;
             }
 
-            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
-            if (runFromExplosives != null)
+            determinedAction = BehaviorFleeFromExplosives(game, FilterStacks(mapPercepts)); //@@MP - unused parameter (Release 5-7)
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
-                return runFromExplosives;
+                return determinedAction;
             }
             #endregion
 
@@ -294,30 +297,29 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
-            // throw?
-            if (hasEnemies)
+            else if (hasEnemies) // otherwise, throw? //@@MP - (Release 5-7)
             {
-                ActorAction throwAction = BehaviorThrowGrenade(game, m_LOSSensor.FOV, enemies);
-                if (throwAction != null)
+                determinedAction = BehaviorThrowGrenade(game, m_LOSSensor.FOV, enemies);
+                if (determinedAction != null)
                 {
-                    return throwAction;
+                    return determinedAction;
                 }
             }
             #endregion
 
             // 2 equip weapon/armor
             #region
-            ActorAction equipWpnAction = BehaviorEquipWeapon(game);
-            if (equipWpnAction != null)
+            determinedAction = BehaviorEquipWeapon(game);
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
-                return equipWpnAction;
+                return determinedAction;
             }
-            ActorAction equipArmAction = BehaviorEquipBodyArmor(game);
-            if (equipArmAction != null)
+            determinedAction = BehaviorEquipBodyArmor(game);
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
-                return equipArmAction;
+                return determinedAction;
             }
             #endregion
 
@@ -337,22 +339,22 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         HasSpeedAdvantage(game, m_Actor,target))
                     {
                         // flee!
-                        ActorAction fleeAction = BehaviorWalkAwayFrom(game, nearestTarget);
-                        if (fleeAction != null)
+                        determinedAction = BehaviorWalkAwayFrom(game, nearestTarget);
+                        if (determinedAction != null)
                         {
                             RunIfPossible(game.Rules);
                             m_Actor.Activity = Activity.FLEEING;
-                            return fleeAction;
+                            return determinedAction;
                         }
                     }
 
                     // fire ze missiles!
-                    ActorAction fireAction = BehaviorRangedAttack(game, nearestTarget);
-                    if (fireAction != null)
+                    determinedAction = BehaviorRangedAttack(game, nearestTarget);
+                    if (determinedAction != null)
                     {
                         m_Actor.Activity = Activity.FIGHTING;
                         m_Actor.TargetActor = target;
-                        return fireAction;
+                        return determinedAction;
                     }
 
                 }
@@ -371,11 +373,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (Map.IsAnyTileFireThere(m_Actor.Location.Map, p))
                     {
                         // shout
-                        ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, friends);
-                        if (shoutAction != null)
+                        determinedAction = BehaviorWarnFriendsOfFire(game, friends);
+                        if (determinedAction != null)
                         {
                             m_Actor.Activity = Activity.FLEEING;
-                            return shoutAction;
+                            return determinedAction;
                         }
                     }
                 }
@@ -389,37 +391,37 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     if (friends != null)
                     {
-                        ActorAction shoutAction = BehaviorWarnFriends(game, friends, FilterNearest(game, enemies).Percepted as Actor);
-                        if (shoutAction != null)
+                        determinedAction = BehaviorWarnFriends(game, friends, FilterNearest(game, enemies).Percepted as Actor);
+                        if (determinedAction != null)
                         {
                             m_Actor.Activity = Activity.IDLE;
-                            return shoutAction;
+                            return determinedAction;
                         }
                     }
                 }
                 // fight or flee.
-                ActorAction fightOrFlee = BehaviorFightOrFlee(game, enemies, seeLeader, isLeaderFighting, Directives.Courage, m_Emotes);
-                if (fightOrFlee != null)
+                determinedAction = BehaviorFightOrFlee(game, enemies, isLeaderFighting, Directives.Courage, m_Emotes); //@@MP - unused parameter (Release 5-7)
+                if (determinedAction != null)
                 {
-                    return fightOrFlee;
+                    return determinedAction;
                 }
             }
             #endregion
 
             // 5 use medicine
             #region
-            ActorAction useMedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
-            if (useMedAction != null)
+            determinedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
-                return useMedAction;
+                return determinedAction;
             }
             #endregion
 
             // 6 rest if tired
             #region
-            ActorAction restAction = BehaviorRestIfTired(game);
-            if (restAction != null)
+            determinedAction = BehaviorRestIfTired(game);
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return new ActionWait(m_Actor, game);
@@ -431,12 +433,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (hasEnemies && isCourageous)
             {
                 Percept nearestEnemy = FilterNearest(game, enemies);
-                ActorAction chargeAction = BehaviorChargeEnemy(game, nearestEnemy);
-                if (chargeAction != null)
+                determinedAction = BehaviorChargeEnemy(game, nearestEnemy);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.FIGHTING;
                     m_Actor.TargetActor = nearestEnemy.Percepted as Actor;
-                    return chargeAction;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -445,19 +447,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.IsActorHungry(m_Actor))
             {
-                ActorAction eatAction = BehaviorEat(game);
-                if (eatAction != null)
+                determinedAction = BehaviorEat(game);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return eatAction;
+                    return determinedAction;
                 }
                 if (game.Rules.IsActorStarving(m_Actor) || game.Rules.IsActorInsane(m_Actor))
                 {
-                    eatAction = BehaviorGoEatCorpse(game, FilterCorpses(game, mapPercepts));
-                    if (eatAction != null)
+                    determinedAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
+                    if (determinedAction != null)
                     {
                         m_Actor.Activity = Activity.IDLE;
-                        return eatAction;
+                        return determinedAction;
                     }
                 }
             }
@@ -467,33 +469,33 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (m_SafeTurns >= MIN_TURNS_SAFE_TO_SLEEP && this.Directives.CanSleep && 
                 WouldLikeToSleep(game, m_Actor) && IsInside(m_Actor) && game.Rules.CanActorSleep(m_Actor))
-            {               
+            {
                 // secure sleep.
-                ActorAction secureSleepAction = BehaviorSecurePerimeter(game, m_LOSSensor.FOV);
-                if (secureSleepAction != null)
+                determinedAction = BehaviorSecurePerimeter(game, m_LOSSensor.FOV);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return secureSleepAction;
+                    return determinedAction;
                 }
 
                 // sleep.
-                ActorAction sleepAction = BehaviorSleep(game, m_LOSSensor.FOV);
-                if (sleepAction != null)
+                determinedAction = BehaviorSleep(game, m_LOSSensor.FOV);
+                if (determinedAction != null)
                 {
-                    if (sleepAction is ActionSleep)
+                    if (determinedAction is ActionSleep)
                         m_Actor.Activity = Activity.SLEEPING;
-                    return sleepAction;
+                    return determinedAction;
                 }
             }
             #endregion
 
             // 10 drop useless light/tracker/spray
             #region
-            ActorAction dropUseless = BehaviorDropUselessItem(game);
-            if (dropUseless != null)
+            determinedAction = BehaviorDropUselessItem(game);
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
-                return dropUseless;
+                return determinedAction;
             }
             #endregion
 
@@ -504,46 +506,46 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // then light.
             bool needLight = NeedsLight(game);
             // finally spray.
-            bool needSpray = IsGoodStenchKillerSpot(game, m_Actor.Location.Map, m_Actor.Location.Position);
+            bool needSpray = IsGoodStenchKillerSpot(m_Actor.Location.Map, m_Actor.Location.Position); //@@MP - unused parameter (Release 5-7)
             // if tracker/light/spray useless, unequip it.
             if (!needCellPhone && !needLight && !needSpray)
             {
-                ActorAction unequipUselessLeftItem = BehaviorUnequipLeftItem(game);
-                if (unequipUselessLeftItem != null)
+                determinedAction = BehaviorUnequipLeftItem(game);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return unequipUselessLeftItem;
+                    return determinedAction;
                 }
             }
             // tracker?
             if(needCellPhone)
             {
-                ActorAction eqTrackerAction = BehaviorEquipCellPhone(game);
-                if (eqTrackerAction != null)
+                determinedAction = BehaviorEquipCellPhone(game);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return eqTrackerAction;
+                    return determinedAction;
                 }
             }
             // ...or light?
             else if (needLight)
             {
-                ActorAction eqLightAction = BehaviorEquipLight(game);
-                if (eqLightAction != null)
+                determinedAction = BehaviorEquipLight(game);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return eqLightAction;
+                    return determinedAction;
                 }
 
             }
             // ... scent spray?
             else if (needSpray)
             {
-                ActorAction eqScentSpray = BehaviorEquipStenchKiller(game);
-                if (eqScentSpray != null)
+                determinedAction = BehaviorEquipStenchKiller(game);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return eqScentSpray;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -559,7 +561,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                 #region Get nearby item
                 // list visible items.
-                List<Percept> interestingStacks = FilterOut(game, FilterStacks(game, mapPercepts),
+                List<Percept> interestingStacks = FilterOut(FilterStacks(mapPercepts), //@@MP - unused parameter (Release 5-7)
                     (p) => (p.Turn != map.LocalTime.TurnCounter) || 
                             IsOccupiedByOther(map, p.Location.Position) || 
                             IsTileTaboo(p.Location.Position) ||
@@ -573,19 +575,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     m_LastItemsSaw = nearestStack;
 
                     // 12: make room for food if needed.
-                    ActorAction makeRoomForFood = BehaviorMakeRoomForFood(game, interestingStacks);
-                    if (makeRoomForFood != null)
+                    determinedAction = BehaviorMakeRoomForFood(game, interestingStacks);
+                    if (determinedAction != null)
                     {
                         m_Actor.Activity = Activity.IDLE;
-                        return makeRoomForFood;
+                        return determinedAction;
                     }
 
                     // 13: try to grab.
-                    ActorAction grabAction = BehaviorGrabFromStack(game, nearestStack.Location.Position, nearestStack.Percepted as Inventory);
-                    if (grabAction != null)
+                    determinedAction = BehaviorGrabFromStack(game, nearestStack.Location.Position, nearestStack.Percepted as Inventory);
+                    if (determinedAction != null)
                     {
                         m_Actor.Activity = Activity.IDLE;
-                        return grabAction;
+                        return determinedAction;
                     }
                     // we can't grab the item. mark the tile as taboo.
                     MarkTileAsTaboo(nearestStack.Location.Position);
@@ -598,7 +600,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (Directives.CanTrade)
                 {
                     // get actors we want to trade with.
-                    List<Percept> tradingActors = FilterOut(game, FilterNonEnemies(game, mapPercepts),
+                    List<Percept> tradingActors = FilterOut(FilterNonEnemies(game, mapPercepts), //@@MP - unused parameter (Release 5-7)
                         (p) =>
                         {
                             if (p.Turn != map.LocalTime.TurnCounter) return true;
@@ -619,24 +621,24 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         Actor tradeTarget = FilterNearest(game, tradingActors).Percepted as Actor;
                         if (game.Rules.IsAdjacent(m_Actor.Location, tradeTarget.Location))
                         {
-                            ActorAction tradeAction = new ActionTrade(m_Actor, game, tradeTarget);
-                            if (tradeAction.IsLegal())
+                            determinedAction = new ActionTrade(m_Actor, game, tradeTarget);
+                            if (determinedAction.IsLegal())
                             {
                                 // remember we tried to trade.
                                 MarkActorAsRecentTrade(tradeTarget);
                                 // say, so we make sure we spend a turn and won't loop.
                                 game.DoSay(m_Actor, tradeTarget, String.Format("Hey {0}, let's make a deal!", tradeTarget.Name), RogueGame.Sayflags.NONE);
-                                return tradeAction;
+                                return determinedAction;
                             }
                         }
                         else
                         {
-                            ActorAction bump = BehaviorIntelligentBumpToward(game, tradeTarget.Location.Position);
-                            if (bump != null)
+                            determinedAction = BehaviorIntelligentBumpToward(game, tradeTarget.Location.Position);
+                            if (determinedAction != null)
                             {
                                 m_Actor.Activity = Activity.FOLLOWING;
                                 m_Actor.TargetActor = tradeTarget;
-                                return bump;
+                                return determinedAction;
                             }
                         }
                     }
@@ -651,7 +653,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 mapPercepts != null && !m_Actor.HasLeader && !m_Actor.Model.Abilities.IsLawEnforcer &&
                 game.Rules.IsActorHungry(m_Actor) && HasNoFoodItems(m_Actor))
             {
-                Percept targetForFood = FilterNearest(game, FilterActors(game, mapPercepts,
+                Percept targetForFood = FilterNearest(game, FilterActors(mapPercepts, //@@MP - unused parameter (Release 5-7)
                     (a) =>
                     {
                         // reject self, dead and leader/follower.
@@ -669,8 +671,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                 if (targetForFood != null)
                 {
-                    ActorAction chargeAction = BehaviorChargeEnemy(game, targetForFood);
-                    if (chargeAction != null)
+                    determinedAction = BehaviorChargeEnemy(game, targetForFood);
+                    if (determinedAction != null)
                     {
                         // randomly emote.
                         if (game.Rules.RollChance(HUNGRY_CHARGE_EMOTE_CHANCE))
@@ -679,7 +681,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         // chaaarge!
                         m_Actor.Activity = Activity.FIGHTING;
                         m_Actor.TargetActor = targetForFood.Percepted as Actor;
-                        return chargeAction;
+                        return determinedAction;
                     }
                 }
             }
@@ -689,22 +691,22 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.RollChance(USE_STENCH_KILLER_CHANCE))
             {
-                ActorAction sprayAction = BehaviorUseStenchKiller(game);
-                if (sprayAction != null)
+                determinedAction = BehaviorUseStenchKiller(game);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return sprayAction;
+                    return determinedAction;
                 }
             }
             #endregion
 
             // 16 close door behind me.
             #region
-            ActorAction closeBehindMe = BehaviorCloseDoorBehindMe(game, PrevLocation);
-            if (closeBehindMe != null)
+            determinedAction = BehaviorCloseDoorBehindMe(game, PrevLocation);
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
-                return closeBehindMe;
+                return determinedAction;
             }
             #endregion
 
@@ -714,18 +716,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 if (m_Actor.Sanity < 0.75f * game.Rules.ActorMaxSanity(m_Actor))
                 {
-                    ActorAction entAction = BehaviorUseEntertainment(game);
-                    if (entAction != null)
+                    determinedAction = BehaviorUseEntertainment(game);
+                    if (determinedAction != null)
                     {
                         m_Actor.Activity = Activity.IDLE;
-                        return entAction;
+                        return determinedAction;
                     }
                 }
-                ActorAction dropEnt = BehaviorDropBoringEntertainment(game);
-                if (dropEnt != null)
+                determinedAction = BehaviorDropBoringEntertainment(game);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return dropEnt;
+                    return determinedAction;
                 }                
             }
             #endregion
@@ -737,12 +739,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 Point lastKnownLeaderPosition = m_Actor.Leader.Location.Position;
                 bool isLeaderVisible = m_LOSSensor.FOV.Contains(m_Actor.Leader.Location.Position);
                 int maxDist = m_Actor.Leader.IsPlayer ? FOLLOW_PLAYERLEADER_MAXDIST : FOLLOW_NPCLEADER_MAXDIST;
-                ActorAction followAction = BehaviorFollowActor(game, m_Actor.Leader, lastKnownLeaderPosition, isLeaderVisible, maxDist);
-                if (followAction != null)
+                determinedAction = BehaviorFollowActor(game, m_Actor.Leader, lastKnownLeaderPosition, isLeaderVisible, maxDist);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.FOLLOWING;
                     m_Actor.TargetActor = m_Actor.Leader;
-                    return followAction;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -758,12 +760,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     Percept nearestFriend = FilterNearest(game, FilterNonEnemies(game, mapPercepts));
                     if (nearestFriend != null)
                     {
-                        ActorAction leadAction = BehaviorLeadActor(game, nearestFriend);
-                        if (leadAction != null)
+                        determinedAction = BehaviorLeadActor(game, nearestFriend);
+                        if (determinedAction != null)
                         {
                             m_Actor.Activity = Activity.IDLE;
                             m_Actor.TargetActor = nearestFriend.Percepted as Actor;
-                            return leadAction;
+                            return determinedAction;
                         }
                     }
                 }
@@ -774,27 +776,27 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.IsActorHungry(m_Actor))
             {
-                ActorAction attackBarricadeAction = BehaviorAttackBarricade(game);
-                if (attackBarricadeAction != null)
+                determinedAction = BehaviorAttackBarricade(game);
+                if (determinedAction != null)
                 {
                     // emote.
                     game.DoEmote(m_Actor, "Open damn it! I know there's food in there!");
 
                     // go!
                     m_Actor.Activity = Activity.IDLE;
-                    return attackBarricadeAction;
+                    return determinedAction;
                 }
                 if (game.Rules.RollChance(HUNGRY_PUSH_OBJECTS_CHANCE))
                 {
-                    ActorAction pushAction = BehaviorPushNonWalkableObject(game);
-                    if (pushAction != null)
+                    determinedAction = BehaviorPushNonWalkableObject(game);
+                    if (determinedAction != null)
                     {
                         // emote.
                         game.DoEmote(m_Actor, "Where's all the damn food?!");
 
                         // go!
                         m_Actor.Activity = Activity.IDLE;
-                        return pushAction;
+                        return determinedAction;
                     }
                 }
             }
@@ -802,11 +804,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 21 go revive corpse.
             #region
-            ActorAction revive = BehaviorGoReviveCorpse(game, FilterCorpses(game, mapPercepts));
-            if (revive != null)
+            determinedAction = BehaviorGoReviveCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
-                return revive;
+                return determinedAction;
             }
             #endregion
 
@@ -814,11 +816,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.RollChance(USE_EXIT_CHANCE))
             {
-                ActorAction useExit = BehaviorUseExit(game, UseExitFlags.DONT_BACKTRACK);
-                if (useExit != null)
+                determinedAction = BehaviorUseExit(game, UseExitFlags.DONT_BACKTRACK);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return useExit;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -827,31 +829,31 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.RollChance(BUILD_TRAP_CHANCE))
             {
-                ActorAction trapAction = BehaviorBuildTrap(game);
-                if (trapAction != null)
+                determinedAction = BehaviorBuildTrap(game);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return trapAction;
+                    return determinedAction;
                 }
             }
             // large fortification.
             if (game.Rules.RollChance(BUILD_LARGE_FORT_CHANCE))
             {
-                ActorAction buildAction = BehaviorBuildLargeFortification(game, START_FORT_LINE_CHANCE);
-                if (buildAction != null)
+                determinedAction = BehaviorBuildLargeFortification(game, START_FORT_LINE_CHANCE);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return buildAction;
+                    return determinedAction;
                 }
             }
             // small fortification.
             if (game.Rules.RollChance(BUILD_SMALL_FORT_CHANCE))
             {
-                ActorAction buildAction = BehaviorBuildSmallFortification(game);
-                if (buildAction != null)
+                determinedAction = BehaviorBuildSmallFortification(game);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return buildAction;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -861,11 +863,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // tell?
             if (m_LastRaidHeard != null && game.Rules.RollChance(TELL_FRIEND_ABOUT_RAID_CHANCE))
             {
-                ActorAction tellAction = BehaviorTellFriendAboutPercept(game, m_LastRaidHeard);
-                if (tellAction != null)
+                determinedAction = BehaviorTellFriendAboutPercept(game, m_LastRaidHeard);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return tellAction;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -873,7 +875,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 25 tell friend about latest soldier.
             #region
             // update percept.
-            Percept seeingSoldier = FilterFirst(game, mapPercepts, 
+            Percept seeingSoldier = FilterFirst(mapPercepts,  //@@MP - unused parameter (Release 5-7)
                 (p) =>
                 {
                     Actor other = p.Percepted as Actor;
@@ -886,11 +888,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // tell?
             if (game.Rules.RollChance(TELL_FRIEND_ABOUT_SOLDIER_CHANCE) && m_LastSoldierSaw != null)
             {
-                ActorAction tellAction = BehaviorTellFriendAboutPercept(game, m_LastSoldierSaw);
-                if (tellAction != null)
+                determinedAction = BehaviorTellFriendAboutPercept(game, m_LastSoldierSaw);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return tellAction;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -899,11 +901,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.RollChance(TELL_FRIEND_ABOUT_ENEMY_CHANCE) && m_LastEnemySaw != null)
             {
-                ActorAction tellAction = BehaviorTellFriendAboutPercept(game, m_LastEnemySaw);
-                if (tellAction != null)
+                determinedAction = BehaviorTellFriendAboutPercept(game, m_LastEnemySaw);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return tellAction;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -912,11 +914,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.RollChance(TELL_FRIEND_ABOUT_ITEMS_CHANCE) && m_LastItemsSaw != null)
             {
-                ActorAction tellAction = BehaviorTellFriendAboutPercept(game, m_LastItemsSaw);
-                if (tellAction != null)
+                determinedAction = BehaviorTellFriendAboutPercept(game, m_LastItemsSaw);
+                if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
-                    return tellAction;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -926,11 +928,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.Model.Abilities.IsLawEnforcer && mapPercepts != null && game.Rules.RollChance(LAW_ENFORCE_CHANCE))
             {
                 Actor target;
-                ActorAction lawAction = BehaviorEnforceLaw(game, mapPercepts, out target);
-                if (lawAction != null)
+                determinedAction = BehaviorEnforceLaw(game, mapPercepts, out target);
+                if (determinedAction != null)
                 {
                     m_Actor.TargetActor = target;
-                    return lawAction;
+                    return determinedAction;
                 }
             }
             #endregion
@@ -940,8 +942,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.CountFollowers > 0)
             {
                 Actor target;
-                ActorAction stickTogether = BehaviorDontLeaveFollowersBehind(game, 2, out target);
-                if (stickTogether != null)
+                determinedAction = BehaviorDontLeaveFollowersBehind(game, 2, out target);
+                if (determinedAction != null)
                 {
                     // emote?
                     if (game.Rules.RollChance(DONT_LEAVE_BEHIND_EMOTE_CHANCE))
@@ -959,18 +961,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                     // go!
                     m_Actor.Activity = Activity.IDLE;
-                    return stickTogether;
+                    return determinedAction;
                 }
             }
             #endregion
 
             // 30 explore
             #region
-            ActorAction exploreAction = BehaviorExplore(game, m_Exploration);
-            if (exploreAction != null)
+            determinedAction = BehaviorExplore(game, m_Exploration);
+            if (determinedAction != null)
             {
                 m_Actor.Activity = Activity.IDLE;
-                return exploreAction;
+                return determinedAction;
             }
             #endregion
 

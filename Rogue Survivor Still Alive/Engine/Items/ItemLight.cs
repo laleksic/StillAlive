@@ -51,10 +51,13 @@ namespace djack.RogueSurvivor.Engine.Items
         public ItemLight(ItemModel model)
             : base(model)
         {
-            if (!(model is ItemLightModel))
+            ItemLightModel itemModel = model as ItemLightModel;
+            //if (!(model is ItemLightModel)) //@@MP (Release 5-7)
+            if (itemModel == null)
                 throw new ArgumentException("model is not a LightModel");
 
-            this.Batteries = (model as ItemLightModel).MaxBatteries;
+            //this.Batteries = (model as ItemLightModel).MaxBatteries;
+            this.Batteries = itemModel.MaxBatteries;
         }
         #endregion
     }

@@ -749,7 +749,7 @@ namespace djack.RogueSurvivor.Gameplay
         }
 
         #region Grammar Helpers
-        bool StartsWithVowel(string name)
+        static bool StartsWithVowel(string name) //@@MP - made static (Release 5-7)
         {
             return name[0] == 'a' || name[0] == 'A' || 
                 name[0] == 'e' || name[0] == 'E' ||
@@ -757,7 +757,7 @@ namespace djack.RogueSurvivor.Gameplay
                 name[0] == 'y' || name[0] == 'Y';
         }
 
-        bool CheckPlural(string name, string plural)
+        static bool CheckPlural(string name, string plural) //@@MP - made static (Release 5-7)
         {
             return name == plural;
         }
@@ -824,7 +824,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsPlural = true,
                 IsStackable = true,
                 StackingLimit = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.STACKINGLIMIT,
-                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.FLAVOR
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.FLAVOR,
+                IsRecreational = true //@@MP (Release 5-7)
             };
             this[IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.NAME, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.PLURAL, GameImages.ITEM_BEER_BOTTLE_GREEN,
                 DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.HEALING, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.STAMINABOOST, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.SANITYCURE)
@@ -832,7 +833,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsPlural = true,
                 IsStackable = true,
                 StackingLimit = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.STACKINGLIMIT,
-                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.FLAVOR
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.FLAVOR,
+                IsRecreational = true //@@MP (Release 5-7)
             };
             this[IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.NAME, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.PLURAL, GameImages.ITEM_BEER_CAN_BLUE,
                 DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.HEALING, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.STAMINABOOST, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.SANITYCURE)
@@ -840,7 +842,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsPlural = true,
                 IsStackable = true,
                 StackingLimit = DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.STACKINGLIMIT,
-                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.FLAVOR
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.FLAVOR,
+                IsRecreational = true //@@MP (Release 5-7)
             };
             this[IDs.MEDICINE_ALCOHOL_BEER_CAN_RED] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.NAME, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.PLURAL, GameImages.ITEM_BEER_CAN_RED,
                 DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.HEALING, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.STAMINABOOST, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.SANITYCURE)
@@ -848,7 +851,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsPlural = true,
                 IsStackable = true,
                 StackingLimit = DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.STACKINGLIMIT,
-                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.FLAVOR
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.FLAVOR,
+                IsRecreational = true //@@MP (Release 5-7)
             };
             this[IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.NAME, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.PLURAL, GameImages.ITEM_LIQUOR_BOTTLE_AMBER,
                 DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.HEALING, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.STAMINABOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.SANITYCURE)
@@ -856,7 +860,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsPlural = true,
                 IsStackable = true,
                 StackingLimit = DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.STACKINGLIMIT,
-                FlavorDescription = DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.FLAVOR
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.FLAVOR,
+                IsRecreational = true //@@MP (Release 5-7)
             };
             this[IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.NAME, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.PLURAL, GameImages.ITEM_LIQUOR_BOTTLE_CLEAR,
                 DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.HEALING, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.STAMINABOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.SANITYCURE)
@@ -864,7 +869,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsPlural = true,
                 IsStackable = true,
                 StackingLimit = DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.STACKINGLIMIT,
-                FlavorDescription = DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.FLAVOR
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.FLAVOR,
+                IsRecreational = true //@@MP (Release 5-7)
             };
             this[IDs.MEDICINE_CIGARETTES] = new ItemMedicineModel(DATA_MEDICINE_CIGARETTES.NAME, DATA_MEDICINE_CIGARETTES.PLURAL, GameImages.ITEM_CIGARETTES,
                 DATA_MEDICINE_CIGARETTES.HEALING, DATA_MEDICINE_CIGARETTES.STAMINABOOST, DATA_MEDICINE_CIGARETTES.SLEEPBOOST, DATA_MEDICINE_CIGARETTES.INFECTIONCURE, DATA_MEDICINE_CIGARETTES.SANITYCURE)
@@ -872,7 +878,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsPlural = true,
                 IsStackable = true,
                 StackingLimit = DATA_MEDICINE_CIGARETTES.STACKINGLIMIT,
-                FlavorDescription = DATA_MEDICINE_CIGARETTES.FLAVOR
+                FlavorDescription = DATA_MEDICINE_CIGARETTES.FLAVOR,
+                IsRecreational = true //@@MP (Release 5-7)
             };
             #endregion
 
@@ -1347,12 +1354,14 @@ namespace djack.RogueSurvivor.Gameplay
                 EquipmentPart = DollPart.RIGHT_HAND,
                 IsStackable = true,
                 StackingLimit = exData.STACKLINGLIMIT,
-                FlavorDescription = exData.FLAVOR
+                FlavorDescription = exData.FLAVOR,
+                IsFlameWeapon = true //@@MP - moved from GameItems.cs where it was hard-coded (Release 5-7)
             };
 
             this[IDs.EXPLOSIVE_MOLOTOV_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_MOLOTOV_PRIMED, this[IDs.EXPLOSIVE_MOLOTOV] as ItemGrenadeModel)
             {
-                EquipmentPart = DollPart.RIGHT_HAND
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsFlameWeapon = true //@@MP - moved from GameItems.cs where it was hard-coded (Release 5-7)
             };
 
             //@@MP - DYNAMITE (Release 4)
@@ -1679,14 +1688,14 @@ namespace djack.RogueSurvivor.Gameplay
         #region Data loading
 
         #region Helpers
-        void Notify(IRogueUI ui, string what, string stage)
+        static void Notify(IRogueUI ui, string what, string stage) //@@MP - made static (Release 5-7)
         {
             ui.UI_Clear(Color.Black);
             ui.UI_DrawStringBold(Color.White, "Loading "+what+" data : " + stage, 0, 0);
             ui.UI_Repaint();
         }
 
-        CSVLine FindLineForModel(CSVTable table, IDs modelID)
+        static CSVLine FindLineForModel(CSVTable table, IDs modelID) //@@MP - made static (Release 5-7)
         {
             foreach (CSVLine l in table.Lines)
             {
@@ -1697,7 +1706,7 @@ namespace djack.RogueSurvivor.Gameplay
             return null;
         }
 
-        _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(IRogueUI ui, CSVTable table, Func<CSVLine, _DATA_TYPE_> fn, IDs modelID, string path)
+        _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(CSVTable table, Func<CSVLine, _DATA_TYPE_> fn, IDs modelID, string path)
         {
             // get line for model in table.
             CSVLine line = FindLineForModel(table, modelID);
@@ -1740,7 +1749,7 @@ namespace djack.RogueSurvivor.Gameplay
                     }
                     allLines.Add(inLine);
                 }
-                reader.Close();
+                //reader.Close();
             }
             // parse all the lines read.
             Notify(ui, kind, "parsing CSV...");
@@ -1755,7 +1764,7 @@ namespace djack.RogueSurvivor.Gameplay
             data = new _DATA_TYPE_[idsToRead.Length];
             for (int i = 0; i < idsToRead.Length; i++)
             {
-                data[i] = GetDataFromCSVTable<_DATA_TYPE_>(ui, table, fn, idsToRead[i], path);
+                data[i] = GetDataFromCSVTable<_DATA_TYPE_>(table, fn, idsToRead[i], path); //@@MP - unused parameter (Release 5-7)
             }
 
             //////////////

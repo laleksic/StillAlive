@@ -105,6 +105,9 @@ namespace djack.RogueSurvivor.Engine
 
         public void AddLine(CSVLine line)
         {
+            if (line == null) //@@MP (Release 5-7)
+                throw new ArgumentNullException("line", "null line");
+
             if (line.FieldsCount != m_nbFields)
                 throw new ArgumentException(String.Format("line fields count {0} does not match with table fields count {1}", line.FieldsCount, m_nbFields));
 

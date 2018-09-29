@@ -68,7 +68,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
-            List<Percept> mapPercepts = FilterSameMap(game, percepts);
+            List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
             // 1. Follow order
             #region
@@ -107,7 +107,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // get data.
             List<Percept> allEnemies = FilterEnemies(game, mapPercepts);
-            List<Percept> currentEnemies = FilterCurrent(game, allEnemies);
+            List<Percept> currentEnemies = FilterCurrent(allEnemies); //@@MP - unused parameter (Release 5-7)
             bool checkOurLeader = m_Actor.HasLeader && !DontFollowLeader;
             bool hasCurrentEnemies = (currentEnemies != null);
             bool hasAnyEnemies = (allEnemies != null);
@@ -124,7 +124,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return runFromFires;
             }
             
-            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
+            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(mapPercepts)); //@@MP - unused parameter (Release 5-7)
             if (runFromExplosives != null)
             {
                 m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
@@ -214,7 +214,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
 
                 // fight or flee?
-                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, true, true, ActorCourage.COURAGEOUS, FIGHT_EMOTES);
+                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, true, ActorCourage.COURAGEOUS, FIGHT_EMOTES); //@@MP - unused parameter (Release 5-7)
                 if (fightOrFlee != null)
                 {
                     return fightOrFlee;
@@ -282,7 +282,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 8 chase old enemy
             #region
-            List<Percept> oldEnemies = Filter(game, allEnemies, (p) => p.Turn != m_Actor.Location.Map.LocalTime.TurnCounter);
+            List<Percept> oldEnemies = Filter(allEnemies, (p) => p.Turn != m_Actor.Location.Map.LocalTime.TurnCounter); //@@MP - unused parameter (Release 5-7)
             if (oldEnemies != null)
             {
                 Percept chasePercept = FilterNearest(game, oldEnemies);

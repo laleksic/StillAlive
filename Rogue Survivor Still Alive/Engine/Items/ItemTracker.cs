@@ -57,10 +57,10 @@ namespace djack.RogueSurvivor.Engine.Items
         public ItemTracker(ItemModel model)
             : base(model)
         {
-            if (!(model is ItemTrackerModel))
+            ItemTrackerModel m = model as ItemTrackerModel;
+            if (m == null)
                 throw new ArgumentException("model is not a TrackerModel");
 
-            ItemTrackerModel m = model as ItemTrackerModel;
             this.Tracking = m.Tracking;
             this.Batteries = m.MaxBatteries;
         }

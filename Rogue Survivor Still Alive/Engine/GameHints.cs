@@ -56,11 +56,18 @@ namespace djack.RogueSurvivor.Engine
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving hints...");
 
             IFormatter formatter = CreateFormatter();
-            Stream stream = CreateStream(filepath, true);
-
-            formatter.Serialize(stream, hints);
-            stream.Flush();
-            stream.Close();
+            Stream stream = null; //@@MP - try/finally ensures that the stream is always closed (Release 5-7)
+            try
+            {
+                stream = CreateStream(filepath, true);
+                formatter.Serialize(stream, hints);
+                stream.Flush();
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving hints... done!");
         }
@@ -72,29 +79,35 @@ namespace djack.RogueSurvivor.Engine
         public static GameHintsStatus Load(string filepath)
         {
             if (filepath == null)
-                throw new ArgumentNullException("filepath");
+                throw new ArgumentNullException("filepath","null filepath");
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading hints...");
 
             GameHintsStatus hints;
-            try
+            if (File.Exists(filepath))
             {
                 IFormatter formatter = CreateFormatter();
-                Stream stream = CreateStream(filepath, false);
-
-                hints = (GameHintsStatus)formatter.Deserialize(stream);
-                stream.Close();
+                Stream stream = null; //@@MP - try/finally ensures that the stream is always closed (Release 5-7)
+                try
+                {
+                    stream = CreateStream(filepath, false);
+                    hints = (GameHintsStatus)formatter.Deserialize(stream);
+                    stream.Flush();
+                }
+                finally
+                {
+                    if (stream != null)
+                        stream.Close();
+                }
             }
-            catch (Exception e)
+            else
             {
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load hints (first run?).");
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "resetting.");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "resetting all hints.");
                 hints = new GameHintsStatus();
                 hints.ResetAllHints();
             }
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading options... done!");
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading hints... done!");
             return hints;
         }
 
@@ -105,10 +118,17 @@ namespace djack.RogueSurvivor.Engine
 
         static Stream CreateStream(string saveFileName, bool save)
         {
-            return new FileStream(saveFileName,
+            try
+            {
+                return new FileStream(saveFileName,
                 save ? FileMode.Create : FileMode.Open,
                 save ? FileAccess.Write : FileAccess.Read,
                 FileShare.None);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                return null;
+            }
         }
         #endregion
     }

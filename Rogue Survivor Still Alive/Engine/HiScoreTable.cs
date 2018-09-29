@@ -28,7 +28,7 @@ namespace djack.RogueSurvivor.Engine
         public static HiScore FromScoring(string name, Scoring sc, string skillsDescription)
         {
             if (sc == null)
-                throw new ArgumentNullException("scoring");
+                throw new ArgumentNullException("sc","scoring");
 
             HiScore hi = new HiScore()
             {
@@ -77,7 +77,7 @@ namespace djack.RogueSurvivor.Engine
         public HiScoreTable(int maxEntries)
         {
             if (maxEntries < 1)
-                throw new ArgumentOutOfRangeException("maxEntries < 1");
+                throw new ArgumentOutOfRangeException("maxEntries","maxEntries < 1");
 
             m_Table = new List<HiScore>(maxEntries);
             m_MaxEntries = maxEntries;
@@ -141,11 +141,18 @@ namespace djack.RogueSurvivor.Engine
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving high score table...");
 
             IFormatter formatter = CreateFormatter();
-            Stream stream = CreateStream(filepath, true);
-
-            formatter.Serialize(stream, table);
-            stream.Flush();
-            stream.Close();
+            Stream stream = null; //@@MP - try/finally ensures that the stream is always closed (Release 5-7)
+            try
+            {
+                stream = CreateStream(filepath, true);
+                formatter.Serialize(stream, table);
+                stream.Flush();
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving high score table... done!");
         }
@@ -162,24 +169,29 @@ namespace djack.RogueSurvivor.Engine
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading high score table...");
 
             HiScoreTable table;
-            try
+            if (File.Exists(filepath))
             {
                 IFormatter formatter = CreateFormatter();
-                Stream stream = CreateStream(filepath, false);
-
-                table = (HiScoreTable)formatter.Deserialize(stream);
-                stream.Close();
+                Stream stream = null; //@@MP - try/finally ensures that the stream is always closed (Release 5-7)
+                try
+                {
+                    stream = CreateStream(filepath, false);
+                    table = (HiScoreTable)formatter.Deserialize(stream);
+                    stream.Flush();
+                }
+                finally
+                {
+                    if (stream != null)
+                        stream.Close();
+                }
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading high score table... done!");
+                return table;
             }
-            catch (Exception e)
+            else
             {
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load high score table (no high scores?).");
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
                 return null;
             }
-
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading high score table... done!");
-            return table;
         }
 
         static IFormatter CreateFormatter()
@@ -189,10 +201,17 @@ namespace djack.RogueSurvivor.Engine
 
         static Stream CreateStream(string saveFileName, bool save)
         {
-            return new FileStream(saveFileName,
+            try
+            {
+                return new FileStream(saveFileName,
                 save ? FileMode.Create : FileMode.Open,
                 save ? FileAccess.Write : FileAccess.Read,
                 FileShare.None);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                return null;
+            }
         }
 #endregion
     }

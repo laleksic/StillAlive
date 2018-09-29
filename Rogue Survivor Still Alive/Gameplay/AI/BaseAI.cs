@@ -145,7 +145,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #endregion
 
         #region Common sensor filters
-        protected List<Percept> FilterSameMap(RogueGame game, List<Percept> percepts)
+        protected List<Percept> FilterSameMap(List<Percept> percepts) //@@MP - unused parameter (Release 5-7)
         {
             if (percepts == null || percepts.Count == 0)
                 return null;
@@ -169,8 +169,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="game"></param>
-        /// <param name="percepts"></param>
         /// <returns>null if no enemies</returns>
         protected List<Percept> FilterEnemies(RogueGame game, List<Percept> percepts)
         {
@@ -220,7 +218,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return list;
         }
 
-        protected List<Percept> FilterCurrent(RogueGame game, List<Percept> percepts)
+        protected List<Percept> FilterCurrent(List<Percept> percepts) //@@MP - unused parameter (Release 5-7)
         {
             if (percepts == null || percepts.Count == 0)
                 return null;
@@ -263,7 +261,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return best;
         }
 
-        protected Percept FilterStrongestScent(RogueGame game, List<Percept> scents)
+        protected Percept FilterStrongestScent(List<Percept> scents)
         {
             if (scents == null || scents.Count == 0)
                 return null;
@@ -357,7 +355,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         }
 #endif
 
-        protected List<Percept> FilterActorsModel(RogueGame game, List<Percept> percepts, ActorModel model)
+        protected static List<Percept> FilterActorsModel(List<Percept> percepts, ActorModel model) //@@MP - unused parameter, made static (Release 5-7)
         {
             if (percepts == null || percepts.Count == 0)
                 return null;
@@ -378,7 +376,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return list;
         }
 
-        protected List<Percept> FilterActors(RogueGame game, List<Percept> percepts, Predicate<Actor> predicateFn)
+        protected static List<Percept> FilterActors(List<Percept> percepts, Predicate<Actor> predicateFn) //@@MP - unused parameter, made static (Release 5-7)
         {
             if (percepts == null || percepts.Count == 0)
                 return null;
@@ -401,7 +399,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected List<Percept> FilterFireTargets(RogueGame game, List<Percept> percepts)
         {
-            return Filter(game, percepts, 
+            return Filter(percepts,  //@@MP - unused parameter (Release 5-7)
                 (p) =>
                 {
                     Actor other = p.Percepted as Actor;
@@ -411,9 +409,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 });
         }
 
-        protected List<Percept> FilterStacks(RogueGame game, List<Percept> percepts)
+        protected static List<Percept> FilterStacks(List<Percept> percepts) //@@MP - unused parameter, made static (Release 5-7)
         {
-            return Filter(game, percepts,
+            return Filter(percepts, //@@MP - unused parameter (Release 5-7)
                 (p) =>
                 {
                     Inventory it = p.Percepted as Inventory;
@@ -423,9 +421,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 });
         }
 
-        protected List<Percept> FilterCorpses(RogueGame game, List<Percept> percepts)
+        protected static List<Percept> FilterCorpses(List<Percept> percepts) //@@MP - unused parameter, made static (Release 5-7)
         {
-            return Filter(game, percepts,
+            return Filter(percepts, //@@MP - unused parameter (Release 5-7)
                 (p) =>
                 {
                     List<Corpse> corpses = p.Percepted as List<Corpse>;
@@ -435,7 +433,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 });
         }
 
-        protected List<Percept> Filter(RogueGame game, List<Percept> percepts, Predicate<Percept> predicateFn)
+        protected static List<Percept> Filter(List<Percept> percepts, Predicate<Percept> predicateFn) //@@MP - unused parameter, made static (Release 5-7)
         {
             if (percepts == null || percepts.Count == 0)
                 return null;
@@ -455,7 +453,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return list;
         }
 
-        protected Percept FilterFirst(RogueGame game, List<Percept> percepts, Predicate<Percept> predicateFn)
+        protected static Percept FilterFirst(List<Percept> percepts, Predicate<Percept> predicateFn) //@@MP - unused parameter, made static (Release 5-7)
         {
             if (percepts == null || percepts.Count == 0)
                 return null;
@@ -469,9 +467,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return null;
         }
 
-        protected List<Percept> FilterOut(RogueGame game, List<Percept> percepts, Predicate<Percept> rejectPredicateFn)
+        protected static List<Percept> FilterOut(List<Percept> percepts, Predicate<Percept> rejectPredicateFn) //@@MP - unused parameter, made static (Release 5-7)
         {
-            return Filter(game, percepts, (p) => !rejectPredicateFn(p));
+            return Filter(percepts, (p) => !rejectPredicateFn(p)); //@@MP - unused parameter (Release 5-7)
         }
 
         /// <summary>
@@ -508,7 +506,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <param name="game"></param>
         /// <param name="percepts"></param>
         /// <returns></returns>
-        protected List<Percept> SortByDate(RogueGame game, List<Percept> percepts)
+        protected static List<Percept> SortByDate(List<Percept> percepts) //@@MP - unused parameter, made static (Release 5-7)
         {
             if (percepts == null || percepts.Count == 0)
                 return null;
@@ -540,7 +538,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (goodWanderLocFn != null && !goodWanderLocFn(next))
                         return false;
                     ActorAction bumpAction = game.Rules.IsBumpableFor(m_Actor, game, next);
-                    return isValidWanderAction(game, bumpAction);
+                    return IsValidWanderAction(game, bumpAction);
                 },
                 (dir) =>
                 {
@@ -793,14 +791,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region Ranged first
             // If already equiped a ranged weapon, we might want to reload it.
             Item eqWpn = GetEquippedWeapon();
-            if (eqWpn != null && eqWpn is ItemRangedWeapon)
+            ItemRangedWeapon rw = eqWpn as ItemRangedWeapon; //@@MP (Release 5-7)
+            if (eqWpn != null && rw != null)
             {
                 // ranged weapon equipped, if directive disabled unequip it!
                 if (!this.Directives.CanFireWeapons)
                     return new ActionUnequipItem(m_Actor, game, eqWpn);
 
                 // ranged weapon equipped, reload it?
-                ItemRangedWeapon rw = eqWpn as ItemRangedWeapon;
                 if (rw.Ammo <= 0)
                 {
                     // reload it if we can.
@@ -809,8 +807,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return new ActionUseItem(m_Actor, game, ammoIt);
                 }
                 else
-                    // nope, ranged equipped with ammo, nothing more to do with it.
-                    return null;
+                    return null; // nope, ranged equipped with ammo, nothing more to do with it.
             }
 
             // No ranged weapon equipped or equipped but out of ammo and no ammos to reload.
@@ -829,7 +826,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             #region Melee second
             // Get best melee weapon in inventory.
-            ItemMeleeWeapon bestMeleeWeapon = GetBestMeleeWeapon(game, (it) => !IsItemTaboo(it));
+            ItemMeleeWeapon bestMeleeWeapon = GetBestMeleeWeapon((it) => !IsItemTaboo(it)); //@@MP - unused parameter (Release 5-7)
 
             // If none, nothing to do.
             if (bestMeleeWeapon == null)
@@ -865,7 +862,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         protected ActorAction BehaviorEquipBodyArmor(RogueGame game)
         {
             // Get best armor available.
-            ItemBodyArmor bestArmor = GetBestBodyArmor(game, (it) => !IsItemTaboo(it));
+            ItemBodyArmor bestArmor = GetBestBodyArmor((it) => !IsItemTaboo(it)); //@@MP - unused parameter (Release 5-7)
 
             // If none, don't bother.
             if (bestArmor == null)
@@ -1223,7 +1220,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         #region Barricading & Building & Traps
 
-        protected int ComputeTrapsMaxDamage(Map map, Point pos)
+        protected static int ComputeTrapsMaxDamage(Map map, Point pos) //@@MP - made static (Release 5-7)
         {
             Inventory inv = map.GetItemsAt(pos);
             if (inv == null) return 0;
@@ -1239,7 +1236,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return sum;
         }
 
-        protected int ComputeTrapsTriggerChance(Map map, Point pos) //@@MP (Release 4)
+        protected static int ComputeTrapsTriggerChance(Map map, Point pos) //@@MP (Release 4), made static (Release 5-7)
         {
             Inventory inv = map.GetItemsAt(pos);
             if (inv == null) return 0;
@@ -1264,7 +1261,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // is this a good spot for a trap?            
             string reason;
-            if (!IsGoodTrapSpot(game, m_Actor.Location.Map, m_Actor.Location.Position, out reason))
+            if (!IsGoodTrapSpot(m_Actor.Location.Map, m_Actor.Location.Position, out reason)) //@@MP - unused parameter (Release 5-7)
                 return null;
 
             // if trap needs to be activated, do it.
@@ -1276,7 +1273,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return new ActionDropItem(m_Actor, game, trap);
         }
 
-        protected bool IsGoodTrapSpot(RogueGame game, Map map, Point pos, out string reason)
+        protected bool IsGoodTrapSpot(Map map, Point pos, out string reason) //@@MP - unused parameter (Release 5-7)
         {
             reason = "";
             bool potentialSpot = false;
@@ -1370,7 +1367,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return false;
                     if (map.GetExitAt(pt) != null)
                         return false;
-                    return IsDoorwayOrCorridor(game, map, pt);
+                    return IsDoorwayOrCorridor(map, pt); //@@MP - unused parameter (Release 5-7)
                 },
                 (dir) => game.Rules.Roll(0, 666),
                 (a, b) => a > b);
@@ -1737,7 +1734,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // get highest scent.
-            Percept best = FilterStrongestScent(game, scents);
+            Percept best = FilterStrongestScent(scents); //@@MP - unused parameter (Release 5-7)
 
             // 2 cases:
             // 1. Standing on best scent.
@@ -1886,7 +1883,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <param name="courage"></param>
         /// <param name="emotes">0 = flee; 1 = trapped; 2 = charge</param>
         /// <returns></returns>
-        protected ActorAction BehaviorFightOrFlee(RogueGame game, List<Percept> enemies, bool hasVisibleLeader, bool isLeaderFighting, ActorCourage courage,
+        protected ActorAction BehaviorFightOrFlee(RogueGame game, List<Percept> enemies, bool isLeaderFighting, ActorCourage courage, //@@MP - unused parameter (Release 5-7)
             string[] emotes)
         {
             Percept nearestEnemy = FilterNearest(game, enemies);
@@ -1949,7 +1946,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             break;
 
                         default:
-                            throw new ArgumentOutOfRangeException("unhandled courage");
+                            throw new ArgumentOutOfRangeException("courage","unhandled courage");
                     }
                     #endregion
                 }
@@ -1974,7 +1971,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             doRun = !HasSpeedAdvantage(game, m_Actor, enemy);
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException("unhandled courage");
+                            throw new ArgumentOutOfRangeException("courage", "unhandled courage");
                     }
                     #endregion
                 }
@@ -2279,7 +2276,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                 string shoutText = "";
                 // friend sleeping, wake up!
-                if (whatToShout != "")
+                if (!String.IsNullOrEmpty(whatToShout)) // (whatToShout != "")
                     shoutText = whatToShout;
                 else
                     shoutText = String.Format("Wake up {0}!", other.Name);
@@ -2532,7 +2529,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // filter stacks that have primed explosives.
-            List<Percept> primedExplosives = Filter(game, itemStacks, 
+            List<Percept> primedExplosives = Filter(itemStacks,  //@@MP - unused parameter (Release 5-7)
                 (p) =>
                 {
                     Inventory stack = p.Percepted as Inventory;
@@ -2583,7 +2580,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     float safetyValue = 1;
                     if (Map.IsAnyTileFireThere(next.Map, next.Position))
                     {
-                        safetyValue -= 2; //@@MP - reduced from 1 to 2 to avoid certain pain from fires than possible pain from traps (Release 5-2)
+                        safetyValue -= 2; //@@MP - reduced from 1 to 2 to avoid guaranteed pain from fires rather than possible pain from traps (Release 5-2)
                     }
                     if (Map.IsAnyActivatedTrapThere(next.Map, next.Position)) //@@MP (Release 5-2)
                     {
@@ -2604,22 +2601,25 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected ActorAction BehaviorThrowGrenade(RogueGame game, HashSet<Point> fov, List<Percept> enemies)
         {
-            // don't bother if no enemies or not enough enemies //@@MP - merged as count was checked twice (Release 4)
-            if (enemies == null || enemies.Count < 3)
-                return null;
-
             // don't bother if no grenade in inventory.
             Inventory inv = m_Actor.Inventory;
             if (inv == null || inv.IsEmpty)
                 return null;
-            ItemGrenade grenade = GetFirstGrenade((it) => !IsItemTaboo(it));
+            ItemGrenade grenade = GetFirstGrenade((it) => !IsItemTaboo(it)); //note: dynamite is set to be ignored (IsInteresting), so it will never be picked up by AI
             if (grenade == null)
                 return null;
             ItemGrenadeModel model = grenade.Model as ItemGrenadeModel;
 
+            // don't bother if no enemies or not enough enemies //@@MP - merged as count was checked twice (Release 4), moved down ==null? as passing methods have already checked (Release 5-7)
+            if (enemies == null)
+                return null;
+            else if (enemies.Count < 2 & !game.Rules.IsActorInsane(m_Actor)) //not enough enemies to warrant an explosive. insane people don't care
+                return null;
+
             // find the best throw point : a spot with many enemies around and no friend to hurt.
             #region
             int maxThrowRange = game.Rules.ActorMaxThrowRange(m_Actor, model.MaxThrowDistance);
+            Dictionary<Point, int> scoreByPosition = new Dictionary<Point, int>(); //@@MP - hold each pt already checked, so we don't have to calculate it again (Release 5-7)
             Point? bestSpot = null;
             int bestSpotScore = 0;
             foreach (Point pt in fov)
@@ -2627,54 +2627,74 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // never throw within blast radius - don't suicide ^^
                 if (game.Rules.GridDistance(m_Actor.Location.Position, pt) <= model.BlastAttack.Radius)
                     continue;
-
                 // if we can't throw there, don't bother.
                 if (game.Rules.GridDistance(m_Actor.Location.Position, pt) > maxThrowRange)
                     continue;
+                // not in line of sight
                 if (!LOS.CanTraceThrowLine(m_Actor.Location, pt, maxThrowRange, null))
                     continue;
 
                 // compute interest of throwing there.
                 // - pro: number of enemies within blast radius.
-                // - cons: friend in radius.
-                // don't bother checking for blast wave actuallly reaching the targets.
+                // - cons: friend in radius. enemy is skelton type. enemy is already on fire
+                // don't bother checking for blast wave actually reaching the targets.
                 int score = 0;
                 for (int x = pt.X - model.BlastAttack.Radius; x <= pt.X + model.BlastAttack.Radius; x++)
+                {
                     for (int y = pt.Y - model.BlastAttack.Radius; y <= pt.Y + model.BlastAttack.Radius; y++)
                     {
-                        if (!m_Actor.Location.Map.IsInBounds(x, y))
+                        Point currentlyCheckingPT = new Point(x, y); //@@MP - added check for PTs already calculated (Release 5-7)
+                        if (scoreByPosition.ContainsKey(currentlyCheckingPT)) //we've already calculated it previously when looping through the points
+                            continue;
+                        if (!m_Actor.Location.Map.IsInBounds(x, y)) //the spot we're currently checking is out of bounds
                             continue;
                         Actor otherActor = m_Actor.Location.Map.GetActorAt(x, y);
-                        if (otherActor == null)
+                        if (otherActor == null) //no one there
                             continue;
-                        if (otherActor == m_Actor)
+                        if (otherActor == m_Actor) //that's me!
                             continue;
                         int blastDistToTarget = game.Rules.GridDistance(pt, otherActor.Location.Position);
-                        if (blastDistToTarget > model.BlastAttack.Radius)
+                        if (blastDistToTarget > model.BlastAttack.Radius) //otherActor won't be caught in the blast
                             continue;
 
                         // other actor within blast radius.
                         // - if friend, abort and never throw there.
-                        // - if enemy, increase score.
+                        // - if enemy, increase score, unless it's a skeleton type and thus decrease score
                         if (game.Rules.IsEnemyOf(m_Actor, otherActor))
                         {
-                            // score = damage inflicted vs target toughness(max hp).
-                            // -> means it is better to hurt badly one big enemy than a few scratch on a group of weaklings.
-                            int value = game.Rules.BlastDamage(blastDistToTarget, model.BlastAttack) * game.Rules.ActorMaxHPs(otherActor);
-                            score += value;
+                            if (model.IsFlameWeapon && (otherActor.IsSkeletonType || otherActor.IsOnFire)) //@@MP - check if invulnerable to fire or would be wasted (Release 5-7)
+                                score = -2;
+                            else
+                            {
+                                //@@MP - simplified this, as it was generating higher scores than would ensure the safety of friends in the blast radius (Release 5-7)
+                                //now it will favour multiple targets and not consider their relative toughnesses. this is the opposite of vanilla
+                                if (m_Actor.IsSelfDefenceFrom(otherActor))
+                                    score = +2;
+                                else
+                                    score = +1;
+
+                                //// score = damage inflicted vs target toughness(max hp).
+                                //// -> means it is better to hurt badly one big enemy than a few scratch on a group of weaklings.
+                                //int value = game.Rules.BlastDamage(blastDistToTarget, model.BlastAttack) * game.Rules.ActorMaxHPs(otherActor);
+                                //score += value;
+                            }
                         }
-                        else
+                        else //@@MP - a friend or a neutral
                         {
-                            score = -1;
-                            break;
+                            score = -4;
+                            //continue; //@@MP - was break, but i think that would be excessive if the fov on that column was quite large (Release 5-7)
                         }
                     }
+                }
+
+                //@@MP - hold the score for this point, so that we don't have to calculate it again
+                scoreByPosition.Add(pt, score); //@@MP (Release 5-7)
 
                 // if negative score (eg: friends get hurt), don't throw.
                 if (score <= 0)
                     continue;
 
-                // possible spot. best one?
+                // we've got a possible spot. if we don't already have a spot, or this one is better, it becomes the one
                 if (bestSpot == null || score > bestSpotScore)
                 {
                     bestSpot = pt;
@@ -2802,7 +2822,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // spot must be interesting to spray.
-            if (!IsGoodStenchKillerSpot(game, m_Actor.Location.Map, m_Actor.Location.Position))
+            if (!IsGoodStenchKillerSpot(m_Actor.Location.Map, m_Actor.Location.Position)) //@@MP - unused parameter (Release 5-7)
                 return null;
 
             // good spot, try to do it.
@@ -2814,7 +2834,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return null;
         }
 
-        protected bool IsGoodStenchKillerSpot(RogueGame game, Map map, Point pos)
+        protected bool IsGoodStenchKillerSpot(Map map, Point pos) //@@MP - unused parameter (Release 5-7)
         {
             // 1. Don't spray at an already sprayed spot.
             // 2. Spray in a good position:
@@ -2858,7 +2878,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
             
             // filter murderers that are not our enemies yet.
-            List<Percept> murderers = FilterActors(game, percepts,
+            List<Percept> murderers = FilterActors(percepts, //@@MP - unused parameter (Release 5-7)
                 (a) => a.MurdersCounter > 0 && !game.Rules.IsEnemyOf(m_Actor, a));
 
             // if none, nothing to do.
@@ -2904,7 +2924,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // filter stacks with food.
-            List<Percept> foodStacks = Filter(game, stacksPercepts, (p) =>
+            List<Percept> foodStacks = Filter(stacksPercepts, (p) => //@@MP - unused parameter (Release 5-7)
             {
                 Inventory inv = p.Percepted as Inventory;
                 return inv.HasItemOfType(typeof(ItemFood));
@@ -2978,8 +2998,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // keep only corpses stacks where we can revive at least one corpse.
-            List<Percept> revivables = Filter(game, corpsesPercepts, (p) =>
-                {
+            List<Percept> revivables = Filter(corpsesPercepts, (p) => //@@MP - unused parameter (Release 5-7)
+            {
                     List<Corpse> corpsesThere = p.Percepted as List<Corpse>;
                     foreach (Corpse c in corpsesThere)
                     {
@@ -3019,7 +3039,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #region Behaviors helpers
 
         #region Messages
-        string MakeCentricLocationDirection(RogueGame game, Location from, Location to)
+        static string MakeCentricLocationDirection(RogueGame game, Location from, Location to) //@@MP - made static (Release 5-7)
         {
             // if not same location, just says the map.
             if (from.Map != to.Map)
@@ -3087,11 +3107,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     else
                     {
                         // out of ammo, but do we have a matching ammo item in inventory we could reload it with?
+                        ItemAmmo itAmmo = null; //@@MP (Release 5-7)
                         foreach (Item itReload in m_Actor.Inventory.Items)
                         {
-                            if (itReload is ItemAmmo && (fn == null || fn(itReload)))
+                            //if (itReload is ItemAmmo && (fn == null || fn(itReload)))
+                            itAmmo = itReload as ItemAmmo;
+                            if (itAmmo != null && (fn == null || fn(itReload)))
                             {
-                                ItemAmmo itAmmo = itReload as ItemAmmo;
+                                //ItemAmmo itAmmo = itReload as ItemAmmo;
                                 if (itAmmo.AmmoType == w.AmmoType)
                                 {
                                     checkIt = true;
@@ -3116,7 +3139,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return best;
         }
 
-        protected int ScoreRangedWeapon(ItemRangedWeapon w)
+        protected static int ScoreRangedWeapon(ItemRangedWeapon w) //@@MP - made static (Release 5-7)
         {
             ItemRangedWeaponModel m = w.Model as ItemRangedWeaponModel;
             return 1000 * m.Attack.Range + m.Attack.DamageValue;
@@ -3182,12 +3205,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             foreach (Item it in m_Actor.Inventory.Items)
-                if (it.IsEquipped && it is ItemTracker)
+            {
+                ItemTracker t = it as ItemTracker;
+                if (t != null && t.IsEquipped)
                 {
-                    ItemTracker t = it as ItemTracker;
                     if (t.CanTrackFollowersOrLeader)
                         return it;
                 }
+            }
 
             return null;
         }
@@ -3263,7 +3288,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return null;
         }
 
-        protected bool IsRangedWeaponOutOfAmmo(Item it)
+        protected static bool IsRangedWeaponOutOfAmmo(Item it) //@@MP - made static (Release 5-7)
         {
             ItemRangedWeapon w = it as ItemRangedWeapon;
             if (w == null)
@@ -3271,7 +3296,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return w.Ammo <= 0;
         }
 
-        protected bool IsLightOutOfBatteries(Item it)
+        protected static bool IsLightOutOfBatteries(Item it) //@@MP - made static (Release 5-7)
         {
             ItemLight l = it as ItemLight;
             if (l == null)
@@ -3343,9 +3368,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             bool onlyOneSlotLeft = (m_Actor.Inventory.CountItems == game.Rules.ActorMaxInv(m_Actor) - 1);
 
             // 0 Reject anything not food if only one slot left.
+            ItemFood food = it as ItemFood;
             if (onlyOneSlotLeft)
             {
-                if (it is ItemFood)
+                if (food != null)
                     return true;
                 else
                     return false;
@@ -3360,14 +3386,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return false;
 
             // 3 Reject activated traps.
-            if (it is ItemTrap)
+            ItemTrap trap = it as ItemTrap;
+            if (trap != null && trap.IsActivated)
             {
-                if ((it as ItemTrap).IsActivated)
-                    return false;
+                return false;
             }
 
             // 4 Food
-            if (it is ItemFood)
+            if (food != null)
             {
                 // accept any food if hungry or without food.
                 if (game.Rules.IsActorHungry(m_Actor) || HasNoFoodItems(m_Actor)) //@@MP - added check for NoFood (Release 4)
@@ -3376,19 +3402,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 bool hasEnoughFood = HasEnoughFoodFor(game, m_Actor.Sheet.BaseFoodPoints / 2);
 
                 // food not urgent, only interested in not spoiled food and if need more.
-                return !hasEnoughFood && !game.Rules.IsFoodSpoiled(it as ItemFood, m_Actor.Location.Map.LocalTime.TurnCounter);
+                return !hasEnoughFood && !game.Rules.IsFoodSpoiled(food, m_Actor.Location.Map.LocalTime.TurnCounter);
             }
 
             // 5 Ranged weapons.
             // Reject is AI_NotInterestedInRangedWeapons flag set.
-            // Reject empty if no matching ammo, not already 2 ranged weapons in inventory, and different than any weapon we already have.
-            if (it is ItemRangedWeapon)
+            // Reject empty if no matching ammo, not already a ranged weapon in inventory, and different than any weapon we already have.
+            ItemRangedWeapon rw = it as ItemRangedWeapon;
+            if (rw != null)
             {
                 // ai flag.
                 if (m_Actor.Model.Abilities.AI_NotInterestedInRangedWeapons)
                     return false;
 
-                ItemRangedWeapon rw = it as ItemRangedWeapon;
                 // empty and no matching ammo : no.
                 if (rw.Ammo <= 0 && GetCompatibleAmmoItem(game, rw) == null)
                     return false;
@@ -3406,15 +3432,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 6 Ammo : only if has matching weapon and if has less than two full stacks.
-            if (it is ItemAmmo)
+            ItemAmmo am = it as ItemAmmo;
+            if (am != null)
             {
-                ItemAmmo am = it as ItemAmmo;
-                if (GetCompatibleRangedWeapon(game, am) == null)
+                if (GetCompatibleRangedWeapon(am) == null) //@@MP - unused parameter (Release 5-7)
                     return false;
                 return !HasAtLeastFullStackOfItemTypeOrModel(it, 2);
             }
 
-            // 7 Melee weapons, Medecine
+            // 7 Melee weapons, Medicine
             // Reject melee weapons if we are skilled in martial arts or we alreay have 2.
             // Reject medecine if we alredy have full stacks.
             //@@MP - also added one more specific for alcohol, as each type is a different model
@@ -3516,9 +3542,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             int nutritionTotal = 0;
             foreach (Item it in m_Actor.Inventory.Items)
             {
-                if (it is ItemFood)
+                ItemFood food = it as ItemFood;
+                if (food != null)
                 {
-                    nutritionTotal += game.Rules.FoodItemNutrition(it as ItemFood, turnCounter);
+                    nutritionTotal += game.Rules.FoodItemNutrition(food, turnCounter);
                     if (nutritionTotal >= nutritionNeed) // exit asap
                         return true;
                 }
@@ -3620,7 +3647,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #endregion
 
         #region Distances & Safety
-        protected int GridDistancesSum(Rules rules, Point from, List<Percept> goals)
+        protected static int GridDistancesSum(Rules rules, Point from, List<Percept> goals) //@@MP - made static (Release 5-7)
         {
             int sum = 0;
             foreach (Percept to in goals)
@@ -3706,10 +3733,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #endregion
 
         #region Choice making
-        protected ChoiceEval<_T_> Choose<_T_>(RogueGame game, List<_T_> listOfChoices, 
+        protected static ChoiceEval<_T_> Choose<_T_>(RogueGame game, List<_T_> listOfChoices, 
             Func<_T_, bool> isChoiceValidFn,
             Func<_T_, float> evalChoiceFn, 
-            Func<float, float, bool> isBetterEvalThanFn)
+            Func<float, float, bool> isBetterEvalThanFn) //@@MP - made static (Release 5-7)
         {
             //Console.Out.WriteLine("Evaluating choices");
 
@@ -3778,10 +3805,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return candidates[iChoice];
         }
 
-        protected ChoiceEval<_DATA_> ChooseExtended<_T_, _DATA_>(RogueGame game, List<_T_> listOfChoices,
+        protected static ChoiceEval<_DATA_> ChooseExtended<_T_, _DATA_>(RogueGame game, List<_T_> listOfChoices,
             Func<_T_, _DATA_> isChoiceValidFn,
             Func<_T_, float> evalChoiceFn,
-            Func<float, float, bool> isBetterEvalThanFn)
+            Func<float, float, bool> isBetterEvalThanFn) //@@MP - made static (Release 5-7)
         {
             //Console.Out.WriteLine("Evaluating choices");
 
@@ -3863,7 +3890,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        protected bool IsValidFleeingAction(ActorAction a)
+        protected static bool IsValidFleeingAction(ActorAction a) //@@MP - made static (Release 5-7)
         {
             return a != null && (a is ActionMoveStep || a is ActionOpenDoor || a is ActionSwitchPlace);
         }
@@ -3873,17 +3900,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        protected bool isValidWanderAction(RogueGame game, ActorAction a)
-        {
+        protected bool IsValidWanderAction(RogueGame game, ActorAction a)
+        { //@@MP - re-ordered from most to least likely, for best performance (Release 5-7)
             return a != null && 
-                (a is ActionMoveStep || 
-                a is ActionSwitchPlace ||
-                a is ActionPush ||
-                a is ActionOpenDoor || 
-                (a is ActionChat && (this.Directives.CanTrade || (a as ActionChat).Target == m_Actor.Leader)) || 
-                a is ActionBashDoor || 
+                (a is ActionMoveStep ||
                 (a is ActionGetFromContainer && IsInterestingItem(game, (a as ActionGetFromContainer).Item)) ||
-                a is ActionBarricadeDoor);
+                a is ActionOpenDoor ||
+                a is ActionBashDoor ||
+                a is ActionSwitchPlace ||
+                (a is ActionChat && (this.Directives.CanTrade || (a as ActionChat).Target == m_Actor.Leader)) ||
+                a is ActionBarricadeDoor ||
+                a is ActionPush);
         }
 
         /// <summary>
@@ -3892,7 +3919,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        protected bool IsValidMoveTowardGoalAction(ActorAction a)
+        protected static bool IsValidMoveTowardGoalAction(ActorAction a) //@@MP - made static (Release 5-7)
         {
             return a != null &&
                 !(a is ActionChat || a is ActionGetFromContainer || a is ActionSwitchPowerGenerator || a is ActionRechargeItemBattery);
@@ -3900,7 +3927,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #endregion
 
         #region Actors predicates
-        protected bool HasNoFoodItems(Actor actor)
+        protected static bool HasNoFoodItems(Actor actor) //@@MP - made static (Release 5-7)
         {
             Inventory inv = actor.Inventory;
             if (inv == null || inv.IsEmpty)
@@ -3908,12 +3935,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return !inv.HasItemOfType(typeof(ItemFood));
         }
 
-        protected bool IsSoldier(Actor actor)
+        protected static bool IsSoldier(Actor actor) //@@MP - made static (Release 5-7)
         {
             return actor != null && actor.Controller is SoldierAI;
         }
 
-        protected bool WouldLikeToSleep(RogueGame game, Actor actor)
+        protected static bool WouldLikeToSleep(RogueGame game, Actor actor) //@@MP - made static (Release 5-7)
         {
             return game.Rules.IsAlmostSleepy(actor) || game.Rules.IsActorSleepy(actor);
         }
@@ -3924,7 +3951,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return other != null && other != m_Actor;
         }
 
-        protected bool IsAdjacentToEnemy(RogueGame game, Actor actor)
+        protected static bool IsAdjacentToEnemy(RogueGame game, Actor actor) //@@MP - made static (Release 5-7)
         {
             if (actor == null)
                 return false;
@@ -3941,7 +3968,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 });
         }
 
-        protected bool IsInside(Actor actor)
+        protected static bool IsInside(Actor actor) //@@MP - made static (Release 5-7)
         {
             if (actor == null)
                 return false;
@@ -3949,7 +3976,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return actor.Location.Map.GetTileAt(actor.Location.Position.X, actor.Location.Position.Y).IsInside;
         }
 
-        protected bool HasEquipedRangedWeapon(Actor actor)
+        protected static bool HasEquipedRangedWeapon(Actor actor) //@@MP - made static (Release 5-7)
         {
             return (actor.GetEquippedWeapon() as ItemRangedWeapon) != null;
         }
@@ -3973,7 +4000,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return null;
         }
 
-        protected ItemRangedWeapon GetCompatibleRangedWeapon(RogueGame game, ItemAmmo am)
+        protected ItemRangedWeapon GetCompatibleRangedWeapon(ItemAmmo am) //@@MP - unused parameter (Release 5-7)
         {
             if (m_Actor.Inventory == null)
                 return null;
@@ -3992,7 +4019,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return null;
         }
 
-        protected ItemMeleeWeapon GetBestMeleeWeapon(RogueGame game, Predicate<Item> fn)
+        protected ItemMeleeWeapon GetBestMeleeWeapon(Predicate<Item> fn) //@@MP - unused parameter (Release 5-7)
         {
             if (m_Actor.Inventory == null)
                 return null;
@@ -4025,7 +4052,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return bestWeapon;
         }
 
-        protected ItemBodyArmor GetBestBodyArmor(RogueGame game, Predicate<Item> fn)
+        protected ItemBodyArmor GetBestBodyArmor(Predicate<Item> fn) //@@MP - unused parameter (Release 5-7)
         {
             if (m_Actor.Inventory == null)
                 return null;
@@ -4067,7 +4094,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ///////////////////////////////////////////////////////
 
             // 1. Always if fighting makes me tired.
-            if (WillTireAfterAttack(game, actor))
+            if (WillTireAfterAttack(actor)) //@@MP - unused parameter (Release 5-7)
                 return true;
 
             // 2. Yes : slower targets that will act next turn (kiting) and are targetting us.
@@ -4085,7 +4112,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // get weaker actor in melee.
-            Actor weakerOne = FindWeakerInMelee(game, m_Actor, target);
+            Actor weakerOne = FindWeakerInMelee(m_Actor, target); //@@MP - unused parameter (Release 5-7)
 
             // 3. No : target is weaker.
             if (weakerOne == target)
@@ -4103,7 +4130,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// Get which of the two actor can be considered as a weaker one in a melee fight.
         /// </summary>
         /// <returns>weaker actor, null if they are equal.</returns>
-        protected Actor FindWeakerInMelee(RogueGame game, Actor a, Actor b)
+        protected static Actor FindWeakerInMelee(Actor a, Actor b) //@@MP - unused parameter, made static (Release 5-7)
         {
             int value_A = a.HitPoints + a.CurrentMeleeAttack.DamageValue;
             int value_B = b.HitPoints + b.CurrentMeleeAttack.DamageValue;
@@ -4111,7 +4138,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return value_A < value_B ? a : value_A > value_B ? b : null;
         }
 
-        protected bool WillTireAfterAttack(RogueGame game, Actor actor)
+        protected static bool WillTireAfterAttack(Actor actor) //@@MP - unused parameter, made static (Release 5-7)
         {
             if (!actor.Model.Abilities.CanTire)
                 return false;
@@ -4119,7 +4146,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return staAfter < Rules.STAMINA_MIN_FOR_ACTIVITY;
         }
 
-        protected bool WillTireAfterRunning(RogueGame game, Actor actor)
+        protected static bool WillTireAfterRunning(Actor actor) //@@MP - unused parameter (Release 5-7)
         {
             if (!actor.Model.Abilities.CanTire)
                 return false;
@@ -4127,7 +4154,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return staAfter < Rules.STAMINA_MIN_FOR_ACTIVITY;
         }
 
-        protected bool HasSpeedAdvantage(RogueGame game, Actor actor, Actor target)
+        protected static bool HasSpeedAdvantage(RogueGame game, Actor actor, Actor target) //@@MP - made static (Release 5-7)
         {
             int actorSpeed = game.Rules.ActorSpeed(actor);
             int targetSpeed = game.Rules.ActorSpeed(target);
@@ -4138,7 +4165,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // if we can run and the target can't and that would make us faster without tiring us, then yes!
             if (game.Rules.CanActorRun(actor) && !game.Rules.CanActorRun(target) &&
-                !WillTireAfterRunning(game, actor) && actorSpeed * 2 > targetSpeed)
+                !WillTireAfterRunning(actor) && actorSpeed * 2 > targetSpeed) //@@MP - unused parameter (Release 5-7)
                 return true;
 
             // TODO: other tricky cases?
@@ -4159,7 +4186,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return m_Actor.Location.Map.LocalTime.IsNight &&
                         (game.Session.World.Weather == Weather.HEAVY_RAIN || !m_Actor.Location.Map.GetTileAt(m_Actor.Location.Position.X, m_Actor.Location.Position.Y).IsInside);
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled lighting");
+                    throw new InvalidOperationException("unhandled lighting type");
             }
         }
 
@@ -4171,7 +4198,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <param name="B"></param>
         /// <param name="C"></param>
         /// <returns></returns>
-        protected bool IsBetween(RogueGame game, Point A, Point between, Point B)
+        protected static bool IsBetween(RogueGame game, Point A, Point between, Point B) //@@MP - made static (Release 5-7)
         {
             float A_between = game.Rules.StdDistance(A, between);
             float B_between = game.Rules.StdDistance(B, between);
@@ -4180,7 +4207,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return A_between + B_between <= A_B + 0.25f;
         }
 
-        protected bool IsDoorwayOrCorridor(RogueGame game, Map map, Point pos)
+        protected bool IsDoorwayOrCorridor(Map map, Point pos)
         {
             ///////////////////////////////////////
             // Check for simple shapes:
@@ -4232,13 +4259,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return !game.Rules.IsEnemyOf(m_Actor, other) && m_Actor.Faction == other.Faction;
         }
 
-        protected Actor GetNearestTargetFor(RogueGame game, Actor actor)
+        protected static Actor GetNearestTargetFor(RogueGame game, Actor actor) //@@MP - made static (Release 5-7)
         {
             Map map = actor.Location.Map;
             Actor nearest = null;
             int best = int.MaxValue;
 
-            // quite uggly but better than computing the whole FoV...
+            // quite ugly but better than computing the whole FoV...
             foreach (Actor a in map.Actors)
             {
                 if (a.IsDead) continue;
@@ -4261,7 +4288,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #endregion
 
         #region Exits
-        protected List<Exit> ListAdjacentExits(RogueGame game, Location fromLocation)
+        protected static List<Exit> ListAdjacentExits(Location fromLocation) //@@MP - unused parameter, made static (Release 5-7)
         {
             List<Exit> list = null;
             foreach (Direction d in Direction.COMPASS)
@@ -4278,10 +4305,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return list;
         }
 
-        protected Exit PickAnyAdjacentExit(RogueGame game, Location fromLocation)
+        protected static Exit PickAnyAdjacentExit(RogueGame game, Location fromLocation) //@@MP - made static (Release 5-7)
         {
             // get all adjacent exits.
-            List<Exit> list = ListAdjacentExits(game, fromLocation);
+            List<Exit> list = ListAdjacentExits(fromLocation); //@@MP - unused parameter (Release 5-7)
 
             // if none, failed.
             if (list == null)
@@ -4297,7 +4324,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #endregion
 
         #region Random position near
-        protected Point RandomPositionNear(Rules rules, Map map, Point goal, int range)
+        protected static Point RandomPositionNear(Rules rules, Map map, Point goal, int range) //@@MP - made static (Release 5-7)
         {
             int x = goal.X + rules.Roll(-range, +range);
             int y = goal.Y + rules.Roll(-range, +range);

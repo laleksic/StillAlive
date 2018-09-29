@@ -101,9 +101,10 @@ namespace djack.RogueSurvivor
         private const int CP_NOCLOSE_BUTTON = 0x200;
         protected override CreateParams CreateParams
         {
+            [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.LinkDemand, Flags = System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
             get
             {
-                CreateParams cp = base.CreateParams;
+            CreateParams cp = base.CreateParams;
                 cp.ClassStyle |= CP_NOCLOSE_BUTTON;
                 return cp;
             }
@@ -130,7 +131,7 @@ namespace djack.RogueSurvivor
             if (m_Game.IsGameRunning)
             {
                 e.Cancel = true;
-                MessageBox.Show("The game is still running. Please quit inside the game.");
+                MessageBox.Show(this, "The game is still running. Please quit inside the game.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0);
             }
         }
         #endregion
@@ -169,6 +170,9 @@ namespace djack.RogueSurvivor
 
         public void UI_PostKey(KeyEventArgs e)
         {
+            if (e == null) //@@MP (Release 5-7)
+                throw new ArgumentNullException("e", "null e");
+
             // ignore Shift/Ctrl/Alt alone.
             switch (e.KeyCode)
             {
@@ -392,7 +396,7 @@ namespace djack.RogueSurvivor
         public void UI_DrawRect(Color color, Rectangle rect)
         {
             if (rect.Width <= 0 || rect.Height <= 0)
-                throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
+                throw new ArgumentOutOfRangeException("rect","rectangle Width/Height <= 0");
 
             m_GameCanvas.AddRect(color, rect);
         }
@@ -400,13 +404,16 @@ namespace djack.RogueSurvivor
         public void UI_FillRect(Color color, Rectangle rect)
         {
             if (rect.Width <= 0 || rect.Height <= 0)
-                throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
+                throw new ArgumentOutOfRangeException("rect","rectangle Width/Height <= 0");
 
             m_GameCanvas.AddFilledRect(color, rect);
         }
 
         public void UI_DrawPopup(string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         { //@@MP - the popup that appears when you hover the mouse over actors/items in-game
+            if (lines == null) //@@MP (Release 5-7)
+                throw new ArgumentNullException("lines", "null lines");
+
             /////////////////
             // Measure lines
             /////////////////
@@ -440,6 +447,7 @@ namespace djack.RogueSurvivor
             catch (Exception e)
             {
                 Logger.WriteLine(Logger.Stage.RUN_GFX, "failed to draw popup box:: " + e.ToString());
+                throw; //@@MP (Release 5-7)
             }
 
             //////////////

@@ -5,6 +5,10 @@
     /// </summary>
     partial class RogueForm
     {
+        
+        //@@MP - commented out the dispose method as it's already handled in DXGameCanvas.cs (Release 5-7)
+        //@@MP - see https://stackoverflow.com/questions/16260654/code-analysis-finds-ca2213-error-in-designer-code
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -20,6 +24,19 @@
             if (disposing && m_GameCanvas != null)
             {
                 m_GameCanvas.DisposeUnmanagedResources();
+                if (m_BoldFont != null)
+                {
+                    Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing bold font...");
+                    m_BoldFont.Dispose();
+                    m_BoldFont = null;
+                }
+
+                if (m_NormalFont != null)
+                {
+                    Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing normal font...");
+                    m_NormalFont.Dispose();
+                    m_NormalFont = null;
+                }
             }
 
             if (disposing && (components != null))
@@ -29,11 +46,13 @@
             base.Dispose(disposing);
         }
 
+
         #region Windows Form Designer generated code
 
         /// <summary>
         /// *** contains custom ugly code! ***
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         private void InitializeComponent()
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating GameCanvas...");

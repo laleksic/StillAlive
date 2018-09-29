@@ -54,7 +54,7 @@ namespace djack.RogueSurvivor.Data
                 case ActorCourage.COWARD:
                     return "Coward";
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled courage");
+                    throw new ArgumentOutOfRangeException("c","unhandled courage");
             }
         }
         #endregion

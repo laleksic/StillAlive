@@ -60,7 +60,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 DressCivilian(roller, actor, FEMALE_EYES, FEMALE_SKINS, FEMALE_HEADS, FEMALE_TORSOS, FEMALE_LEGS, FEMALE_SHOES);
         }
 
-        public void SkinNakedHuman(DiceRoller roller, Actor actor)
+        public static void SkinNakedHuman(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
         {
             if (actor.Model.DollBody.IsMale)
                 SkinNakedHuman(roller, actor, MALE_EYES, MALE_SKINS, MALE_HEADS);
@@ -68,7 +68,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 SkinNakedHuman(roller, actor, FEMALE_EYES, FEMALE_SKINS, FEMALE_HEADS);
         }
 
-        public void DressCivilian(DiceRoller roller, Actor actor, string[] eyes, string[] skins, string[] heads, string[] torsos, string[] legs, string[] shoes)
+        public static void DressCivilian(DiceRoller roller, Actor actor, string[] eyes, string[] skins, string[] heads, string[] torsos, string[] legs, string[] shoes) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
             actor.Doll.AddDecoration(DollPart.EYES, eyes[roller.Roll(0, eyes.Length)]);
@@ -79,7 +79,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.FEET, shoes[roller.Roll(0, shoes.Length)]);
         }
 
-        public void SkinNakedHuman(DiceRoller roller, Actor actor, string[] eyes, string[] skins, string[] heads)
+        public static void SkinNakedHuman(DiceRoller roller, Actor actor, string[] eyes, string[] skins, string[] heads) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
             actor.Doll.AddDecoration(DollPart.EYES, eyes[roller.Roll(0, eyes.Length)]);
@@ -87,13 +87,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.HEAD, heads[roller.Roll(0, heads.Length)]);
         }
 
-        public void SkinDog(DiceRoller roller, Actor actor)
+        public static void SkinDog(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
             actor.Doll.AddDecoration(DollPart.SKIN, DOG_SKINS[roller.Roll(0, DOG_SKINS.Length)]);
         }
 
-        public void DressArmy(DiceRoller roller, Actor actor)
+        public static void DressArmy(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
             actor.Doll.AddDecoration(DollPart.SKIN, MALE_SKINS[roller.Roll(0, MALE_SKINS.Length)]);
@@ -103,7 +103,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.FEET, GameImages.ARMY_SHOES);
         }
 
-        public void DressPolice(DiceRoller roller, Actor actor)
+        public static void DressPolice(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
             actor.Doll.AddDecoration(DollPart.EYES, MALE_EYES[roller.Roll(0, MALE_EYES.Length)]);
@@ -115,7 +115,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.FEET, GameImages.POLICE_SHOES);
         }
 
-        public void DressBiker(DiceRoller roller, Actor actor)
+        public static void DressBiker(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
             actor.Doll.AddDecoration(DollPart.EYES, MALE_EYES[roller.Roll(0, MALE_EYES.Length)]);
@@ -125,7 +125,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.FEET, BIKER_SHOES[roller.Roll(0, BIKER_SHOES.Length)]);
         }
 
-        public void DressGangsta(DiceRoller roller, Actor actor)
+        public static void DressGangsta(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
             actor.Doll.AddDecoration(DollPart.EYES, MALE_EYES[roller.Roll(0, MALE_EYES.Length)]);
@@ -137,7 +137,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.FEET, MALE_SHOES[roller.Roll(0, MALE_SHOES.Length)]);
         }
         
-        public void DressCHARGuard(DiceRoller roller, Actor actor)
+        public static void DressCHARGuard(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
             actor.Doll.AddDecoration(DollPart.EYES, MALE_EYES[roller.Roll(0, MALE_EYES.Length)]);
@@ -146,7 +146,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.LEGS, CHARGUARD_LEGS[roller.Roll(0, CHARGUARD_LEGS.Length)]);
         }
 
-        public void DressBlackOps(DiceRoller roller, Actor actor)
+        public static void DressBlackOps(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
             actor.Doll.AddDecoration(DollPart.EYES, MALE_EYES[roller.Roll(0, MALE_EYES.Length)]);
@@ -154,7 +154,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.TORSO, GameImages.BLACKOP_SUIT);
         }
 
-        public string RandomSkin(DiceRoller roller, bool isMale)
+        public static string RandomSkin(DiceRoller roller, bool isMale) //@@MP - made static (Release 5-7)
         {
             string[] skins = isMale ? MALE_SKINS : FEMALE_SKINS;
             return skins[roller.Roll(0, skins.Length)];
@@ -260,7 +260,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 GiveNameToActor(roller, actor, FEMALE_FIRST_NAMES, LAST_NAMES);
         }
 
-        public void GiveNameToActor(DiceRoller roller, Actor actor, string[] firstNames, string[] lastNames)
+        public static void GiveNameToActor(DiceRoller roller, Actor actor, string[] firstNames, string[] lastNames)
         {
             actor.IsProperName = true;
             string randomName = firstNames[roller.Roll(0, firstNames.Length)] + " " + lastNames[roller.Roll(0, lastNames.Length)];
@@ -309,7 +309,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #endregion
 
         #region Common map objects
-        protected DoorWindow MakeObjWoodenDoor()
+        protected static DoorWindow MakeObjWoodenDoor() //@@MP - made static (Release 5-7)
         {
             return new DoorWindow("wooden door", GameImages.OBJ_WOODEN_DOOR_CLOSED, GameImages.OBJ_WOODEN_DOOR_OPEN, GameImages.OBJ_WOODEN_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS)
             {
@@ -317,7 +317,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected DoorWindow MakeObjHospitalDoor()
+        protected static DoorWindow MakeObjHospitalDoor() //@@MP - made static (Release 5-7)
         {
             return new DoorWindow("door", GameImages.OBJ_HOSPITAL_DOOR_CLOSED, GameImages.OBJ_HOSPITAL_DOOR_OPEN, GameImages.OBJ_HOSPITAL_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS)
             {
@@ -325,7 +325,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected DoorWindow MakeObjCharDoor()
+        protected static DoorWindow MakeObjCharDoor() //@@MP - made static (Release 5-7)
         {
             return new DoorWindow("CHAR door", GameImages.OBJ_CHAR_DOOR_CLOSED, GameImages.OBJ_CHAR_DOOR_OPEN, GameImages.OBJ_CHAR_DOOR_BROKEN, 4 * DoorWindow.BASE_HITPOINTS)
             {
@@ -333,7 +333,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected DoorWindow MakeObjGlassDoor()
+        protected static DoorWindow MakeObjGlassDoor() //@@MP - made static (Release 5-7)
         {
             return new DoorWindow("glass door", GameImages.OBJ_GLASS_DOOR_CLOSED, GameImages.OBJ_GLASS_DOOR_OPEN, GameImages.OBJ_GLASS_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS / 4)
             {
@@ -342,7 +342,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected DoorWindow MakeObjIronDoor()
+        protected static DoorWindow MakeObjIronDoor() //@@MP - made static (Release 5-7)
         {
             return new DoorWindow("iron door", GameImages.OBJ_IRON_DOOR_CLOSED, GameImages.OBJ_IRON_DOOR_OPEN, GameImages.OBJ_IRON_DOOR_BROKEN, 8 * DoorWindow.BASE_HITPOINTS)
             {
@@ -351,7 +351,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjLockedDoor(string doorImageID) //@@MP (Release 4)
+        protected static MapObject MakeObjLockedDoor(string doorImageID) //@@MP (Release 4), made static (Release 5-7)
         {
             return new MapObject("locked door", doorImageID)
             {
@@ -359,7 +359,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected DoorWindow MakeObjRollerDoor() //@@MP (Release 4)
+        protected static DoorWindow MakeObjRollerDoor() //@@MP (Release 4), made static (Release 5-7)
         {
             return new DoorWindow("roller door", GameImages.OBJ_ROLLER_DOOR_CLOSED, GameImages.OBJ_ROLLER_DOOR_OPEN, GameImages.OBJ_ROLLER_DOOR_BROKEN, 6 * DoorWindow.BASE_HITPOINTS)
             {
@@ -367,7 +367,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected DoorWindow MakeObjWindow()
+        protected static DoorWindow MakeObjWindow() //@@MP - made static (Release 5-7)
         {
             // windows as transparent doors.
             return new DoorWindow("window", GameImages.OBJ_WINDOW_CLOSED, GameImages.OBJ_WINDOW_OPEN, GameImages.OBJ_WINDOW_BROKEN, DoorWindow.BASE_HITPOINTS / 4)
@@ -379,7 +379,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjFence(string fenceImageID)
+        protected static MapObject MakeObjFence(string fenceImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("chain wire fence", fenceImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 10) //@@MP - appended 'chain wire' for clarity (Release 5-4)
             {
@@ -391,7 +391,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjIronFence(string fenceImageID)
+        protected static MapObject MakeObjIronFence(string fenceImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("iron fence", fenceImageID)
             {
@@ -403,7 +403,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjIronGate(string gateImageID)
+        protected static MapObject MakeObjIronGate(string gateImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("iron gate", gateImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 20)
             {
@@ -433,7 +433,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjTree(string treeImageID)
+        protected static MapObject MakeObjTree(string treeImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("tree", treeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 20)
             {
@@ -449,7 +449,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// </summary>
         /// <param name="roller"></param>
         /// <returns></returns>
-        protected MapObject MakeObjWreckedCar(DiceRoller roller)
+        protected static MapObject MakeObjWreckedCar(DiceRoller roller) //@@MP - made static (Release 5-7)
         {
             return MakeObjWreckedCar(CARS[roller.Roll(0, CARS.Length)]);
         }
@@ -459,7 +459,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// </summary>
         /// <param name="carImageID"></param>
         /// <returns></returns>
-        protected MapObject MakeObjWreckedCar(string carImageID)
+        protected static MapObject MakeObjWreckedCar(string carImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("wrecked car", carImageID)
             {
@@ -473,7 +473,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjShelf(string shelfImageID)
+        protected static MapObject MakeObjShelf(string shelfImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("shelf", shelfImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
@@ -484,7 +484,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjBench(string benchImageID)
+        protected static MapObject MakeObjBench(string benchImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("bench", benchImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
@@ -495,7 +495,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjIronBench(string benchImageID)
+        protected static MapObject MakeObjIronBench(string benchImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("iron bench", benchImageID)
             {
@@ -507,7 +507,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjBed(string bedImageID)
+        protected static MapObject MakeObjBed(string bedImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("bed", bedImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
@@ -521,7 +521,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjWardrobe(string wardrobeImageID)
+        protected static MapObject MakeObjWardrobe(string wardrobeImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("wardrobe", wardrobeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
@@ -533,7 +533,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjDrawer(string drawerImageID)
+        protected static MapObject MakeObjDrawer(string drawerImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("drawer", drawerImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
@@ -546,7 +546,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjTable(string tableImageID)
+        protected static MapObject MakeObjTable(string tableImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("table", tableImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
@@ -558,7 +558,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjChair(string chairImageID)
+        protected static MapObject MakeObjChair(string chairImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("chair", chairImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 3)
             {
@@ -570,7 +570,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjNightTable(string nightTableImageID)
+        protected static MapObject MakeObjNightTable(string nightTableImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("night table", nightTableImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 3)
             {
@@ -582,7 +582,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjFridge(string fridgeImageID)
+        protected static MapObject MakeObjFridge(string fridgeImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("fridge", fridgeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 6)
             {
@@ -593,7 +593,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjJunk(string junkImageID)
+        protected static MapObject MakeObjJunk(string junkImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("junk", junkImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
@@ -606,7 +606,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjBarrels(string barrelsImageID)
+        protected static MapObject MakeObjBarrels(string barrelsImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("barrels", barrelsImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
@@ -620,7 +620,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected PowerGenerator MakeObjPowerGenerator(string offImageID, string onImageID)
+        protected static PowerGenerator MakeObjPowerGenerator(string offImageID, string onImageID) //@@MP - made static (Release 5-7)
         {
             return new PowerGenerator("power generator", offImageID, onImageID)
             {
@@ -634,12 +634,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         }
 
         //@@MP (Release 3)
-        protected MapObject MakeObjCHARvat(string vatImageID)
+        protected static MapObject MakeObjCHARvat(string vatImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("CHAR vat", vatImageID);
         }
 
-        protected MapObject MakeObjCHARdesktop(string CHARdesktopImageID)
+        protected static MapObject MakeObjCHARdesktop(string CHARdesktopImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("CHAR desktop", CHARdesktopImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
@@ -650,7 +650,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjHouseDrawers(string houseDrawersImageID)
+        protected static MapObject MakeObjHouseDrawers(string houseDrawersImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("drawers", houseDrawersImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
@@ -662,7 +662,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjHouseShelves(string houseShelvesImageID)
+        protected static MapObject MakeObjHouseShelves(string houseShelvesImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("shelves", houseShelvesImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
@@ -674,7 +674,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjPiano(string pianoImageID)
+        protected static MapObject MakeObjPiano(string pianoImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("piano", pianoImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
@@ -687,7 +687,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjPottedPlant(string pottedPlantImageID)
+        protected static MapObject MakeObjPottedPlant(string pottedPlantImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("potted plant", pottedPlantImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 6)
             {
@@ -698,7 +698,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjTelevision(string televisionImageID)
+        protected static MapObject MakeObjTelevision(string televisionImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("television", televisionImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 3)
             {
@@ -709,7 +709,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjStandingLamp(string standingLampImageID)
+        protected static MapObject MakeObjStandingLamp(string standingLampImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("standing lamp", standingLampImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 6)
             {
@@ -720,7 +720,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjStoveOven(string stoveOvenImageID)
+        protected static MapObject MakeObjStoveOven(string stoveOvenImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("stove oven", stoveOvenImageID)
             {
@@ -730,7 +730,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjKitchenSink(string kitchenSinkImageID)
+        protected static MapObject MakeObjKitchenSink(string kitchenSinkImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("sink", kitchenSinkImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
@@ -741,7 +741,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjBookshelves(string bookshelvesImageID)
+        protected static MapObject MakeObjBookshelves(string bookshelvesImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("bookshelves", bookshelvesImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
@@ -753,7 +753,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjCouch(string couchImageID)
+        protected static MapObject MakeObjCouch(string couchImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("couch", couchImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
@@ -765,7 +765,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjKitchenCounter(string kitchenCounterImageID)
+        protected static MapObject MakeObjKitchenCounter(string kitchenCounterImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("counter", kitchenCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
@@ -776,7 +776,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjBarCounter(string barCounterImageID) //@@MP (Release 5-3)
+        protected static MapObject MakeObjBarCounter(string barCounterImageID) //@@MP (Release 5-3), made static (Release 5-7)
         {
             return new MapObject("counter", barCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
@@ -786,7 +786,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjCashRegister(string cashRegisterImageID)
+        protected static MapObject MakeObjCashRegister(string cashRegisterImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("cash register", cashRegisterImageID)
             {
@@ -798,7 +798,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         }
 
         //@@MP (Release 4)
-        public MapObject MakeObjTombstone(string tombstoneImageID)
+        public static MapObject MakeObjTombstone(string tombstoneImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("tombstone", tombstoneImageID)
             {
@@ -808,7 +808,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjWorkbench(string workbenchImageID)
+        protected static MapObject MakeObjWorkbench(string workbenchImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("workbench", workbenchImageID)
             {
@@ -816,7 +816,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjBankSafe(string banksafeImageID)
+        protected static MapObject MakeObjBankSafe(string banksafeImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("bank safe", banksafeImageID)
             {
@@ -825,7 +825,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjBankTeller(string banktellerImageID)
+        protected static MapObject MakeObjBankTeller(string banktellerImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("bank teller", banktellerImageID)
             {
@@ -833,7 +833,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjBerryBush(string berrybushImageID)
+        protected static MapObject MakeObjBerryBush(string berrybushImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("berry bush", berrybushImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS / 20)
             {
@@ -842,7 +842,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjReceptionDesk(string receptiondeskImageID)
+        protected static MapObject MakeObjReceptionDesk(string receptiondeskImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("reception desk", receptiondeskImageID)
             {
@@ -853,7 +853,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjMachinery(string machineryImageID)
+        protected static MapObject MakeObjMachinery(string machineryImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("machinery", machineryImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
@@ -862,7 +862,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected MapObject MakeObjCurtain(string curtainImageID)
+        protected static MapObject MakeObjCurtain(string curtainImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("curtain", curtainImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS / 6)
             {
@@ -874,7 +874,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #endregion
 
         #region Common tile decorations
-        public void DecorateOutsideWalls(Map map, Rectangle rect, Func<int, int, string> decoFn)
+        public static void DecorateOutsideWalls(Map map, Rectangle rect, Func<int, int, string> decoFn) //@@MP - made static (Release 5-7)
         {
             for (int x = rect.Left; x < rect.Right; x++)
                 for (int y = rect.Top; y < rect.Bottom; y++)
@@ -1126,7 +1126,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 2: paintModel = m_Game.GameItems.SPRAY_PAINT3; break;
                 case 3: paintModel = m_Game.GameItems.SPRAY_PAINT4; break;
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
 
             return new ItemSprayPaint(paintModel);
@@ -1302,7 +1302,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 4: alcoholType = m_Game.GameItems.ALCOHOL_LIQUOR_AMBER; quantity = 3; break;
                 case 5: alcoholType = m_Game.GameItems.ALCOHOL_LIQUOR_CLEAR; quantity = 3; break;
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
 
             return new ItemMedicine(alcoholType)
@@ -1361,7 +1361,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #endregion
 
         #region Common tasks
-        protected void BarricadeDoors(Map map, Rectangle rect, int barricadeLevel)
+        protected static void BarricadeDoors(Map map, Rectangle rect, int barricadeLevel) //@@MP - made static (Release 5-7)
         {
             barricadeLevel = Math.Min(Rules.BARRICADING_MAX, barricadeLevel);
 
@@ -1377,7 +1377,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #endregion
 
         #region Zones
-        protected Zone MakeUniqueZone(string basename, Rectangle rect)
+        protected static Zone MakeUniqueZone(string basename, Rectangle rect) //@@MP - made static (Release 5-7)
         {
             string name = String.Format("{0}@{1}-{2}", basename, rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
             return new Zone(name, rect);

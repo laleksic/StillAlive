@@ -27,7 +27,7 @@ namespace djack.RogueSurvivor.Engine.Actions
         #region ActorAction
         public override bool IsLegal()
         {
-            return m_Game.Rules.CanActorRepairFortification(m_Actor, m_Fort, out m_FailReason);
+            return m_Game.Rules.CanActorRepairFortification(m_Actor, out m_FailReason); //@@MP - unused parameter (Release 5-7)
         }
 
         public override void Perform()

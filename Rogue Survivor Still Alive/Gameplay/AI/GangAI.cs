@@ -65,7 +65,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
             HashSet<Point> FOV = m_LOSSensor.FOV;
-            List<Percept> mapPercepts = FilterSameMap(game, percepts);
+            List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
             // 1. Follow order
             #region
@@ -114,11 +114,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // get data.
             List<Percept> allEnemies = FilterEnemies(game, mapPercepts);
-            List<Percept> currentEnemies = FilterCurrent(game, allEnemies);
+            List<Percept> currentEnemies = FilterCurrent(allEnemies); //@@MP - unused parameter (Release 5-7)
             bool hasCurrentEnemies = currentEnemies != null;
             bool hasAnyEnemies = allEnemies != null;
             bool checkOurLeader = m_Actor.HasLeader && !DontFollowLeader;
-            bool seeLeader = checkOurLeader && FOV.Contains(m_Actor.Leader.Location.Position);
+            //bool seeLeader = checkOurLeader && FOV.Contains(m_Actor.Leader.Location.Position); //@@MP - unused (Release 5-7)
             bool isLeaderFighting = checkOurLeader && IsAdjacentToEnemy(game, m_Actor.Leader);
             bool isCourageous = !game.Rules.IsActorTired(m_Actor);
 
@@ -134,7 +134,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return runFromFires;
             }
 
-            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
+            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(mapPercepts)); //@@MP - unused parameter (Release 5-7)
             if (runFromExplosives != null)
             {
                 m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
@@ -215,7 +215,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
                 // fight or flee.
-                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, seeLeader, isLeaderFighting, ActorCourage.COURAGEOUS, FIGHT_EMOTES);
+                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, isLeaderFighting, ActorCourage.COURAGEOUS, FIGHT_EMOTES); //@@MP - unused parameter (Release 5-7)
                 if (fightOrFlee != null)
                 {
                     return fightOrFlee;
@@ -223,7 +223,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 4 use medecine
+            // 4 use medicine
             #region
             ActorAction useMedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
             if (useMedAction != null)
@@ -270,7 +270,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
                 if (game.Rules.IsActorStarving(m_Actor) || game.Rules.IsActorInsane(m_Actor))
                 {
-                    eatAction = BehaviorGoEatCorpse(game, FilterCorpses(game, mapPercepts));
+                    eatAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
                     if (eatAction != null)
                     {
                         m_Actor.Activity = Activity.IDLE;
@@ -358,7 +358,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (!hasCurrentEnemies)
             {
                 Map map = m_Actor.Location.Map;
-                List<Percept> stacks = FilterOut(game, FilterStacks(game, mapPercepts),
+                List<Percept> stacks = FilterOut(FilterStacks(mapPercepts), //@@MP - unused parameter (Release 5-7)
                     (p) => (p.Turn != map.LocalTime.TurnCounter) || IsOccupiedByOther(map, p.Location.Position));
                 if (stacks != null)
                 {
@@ -377,8 +377,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (!hasCurrentEnemies)
             {
-                Map map = m_Actor.Location.Map;
-                List<Percept> mayStealFrom = FilterActors(game, FilterCurrent(game, mapPercepts),
+                //Map map = m_Actor.Location.Map; //@@MP - unused (Release 5-7)
+                List<Percept> mayStealFrom = FilterActors(FilterCurrent(mapPercepts), //@@MP - unused parameter (Release 5-7)
                     (a) =>
                     {
                         if (a.Inventory == null || a.Inventory.CountItems == 0 || IsFriendOf(game, a))

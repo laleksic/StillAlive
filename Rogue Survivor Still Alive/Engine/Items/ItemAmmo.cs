@@ -25,10 +25,10 @@ namespace djack.RogueSurvivor.Engine.Items
         public ItemAmmo(ItemModel model)
             : base(model)
         {
-            if (!(model is ItemAmmoModel))
+            ItemAmmoModel m = model as ItemAmmoModel;
+            if (m == null)
                 throw new ArgumentException("model is not a AmmoModel");
 
-            ItemAmmoModel m = model as ItemAmmoModel;
             m_AmmoType = m.AmmoType;
             this.Quantity = m.MaxQuantity;
         }

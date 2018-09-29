@@ -49,8 +49,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
-            HashSet<Point> fov = m_LOSSensor.FOV;
-            List<Percept> mapPercepts = FilterSameMap(game, percepts);
+            //HashSet<Point> fov = m_LOSSensor.FOV; //@@MP - unused (Release 5-7)
+            List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
             //////////////////////////////////////////////////////////////
             // 0 run away from fires or alert sleeping friends //@@MP (Release 5-2)).
@@ -123,7 +123,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (enemies != null)
             {
-                ActorAction ff = BehaviorFightOrFlee(game, enemies, isLeaderVisible, isLeaderFighting, Directives.Courage, FIGHT_EMOTES);
+                ActorAction ff = BehaviorFightOrFlee(game, enemies, isLeaderFighting, Directives.Courage, FIGHT_EMOTES); //@@MP - unused parameter (Release 5-7)
                 if (ff != null)
                 {
                     m_Actor.IsRunning = true; // always run!
@@ -136,7 +136,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.IsAlmostHungry(m_Actor))
             {
-                List<Percept> itemsStack = FilterStacks(game, mapPercepts);
+                List<Percept> itemsStack = FilterStacks(mapPercepts); //@@MP - unused parameter (Release 5-7)
                 if (itemsStack != null)
                 {
                     ActorAction eatFood = BehaviorGoEatFoodOnGround(game, itemsStack);
@@ -154,7 +154,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.IsActorHungry(m_Actor))
             {
-                List<Percept> corpses = FilterCorpses(game, mapPercepts);
+                List<Percept> corpses = FilterCorpses(mapPercepts); //@@MP - unused parameter (Release 5-7)
                 if (corpses != null)
                 {
                     ActorAction eatCorpses = BehaviorGoEatCorpse(game, corpses);

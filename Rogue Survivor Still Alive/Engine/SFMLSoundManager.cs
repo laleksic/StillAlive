@@ -42,29 +42,36 @@ namespace djack.RogueSurvivor.Engine
             m_Volume = 100;
         }
 
-        string FullName(string fileName)
+        static string FullName(string fileName) //@@MP - made static (Release 5-7)
         {
             return fileName + ".ogg";
         }
         #endregion
 
         #region Loading sound
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public bool Load(string soundname, string filename)
         {
             filename = FullName(filename);
             Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("loading sound {0} file {1}", soundname, filename));
+            SoundBuffer buffer = null; //@@MP - try/finally ensures that the buffer is always closed (Release 5-7)
             try
             {
                 //SFMLSound sound = new SFMLSound(filename);
-                SoundBuffer buffer = new SoundBuffer(filename); //@@MP - SFML:Sound buffers rather than streams from the drive like Music (Release 5-3)
+                buffer = new SoundBuffer(filename); //@@MP - SFML:Sound buffers rather than streams from the drive like Music (Release 5-3)
                 SFMLSound sound = new SFMLSound(buffer);
                 m_Sounds.Add(soundname, sound);
             }
             catch (Exception e)
             {
                 Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("failed to load sound file {0} exception {1}.", filename, e.ToString()));
+                throw;
             }
-
+            finally
+            {
+                /*if (buffer != null)
+                    buffer.Dispose);*/
+            }
 
             return true;
         }
@@ -200,7 +207,7 @@ namespace djack.RogueSurvivor.Engine
                 return false;
         }
 
-        void Stop(SFMLSound audio)
+        static void Stop(SFMLSound audio) //@@MP - made static (Release 5-7)
         {
             audio.Stop();
         }
@@ -212,22 +219,22 @@ namespace djack.RogueSurvivor.Engine
             audio.Play();
         }
 
-        void Resume(SFMLSound audio)
+        static void Resume(SFMLSound audio) //@@MP - made static (Release 5-7)
         {
             audio.Play();
         }
 
-        bool IsPlaying(SFMLSound audio)
+        static bool IsPlaying(SFMLSound audio) //@@MP - made static (Release 5-7)
         {
             return audio.Status == SoundStatus.Playing;
         }
 
-        bool IsPaused(SFMLSound audio)
+        static bool IsPaused(SFMLSound audio) //@@MP - made static (Release 5-7)
         {
             return audio.Status == SoundStatus.Paused;
         }
 
-        bool HasEnded(SFMLSound audio)
+        static bool HasEnded(SFMLSound audio) //@@MP - made static (Release 5-7)
         {
             return audio.Status == SoundStatus.Stopped;// || audio.PlayingOffset >= audio.Duration; //@@MP - Duration is a SFML:Music property only (Release 5-3)
         }

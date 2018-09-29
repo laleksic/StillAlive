@@ -32,10 +32,9 @@ namespace djack.RogueSurvivor.Engine.Items
         public ItemRangedWeapon(ItemModel model)
             : base(model)
         {
-            if(!(model is ItemRangedWeaponModel))
-                throw new ArgumentException("model is not RangedWeaponModel");
-
             ItemRangedWeaponModel m = model as ItemRangedWeaponModel;
+            if (m == null)
+                throw new ArgumentException("model is not RangedWeaponModel");
 
             m_Ammo = m.MaxAmmo;
             m_AmmoType = m.AmmoType;

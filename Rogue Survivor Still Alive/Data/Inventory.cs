@@ -89,7 +89,7 @@ namespace djack.RogueSurvivor.Data
         public Inventory(int maxCapacity)
         {
             if (maxCapacity < 0)
-                throw new ArgumentOutOfRangeException("maxCapacity < 0");
+                throw new ArgumentOutOfRangeException("maxCapacity","maxCapacity < 0");
 
             m_MaxCapacity = maxCapacity;
             //m_Items = new List<Item>(maxCapacity);
@@ -120,7 +120,7 @@ namespace djack.RogueSurvivor.Data
                 {
                     int canStackOther = other.Model.StackingLimit - other.Quantity;
                     int stackOther = Math.Min(canStackOther, quantityLeft);
-                    AddToStack(it, stackOther, other);
+                    AddToStack(stackOther, other); //@@MP - unused parameter (Release 5-7)
                     quantityLeft -= stackOther;
                     if (quantityLeft <= 0)
                         break;
@@ -160,7 +160,7 @@ namespace djack.RogueSurvivor.Data
                 quantityAdded = 0;
                 foreach (Item other in stackList)
                 {
-                    int added = AddToStack(it, it.Quantity - quantityAdded, other);
+                    int added = AddToStack(it.Quantity - quantityAdded, other); //@@MP - unused parameter (Release 5-7)
                     quantityAdded += added;
                 }
                 // If quantity left, try to add rest in free slot.
@@ -282,12 +282,12 @@ namespace djack.RogueSurvivor.Data
                 m_Items.Remove(it);
         }
 
-        int AddToStack(Item from, int addThis, Item to)
+        static int AddToStack(int addThis, Item toStack) //@@MP - unused parameter, renamed parameter, made static (Release 5-7)
         {
             int added = 0;
-            while (addThis > 0 && to.Quantity < to.Model.StackingLimit)
+            while (addThis > 0 && toStack.Quantity < toStack.Model.StackingLimit)
             {
-                ++to.Quantity;
+                ++toStack.Quantity;
                 ++added;
                 --addThis;
             }

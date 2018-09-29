@@ -66,7 +66,7 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="line">if not null, the method adds the points forming the segment, source position included.</param>
         /// <param name="fn"></param>
         /// <returns></returns>
-        public static bool AsymetricBresenhamTrace(int maxSteps, Map map, int xFrom, int yFrom, int xTo, int yTo, List<Point> line, Func<int, int, bool> fn)
+        public static bool AsymetricBresenhamTrace(int maxSteps, int xFrom, int yFrom, int xTo, int yTo, List<Point> line, Func<int, int, bool> fn) //@@MP - unused parameter (Release 5-7)
         {
             // From Roguebasin
             // http://roguebasin.roguelikedevelopment.org/index.php?title=Bresenham%27s_Line_Algorithm
@@ -158,27 +158,26 @@ namespace djack.RogueSurvivor.Engine
         }
 #endif
 
-        public static bool AsymetricBresenhamTrace(Map map, int xFrom, int yFrom, int xTo, int yTo, List<Point> line, Func<int, int, bool> fn)
+        public static bool AsymetricBresenhamTrace(int xFrom, int yFrom, int xTo, int yTo, List<Point> line, Func<int, int, bool> fn) //@@MP - unused parameter (Release 5-7)
         {
-            return AsymetricBresenhamTrace(Int32.MaxValue, map, xFrom, yFrom, xTo, yTo, line, fn);
+            return AsymetricBresenhamTrace(Int32.MaxValue, xFrom, yFrom, xTo, yTo, line, fn);
         }
 
-        public static Direction DirectionTo(Map map, int xFrom, int yFrom, int xTo, int yTo)
+        public static Direction DirectionTo(int xFrom, int yFrom, int xTo, int yTo) //@@MP - unused parameter (Release 5-7)
         {
             List<Point> line = new List<Point>();
-            AsymetricBresenhamTrace(1, map, xFrom, yFrom, xTo, yTo, line,
+            AsymetricBresenhamTrace(1, xFrom, yFrom, xTo, yTo, line,
                 (x, y) => true);
 
             return Direction.FromVector(line[0]);
         }
 
-        public static bool CanTraceViewLine(Location fromLocation, Point toPosition, int maxRange)
+        public static bool CanTraceViewLine(Location fromLocation, Point toPosition, int maxRange) //@@MP - unused parameter (Release 5-7)
         {
             Map map = fromLocation.Map;
             Point goal = toPosition;
 
             return AsymetricBresenhamTrace(maxRange,
-                map,
                 fromLocation.Position.X, fromLocation.Position.Y,
                 toPosition.X, toPosition.Y,
                 null,
@@ -203,7 +202,7 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="maxRange"></param>
         /// <param name="line">if not null will contains the entire fire line, even if obstructed.</param>
         /// <returns>true if fire line is clear.</returns>
-        public static bool CanTraceFireLine(Location fromLocation, Point toPosition, int maxRange, List<Point> line)
+        public static bool CanTraceFireLine(Location fromLocation, Point toPosition, int maxRange, List<Point> line) //@@MP - unused parameter (Release 5-7)
         {
             Map map = fromLocation.Map;
             Point start = fromLocation.Position;
@@ -211,7 +210,6 @@ namespace djack.RogueSurvivor.Engine
             bool fireLineClear = true;
 
             AsymetricBresenhamTrace(maxRange,
-                map,
                 fromLocation.Position.X, fromLocation.Position.Y,
                 toPosition.X, toPosition.Y,
                 line,
@@ -226,7 +224,7 @@ namespace djack.RogueSurvivor.Engine
             return fireLineClear;
         }
 
-        public static bool CanTraceThrowLine(Location fromLocation, Point toPosition, int maxRange, List<Point> line)
+        public static bool CanTraceThrowLine(Location fromLocation, Point toPosition, int maxRange, List<Point> line) //@@MP - unused parameter (Release 5-7)
         {
             Map map = fromLocation.Map;
             Point start = fromLocation.Position;
@@ -235,7 +233,6 @@ namespace djack.RogueSurvivor.Engine
 
             // check line.
             AsymetricBresenhamTrace(maxRange,
-                map,
                 fromLocation.Position.X, fromLocation.Position.Y,
                 toPosition.X, toPosition.Y,
                 line,
@@ -257,7 +254,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Computing FOV
-        static bool FOVSub(Location fromLocation, Point toPosition, int maxRange, ref HashSet<Point> visibleSet)
+        static bool FOVSub(Location fromLocation, Point toPosition, int maxRange, ref HashSet<Point> visibleSet) //@@MP - unused parameter (Release 5-7)
         {
 #if false
             return CanTraceViewLine(fromLocation, toPosition, maxRange);
@@ -271,7 +268,6 @@ namespace djack.RogueSurvivor.Engine
             Point goal = toPosition;
 
             return AsymetricBresenhamTrace(maxRange,
-                map,
                 fromLocation.Position.X, fromLocation.Position.Y,
                 toPosition.X, toPosition.Y,
                 null,

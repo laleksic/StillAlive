@@ -52,7 +52,7 @@ namespace djack.RogueSurvivor.Data
         public World(int size)
         {
             if (size <= 0)
-                throw new ArgumentOutOfRangeException("size <=0");
+                throw new ArgumentOutOfRangeException("size","size <=0");
 
             m_DistrictsGrid = new District[size, size];
             m_Size = size;

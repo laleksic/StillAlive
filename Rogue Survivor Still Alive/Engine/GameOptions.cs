@@ -18,7 +18,7 @@ namespace djack.RogueSurvivor.Engine
             UI_MUSIC_VOLUME,
             UI_SFXS, //@@MP (Release 2)
             UI_SFXS_VOLUME, //@@MP (Release 2)
-            UI_SHOW_PLAYER_TAG_ON_MINIMAP,
+            //UI_SHOW_PLAYER_TAG_ON_MINIMAP, //@@MP (Release 5-7)
             UI_ANIM_DELAY,
             UI_SHOW_MINIMAP,
             UI_SHOW_CORPSES,
@@ -47,16 +47,16 @@ namespace djack.RogueSurvivor.Engine
             GAME_STARVED_ZOMBIFICATION_CHANCE,
             GAME_SANITY, //@@MP (Release 1)
             GAME_MAX_REINCARNATIONS,
-            GAME_REINCARNATE_AS_RAT,
-            GAME_REINCARNATE_TO_SEWERS,
-            GAME_REINC_LIVING_RESTRICTED,
+            //GAME_REINCARNATE_AS_RAT, //@@MP (Release 5-7)
+            //GAME_REINCARNATE_TO_SEWERS, //@@MP (Release 5-7)
+            //GAME_REINC_LIVING_RESTRICTED, //@@MP (Release 5-7)
             GAME_PERMADEATH,
             GAME_DEATH_SCREENSHOT,
             GAME_AGGRESSIVE_HUNGRY_CIVILIANS,
             GAME_NATGUARD_FACTOR,
             GAME_SUPPLIESDROP_FACTOR,
             GAME_UNDEADS_UPGRADE_DAYS,
-            GAME_RATS_UPGRADE,
+            //GAME_RATS_UPGRADE, //@@MP (Release 5-7)
             GAME_SKELETONS_UPGRADE,
             GAME_SHAMBLERS_UPGRADE,
             GAME_VTG_ANTIVIRAL_PILLS //@@MP (Release 5-2)
@@ -147,7 +147,7 @@ namespace djack.RogueSurvivor.Engine
         float m_cachedSimRatioFloat;
         bool m_SimulateWhenSleeping;
         bool m_SimThread;
-        bool m_ShowPlayerTagsOnMinimap;
+        //bool m_ShowPlayerTagsOnMinimap; //@@MP (Release 5-7)
         int m_SpawnSkeletonChance;
         int m_SpawnZombieChance;
         int m_SpawnZombieMasterChance;
@@ -159,11 +159,11 @@ namespace djack.RogueSurvivor.Engine
         int m_DayZeroUndeadsPercent;
         int m_ZombieInvasionDailyIncrease;
         int m_StarvedZombificationChance;
-        bool m_Sanity;  //@@MP (Release 1)
+        bool m_Sanity; //@@MP (Release 1)
         int m_MaxReincarnations;
-        bool m_CanReincarnateAsRat;
-        bool m_CanReincarnateToSewers;
-        bool m_IsLivingReincRestricted;
+        //bool m_CanReincarnateAsRat; //@@MP (Release 5-7)
+        //bool m_CanReincarnateToSewers; //@@MP (Release 5-7)
+        //bool m_IsLivingReincRestricted; //@@MP (Release 5-7)
         bool m_Permadeath;
         bool m_DeathScreenshot;
         bool m_AggressiveHungryCivilians;
@@ -172,7 +172,7 @@ namespace djack.RogueSurvivor.Engine
         bool m_ShowTargets;
         bool m_ShowPlayerTargets;
         ZupDays m_ZupDays;
-        bool m_RatsUpgrade;
+        //bool m_RatsUpgrade;//@@MP (Release 5-7)
         bool m_SkeletonsUpgrade;
         bool m_ShamblersUpgrade;
         bool m_VTGAntiviralPills; //@@MP (Release 5-2)
@@ -231,11 +231,11 @@ namespace djack.RogueSurvivor.Engine
             set { m_ShowCorpses = value; }
         }
 
-        public bool ShowPlayerTagsOnMinimap
+        /*public bool ShowPlayerTagsOnMinimap //@@MP (Release 5-7)
         {
             get { return m_ShowPlayerTagsOnMinimap; }
             set { m_ShowPlayerTagsOnMinimap = value; }
-        }
+        }*/
 
         public bool IsAnimDelayOn
         {
@@ -463,23 +463,23 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        public bool CanReincarnateAsRat
+        /*public bool CanReincarnateAsRat //@@MP (Release 5-7)
         {
             get { return m_CanReincarnateAsRat; }
             set { m_CanReincarnateAsRat = value; }
-        }
+        }*/
 
-        public bool CanReincarnateToSewers
+        /*public bool CanReincarnateToSewers //@@MP (Release 5-7)
         {
             get { return m_CanReincarnateToSewers; }
             set { m_CanReincarnateToSewers = value; }
-        }
+        }*/
 
-        public bool IsLivingReincRestricted
+        /*public bool IsLivingReincRestricted //@@MP (Release 5-7)
         {
             get { return m_IsLivingReincRestricted; }
             set { m_IsLivingReincRestricted = value; }
-        }
+        }*/
 
         public bool IsPermadeathOn
         {
@@ -539,11 +539,11 @@ namespace djack.RogueSurvivor.Engine
             set { m_ZupDays = value; }
         }
 
-        public bool RatsUpgrade
+        /*public bool RatsUpgrade //@@MP - rats upgrade disabled (Release 5-7)
         {
             get { return m_RatsUpgrade; }
             set { m_RatsUpgrade = value; }
-        }
+        }*/
 
         public bool SkeletonsUpgrade
         {
@@ -577,11 +577,11 @@ namespace djack.RogueSurvivor.Engine
             m_MaxDogs = DEFAULT_MAX_DOGS;
             m_PlayMusic = true;
             m_MusicVolume = 100;
-            m_PlaySFXs = true;//@@MP (Release 2)
-            m_SFXVolume = 100;//@@MP (Release 2)
+            m_PlaySFXs = true; //@@MP (Release 2)
+            m_SFXVolume = 100; //@@MP (Release 2)
             m_AnimDelay = true;
             m_ShowMinimap = true;
-            m_ShowPlayerTagsOnMinimap = true;
+            //m_ShowPlayerTagsOnMinimap = true; //@@MP (Release 5-7)
             m_EnabledAdvisor = true;
             m_CombatAssistant = false;
             this.SimulateDistricts = DEFAULT_SIM_DISTRICTS;
@@ -601,10 +601,9 @@ namespace djack.RogueSurvivor.Engine
             m_MaxReincarnations = DEFAULT_MAX_REINCARNATIONS;
             m_Sanity = true;
             m_ShowCorpses = true;
-            m_CanReincarnateAsRat = false;
-            m_CanReincarnateToSewers = false;
-            m_IsLivingReincRestricted = false;
-            m_Permadeath = false;
+            //m_CanReincarnateAsRat = false; //@@MP (Release 5-7)
+            //m_CanReincarnateToSewers = false; //@@MP (Release 5-7)
+            //m_IsLivingReincRestricted = false; //@@MP (Release 5-7)
             m_DeathScreenshot = true;
             m_AggressiveHungryCivilians = true;
             m_NatGuardFactor = DEFAULT_NATGUARD_FACTOR;
@@ -612,14 +611,19 @@ namespace djack.RogueSurvivor.Engine
             m_ShowTargets = true;
             m_ShowPlayerTargets = true;
             m_ZupDays = DEFAULT_ZOMBIFIEDS_UPGRADE_DAYS;
-            m_RatsUpgrade = false;
+            //m_RatsUpgrade = false; //@@MP (Release 5-7)
             m_SkeletonsUpgrade = false;
             m_ShamblersUpgrade = false;
             m_VTGAntiviralPills = true; //@@MP (Release 5-2)
+#if DEBUG
+            m_Permadeath = true; //@@MP - enabled by default (Release 5-7)
+#else
+            m_Permadeath = false; //@@MP - for playtesting (Release 5-7)
+#endif
         }
-        #endregion
+#endregion
 
-        #region Helpers
+#region Helpers
         public static string Name(IDs option)
         {
             switch (option)
@@ -628,20 +632,20 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_ALLOW_UNDEADS_EVOLUTION:          return "(Undead) Allow Undeads Evolution (non-VTG)";
                 case IDs.GAME_CITY_SIZE:                        return "   (Map) City Size";
                 case IDs.GAME_DAY_ZERO_UNDEADS_PERCENT:         return "(Undead) Day 0 Undeads";
-                case IDs.GAME_DEATH_SCREENSHOT:                 return " (Death) Death Screenshot";
+                case IDs.GAME_DEATH_SCREENSHOT:                 return " (Death) Screenshot on Death";
                 case IDs.GAME_DISTRICT_SIZE:                    return "   (Map) District Map Size";
-                case IDs.GAME_MAX_CIVILIANS:                    return "(Living) Max Civilians";
-                case IDs.GAME_MAX_DOGS:                         return "(Living) Max Dogs";
-                case IDs.GAME_MAX_REINCARNATIONS:               return " (Reinc) Max Reincarnations";
-                case IDs.GAME_MAX_UNDEADS:                      return "(Undead) Max Undeads";
+                case IDs.GAME_MAX_CIVILIANS:                    return "(Living) Maximum Civilians Cap";
+                case IDs.GAME_MAX_DOGS:                         return "(Living) Maximum Dogs Cap";
+                case IDs.GAME_MAX_REINCARNATIONS:               return " (Reinc) Maximum Reincarnations Cap";
+                case IDs.GAME_MAX_UNDEADS:                      return "(Undead) Maximum Undeads Cap";
                 case IDs.GAME_NATGUARD_FACTOR:                  return " (Event) National Guard";
                 case IDs.GAME_NPC_CAN_STARVE_TO_DEATH:          return "(Living) NPCs can Starve to Death";
                 case IDs.GAME_PERMADEATH:                       return " (Death) Permadeath";
-                case IDs.GAME_RATS_UPGRADE:                     return "(Undead) Rats Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
+                //case IDs.GAME_RATS_UPGRADE:                     return "(Undead) Rats Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2), removed (Release 5-6)
                 case IDs.GAME_REVEAL_STARTING_DISTRICT:         return "   (Map) Reveal Starting District";
-                case IDs.GAME_REINC_LIVING_RESTRICTED:          return " (Reinc) Civilians-only Reinc.";
-                case IDs.GAME_REINCARNATE_AS_RAT:               return " (Reinc) Can Reincarnate as Rat (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
-                case IDs.GAME_REINCARNATE_TO_SEWERS:            return " (Reinc) Can Reincarnate to Sewers";
+                //case IDs.GAME_REINC_LIVING_RESTRICTED:          return " (Reinc) Civilians-only Reincarnation"; //@@MP (Release 5-7)
+                //case IDs.GAME_REINCARNATE_AS_RAT:               return " (Reinc) Can Reincarnate as Rat (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2), removed (Release 5-6)
+                //case IDs.GAME_REINCARNATE_TO_SEWERS:            return " (Reinc) Can Reincarnate to Sewers"; //@@MP (Release 5-7)
                 case IDs.GAME_SANITY:                           return "(Living) Sanity Loss"; //@@MP (Release 1)
                 case IDs.GAME_SHAMBLERS_UPGRADE:                return "(Undead) Shamblers Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
                 case IDs.GAME_SKELETONS_UPGRADE:                return "(Undead) Skeletons Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
@@ -663,7 +667,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.UI_SFXS:                               return "   (Sfx) Sound Effects"; //@@MP (Release 2)
                 case IDs.UI_SFXS_VOLUME:                        return "   (Sfx) Sound Effects Volume"; //@@MP (Release 2)
                 case IDs.UI_SHOW_MINIMAP:                       return "   (Gfx) Show Minimap";
-                case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:         return "   (Gfx) Show Tags on Minimap";
+                //case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:         return "   (Gfx) Show Tags on Minimap"; //@@MP (Release 5-7)
                 case IDs.UI_SHOW_CORPSES:                       return "   (Gfx) Show Corpses in STD Game Mode";
                 case IDs.UI_ADVISOR:                            return "  (Help) Enable Advisor";
                 case IDs.UI_COMBAT_ASSISTANT:                   return "  (Help) Combat Assistant";
@@ -671,7 +675,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.UI_SHOW_PLAYER_TARGETS:                return "  (Help) Always Show Player Targets";
 
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled option");
+                    throw new ArgumentOutOfRangeException("option","unhandled option");
             }
         }
 
@@ -686,7 +690,7 @@ namespace djack.RogueSurvivor.Engine
                 case ReincMode.KILLER: return "Your Killer";
                 case ReincMode.ZOMBIFIED: return "Your Zombie Self";
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled ReincMode");
+                    throw new ArgumentOutOfRangeException("mode","unhandled ReincMode");
             }
         }
 
@@ -702,7 +706,7 @@ namespace djack.RogueSurvivor.Engine
                 case SimRatio.THREE_QUARTER: return "75%";
                 case SimRatio.FULL: return "FULL";
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled simRatio");
+                    throw new ArgumentOutOfRangeException("ratio","unhandled simRatio");
             }
 
         }
@@ -719,7 +723,7 @@ namespace djack.RogueSurvivor.Engine
                 case SimRatio.THREE_QUARTER: return 3f / 4f;
                 case SimRatio.FULL: return 1f;
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled simRatio");
+                    throw new ArgumentOutOfRangeException("ratio","unhandled simRatio");
             }
         }
 
@@ -736,7 +740,7 @@ namespace djack.RogueSurvivor.Engine
                 case ZupDays.SIX: return "6 d";
                 case ZupDays.SEVEN: return "7 d";
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled zupDays");
+                    throw new ArgumentOutOfRangeException("d","unhandled zupDays");
             }
         }
 
@@ -757,7 +761,7 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        public string DescribeValue(GameMode mode, IDs option)
+        public string DescribeValue(IDs option)//, GameMode mode) //@@MP - unused parameter (Release 5-7)
         {
             switch (option)
             {
@@ -789,18 +793,18 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_NPC_CAN_STARVE_TO_DEATH:
                     return NPCCanStarveToDeath ? "YES   (default YES)" : "NO    (default YES)";
                 case IDs.GAME_PERMADEATH:
-                    return IsPermadeathOn ? "YES   (default NO)" : "NO    (default NO)";
-                case IDs.GAME_RATS_UPGRADE:
-                    /*if (mode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                        return "---";
-                    else*/
-                    return RatsUpgrade ? "YES   (default NO)" : "NO    (default NO)";
-                case IDs.GAME_REINC_LIVING_RESTRICTED:
-                    return IsLivingReincRestricted ? "YES   (default NO)" : "NO    (default NO)";
-                case IDs.GAME_REINCARNATE_AS_RAT:
-                    return CanReincarnateAsRat ? "YES   (default NO)" : "NO    (default NO)";
-                case IDs.GAME_REINCARNATE_TO_SEWERS:
-                    return CanReincarnateToSewers ? "YES   (default NO)" : "NO    (default NO)";
+                    return IsPermadeathOn ? "YES   (default YES)" : "NO    (default YES)";
+                //case IDs.GAME_RATS_UPGRADE:
+                /*if (mode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
+                    return "---";
+                else*/
+                    //return RatsUpgrade ? "YES   (default NO)" : "NO    (default NO)"; //@@MP (Release 5-7)
+                /*case IDs.GAME_REINC_LIVING_RESTRICTED:  //@@MP (Release 5-7)
+                    return IsLivingReincRestricted ? "YES   (default NO)" : "NO    (default NO)";*/
+                /*case IDs.GAME_REINCARNATE_AS_RAT:
+                    return CanReincarnateAsRat ? "YES   (default NO)" : "NO    (default NO)";*/  //@@MP (Release 5-7)
+                /*case IDs.GAME_REINCARNATE_TO_SEWERS:
+                    return CanReincarnateToSewers ? "YES   (default NO)" : "NO    (default NO)";*/  //@@MP (Release 5-7)
                 case IDs.GAME_REVEAL_STARTING_DISTRICT:
                     return RevealStartingDistrict ? "YES   (default YES)" : "NO    (default YES)";
                 case IDs.GAME_SANITY://@@MP (Release 1)
@@ -851,8 +855,8 @@ namespace djack.RogueSurvivor.Engine
                     return IsMinimapOn ? "ON " : "OFF";
                 case IDs.UI_SHOW_CORPSES:
                     return ShowCorpses ? "ON*   (default ON)" : "OFF*  (default ON)";
-                case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:
-                    return ShowPlayerTagsOnMinimap ? "YES" : "NO ";
+                /*case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:   //@@MP (Release 5-7)
+                    return ShowPlayerTagsOnMinimap ? "YES" : "NO ";*/
                 case IDs.UI_SHOW_PLAYER_TARGETS:
                     return ShowPlayerTargets ? "ON    (default ON)" : "OFF   (default ON)";
                 case IDs.UI_SHOW_TARGETS:
@@ -861,9 +865,9 @@ namespace djack.RogueSurvivor.Engine
                     return "???";
             }
         }
-        #endregion
+#endregion
 
-        #region Saving & Loading
+#region Saving & Loading
         public static void Save(GameOptions options, string filepath)
         {
             if (filepath == null)
@@ -872,11 +876,18 @@ namespace djack.RogueSurvivor.Engine
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving options...");
 
             IFormatter formatter = CreateFormatter();
-            Stream stream = CreateStream(filepath, true);
-
-            formatter.Serialize(stream, options);
-            stream.Flush();
-            stream.Close();
+            Stream stream = null; //@@MP - try/finally ensures that the stream is always closed (Release 5-7)
+            try
+            {
+                stream = CreateStream(filepath, true);
+                formatter.Serialize(stream, options);
+                stream.Flush();
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Close();
+            }
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving options... done!");
         }
@@ -893,25 +904,29 @@ namespace djack.RogueSurvivor.Engine
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading options...");
 
             GameOptions options;
-            try
+            if (File.Exists(filepath))
             {
                 IFormatter formatter = CreateFormatter();
-                Stream stream = CreateStream(filepath, false);
-
-                options = (GameOptions)formatter.Deserialize(stream);
-                stream.Close();
+                Stream stream = null; //@@MP - try/finally ensures that the stream is always closed (Release 5-7)
+                try
+                {
+                    stream = CreateStream(filepath, false);
+                    options = (GameOptions)formatter.Deserialize(stream);
+                    stream.Flush();
+                }
+                finally
+                {
+                    if (stream != null)
+                        stream.Close();
+                }
             }
-            catch (Exception e)
+            else
             {
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load options (no custom options, probably first run?).");
-
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
-
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, "returning default values.");
                 options = new GameOptions();
                 options.ResetToDefaultValues();
             }
-
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading options... done!");
             return options;
         }
@@ -923,11 +938,18 @@ namespace djack.RogueSurvivor.Engine
 
         static Stream CreateStream(string saveFileName, bool save)
         {
-            return new FileStream(saveFileName,
+            try
+            {
+                return new FileStream(saveFileName,
                 save ? FileMode.Create : FileMode.Open,
                 save ? FileAccess.Write : FileAccess.Read,
                 FileShare.None);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                return null;
+            }
         }
-        #endregion
+#endregion
     }
 }

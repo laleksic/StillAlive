@@ -102,8 +102,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
-            HashSet<Point> fov = m_LOSSensor.FOV;
-            List<Percept> mapPercepts = FilterSameMap(game, percepts);
+            //HashSet<Point> fov = m_LOSSensor.FOV; //@@MP - unused (Release 5-7)
+            List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
             ///////////////////////////////////////////////////////////////////////
             // 1 equip weapon
@@ -129,7 +129,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (enemies != null)
                 {
                     // try visible enemies first, the closer the best.
-                    List<Percept> visibleEnemies = Filter(game, enemies, (p) => p.Turn == m_Actor.Location.Map.LocalTime.TurnCounter);
+                    List<Percept> visibleEnemies = Filter(enemies, (p) => p.Turn == m_Actor.Location.Map.LocalTime.TurnCounter); //@@MP - unused parameter (Release 5-7)
                     if (visibleEnemies != null)
                     {
                         Percept bestEnemyPercept = null;
@@ -160,7 +160,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
 
                     // then try rest, the closer the best.
-                    List<Percept> oldEnemies = Filter(game, enemies, (p) => p.Turn != m_Actor.Location.Map.LocalTime.TurnCounter);
+                    List<Percept> oldEnemies = Filter(enemies, (p) => p.Turn != m_Actor.Location.Map.LocalTime.TurnCounter); //@@MP - unused parameter (Release 5-7)
                     if (oldEnemies != null)
                     {
                         Percept bestEnemyPercept = null;

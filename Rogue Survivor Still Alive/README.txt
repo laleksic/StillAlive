@@ -1,4 +1,4 @@
-Rogue Survivor 'Staying Alive' is a modification of the original Rogue Survivor Alpha 9 source code from 2012, released as open source under GNU GPL v3.
+Rogue Survivor 'Staying Alive' is a modification of the original Rogue Survivor Alpha 9a source code from 2012, released as open source under GNU GPL v3.
 
 You can find your saves, screenshots, and graveyard files in \My Documents\Rogue Survivor\ (aka \Libraries\Documents\)
 

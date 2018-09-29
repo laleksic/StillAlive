@@ -17,10 +17,13 @@ namespace djack.RogueSurvivor.Engine.Items
         public ItemSprayScent(ItemModel model)
             : base(model)
         {
-            if (!(model is ItemSprayScentModel))
+            ItemSprayScentModel itemModel = model as ItemSprayScentModel;
+            //if (!(model is ItemSprayScentModel))
+            if (itemModel == null)
                 throw new ArgumentException("model is not a ItemScentSprayModel");
 
-            this.SprayQuantity = (model as ItemSprayScentModel).MaxSprayQuantity;
+            //this.SprayQuantity = (model as ItemSprayScentModel).MaxSprayQuantity;
+            this.SprayQuantity = itemModel.MaxSprayQuantity;
         }
         #endregion
     }

@@ -9,14 +9,15 @@ namespace djack.RogueSurvivor
     public static class SetupConfig
     {
         //public const string GAME_VERSION = "Still Alive";
-        public static string GAME_VERSION = "Still Alive " + System.Windows.Forms.Application.ProductVersion + " "; //@@MP remember to update the Assembly info (Release 1)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible")]
+        public static string GAME_VERSION = "Still Alive " + System.Windows.Forms.Application.ProductVersion; //@@MP remember to update the Assembly info (Release 1)
 
         public enum eVideo
         {
             VIDEO_INVALID,
             VIDEO_MANAGED_DIRECTX,
             VIDEO_GDI_PLUS,
-            _COUNT
+            COUNT //@@MP - removed underscore for CLS compliance (Release 5-7)
         }
 
         public enum eSound
@@ -25,7 +26,7 @@ namespace djack.RogueSurvivor
             SOUND_MANAGED_DIRECTX,
             SOUND_SFML,
             SOUND_NOSOUND,
-            _COUNT
+            COUNT //@@MP - removed underscore for CLS compliance (Release 5-7)
         }
 
         public enum eWindow //@@MP (Release 5-5)
@@ -33,7 +34,7 @@ namespace djack.RogueSurvivor
             WINDOW_INVALID,
             WINDOW_FULLSCREEN,
             WINDOW_WINDOWED,
-            _COUNT
+            COUNT //@@MP - removed underscore for CLS compliance (Release 5-7)
         }
 
         public static eVideo Video { get; set; }
@@ -62,9 +63,9 @@ namespace djack.RogueSurvivor
         {
             using (StreamWriter sw = File.CreateText(FilePath))
             {
-                sw.WriteLine(toString(SetupConfig.Video));
-                sw.WriteLine(toString(SetupConfig.Sound));
-                sw.WriteLine(toString(SetupConfig.Window)); //@@MP (Release 5-5)
+                sw.WriteLine(SetupConfig.Video.ToString());
+                sw.WriteLine(SetupConfig.Sound.ToString());
+                sw.WriteLine(SetupConfig.Window.ToString()); //@@MP (Release 5-5)
             }
         }
 
@@ -90,21 +91,6 @@ namespace djack.RogueSurvivor
 
                 Save();
             }
-        }
-
-        public static string toString(eVideo v)
-        {
-            return v.ToString();
-        }
-
-        public static string toString(eSound s)
-        {
-            return s.ToString();
-        }
-
-        public static string toString(eWindow w) //@@MP (Release 5-5)
-        {
-            return w.ToString();
         }
 
         public static eVideo toVideo(string s)

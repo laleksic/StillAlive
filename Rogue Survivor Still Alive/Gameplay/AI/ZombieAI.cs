@@ -63,8 +63,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
-            HashSet<Point> fov = (m_MemLOSSensor.Sensor as LOSSensor).FOV;
-            List<Percept> mapPercepts = FilterSameMap(game, percepts);
+            //HashSet<Point> fov = (m_MemLOSSensor.Sensor as LOSSensor).FOV; //@@MP - unused (Release 5-7)
+            List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
             //////////////////////////////////////////////////////////////
             // 0 run away from primed explosives (and fires //@@MP (Release 5-2)).
@@ -98,7 +98,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return runFromFires;
                 }
 
-                ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
+                ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(mapPercepts)); //@@MP - unused parameter (Release 5-7)
                 if (runFromExplosives != null)
                 {
                     m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
@@ -113,7 +113,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (enemies != null)
             {
                 // try visible enemies first, the closer the best.
-                List<Percept> visibleEnemies = Filter(game, enemies, (p) => p.Turn == m_Actor.Location.Map.LocalTime.TurnCounter);
+                List<Percept> visibleEnemies = Filter(enemies, (p) => p.Turn == m_Actor.Location.Map.LocalTime.TurnCounter); //@@MP - unused parameter (Release 5-7)
                 if (visibleEnemies != null)
                 {
                     Percept bestEnemyPercept = null;
@@ -144,7 +144,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
 
                 // then try rest, the closer the best.
-                List<Percept> oldEnemies = Filter(game, enemies, (p) => p.Turn != m_Actor.Location.Map.LocalTime.TurnCounter);
+                List<Percept> oldEnemies = Filter(enemies, (p) => p.Turn != m_Actor.Location.Map.LocalTime.TurnCounter); //@@MP - unused parameter (Release 5-7)
                 if (oldEnemies != null)
                 {
                     Percept bestEnemyPercept = null;
@@ -177,7 +177,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endregion
 
             // 2 eat corpses.
-            List<Percept> corpses = FilterCorpses(game, mapPercepts);
+            List<Percept> corpses = FilterCorpses(mapPercepts); //@@MP - unused parameter (Release 5-7)
             if (corpses != null)
             {
                 ActorAction eatCorpses = BehaviorGoEatCorpse(game, corpses);
@@ -208,7 +208,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (!m_Actor.Model.Abilities.IsUndeadMaster)
             {
-                Percept nearestMaster = FilterNearest(game, FilterActors(game, mapPercepts, (a) => a.Model.Abilities.IsUndeadMaster));
+                Percept nearestMaster = FilterNearest(game, FilterActors(mapPercepts, (a) => a.Model.Abilities.IsUndeadMaster)); //@@MP - unused parameter (Release 5-7)
                 if (nearestMaster != null)
                 {
                     ActorAction bumpAction = BehaviorStupidBumpToward(game, RandomPositionNear(game.Rules, m_Actor.Location.Map, nearestMaster.Location.Position, 3));

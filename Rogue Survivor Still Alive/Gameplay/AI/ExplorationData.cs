@@ -23,9 +23,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
         public ExplorationData(int locationsToRemember, int zonesToRemember)
         {
             if (locationsToRemember < 1)
-                throw new ArgumentOutOfRangeException("locationsQueueSize < 1");
+                throw new ArgumentOutOfRangeException("locationsToRemember","locationsQueueSize < 1");
             if (zonesToRemember < 1)
-                throw new ArgumentOutOfRangeException("zonesQueueSize < 1");
+                throw new ArgumentOutOfRangeException("zonesToRemember","zonesQueueSize < 1");
 
             m_LocationsQueueSize = locationsToRemember;
             m_LocationsQueue = new Queue<Location>(locationsToRemember);

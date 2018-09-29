@@ -16,7 +16,7 @@ namespace djack.RogueSurvivor.UI
     public partial class GDIPlusGameCanvas : UserControl, IGameCanvas
     {
         #region Types
-        public interface IGfx
+        interface IGfx //@@MP - removed public (Release 5-7)
         {
             void Draw(Graphics g);
         }
@@ -93,7 +93,6 @@ namespace djack.RogueSurvivor.UI
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.Opaque | ControlStyles.EnableNotifyMessage, true);
         }
         #endregion
-
 
         #region UserControl
         protected override void OnCreateControl()
@@ -225,7 +224,7 @@ namespace djack.RogueSurvivor.UI
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="color">not used in GDI implementation</param>
-        public void AddImage(Image img, int x, int y, Color color)
+        public void AddImage(Image img, int x, int y, Color tint)
         {
             AddImage(img, x, y);
         }
@@ -335,7 +334,7 @@ namespace djack.RogueSurvivor.UI
             catch (Exception e)
             {
                 Logger.WriteLine(Logger.Stage.RUN_GFX, String.Format("exception when taking screenshot : {0}", e.ToString()));
-                return null;
+                throw; //return null;
             }
             Logger.WriteLine(Logger.Stage.RUN_GFX, "taking screenshot... done!");
             return filePath + ".png";   // Image.Save automatically adds .png
@@ -349,6 +348,7 @@ namespace djack.RogueSurvivor.UI
         public void DisposeUnmanagedResources()
         {
             // nothing to do.
+            DisposeGDI(); //@@MP (Release 5-7)
         }        
         #endregion
 
@@ -372,7 +372,7 @@ namespace djack.RogueSurvivor.UI
             }
         }
 
-        class GfxImageTransform : IGfx
+        class GfxImageTransform : IGfx, IDisposable
         {
             readonly Image m_Img;
             readonly Matrix m_Matrix;
@@ -398,9 +398,15 @@ namespace djack.RogueSurvivor.UI
                 g.DrawImageUnscaled(m_Img, m_X, m_Y);
                 g.Transform = prevMatrix;
             }
-        }
 
-        class GfxTransparentImage : IGfx
+            void IDisposable.Dispose()
+            {
+                if (m_Matrix != null)
+                    m_Matrix.Dispose();
+            }   
+    }
+
+        class GfxTransparentImage : IGfx, IDisposable
         {
             readonly Image m_Img;
             readonly int m_X;
@@ -432,6 +438,12 @@ namespace djack.RogueSurvivor.UI
             {
                 g.DrawImage(m_Img, new Rectangle(m_X, m_Y, m_Img.Width, m_Img.Height), 0, 0, m_Img.Width, m_Img.Height, GraphicsUnit.Pixel, m_ImgAttributes);
             }
+
+            void IDisposable.Dispose()
+            {
+                if (m_ImgAttributes != null)
+                    m_ImgAttributes.Dispose();
+            }
         }
 
         class GfxLine : IGfx
@@ -455,7 +467,7 @@ namespace djack.RogueSurvivor.UI
             }
         }
 
-        class GfxString : IGfx
+        class GfxString : IGfx, IDisposable
         {
             readonly Color m_Color;
             readonly Font m_Font;
@@ -477,6 +489,12 @@ namespace djack.RogueSurvivor.UI
             public void Draw(Graphics g)
             {
                 g.DrawString(m_Text, m_Font, m_Brush, m_X, m_Y);
+            }
+
+            void IDisposable.Dispose()
+            {
+                if (m_Brush != null)
+                    m_Brush.Dispose();
             }
         }
 
@@ -512,6 +530,29 @@ namespace djack.RogueSurvivor.UI
             {
                 g.DrawRectangle(m_Pen, m_Rect);
             }
+        }
+        #endregion
+
+        #region Disposing
+        void DisposeGDI()
+        {
+            Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing...");
+
+            if (m_MinimapBitmap != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing minimap bitmap...");
+                m_MinimapBitmap.Dispose();
+                m_MinimapBitmap = null;
+            }
+
+            if (m_RenderImage != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing render image...");
+                m_RenderImage.Dispose();
+                m_RenderImage = null;
+            }
+
+            Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing done.");
         }
         #endregion
     }

@@ -116,7 +116,7 @@ namespace djack.RogueSurvivor.Data
 
         /// <summary>
         /// A law enforcer can attack murderers that are not law enforces with impunity.
-        /// AIs will make use of this.
+        /// AIs will make use of this .
         /// </summary>
         public bool IsLawEnforcer { get; set; }
 

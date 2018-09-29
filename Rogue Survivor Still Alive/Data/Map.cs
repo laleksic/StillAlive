@@ -229,11 +229,11 @@ namespace djack.RogueSurvivor.Data
         public Map(int seed, string name, int width, int height)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException("name","null name");
             if (width <= 0)
-                throw new ArgumentOutOfRangeException("width <=0");
+                throw new ArgumentOutOfRangeException("width","width <=0");
             if (height <= 0)
-                throw new ArgumentOutOfRangeException("height <=0");
+                throw new ArgumentOutOfRangeException("height","height <=0");
 
             m_Seed = seed;
             m_Name = name;
@@ -326,9 +326,9 @@ namespace djack.RogueSurvivor.Data
         public void SetTileModelAt(int x, int y, TileModel model)
         {
             if (!IsInBounds(x, y))
-                throw new ArgumentOutOfRangeException("position out of map bounds");
+                throw new InvalidOperationException("position out of map bounds");
             if (model == null)
-                throw new ArgumentNullException("model");
+                throw new ArgumentNullException("model", "null model");
 
             m_Tiles[x, y].Model = model;
         }
@@ -551,7 +551,7 @@ namespace djack.RogueSurvivor.Data
             if (other != null)
                 throw new InvalidOperationException("another actor already at position");
             if (!IsInBounds(position.X, position.Y))
-                throw new ArgumentOutOfRangeException("position out of map bounds");
+                throw new ArgumentOutOfRangeException("position","position out of map bounds");
 
             if (HasActor(actor))
             {
@@ -618,7 +618,7 @@ namespace djack.RogueSurvivor.Data
         public void PlaceMapObjectAt(MapObject mapObj, Point position)
         {
             if (mapObj == null)
-                throw new ArgumentNullException("actor");
+                throw new ArgumentNullException("mapObj","actor");
             MapObject other = GetMapObjectAt(position);
             if (other == mapObj)
                 return;
@@ -627,7 +627,7 @@ namespace djack.RogueSurvivor.Data
             if (other != null)
                 throw new InvalidOperationException("another mapObject already at position");
             if (!IsInBounds(position.X, position.Y))
-                throw new ArgumentOutOfRangeException("position out of map bounds");
+                throw new ArgumentOutOfRangeException("position","position out of map bounds");
             if (!GetTileAt(position.X, position.Y).Model.IsWalkable)
                 throw new InvalidOperationException("cannot place map objects on unwalkable tiles");
 
@@ -685,9 +685,9 @@ namespace djack.RogueSurvivor.Data
         public void DropItemAt(Item it, Point position)
         {
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it","item");
             if (!IsInBounds(position))
-                throw new ArgumentOutOfRangeException("position out of map bounds");
+                throw new ArgumentOutOfRangeException("position","position out of map bounds");
 
             Inventory invThere = GetItemsAt(position);
             if (invThere == null)
@@ -731,9 +731,9 @@ namespace djack.RogueSurvivor.Data
         public void RemoveItemAt(Item it, Point position)
         {
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it","item");
             if (!IsInBounds(position))
-                throw new ArgumentOutOfRangeException("position out of map bounds");
+                throw new ArgumentOutOfRangeException("position","position out of map bounds");
 
             Inventory invThere = GetItemsAt(position);
             if (invThere == null)
@@ -1281,9 +1281,9 @@ namespace djack.RogueSurvivor.Data
                 if (!IsInBounds(next))
                     continue;
 
-                MapObject mapObj = GetMapObjectAt(next);
+                MapObject mapObj = GetMapObjectAt(position);
                 DoorWindow door = mapObj as DoorWindow;
-                if (door != null)
+                if (door != null)// && mapObj is DoorWindow) //@@MP - redundancy fixed (Release 5-7)
                 {
                     if (door.IsClosed)
                         return true;
@@ -1296,10 +1296,10 @@ namespace djack.RogueSurvivor.Data
         }
 
         /// <summary>
-        /// Determine if the closest door in any direction (clockwise from N) is closed. True = yes
+        /// Determine if the closest iron gate in any direction (clockwise from N) is closed. True = yes
         /// </summary>
         /// <param name="direction">8 ways: N,NE,SE,E,SW,etc</param>
-        public bool IsClosestIronGateClosed(Point position) //@@MP - initially created to check the cell door of the Prisoner Who's Not Named (Release 5-1)
+        public bool IsClosestIronGateClosed(Point position) //@@MP - initially created to check the cell door of the Prisoner Who's Not Named (Release 5-6)
         {
             Point next;
             foreach (Direction d in Direction.COMPASS)
@@ -1440,6 +1440,9 @@ namespace djack.RogueSurvivor.Data
 
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            if (info == null) //@@MP (Release 5-7)
+                throw new ArgumentNullException("info","null info");
+
             //////////////////
             // Primary Fields
             //////////////////

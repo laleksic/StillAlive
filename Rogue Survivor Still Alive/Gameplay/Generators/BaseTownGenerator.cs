@@ -66,7 +66,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_MapWidth; }
                 set
                 {
-                    if (value <= 0 || value > RogueGame.MAP_MAX_WIDTH) throw new ArgumentOutOfRangeException("MapWidth");
+                    if (value <= 0 || value > RogueGame.MAP_MAX_WIDTH) throw new InvalidOperationException("invalid MapWidth");
                     m_MapWidth = value;
                 }
             }
@@ -76,7 +76,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_MapHeight; }
                 set
                 {
-                    if (value <= 0 || value > RogueGame.MAP_MAX_WIDTH) throw new ArgumentOutOfRangeException("MapHeight");
+                    if (value <= 0 || value > RogueGame.MAP_MAX_WIDTH) throw new InvalidOperationException("invalid MapHeight");
                     m_MapHeight = value;
                 }
             }
@@ -86,7 +86,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_MinBlockSize; }
                 set
                 {
-                    if (value < 4 || value > 32) throw new ArgumentOutOfRangeException("MinBlockSize must be [4..32]");
+                    if (value < 4 || value > 32) throw new InvalidOperationException("invalid MinBlockSize must be [4..32]");
                     m_MinBlockSize = value;
                 }
             }
@@ -96,7 +96,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_WreckedCarChance; }
                 set
                 {
-                    if (value < 0 || value > 100) throw new ArgumentOutOfRangeException("WreckedCarChance must be [0..100]");
+                    if (value < 0 || value > 100) throw new InvalidOperationException("WreckedCarChance must be [0..100]");
                     m_WreckedCarChance = value;
                 }
             }
@@ -106,7 +106,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_ShopBuildingChance; }
                 set
                 {
-                    if (value < 0 || value > 100) throw new ArgumentOutOfRangeException("ShopBuildingChance must be [0..100]");
+                    if (value < 0 || value > 100) throw new InvalidOperationException("ShopBuildingChance must be [0..100]");
                     m_ShopBuildingChance = value;
                 }
             }
@@ -116,7 +116,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_ParkBuildingChance; }
                 set
                 {
-                    if (value < 0 || value > 100) throw new ArgumentOutOfRangeException("ParkBuildingChance must be [0..100]");
+                    if (value < 0 || value > 100) throw new InvalidOperationException("ParkBuildingChance must be [0..100]");
                     m_ParkBuildingChance = value;
  
                 }
@@ -127,7 +127,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_CHARBuildingChance; }
                 set
                 {
-                    if (value < 0 || value > 100) throw new ArgumentOutOfRangeException("CHARBuildingChance must be [0..100]");
+                    if (value < 0 || value > 100) throw new InvalidOperationException("CHARBuildingChance must be [0..100]");
                     m_CHARBuildingChance = value;
 
                 }
@@ -138,7 +138,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_PostersChance; }
                 set
                 {
-                    if (value < 0 || value > 100) throw new ArgumentOutOfRangeException("PostersChance must be [0..100]");
+                    if (value < 0 || value > 100) throw new InvalidOperationException("PostersChance must be [0..100]");
                     m_PostersChance = value;
 
                 }
@@ -149,7 +149,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_TagsChance; }
                 set
                 {
-                    if (value < 0 || value > 100) throw new ArgumentOutOfRangeException("TagsChance must be [0..100]");
+                    if (value < 0 || value > 100) throw new InvalidOperationException("TagsChance must be [0..100]");
                     m_TagsChance = value;
 
                 }
@@ -160,7 +160,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_ItemInShopShelfChance; }
                 set
                 {
-                    if (value < 0 || value > 100) throw new ArgumentOutOfRangeException("ItemInShopShelfChance must be [0..100]");
+                    if (value < 0 || value > 100) throw new InvalidOperationException("ItemInShopShelfChance must be [0..100]");
                     m_ItemInShopShelfChance = value;
 
                 }
@@ -172,7 +172,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 get { return m_PolicemanChance; }
                 set
                 {
-                    if (value < 0 || value > 100) throw new ArgumentOutOfRangeException("PolicemanChance must be [0..100]");
+                    if (value < 0 || value > 100) throw new InvalidOperationException("PolicemanChance must be [0..100]");
                     m_PolicemanChance = value;
 
                 }
@@ -324,7 +324,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             ///////////////////
             // Init with grass
             ///////////////////
-            base.TileFill(map, m_Game.GameTiles.FLOOR_GRASS);
+            TileFill(map, m_Game.GameTiles.FLOOR_GRASS);
 
             ///////////////
             // Cut blocks
@@ -546,7 +546,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                             fy2 = fy1;
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException("unhandled roll");
+                            throw new InvalidOperationException("unhandled roll");
                     }
 
                     // never on border.
@@ -693,7 +693,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     continue;
 
                 // must be all walls = not already assigned as a room.
-                if (!CheckForEachTile(sewers, b.BuildingRect, (pt) => !sewers.GetTileAt(pt).Model.IsWalkable))
+                if (!CheckForEachTile(b.BuildingRect, (pt) => !sewers.GetTileAt(pt).Model.IsWalkable)) //@@MP - unused parameter (Release 5-7)
                     continue;
 
                 // carve a room.
@@ -744,7 +744,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         case 1: it = MakeItemCrowbar(); break;
                         case 2: it = MakeItemSprayPaint(); break;
                         default:
-                            throw new ArgumentOutOfRangeException("unhandled roll");
+                            throw new InvalidOperationException("unhandled roll");
                     }
                     sewers.DropItemAt(it, x, y);
                 }
@@ -886,7 +886,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     else
                         toolsRoom = new Rectangle(x, y, toolsRoomWidth, toolsRoomHeight);
                     // check room rect is all walls (do not overlap with platform or other rooms)
-                    foundToolsRoom = CheckForEachTile(subway, toolsRoom, (pt) => !subway.GetTileAt(pt).Model.IsWalkable);
+                    foundToolsRoom = CheckForEachTile(toolsRoom, (pt) => !subway.GetTileAt(pt).Model.IsWalkable); //@@MP - unused parameter (Release 5-7)
                 }
                 ++toolsRoomAttempt;
             }
@@ -901,7 +901,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 subway.AddZone(MakeUniqueZone("tools room", toolsRoom));
 
                 // shelves on walls with construction items.
-                DoForEachTile(subway, toolsRoom,
+                DoForEachTile(toolsRoom, //@@MP - unused parameter (Release 5-7)
                     (pt) =>
                     {
                         if (!subway.IsWalkable(pt.X, pt.Y))
@@ -1066,14 +1066,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected virtual void MakeRoad(Map map, TileModel roadModel, Rectangle rect)
         {
-            base.TileFill(map, roadModel, rect,
+            TileFill(map, roadModel, rect,
                 (tile, prevmodel, x, y) =>
                 {
                     // don't overwrite roads!
                     if (m_Game.GameTiles.IsRoadModel(prevmodel))
                         map.SetTileModelAt(x, y, prevmodel);
                 });
-            map.AddZone(base.MakeUniqueZone("road", rect));
+            map.AddZone(MakeUniqueZone("road", rect));
         }
         #endregion
 
@@ -1081,7 +1081,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         protected virtual void PlaceDoor(Map map, int x, int y, TileModel floor, DoorWindow door)
         {
             map.SetTileModelAt(x, y, floor);
-            base.MapObjectPlace(map, x, y, door);
+            MapObjectPlace(map, x, y, door);
         }
 
         protected virtual void PlaceDoorIfNoObject(Map map, int x, int y, TileModel floor, DoorWindow door)
@@ -1142,7 +1142,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             //////////////////////////////////////
             // Add random cars (+ on fire effect)
             //////////////////////////////////////
-            base.MapObjectFill(map, rect,
+            MapObjectFill(map, rect,
                 (pt) =>
                 {
                     if (m_DiceRoller.RollChance(m_Params.WreckedCarChance))
@@ -1150,7 +1150,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         Tile tile = map.GetTileAt(pt.X, pt.Y);
                         if (!tile.IsInside && tile.Model.IsWalkable && tile.Model != m_Game.GameTiles.FLOOR_GRASS)
                         {
-                            MapObject car = base.MakeObjWreckedCar(m_DiceRoller);
+                            MapObject car = MakeObjWreckedCar(m_DiceRoller);
                             if (m_DiceRoller.RollChance(50))
                             {
                                 m_Game.ApplyOnFire(car);
@@ -1164,7 +1164,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #endregion
 
         #region Concrete buildings
-        protected bool IsThereASpecialBuilding(Map map, Rectangle rect)
+        protected static bool IsThereASpecialBuilding(Map map, Rectangle rect) //@@MP - made static (Release 5-7)
         {
             // must not be a special building.
             List<Zone> zonesUpThere = map.GetZonesAt(rect.Left, rect.Top);
@@ -1201,9 +1201,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_STONE, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_TILES, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_STONE, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_TILES, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
 
             ///////////////////////
             // 2. Decide shop type
@@ -1235,7 +1235,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
             Rectangle alleysRect = Rectangle.FromLTRB(alleysStartX, alleysStartY, alleysEndX, alleysEndY);
 
-            base.MapObjectFill(map, alleysRect,
+            MapObjectFill(map, alleysRect,
                 (pt) =>
                 {
                     bool addShelf;
@@ -1246,7 +1246,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         addShelf = ((pt.X - alleysRect.Left) % 2 == 1) && pt.Y != centralAlley;
 
                     if (addShelf)
-                        return base.MakeObjShelf(GameImages.OBJ_SHOP_SHELF);
+                        return MakeObjShelf(GameImages.OBJ_SHOP_SHELF);
                     else
                         return null;
                 });
@@ -1270,12 +1270,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     // west
                     strDoorSide = "west";
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Height >= 8) //@@MP adds up to two more doors depending on how big the shop is
                     {
-                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Height >= 12)
-                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                     //@@MP - cash register by the door. abandoned it for in a nearby corner; see section 8 (Release 3)
                     /*int intOffset = 1;
@@ -1289,12 +1289,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     // east
                     strDoorSide = "east";
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Height >= 8)
                     {
-                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Height >= 12)
-                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
             }
@@ -1306,24 +1306,24 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     // north
                     strDoorSide = "north";
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
-                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Width >= 12)
-                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
                 else
                 {
                     // south
                     strDoorSide = "south";
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
-                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Width >= 12)
-                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
             }
@@ -1366,7 +1366,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     shopName = "Liquor Store";
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled shoptype");
+                    throw new InvalidOperationException("unhandled shoptype");
             }
             DecorateOutsideWalls(map, b.BuildingRect, (x, y) => map.GetMapObjectAt(x, y) == null && CountAdjDoors(map, x, y) >= 1 ? shopImage : null);
 
@@ -1382,7 +1382,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     case 1: wx = b.BuildingRect.Left + b.BuildingRect.Width / 2; wy = b.BuildingRect.Bottom - 1; break;
                     case 2: wx = b.BuildingRect.Left; wy = b.BuildingRect.Top + b.BuildingRect.Height / 2; break;
                     case 3: wx = b.BuildingRect.Right - 1; wy = b.BuildingRect.Top + b.BuildingRect.Height / 2; break;
-                    default: throw new ArgumentOutOfRangeException("unhandled side");
+                    default: throw new InvalidOperationException("unhandled side");
                 }
                 // check it is ok to make a window there.
                 bool isGoodWindowPos = true;
@@ -1390,7 +1390,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 // do it?
                 if (isGoodWindowPos)
                 {
-                    PlaceDoor(map, wx, wy, m_Game.GameTiles.FLOOR_TILES, base.MakeObjWindow());
+                    PlaceDoor(map, wx, wy, m_Game.GameTiles.FLOOR_TILES, MakeObjWindow());
                 }
             }
 
@@ -1406,7 +1406,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // 5. Add items to shelves.
             ///////////////////////////
             #region
-            base.ItemsDrop(map, b.InsideRect,
+            ItemsDrop(map, b.InsideRect,
                 (pt) =>
                 {
                     MapObject mapObj = map.GetMapObjectAt(pt);
@@ -1441,14 +1441,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     Lighting = Lighting.DARKNESS
                 };
-                DoForEachTile(shopBasement, shopBasement.Rect, (pt) => shopBasement.GetTileAt(pt).IsInside = true);
+                DoForEachTile(shopBasement.Rect, (pt) => shopBasement.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
                 TileFill(shopBasement, m_Game.GameTiles.FLOOR_CONCRETE);
                 TileRectangle(shopBasement, m_Game.GameTiles.WALL_BRICK, shopBasement.Rect);
                 shopBasement.AddZone(MakeUniqueZone("basement", shopBasement.Rect));
 
                 // - some shelves with shop items.
                 // - some rats.
-                DoForEachTile(shopBasement, shopBasement.Rect,
+                DoForEachTile(shopBasement.Rect, //@@MP - unused parameter (Release 5-7)
                     (pt) =>
                     {
                         if (!shopBasement.IsWalkable(pt.X, pt.Y))
@@ -1603,7 +1603,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// Given two different Y coordinates along the same vertical, which has no exit on it?
         /// </summary>
         /// <returns>1=y1 only is free, 2=y2 only is free, 3=both are free</returns>
-        private int TopOrBottomCornersFree(Map map, int x, int y1, int y2) //@@MP (Release 3)
+        private static int TopOrBottomCornersFree(Map map, int x, int y1, int y2) //@@MP (Release 3)
         {
             Point cornerpt = new Point();
             int cornersFreeCode = 0;
@@ -1624,7 +1624,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// Given two different X coordinates along the same horizontal, which has no exit on it?
         /// </summary>
         /// <returns>1= x1 only is free, 2= x2 only is free, 3= both are free</returns>
-        private int LeftOrRightCornersFree(Map map, int y, int x1, int x2) //@@MP (Release 3)
+        private static int LeftOrRightCornersFree(Map map, int y, int x1, int x2) //@@MP (Release 3), made static (Release 5-7)
         {
             Point cornerpt = new Point();
             int cornersFreeCode = 0;
@@ -1653,9 +1653,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_BLUE_CARPET, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_BLUE_CARPET, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
 
             //////////////////////////////////////////
             // 2. Make sections alleys with displays.
@@ -1682,7 +1682,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
             Rectangle alleysRect = Rectangle.FromLTRB(alleysStartX, alleysStartY, alleysEndX, alleysEndY);
 
-            base.MapObjectFill(map, alleysRect,
+            MapObjectFill(map, alleysRect,
                 (pt) =>
                 {
                     bool addShelf;
@@ -1693,7 +1693,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         addShelf = ((pt.X - alleysRect.Left) % 2 == 1) && pt.Y != centralAlley;
 
                     if (addShelf)
-                        return base.MakeObjShelf(GameImages.OBJ_BOOK_SHELVES);
+                        return MakeObjShelf(GameImages.OBJ_BOOK_SHELVES);
                     else
                         return null;
                 });
@@ -1717,24 +1717,24 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     // west
                     strDoorSide = "west";
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Height >= 8) //@@MP adds up to two more doors depending on how big the shop is
                     {
-                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Height >= 12)
-                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
                 else
                 {
                     // east
                     strDoorSide = "east";
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Height >= 8)
                     {
-                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Height >= 12)
-                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
             }
@@ -1746,24 +1746,24 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     // north
                     strDoorSide = "north";
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
-                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Width >= 12)
-                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
                 else
                 {
                     // south
                     strDoorSide = "south";
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
-                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Width >= 12)
-                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
             }
@@ -1782,7 +1782,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 1: wx = b.BuildingRect.Left + b.BuildingRect.Width / 2; wy = b.BuildingRect.Bottom - 1; break;
                 case 2: wx = b.BuildingRect.Left; wy = b.BuildingRect.Top + b.BuildingRect.Height / 2; break;
                 case 3: wx = b.BuildingRect.Right - 1; wy = b.BuildingRect.Top + b.BuildingRect.Height / 2; break;
-                default: throw new ArgumentOutOfRangeException("unhandled side");
+                default: throw new InvalidOperationException("unhandled side");
             }
             // check it is ok to make a window there.
             bool isGoodWindowPos = true;
@@ -1790,7 +1790,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // do it?
             if (isGoodWindowPos)
             {
-                PlaceDoor(map, wx, wy, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjGlassDoor());
+                PlaceDoor(map, wx, wy, m_Game.GameTiles.FLOOR_BLUE_CARPET, MakeObjGlassDoor());
             }
             #endregion
 
@@ -1798,7 +1798,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // 4. Add items to shelves.
             ///////////////////////////
             #region
-            base.ItemsDrop(map, b.InsideRect,
+            ItemsDrop(map, b.InsideRect,
                 (pt) =>
                 {
                     MapObject mapObj = map.GetMapObjectAt(pt);
@@ -1929,9 +1929,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_PLANKS, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_PLANKS, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
 
             //////////////////////////////////////////
             // 2. Make rows of pews.
@@ -1958,7 +1958,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
             Rectangle alleysRect = Rectangle.FromLTRB(alleysStartX, alleysStartY, alleysEndX, alleysEndY);
 
-            base.MapObjectFill(map, alleysRect,
+            MapObjectFill(map, alleysRect,
                 (pt) =>
                 {
                     bool addShelf;
@@ -1977,7 +1977,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     }
 
                     if (addShelf && CountAdjWalls(map, pt.X, pt.Y) == 0)
-                        return base.MakeObjBench(GameImages.OBJ_CHURCH_PEW);
+                        return MakeObjBench(GameImages.OBJ_CHURCH_PEW);
                     else
                         return null;
                 });
@@ -2001,7 +2001,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 if (west)
                 {
                     // west
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjWoodenDoor());
 
                     //@@MP - lectern opposite to the door
                     Point pt = new Point(b.BuildingRect.Right - 2, midY);
@@ -2015,7 +2015,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 else
                 {
                     // east
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjWoodenDoor());
 
                     //@@MP - lectern opposite to the door
                     Point pt = new Point(b.BuildingRect.Left + 1, midY);
@@ -2034,7 +2034,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 if (north)
                 {
                     // north
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjWoodenDoor());
 
                     //@@MP - lectern opposite to the door
                     Point pt = new Point(midX, b.BuildingRect.Bottom - 2);
@@ -2048,7 +2048,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 else
                 {
                     // south
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjWoodenDoor());
 
                     //@@MP - lectern opposite to the door
                     Point pt = new Point(midX, b.BuildingRect.Top + 1);
@@ -2089,9 +2089,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_PLANKS, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_PLANKS, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
 
             ///////////////////////////////
             // 2. Entry door with shop ids
@@ -2114,7 +2114,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 case 0:
                     // west
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjWoodenDoor());
 
                     //place velvet entry rope
                     Point westropept = new Point(b.BuildingRect.Left - 1, midY);
@@ -2154,7 +2154,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 1:
                     // east
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjWoodenDoor());
 
                     //place velvet entry rope
                     Point eastropept = new Point(b.BuildingRect.Right, midY);
@@ -2194,7 +2194,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 2:
                     // north
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjWoodenDoor());
 
                     //place velvet entry rope
                     Point northropept = new Point(midX, b.BuildingRect.Top - 1);
@@ -2234,7 +2234,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 3:
                     // south
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjWoodenDoor());
 
                     //place velvet entry rope
                     Point southropept = new Point(midX, b.BuildingRect.Bottom);
@@ -2367,9 +2367,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_STONE, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_CONCRETE, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_STONE, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_CONCRETE, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
 
             ///////////////////////////////
             // 2. Entry door with shop ids
@@ -2385,9 +2385,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 case 0:
                     // west
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
-                    PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
-                    PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
 
                     //place driveway
                     Point westdrivewaypt = new Point(b.BuildingRect.Left - 1, midY);
@@ -2397,9 +2397,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 1:
                     // east
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
 
                     //place driveway
                     Point eastdrivewaypt = new Point(b.BuildingRect.Right, midY);
@@ -2409,9 +2409,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 2:
                     // north
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
-                    PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
-                    PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
+                    PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
+                    PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
 
                     //place driveway
                     Point northdrivewaypt = new Point(midX, b.BuildingRect.Top - 1);
@@ -2421,9 +2421,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 3:
                     // south
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
-                    PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
-                    PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
+                    PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
+                    PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjRollerDoor());
 
                     //place driveway
                     Point southdrivewaypt = new Point(midX, b.BuildingRect.Bottom);
@@ -2459,7 +2459,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                     Tile tile = map.GetTileAt(pt.X, pt.Y);
                                     if (tile.IsInside && tile.Model.IsWalkable)// && tile.Model != m_Game.GameTiles.WALL_STONE)
                                     {
-                                        MapObject car = base.MakeObjWreckedCar(m_DiceRoller);
+                                        MapObject car = MakeObjWreckedCar(m_DiceRoller);
                                         return car;
                                     }
                                 }
@@ -2491,9 +2491,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_STONE, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_TILES, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_STONE, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_TILES, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
 
             ///////////////////////////////
             // 2. Entry door with shop ids
@@ -2516,7 +2516,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 case 0:
                     // west
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjHospitalDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjHospitalDoor());
 
                     //place desk by the door
                     receptiondeskpt = new Point(b.BuildingRect.Left + 1, midY - 1);
@@ -2525,7 +2525,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 1:
                     // east
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjHospitalDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjHospitalDoor());
 
                     //place desk by the door
                     receptiondeskpt = new Point(b.BuildingRect.Right - 2, midY + 1);
@@ -2534,7 +2534,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 2:
                     // north
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjHospitalDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjHospitalDoor());
 
                     //place desk by the door
                     receptiondeskpt = new Point(midX - 1, b.BuildingRect.Top + 1);
@@ -2543,7 +2543,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 3:
                     // south
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjHospitalDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjHospitalDoor());
 
                     //place desk by the door
                     receptiondeskpt = new Point(midX + 1, b.BuildingRect.Bottom - 2);
@@ -2652,17 +2652,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_DIRT, b.InsideRect); //@@MP - no longer marked as IsInside (Release 5-3)
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileFill(map, m_Game.GameTiles.FLOOR_DIRT, b.InsideRect); //@@MP - no longer marked as IsInside (Release 5-3)
             //base.TileFill(map, m_Game.GameTiles.FLOOR_DIRT, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
-            base.MapObjectFill(map, b.BuildingRect,
+            MapObjectFill(map, b.BuildingRect,
                 (pt) =>
                 {
                     bool placeFence = (pt.X == b.BuildingRect.Left || pt.X == b.BuildingRect.Right - 1 || pt.Y == b.BuildingRect.Top || pt.Y == b.BuildingRect.Bottom - 1);
                     if (placeFence)
                     {
                         map.SetTileModelAt(pt.X, pt.Y, m_Game.GameTiles.FLOOR_DIRT);
-                        return base.MakeObjFence(GameImages.OBJ_FENCE); //@@MP - standard chain wire fence
+                        return MakeObjFence(GameImages.OBJ_FENCE); //@@MP - standard chain wire fence
                     }
                     else
                         return null;
@@ -2683,9 +2683,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 case 0:
                     // west
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
-                    PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
-                    PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
 
                     //place driveway
                     Point westdrivewaypt = new Point(b.BuildingRect.Left - 1, midY);
@@ -2695,9 +2695,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 1:
                     // east
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
 
                     //place driveway
                     Point eastdrivewaypt = new Point(b.BuildingRect.Right, midY);
@@ -2707,9 +2707,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 2:
                     // north
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
-                    PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
-                    PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
+                    PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
+                    PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
 
                     //place driveway
                     Point northdrivewaypt = new Point(midX, b.BuildingRect.Top - 1);
@@ -2719,9 +2719,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     break;
                 case 3:
                     // south
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
-                    PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
-                    PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
+                    PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
+                    PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_DIRT, MakeObjRollerDoor());
 
                     //place driveway
                     Point southdrivewaypt = new Point(midX, b.BuildingRect.Bottom);
@@ -2750,11 +2750,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                         MapObject thing;
                                         int rolled = m_DiceRoller.Roll(0, 99);
                                         if (rolled >= 80)
-                                            thing = base.MakeObjWreckedCar(m_DiceRoller); //20%
+                                            thing = MakeObjWreckedCar(m_DiceRoller); //20%
                                         else if (rolled >= 40 && rolled < 79)
-                                            thing = base.MakeObjJunk(GameImages.OBJ_JUNK); //40%
+                                            thing = MakeObjJunk(GameImages.OBJ_JUNK); //40%
                                         else
-                                            thing = base.MakeObjBarrels(GameImages.OBJ_BARRELS); //40%
+                                            thing = MakeObjBarrels(GameImages.OBJ_BARRELS); //40%
 
                                         return thing;
                                     }
@@ -2786,9 +2786,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_BLUE_CARPET, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_BLUE_CARPET, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
 
             ///////////////////////////////
             // 2. Entry door with shop ids
@@ -2811,7 +2811,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 case 0:
                     // west
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
 
                     //create the back room, safes and counters
                     customerarearight -= 6;
@@ -2840,12 +2840,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         if (map.IsWalkable(counterpt) && counterpt.Y != midY)
                             map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
                         else if (counterpt.Y == midY)
-                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjWoodenDoor());
+                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, MakeObjWoodenDoor());
                     }
                     break;
                 case 1:
                     // east
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
 
                     //create the back room, safes and counters
                     customerarealeft += 6;
@@ -2874,12 +2874,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         if (map.IsWalkable(counterpt) && counterpt.Y != midY)
                             map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
                         else if (counterpt.Y == midY)
-                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjWoodenDoor());
+                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, MakeObjWoodenDoor());
                     }
                     break;
                 case 2:
                     // north
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
 
                     //create the back room, safes and counters
                     customerareabottom -= 6;
@@ -2908,12 +2908,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         if (map.IsWalkable(counterpt) && counterpt.X != midX)
                             map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
                         else if (counterpt.X == midX)
-                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjWoodenDoor());
+                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, MakeObjWoodenDoor());
                     }
                     break;
                 case 3:
                     // south
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
 
                     //create the back room, safes and counters
                     customerareatop += 6;
@@ -2942,7 +2942,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         if (map.IsWalkable(counterpt) && counterpt.X != midX)
                             map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
                         else if (counterpt.X == midX)
-                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjWoodenDoor());
+                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, MakeObjWoodenDoor());
                     }
                     break;
             }
@@ -3043,9 +3043,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_OFFICE, b.InsideRect,
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_OFFICE, b.InsideRect,
                 (tile, prevmodel, x, y) =>
                 {
                     tile.IsInside = true;
@@ -3073,23 +3073,23 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 if (west)
                 {
                     // west
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Height >= 8)
                     {
-                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Height >= 12)
-                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
                 else
                 {
                     // east
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Height >= 8)
                     {
-                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Height >= 12)
-                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
             }
@@ -3100,23 +3100,23 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 if (north)
                 {
                     // north
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
-                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Width >= 12)
-                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
                 else
                 {
                     // south
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
-                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Width >= 12)
-                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
             }
@@ -3192,9 +3192,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_OFFICE, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_OFFICE, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
 
             //////////////////////////
             // 2. Decide orientation.
@@ -3219,24 +3219,24 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     doorSide = Direction.W;
                     // west
-                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Height >= 8)
                     {
-                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Height >= 12)
-                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
                 else
                 {
                     doorSide = Direction.E;
                     // east
-                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Height >= 8)
                     {
-                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Height >= 12)
-                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
             }
@@ -3248,24 +3248,24 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     doorSide = Direction.N;
                     // north
-                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
-                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Width >= 12)
-                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
                 else
                 {
                     doorSide = Direction.S;
                     // south
-                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
-                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                         if (b.InsideRect.Width >= 12)
-                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjGlassDoor());
                     }
                 }
             }
@@ -3286,19 +3286,19 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             const int hallDepth = 3;
             if (doorSide == Direction.N)
             {
-                base.TileHLine(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.InsideRect.Left, b.InsideRect.Top + hallDepth, b.InsideRect.Width);
+                TileHLine(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.InsideRect.Left, b.InsideRect.Top + hallDepth, b.InsideRect.Width);
             }
             else if (doorSide == Direction.S)
             {
-                base.TileHLine(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.InsideRect.Left, b.InsideRect.Bottom - 1 - hallDepth, b.InsideRect.Width);
+                TileHLine(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.InsideRect.Left, b.InsideRect.Bottom - 1 - hallDepth, b.InsideRect.Width);
             }
             else if (doorSide == Direction.E)
             {
-                base.TileVLine(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.InsideRect.Right - 1 - hallDepth, b.InsideRect.Top, b.InsideRect.Height);
+                TileVLine(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.InsideRect.Right - 1 - hallDepth, b.InsideRect.Top, b.InsideRect.Height);
             }
             else if (doorSide == Direction.W)
             {
-                base.TileVLine(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.InsideRect.Left + hallDepth, b.InsideRect.Top, b.InsideRect.Height);
+                TileVLine(map, m_Game.GameTiles.WALL_CHAR_OFFICE, b.InsideRect.Left + hallDepth, b.InsideRect.Top, b.InsideRect.Height);
             }
             else
                 throw new InvalidOperationException("unhandled door side");
@@ -3333,8 +3333,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             else
                 throw new InvalidOperationException("unhandled door side");
 
-            base.TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, corridorRect);
-            PlaceDoor(map, corridorDoor.X, corridorDoor.Y, m_Game.GameTiles.FLOOR_OFFICE, base.MakeObjCharDoor());
+            TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, corridorRect);
+            PlaceDoor(map, corridorDoor.X, corridorDoor.Y, m_Game.GameTiles.FLOOR_OFFICE, MakeObjCharDoor());
             #endregion
 
             /////////////////////////
@@ -3374,12 +3374,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             foreach (Rectangle roomRect in officesOne)
             {
-                base.TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, roomRect);
+                TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, roomRect);
                 map.AddZone(MakeUniqueZone("Office room", roomRect));
             }
             foreach (Rectangle roomRect in officesTwo)
             {
-                base.TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, roomRect);
+                TileRectangle(map, m_Game.GameTiles.WALL_CHAR_OFFICE, roomRect);
                 map.AddZone(MakeUniqueZone("Office room", roomRect));
             }
 
@@ -3387,22 +3387,22 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 if (horizontalCorridor)
                 {
-                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Bottom - 1, m_Game.GameTiles.FLOOR_OFFICE, base.MakeObjCharDoor());
+                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Bottom - 1, m_Game.GameTiles.FLOOR_OFFICE, MakeObjCharDoor());
                 }
                 else
                 {
-                    PlaceDoor(map, roomRect.Right - 1, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_OFFICE, base.MakeObjCharDoor());
+                    PlaceDoor(map, roomRect.Right - 1, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_OFFICE, MakeObjCharDoor());
                 }
             }
             foreach (Rectangle roomRect in officesTwo)
             {
                 if (horizontalCorridor)
                 {
-                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Top, m_Game.GameTiles.FLOOR_OFFICE, base.MakeObjCharDoor());
+                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Top, m_Game.GameTiles.FLOOR_OFFICE, MakeObjCharDoor());
                 }
                 else
                 {
-                    PlaceDoor(map, roomRect.Left, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_OFFICE, base.MakeObjCharDoor());
+                    PlaceDoor(map, roomRect.Left, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_OFFICE, MakeObjCharDoor());
                 }
             }
 
@@ -3411,7 +3411,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 // table.
                 Point tablePos = new Point(roomRect.Left + roomRect.Width / 2, roomRect.Top + roomRect.Height / 2);
-                map.PlaceMapObjectAt(base.MakeObjTable(GameImages.OBJ_CHAR_TABLE), tablePos);
+                map.PlaceMapObjectAt(MakeObjTable(GameImages.OBJ_CHAR_TABLE), tablePos);
 
                 // try to put a computer and chair in the room
                 int nbChairs = 1;
@@ -3444,7 +3444,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // drop goodies in rooms.
             foreach (Rectangle roomRect in allOffices)
             {
-                base.ItemsDrop(map, roomRect,
+                ItemsDrop(map, roomRect,
                     (pt) =>
                     {
                         Tile tile = map.GetTileAt(pt.X, pt.Y);
@@ -3462,7 +3462,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             ///////////
             // 8. Zone
             ///////////
-            Zone zone = base.MakeUniqueZone("CHAR Office", b.BuildingRect);
+            Zone zone = MakeUniqueZone("CHAR Office", b.BuildingRect);
             zone.SetGameAttribute<bool>(ZoneAttributes.IS_CHAR_OFFICE, true);
             map.AddZone(zone);
             MakeWalkwayZones(map, b);
@@ -3482,18 +3482,18 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Grass, walkway & fence
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_GRASS, b.InsideRect);
-            base.MapObjectFill(map, b.BuildingRect,
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileFill(map, m_Game.GameTiles.FLOOR_GRASS, b.InsideRect);
+            MapObjectFill(map, b.BuildingRect,
                 (pt) =>
                 {
                     bool placeFence = (pt.X == b.BuildingRect.Left || pt.X == b.BuildingRect.Right - 1 || pt.Y == b.BuildingRect.Top || pt.Y == b.BuildingRect.Bottom - 1);
                     if (placeFence)
                     {
                         if (!isgraveyard) //@@MP (Release 4)
-                            return base.MakeObjFence(GameImages.OBJ_FENCE); //@@MP - standard chain wire fence
+                            return MakeObjFence(GameImages.OBJ_FENCE); //@@MP - standard chain wire fence
                         else
-                            return base.MakeObjIronFence(GameImages.OBJ_GRAVEYARD_FENCE); //@@MP - corrected to an iron fence (Release 5-4)
+                            return MakeObjIronFence(GameImages.OBJ_GRAVEYARD_FENCE); //@@MP - corrected to an iron fence (Release 5-4)
                     }
                     else
                         return null;
@@ -3504,7 +3504,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             ///////////////////////////////
             if (isgraveyard) //@@MP - added the chance to become a graveyard (Release 4)
             {
-                base.MapObjectFill(map, b.InsideRect,
+                MapObjectFill(map, b.InsideRect,
                 (pt) =>
                 {
                     bool placeGraveOrTree = m_DiceRoller.RollChance(PARK_GRAVE_OR_TREE_CHANCE); //@@MP - use the original tree chance, but within that a higher chance to be a grave instead
@@ -3513,16 +3513,16 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         int placeObject = m_DiceRoller.Roll(0, 10);
                         switch (placeObject)
                         {
-                            case 0: return base.MakeObjTree(GameImages.OBJ_TREE); //10%
+                            case 0: return MakeObjTree(GameImages.OBJ_TREE); //10%
                             case 1:
                             case 2:
                             case 3:
                             case 4:
                             case 5:
-                            case 6: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE); //@@MP - took the duplicates out of 1 to 5 and let them fall through (Release 5-3)
+                            case 6: return MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE); //@@MP - took the duplicates out of 1 to 5 and let them fall through (Release 5-3)
                             case 7:
                             case 8:
-                            case 9: return base.MakeObjTombstone(GameImages.OBJ_CROSS_TOMBSTONE); //@@MP - took the duplicates out of 7 & 8 and let them fall through (Release 5-3)
+                            case 9: return MakeObjTombstone(GameImages.OBJ_CROSS_TOMBSTONE); //@@MP - took the duplicates out of 7 & 8 and let them fall through (Release 5-3)
                             default:
                                 return null;
                         }
@@ -3533,28 +3533,28 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
             else //trees
             {
-                base.MapObjectFill(map, b.InsideRect,
+                MapObjectFill(map, b.InsideRect,
                 (pt) =>
                 {
                     bool placeTree = m_DiceRoller.RollChance(PARK_TREE_CHANCE);
                     if (placeTree)
-                        return base.MakeObjTree(GameImages.OBJ_TREE);
+                        return MakeObjTree(GameImages.OBJ_TREE);
                     else if (m_DiceRoller.RollChance(PARK_ITEM_CHANCE)) //@@MP (Release 4)
                     {
                         map.DropItemAt(MakeItemWildBerries(), pt); //@@MP (Release 5-3)
-                        return base.MakeObjBerryBush(GameImages.OBJ_BERRY_BUSH);
+                        return MakeObjBerryBush(GameImages.OBJ_BERRY_BUSH);
                     }
                     else
                         return null;
                 });
             }
 
-            base.MapObjectFill(map, b.InsideRect,
+            MapObjectFill(map, b.InsideRect,
                 (pt) =>
                 {
                     bool placeBench = m_DiceRoller.RollChance(PARK_BENCH_CHANCE);
                     if (placeBench)
-                        return base.MakeObjBench(GameImages.OBJ_BENCH);
+                        return MakeObjBench(GameImages.OBJ_BENCH);
                     else
                         return null;
                 });
@@ -3591,7 +3591,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             ////////////
             if (!isgraveyard) //@@MP - only add stuff to parks
             {
-                base.ItemsDrop(map, b.InsideRect,
+                ItemsDrop(map, b.InsideRect,
                 (pt) => map.GetMapObjectAt(pt) == null && m_DiceRoller.RollChance(PARK_ITEM_CHANCE),
                 (pt) => MakeRandomParkItem());
             }
@@ -3617,9 +3617,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             /////////////////////////////
             // 1. Walkway, floor & walls
             /////////////////////////////
-            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
-            base.TileRectangle(map, m_Game.GameTiles.WALL_BRICK, b.BuildingRect);
-            base.TileFill(map, m_Game.GameTiles.FLOOR_PLANKS, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_BRICK, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_PLANKS, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
 
             ///////////////////////
             // 2. Rooms floor plan
@@ -3758,7 +3758,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     map.GetTileAt(doorX, doorY + 1).AddDecoration(GameImages.DECO_SEWERS_BUILDING);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
             // add the door.
             PlaceDoor(map, doorX, doorY, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor());
@@ -3923,7 +3923,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
             // add door if surface.
             if (isSurface)
@@ -4159,8 +4159,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             ////////////////////
             // 1. Floor & Walls
             ////////////////////
-            base.TileFill(map, floor, roomRect);
-            base.TileRectangle(map, wall, roomRect.Left, roomRect.Top, roomRect.Width, roomRect.Height,
+            TileFill(map, floor, roomRect);
+            TileRectangle(map, wall, roomRect.Left, roomRect.Top, roomRect.Width, roomRect.Height,
                 (tile, prevmodel, x, y) =>
                 {
                     // if we have a door there, don't put a wall!
@@ -4508,7 +4508,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     }
 
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
                 #endregion
             }
         }
@@ -4537,7 +4537,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case ShopType.LIQUOR: //@@MP (Release 4)
                     return MakeItemAlcohol();
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled shoptype");
+                    throw new ArgumentOutOfRangeException("shop","unhandled shoptype");
 
             }
         }
@@ -4551,7 +4551,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 1: return MakeItemGroceries();
                 case 2: return MakeItemVegetables();
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
         }
 
@@ -4577,7 +4577,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 5: return MakeItemStenchKiller();
 
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
         }
 
@@ -4599,7 +4599,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 9: return MakeItemTennisRacket();
                 case 10: return MakeItemMagazines();
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
         }
 
@@ -4627,7 +4627,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 16: return MakeItemNailGunAmmo(); //@@MP (Release 5-1)
                 case 17: return MakeItemVegetableSeeds(); //@@MP (Release 5-5)    
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
         }
 
@@ -4733,7 +4733,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 5: return MakeItemCigarettes();
                 case 6: return MakeItemCellPhone(); //@MP - added more phones, because they were too rare (Release 5-4)
                 default: 
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
         }
 
@@ -4760,7 +4760,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 6: return (RogueGame.Options.VTGAntiviralPills) ? MakeItemPillsAntiviral() : MakeItemCannedFood(); //@MP - handles new antiviral pills option (Release 5-2)
 
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
         }
         
@@ -4823,7 +4823,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     else
                         return MakeItemMagazines();
 
-                default: throw new ArgumentOutOfRangeException("unhandled roll");
+                default: throw new InvalidOperationException("unhandled roll");
             }
         }
 
@@ -4836,7 +4836,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 1: return MakeItemGroceries();
                 case 2: return MakeItemVegetables();
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled roll");
+                    throw new InvalidOperationException("unhandled roll");
             }
         }
 
@@ -4898,7 +4898,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 6: return MakeItemCellPhone();
                 case 7: return MakeItemWoodenPlank();
                 case 8: return MakeItemCigarettes(); //@@MP (Release 4)
-                default: throw new ArgumentOutOfRangeException("unhandled item roll");
+                default: throw new InvalidOperationException("Out of Range: unhandled item roll");
             }
         }
 
@@ -4913,7 +4913,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         static readonly string[] POSTERS = { GameImages.DECO_POSTERS1, GameImages.DECO_POSTERS2 };
         protected virtual void DecorateOutsideWallsWithPosters(Map map, Rectangle rect, int chancePerWall)
         {
-            base.DecorateOutsideWalls(map, rect,
+            DecorateOutsideWalls(map, rect,
                 (x, y) =>
                 {
                     if (m_DiceRoller.RollChance(chancePerWall))
@@ -4929,7 +4929,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected virtual void DecorateOutsideWallsWithTags(Map map, Rectangle rect, int chancePerWall)
         {
-            base.DecorateOutsideWalls(map, rect,
+            DecorateOutsideWalls(map, rect,
                 (x, y) =>
                 {
                     if (m_DiceRoller.RollChance(chancePerWall))
@@ -5004,7 +5004,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // random pilars/walls.
             #region
-            DoForEachTile(basement, basement.Rect,
+            DoForEachTile(basement.Rect, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
                 {
                     if (!m_DiceRoller.RollChance(HOUSE_BASEMENT_PILAR_CHANCE))
@@ -5060,7 +5060,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                 return null;
                             }
                         default:
-                            throw new ArgumentOutOfRangeException("unhandled roll");
+                            throw new InvalidOperationException("unhandled roll");
                     }
                 });
             #endregion
@@ -5069,7 +5069,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             #region
             if (Rules.HasZombiesInBasements(m_Game.Session.GameMode))
             {
-                DoForEachTile(basement, basement.Rect,
+                DoForEachTile(basement.Rect, //@@MP - unused parameter (Release 5-7)
                     (pt) =>
                     {
                         if (!basement.IsWalkable(pt.X, pt.Y))
@@ -5200,7 +5200,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
 
             // barricade the rooms door.
-            DoForEachTile(surfaceMap, roomZone.Bounds,
+            DoForEachTile(roomZone.Bounds, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
                 {
                     DoorWindow door = surfaceMap.GetMapObjectAt(pt) as DoorWindow;
@@ -5343,7 +5343,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                 break;
                             }
                         default:
-                            throw new ArgumentOutOfRangeException("unhandled role");
+                            throw new InvalidOperationException("unhandled role");
                     }
                 }
 
@@ -5588,7 +5588,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                     it = new Item(m_Game.GameItems.UNIQUE_CHAR_DOCUMENT6) { IsUnique = true, IsForbiddenToAI = true };
                                     break;
                                 default:
-                                    throw new ArgumentOutOfRangeException("unhandled roll");
+                                    throw new InvalidOperationException("unhandled roll");
                             }
                             map.DropItemAt(it, pt);
                             boolPlacedCHARdocument = true; //@@MP - only drop one per room
@@ -5684,7 +5684,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             TileFill(map, m_Game.GameTiles.FLOOR_CONCRETE, roomRect);
 
             // add deco power sign next to doors.
-            DoForEachTile(map, wallsRect,
+            DoForEachTile(wallsRect, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
                 {
                     if (!(map.GetMapObjectAt(pt) is DoorWindow))
@@ -5701,7 +5701,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 });
 
             // add power generators along walls.
-            DoForEachTile(map, roomRect,
+            DoForEachTile(roomRect, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
                 {
                     if (!map.GetTileAt(pt).Model.IsWalkable)
@@ -5740,7 +5740,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             GeneratePoliceStation(map, policeBlock, out surfaceStairsPos);
 
             // 3. Generate Offices level (-1).
-            Map officesLevel = GeneratePoliceStation_OfficesLevel(map, policeBlock, surfaceStairsPos);
+            Map officesLevel = GeneratePoliceStation_OfficesLevel(map); //@@MP - unused parameter (Release 5-7)
 
             // 4. Generate Jails level (-2).
             Map jailsLevel = GeneratePoliceStation_JailsLevel(officesLevel);
@@ -5771,7 +5771,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             TileFill(surfaceMap, m_Game.GameTiles.FLOOR_TILES, policeBlock.InsideRect);
             TileRectangle(surfaceMap, m_Game.GameTiles.WALL_POLICE_STATION, policeBlock.BuildingRect);
             TileRectangle(surfaceMap, m_Game.GameTiles.FLOOR_WALKWAY, policeBlock.Rectangle);
-            DoForEachTile(surfaceMap, policeBlock.InsideRect, (pt) => surfaceMap.GetTileAt(pt).IsInside = true);
+            DoForEachTile(policeBlock.InsideRect, (pt) => surfaceMap.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
 
             // Entrance to the south with police signs.
             Point entryDoorPos = new Point(policeBlock.BuildingRect.Left + policeBlock.BuildingRect.Width / 2, policeBlock.BuildingRect.Bottom - 1);
@@ -5783,7 +5783,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             TileRectangle(surfaceMap, m_Game.GameTiles.WALL_POLICE_STATION, entryHall);
             PlaceDoor(surfaceMap, entryHall.Left + entryHall.Width / 2, entryHall.Top, m_Game.GameTiles.FLOOR_TILES, MakeObjIronDoor());
             PlaceDoor(surfaceMap, entryDoorPos.X, entryDoorPos.Y, m_Game.GameTiles.FLOOR_TILES, MakeObjGlassDoor());
-            DoForEachTile(surfaceMap, entryHall,
+            DoForEachTile(entryHall, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
                 {
                     if (!surfaceMap.IsWalkable(pt.X, pt.Y))
@@ -5801,7 +5801,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             MakeWalkwayZones(surfaceMap, policeBlock);
         }
 
-        Map GeneratePoliceStation_OfficesLevel(Map surfaceMap, Block policeBlock, Point exitPos)
+        Map GeneratePoliceStation_OfficesLevel(Map surfaceMap) //@@MP - unused parameter (Release 5-7)
         {
             //////////////////
             // 1. Create map.
@@ -5815,7 +5815,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 Lighting = Lighting.DARKNESS
             };
-            DoForEachTile(map, map.Rect, (pt) => map.GetTileAt(pt).IsInside = true);
+            DoForEachTile(map.Rect, (pt) => map.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
 
             // 2. Floor plan.
             TileFill(map, m_Game.GameTiles.FLOOR_TILES);
@@ -5839,7 +5839,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     PlaceDoor(map, roomRect.Left, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor());
 
                     // shelves with weaponry & armor next to the walls.
-                    DoForEachTile(map, inRoomRect,
+                    DoForEachTile(inRoomRect, //@@MP - unused parameter (Release 5-7)
                         (pt) =>
                         {
                             if (!map.IsWalkable(pt.X, pt.Y) || CountAdjWalls(map, pt.X, pt.Y) == 0 || CountAdjDoors(map, pt.X, pt.Y) > 0)
@@ -5884,7 +5884,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                     break;
 
                                 default:
-                                    throw new ArgumentOutOfRangeException("unhandled roll");
+                                    throw new InvalidOperationException("unhandled roll");
 
                             }
 
@@ -5925,7 +5925,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 }
             }
             // - benches in corridor.
-            DoForEachTile(map, new Rectangle(1, 1, 1, map.Height - 2),
+            DoForEachTile(new Rectangle(1, 1, 1, map.Height - 2), //@@MP - unused parameter (Release 5-7)
                 (pt) =>
                 {
                     if (pt.Y % 2 == 1)
@@ -5965,7 +5965,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 Lighting = Lighting.DARKNESS
             };
-            DoForEachTile(map, map.Rect, (pt) => map.GetTileAt(pt).IsInside = true);
+            DoForEachTile(map.Rect, (pt) => map.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
 
             // 2. Floor plan.
             TileFill(map, m_Game.GameTiles.FLOOR_TILES);
@@ -6131,7 +6131,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             TileFill(surfaceMap, m_Game.GameTiles.FLOOR_TILES, block.InsideRect);
             TileRectangle(surfaceMap, m_Game.GameTiles.WALL_HOSPITAL, block.BuildingRect);
             TileRectangle(surfaceMap, m_Game.GameTiles.FLOOR_WALKWAY, block.Rectangle);
-            DoForEachTile(surfaceMap, block.InsideRect, (pt) => surfaceMap.GetTileAt(pt).IsInside = true);
+            DoForEachTile(block.InsideRect, (pt) => surfaceMap.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
 
             // 2 entrances to the south with signs.
             Point entryRightDoorPos = new Point(block.BuildingRect.Left + block.BuildingRect.Width / 2, block.BuildingRect.Bottom - 1);
@@ -6143,7 +6143,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Rectangle entryHall = Rectangle.FromLTRB(block.BuildingRect.Left, block.BuildingRect.Top, block.BuildingRect.Right, block.BuildingRect.Bottom);
             PlaceDoor(surfaceMap, entryRightDoorPos.X, entryRightDoorPos.Y, m_Game.GameTiles.FLOOR_TILES, MakeObjGlassDoor());
             PlaceDoor(surfaceMap, entryLeftDoorPos.X, entryLeftDoorPos.Y, m_Game.GameTiles.FLOOR_TILES, MakeObjGlassDoor());
-            DoForEachTile(surfaceMap, entryHall,
+            DoForEachTile(entryHall, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
                 {
                     // benches only on west & east sides.
@@ -6174,7 +6174,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 Lighting = Lighting.DARKNESS
             };
-            DoForEachTile(map, map.Rect, (pt) => map.GetTileAt(pt).IsInside = true);
+            DoForEachTile(map.Rect, (pt) => map.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
             TileFill(map, m_Game.GameTiles.FLOOR_TILES);
             TileRectangle(map, m_Game.GameTiles.WALL_HOSPITAL, map.Rect);
 
@@ -6208,7 +6208,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int i = 0; i < nbPatients; i++)
             {
                 // create.
-                Actor patient = CreateNewHospitalPatient(0);
+                Actor patient = CreateNewHospitalPatient(); //@@MP - unused parameter (Release 5-7)
                 // place.
                 ActorPlace(m_DiceRoller, map.Width * map.Height, map, patient, (pt) => map.HasZonePartiallyNamedAt(pt, "patient room"));
             }
@@ -6218,7 +6218,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int i = 0; i < nbNurses; i++)
             {
                 // create.
-                Actor nurse = CreateNewHospitalNurse(0);
+                Actor nurse = CreateNewHospitalNurse(); //@@MP - unused parameter (Release 5-7)
                 // place.
                 ActorPlace(m_DiceRoller, map.Width * map.Height, map, nurse, (pt) => map.HasZonePartiallyNamedAt(pt, "corridor"));
             }
@@ -6226,7 +6226,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int i = 0; i < nbDoctor; i++)
             {
                 // create.
-                Actor nurse = CreateNewHospitalDoctor(0);
+                Actor nurse = CreateNewHospitalDoctor(); //@@MP - unused parameter (Release 5-7)
                 // place.
                 ActorPlace(m_DiceRoller, map.Width * map.Height, map, nurse, (pt) => map.HasZonePartiallyNamedAt(pt, "corridor"));
             }
@@ -6248,7 +6248,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 Lighting = Lighting.DARKNESS
             };
-            DoForEachTile(map, map.Rect, (pt) => map.GetTileAt(pt).IsInside = true);
+            DoForEachTile(map.Rect, (pt) => map.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
             TileFill(map, m_Game.GameTiles.FLOOR_TILES);
             TileRectangle(map, m_Game.GameTiles.WALL_HOSPITAL, map.Rect);
 
@@ -6282,7 +6282,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int i = 0; i < nbNurses; i++)
             {
                 // create.
-                Actor nurse = CreateNewHospitalNurse(0);
+                Actor nurse = CreateNewHospitalNurse(); //@@MP - unused parameter (Release 5-7)
                 // place.
                 ActorPlace(m_DiceRoller, map.Width * map.Height, map, nurse, (pt) => map.HasZonePartiallyNamedAt(pt, "office"));
             }
@@ -6290,7 +6290,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int i = 0; i < nbDoctor; i++)
             {
                 // create.
-                Actor nurse = CreateNewHospitalDoctor(0);
+                Actor nurse = CreateNewHospitalDoctor(); //@@MP - unused parameter (Release 5-7)
                 // place.
                 ActorPlace(m_DiceRoller, map.Width * map.Height, map, nurse, (pt) => map.HasZonePartiallyNamedAt(pt, "office"));
             }
@@ -6312,7 +6312,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 Lighting = Lighting.DARKNESS
             };
-            DoForEachTile(map, map.Rect, (pt) => map.GetTileAt(pt).IsInside = true);
+            DoForEachTile(map.Rect, (pt) => map.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
             TileFill(map, m_Game.GameTiles.FLOOR_TILES);
             TileRectangle(map, m_Game.GameTiles.WALL_HOSPITAL, map.Rect);
 
@@ -6346,7 +6346,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int i = 0; i < nbPatients; i++)
             {
                 // create.
-                Actor patient = CreateNewHospitalPatient(0);
+                Actor patient = CreateNewHospitalPatient(); //@@MP - unused parameter (Release 5-7)
                 // place.
                 ActorPlace(m_DiceRoller, map.Width * map.Height, map, patient, (pt) => map.HasZonePartiallyNamedAt(pt, "patient room"));
             }
@@ -6356,7 +6356,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int i = 0; i < nbNurses; i++)
             {
                 // create.
-                Actor nurse = CreateNewHospitalNurse(0);
+                Actor nurse = CreateNewHospitalNurse(); //@@MP - unused parameter (Release 5-7)
                 // place.
                 ActorPlace(m_DiceRoller, map.Width * map.Height, map, nurse, (pt) => map.HasZonePartiallyNamedAt(pt, "corridor"));
             }
@@ -6364,7 +6364,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int i = 0; i < nbDoctor; i++)
             {
                 // create.
-                Actor nurse = CreateNewHospitalDoctor(0);
+                Actor nurse = CreateNewHospitalDoctor(); //@@MP - unused parameter (Release 5-7)
                 // place.
                 ActorPlace(m_DiceRoller, map.Width * map.Height, map, nurse, (pt) => map.HasZonePartiallyNamedAt(pt, "corridor"));
             }
@@ -6385,7 +6385,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 Lighting = Lighting.DARKNESS
             };
-            DoForEachTile(map, map.Rect, (pt) => map.GetTileAt(pt).IsInside = true);
+            DoForEachTile(map.Rect, (pt) => map.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
             TileFill(map, m_Game.GameTiles.FLOOR_TILES);
             TileRectangle(map, m_Game.GameTiles.WALL_HOSPITAL, map.Rect);
 
@@ -6449,7 +6449,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 Lighting = Lighting.DARKNESS
             };
-            DoForEachTile(map, map.Rect, (pt) => map.GetTileAt(pt).IsInside = true);
+            DoForEachTile(map.Rect, (pt) => map.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
             TileFill(map, m_Game.GameTiles.FLOOR_CONCRETE);
             TileRectangle(map, m_Game.GameTiles.WALL_BRICK, map.Rect);
 
@@ -6468,7 +6468,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             map.AddZone(MakeUniqueZone("power room", room));
 
             // power generators.
-            DoForEachTile(map, room,
+            DoForEachTile(room, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
                 {
                     if (pt.X == room.Left)
@@ -6511,7 +6511,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return map;
         }
 
-        Actor CreateNewHospitalPatient(int spawnTime)
+        Actor CreateNewHospitalPatient() //@@MP - unused parameter (Release 5-7)
         {
             // decide model.
             ActorModel model = m_Rules.Roll(0, 2) == 0 ? m_Game.GameActors.MaleCivilian : m_Game.GameActors.FemaleCivilian;
@@ -6533,7 +6533,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return patient;
         }
 
-        Actor CreateNewHospitalNurse(int spawnTime)
+        Actor CreateNewHospitalNurse() //@@MP - unused parameter (Release 5-7)
         {
             // create.
             Actor nurse = m_Game.GameActors.FemaleCivilian.CreateNumberedName(m_Game.GameFactions.TheCivilians, 0);
@@ -6556,7 +6556,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return nurse;
         }
 
-        Actor CreateNewHospitalDoctor(int spawnTime)
+        Actor CreateNewHospitalDoctor() //@@MP - unused parameter (Release 5-7)
         {
             // create.
             Actor doctor = m_Game.GameActors.MaleCivilian.CreateNumberedName(m_Game.GameFactions.TheCivilians, 0);
@@ -6649,7 +6649,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             PlaceDoor(map, room.Left + 2, room.Top, m_Game.GameTiles.FLOOR_TILES, MakeObjHospitalDoor());
 
             // shelves with meds.
-            DoForEachTile(map, room,
+            DoForEachTile(room, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
                 {
                     if (!map.IsWalkable(pt))
@@ -6756,7 +6756,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // setup.
             base.GiveNameToActor(m_DiceRoller, survivor);
-            base.DressCivilian(m_DiceRoller, survivor);
+            DressCivilian(m_DiceRoller, survivor);
             survivor.Doll.AddDecoration(DollPart.HEAD, isMale ? GameImages.SURVIVOR_MALE_BANDANA : GameImages.SURVIVOR_FEMALE_BANDANA);
 
             // give items, good survival gear (7 items).
@@ -6812,7 +6812,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return survivor;
         }
 
-        public Actor CreateNewNakedHuman(int spawnTime, int itemsToCarry, int skills)
+        public Actor CreateNewNakedHuman(int spawnTime) //@@MP - unused parameter (Release 5-7)
         {
             // decide model.
             ActorModel model = m_Rules.Roll(0, 2) == 0 ? m_Game.GameActors.MaleCivilian : m_Game.GameActors.FemaleCivilian;
@@ -6833,7 +6833,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Actor civilian = model.CreateNumberedName(m_Game.GameFactions.TheCivilians, spawnTime);
 
             // setup.
-            base.DressCivilian(m_DiceRoller, civilian);
+            DressCivilian(m_DiceRoller, civilian);
             base.GiveNameToActor(m_DiceRoller, civilian);
             for (int i = 0; i < itemsToCarry; i++)
                 GiveRandomItemToActor(m_DiceRoller, civilian, spawnTime);
@@ -6859,7 +6859,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Actor newCop = model.CreateNumberedName(m_Game.GameFactions.ThePolice, spawnTime);
 
             // setup.
-            base.DressPolice(m_DiceRoller, newCop);
+            DressPolice(m_DiceRoller, newCop);
             base.GiveNameToActor(m_DiceRoller, newCop);
             newCop.Name = "Cop " + newCop.Name;
             base.GiveRandomSkillsToActor(m_DiceRoller, newCop, 1);
@@ -7007,7 +7007,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Actor newGuard = model.CreateNumberedName(m_Game.GameFactions.TheCHARCorporation, spawnTime);
 
             // setup.
-            base.DressCHARGuard(m_DiceRoller, newGuard);
+            DressCHARGuard(m_DiceRoller, newGuard);
             base.GiveNameToActor(m_DiceRoller, newGuard);
             newGuard.Name = "Gd. " + newGuard.Name;
 
@@ -7029,7 +7029,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Actor newNat = model.CreateNumberedName(m_Game.GameFactions.TheArmy, spawnTime);
 
             // setup.
-            base.DressArmy(m_DiceRoller, newNat);
+            DressArmy(m_DiceRoller, newNat);
             base.GiveNameToActor(m_DiceRoller, newNat);
             newNat.Name = rankName + " " + newNat.Name;
 
@@ -7065,7 +7065,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // setup.
             newBiker.GangID = (int)gangId;
-            base.DressBiker(m_DiceRoller, newBiker);
+            DressBiker(m_DiceRoller, newBiker);
             base.GiveNameToActor(m_DiceRoller, newBiker);
             newBiker.Controller = new GangAI();
 
@@ -7092,7 +7092,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // setup.
             newGangsta.GangID = (int)gangId;
-            base.DressGangsta(m_DiceRoller, newGangsta);
+            DressGangsta(m_DiceRoller, newGangsta);
             base.GiveNameToActor(m_DiceRoller, newGangsta);
             newGangsta.Controller = new GangAI();
 
@@ -7118,7 +7118,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Actor newBO = model.CreateNumberedName(m_Game.GameFactions.TheBlackOps, spawnTime);
 
             // setup.
-            base.DressBlackOps(m_DiceRoller, newBO);
+            DressBlackOps(m_DiceRoller, newBO);
             base.GiveNameToActor(m_DiceRoller, newBO);
             newBO.Name = rankName + " " + newBO.Name;
 
@@ -7157,7 +7157,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// <param name="to"></param>
         /// <param name="toPosition"></param>
         /// <param name="exitImageID"></param>
-        void AddExit(Map from, Point fromPosition, Map to, Point toPosition, string exitImageID, bool isAnAIExit)
+        static void AddExit(Map from, Point fromPosition, Map to, Point toPosition, string exitImageID, bool isAnAIExit) //@@MP - made static (Release 5-7)
         {
             from.SetExitAt(fromPosition, new Exit(to, toPosition) { IsAnAIExit = isAnAIExit });
             from.GetTileAt(fromPosition).AddDecoration(exitImageID);
@@ -7165,7 +7165,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #endregion
 
         #region Zones
-        protected void MakeWalkwayZones(Map map, Block b)
+        protected static void MakeWalkwayZones(Map map, Block b) //@@MP - made static (Release 5-7)
         {
             /*
              *  NNNE

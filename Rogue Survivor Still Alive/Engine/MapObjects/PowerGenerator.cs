@@ -51,7 +51,7 @@ namespace djack.RogueSurvivor.Engine.MapObjects
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled state");
+                    throw new ArgumentOutOfRangeException("newState","unhandled state");
             }
         }
         #endregion

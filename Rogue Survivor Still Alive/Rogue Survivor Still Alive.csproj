@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -38,10 +38,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
+    <LangVersion>default</LangVersion>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <NoWarn>IDE0028;</NoWarn>
+    <NoWarn>IDE0017;IDE0018;IDE0019;IDE0028;</NoWarn>
+    <CodeAnalysisRuleSet>..\..\CustomRuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -52,6 +53,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>djack.RogueSurvivor.Program</StartupObject>
@@ -80,15 +82,15 @@
     <Reference Include="Microsoft.VisualC" />
     <Reference Include="sfmlnet-audio-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-audio-2.dll</HintPath>
+      <HintPath>..\..\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-audio-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-system-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-system-2.dll</HintPath>
+      <HintPath>..\..\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-system-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-window-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-window-2.dll</HintPath>
+      <HintPath>..\..\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-window-2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -280,6 +282,7 @@
     <Compile Include="Gameplay\Generators\StdTownGenerator.cs" />
     <Compile Include="Gameplay\Skills.cs" />
     <Compile Include="Gameplay\ZoneAttributes.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="Program.cs" />
@@ -311,6 +314,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="openal32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Actors\Decoration\female_on_fire.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Actors\Decoration\male_on_fire.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Actors\Decoration\other_undead_on_fire.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Actors\Decoration\zombie_on_fire.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Images\Items\item_vegetables.png">
@@ -356,7 +371,7 @@
     <Content Include="about.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="help.txt">
+    <Content Include="HELP.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Data\Actors.csv">

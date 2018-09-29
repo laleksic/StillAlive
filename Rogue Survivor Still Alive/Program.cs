@@ -17,8 +17,8 @@ namespace djack.RogueSurvivor
         [STAThread]
         static void Main()
         {
-#if RELEASE
-            //Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); //@@MP
+#if !DEBUG
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); //@@MP
 #endif
             Logger.CreateFile();
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "starting program...");
@@ -31,7 +31,7 @@ namespace djack.RogueSurvivor
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading setup...");
             SetupConfig.Load();
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "setup : " + SetupConfig.toString(SetupConfig.Video) + ", " + SetupConfig.toString(SetupConfig.Sound));
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "setup : " + SetupConfig.Video.ToString() + ", " + SetupConfig.Sound.ToString());
 
             using (RogueForm form = new RogueForm())
             {

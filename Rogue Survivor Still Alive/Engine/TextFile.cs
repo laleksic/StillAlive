@@ -36,27 +36,37 @@ namespace djack.RogueSurvivor.Engine
         #region Loading & Saving
         public bool Load(string fileName)
         {
+            StreamReader inStream = null; //@@MP - try/finally ensures that the stream is always closed (Release 5-7)
             try
             {
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Loading text file {0}...", fileName));
-                StreamReader inStream = File.OpenText(fileName);
+
+                inStream = File.OpenText(fileName);
                 m_RawLines = new List<string>();
                 while (!inStream.EndOfStream)
                 {
                     string line = inStream.ReadLine();
                     m_RawLines.Add(line);
-                }               
-                inStream.Close();
+                }
 
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("done!")); //@@MP - removed unused argument (Release 5-5)
                 return true;
             }
+            catch (FileNotFoundException e)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Text file not found: {0}", e.ToString()));
+                return false;
+            }
             catch (Exception e)
             {
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Loading exception: {0}", e.ToString()));
-                return false;
+                throw;
             }
-
+            finally
+            {
+                if (inStream != null)
+                    inStream.Close();
+            }
         }
 
         public bool Save(string fileName)
@@ -71,7 +81,7 @@ namespace djack.RogueSurvivor.Engine
             catch (Exception e)
             {
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Saving exception: {0}", e.ToString()));
-                return false;
+                throw; //return false;
             }
         }
         #endregion

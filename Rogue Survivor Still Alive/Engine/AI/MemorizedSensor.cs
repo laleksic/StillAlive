@@ -36,7 +36,7 @@ namespace djack.RogueSurvivor.Engine.AI
         public MemorizedSensor(Sensor noMemorySensor, int persistance)
         {
             if (noMemorySensor == null)
-                throw new ArgumentNullException("decoratedSensor");
+                throw new ArgumentNullException("noMemorySensor","decoratedSensor");
 
             m_Sensor = noMemorySensor;
             m_Persistance = persistance;

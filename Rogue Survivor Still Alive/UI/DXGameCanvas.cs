@@ -209,7 +209,16 @@ namespace djack.RogueSurvivor.UI
             m_TextSprite = new Sprite(m_Device);
 
             Logger.WriteLine(Logger.Stage.INIT_GFX, "creating blank texture...");
-            m_BlankTexture = new Texture(m_Device, new Bitmap(@"Resources\Images\blank_texture.png"), 0, Pool.Managed);
+            Bitmap newBitmap = null; //@@MP - made disposable (Release 5-7)
+            try
+            {
+                newBitmap = new Bitmap(@"Resources\Images\blank_texture.png");
+                m_BlankTexture = new Texture(m_Device, newBitmap, 0, Pool.Managed); //new Bitmap(@"Resources\Images\blank_texture.png"), 0, Pool.Managed);
+            }
+            finally
+            {
+                newBitmap.Dispose();
+            }
 
             if (m_RenderTexture != null)
             {
@@ -510,12 +519,27 @@ namespace djack.RogueSurvivor.UI
             Logger.WriteLine(Logger.Stage.RUN_GFX, "taking screenshot...");
             try
             {
+                //commented out other means of performing the screenshot. they give varying sizes, formats and file sizes.
+
+                /*Size ScreenSize = new Size(m_RogueForm.Bounds.Width, m_RogueForm.Bounds.Height);
+                Bitmap BMP = new Bitmap(m_RogueForm.Bounds.Width, m_RogueForm.Bounds.Height);
+                Graphics g = Graphics.FromImage(BMP);
+                g.CopyFromScreen(new Point(0, 0), new Point(0, 0), ScreenSize);
+                BMP.Save(file, System.Drawing.Imaging.ImageFormat.Bmp);*/
+
+                /*Surface backbuffer = m_Device.GetBackBuffer(0, 0, BackBufferType.Mono);
+                SurfaceLoader.Save(filePath, ImageFileFormat.Png, backbuffer);*/
+
+                /*using (Surface renderTarget = m_Device.GetRenderTarget(0))
+                    SurfaceLoader.Save(filePath, ImageFileFormat.Bmp, renderTarget);*/
+
                 SurfaceLoader.Save(filePath, ImageFileFormat.Png, m_RenderSurface);
             }
             catch (Exception e)
             {
+                Logger.WriteLine(Logger.Stage.RUN_GFX, String.Format(file.ToString()));
                 Logger.WriteLine(Logger.Stage.RUN_GFX, String.Format("exception when taking screenshot : {0}", e.ToString()));
-                return null;
+                throw; //return null;
             }
             Logger.WriteLine(Logger.Stage.RUN_GFX, "taking screenshot... done!");
             return file;
@@ -539,7 +563,7 @@ namespace djack.RogueSurvivor.UI
             if (m_ImageToTextures.TryGetValue(img, out texture))
                 return texture;
 
-            texture = Texture.FromBitmap(m_Device, new Bitmap(img), Usage.SoftwareProcessing, Pool.Managed);
+            texture = Texture.FromBitmap(m_Device, img as Bitmap, Usage.SoftwareProcessing, Pool.Managed);//new Bitmap(img), Usage.SoftwareProcessing, Pool.Managed);
             m_ImageToTextures.Add(img, texture);
             return texture;
         }

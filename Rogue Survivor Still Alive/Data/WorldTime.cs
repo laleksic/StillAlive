@@ -113,7 +113,7 @@ namespace djack.RogueSurvivor.Data
         public WorldTime(int turnCounter)
         {
             if (turnCounter < 0)
-                throw new ArgumentOutOfRangeException("turnCounter < 0");
+                throw new ArgumentOutOfRangeException("turnCounter","turnCounter < 0");
 
             m_TurnCounter = turnCounter;
             RecomputeDate();
@@ -158,7 +158,7 @@ namespace djack.RogueSurvivor.Data
                 case 22:
                 case 23: m_Phase = DayPhase.EVENING; m_IsNight = true; break;
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled hour");
+                    throw new InvalidOperationException("unhandled hour");
 
             }
         }

@@ -982,7 +982,7 @@ namespace djack.RogueSurvivor.Gameplay
                     }
                     allLines.Add(inLine);
                 }
-                reader.Close();
+                //reader.Close();
             }
             // parse all the lines read.
             Notify(ui, "parsing CSV...");
@@ -994,48 +994,48 @@ namespace djack.RogueSurvivor.Gameplay
             /////////////
             Notify(ui, "reading data...");
 
-            #region Undeads
-            DATA_SKELETON = GetDataFromCSVTable(ui, table, IDs.UNDEAD_SKELETON);
-            DATA_RED_EYED_SKELETON = GetDataFromCSVTable(ui, table, IDs.UNDEAD_RED_EYED_SKELETON);
-            DATA_RED_SKELETON = GetDataFromCSVTable(ui, table, IDs.UNDEAD_RED_SKELETON);
+            #region Undeads //@@MP - unused parameter (Release 5-7)
+            DATA_SKELETON = GetDataFromCSVTable(table, IDs.UNDEAD_SKELETON);
+            DATA_RED_EYED_SKELETON = GetDataFromCSVTable(table, IDs.UNDEAD_RED_EYED_SKELETON);
+            DATA_RED_SKELETON = GetDataFromCSVTable(table, IDs.UNDEAD_RED_SKELETON);
 
-            DATA_ZOMBIE = GetDataFromCSVTable(ui, table, IDs.UNDEAD_ZOMBIE);
-            DATA_DARK_EYED_ZOMBIE = GetDataFromCSVTable(ui, table, IDs.UNDEAD_DARK_EYED_ZOMBIE);
-            DATA_DARK_ZOMBIE = GetDataFromCSVTable(ui, table, IDs.UNDEAD_DARK_ZOMBIE);
+            DATA_ZOMBIE = GetDataFromCSVTable(table, IDs.UNDEAD_ZOMBIE);
+            DATA_DARK_EYED_ZOMBIE = GetDataFromCSVTable(table, IDs.UNDEAD_DARK_EYED_ZOMBIE);
+            DATA_DARK_ZOMBIE = GetDataFromCSVTable(table, IDs.UNDEAD_DARK_ZOMBIE);
 
-            DATA_MALE_ZOMBIFIED = GetDataFromCSVTable(ui, table, IDs.UNDEAD_MALE_ZOMBIFIED);
-            DATA_FEMALE_ZOMBIFIED = GetDataFromCSVTable(ui, table, IDs.UNDEAD_FEMALE_ZOMBIFIED);
-            DATA_MALE_NEOPHYTE = GetDataFromCSVTable(ui, table, IDs.UNDEAD_MALE_NEOPHYTE);
-            DATA_FEMALE_NEOPHYTE = GetDataFromCSVTable(ui, table, IDs.UNDEAD_FEMALE_NEOPHYTE);
-            DATA_MALE_DISCIPLE = GetDataFromCSVTable(ui, table, IDs.UNDEAD_MALE_DISCIPLE);
-            DATA_FEMALE_DISCIPLE = GetDataFromCSVTable(ui, table, IDs.UNDEAD_FEMALE_DISCIPLE);
+            DATA_MALE_ZOMBIFIED = GetDataFromCSVTable(table, IDs.UNDEAD_MALE_ZOMBIFIED);
+            DATA_FEMALE_ZOMBIFIED = GetDataFromCSVTable(table, IDs.UNDEAD_FEMALE_ZOMBIFIED);
+            DATA_MALE_NEOPHYTE = GetDataFromCSVTable(table, IDs.UNDEAD_MALE_NEOPHYTE);
+            DATA_FEMALE_NEOPHYTE = GetDataFromCSVTable(table, IDs.UNDEAD_FEMALE_NEOPHYTE);
+            DATA_MALE_DISCIPLE = GetDataFromCSVTable(table, IDs.UNDEAD_MALE_DISCIPLE);
+            DATA_FEMALE_DISCIPLE = GetDataFromCSVTable(table, IDs.UNDEAD_FEMALE_DISCIPLE);
 
-            DATA_ZM = GetDataFromCSVTable(ui, table, IDs.UNDEAD_ZOMBIE_MASTER);
-            DATA_ZL = GetDataFromCSVTable(ui, table, IDs.UNDEAD_ZOMBIE_LORD);
-            DATA_ZP = GetDataFromCSVTable(ui, table, IDs.UNDEAD_ZOMBIE_PRINCE);
+            DATA_ZM = GetDataFromCSVTable(table, IDs.UNDEAD_ZOMBIE_MASTER);
+            DATA_ZL = GetDataFromCSVTable(table, IDs.UNDEAD_ZOMBIE_LORD);
+            DATA_ZP = GetDataFromCSVTable(table, IDs.UNDEAD_ZOMBIE_PRINCE);
 
-            DATA_RAT_ZOMBIE = GetDataFromCSVTable(ui, table, IDs.UNDEAD_RAT_ZOMBIE);
+            DATA_RAT_ZOMBIE = GetDataFromCSVTable(table, IDs.UNDEAD_RAT_ZOMBIE);
 
-            DATA_SEWERS_THING = GetDataFromCSVTable(ui, table, IDs.SEWERS_THING);
+            DATA_SEWERS_THING = GetDataFromCSVTable(table, IDs.SEWERS_THING);
             #endregion
 
-            #region Livings
-            DATA_MALE_CIVILIAN = GetDataFromCSVTable(ui, table, IDs.MALE_CIVILIAN);
-            DATA_FEMALE_CIVILIAN = GetDataFromCSVTable(ui, table, IDs.FEMALE_CIVILIAN);
-            DATA_FERAL_DOG = GetDataFromCSVTable(ui, table, IDs.FERAL_DOG);
+            #region Livings //@@MP - unused parameter (Release 5-7)
+            DATA_MALE_CIVILIAN = GetDataFromCSVTable(table, IDs.MALE_CIVILIAN);
+            DATA_FEMALE_CIVILIAN = GetDataFromCSVTable(table, IDs.FEMALE_CIVILIAN);
+            DATA_FERAL_DOG = GetDataFromCSVTable(table, IDs.FERAL_DOG);
 
-            DATA_POLICEMAN = GetDataFromCSVTable(ui, table, IDs.POLICEMAN);
+            DATA_POLICEMAN = GetDataFromCSVTable(table, IDs.POLICEMAN);
 
-            DATA_CHAR_GUARD = GetDataFromCSVTable(ui, table, IDs.CHAR_GUARD);
+            DATA_CHAR_GUARD = GetDataFromCSVTable(table, IDs.CHAR_GUARD);
 
-            DATA_NATGUARD = GetDataFromCSVTable(ui, table, IDs.ARMY_NATIONAL_GUARD);
+            DATA_NATGUARD = GetDataFromCSVTable(table, IDs.ARMY_NATIONAL_GUARD);
 
-            DATA_BIKER_MAN = GetDataFromCSVTable(ui, table, IDs.BIKER_MAN);
-            DATA_GANGSTA_MAN = GetDataFromCSVTable(ui, table, IDs.GANGSTA_MAN);
+            DATA_BIKER_MAN = GetDataFromCSVTable(table, IDs.BIKER_MAN);
+            DATA_GANGSTA_MAN = GetDataFromCSVTable(table, IDs.GANGSTA_MAN);
 
-            DATA_BLACKOPS_MAN = GetDataFromCSVTable(ui, table, IDs.BLACKOPS_MAN);
+            DATA_BLACKOPS_MAN = GetDataFromCSVTable(table, IDs.BLACKOPS_MAN);
 
-            DATA_JASON_MYERS = GetDataFromCSVTable(ui, table, IDs.JASON_MYERS);
+            DATA_JASON_MYERS = GetDataFromCSVTable(table, IDs.JASON_MYERS);
             #endregion
 
             /////////////////
@@ -1050,7 +1050,7 @@ namespace djack.RogueSurvivor.Gameplay
             return true;
         }
 
-        CSVLine FindLineForModel(CSVTable table, IDs modelID)
+        static CSVLine FindLineForModel(CSVTable table, IDs modelID) //@@MP - made static (Release 5-7)
         {
             foreach (CSVLine l in table.Lines)
             {
@@ -1061,7 +1061,7 @@ namespace djack.RogueSurvivor.Gameplay
             return null;
         }
 
-        ActorData GetDataFromCSVTable(IRogueUI ui, CSVTable table, IDs modelID)
+        static ActorData GetDataFromCSVTable(CSVTable table, IDs modelID) //@@MP - unused parameter (Release 5-7)
         {
             //Notify(ui, String.Format("reading model {0}...", modelID.ToString()));
 
@@ -1086,7 +1086,7 @@ namespace djack.RogueSurvivor.Gameplay
             return data;
         }
 
-        void Notify(IRogueUI ui, string stage)
+        static void Notify(IRogueUI ui, string stage) //@@MP - made static (Release 5-7)
         {
             ui.UI_Clear(Color.Black);
             ui.UI_DrawStringBold(Color.White, "Loading actors data : " + stage, 0, 0);

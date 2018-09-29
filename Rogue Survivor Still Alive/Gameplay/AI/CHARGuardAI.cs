@@ -53,7 +53,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
-            List<Percept> mapPercepts = FilterSameMap(game, percepts);
+            List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
 
             // 1. Follow order
             #region
@@ -91,7 +91,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // get data.
             List<Percept> allEnemies = FilterEnemies(game, mapPercepts);
-            List<Percept> currentEnemies = FilterCurrent(game, allEnemies);
+            List<Percept> currentEnemies = FilterCurrent(allEnemies); //@@MP - unused parameter (Release 5-7)
             bool checkOurLeader = m_Actor.HasLeader && !DontFollowLeader;
             bool hasAnyEnemies = allEnemies != null;
 
@@ -104,7 +104,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return runFromFires;
             }
 
-            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
+            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(mapPercepts)); //@@MP - unused parameter (Release 5-7)
             if (runFromExplosives != null)
             {
                 m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
@@ -157,11 +157,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (currentEnemies != null)
             {
-                Percept nearestEnemy = FilterNearest(game, currentEnemies);
-                Actor targetActor = nearestEnemy.Percepted as Actor;
+                //@@MP - unused (Release 5-7)
+                //Percept nearestEnemy = FilterNearest(game, currentEnemies);
+                //Actor targetActor = nearestEnemy.Percepted as Actor;
 
                 // fight or flee?
-                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, true, true, ActorCourage.COURAGEOUS, FIGHT_EMOTES);
+                ActorAction fightOrFlee = BehaviorFightOrFlee(game, currentEnemies, true, ActorCourage.COURAGEOUS, FIGHT_EMOTES); //@@MP - unused parameter (Release 5-7)
                 if (fightOrFlee != null)
                 {
                     return fightOrFlee;
@@ -174,7 +175,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             List<Percept> nonEnemies = FilterNonEnemies(game, mapPercepts);
             if (nonEnemies != null)
             {
-                List<Percept> trespassers = Filter(game, nonEnemies, (p) =>
+                List<Percept> trespassers = Filter(nonEnemies, (p) => //@@MP - unused parameter (Release 5-7)
                 {
                     Actor other = (p.Percepted as Actor);
                     if (other.Faction == game.GameFactions.TheCHARCorporation)

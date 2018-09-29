@@ -327,6 +327,11 @@ namespace djack.RogueSurvivor.Gameplay
 
         #region Actor decorations
         public const string BLOODIED = @"Actors\Decoration\bloodied";
+        //@@MP (Release 5-7)
+        public const string MALE_ON_FIRE = @"Actors\Decoration\male_on_fire";
+        public const string FEMALE_ON_FIRE = @"Actors\Decoration\female_on_fire";
+        public const string ZOMBIE_ON_FIRE = @"Actors\Decoration\zombie_on_fire";
+        public const string OTHER_UNDEAD_ON_FIRE = @"Actors\Decoration\other_undead_on_fire";
 
         public const string MALE_SKIN1 = @"Actors\Decoration\male_skin1";
         public const string MALE_SKIN2 = @"Actors\Decoration\male_skin2";
@@ -901,6 +906,11 @@ namespace djack.RogueSurvivor.Gameplay
             Notify(ui, "actor decorations...");
 
             Load(BLOODIED);
+            //@@MP (Release 5-7)
+            Load(MALE_ON_FIRE);
+            Load(FEMALE_ON_FIRE);
+            Load(ZOMBIE_ON_FIRE);
+            Load(OTHER_UNDEAD_ON_FIRE);
 
             Load(MALE_SKIN1);
             Load(MALE_SKIN2);
@@ -1151,13 +1161,14 @@ namespace djack.RogueSurvivor.Gameplay
         static void Load(string id)
         {
             string file = FOLDER + id + ".png";
-            try
+            Bitmap img = null;
+            Bitmap imgFixed = null;
+            try //@@MP - try/finally ensures that the stream is always closed (Release 5-7)
             {
-                Bitmap img = new Bitmap(file);
+                img = new Bitmap(file);
 
                 // fixes retarded GDI+ display bug with some png 32 images.
-                Bitmap imgFixed = new Bitmap(img);
-                img.Dispose();
+                imgFixed = new Bitmap(img);
 
                 s_Images.Add(id, imgFixed);
                 s_GrayLevelImages.Add(id, MakeGrayLevel(imgFixed));
@@ -1166,8 +1177,16 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 throw new ArgumentException("coud not load image id=" + id + "; file=" + file);
             }
+            finally
+            {
+                if (img != null)
+                    img.Dispose();
+                /*if (imgFixed != null)
+                    imgFixed.Dispose();*/
+            }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         static Image MakeGrayLevel(Bitmap img)
         {
             Bitmap grayed = new Bitmap(img);

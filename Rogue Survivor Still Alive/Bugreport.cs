@@ -23,14 +23,14 @@ namespace djack.RogueSurvivor
 
         private void m_OkButton_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void Bugreport_Load(object sender, EventArgs e)
         {
-            m_HeaderTextBox.Text = "Rogue Survivor encoutered a fatal error."+NL+
-                "Please report all the text in the textbox below to the author (copypaste it, remember to scroll all the way down from start to end)."+NL+
-                "Press OK to exit.";
+            m_HeaderTextBox.Text = "Rogue Survivor encountered a fatal error."+NL+
+                @"Please report all the text in the textbox below to the author (copy+paste it, remember to scroll all the way down from start to end)."+NL+
+                @"Press OK to exit.";
 
             m_LogTextBox.Clear();
             m_LogTextBox.AppendText("Start of report."+NL);

@@ -1,6 +1,6 @@
 "ID","NAME","PLURAL","ATK","DMG","STA","STACKINGLIMIT","ISFRAGILE","FLAVOR"
 "MELEE_BASEBALLBAT","baseball bat","baseball bats",8,10,2,1,0,"Homerun!"
-"MELEE_COMBAT_KNIFE","combat knife","combat knives",2,8,0,2,0,"That's not a knife. This is a knife."
+"MELEE_COMBAT_KNIFE","combat knife","combat knives",2,8,0,1,0,"That's not a knife. This is a knife."
 "MELEE_CROWBAR","crowbar","crowbars",3,2,0,1,0,"A hero and his crowbar."
 "UNIQUE_JASON_MYERS_AXE","Jason Myers axe","Jason Myers axe",14,14,4,1,0,"But he used a machete...?"
 "MELEE_HUGE_HAMMER","huge hammer","huge hammers",16,16,6,1,0,"Hammer time!"

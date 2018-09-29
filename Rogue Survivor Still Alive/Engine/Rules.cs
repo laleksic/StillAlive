@@ -242,6 +242,7 @@ namespace djack.RogueSurvivor.Engine
         public const int TRUST_GOOD_GIFT_INCREASE = 3 * WorldTime.TURNS_PER_HOUR;       // 3 trust-hours gained.
         public const int TRUST_MISC_GIFT_INCREASE = TRUST_BASE_INCREASE + TRUST_GOOD_GIFT_INCREASE / 10;
         public const int TRUST_GIVE_ITEM_ORDER_PENALTY = -WorldTime.TURNS_PER_HOUR;     // 1 trust-hours lost.
+        public const int TRUST_FRIENDLY_FIRE_PENALTY = 6 * -WorldTime.TURNS_PER_HOUR;   //@@MP 6 trust-hours lost (Release 5-7)
         public const int TRUST_LEADER_KILL_ENEMY = 3 * WorldTime.TURNS_PER_HOUR;        // 3 trust-hours gain.
         public const int TRUST_REVIVE_BONUS = 12 * WorldTime.TURNS_PER_HOUR;
         #endregion
@@ -636,9 +637,9 @@ namespace djack.RogueSurvivor.Engine
         public bool CanActorGetItem(Actor actor, Item it, out string reason)
         {
             if (actor == null)
-                throw new ArgumentNullException("actor");
+                throw new ArgumentNullException("actor","null actor");
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it","null item");
 
             //////////////////////////////////////////////
             // Cant if any is true:
@@ -660,7 +661,8 @@ namespace djack.RogueSurvivor.Engine
                 reason = "inventory is full";
                 return false;
             }
-            if (it is ItemTrap && (it as ItemTrap).IsTriggered)
+            ItemTrap trap = it as ItemTrap;
+            if (trap != null && trap.IsTriggered)
             {
                 reason = "triggered trap";
                 return false;
@@ -680,9 +682,9 @@ namespace djack.RogueSurvivor.Engine
         public bool CanActorEquipItem(Actor actor, Item it, out string reason)
         {
             if (actor == null)
-                throw new ArgumentNullException("actor");
+                throw new ArgumentNullException("actor","null actor");
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it","null item");
 
             ////////////////////////////
             // Can't if any is true:
@@ -729,9 +731,9 @@ namespace djack.RogueSurvivor.Engine
         public bool CanActorUnequipItem(Actor actor, Item it, out string reason)
         {
             if (actor == null)
-                throw new ArgumentNullException("actor");
+                throw new ArgumentNullException("actor","null actor");
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it","null item");
 
             /////////////////////////
             // Can't if any is true:
@@ -768,9 +770,9 @@ namespace djack.RogueSurvivor.Engine
         public bool CanActorDropItem(Actor actor, Item it, out string reason)
         {
             if (actor == null)
-                throw new ArgumentNullException("actor");
+                throw new ArgumentNullException("actor","null actor");
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it","null item");
 
             /////////////////////////
             // Can't if any is true:
@@ -807,9 +809,9 @@ namespace djack.RogueSurvivor.Engine
         public bool CanActorUseItem(Actor actor, Item it, out string reason)
         {
             if (actor == null)
-                throw new ArgumentNullException("actor");
+                throw new ArgumentNullException("actor","null actor");
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it","null item");
 
             //////////////////////////////////////////////////
             // Can't if any is true:
@@ -923,9 +925,9 @@ namespace djack.RogueSurvivor.Engine
         public bool CanActorEatFoodOnGround(Actor actor, Item it, out string reason)
         {
             if (actor == null)
-                throw new ArgumentNullException("actor");
+                throw new ArgumentNullException("actor", "null actor");
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it", "null item");
 
 
             ///////////////////////////////
@@ -957,9 +959,9 @@ namespace djack.RogueSurvivor.Engine
         public bool CanActorRechargeItemBattery(Actor actor, Item it, out string reason)
         {
             if (actor == null)
-                throw new ArgumentNullException("actor");
+                throw new ArgumentNullException("actor", "null ctor");
             if (it == null)
-                throw new ArgumentNullException("item");
+                throw new ArgumentNullException("it","item");
 
             //////////////////////////////////////////////////
             // Can't if any is true:
@@ -1550,7 +1552,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Chatting & Trading
-        public bool CanActorChatWith(Actor speaker, Actor target, out string reason)
+        public static bool CanActorChatWith(Actor speaker, Actor target, out string reason) //@@MP - made static (Release 5-7)
         {
             if (speaker == null)
                 throw new ArgumentNullException("speaker");
@@ -2756,7 +2758,7 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        public bool CanActorRepairFortification(Actor actor, Fortification fort, out string reason)
+        public bool CanActorRepairFortification(Actor actor, out string reason) //@@MP - unused parameter (Release 5-7)
         {
             if (actor == null)
                 throw new ArgumentNullException("actor");
@@ -3073,7 +3075,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Actor turn ordering
-        public Actor GetNextActorToAct(Map map, int turnCounter)
+        public Actor GetNextActorToAct(Map map) //@@MP - unused parameter (Release 5-7)
         {
             if (map == null)
                 return null;
@@ -3305,7 +3307,7 @@ namespace djack.RogueSurvivor.Engine
             return actor.Sheet.BaseFoodPoints + skillBonus;
         }
 
-        public int ActorMaxSleep(Actor actor)
+        public int ActorMaxSleep(Actor actor) //@@MP - unused parameter (Release 5-7)
         {
             int skillBonus = (int)(actor.Sheet.BaseSleepPoints * SKILL_AWAKE_SLEEP_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.AWAKE));
 
@@ -3502,7 +3504,7 @@ namespace djack.RogueSurvivor.Engine
                     FOV -= WeatherFovPenalty(actor, weather);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("unhandled lighting");
+                    throw new ArgumentOutOfRangeException("actor","unhandled lighting");
             }
 
             // sleep penalty.
@@ -3642,7 +3644,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Day/Night, Weather & Lighting effects
-        int NightFovPenalty(Actor actor, WorldTime time)
+        static int NightFovPenalty(Actor actor, WorldTime time) //@@MP - made static (Release 5-7)
         {
             if (actor.Model.Abilities.IsUndead)
                 return 0;
@@ -3668,7 +3670,7 @@ namespace djack.RogueSurvivor.Engine
                 return NIGHT_STA_PENALTY;
         }
 
-        int WeatherFovPenalty(Actor actor, Weather weather)
+        static int WeatherFovPenalty(Actor actor, Weather weather) //@@MP - made static (Release 5-7)
         {
             if (actor.Model.Abilities.IsUndead)
                 return 0;
@@ -3693,7 +3695,7 @@ namespace djack.RogueSurvivor.Engine
                 case Weather.HEAVY_RAIN:
                 case Weather.RAIN:
                     return true;
-                default: throw new ArgumentOutOfRangeException("unhandled weather");
+                default: throw new ArgumentOutOfRangeException("weather","unhandled weather");
             }
         }
 
@@ -3756,7 +3758,7 @@ namespace djack.RogueSurvivor.Engine
             return dmg + bonus;
         }
 
-        public int ActorBiteNutritionValue(Actor actor, int baseValue)
+        public int ActorBiteNutritionValue(Actor actor, int baseValue) //@@MP - unused parameter (Release 5-7)
         {
             float zskillFactor = SKILL_ZLIGHT_EATER_FOOD_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.Z_LIGHT_EATER);
             float skillFactor = SKILL_LIGHT_EATER_FOOD_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LIGHT_EATER);
@@ -3816,7 +3818,7 @@ namespace djack.RogueSurvivor.Engine
             return 0;
         }
 
-        public static float CorpseDecayPerTurn(Corpse c)
+        public static float CorpseDecayPerTurn() //@@MP - unused parameter (Release 5-7)
         {
             return CORPSE_DECAY_PER_TURN;
         }
@@ -3870,7 +3872,7 @@ namespace djack.RogueSurvivor.Engine
             return baseChance + skillBonus;
         }
 
-        public int CorpseReviveHPs(Actor actor, Corpse corpse)
+        public int CorpseReviveHPs(Actor actor) //@@MP - unused parameter (Release 5-7)
         {
             int baseHps = 5;
             int skillBonus = actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MEDIC);
@@ -3920,7 +3922,7 @@ namespace djack.RogueSurvivor.Engine
             return RollChance(chance);
         }
 
-        public bool CheckTrapEscapeBreaks(ItemTrap trap, Actor a)
+        public bool CheckTrapEscapeBreaks(ItemTrap trap) //@@MP - unused parameter (Release 5-7)
         {
             return RollChance(trap.TrapModel.BreakChanceWhenEscape);
         }
@@ -3945,7 +3947,7 @@ namespace djack.RogueSurvivor.Engine
 
         public bool IsTrapTriggeringMapObjectThere(Map map, Point pos)
         {
-            MapObject mobj = map.GetMapObjectAt(pos);
+            MapObject mobj = map.GetMapObjectAt(pos); //@@MP - unused parameter (Release 5-7)
             if (mobj == null) return false;
             // mobj is NOT walkable and NOT a door and NOT jumpable (eg:shelves,large fort)
             return !mobj.IsWalkable && !mobj.IsJumpable && !(mobj is DoorWindow);
@@ -3953,7 +3955,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Grabbing
-        public int ZGrabChance(Actor grabber, Actor victim)
+        public int ZGrabChance(Actor grabber) //@@MP - unused parameter (Release 5-7)
         {
             int zGrabLevel = grabber.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.Z_GRAB);
             return zGrabLevel * SKILL_ZGRAB_CHANCE;

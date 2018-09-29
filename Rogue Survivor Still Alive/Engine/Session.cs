@@ -542,12 +542,13 @@ namespace djack.RogueSurvivor.Engine
             return m_Event_Raids[(int)raid, district.WorldPosition.X, district.WorldPosition.Y];
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity")]
         public void SetLastRaidTime(RaidType raid, District district, int turnCounter)
         {
             if (district == null)
                 throw new ArgumentNullException("district");
 
-            lock (m_Event_Raids) // thread safe.
+            lock (m_Event_Raids) // thread safe. //@@MP could lead to a deadlock...
             {
                 m_Event_Raids[(int)raid, district.WorldPosition.X, district.WorldPosition.Y] = turnCounter;
             }
@@ -594,7 +595,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 formatter.Serialize(stream, session);
                 stream.Flush();
-                stream.Close();
+                //stream.Close();
             }
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
@@ -611,27 +612,25 @@ namespace djack.RogueSurvivor.Engine
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
 
-            try
+            if (File.Exists(filepath))
             {
                 // deserialize.
                 IFormatter formatter = CreateFormatter();
                 using (Stream stream = CreateStream(filepath, false))
                 {
                     s_TheSession = (Session)formatter.Deserialize(stream);
-                    stream.Close();
+                    //stream.Close();
                 }
 
                 // reconstruct auxiliary fields.
                 s_TheSession.ReconstructAuxiliaryFields();
             }
-            catch (Exception e)
+            else
             {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game).");
                 s_TheSession = null;
                 return false;
             }
-
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
             return true;
@@ -651,7 +650,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 formatter.Serialize(stream, session);
                 stream.Flush();
-                stream.Close();
+                //stream.Close();
             }
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
@@ -668,23 +667,22 @@ namespace djack.RogueSurvivor.Engine
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
 
-            try
+            if (File.Exists(filepath))
             {
                 // deserialize.
                 IFormatter formatter = CreateSoapFormatter();
                 using (Stream stream = CreateStream(filepath, false))
                 {
                     s_TheSession = (Session)formatter.Deserialize(stream);
-                    stream.Close();
+                    //stream.Close();
                 }
 
                 // reconstruct auxiliary fields.
                 s_TheSession.ReconstructAuxiliaryFields();
             }
-            catch (Exception e)
+            else
             {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game).");
                 s_TheSession = null;
                 return false;
             }
@@ -708,7 +706,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 xs.Serialize(stream, session);
                 stream.Flush();
-                stream.Close();
+                //stream.Close();
             }
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
@@ -725,7 +723,7 @@ namespace djack.RogueSurvivor.Engine
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
 
-            try
+            if (File.Exists(filepath))
             {
                 // deserialize.
                 XmlSerializer xs = new XmlSerializer(typeof(Session));
@@ -733,16 +731,15 @@ namespace djack.RogueSurvivor.Engine
                 {
                     s_TheSession = (Session)xs.Deserialize(stream);
                     stream.Flush();
-                    stream.Close();
+                    //stream.Close();
                 }
 
                 // reconstruct auxiliary fields.
                 s_TheSession.ReconstructAuxiliaryFields();
             }
-            catch (Exception e)
+            else
             {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game).");
                 s_TheSession = null;
                 return false;
             }
@@ -760,21 +757,21 @@ namespace djack.RogueSurvivor.Engine
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "deleting saved game...");
 
             bool hasDeleted = false;
-            try
+            if (File.Exists(filepath))
             {
-                File.Delete(filepath);
-                hasDeleted = true;
+                try
+                {
+                    File.Delete(filepath);
+                    hasDeleted = true;
+                }
+                catch (Exception e)
+                {
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to delete saved game (no save?)");
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("delete exception : {0}.", e.ToString()));
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "failing silently.");
+                }
             }
-            catch (Exception e) 
-            {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to delete saved game (no save?)");
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "exception :");
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, e.ToString());
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failing silently.");
-            }
-
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "deleting saved game... done!");
-
             return hasDeleted;
         }
 
@@ -816,7 +813,7 @@ namespace djack.RogueSurvivor.Engine
                 case GameMode.GM_STANDARD: return "STD - Standard Game";
                 case GameMode.GM_CORPSES_INFECTION: return "C&I - Corpses & Infection";
                 case GameMode.GM_VINTAGE: return "VTG - Vintage Zombies";
-                default: throw new Exception("unhandled game mode");
+                default: throw new ArgumentException("unhandled game mode", "mode");
             }
         }
 
@@ -827,7 +824,7 @@ namespace djack.RogueSurvivor.Engine
                 case GameMode.GM_STANDARD: return "STD";
                 case GameMode.GM_CORPSES_INFECTION: return "C&I";
                 case GameMode.GM_VINTAGE: return "VTG";
-                default: throw new Exception("unhandled game mode");
+                default: throw new ArgumentException("unhandled game mode", "mode");
             }
         }
         #endregion

@@ -21,10 +21,13 @@ namespace djack.RogueSurvivor.Engine.Items
         public ItemPrimedExplosive(ItemModel model)
             : base(model, model)
         {
-            if (!(model is ItemExplosiveModel))
+            ItemExplosiveModel itemModel = model as ItemExplosiveModel;
+            //if (!(model is ItemExplosiveModel)) //@@MP (Release 5-7)
+            if (itemModel == null)
                 throw new ArgumentException("model is not ItemExplosiveModel");
 
-            this.FuseTimeLeft = (model as ItemExplosiveModel).FuseDelay;
+            //this.FuseTimeLeft = (model as ItemExplosiveModel).FuseDelay;
+            this.FuseTimeLeft = itemModel.FuseDelay;
         }
         #endregion
     }
