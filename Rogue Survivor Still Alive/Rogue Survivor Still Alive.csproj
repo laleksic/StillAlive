@@ -80,15 +80,15 @@
     <Reference Include="Microsoft.VisualC" />
     <Reference Include="sfmlnet-audio-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-audio-2.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-audio-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-system-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-system-2.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-system-2.dll</HintPath>
     </Reference>
     <Reference Include="sfmlnet-window-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-window-2.dll</HintPath>
+      <HintPath>..\..\..\..\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor repository\SFML.NET 2.4 compiled\sfmlnet-window-2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

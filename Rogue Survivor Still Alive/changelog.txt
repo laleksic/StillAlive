@@ -1,4 +1,18 @@
-﻿STILL ALIVE 1.5.32.5 (aka Release 5-5, 25/02/2018) [Author: MP]
+﻿STILL ALIVE 1.5.32.11 (aka Release 5-6, 14/04/2018) [Author: MP]
+---------------------
+
+Fixes:
+-Added the missing hint for planting seeds.
+-Fixed a crash upon starting the game as a zombified man/woman.
+-Added keyboard shortcut to tooltips for items related to planting seeds.
+-PWNN is now detected properly.
+For the following thanks goes to the one-and-only RoguedJack!!:
+-Made iron fences jumpable as AI were getting stuck.
+-Zombification no longer causes crashes in C&I mode.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.5.32.5 (aka Release 5-5, 25/02/2018) [Author: MP]
 --------------------
 
 Features:

@@ -20,7 +20,7 @@ SLEEP : Z                       WAIT 1 TURN : Numpad 5          WAIT 1 HOUR : W
 CITY INFO : I                   MESSAGES LOG : Shift + M
 FIRE : F                        MARK ENEMIES : E                MAKE MOLOTOVS : M
 CLOSE : C                       USE LADDER/STAIRS : X           USE SPRAY : A
-BREAK : K                       PUSH : P					    PLANT SEEDS: J
+BREAK : K                       PUSH : P                        PLANT SEEDS: J
 BARRICADE : B                   BUILD SMALL FORT. : N           BUILD LARGE FORT : Ctrl + N
 INITIATE TRADE : E              GIVE : G                        SHOUT : S
 LEAD FOLLOWER : L               ORDER FOLLOWER : O              SWITCH PLACE : Ctrl + S

@@ -396,8 +396,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new MapObject("iron fence", fenceImageID)
             {
                 IsMaterialTransparent = true,
+                JumpLevel = 1, //@@MP (Release 5-6)
                 IsAn = true,
-                IsMetal = true //@@MP (Release 5-4)
+                IsMetal = true, //@@MP (Release 5-4)
+                StandOnFovBonus = true //@@MP (Release 5-6)
             };
         }
 

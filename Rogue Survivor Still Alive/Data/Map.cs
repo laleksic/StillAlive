@@ -1281,16 +1281,40 @@ namespace djack.RogueSurvivor.Data
                 if (!IsInBounds(next))
                     continue;
 
-                MapObject mapObj = GetMapObjectAt(position);
-                if (mapObj != null && mapObj is DoorWindow)
+                MapObject mapObj = GetMapObjectAt(next);
+                DoorWindow door = mapObj as DoorWindow;
+                if (door != null)
                 {
-                    DoorWindow door = mapObj as DoorWindow;
                     if (door.IsClosed)
                         return true;
                     else
                         return false;
                 }
                     
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Determine if the closest door in any direction (clockwise from N) is closed. True = yes
+        /// </summary>
+        /// <param name="direction">8 ways: N,NE,SE,E,SW,etc</param>
+        public bool IsClosestIronGateClosed(Point position) //@@MP - initially created to check the cell door of the Prisoner Who's Not Named (Release 5-1)
+        {
+            Point next;
+            foreach (Direction d in Direction.COMPASS)
+            {
+                next = position + d;
+
+                if (!IsInBounds(next))
+                    continue;
+
+                MapObject mapObj = GetMapObjectAt(next);
+                if (mapObj != null && mapObj.AName == "an iron gate")
+                {
+                    return true;
+                }
+
             }
             return false;
         }

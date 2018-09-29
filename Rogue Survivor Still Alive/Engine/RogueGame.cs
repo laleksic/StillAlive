@@ -3283,8 +3283,8 @@ namespace djack.RogueSurvivor.Engine
                                     }
                                 }
                             }
-                            foreach (Corpse c in zombifiedCorpses)
-                                DestroyCorpse(c, map);
+                            /*foreach (Corpse c in zombifiedCorpses) //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
+                                DestroyCorpse(c, map);*/
                         }
                         // rot! (message only)
                         if (m_Player != null && m_Player.Location.Map == map)
@@ -3410,7 +3410,7 @@ namespace djack.RogueSurvivor.Engine
                                 if (a.IsPlayer)
                                 {
                                     // remove player corpse!
-                                    map.TryRemoveCorpseOf(a);
+                                    //map.TryRemoveCorpseOf(a); //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
                                     // zombify player!
                                     Zombify(null, a, false);
 
@@ -3770,7 +3770,7 @@ namespace djack.RogueSurvivor.Engine
                         if (!actor.Model.Abilities.IsUndead && Rules.HasImmediateZombification(m_Session.GameMode) && m_Rules.RollChance(s_Options.StarvedZombificationChance))
                         {
                             // remove morpse!
-                            map.TryRemoveCorpseOf(actor);
+                            //map.TryRemoveCorpseOf(actor); //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
                             // zombify!
                             Zombify(null, actor, false);
                             // show.
@@ -10611,6 +10611,16 @@ namespace djack.RogueSurvivor.Engine
                         };
                     break;
 
+                case AdvisorHint.PLANT_SEEDS: //@@MP (Release 5-5)
+                    title = "PLANTING SEEDS";
+                    body = new string[] {
+                            "You can find vegie seeds in hardware stores.",
+                            "Seeds can be planted using a shovel or pick axe.",
+                            "On the next morning they will grow into harvestable vegies.",
+                            String.Format("To PLANT : <{0}>.", s_KeyBindings.Get(PlayerCommand.PLANT_SEEDS).ToString())
+                        };
+                    break;
+
                 case AdvisorHint.RAIN:
                     title = "RAIN";
                     body = new string[] {
@@ -11381,7 +11391,7 @@ namespace djack.RogueSurvivor.Engine
             if (it is ItemWeapon)
             {
                 lines.AddRange(DescribeItemWeapon(it as ItemWeapon));
-                if(it is ItemRangedWeapon)
+                if (it is ItemRangedWeapon)
                     additionalDescription = String.Format("to fire : <{0}>.", s_KeyBindings.Get(PlayerCommand.FIRE_MODE).ToString());
             }
             else if (it is ItemFood)
@@ -11441,6 +11451,12 @@ namespace djack.RogueSurvivor.Engine
             else if (it is ItemEntertainment)
             {
                 lines.AddRange(DescribeItemEntertainment(it as ItemEntertainment));
+            }
+
+            //is related to planting seeds?
+            if ((it.Model.ID == (int)GameItems.IDs.VEGETABLE_SEEDS) || (it.Model.ID == (int)GameItems.IDs.MELEE_SHORT_SHOVEL) || (it.Model.ID == (int)GameItems.IDs.MELEE_SHOVEL) || (it.Model.ID == (int)GameItems.IDs.MELEE_PICKAXE)) //@@MP (Release 5-6)
+            {
+                additionalDescription = String.Format("plant seeds : <{0}>.", s_KeyBindings.Get(PlayerCommand.PLANT_SEEDS).ToString());
             }
 
             // 3. Flavor description
@@ -13239,7 +13255,7 @@ namespace djack.RogueSurvivor.Engine
                             else if (defender == m_Player && !defender.Model.Abilities.IsUndead && defender.Infection > 0)
                             {
                                 // remove player corpse.
-                                defender.Location.Map.TryRemoveCorpseOf(defender);
+                                //defender.Location.Map.TryRemoveCorpseOf(defender); //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
                                 // zombify player!
                                 Zombify(null, defender, false);
 
@@ -17719,22 +17735,28 @@ namespace djack.RogueSurvivor.Engine
                 m_TownGenerator.RecomputeActorStartingStats(newZombie);
             }
 
-            // cause insanity if the actor sees a zombie rise
+            
             if (!isStartingGame)
+            {
+                // cause insanity if the actor sees a zombie rise
                 SeeingCauseInsanity(newZombie.Location, Rules.SANITY_HIT_ZOMBIFY, String.Format("{0} turning into a zombie", deadVictim.Name), newZombie); //@@MP - updated for the change to this method (Release 5-2)
 
-            //remove their corpse //@@MP (Release 5-5)
-            Map map = deadVictim.Location.Map;
-            map.TryRemoveCorpseOf(deadVictim);
-            /*List<Corpse> corpses = map.GetCorpsesAt(newZombie.Location.Position);
-            if (corpses != null && corpses.Count > 0)
-            {
-                foreach (Corpse corpse in corpses)
-                {
-                    if (corpse.DeadGuy.Name == deadVictim.Name)
-                        map.RemoveCorpse(corpse);
-                }
-            }*/
+                //remove their corpse //@@MP (Release 5-5), moved within startofgame check (Release 5-6)
+                Map map = deadVictim.Location.Map;
+                map.TryRemoveCorpseOf(deadVictim);
+                //List<Corpse> corpses = map.GetCorpsesAt(deadVictim.Location.Position); //List<Corpse> corpses = map.GetCorpsesAt(newZombie.Location.Position);
+                //if (corpses != null && corpses.Count > 0)
+                //{
+                //    foreach (Corpse corpse in corpses)
+                //    {
+                //        if (corpse.DeadGuy.Name == deadVictim.Name)
+                //        {
+                //            map.RemoveCorpse(corpse);
+                //            break;
+                //        }
+                //    }
+                //}
+            }
 
             // done.
             return newZombie;
@@ -21333,7 +21355,7 @@ namespace djack.RogueSurvivor.Engine
                         /////////////////////////////////////////////
                         // Player is next to generator : offer deal.
                         /////////////////////////////////////////////
-                        if (map.HasAnyAdjacentInMap(player.Location.Position, (pt) => map.GetMapObjectAt(pt) is PowerGenerator) && !prisoner.IsSleeping && IsVisibleToPlayer(prisoner) && map.IsClosestDoorClosed(prisoner.Location.Position))
+                        if (map.HasAnyAdjacentInMap(player.Location.Position, (pt) => map.GetMapObjectAt(pt) is PowerGenerator) && !prisoner.IsSleeping && IsVisibleToPlayer(prisoner) && map.IsClosestIronGateClosed(prisoner.Location.Position))
                         {
                             lock (m_Session) // thread safe
                             {
