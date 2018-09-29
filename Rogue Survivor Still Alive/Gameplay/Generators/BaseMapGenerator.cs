@@ -364,7 +364,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 IsWindow = true,
                 IsMaterialTransparent = true,
-                GivesWood = true,
+                //GivesWood = true, //@@MP (Release 5-3)
                 BreaksWhenFiredThrough = true
             };
         }
@@ -582,6 +582,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsPlural = true,
                 IsMaterialTransparent = true,
                 IsMovable = true,
+                IsContainer = true, //@@MP (Release 5-3)
                 GivesWood = true,
                 Weight = 6
             };
@@ -594,6 +595,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsPlural = true,
                 IsMaterialTransparent = true,
                 IsMovable = true,
+                IsContainer = true, //@@MP (Release 5-3)
                 GivesWood = true,
                 Weight = 10
             };
@@ -654,7 +656,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new MapObject("piano", pianoImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
-                IsContainer = true,
+                //IsContainer = true, //@@MP (Release 5-3)
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
                 GivesWood = true,
@@ -680,7 +682,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 IsMaterialTransparent = true,
                 IsMovable = true,
-                Weight = 3
+                Weight = 3,
+                GivesWood = true  //@@MP (Release 5-3)
             };
         }
 
@@ -699,7 +702,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new MapObject("stove oven", stoveOvenImageID)
             {
-                IsMaterialTransparent = true
+                IsMaterialTransparent = true,
+                IsContainer = true //@@MP (Release 5-3)
             };
         }
 
@@ -708,7 +712,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new MapObject("sink", kitchenSinkImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
                 IsMaterialTransparent = true,
-                JumpLevel = 1,
+                IsContainer = true, //@@MP (Release 5-3)
+                //JumpLevel = 1, //@@MP (Release 5-3)
                 GivesWood = true
             };
         }
@@ -742,6 +747,16 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new MapObject("counter", kitchenCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
                 IsContainer = true,
+                //JumpLevel = 1, //@@MP (Release 5-3)
+                IsMaterialTransparent = true,
+                GivesWood = true
+            };
+        }
+
+        protected MapObject MakeObjBarCounter(string barCounterImageID) //@@MP (Release 5-3)
+        {
+            return new MapObject("counter", barCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
+            {
                 JumpLevel = 1,
                 IsMaterialTransparent = true,
                 GivesWood = true
@@ -753,7 +768,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new MapObject("cash register", cashRegisterImageID)
             {
                 IsMaterialTransparent = true,
-                JumpLevel = 1,
+                IsContainer = true, //@@MP (Release 5-3)
+                //JumpLevel = 1, //@@MP (Release 5-3)
                 GivesWood = true
             };
         }
@@ -771,7 +787,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected MapObject MakeObjWorkbench(string workbenchImageID)
         {
-            return new MapObject("workbench", workbenchImageID);
+            return new MapObject("workbench", workbenchImageID)
+            {
+                IsContainer = true, //@@MP (Release 5-3)
+            };
         }
 
         protected MapObject MakeObjBankSafe(string banksafeImageID)
@@ -784,7 +803,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected MapObject MakeObjBankTeller(string banktellerImageID)
         {
-            return new MapObject("bank teller", banktellerImageID);
+            return new MapObject("bank teller", banktellerImageID)
+            {
+                IsMaterialTransparent = true, //@@MP (Release 5-3)
+            };
         }
 
         protected MapObject MakeObjBerryBush(string berrybushImageID)
@@ -800,6 +822,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new MapObject("reception desk", receptiondeskImageID)
             {
+                IsContainer = true, //@@MP (Release 5-3)
                 JumpLevel = 1,
                 IsMaterialTransparent = true,
                 StandOnFovBonus = true
@@ -810,7 +833,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new MapObject("machinery", machineryImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
-                IsMaterialTransparent = true
+                IsMaterialTransparent = true,
+                IsContainer = true //@@MP (Release 5-3)
             };
         }
 
@@ -1270,9 +1294,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeItemWildBerries()
         {
-            // berries rot after a few days.
             int timeNow = m_Game.Session.WorldTime.TurnCounter;
-            int freshUntil = timeNow + WorldTime.TURNS_PER_DAY * m_Game.GameItems.WILD_BERRIES.BestBeforeDays;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.WILD_BERRIES.BestBeforeDays);
             return new ItemFood(m_Game.GameItems.WILD_BERRIES, freshUntil)
             {
                 Quantity = 3
@@ -1289,8 +1312,38 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new ItemAmmo(m_Game.GameItems.AMMO_NAILS);
         }
-        #endregion
 
+        //@@MP (Release 5-3)
+        public Item MakeItemCarrots()
+        {
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.CARROTS.BestBeforeDays);
+            return new ItemFood(m_Game.GameItems.CARROTS, freshUntil)
+            {
+                Quantity = 3
+            };
+        }
+
+        public Item MakeItemPumpkin()
+        {
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.PUMPKIN.BestBeforeDays);
+            return new ItemFood(m_Game.GameItems.PUMPKIN, freshUntil)
+            {
+                Quantity = 1
+            };
+        }
+
+        public Item MakeItemTurnips()
+        {
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.TURNIP.BestBeforeDays);
+            return new ItemFood(m_Game.GameItems.TURNIP, freshUntil)
+            {
+                Quantity = 3
+            };
+        }
+        #endregion
 
         #region Common tasks
         protected void BarricadeDoors(Map map, Rectangle rect, int barricadeLevel)

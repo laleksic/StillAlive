@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.DirectX.AudioVideoPlayback;
-using Microsoft.DirectX;
+
+using SFML.Audio;
+
+using SFMLMusic = SFML.Audio.Music;
 
 namespace djack.RogueSurvivor.Engine
 {
-    class MDXSoundManager : ISoundManager
+    class SFMLMusicManager : ISoundManager
     {
         #region Fields
         bool m_IsAudioEnabled; //@@MP renamed (Release 2)
         int m_Volume;
-        int m_Attenuation;
-        Dictionary<string, Audio> m_Musics;
+        Dictionary<string, SFMLMusic> m_Musics;
         #endregion
 
         #region Properties
@@ -22,11 +23,12 @@ namespace djack.RogueSurvivor.Engine
             get { return m_IsAudioEnabled; }
             set { m_IsAudioEnabled = value; }
         }
-        public int Volume 
+
+        public int Volume
         {
             get { return m_Volume; }
-            set 
-            { 
+            set
+            {
                 m_Volume = value;
                 OnVolumeChange();
             }
@@ -34,15 +36,15 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Init
-        public MDXSoundManager()
+        public SFMLMusicManager()
         {
-            m_Musics = new Dictionary<string, Audio>();
-            this.Volume = 100;
+            m_Musics = new Dictionary<string, SFMLMusic>();
+            m_Volume = 100;
         }
 
         string FullName(string fileName)
         {
-            return fileName + ".ogg";//".mp3"; //@@MP (Release 5-3)
+            return fileName + ".ogg";
         }
         #endregion
 
@@ -53,7 +55,7 @@ namespace djack.RogueSurvivor.Engine
             Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("loading music {0} file {1}", musicname, filename));
             try
             {
-                Audio music = new Audio(filename);
+                SFMLMusic music = new SFMLMusic(filename);
                 m_Musics.Add(musicname, music);
             }
             catch (Exception e)
@@ -75,29 +77,8 @@ namespace djack.RogueSurvivor.Engine
 
         private void OnVolumeChange()
         {
-            m_Attenuation = ComputeDXAttenuationFromVolume();
-            foreach (Audio a in m_Musics.Values)
-                try
-                {
-                    a.Volume = -m_Attenuation; // yep mdx volume is negative and means attenuation instead of volume.
-                }
-                catch (DirectXException)
-                {
-                }
-        }
-
-        /**
-         * MDX is retarded, "volume" audio property means attenuation instead and 0 is max volume and -10000 is zero db.
-         * Go figure.
-         */
-        private int ComputeDXAttenuationFromVolume()
-        {
-            const int MIN_ATT = 10000;
-            const int ATT_FACTOR = 2500; // should be min_att but it doesn't work. mdx is weird like that.
-            if (m_Volume <= 0)
-                return MIN_ATT;
-            int att = ((100 - m_Volume) * ATT_FACTOR) / 100;
-            return att;
+            foreach (SFMLMusic a in m_Musics.Values)
+                a.Volume = m_Volume;
         }
 
         /// <summary>
@@ -109,7 +90,7 @@ namespace djack.RogueSurvivor.Engine
             if (!m_IsAudioEnabled)
                 return;
 
-            Audio music;
+            SFMLMusic music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing music {0}.", musicname));
@@ -126,7 +107,7 @@ namespace djack.RogueSurvivor.Engine
             if (!m_IsAudioEnabled)
                 return;
 
-            Audio music;
+            SFMLMusic music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 if (!IsPlaying(music))
@@ -143,11 +124,11 @@ namespace djack.RogueSurvivor.Engine
             if (!m_IsAudioEnabled)
                 return;
 
-            Audio music;
+            SFMLMusic music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping music {0}.", musicname));
-                music.Ending += new EventHandler(music_Ending);
+                music.Loop = true;
                 Play(music);
             }
         }
@@ -157,7 +138,7 @@ namespace djack.RogueSurvivor.Engine
             if (!m_IsAudioEnabled)
                 return;
 
-            Audio music;
+            SFMLMusic music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming looping music {0}.", musicname));
@@ -165,15 +146,9 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        void music_Ending(object sender, EventArgs e)
-        {
-            Audio music = (Audio)sender;
-            Play(music);
-        }
-
         public void Stop(string musicname)
         {
-            Audio music;
+            SFMLMusic music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("stopping music {0}.", musicname));
@@ -184,7 +159,7 @@ namespace djack.RogueSurvivor.Engine
         public void StopAll()
         {
             Logger.WriteLine(Logger.Stage.RUN_SOUND, "stopping all musics.");
-            foreach (Audio a in m_Musics.Values)
+            foreach (SFMLMusic a in m_Musics.Values)
             {
                 Stop(a);
             }
@@ -192,7 +167,7 @@ namespace djack.RogueSurvivor.Engine
 
         public bool IsPlaying(string musicname)
         {
-            Audio music;
+            SFMLMusic music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 return IsPlaying(music);
@@ -203,7 +178,7 @@ namespace djack.RogueSurvivor.Engine
 
         public bool IsPaused(string musicname)
         {
-            Audio music;
+            SFMLMusic music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 return IsPaused(music);
@@ -214,7 +189,7 @@ namespace djack.RogueSurvivor.Engine
 
         public bool HasEnded(string musicname)
         {
-            Audio music;
+            SFMLMusic music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 return HasEnded(music);
@@ -223,50 +198,46 @@ namespace djack.RogueSurvivor.Engine
                 return false;
         }
 
-        void Stop(Audio audio)
-        {
-            audio.Ending -= music_Ending;
-            //audio.Pause(); //@@MP (Release 2)
-            if (audio.Playing)
-                audio.Stop();
-        }
-
-        void Play(Audio audio)
+        void Stop(SFMLMusic audio)
         {
             audio.Stop();
-            audio.SeekCurrentPosition(0, SeekPositionFlags.AbsolutePositioning);
-            audio.Volume = -m_Attenuation;
+        }
+
+        void Play(SFMLMusic audio)
+        {
+            audio.Stop();
+            audio.Volume = m_Volume;
             audio.Play();
         }
 
-        void Resume(Audio audio)
+        void Resume(SFMLMusic audio)
         {
             audio.Play();
         }
 
-        bool IsPlaying(Audio audio)
+        bool IsPlaying(SFMLMusic audio)
         {
-            return audio.CurrentPosition > 0 && audio.CurrentPosition < audio.Duration && audio.State == StateFlags.Running;
+            return audio.Status == SoundStatus.Playing;
         }
 
-        bool IsPaused(Audio audio)
+        bool IsPaused(SFMLMusic audio)
         {
-            return (audio.State & StateFlags.Paused) != 0;
+            return audio.Status == SoundStatus.Paused;
         }
 
-        bool HasEnded(Audio audio)
+        bool HasEnded(SFMLMusic audio)
         {
-            return audio.CurrentPosition >= audio.Duration;
+            return audio.Status == SoundStatus.Stopped || audio.PlayingOffset >= audio.Duration;
         }
         #endregion
 
         #region IDisposable
         public void Dispose()
         {
-            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing MDXMusicManager...");
+            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing SFMLMusicManager...");
             foreach (string musicname in m_Musics.Keys)
             {
-                Audio music = m_Musics[musicname];
+                SFMLMusic music = m_Musics[musicname];
                 if(music==null)
                 {
                     Logger.WriteLine(Logger.Stage.CLEAN_SOUND, String.Format("WARNING: null music for key {0}", musicname));
@@ -277,7 +248,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             m_Musics.Clear();
-            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing MDXMusicManager done.");
+            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing SFMLMusicManager done.");
         }
         #endregion
     }

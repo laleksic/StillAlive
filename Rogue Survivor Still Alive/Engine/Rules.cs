@@ -190,9 +190,9 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Loud noises
-        public const int LOUD_NOISE_RADIUS = 5;
+        public const int LOUD_NOISE_RADIUS = 7; //5; //@@MP (Release 5-3)
         const int LOUD_NOISE_BASE_WAKEUP_CHANCE = 10;
-        const int LOUD_NOISE_DISTANCE_BONUS = 10;
+        const int LOUD_NOISE_DISTANCE_BONUS = 8; //10; //@@MP (Release 5-3)
         #endregion
 
         #region Victims dropping items.
@@ -558,59 +558,66 @@ namespace djack.RogueSurvivor.Engine
             if (actor == null)
                 throw new ArgumentNullException("actor");
 
-            ////////////////////////////////////
-            // Can't if any is true:
-            // 1. Is a locked door
-            // 2. They're exhausted
-            // 3. Map object is not a container.
-            // 4. There is no items there.
-            // 5. Actor cannot take the item.
-            ////////////////////////////////////
-
-            MapObject mapObj = actor.Location.Map.GetMapObjectAt(position);
-
-            // 1. it's a well locked door, like a bank vault //@@MP (Release 4)
-            if (mapObj.AName == "a locked door")
+            MapObject mapObj = actor.Location.Map.GetMapObjectAt(position); //@@MP - added null check to prevent crashing (Release 5-3)
+            if (mapObj != null)
             {
-                reason = "this door cannot be opened";
-                return false;
+                ////////////////////////////////////
+                // Can't if any is true:
+                // X 1. Is a locked door - MOVED TO RogueGame : DoPlayerBump() (Release 5-3)
+                // X 2. They're exhausted - MOVED TO RogueGame : DoPlayerBump() (Release 5-3)
+                // X 3. Map object is not a container. - REMOVED, not helpful for the player (Release 5-3)
+                // 4. There is no items there.
+                // 5. Actor cannot take the item.
+                ////////////////////////////////////
+
+                /* @@MP FIXME: THE FOLLOWING ARE LEFT IN FOR REFERENCE ONLY. CLEAN UP IN THE FUTURE
+                // 1. it's a well locked door, like a bank vault //@@MP (Release 4)
+                if (mapObj.AName == "a locked door")
+                {
+                    reason = "this door cannot be opened";
+                    return false;
+                }
+
+                // 2. too exhausted to climb //@@MP (Release 4)
+                if (mapObj.IsJumpable && actor.StaminaPoints < STAMINA_MIN_FOR_ACTIVITY)
+                {
+                    reason = "not enough stamina to climb on that";
+                    return false;
+                }
+
+                // 3. Map object is not a container.
+                if (mapObj == null || !mapObj.IsContainer)
+                {
+                    reason = "object is not a container";
+                    return false;
+                }
+                */
+
+                // 4. There is no items there.
+                Inventory invThere = actor.Location.Map.GetItemsAt(position);
+                if (invThere == null || invThere.IsEmpty)
+                {
+                    reason = "nothing to take there";
+                    return false;
+                }
+
+                // 5. Actor cannot take the item.
+                if (!actor.Model.Abilities.HasInventory ||
+                    !actor.Model.Abilities.CanUseMapObjects ||
+                    actor.Inventory == null ||
+                    !CanActorGetItem(actor, invThere.TopItem))
+                {
+                    reason = "cannot take an item";
+                    return false;
+                }
+
+                // all clear.
+                reason = "";
+                return true;
             }
 
-            // 2. to exhausted to climb //@@MP (Release 4)
-            if (mapObj.IsJumpable && actor.StaminaPoints < STAMINA_MIN_FOR_ACTIVITY)
-            {
-                reason = "not enough stamina to climb on that";
-                return false;
-            }
-
-            // 3. Map object is not a container.
-            if (mapObj == null || !mapObj.IsContainer)
-            {
-                reason = "object is not a container";
-                return false;
-            }
-
-            // 4. There is no items there.
-            Inventory invThere = actor.Location.Map.GetItemsAt(position);
-            if (invThere == null || invThere.IsEmpty)
-            {
-                reason = "nothing to take there";
-                return false;
-            }
-
-            // 5. Actor cannot take the item.
-            if (!actor.Model.Abilities.HasInventory ||
-                !actor.Model.Abilities.CanUseMapObjects ||
-                actor.Inventory == null ||
-                !CanActorGetItem(actor, invThere.TopItem))
-            {
-                reason = "cannot take an item";
-                return false;
-            }
-
-            // all clear.
             reason = "";
-            return true;
+            return false; //@@MP - fall through (Release 5-3)
         }
 
         public bool CanActorGetItem(Actor actor, Item it)
@@ -2371,7 +2378,7 @@ namespace djack.RogueSurvivor.Engine
         {
             return (IsFoodStillFresh(food, turnCounter) ? food.Nutrition : 
                 IsFoodExpired(food, turnCounter) ? 2 * food.Nutrition / 3 :
-                food.Nutrition / 3);
+                food.Nutrition / 6); //@@MP - reduced from 3 to 6 (Release 5-3)
         }
 
         public bool IsActorSleepy(Actor a)

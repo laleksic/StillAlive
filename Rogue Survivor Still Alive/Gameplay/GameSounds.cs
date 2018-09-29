@@ -17,9 +17,6 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string NIGHTMARE_FILE = PATH + "sfx - nightmare";
 
         //@@MP (Release 2)
-        public static readonly string COMMOTION = "commotion";
-        public static readonly string COMMOTION_FILE = PATH + "commotion";
-
         public static readonly string PISTOL_FIRE_PLAYER = "player fires pistol";
         public static readonly string PISTOL_FIRE_PLAYER_FILE = PATH + "pistol_player";
         public static readonly string HUNTING_RIFLE_FIRE_PLAYER = "player fires hunting rifle";
@@ -197,5 +194,19 @@ namespace djack.RogueSurvivor.Gameplay
         //@@MP (Release 5-1)
         public static readonly string NAIL_GUN = "player fires nail gun";
         public static readonly string NAIL_GUN_FILE = PATH + "nail_gun";
+
+        //@@MP (Release 5-3)
+        public static readonly string BREAKWOODENDOOR_PLAYER = "break wooden door";
+        public static readonly string BREAKWOODENDOOR_PLAYER_FILE = PATH + "breakwoodendoor_player";
+        public static readonly string BREAKWOODENDOOR_NEARBY = "wooden door breaks nearby";
+        public static readonly string BREAKWOODENDOOR_NEARBY_FILE = PATH + "breakwoodendoor_nearby";
+        public static readonly string BREAKGLASSDOOR_PLAYER = "break glass door";
+        public static readonly string BREAKGLASSDOOR_PLAYER_FILE = PATH + "breakglassdoor_player";
+        public static readonly string BREAKGLASSDOOR_NEARBY = "glass door breaks nearby";
+        public static readonly string BREAKGLASSDOOR_NEARBY_FILE = PATH + "breakglassdoor_nearby";
+        public static readonly string RAIN_OUTSIDE = "outside whilst raining";
+        public static readonly string RAIN_OUTSIDE_FILE = PATH + "rain_outside_looped";
+        public static readonly string RAIN_INSIDE = "inside whilst raining";
+        public static readonly string RAIN_INSIDE_FILE = PATH + "rain_inside_looped";
     }
 }

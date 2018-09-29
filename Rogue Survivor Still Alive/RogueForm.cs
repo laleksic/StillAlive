@@ -38,13 +38,21 @@ namespace djack.RogueSurvivor
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::InitializeComponent...");
             InitializeComponent();
-            this.Text = "Rogue Survivor - " + SetupConfig.GAME_VERSION;
-            if (SetupConfig.Video == SetupConfig.eVideo.VIDEO_GDI_PLUS) this.Text += " (GDI+)";
+
+            this.Text = "Rogue Survivor: " + SetupConfig.GAME_VERSION + " [";
+            switch (SetupConfig.Video) //@@MP (Release 5-3)
+            {
+                case SetupConfig.eVideo.VIDEO_MANAGED_DIRECTX: this.Text += "MDX video,"; break;
+                case SetupConfig.eVideo.VIDEO_GDI_PLUS: this.Text += "GDI+ video,"; break;
+            }
             switch (SetupConfig.Sound)
             {
-                case SetupConfig.eSound.SOUND_NOSOUND: this.Text += " (nosound)"; break;
-                case SetupConfig.eSound.SOUND_SFML: this.Text += " (sndSFML)"; break;
+                case SetupConfig.eSound.SOUND_SFML: this.Text += " SFML sound"; break;
+                case SetupConfig.eSound.SOUND_MANAGED_DIRECTX: this.Text += " MDX sound"; break; //@@MP (Release 5-3)
+                case SetupConfig.eSound.SOUND_NOSOUND: this.Text += " no sound"; break;
             }
+            this.Text += "]";
+
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::SetClientSizeCore...");
             SetClientSizeCore(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
             // prevent flickering (gdi conflicting with directx?)
@@ -188,6 +196,11 @@ namespace djack.RogueSurvivor
                 //if (GameOptions.m_SanityGlobal) m_Game.Player.Sanity = m_Game.Rules.ActorMaxSanity(m_Game.Player);
                 if (RogueGame.Options.IsSanityEnabled) m_Game.Player.Sanity = m_Game.Rules.ActorMaxSanity(m_Game.Player); //@MP - fixed crappy implem (Release 5-2)
                 //m_Game.Player.Inventory.MaxCapacity = 10;
+                /*Tile tile = m_Game.Session.CurrentMap.GetTileAt(m_Game.Player.Location.Position);
+                if (tile == null)
+                    return;
+                else if (tile.IsInside)
+                    m_Game.Player.SleepPoints = (m_Game.Rules.ActorMaxSleep(m_Game.Player) / 2);*/
             }
             // F7 - DEV - toggle FPS
             if (e.KeyCode == Keys.F7)

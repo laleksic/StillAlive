@@ -5,7 +5,7 @@ using System.Text;
 
 using SFML.Audio;
 
-using SFMLMusic = SFML.Audio.Music;
+using SFMLSound = SFML.Audio.Sound;
 
 namespace djack.RogueSurvivor.Engine
 {
@@ -14,7 +14,7 @@ namespace djack.RogueSurvivor.Engine
         #region Fields
         bool m_IsAudioEnabled; //@@MP renamed (Release 2)
         int m_Volume;
-        Dictionary<string, SFMLMusic> m_Musics;
+        Dictionary<string, SFMLSound> m_Sounds;
         #endregion
 
         #region Properties
@@ -38,7 +38,7 @@ namespace djack.RogueSurvivor.Engine
         #region Init
         public SFMLSoundManager()
         {
-            m_Musics = new Dictionary<string, SFMLMusic>();
+            m_Sounds = new Dictionary<string, SFMLSound>();
             m_Volume = 100;
         }
 
@@ -48,207 +48,209 @@ namespace djack.RogueSurvivor.Engine
         }
         #endregion
 
-        #region Loading music
-        public bool Load(string musicname, string filename)
+        #region Loading sound
+        public bool Load(string soundname, string filename)
         {
             filename = FullName(filename);
-            Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("loading music {0} file {1}", musicname, filename));
+            Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("loading sound {0} file {1}", soundname, filename));
             try
             {
-                SFMLMusic music = new SFMLMusic(filename);
-                m_Musics.Add(musicname, music);
+                //SFMLSound sound = new SFMLSound(filename);
+                SoundBuffer buffer = new SoundBuffer(filename); //@@MP - SFML:Sound buffers rather than streams from the drive like Music (Release 5-3)
+                SFMLSound sound = new SFMLSound(buffer);
+                m_Sounds.Add(soundname, sound);
             }
             catch (Exception e)
             {
-                Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("failed to load music file {0} exception {1}.", filename, e.ToString()));
+                Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("failed to load sound file {0} exception {1}.", filename, e.ToString()));
             }
 
 
             return true;
         }
 
-        public void Unload(string musicname)
+        public void Unload(string soundname)
         {
-            m_Musics.Remove(musicname);
+            m_Sounds.Remove(soundname);
         }
         #endregion
 
-        #region Playing music
+        #region Playing sound
 
         private void OnVolumeChange()
         {
-            foreach (SFMLMusic a in m_Musics.Values)
+            foreach (SFMLSound a in m_Sounds.Values)
                 a.Volume = m_Volume;
         }
 
         /// <summary>
-        /// Restart playing a music from the beginning if music is enabled.
+        /// Restart playing a sound from the beginning if sound is enabled.
         /// </summary>
-        /// <param name="musicname"></param>
-        public void Play(string musicname)
+        /// <param name="soundname"></param>
+        public void Play(string soundname)
         {
             if (!m_IsAudioEnabled)
                 return;
 
-            SFMLMusic music;
-            if (m_Musics.TryGetValue(musicname, out music))
+            SFMLSound sound;
+            if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing music {0}.", musicname));
-                Play(music);
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing sound {0}.", soundname));
+                Play(sound);
             }
         }
 
         /// <summary>
-        /// Start playing a music from the beginning if not already playing and if music is enabled.
+        /// Start playing a sound from the beginning if not already playing and if sound is enabled.
         /// </summary>
-        /// <param name="musicname"></param>
-        public void PlayIfNotAlreadyPlaying(string musicname)
+        /// <param name="soundname"></param>
+        public void PlayIfNotAlreadyPlaying(string soundname)
         {
             if (!m_IsAudioEnabled)
                 return;
 
-            SFMLMusic music;
-            if (m_Musics.TryGetValue(musicname, out music))
+            SFMLSound sound;
+            if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                if (!IsPlaying(music))
-                    Play(music);
+                if (!IsPlaying(sound))
+                    Play(sound);
             }
         }
 
         /// <summary>
-        /// Restart playing in a loop a music from the beginning if music is enabled.
+        /// Restart playing in a loop a sound from the beginning if sound is enabled.
         /// </summary>
-        /// <param name="musicname"></param>
-        public void PlayLooping(string musicname)
+        /// <param name="soundname"></param>
+        public void PlayLooping(string soundname)
         {
             if (!m_IsAudioEnabled)
                 return;
 
-            SFMLMusic music;
-            if (m_Musics.TryGetValue(musicname, out music))
+            SFMLSound sound;
+            if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping music {0}.", musicname));
-                music.Loop = true;
-                Play(music);
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping sound {0}.", soundname));
+                sound.Loop = true;
+                Play(sound);
             }
         }
 
-        public void ResumeLooping(string musicname)
+        public void ResumeLooping(string soundname)
         {
             if (!m_IsAudioEnabled)
                 return;
 
-            SFMLMusic music;
-            if (m_Musics.TryGetValue(musicname, out music))
+            SFMLSound sound;
+            if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming looping music {0}.", musicname));
-                Resume(music);
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming looping sound {0}.", soundname));
+                Resume(sound);
             }
         }
 
-        public void Stop(string musicname)
+        public void Stop(string soundname)
         {
-            SFMLMusic music;
-            if (m_Musics.TryGetValue(musicname, out music))
+            SFMLSound sound;
+            if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("stopping music {0}.", musicname));
-                Stop(music);
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("stopping sound {0}.", soundname));
+                Stop(sound);
             }
         }
 
         public void StopAll()
         {
-            Logger.WriteLine(Logger.Stage.RUN_SOUND, "stopping all musics.");
-            foreach (SFMLMusic a in m_Musics.Values)
+            Logger.WriteLine(Logger.Stage.RUN_SOUND, "stopping all sounds.");
+            foreach (SFMLSound a in m_Sounds.Values)
             {
                 Stop(a);
             }
         }
 
-        public bool IsPlaying(string musicname)
+        public bool IsPlaying(string soundname)
         {
-            SFMLMusic music;
-            if (m_Musics.TryGetValue(musicname, out music))
+            SFMLSound sound;
+            if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                return IsPlaying(music);
+                return IsPlaying(sound);
             }
             else
                 return false;
         }
 
-        public bool IsPaused(string musicname)
+        public bool IsPaused(string soundname)
         {
-            SFMLMusic music;
-            if (m_Musics.TryGetValue(musicname, out music))
+            SFMLSound sound;
+            if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                return IsPaused(music);
+                return IsPaused(sound);
             }
             else
                 return false;
         }
 
-        public bool HasEnded(string musicname)
+        public bool HasEnded(string soundname)
         {
-            SFMLMusic music;
-            if (m_Musics.TryGetValue(musicname, out music))
+            SFMLSound sound;
+            if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                return HasEnded(music);
+                return HasEnded(sound);
             }
             else
                 return false;
         }
 
-        void Stop(SFMLMusic audio)
+        void Stop(SFMLSound audio)
         {
             audio.Stop();
         }
 
-        void Play(SFMLMusic audio)
+        void Play(SFMLSound audio)
         {
             audio.Stop();
             audio.Volume = m_Volume;
             audio.Play();
         }
 
-        void Resume(SFMLMusic audio)
+        void Resume(SFMLSound audio)
         {
             audio.Play();
         }
 
-        bool IsPlaying(SFMLMusic audio)
+        bool IsPlaying(SFMLSound audio)
         {
             return audio.Status == SoundStatus.Playing;
         }
 
-        bool IsPaused(SFMLMusic audio)
+        bool IsPaused(SFMLSound audio)
         {
             return audio.Status == SoundStatus.Paused;
         }
 
-        bool HasEnded(SFMLMusic audio)
+        bool HasEnded(SFMLSound audio)
         {
-            return audio.Status == SoundStatus.Stopped || audio.PlayingOffset >= audio.Duration;
+            return audio.Status == SoundStatus.Stopped;// || audio.PlayingOffset >= audio.Duration; //@@MP - Duration is a SFML:Music property only (Release 5-3)
         }
         #endregion
 
         #region IDisposable
         public void Dispose()
         {
-            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing SFMLMusicManager...");
-            foreach (string musicname in m_Musics.Keys)
+            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing SFMLSoundManager...");
+            foreach (string soundname in m_Sounds.Keys)
             {
-                SFMLMusic music = m_Musics[musicname];
-                if(music==null)
+                SFMLSound sound = m_Sounds[soundname];
+                if(sound==null)
                 {
-                    Logger.WriteLine(Logger.Stage.CLEAN_SOUND, String.Format("WARNING: null music for key {0}", musicname));
+                    Logger.WriteLine(Logger.Stage.CLEAN_SOUND, String.Format("WARNING: null sound for key {0}", soundname));
                     continue;
                 }
-                Logger.WriteLine(Logger.Stage.CLEAN_SOUND, String.Format("disposing music {0}.", musicname));
-                music.Dispose();
+                Logger.WriteLine(Logger.Stage.CLEAN_SOUND, String.Format("disposing sound {0}.", soundname));
+                sound.Dispose();
             }
 
-            m_Musics.Clear();
-            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing SFMLMusicManager done.");
+            m_Sounds.Clear();
+            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing SFMLSoundManager done.");
         }
         #endregion
     }

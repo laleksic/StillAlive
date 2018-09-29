@@ -1,4 +1,29 @@
-﻿STILL ALIVE 1.4.25.11 (aka Release 5-2, 9/1/2018) [Author: MP]
+﻿STILL ALIVE 1.5.27.8 (aka Release 5-3[#2], 27/01/2018) [Author: MP]
+--------------------
+
+Features:
+-Bushes in park areas now grow edible berries (24 hour growth time).
+-Added sound effects for breaking doors, windows and wooden furniture.
+-Added sound effects for rain.
+
+Fixes:
+-Fixed a crash caused by map objects not set with the correct container properties.
+-Made SFML sound the default. Resolves audio glitches when multiple sounds play at once.
+-Tweaked audio range for for certain sound effects.
+-Increased Loud noise distance radius, and offset with a reduction to the distance bonus.
+-Spoiled food gives half as much nutrition (still 25% chance to vomit when eaten).
+-Ensured there is no more than one library per district.
+-Seeing undead die in a fire no longer hurts sanity.
+-Tiny performance improvement to taking items.
+
+Development:
+-Upgraded to SFML.NET 2.4-x86 (drops libsndfile and uses Ogg natively), and thus also CSFML 2.4-x86.
+-Removed MP3s and implemented SFML:Sound for effects. Slightly improves load time, lowers game size, less dev effort, and Ogg is open source.
+-Area within junkyards no longer count as being 'inside'.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.4.25.11 (aka Release 5-2, 9/1/2018) [Author: MP]
 ---------------------
 
 Features:

@@ -18,7 +18,7 @@ namespace djack.RogueSurvivor
         static void Main()
         {
 #if RELEASE
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); //@@MP
+            //Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); //@@MP
 #endif
             Logger.CreateFile();
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "starting program...");

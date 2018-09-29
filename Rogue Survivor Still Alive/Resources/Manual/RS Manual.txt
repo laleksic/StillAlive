@@ -226,7 +226,7 @@ You need to eat food to survive. Food points slowly decrease each turn.
 Below a certain level you become Hungry and at zero points you are Starved.
 -Hungry : you cannot sleep.
 -Starved : in addition you have a chance to die of starvation each turn.
-Eating expired food will recover much less points. Eating spoiled food might make you vomit.
+Eating expired food will recover much less points. Eating spoiled food is hardly worth it, and might make you vomit.
 
 
 > SLEEP (SLP)

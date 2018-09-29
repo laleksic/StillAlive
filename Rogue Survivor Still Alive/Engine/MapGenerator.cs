@@ -445,7 +445,6 @@ namespace djack.RogueSurvivor.Engine
         public bool IsADoorNSEW(Map map, int x, int y) //@@MP (Release 3)
         {
             Point pt = new Point(x, y);
-            //if (map.HasMapObject(MapObjects.DoorWindow))
             if (map.GetMapObjectAt(pt.X, pt.Y + 1) as DoorWindow != null) //north
                 return true;
             else if (map.GetMapObjectAt(pt.X, pt.Y - 1) as DoorWindow != null) //south

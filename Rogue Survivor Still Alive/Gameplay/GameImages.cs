@@ -456,6 +456,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_BOOK = @"Items\item_book";
         public const string ITEM_BLACKOPS_GPS = @"Items\item_blackops_gps";
         public const string ITEM_CANNED_FOOD = @"Items\item_canned_food";
+        public const string ITEM_CARROT_SEEDS = @"Items\item_carrot_seeds"; //@@MP (Release 5-3)
+        public const string ITEM_CARROTS = @"Items\item_carrots"; //@@MP (Release 5-3)
         public const string ITEM_CELL_PHONE = @"Items\item_cellphone";
         public const string ITEM_CHAR_DOCUMENT = @"Items\item_CHAR_document"; //@@MP (Release 3)
         public const string ITEM_CHAR_LIGHT_BODYARMOR = @"Items\item_CHAR_light_bodyarmor";
@@ -504,6 +506,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_POLICE_RADIO = @"Items\item_police_radio";
         public const string ITEM_POLICE_RIOT_ARMOR = @"Items\item_police_riot_armor";
         public const string ITEM_PRECISION_RIFLE = @"Items\item_precision_rifle";
+        public const string ITEM_PUMPKIN_SEEDS = @"Items\item_pumpkin_seeds"; //@@MP (Release 5-3)
+        public const string ITEM_PUMPKIN = @"Items\item_pumpkin"; //@@MP (Release 5-3)
         public const string ITEM_ROGUEDJACK_KEYBOARD = @"Items\item_roguedjack_keyboard";
         public const string ITEM_SANTAMAN_SHOTGUN = @"Items\item_santaman_shotgun";
         public const string ITEM_SHOTGUN = @"Items\item_shotgun";
@@ -520,6 +524,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_SUBWAY_BADGE = @"Items\item_subway_badge";
         public const string ITEM_TENNIS_RACKET = @"Items\item_tennis_racket"; //@@MP (Release 3)
         public const string ITEM_TRUNCHEON = @"Items\item_truncheon";
+        public const string ITEM_TURNIP_SEEDS = @"Items\item_turnip_seeds"; //@@MP (Release 5-3)
+        public const string ITEM_TURNIPS = @"Items\item_turnips"; //@@MP (Release 5-3)
         public const string ITEM_WILD_BERRIES = @"Items\item_wild_berries"; //@@MP (Release 4)
         public const string ITEM_WOODEN_PLANK = @"Items\item_wooden_plank";
         public const string ITEM_ZTRACKER = @"Items\item_ztracker";
@@ -1026,6 +1032,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_BLACKOPS_GPS);
             Load(ITEM_BOOK);
             Load(ITEM_CANNED_FOOD);
+            Load(ITEM_CARROT_SEEDS); //@@MP (Release 5-3)
+            Load(ITEM_CARROTS); //@@MP (Release 5-3)
             Load(ITEM_CELL_PHONE);
             Load(ITEM_CHAR_DOCUMENT); //@@MP (Release 3)
             Load(ITEM_CHAR_LIGHT_BODYARMOR);
@@ -1074,6 +1082,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_POLICE_RADIO);
             Load(ITEM_POLICE_RIOT_ARMOR);
             Load(ITEM_PRECISION_RIFLE);
+            Load(ITEM_PUMPKIN_SEEDS); //@@MP (Release 5-3)
+            Load(ITEM_PUMPKIN); //@@MP (Release 5-3)
             Load(ITEM_ROGUEDJACK_KEYBOARD);
             Load(ITEM_SANTAMAN_SHOTGUN);
             Load(ITEM_SHOTGUN);
@@ -1090,6 +1100,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_SUBWAY_BADGE);
             Load(ITEM_TENNIS_RACKET); //@@MP (Release 3)
             Load(ITEM_TRUNCHEON);
+            Load(ITEM_TURNIP_SEEDS); //@@MP (Release 5-3)
+            Load(ITEM_TURNIPS); //@@MP (Release 5-3)
             Load(ITEM_WILD_BERRIES); //@@MP (Release 4)
             Load(ITEM_WOODEN_PLANK);
             Load(ITEM_ZTRACKER);

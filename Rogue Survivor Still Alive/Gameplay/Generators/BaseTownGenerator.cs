@@ -375,6 +375,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // CHAR buildings..
             completedBlocks.Clear();
             int charOfficesCount = 0;
+            bool hasLibrary = false; //@@MP - (Release 5-3)
             foreach (Block b in emptyBlocks)
             {
                 //if (m_Params.District.Kind == DistrictKind.BUSINESS) && charOfficesCount == 0) || m_DiceRoller.RollChance(m_Params.CHARBuildingChance)) //@@MP (Release 4)
@@ -404,8 +405,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         //@@MP - the first 2 need specific sizes, the other 3 are good for whatever
                         if ((b.InsideRect.Width <= 7 && b.InsideRect.Height < 10) || (b.InsideRect.Width < 10 && b.InsideRect.Height <= 7))
                             MakeMechanicWorkshop(map, b);
-                        else if (b.InsideRect.Width > 10 || b.InsideRect.Height > 10)
+                        else if (!hasLibrary && (b.InsideRect.Width > 10 || b.InsideRect.Height > 10)) //@@MP - added a check to ensure only 1 library per district (Release 5-3)
+                        {
                             MakeLibraryBuilding(map, b);
+                            hasLibrary = true; //@@MP - (Release 5-3)
+                        }
                         else
                         {
                             int roll2 = m_DiceRoller.Roll(0, 3);
@@ -2143,7 +2147,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         if (map.IsWalkable(counterpt))
                         {
                             westtile = map.GetTileAt(counterpt.X, counterpt.Y);
-                            map.PlaceMapObjectAt(MakeObjKitchenCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt);
+                            map.PlaceMapObjectAt(MakeObjBarCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //@@MP - changed to BarCounter to keep them jumpable (Release 5-3)
                             map.DropItemAt(MakeItemAlcohol(), shelfpt);
                         }
                     }
@@ -2183,7 +2187,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         if (map.IsWalkable(counterpt))
                         {
                             westtile = map.GetTileAt(counterpt.X, counterpt.Y);
-                            map.PlaceMapObjectAt(MakeObjKitchenCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt);
+                            map.PlaceMapObjectAt(MakeObjBarCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //@@MP - changed to BarCounter to keep them jumpable (Release 5-3)
                             map.DropItemAt(MakeItemAlcohol(), shelfpt);
                         }
                     }
@@ -2223,7 +2227,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         if (map.IsWalkable(counterpt))
                         {
                             westtile = map.GetTileAt(counterpt.X, counterpt.Y);
-                            map.PlaceMapObjectAt(MakeObjKitchenCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt);
+                            map.PlaceMapObjectAt(MakeObjBarCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //@@MP - changed to BarCounter to keep them jumpable (Release 5-3)
                             map.DropItemAt(MakeItemAlcohol(), shelfpt);
                         }
                     }
@@ -2263,7 +2267,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         if (map.IsWalkable(counterpt))
                         {
                             westtile = map.GetTileAt(counterpt.X, counterpt.Y);
-                            map.PlaceMapObjectAt(MakeObjKitchenCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt);
+                            map.PlaceMapObjectAt(MakeObjBarCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //@@MP - changed to BarCounter to keep them jumpable (Release 5-3)
                             map.DropItemAt(MakeItemAlcohol(), shelfpt);
                         }
                     }
@@ -2444,7 +2448,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         return null;
                     else if (m_DiceRoller.RollChance(20))
                         map.DropItemAt(MakeShopConstructionItem(), pt);
-                    return MakeObjKitchenCounter(GameImages.OBJ_WORKBENCH);
+                    return MakeObjWorkbench(GameImages.OBJ_WORKBENCH); //@@MP (Release 5-3)
                 });
 
             MapObjectFill(map, b.InsideRect,
@@ -2649,6 +2653,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // 1. Walkway, floor & walls
             /////////////////////////////
             base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            base.TileFill(map, m_Game.GameTiles.FLOOR_DIRT, b.InsideRect); //@@MP - no longer marked as IsInside (Release 5-3)
+            //base.TileFill(map, m_Game.GameTiles.FLOOR_DIRT, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
             base.MapObjectFill(map, b.BuildingRect,
                 (pt) =>
                 {
@@ -2661,7 +2667,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     else
                         return null;
                     });
-            base.TileFill(map, m_Game.GameTiles.FLOOR_DIRT, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+            
 
             ///////////////////////////////
             // 2. Entry door with shop ids
@@ -2739,7 +2745,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                 if (m_DiceRoller.RollChance(65))
                                 {
                                     Tile tile = map.GetTileAt(pt.X, pt.Y);
-                                    if (tile.IsInside && tile.Model.IsWalkable)// && tile.Model != m_Game.GameTiles.WALL_STONE)
+                                    if (tile.Model.IsWalkable)// && tile.Model != m_Game.GameTiles.WALL_STONE) //@@MP - removed (tile.IsInside && ...) (Release 5-3)
                                     {
                                         MapObject thing;
                                         int rolled = m_DiceRoller.Roll(0, 99);
@@ -2761,8 +2767,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // 4. Zone
             ///////////
             // demark building.
-            string buildingName = "Junkyard";
-            map.AddZone(MakeUniqueZone(buildingName, b.BuildingRect));
+            map.AddZone(MakeUniqueZone("Junkyard", b.BuildingRect));
             // walkway zones.
             MakeWalkwayZones(map, b);
 
@@ -3509,15 +3514,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         switch (placeObject)
                         {
                             case 0: return base.MakeObjTree(GameImages.OBJ_TREE); //10%
-                            case 1: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
-                            case 2: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
-                            case 3: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
-                            case 4: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
-                            case 5: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
-                            case 6: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
-                            case 7: return base.MakeObjTombstone(GameImages.OBJ_CROSS_TOMBSTONE);
-                            case 8: return base.MakeObjTombstone(GameImages.OBJ_CROSS_TOMBSTONE);
-                            case 9: return base.MakeObjTombstone(GameImages.OBJ_CROSS_TOMBSTONE);
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 6: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE); //@@MP - took the duplicates out of 1 to 5 and let them fall through (Release 5-3)
+                            case 7:
+                            case 8:
+                            case 9: return base.MakeObjTombstone(GameImages.OBJ_CROSS_TOMBSTONE); //@@MP - took the duplicates out of 7 & 8 and let them fall through (Release 5-3)
                             default:
                                 return null;
                         }
@@ -3536,7 +3541,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         return base.MakeObjTree(GameImages.OBJ_TREE);
                     else if (m_DiceRoller.RollChance(PARK_ITEM_CHANCE)) //@@MP (Release 4)
                     {
-                        //map.DropItemAt(MakeItemWildBerries(), pt);
+                        map.DropItemAt(MakeItemWildBerries(), pt); //@@MP (Release 5-3)
                         return base.MakeObjBerryBush(GameImages.OBJ_BERRY_BUSH);
                     }
                     else

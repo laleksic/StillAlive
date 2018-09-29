@@ -10,7 +10,7 @@ using djack.RogueSurvivor.Engine.Items;
 namespace djack.RogueSurvivor.Engine.Tasks
 {
     [Serializable]
-    class TaskRegrowWildBerries : TimedTask //@@MP - new to Release 4
+    class TaskRegrowWildBerries : TimedTask //@@MP - new to (Release 4)
     {
         private int m_X, m_Y, m_TimeNow, m_BestBeforeDays;
         private ItemFoodModel m_ItemFoodModel;
@@ -28,7 +28,7 @@ namespace djack.RogueSurvivor.Engine.Tasks
         public override void Trigger(Map m)
         {
             System.Drawing.Point pt = new System.Drawing.Point(m_X, m_Y);
-            int freshUntil = m_TimeNow + WorldTime.TURNS_PER_DAY * m_BestBeforeDays;
+            int freshUntil = m_TimeNow + (WorldTime.TURNS_PER_DAY * m_BestBeforeDays);
             Item berries = new ItemFood(m_ItemFoodModel, freshUntil)
             {
                 Quantity = 3

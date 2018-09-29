@@ -9,7 +9,7 @@ namespace djack.RogueSurvivor
     public static class SetupConfig
     {
         //public const string GAME_VERSION = "Still Alive";
-        public static string GAME_VERSION = "Still Alive " + System.Windows.Forms.Application.ProductVersion; //@@MP remember to update the Assembly info
+        public static string GAME_VERSION = "Still Alive " + System.Windows.Forms.Application.ProductVersion + " "; //@@MP remember to update the Assembly info (Release 1)
 
         public enum eVideo
         {
@@ -74,7 +74,7 @@ namespace djack.RogueSurvivor
                     Directory.CreateDirectory(DirPath);
 
                 SetupConfig.Video = eVideo.VIDEO_MANAGED_DIRECTX;
-                SetupConfig.Sound = eSound.SOUND_MANAGED_DIRECTX;
+                SetupConfig.Sound = eSound.SOUND_SFML; //@@MP - changed default to SFML (Release 5-3)
 
                 Save();
             }

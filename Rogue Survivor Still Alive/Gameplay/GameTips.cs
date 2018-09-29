@@ -17,8 +17,8 @@ namespace djack.RogueSurvivor.Gameplay
             "...livings will usually wake others if a fire breaks out nearby?",
             // undeads
         	"...undeads can smell scents left by livings? Some sprays can cover your scent",
-            "...some undeads are stupid and won't avoid traps and fires?",
-            "...many undeads are smart and will avoid traps and fires?",
+            "...basic undeads are mindless and won't avoid traps and fires?",
+            "...some undeads are smart and will avoid traps and fires?",
             "...seeing an undead kill a living is bad for one's sanity?",
             // doing stuff
 	        "...you can recharge battery-powered items at powered generators?",
