@@ -1,4 +1,19 @@
-﻿STILL ALIVE 1.3.21.9 (aka Release 4, 7/12/2017) [Author: MP]
+﻿STILL ALIVE 1.3.23.3 (aka Release 5-1, ??/1/2018) [Author: MP]
+--------------------
+
+Features:
+-Added nail guns.
+-Living AIs may now make molotovs.
+
+Fixes:
+-Config files (saves, scores, screenshots) now save to \Documents\Rogue Survivor\, which allows non-admins to run the game.
+-Improved the Medic skill bonus from 15% to 30%.
+|Healing rounds down, so it was really only 10%, and that meant medkits only gave 1 extra HP with the skill.
+-Fixed bug where the Prisoner With No Name is already freed before the player stands in front of their cell, but the dialog was still initiated.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.3.21.9 (aka Release 4, 7/12/2017) [Author: MP]
 --------------------
 
 Features:

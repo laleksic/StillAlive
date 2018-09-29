@@ -436,6 +436,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_AMMO_HEAVY_RIFLE = @"Items\item_ammo_heavy_rifle";
         public const string ITEM_AMMO_SHOTGUN = @"Items\item_ammo_shotgun";
         public const string ITEM_AMMO_BOLTS =  @"Items\item_ammo_bolts";
+        public const string ITEM_AMMO_NAILS = @"Items\item_ammo_nail_gun"; //@@MP (Release 5-1)
 
         public const string ITEM_ARMY_BODYARMOR = @"Items\item_army_bodyarmor";
         public const string ITEM_ARMY_PISTOL = @"Items\item_army_pistol";
@@ -491,6 +492,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_MEDIKIT = @"Items\item_medikit";
         public const string ITEM_MOLOTOV = @"Items\item_molotov"; //@@MP (Release 4)
         public const string ITEM_MOLOTOV_PRIMED = @"Items\item_molotov_primed"; //@@MP (Release 4)
+        public const string ITEM_NAIL_GUN = @"Items\item_nail_gun"; //@@MP (Release 5-1)
         public const string ITEM_PICKAXE = @"Items\item_pickaxe"; //@@MP (Release 3)
         public const string ITEM_PILLS_ANTIVIRAL = @"Items\item_pills_antiviral";
         public const string ITEM_PILLS_BLUE = @"Items\item_pills_blue";
@@ -1004,6 +1006,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_AMMO_HEAVY_RIFLE);
             Load(ITEM_AMMO_LIGHT_PISTOL);
             Load(ITEM_AMMO_LIGHT_RIFLE);
+            Load(ITEM_AMMO_NAILS); //@@MP (Release 5-1)
             Load(ITEM_AMMO_SHOTGUN);
             Load(ITEM_ARMY_BODYARMOR);
             Load(ITEM_ARMY_PISTOL);
@@ -1059,6 +1062,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_MEDIKIT);
             Load(ITEM_MOLOTOV); //@@MP (Release 4)
             Load(ITEM_MOLOTOV_PRIMED); //@@MP (Release 4)
+            Load(ITEM_NAIL_GUN); //@@MP (Release 5-1)
             Load(ITEM_PICKAXE); //@@MP (Release 3)
             Load(ITEM_PILLS_ANTIVIRAL);
             Load(ITEM_PILLS_BLUE);

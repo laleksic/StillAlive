@@ -59,6 +59,7 @@ namespace djack.RogueSurvivor.Gameplay
             RANGED_KOLT_REVOLVER,
             RANGED_PRECISION_RIFLE,
             RANGED_SHOTGUN,
+            RANGED_NAIL_GUN, //@@MP (Release 5-1)
 
             EXPLOSIVE_GRENADE,
             EXPLOSIVE_GRENADE_PRIMED,
@@ -99,6 +100,7 @@ namespace djack.RogueSurvivor.Gameplay
             AMMO_HEAVY_RIFLE,
             AMMO_SHOTGUN,
             AMMO_BOLTS,
+            AMMO_NAILS, //@@MP (Release 5-1)
 
             TRAP_EMPTY_CAN,
             TRAP_BEAR_TRAP,
@@ -377,6 +379,9 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemRangedWeaponModel UNIQUE_SANTAMAN_SHOTGUN { get { return this[IDs.UNIQUE_SANTAMAN_SHOTGUN] as ItemRangedWeaponModel; } }
         RangedWeaponData DATA_UNIQUE_HANS_VON_HANZ_PISTOL;
         public ItemRangedWeaponModel UNIQUE_HANS_VON_HANZ_PISTOL { get { return this[IDs.UNIQUE_HANS_VON_HANZ_PISTOL] as ItemRangedWeaponModel; } }
+        //@@MP (Release 5-1)
+        RangedWeaponData DATA_RANGED_NAIL_GUN;
+        public ItemRangedWeaponModel NAIL_GUN { get { return this[IDs.RANGED_NAIL_GUN] as ItemRangedWeaponModel; } }
         #endregion
 
         #region Ammos
@@ -386,6 +391,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemAmmoModel AMMO_HEAVY_RIFLE { get { return this[IDs.AMMO_HEAVY_RIFLE] as ItemAmmoModel; } }
         public ItemAmmoModel AMMO_SHOTGUN { get { return this[IDs.AMMO_SHOTGUN] as ItemAmmoModel; } }
         public ItemAmmoModel AMMO_BOLTS { get { return this[IDs.AMMO_BOLTS] as ItemAmmoModel; } }
+        public ItemAmmoModel AMMO_NAILS { get { return this[IDs.AMMO_NAILS] as ItemAmmoModel; } } //@@MP (Release 5-1)
         #endregion
 
         #region Explosives
@@ -1231,6 +1237,15 @@ namespace djack.RogueSurvivor.Gameplay
                 IsProper = true,
                 IsUnbreakable = true
             };
+
+            rwp = DATA_RANGED_NAIL_GUN; //@@MP (Release 5-1)
+            this[IDs.RANGED_NAIL_GUN] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_NAIL_GUN,
+                new Attack(AttackKind.FIREARM, new Verb("nail"), rwp.ATK, rwp.DMG, 0, rwp.RANGE),
+                    rwp.MAXAMMO, AmmoType.NAIL)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = rwp.FLAVOR
+            };
             #endregion
 
             #region Ammos
@@ -1271,6 +1286,14 @@ namespace djack.RogueSurvivor.Gameplay
 
             this[IDs.AMMO_BOLTS] = new ItemAmmoModel("crossbow bolts", "crossbow bolts", GameImages.ITEM_AMMO_BOLTS,
                 AmmoType.BOLT, 30)
+            {
+                IsPlural = true,
+                FlavorDescription = ""
+            };
+
+            //@@MP (Release 5-1)
+            this[IDs.AMMO_NAILS] = new ItemAmmoModel("nails", "nails", GameImages.ITEM_AMMO_NAILS,
+                AmmoType.NAIL, 99)
             {
                 IsPlural = true,
                 FlavorDescription = ""
@@ -1822,7 +1845,7 @@ namespace djack.RogueSurvivor.Gameplay
 
             LoadDataFromCSV<RangedWeaponData>(ui, path, "ranged weapons items", RangedWeaponData.COUNT_FIELDS, RangedWeaponData.FromCSVLine,
                 new IDs[] { IDs.RANGED_ARMY_PISTOL, IDs.RANGED_ARMY_RIFLE, IDs.RANGED_HUNTING_CROSSBOW, IDs.RANGED_HUNTING_RIFLE, IDs.RANGED_KOLT_REVOLVER, IDs.RANGED_PISTOL, IDs.RANGED_PRECISION_RIFLE, IDs.RANGED_SHOTGUN,
-                            IDs.UNIQUE_SANTAMAN_SHOTGUN, IDs.UNIQUE_HANS_VON_HANZ_PISTOL },
+                            IDs.UNIQUE_SANTAMAN_SHOTGUN, IDs.UNIQUE_HANS_VON_HANZ_PISTOL, IDs.RANGED_NAIL_GUN }, //@@MP - added nail gun (Release 5-1)
                 out data);
 
             DATA_RANGED_ARMY_PISTOL = data[0];
@@ -1835,6 +1858,7 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_RANGED_SHOTGUN = data[7];
             DATA_UNIQUE_SANTAMAN_SHOTGUN = data[8];
             DATA_UNIQUE_HANS_VON_HANZ_PISTOL = data[9];
+            DATA_RANGED_NAIL_GUN = data[10]; //@@MP (Release 5-1)
 
             return true;
         }

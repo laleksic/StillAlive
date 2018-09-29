@@ -17,6 +17,7 @@ namespace djack.RogueSurvivor.Engine.Items
         LIGHT_RIFLE,
         HEAVY_RIFLE,
         BOLT,
+        NAIL, //@@MP (Release 5-1)
 
         _COUNT
     }

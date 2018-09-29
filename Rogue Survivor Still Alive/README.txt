@@ -1,6 +1,8 @@
 Rogue Survivor 'Staying Alive' is a modification of the original Rogue Survivor Alpha 9 source code from 2012, released as open source under GNU GPL v3.
 
-If you wish to use or share this code in any way please refer to the original authors (and copyright owner) instructions below:
+You can find your saves, screenshots, and graveyard files in \My Documents\Rogue Survivor\ (aka \Libraries\Documents\)
+
+If you wish to use or share this code in any way please refer to the instructions of the original author (and copyright owner)  below:
 
 --------------------------------------------------------------------------------
 
@@ -31,3 +33,5 @@ Some of you guys have some serious dedication for this game! It is both scary an
 Sorry for failing you by not working more on the game or being more responsive!<br>
 From time to time I secretly tried to revive the game or start a new incarnation. I didn't tell you guys because all I had to show was a couple of prototypes that didn't go very far and I didn't want to repeat the RS2 fiasco...<br>
 Anyway, I don't plan on updating the game, so go ahead and have fun!!
+
+-RoguedJack

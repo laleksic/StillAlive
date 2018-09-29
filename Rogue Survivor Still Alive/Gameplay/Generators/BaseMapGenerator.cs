@@ -1278,6 +1278,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 Quantity = 3
             };
         }
+
+        //@@MP (Release 5-1)
+        public Item MakeItemNailGun()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.NAIL_GUN);
+        }
+
+        public Item MakeItemNailGunAmmo()
+        {
+            return new ItemAmmo(m_Game.GameItems.AMMO_NAILS);
+        }
         #endregion
 
 

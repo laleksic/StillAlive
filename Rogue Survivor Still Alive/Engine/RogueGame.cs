@@ -1186,6 +1186,8 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.MOLOTOV_AUDIBLE, GameSounds.MOLOTOV_AUDIBLE_FILE);
             m_SFXManager.Load(GameSounds.SMOKING, GameSounds.SMOKING_FILE);
             m_SFXManager.Load(GameSounds.ROLLER_DOOR, GameSounds.ROLLER_DOOR_FILE);
+            //@MP (Release 5-1)
+            m_SFXManager.Load(GameSounds.NAIL_GUN, GameSounds.NAIL_GUN_FILE);
 
             m_UI.UI_Clear(Color.Black);
             m_UI.UI_DrawStringBold(Color.White, "Loading sfxs... done!", 0, 0);
@@ -1267,7 +1269,8 @@ namespace djack.RogueSurvivor.Engine
             {
                 m_UI.UI_DrawStringBold(Color.Yellow, "Directories created.", 0, gy);
                 gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.Yellow, "Your save, high scores, and screenshots are in the game's directory:", 0, gy);
+                //m_UI.UI_DrawStringBold(Color.Yellow, "Your save, high scores, and screenshots are in the game's directory:", 0, gy); //@@MP - moved to user data (Release 5-1)
+                m_UI.UI_DrawStringBold(Color.Yellow, "Your save, high scores, and screenshots are in your AppData directory:", 0, gy);
                 gy += BOLD_LINE_SPACING;
                 m_UI.UI_DrawString(Color.LightGreen, GetUserBasePath(), 0, gy);
                 gy += BOLD_LINE_SPACING;
@@ -11325,6 +11328,7 @@ namespace djack.RogueSurvivor.Engine
                 case AmmoType.LIGHT_PISTOL: return "light pistol bullets";
                 case AmmoType.LIGHT_RIFLE: return "light rifle bullets";
                 case AmmoType.SHOTGUN: return "shotgun cartridge";
+                case AmmoType.NAIL: return "nails"; //@MP (Release 5-1-1)
                 default:
                     throw new ArgumentOutOfRangeException("unhandled ammo type");
             }
@@ -13203,6 +13207,9 @@ namespace djack.RogueSurvivor.Engine
                     case "the hunting crossbow":
                         m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CROSSBOW_FIRE_PLAYER);
                         break;
+                    case "the nail gun":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.NAIL_GUN);
+                        break;
                     default: break;
                 }
             }
@@ -14319,6 +14326,17 @@ namespace djack.RogueSurvivor.Engine
                 ItemTrap trap = it as ItemTrap;
                 // taking a trap deactivates it.
                 trap.IsActivated = false;
+            }
+
+            if (!actor.Model.Abilities.IsUndead && IsItemLiquorForMolotov(it) && !actor.IsPlayer && m_Rules.RollChance(10)) //@MP - chance for livings to make molotovs (Release 5-1-1)
+            {
+                int liquorQuantity = it.Quantity;
+                map.RemoveItemAt(it, position);//remove the liquor and replace with molotovs
+                for (int i = 0; i != liquorQuantity; i++)
+                {
+                    Item molotov = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
+                    map.DropItemAt(molotov, position);
+                }
             }
 
             // add to inventory.
@@ -20826,10 +20844,9 @@ namespace djack.RogueSurvivor.Engine
 
             // 4. Police Station script.
             #region
-            if (player.Location.Map == m_Session.UniqueMaps.PoliceStation_JailsLevel.TheMap &&
-                !m_Session.UniqueActors.PoliceStationPrisonner.TheActor.IsDead)
+            if (player.Location.Map == m_Session.UniqueMaps.PoliceStation_JailsLevel.TheMap && !m_Session.UniqueActors.PoliceStationPrisonner.TheActor.IsDead)
             {
-                Actor prisonner = m_Session.UniqueActors.PoliceStationPrisonner.TheActor;
+                Actor prisoner = m_Session.UniqueActors.PoliceStationPrisonner.TheActor;
                 Map map = player.Location.Map;
                 switch (m_Session.ScriptStage_PoliceStationPrisonner)
                 {
@@ -20837,32 +20854,30 @@ namespace djack.RogueSurvivor.Engine
                         /////////////////////////////////////////////
                         // Player is next to generator : offer deal.
                         /////////////////////////////////////////////
-                        if (map.HasAnyAdjacentInMap(player.Location.Position, (pt) => map.GetMapObjectAt(pt) is PowerGenerator) &&
-                            !prisonner.IsSleeping)
+                        if (map.HasAnyAdjacentInMap(player.Location.Position, (pt) => map.GetMapObjectAt(pt) is PowerGenerator) && !prisoner.IsSleeping && IsVisibleToPlayer(prisoner) && map.IsClosestDoorClosed(prisoner.Location.Position))
                         {
                             lock (m_Session) // thread safe
                             {
                                 // Offer deal.
                                 string[] text = new string[] 
                             {
-                                "\" Psssst! Hey! You over there! \"",
-                                String.Format("{0} is discretly calling you from {1} cell. You listen closely...", prisonner.Name, HisOrHer(prisonner)),
-                                "\" Listen! I shouldn't be here! Just drove a bit too fast!",
+                                "\" Psssst! Hey! You there! \"",
+                                String.Format("{0} is discretely calling you from {1} cell. You listen closely...", prisoner.Name, HisOrHer(prisoner)),
+                                "\" Listen. I shouldn't be here! Just drove a bit too fast.",
                                 "  Look, I know what's happening! I worked down there! At the CHAR facility!",
                                 "  They didn't want me to leave but I did! Like I'm stupid enough to stay down there uh?",
-                                "  Now listen! Let's make a deal...",
-                                "  Stupid cops won't listen to me. You look clever...",
+                                "  Stupid cops won't listen to me. You look clever, let's make a deal...",
                                 "  You just have to push this button to open my cell.",
                                 "  The cops are too busy to care about small fish like me!",
                                 "  Then I'll tell you where the underground facility is and just get the hell out of here.",
                                 "  I don't give a fuck about CHAR anymore, you can do what you want with that!",
                                 "  Do it PLEASE! I REALLY shoudn't be here! \"",
-                                String.Format("Looks like {0} wants you to turn the generator on to open the cells...", HeOrShe(prisonner))
+                                String.Format("Looks like {0} wants you to turn the generator on to open the cells...", HeOrShe(prisoner))
                             };
-                                ShowSpecialDialogue(prisonner, text);
+                                ShowSpecialDialogue(prisoner, text);
 
                                 // Scoring event.
-                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format("{0} offered a deal.", prisonner.Name));
+                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format("{0} offered a deal.", prisoner.Name));
 
                                 // Next stage.
                                 m_Session.ScriptStage_PoliceStationPrisonner = ScriptStage.STAGE_1;
@@ -20874,9 +20889,9 @@ namespace djack.RogueSurvivor.Engine
                         ///////////////////////////////////////////////
                         // Wait to get out of cell and next to player.
                         ///////////////////////////////////////////////
-                        if (!map.HasZonePartiallyNamedAt(prisonner.Location.Position, NAME_POLICE_STATION_JAILS_CELL) &&
-                            m_Rules.IsAdjacent(player.Location.Position, prisonner.Location.Position) &&
-                            !prisonner.IsSleeping)
+                        if (!map.HasZonePartiallyNamedAt(prisoner.Location.Position, NAME_POLICE_STATION_JAILS_CELL) &&
+                            m_Rules.IsAdjacent(player.Location.Position, prisoner.Location.Position) &&
+                            !prisoner.IsSleeping)
                         {
                             lock (m_Session) // thread safe
                             {
@@ -20891,10 +20906,10 @@ namespace djack.RogueSurvivor.Engine
                                     "  What's happening? NO!",
                                     "  NO NOT ME! aAAAAAaaaa! NOT NOW! AAAGGGGGGGRRR \""
                                 };
-                                ShowSpecialDialogue(prisonner, text);
+                                ShowSpecialDialogue(prisoner, text);
 
                                 // Scoring event.
-                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format("Freed {0}.", prisonner.Name));
+                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format("Freed {0}.", prisoner.Name));
 
                                 // reveal location.
                                 m_Session.PlayerKnows_CHARUndergroundFacilityLocation = true;
@@ -20904,15 +20919,15 @@ namespace djack.RogueSurvivor.Engine
 
                                 // transformation.
                                 // - zombify.
-                                KillActor(null, prisonner, "transformation");
-                                Actor monster = Zombify(null, prisonner, false);
+                                KillActor(null, prisoner, "transformation");
+                                Actor monster = Zombify(null, prisoner, false);
                                 // - turn into a ZP.
                                 monster.Model = m_GameActors.ZombiePrince;
                                 // - zero AP so player don't get hit asap.
                                 monster.ActionPoints = 0;
 
                                 // Scoring event.
-                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format("{0} turned into a {1}!", prisonner.Name, monster.Model.Name));
+                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format("{0} turned into a {1}!", prisoner.Name, monster.Model.Name));
 
                                 // fight music!
                                 m_MusicManager.Play(GameMusics.FIGHT);

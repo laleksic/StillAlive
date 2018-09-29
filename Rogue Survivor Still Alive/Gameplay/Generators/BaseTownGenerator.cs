@@ -4605,9 +4605,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
         }
 
-        public Item MakeShopConstructionItem() //@@MP (Release 3)
+        public Item MakeShopConstructionItem() //@@MP - split each item into its own single roll (Release 3)
         {
-            int roll = m_DiceRoller.Roll(0, 15);
+            int roll = m_DiceRoller.Roll(0, 17);
             switch (roll)
             {
                 case 0: return MakeItemStandardAxe();
@@ -4625,6 +4625,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 12: return MakeItemBarbedWire();
                 case 13: return MakeItemSmallHammer();
                 case 14: return MakeItemShortShovel();
+                case 15: return MakeItemNailGun(); //@@MP (Release 5-1)
+                case 16: return MakeItemNailGunAmmo(); //@@MP (Release 5-1)
                 default:
                     throw new ArgumentOutOfRangeException("unhandled roll");
             }

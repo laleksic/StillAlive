@@ -193,5 +193,9 @@ namespace djack.RogueSurvivor.Gameplay
 
         public static readonly string ROLLER_DOOR = "roller door";
         public static readonly string ROLLER_DOOR_FILE = PATH + "roller_door";
+
+        //@@MP (Release 5-1)
+        public static readonly string NAIL_GUN = "player fires nail gun";
+        public static readonly string NAIL_GUN_FILE = PATH + "nail_gun";
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Data;
+using djack.RogueSurvivor.Engine.MapObjects; //@@MP - for IsClosestDoorInDirectionOpen (Release 5-1)
 
 namespace djack.RogueSurvivor.Data
 {
@@ -1219,6 +1220,34 @@ namespace djack.RogueSurvivor.Data
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Determine if the closest door in any direction (clockwise from N) is closed. True = yes
+        /// </summary>
+        /// <param name="direction">8 ways: N,NE,SE,E,SW,etc</param>
+        public bool IsClosestDoorClosed(Point position) //@@MP - initially created to check the cell door of the Prisoner Who's Not Named (Release 5-1)
+        {
+            Point next;
+            foreach (Direction d in Direction.COMPASS)
+            {
+                next = position + d;
+
+                if (!IsInBounds(next))
+                    continue;
+
+                MapObject mapObj = GetMapObjectAt(position);
+                if (mapObj != null && mapObj is DoorWindow)
+                {
+                    DoorWindow door = mapObj as DoorWindow;
+                    if (door.IsClosed)
+                        return true;
+                    else
+                        return false;
+                }
+                    
+            }
+            return false;
         }
 
         /// <summary>
