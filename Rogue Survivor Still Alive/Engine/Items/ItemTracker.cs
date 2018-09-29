@@ -1,83 +1,69 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemTracker
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
-using System;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  [Serializable]
-  internal class ItemTracker : Item
-  {
-    private int m_Batteries;
-
-    public ItemTrackerModel.TrackingFlags Tracking { get; private set; }
-
-    public bool CanTrackFollowersOrLeader
+    [Serializable]
+    class ItemTracker : Item
     {
-      get
-      {
-        return (uint) (this.Tracking & ItemTrackerModel.TrackingFlags.FOLLOWER_AND_LEADER) > 0U;
-      }
-    }
+        #region Fields
+        int m_Batteries;
+        #endregion
 
-    public bool CanTrackUndeads
-    {
-      get
-      {
-        return (uint) (this.Tracking & ItemTrackerModel.TrackingFlags.UNDEADS) > 0U;
-      }
-    }
+        #region Properties
+        public ItemTrackerModel.TrackingFlags Tracking { get; private set; }
 
-    public bool CanTrackBlackOps
-    {
-      get
-      {
-        return (uint) (this.Tracking & ItemTrackerModel.TrackingFlags.BLACKOPS_FACTION) > 0U;
-      }
-    }
+        public bool CanTrackFollowersOrLeader
+        {
+            get { return (this.Tracking & ItemTrackerModel.TrackingFlags.FOLLOWER_AND_LEADER) != 0; }
+        }
 
-    public bool CanTrackPolice
-    {
-      get
-      {
-        return (uint) (this.Tracking & ItemTrackerModel.TrackingFlags.POLICE_FACTION) > 0U;
-      }
-    }
+        public bool CanTrackUndeads
+        {
+            get { return (this.Tracking & ItemTrackerModel.TrackingFlags.UNDEADS) != 0; }
+        }
 
-    public int Batteries
-    {
-      get
-      {
-        return this.m_Batteries;
-      }
-      set
-      {
-        if (value < 0)
-          value = 0;
-        this.m_Batteries = Math.Min(value, (this.Model as ItemTrackerModel).MaxBatteries);
-      }
-    }
+        public bool CanTrackBlackOps
+        {
+            get { return (this.Tracking & ItemTrackerModel.TrackingFlags.BLACKOPS_FACTION) != 0; }
+        }
 
-    public bool IsFullyCharged
-    {
-      get
-      {
-        return this.m_Batteries >= (this.Model as ItemTrackerModel).MaxBatteries;
-      }
-    }
+        public bool CanTrackPolice
+        {
+            get { return (this.Tracking & ItemTrackerModel.TrackingFlags.POLICE_FACTION) != 0; }
+        }
 
-    public ItemTracker(ItemModel model)
-      : base(model)
-    {
-      if (!(model is ItemTrackerModel))
-        throw new ArgumentException("model is not a TrackerModel");
-      ItemTrackerModel itemTrackerModel = model as ItemTrackerModel;
-      this.Tracking = itemTrackerModel.Tracking;
-      this.Batteries = itemTrackerModel.MaxBatteries;
+        public int Batteries 
+        {
+            get { return m_Batteries; }
+            set
+            {
+                if (value < 0) value = 0;
+                m_Batteries = Math.Min( value, (this.Model as ItemTrackerModel).MaxBatteries);
+            }
+        }
+
+        public bool IsFullyCharged
+        {
+            get { return m_Batteries >= (this.Model as ItemTrackerModel).MaxBatteries; }
+        }
+        #endregion
+
+        #region Init
+        public ItemTracker(ItemModel model)
+            : base(model)
+        {
+            if (!(model is ItemTrackerModel))
+                throw new ArgumentException("model is not a TrackerModel");
+
+            ItemTrackerModel m = model as ItemTrackerModel;
+            this.Tracking = m.Tracking;
+            this.Batteries = m.MaxBatteries;
+        }
+        #endregion
     }
-  }
 }

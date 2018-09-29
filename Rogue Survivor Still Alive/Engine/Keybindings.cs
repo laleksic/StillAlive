@@ -1,175 +1,220 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Keybindings
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Windows.Forms;
 
 namespace djack.RogueSurvivor.Engine
 {
-  [Serializable]
-  internal class Keybindings
-  {
-    private Dictionary<PlayerCommand, Keys> m_CommandToKeyData;
-    private Dictionary<Keys, PlayerCommand> m_KeyToCommand;
-
-    public Keybindings()
+    [Serializable]
+    class Keybindings
     {
-      this.m_CommandToKeyData = new Dictionary<PlayerCommand, Keys>();
-      this.m_KeyToCommand = new Dictionary<Keys, PlayerCommand>();
-      this.ResetToDefaults();
-    }
+        #region Fields
+        Dictionary<PlayerCommand, Keys> m_CommandToKeyData;
+        Dictionary<Keys, PlayerCommand> m_KeyToCommand;
+        #endregion
 
-    public void ResetToDefaults()
-    {
-      this.m_CommandToKeyData.Clear();
-      this.m_KeyToCommand.Clear();
-      this.Set(PlayerCommand.BARRICADE_MODE, Keys.B);
-      this.Set(PlayerCommand.BREAK_MODE, Keys.K);
-      this.Set(PlayerCommand.CLOSE_DOOR, Keys.C);
-      this.Set(PlayerCommand.FIRE_MODE, Keys.F);
-      this.Set(PlayerCommand.HELP_MODE, Keys.H);
-      this.Set(PlayerCommand.KEYBINDING_MODE, Keys.K | Keys.Shift);
-      this.Set(PlayerCommand.ITEM_SLOT_0, Keys.D1);
-      this.Set(PlayerCommand.ITEM_SLOT_1, Keys.D2);
-      this.Set(PlayerCommand.ITEM_SLOT_2, Keys.D3);
-      this.Set(PlayerCommand.ITEM_SLOT_3, Keys.D4);
-      this.Set(PlayerCommand.ITEM_SLOT_4, Keys.D5);
-      this.Set(PlayerCommand.ITEM_SLOT_5, Keys.D6);
-      this.Set(PlayerCommand.ITEM_SLOT_6, Keys.D7);
-      this.Set(PlayerCommand.ITEM_SLOT_7, Keys.D8);
-      this.Set(PlayerCommand.ITEM_SLOT_8, Keys.D9);
-      this.Set(PlayerCommand.ITEM_SLOT_9, Keys.D0);
-      this.Set(PlayerCommand.ABANDON_GAME, Keys.A | Keys.Shift);
-      this.Set(PlayerCommand.ADVISOR, Keys.H | Keys.Shift);
-      this.Set(PlayerCommand.BUILD_LARGE_FORTIFICATION, Keys.N | Keys.Control);
-      this.Set(PlayerCommand.BUILD_SMALL_FORTIFICATION, Keys.N);
-      this.Set(PlayerCommand.CITY_INFO, Keys.I);
-      this.Set(PlayerCommand.EAT_CORPSE, Keys.E | Keys.Shift);
-      this.Set(PlayerCommand.GIVE_ITEM, Keys.G);
-      this.Set(PlayerCommand.HINTS_SCREEN_MODE, Keys.H | Keys.Control);
-      this.Set(PlayerCommand.INITIATE_TRADE, Keys.E);
-      this.Set(PlayerCommand.LOAD_GAME, Keys.L | Keys.Shift);
-      this.Set(PlayerCommand.MARK_ENEMIES_MODE, Keys.E | Keys.Control);
-      this.Set(PlayerCommand.MESSAGE_LOG, Keys.M | Keys.Shift);
-      this.Set(PlayerCommand.MOVE_E, Keys.NumPad6);
-      this.Set(PlayerCommand.MOVE_N, Keys.NumPad8);
-      this.Set(PlayerCommand.MOVE_NE, Keys.NumPad9);
-      this.Set(PlayerCommand.MOVE_NW, Keys.NumPad7);
-      this.Set(PlayerCommand.MOVE_S, Keys.NumPad2);
-      this.Set(PlayerCommand.MOVE_SE, Keys.NumPad3);
-      this.Set(PlayerCommand.MOVE_SW, Keys.NumPad1);
-      this.Set(PlayerCommand.MOVE_W, Keys.NumPad4);
-      this.Set(PlayerCommand.OPTIONS_MODE, Keys.O | Keys.Shift);
-      this.Set(PlayerCommand.ORDER_MODE, Keys.O);
-      this.Set(PlayerCommand.PUSH_MODE, Keys.P);
-      this.Set(PlayerCommand.QUIT_GAME, Keys.Q | Keys.Shift);
-      this.Set(PlayerCommand.REVIVE_CORPSE, Keys.R | Keys.Shift);
-      this.Set(PlayerCommand.RUN_TOGGLE, Keys.R);
-      this.Set(PlayerCommand.SAVE_GAME, Keys.S | Keys.Shift);
-      this.Set(PlayerCommand.SCREENSHOT, Keys.N | Keys.Shift);
-      this.Set(PlayerCommand.SHOUT, Keys.S);
-      this.Set(PlayerCommand.SLEEP, Keys.Z);
-      this.Set(PlayerCommand.SWITCH_PLACE, Keys.S | Keys.Control);
-      this.Set(PlayerCommand.LEAD_MODE, Keys.T);
-      this.Set(PlayerCommand.USE_SPRAY, Keys.A);
-      this.Set(PlayerCommand.USE_EXIT, Keys.X);
-      this.Set(PlayerCommand.WAIT_OR_SELF, Keys.NumPad5);
-      this.Set(PlayerCommand.WAIT_LONG, Keys.W);
-    }
+        #region Init
+        public Keybindings()
+        {
+            m_CommandToKeyData = new Dictionary<PlayerCommand, Keys>();
+            m_KeyToCommand = new Dictionary<Keys, PlayerCommand>();
+            ResetToDefaults();
+        }
 
-    public Keys Get(PlayerCommand command)
-    {
-      Keys keys;
-      if (this.m_CommandToKeyData.TryGetValue(command, out keys))
-        return keys;
-      return Keys.None;
-    }
+        public void ResetToDefaults()
+        {
+            m_CommandToKeyData.Clear();
+            m_KeyToCommand.Clear();
 
-    public PlayerCommand Get(Keys key)
-    {
-      PlayerCommand playerCommand;
-      if (this.m_KeyToCommand.TryGetValue(key, out playerCommand))
-        return playerCommand;
-      return PlayerCommand.NONE;
-    }
+            Set(PlayerCommand.BARRICADE_MODE, Keys.B);
+            Set(PlayerCommand.BREAK_MODE, Keys.K);
+            Set(PlayerCommand.CLOSE_DOOR, Keys.C);
+            Set(PlayerCommand.FIRE_MODE, Keys.F);
+            Set(PlayerCommand.HELP_MODE, Keys.H);
+            Set(PlayerCommand.KEYBINDING_MODE, Keys.K | Keys.Shift);
 
-    public void Set(PlayerCommand command, Keys key)
-    {
-      PlayerCommand key1 = this.Get(key);
-      if (key1 != PlayerCommand.NONE)
-        this.m_CommandToKeyData.Remove(key1);
-      Keys key2 = this.Get(command);
-      if (key2 != Keys.None)
-        this.m_KeyToCommand.Remove(key2);
-      this.m_CommandToKeyData[command] = key;
-      this.m_KeyToCommand[key] = command;
-    }
+            Set(PlayerCommand.ITEM_SLOT_0, Keys.D1);
+            Set(PlayerCommand.ITEM_SLOT_1, Keys.D2);
+            Set(PlayerCommand.ITEM_SLOT_2, Keys.D3);
+            Set(PlayerCommand.ITEM_SLOT_3, Keys.D4);
+            Set(PlayerCommand.ITEM_SLOT_4, Keys.D5);
+            Set(PlayerCommand.ITEM_SLOT_5, Keys.D6);
+            Set(PlayerCommand.ITEM_SLOT_6, Keys.D7);
+            Set(PlayerCommand.ITEM_SLOT_7, Keys.D8);
+            Set(PlayerCommand.ITEM_SLOT_8, Keys.D9);
+            Set(PlayerCommand.ITEM_SLOT_9, Keys.D0);
 
-    public bool CheckForConflict()
-    {
-      foreach (Keys keys in this.m_CommandToKeyData.Values)
-      {
-        Keys key1 = keys;
-        if (this.m_KeyToCommand.Keys.Count<Keys>((Func<Keys, bool>) (k => k == key1)) > 1)
-          return true;
-      }
-      return false;
-    }
+            Set(PlayerCommand.ABANDON_GAME, Keys.A | Keys.Shift);
+            Set(PlayerCommand.ADVISOR, Keys.H | Keys.Shift);
+            Set(PlayerCommand.BUILD_LARGE_FORTIFICATION, Keys.N | Keys.Control);
+            Set(PlayerCommand.BUILD_SMALL_FORTIFICATION, Keys.N);
+            Set(PlayerCommand.CITY_INFO, Keys.I);
+            Set(PlayerCommand.EAT_CORPSE, Keys.E | Keys.Shift);
+            Set(PlayerCommand.GIVE_ITEM, Keys.G);
+            Set(PlayerCommand.HINTS_SCREEN_MODE, Keys.H | Keys.Control);
+            Set(PlayerCommand.INITIATE_TRADE, Keys.E);
+            Set(PlayerCommand.LOAD_GAME, Keys.L | Keys.Shift);
+            Set(PlayerCommand.MARK_ENEMIES_MODE, Keys.E | Keys.Control);
+            Set(PlayerCommand.MESSAGE_LOG, Keys.M | Keys.Shift);
+            Set(PlayerCommand.MOVE_E, Keys.NumPad6);
+            Set(PlayerCommand.MOVE_N, Keys.NumPad8);
+            Set(PlayerCommand.MOVE_NE, Keys.NumPad9);
+            Set(PlayerCommand.MOVE_NW, Keys.NumPad7);
+            Set(PlayerCommand.MOVE_S, Keys.NumPad2);
+            Set(PlayerCommand.MOVE_SE, Keys.NumPad3);
+            Set(PlayerCommand.MOVE_SW, Keys.NumPad1);
+            Set(PlayerCommand.MOVE_W, Keys.NumPad4);
+            Set(PlayerCommand.OPTIONS_MODE, Keys.O | Keys.Shift);
+            Set(PlayerCommand.ORDER_MODE, Keys.O);
+            Set(PlayerCommand.PUSH_MODE, Keys.P);
+            Set(PlayerCommand.QUIT_GAME, Keys.Q | Keys.Shift);
+            Set(PlayerCommand.REVIVE_CORPSE, Keys.R | Keys.Shift);
+            Set(PlayerCommand.RUN_TOGGLE, Keys.R);
+            Set(PlayerCommand.SAVE_GAME, Keys.S | Keys.Shift);
+            Set(PlayerCommand.SCREENSHOT, Keys.N | Keys.Shift);
+            Set(PlayerCommand.SHOUT, Keys.S);
+            Set(PlayerCommand.SLEEP, Keys.Z);
+            Set(PlayerCommand.SWITCH_PLACE, Keys.S | Keys.Control);
+            Set(PlayerCommand.LEAD_MODE, Keys.T);
+            Set(PlayerCommand.USE_SPRAY, Keys.A);
+            Set(PlayerCommand.USE_EXIT, Keys.X);
+            Set(PlayerCommand.WAIT_OR_SELF, Keys.NumPad5);
+            Set(PlayerCommand.WAIT_LONG, Keys.W);
+        }
+        #endregion
 
-    public static void Save(Keybindings kb, string filepath)
-    {
-      if (kb == null)
-        throw new ArgumentNullException(nameof (kb));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving keybindings...");
-      IFormatter formatter = Keybindings.CreateFormatter();
-      Stream stream = Keybindings.CreateStream(filepath, true);
-      Stream serializationStream = stream;
-      Keybindings keybindings = kb;
-      formatter.Serialize(serializationStream, (object) keybindings);
-      stream.Flush();
-      stream.Close();
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving keybindings... done!");
-    }
+        #region Getting & Setting
+        /// <summary>
+        /// Get KeyData (key code & modifiers).
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public Keys Get(PlayerCommand command)
+        {
+            Keys key;
+            if (m_CommandToKeyData.TryGetValue(command, out key))
+                return key;
+            else
+                return Keys.None;
+        }
 
-    public static Keybindings Load(string filepath)
-    {
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading keybindings...");
-      Keybindings keybindings;
-      try
-      {
-        IFormatter formatter = Keybindings.CreateFormatter();
-        Stream stream = Keybindings.CreateStream(filepath, false);
-        Stream serializationStream = stream;
-        keybindings = (Keybindings) formatter.Deserialize(serializationStream);
-        stream.Close();
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load keybindings (first run?), using defaults.");
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, string.Format("load exception : {0}.", (object) ex.ToString()));
-        keybindings = new Keybindings();
-        keybindings.ResetToDefaults();
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading keybindings... done!");
-      return keybindings;
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key">KeyData</param>
+        /// <returns></returns>
+        public PlayerCommand Get(Keys key)
+        {
+            PlayerCommand cmd;
+            if (m_KeyToCommand.TryGetValue(key, out cmd))
+                return cmd;
+            return PlayerCommand.NONE;
+        }
 
-    private static IFormatter CreateFormatter()
-    {
-      return (IFormatter) new BinaryFormatter();
-    }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="key">KeyData</param>
+        public void Set(PlayerCommand command, Keys key)
+        {
+            // remove previous bind.
+            PlayerCommand prevCommand = Get(key);
+            if (prevCommand != PlayerCommand.NONE)
+            {
+                m_CommandToKeyData.Remove(prevCommand);
+            }
+            Keys prevKey = Get(command);
+            if (prevKey != Keys.None)
+            {
+                m_KeyToCommand.Remove(prevKey);
+            }
+                     
+            // rebind.
+            m_CommandToKeyData[command] = key;
+            m_KeyToCommand[key] = command;
+       }
+        #endregion
 
-    private static Stream CreateStream(string saveName, bool save)
-    {
-      return (Stream) new FileStream(saveName, save ? FileMode.Create : FileMode.Open, save ? FileAccess.Write : FileAccess.Read, FileShare.None);
+        #region Checking for keys conflict
+        public bool CheckForConflict()
+        {
+            foreach (Keys key1 in m_CommandToKeyData.Values)
+            {
+                int bound = m_KeyToCommand.Keys.Count((k) => k == key1);
+                if (bound > 1)
+                    return true;
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region Saving & Loading
+        public static void Save(Keybindings kb, string filepath)
+        {
+            if (kb == null)
+                throw new ArgumentNullException("kb");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving keybindings...");
+
+            IFormatter formatter = CreateFormatter();
+            Stream stream = CreateStream(filepath, true);
+
+            formatter.Serialize(stream, kb);
+            stream.Flush();
+            stream.Close();
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving keybindings... done!");
+        }
+
+        /// <summary>
+        /// Attempt to load, if failed return bindings with defaults.
+        /// </summary>
+        /// <returns></returns>
+        public static Keybindings Load(string filepath)
+        {
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading keybindings...");
+
+            Keybindings kb;
+
+            try
+            {
+                IFormatter formatter = CreateFormatter();
+                Stream stream = CreateStream(filepath, false);
+
+                kb = (Keybindings)formatter.Deserialize(stream);
+                stream.Close();
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load keybindings (first run?), using defaults.");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
+                kb = new Keybindings();
+                kb.ResetToDefaults();
+            }
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading keybindings... done!");
+
+            return kb;
+        }
+
+        static IFormatter CreateFormatter()
+        {
+            return new BinaryFormatter();
+        }
+
+        static Stream CreateStream(string saveName, bool save)
+        {
+            return new FileStream(saveName,
+                save ? FileMode.Create : FileMode.Open,
+                save ? FileAccess.Write : FileAccess.Read,
+                FileShare.None);
+        }
+        #endregion
     }
-  }
 }

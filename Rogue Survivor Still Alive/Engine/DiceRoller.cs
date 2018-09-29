@@ -1,49 +1,75 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.DiceRoller
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace djack.RogueSurvivor.Engine
 {
-  [Serializable]
-  internal class DiceRoller
-  {
-    private Random m_Rng;
-
-    public DiceRoller(int seed)
+    [Serializable]
+    class DiceRoller
     {
-      this.m_Rng = new Random(seed);
-    }
+        #region Fields
+        Random m_Rng;
+        #endregion
 
-    public DiceRoller()
-      : this((int) DateTime.UtcNow.Ticks)
-    {
-    }
+        #region Init
+        public DiceRoller(int seed)
+        {            
+            m_Rng = new Random(seed);
+        }
 
-    public int Roll(int min, int max)
-    {
-      if (max <= min)
-        return min;
-      int num;
-      lock (this.m_Rng)
-        num = this.m_Rng.Next(min, max);
-      if (num >= max)
-        num = max - 1;
-      return num;
-    }
+        /// <summary>
+        /// Seed with current time.
+        /// </summary>
+        public DiceRoller()
+            : this((int)DateTime.UtcNow.Ticks)
+        {
+        }
+        #endregion
 
-    public float RollFloat()
-    {
-      lock (this.m_Rng)
-        return (float) this.m_Rng.NextDouble();
-    }
+        #region Rolling
+        /// <summary>
+        /// Roll in range [min, max[.
+        /// </summary>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public int Roll(int min, int max)
+        {
+            // sanity check, fixes crashes.
+            if (max <= min) return min;
 
-    public bool RollChance(int chance)
-    {
-      return this.Roll(0, 100) < chance;
+            // roll it baby.
+            int r;
+            lock (m_Rng) // thread safe, Random is supposed to be thread safe but apparently not...
+            {
+                r = m_Rng.Next(min, max);
+            }
+            // FIX awfull bug, in some very rare cases .NET Random returns max instead of max-1 (wtf?!)
+            if (r >= max) r = max - 1;
+
+            return r;
+        }
+
+        public float RollFloat()
+        {
+            float r;
+            lock (m_Rng) // thread safe, Random is supposed to be thread safe but apparently not...
+            {
+                r = (float)m_Rng.NextDouble();
+            }
+            return r;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="chance">chance as a percentage [0..100]</param>
+        /// <returns></returns>
+        public bool RollChance(int chance)
+        {
+            return Roll(0, 100) < chance;
+        }
+        #endregion
     }
-  }
 }

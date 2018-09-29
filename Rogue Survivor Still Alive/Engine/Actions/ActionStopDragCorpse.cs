@@ -1,34 +1,39 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Actions.ActionStopDragCorpse
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
-using System;
 
 namespace djack.RogueSurvivor.Engine.Actions
 {
-  internal class ActionStopDragCorpse : ActorAction
-  {
-    private readonly Corpse m_Target;
-
-    public ActionStopDragCorpse(Actor actor, RogueGame game, Corpse target)
-      : base(actor, game)
+    class ActionStopDragCorpse : ActorAction
     {
-      if (target == null)
-        throw new ArgumentNullException(nameof (target));
-      this.m_Target = target;
-    }
+        #region Fields
+        readonly Corpse m_Target;
+        #endregion
 
-    public override bool IsLegal()
-    {
-      return this.m_Game.Rules.CanActorStopDragCorpse(this.m_Actor, this.m_Target, out this.m_FailReason);
-    }
+        #region Init
+        public ActionStopDragCorpse(Actor actor, RogueGame game, Corpse target)
+            : base(actor, game)
+        {
+            if (target == null)
+                throw new ArgumentNullException("target");
 
-    public override void Perform()
-    {
-      this.m_Game.DoStopDragCorpse(this.m_Actor, this.m_Target);
+            m_Target = target;
+        }
+        #endregion
+
+        #region ActorAction
+        public override bool IsLegal()
+        {
+            return m_Game.Rules.CanActorStopDragCorpse(m_Actor, m_Target, out m_FailReason);
+        }
+
+        public override void Perform()
+        {
+            m_Game.DoStopDragCorpse(m_Actor, m_Target);
+        }
+        #endregion
     }
-  }
 }

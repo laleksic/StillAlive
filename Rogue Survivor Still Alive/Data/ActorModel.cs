@@ -1,182 +1,151 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Data.ActorModel
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace djack.RogueSurvivor.Data
 {
-  internal class ActorModel
-  {
-    private int m_ID;
-    private string m_ImageID;
-    private DollBody m_DollBody;
-    private string m_Name;
-    private string m_PluralName;
-    private Abilities m_Abilities;
-    private ActorSheet m_StartingSheet;
-    private Type m_DefaultController;
-    private string m_FlavorDescription;
-    private int m_ScoreValue;
-    private int m_CreatedCount;
-
-    public int ID
+    class ActorModel
     {
-      get
-      {
-        return this.m_ID;
-      }
-      set
-      {
-        this.m_ID = value;
-      }
-    }
+        #region Fields
+        int m_ID;
+        string m_ImageID;
+        DollBody m_DollBody;
+        string m_Name;
+        string m_PluralName;
+        Abilities m_Abilities;
+        ActorSheet m_StartingSheet;
+        Type m_DefaultController;
+        string m_FlavorDescription;
+        int m_ScoreValue;
 
-    public string ImageID
-    {
-      get
-      {
-        return this.m_ImageID;
-      }
-    }
+        int m_CreatedCount;
+        #endregion
 
-    public DollBody DollBody
-    {
-      get
-      {
-        return this.m_DollBody;
-      }
-    }
+        #region Properties
+        public int ID
+        {
+            get { return m_ID; }
+            set { m_ID = value; }
+        }
 
-    public string Name
-    {
-      get
-      {
-        return this.m_Name;
-      }
-    }
+ 
+        public string ImageID
+        {
+            get { return m_ImageID; }
+        }
 
-    public string PluralName
-    {
-      get
-      {
-        return this.m_PluralName;
-      }
-    }
+        public DollBody DollBody
+        {
+            get { return m_DollBody; }
+        }
 
-    public ActorSheet StartingSheet
-    {
-      get
-      {
-        return this.m_StartingSheet;
-      }
-    }
+        public string Name
+        {
+            get { return m_Name; }
+        }
 
-    public Abilities Abilities
-    {
-      get
-      {
-        return this.m_Abilities;
-      }
-    }
+        public string PluralName
+        {
+            get { return m_PluralName; }
+        }
 
-    public Type DefaultController
-    {
-      get
-      {
-        return this.m_DefaultController;
-      }
-    }
+        public ActorSheet StartingSheet
+        {
+            get { return m_StartingSheet; }
+        }
 
-    public int CreatedCount
-    {
-      get
-      {
-        return this.m_CreatedCount;
-      }
-    }
+        public Abilities Abilities
+        {
+            get { return m_Abilities; }
+        }
 
-    public int ScoreValue
-    {
-      get
-      {
-        return this.m_ScoreValue;
-      }
-    }
+        public Type DefaultController
+        {
+            get { return m_DefaultController; }
+        }
 
-    public string FlavorDescription
-    {
-      get
-      {
-        return this.m_FlavorDescription;
-      }
-      set
-      {
-        this.m_FlavorDescription = value;
-      }
-    }
+        public int CreatedCount
+        {
+            get { return m_CreatedCount; }
+        }
 
-    public ActorModel(string imageID, string name, string pluralName, int scoreValue, DollBody body, Abilities abilities, ActorSheet startingSheet, Type defaultController)
-    {
-      if (name == null)
-        throw new ArgumentNullException(nameof (name));
-      if (body == null)
-        throw new ArgumentNullException(nameof (body));
-      if (abilities == null)
-        throw new ArgumentNullException(nameof (abilities));
-      if (startingSheet == null)
-        throw new ArgumentNullException(nameof (startingSheet));
-      if (defaultController != null && !defaultController.IsSubclassOf(typeof (ActorController)))
-        throw new ArgumentException("defaultController is not a subclass of ActorController");
-      this.m_ImageID = imageID;
-      this.m_DollBody = body;
-      this.m_Name = name;
-      this.m_PluralName = pluralName;
-      this.m_StartingSheet = startingSheet;
-      this.m_Abilities = abilities;
-      this.m_DefaultController = defaultController;
-      this.m_ScoreValue = scoreValue;
-      this.m_CreatedCount = 0;
-    }
+        public int ScoreValue
+        {
+            get { return m_ScoreValue; }
+        }
 
-    private Actor Create(Faction faction, int spawnTime)
-    {
-      ++this.m_CreatedCount;
-      return new Actor(this, faction, spawnTime)
-      {
-        Controller = this.InstanciateController()
-      };
-    }
+        public string FlavorDescription
+        {
+            get { return m_FlavorDescription; }
+            set { m_FlavorDescription = value; }
+        }
+        #endregion
 
-    private ActorController InstanciateController()
-    {
-      if (this.m_DefaultController == null)
-        return (ActorController) null;
-      return this.m_DefaultController.GetConstructor(Type.EmptyTypes).Invoke((object[]) null) as ActorController;
-    }
+        #region Init
+        public ActorModel(string imageID, string name, string pluralName, int scoreValue, DollBody body, Abilities abilities, ActorSheet startingSheet, Type defaultController)
+        {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (body == null)
+                throw new ArgumentNullException("body");
+            if (abilities == null)
+                throw new ArgumentNullException("abilities");
+            if (startingSheet == null)
+                throw new ArgumentNullException("startingSheet");
+            if (defaultController != null && !defaultController.IsSubclassOf(typeof(ActorController)))
+                throw new ArgumentException("defaultController is not a subclass of ActorController");
 
-    public Actor CreateAnonymous(Faction faction, int spawnTime)
-    {
-      return this.Create(faction, spawnTime);
-    }
+            m_ImageID = imageID;
+            m_DollBody = body;
+            m_Name = name;
+            m_PluralName = pluralName;
+            m_StartingSheet = startingSheet;
+            m_Abilities = abilities;
+            m_DefaultController = defaultController;
+            m_ScoreValue = scoreValue;
 
-    public Actor CreateNumberedName(Faction faction, int spawnTime)
-    {
-      Actor actor = this.Create(faction, spawnTime);
-      actor.Name += this.m_CreatedCount.ToString();
-      actor.IsProperName = true;
-      return actor;
-    }
+            m_CreatedCount = 0;
+        }
+        #endregion
 
-    public Actor CreateNamed(Faction faction, string properName, bool isPluralName, int spawnTime)
-    {
-      Actor actor = this.Create(faction, spawnTime);
-      actor.Name = properName;
-      actor.IsProperName = true;
-      actor.IsPluralName = isPluralName;
-      return actor;
+        #region Factory
+        Actor Create(Faction faction, int spawnTime)
+        {
+            ++m_CreatedCount;
+            return new Actor(this, faction, spawnTime) { Controller = InstanciateController() };
+        }
+
+        ActorController InstanciateController()
+        {
+            if (m_DefaultController == null)
+                return null;
+            ActorController controller = m_DefaultController.GetConstructor(System.Type.EmptyTypes).Invoke(null) as ActorController;
+            return controller;
+        }
+
+        public Actor CreateAnonymous(Faction faction, int spawnTime)
+        {
+            return Create(faction, spawnTime);
+        }
+
+        public Actor CreateNumberedName(Faction faction, int spawnTime)
+        {
+            Actor actor = Create(faction, spawnTime);
+            String number = m_CreatedCount.ToString();
+            actor.Name += number;
+            actor.IsProperName = true;
+            return actor;
+        }
+
+        public Actor CreateNamed(Faction faction, string properName, bool isPluralName, int spawnTime)
+        {
+            Actor actor = Create(faction, spawnTime);
+            actor.Name = properName;
+            actor.IsProperName = true;
+            actor.IsPluralName = isPluralName;
+            return actor;
+        }
+        #endregion
     }
-  }
 }

@@ -1,42 +1,42 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemSprayPaintModel
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
-using System;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  internal class ItemSprayPaintModel : ItemModel
-  {
-    private int m_MaxPaintQuantity;
-    private string m_TagImageID;
-
-    public int MaxPaintQuantity
+    class ItemSprayPaintModel : ItemModel
     {
-      get
-      {
-        return this.m_MaxPaintQuantity;
-      }
-    }
+        #region Fields
+        int m_MaxPaintQuantity;
+        string m_TagImageID;
+        #endregion
 
-    public string TagImageID
-    {
-      get
-      {
-        return this.m_TagImageID;
-      }
-    }
+        #region Properties
+        public int MaxPaintQuantity
+        {
+            get { return m_MaxPaintQuantity; }
+        }
 
-    public ItemSprayPaintModel(string aName, string theNames, string imageID, int paintQuantity, string tagImageID)
-      : base(aName, theNames, imageID)
-    {
-      if (tagImageID == null)
-        throw new ArgumentNullException(nameof (tagImageID));
-      this.m_MaxPaintQuantity = paintQuantity;
-      this.m_TagImageID = tagImageID;
+        public string TagImageID
+        {
+            get { return m_TagImageID; }
+        }
+
+        #endregion
+
+        #region Init
+        public ItemSprayPaintModel(string aName, string theNames, string imageID, int paintQuantity, string tagImageID)
+            : base(aName, theNames, imageID)
+        {
+            if (tagImageID == null)
+                throw new ArgumentNullException("tagImageID");
+
+            m_MaxPaintQuantity = paintQuantity;
+            m_TagImageID = tagImageID;
+        }
+        #endregion
     }
-  }
 }

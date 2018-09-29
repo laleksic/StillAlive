@@ -1,134 +1,196 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.HiScoreTable
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
+using djack.RogueSurvivor.Data;
+
 namespace djack.RogueSurvivor.Engine
 {
-  [Serializable]
-  internal class HiScoreTable
-  {
-    public const int DEFAULT_MAX_ENTRIES = 12;
-    private List<HiScore> m_Table;
-    private int m_MaxEntries;
-
-    public int Count
+    [Serializable]
+    class HiScore
     {
-      get
-      {
-        return this.m_Table.Count;
-      }
-    }
+        public string Name { get; set; }
+        public int TotalPoints { get; set; }
+        public int DifficultyPercent { get; set; }
+        public int SurvivalPoints { get; set; }
+        public int KillPoints { get; set; }
+        public int AchievementPoints { get; set; }
+        public int TurnSurvived { get; set; }
+        public TimeSpan PlayingTime { get; set; }
+        public string SkillsDescription { get; set; }
+        public string Death { get; set; }
 
-    public HiScore this[int index]
-    {
-      get
-      {
-        return this.Get(index);
-      }
-    }
-
-    public HiScoreTable(int maxEntries)
-    {
-      if (maxEntries < 1)
-        throw new ArgumentOutOfRangeException("maxEntries < 1");
-      this.m_Table = new List<HiScore>(maxEntries);
-      this.m_MaxEntries = maxEntries;
-    }
-
-    public void Clear()
-    {
-      for (int index = 0; index < this.m_MaxEntries; ++index)
-        this.m_Table.Add(new HiScore()
+        public static HiScore FromScoring(string name, Scoring sc, string skillsDescription)
         {
-          Death = "no death",
-          DifficultyPercent = 0,
-          KillPoints = 0,
-          Name = "no one",
-          PlayingTime = TimeSpan.Zero,
-          SurvivalPoints = 0,
-          TotalPoints = 0,
-          TurnSurvived = 0,
-          SkillsDescription = "no skills"
-        });
+            if (sc == null)
+                throw new ArgumentNullException("scoring");
+
+            HiScore hi = new HiScore()
+            {
+                AchievementPoints = sc.AchievementPoints,
+                Death = sc.DeathReason,
+                DifficultyPercent = (int)(100 * sc.DifficultyRating),
+                KillPoints = sc.KillPoints,
+                Name = name,
+                PlayingTime = sc.RealLifePlayingTime,
+                SkillsDescription = skillsDescription,
+                SurvivalPoints = sc.SurvivalPoints,
+                TotalPoints = sc.TotalPoints,
+                TurnSurvived = sc.TurnsSurvived
+            };
+
+            return hi;
+        }
     }
 
-    public bool Register(HiScore hi)
+    [Serializable]
+    class HiScoreTable
     {
-      int index = 0;
-      while (index < this.m_Table.Count && this.m_Table[index].TotalPoints >= hi.TotalPoints)
-        ++index;
-      if (index > this.m_MaxEntries)
-        return false;
-      this.m_Table.Insert(index, hi);
-      while (this.m_Table.Count > this.m_MaxEntries)
-        this.m_Table.RemoveAt(this.m_Table.Count - 1);
-      return true;
-    }
+        #region Constants
+        public const int DEFAULT_MAX_ENTRIES = 12;
+        #endregion
 
-    public HiScore Get(int index)
-    {
-      if (index < 0 || index >= this.m_Table.Count)
-        throw new ArgumentOutOfRangeException(nameof (index));
-      return this.m_Table[index];
-    }
+        #region Fields
+        List<HiScore> m_Table;
+        int m_MaxEntries;
+        #endregion
 
-    public static void Save(HiScoreTable table, string filepath)
-    {
-      if (table == null)
-        throw new ArgumentNullException(nameof (table));
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving high score table...");
-      IFormatter formatter = HiScoreTable.CreateFormatter();
-      Stream stream = HiScoreTable.CreateStream(filepath, true);
-      Stream serializationStream = stream;
-      HiScoreTable hiScoreTable = table;
-      formatter.Serialize(serializationStream, (object) hiScoreTable);
-      stream.Flush();
-      stream.Close();
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving high score table... done!");
-    }
+        #region Properties
+        public int Count
+        {
+            get { return m_Table.Count; }
+        }
 
-    public static HiScoreTable Load(string filepath)
-    {
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading high score table...");
-      HiScoreTable hiScoreTable;
-      try
-      {
-        IFormatter formatter = HiScoreTable.CreateFormatter();
-        Stream stream = HiScoreTable.CreateStream(filepath, false);
-        Stream serializationStream = stream;
-        hiScoreTable = (HiScoreTable) formatter.Deserialize(serializationStream);
-        stream.Close();
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load high score table (no high scores?).");
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, string.Format("load exception : {0}.", (object) ex.ToString()));
-        return (HiScoreTable) null;
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading high score table... done!");
-      return hiScoreTable;
-    }
+        public HiScore this[int index]
+        {
+            get { return Get(index); }
+        }
+        #endregion
 
-    private static IFormatter CreateFormatter()
-    {
-      return (IFormatter) new BinaryFormatter();
-    }
+        #region Init
+        public HiScoreTable(int maxEntries)
+        {
+            if (maxEntries < 1)
+                throw new ArgumentOutOfRangeException("maxEntries < 1");
 
-    private static Stream CreateStream(string saveFileName, bool save)
-    {
-      return (Stream) new FileStream(saveFileName, save ? FileMode.Create : FileMode.Open, save ? FileAccess.Write : FileAccess.Read, FileShare.None);
+            m_Table = new List<HiScore>(maxEntries);
+            m_MaxEntries = maxEntries;
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < m_MaxEntries; i++)
+                m_Table.Add(new HiScore()
+                {
+                    Death = "no death",
+                    DifficultyPercent = 0,
+                    KillPoints = 0,
+                    Name = "no one",
+                    PlayingTime = TimeSpan.Zero,
+                    SurvivalPoints = 0,
+                    TotalPoints = 0,
+                    TurnSurvived = 0,
+                    SkillsDescription = "no skills"
+                });
+        }
+        #endregion
+
+        #region Storing & Retrieving
+        public bool Register(HiScore hi)
+        {
+            int i = 0;
+            while (i < m_Table.Count && m_Table[i].TotalPoints >= hi.TotalPoints)
+            {
+                ++i;
+            }
+
+            if (i > m_MaxEntries)
+                return false;
+
+            m_Table.Insert(i, hi);
+            while (m_Table.Count > m_MaxEntries)
+            {
+                m_Table.RemoveAt(m_Table.Count - 1);
+            }
+            return true;
+        }
+
+        public HiScore Get(int index)
+        {
+            if (index < 0 || index >= m_Table.Count)
+                throw new ArgumentOutOfRangeException("index");
+            return m_Table[index];
+        }
+        #endregion
+
+        #region Saving & Loading
+        public static void Save(HiScoreTable table, string filepath)
+        {
+            if (table == null)
+                throw new ArgumentNullException("table");
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving high score table...");
+
+            IFormatter formatter = CreateFormatter();
+            Stream stream = CreateStream(filepath, true);
+
+            formatter.Serialize(stream, table);
+            stream.Flush();
+            stream.Close();
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving high score table... done!");
+        }
+
+        /// <summary>
+        /// Try to load, null if failed.
+        /// </summary>
+        /// <returns></returns>
+        public static HiScoreTable Load(string filepath)
+        {
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading high score table...");
+
+            HiScoreTable table;
+            try
+            {
+                IFormatter formatter = CreateFormatter();
+                Stream stream = CreateStream(filepath, false);
+
+                table = (HiScoreTable)formatter.Deserialize(stream);
+                stream.Close();
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load high score table (no high scores?).");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
+                return null;
+            }
+
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading high score table... done!");
+            return table;
+        }
+
+        static IFormatter CreateFormatter()
+        {
+            return new BinaryFormatter();
+        }
+
+        static Stream CreateStream(string saveFileName, bool save)
+        {
+            return new FileStream(saveFileName,
+                save ? FileMode.Create : FileMode.Open,
+                save ? FileAccess.Write : FileAccess.Read,
+                FileShare.None);
+        }
+#endregion
     }
-  }
 }

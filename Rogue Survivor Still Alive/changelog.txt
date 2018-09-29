@@ -1,4 +1,30 @@
-﻿STILL ALIVE 1.1.8.0 (30/8/2017) [Author: MP]
+﻿STILL ALIVE 1.2.12.3 (aka Release 2, 30/9/2017) [Author: MP]
+--------------------
+
+Features:
+-Grenades leave behind scorch marks on the tiles that were caught in the blast.
+-Added numerous sound effects for the player and some for nearby, audible actors.
+-Added ability to disable and change volume music and sound effects separately
+-Hearing weapon firing is no longer a 25% only. If it's in audible range, you hear it.
+-Skeletons now drop bones, other undead still drop bloody remains.
+-Wounding has a chance to drop small blood splatters. Corpses bleed out.
+-Bows are now more useful:
+|-Added a chance for fired bolts to rip through an undead, ending up on the ground beside them.
+|-Added a chance for fired bolts to land around the target on a miss.
+|-If a living is hit by a bolt it may stick in them, and they may pull it out and drop it. It may also cause them to drop an item.
+
+Fixes:
+-Fixed MDX audio crash by using hard stop rather than the original pause method.
+-Removed duplicated torso drawing
+-Fixed hunters vest sizing and positioning
+-Spelling mistakes
+
+Development:
+-Separated music and sound effects into distinct instances
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.1.8.0 (aka Release 1, 30/8/2017) [Author: MP]
 -------------------
 
 In-game changes:
@@ -20,6 +46,7 @@ Development:
 
 Note: versioning = [major release].[major feature].[minor feature].[bugfix]
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 NOTE: CHANGES BELOW ARE THE ORIGNAL WORK OF RoguedJack PRIOR TO RELEASE AS OPEN-SOURCE

@@ -1,53 +1,66 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.MapObjects.PowerGenerator
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
-using System;
 
 namespace djack.RogueSurvivor.Engine.MapObjects
 {
-  [Serializable]
-  internal class PowerGenerator : StateMapObject
-  {
-    public const int STATE_OFF = 0;
-    public const int STATE_ON = 1;
-    private string m_OffImageID;
-    private string m_OnImageID;
-
-    public bool IsOn
+    [Serializable]
+    class PowerGenerator : StateMapObject
     {
-      get
-      {
-        return this.State == 1;
-      }
-    }
+        #region Power Generator states
+        public const int STATE_OFF = 0;
+        public const int STATE_ON = 1;
+        #endregion
 
-    public PowerGenerator(string name, string offImageID, string onImageID)
-      : base(name, offImageID)
-    {
-      this.m_OffImageID = offImageID;
-      this.m_OnImageID = onImageID;
-    }
+        #region Fields
+        string m_OffImageID;
+        string m_OnImageID;
+        #endregion
 
-    public override void SetState(int newState)
-    {
-      base.SetState(newState);
-      if (newState != 0)
-      {
-        if (newState != 1)
-          throw new ArgumentOutOfRangeException("unhandled state");
-        this.ImageID = this.m_OnImageID;
-      }
-      else
-        this.ImageID = this.m_OffImageID;
-    }
+        #region Properties
+        public bool IsOn
+        {
+            get { return this.State == STATE_ON; }
+        }
+        #endregion
 
-    public void TogglePower()
-    {
-      this.SetState(this.State == 0 ? 1 : 0);
+        #region Init
+        public PowerGenerator(string name, string offImageID, string onImageID)
+            : base(name, offImageID)
+        {
+            m_OffImageID = offImageID;
+            m_OnImageID = onImageID;
+        }
+        #endregion
+
+        #region StateMapObject
+        public override void SetState(int newState)
+        {
+            base.SetState(newState);
+
+            switch (newState)
+            {
+                case STATE_OFF:
+                    this.ImageID = m_OffImageID;
+                    break;
+
+                case STATE_ON:
+                    this.ImageID = m_OnImageID;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException("unhandled state");
+            }
+        }
+        #endregion
+
+        #region Switching On/Off
+        public void TogglePower()
+        {
+            SetState(this.State == STATE_OFF ? STATE_ON : STATE_OFF);
+        }
+        #endregion
     }
-  }
 }

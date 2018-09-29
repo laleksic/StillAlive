@@ -1,77 +1,129 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Data.Doll
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Drawing;
 
 namespace djack.RogueSurvivor.Data
 {
-  [Serializable]
-  internal class Doll
-  {
-    private DollBody m_Body;
-    private List<string>[] m_Decorations;
-
-    public DollBody Body
+    [Serializable]
+    enum DollPart
     {
-      get
-      {
-        return this.m_Body;
-      }
+        NONE = 0,
+
+        _FIRST,
+
+        RIGHT_HAND = _FIRST,
+        LEFT_HAND,
+        HEAD,
+        TORSO,
+        LEGS,
+        FEET,
+        SKIN,
+        EYES,
+
+        _COUNT
     }
 
-    public Doll(DollBody body)
+    [Serializable]
+    class DollBody
     {
-      this.m_Body = body;
-      this.m_Decorations = new List<string>[9];
-    }
+        #region Blank doll body
+        [NonSerialized]
+        public static readonly DollBody UNDEF = new DollBody(true, 0);
+        #endregion
 
-    public List<string> GetDecorations(DollPart part)
-    {
-      return this.m_Decorations[(int) part];
-    }
+        #region Fields
+        readonly bool m_IsMale;
+        readonly int m_Speed;
+        #endregion
 
-    public int CountDecorations(DollPart part)
-    {
-      List<string> decorations = this.GetDecorations(part);
-      if (decorations != null)
-        return decorations.Count;
-      return 0;
-    }
+        #region Properties
+        public bool IsMale { get { return m_IsMale; } }
+        public int Speed { get { return m_Speed; } }        
+        #endregion
 
-    public void AddDecoration(DollPart part, string imageID)
-    {
-      (this.GetDecorations(part) ?? (this.m_Decorations[(int) part] = new List<string>(1))).Add(imageID);
-    }
-
-    public void RemoveDecoration(string imageID)
-    {
-      for (int index = 0; index < 9; ++index)
-      {
-        List<string> decoration = this.m_Decorations[index];
-        if (decoration != null && decoration.Contains(imageID))
+        #region Init
+        public DollBody(bool isMale, int speed)
         {
-          decoration.Remove(imageID);
-          if (decoration.Count != 0)
-            break;
-          this.m_Decorations[index] = (List<string>) null;
-          break;
+            m_IsMale = isMale;
+            m_Speed = speed;
         }
-      }
+        #endregion
     }
 
-    public void RemoveDecoration(DollPart part)
+    [Serializable]
+    class Doll
     {
-      this.m_Decorations[(int) part] = (List<string>) null;
-    }
+        #region Fields
+        DollBody m_Body;
+        List<string>[] m_Decorations;
+        #endregion
 
-    public void RemoveAllDecorations()
-    {
-      for (int index = 0; index < 9; ++index)
-        this.m_Decorations[index] = (List<string>) null;
+        #region Properties
+        public DollBody Body
+        {
+            get { return m_Body; }
+        }
+        #endregion
+
+        #region Init
+        public Doll(DollBody body)
+        {
+            m_Body = body;
+            m_Decorations = new List<string>[(int)DollPart._COUNT];
+        }
+        #endregion
+
+        #region Decorating
+        public List<string> GetDecorations(DollPart part)
+        {
+            return m_Decorations[(int)part];
+        }
+
+        public int CountDecorations(DollPart part)
+        {
+            List<string> partList = GetDecorations(part);
+            return (partList == null ? 0 : partList.Count);
+        }
+
+        public void AddDecoration(DollPart part, string imageID)
+        {
+            List<string> partList = GetDecorations(part);
+            if (partList == null)
+            {
+                partList = m_Decorations[(int)part] = new List<string>(1);
+            }
+            partList.Add(imageID);
+        }
+
+        public void RemoveDecoration(string imageID)
+        {
+            for (int iPart = 0; iPart < (int)DollPart._COUNT; iPart++)
+            {
+                List<string> partList = m_Decorations[iPart];
+                if (partList == null)
+                    continue;
+                if (partList.Contains(imageID))
+                {
+                    partList.Remove(imageID);
+                    if (partList.Count == 0)
+                        m_Decorations[iPart] = null;
+                    return;
+                }
+            }
+        }
+
+        public void RemoveDecoration(DollPart part)
+        {
+            m_Decorations[(int)part] = null;
+        }
+
+        public void RemoveAllDecorations()
+        {
+            for (int iPart = 0; iPart < (int)DollPart._COUNT; iPart++)
+                m_Decorations[iPart] = null;
+        }
+        #endregion
     }
-  }
 }

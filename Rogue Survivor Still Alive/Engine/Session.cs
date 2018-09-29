@@ -1,422 +1,885 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Session
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using djack.RogueSurvivor.Data;
-using System;
-using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
+using System.Drawing;
+using System.Xml;
 using System.Xml.Serialization;
+
+using djack.RogueSurvivor.Data;
 
 namespace djack.RogueSurvivor.Engine
 {
-  [Serializable]
-  internal class Session
-  {
-    private GameMode m_GameMode;
-    private WorldTime m_WorldTime;
-    private World m_World;
-    private Map m_CurrentMap;
-    private Scoring m_Scoring;
-    private int[,,] m_Event_Raids;
-    [NonSerialized]
-    private static Session s_TheSession;
-
-    public static Session Get
+    [Serializable]
+    enum GameMode
     {
-      get
-      {
-        if (Session.s_TheSession == null)
-          Session.s_TheSession = new Session();
-        return Session.s_TheSession;
-      }
+        GM_STANDARD,
+        GM_CORPSES_INFECTION,
+        GM_VINTAGE
     }
 
-    public GameMode GameMode
+    [Serializable]
+    enum ScriptStage
     {
-      get
-      {
-        return this.m_GameMode;
-      }
-      set
-      {
-        this.m_GameMode = value;
-      }
+        STAGE_0,
+        STAGE_1,
+        STAGE_2,
+        STAGE_3,
+        STAGE_4,
+        STAGE_5
     }
 
-    public int Seed { get; set; }
-
-    public WorldTime WorldTime
+    [Serializable]
+    enum RaidType
     {
-      get
-      {
-        return this.m_WorldTime;
-      }
+        _FIRST = 0,
+
+        BIKERS = _FIRST,
+        GANGSTA,
+        BLACKOPS,
+        SURVIVORS,
+
+        /// <summary>
+        /// "Fake" raid for AIs.
+        /// </summary>
+        NATGUARD,
+
+        /// <summary>
+        /// "Fake" raid for AIs.
+        /// </summary>
+        ARMY_SUPLLIES,
+
+        _COUNT
     }
 
-    public int LastTurnPlayerActed { get; set; }
-
-    public World World
+    [Serializable]
+    enum AdvisorHint
     {
-      get
-      {
-        return this.m_World;
-      }
-      set
-      {
-        this.m_World = value;
-      }
+        _FIRST = 0,
+
+        /// <summary>
+        /// Basic movement directions.
+        /// </summary>
+        MOVE_BASIC = _FIRST,
+
+        /// <summary>
+        /// Looking with the mouse.
+        /// </summary>
+        MOUSE_LOOK,
+
+        /// <summary>
+        /// Redefining keys & options.
+        /// </summary>
+        KEYS_OPTIONS,
+
+        /// <summary>
+        /// Night effects.
+        /// </summary>
+        NIGHT,
+
+        /// <summary>
+        /// Rainy weather effects.
+        /// </summary>
+        RAIN,
+
+        /// <summary>
+        /// Attacking in melee.
+        /// </summary>
+        ACTOR_MELEE,
+
+        /// <summary>
+        /// Running.
+        /// </summary>
+        MOVE_RUN,
+
+        /// <summary>
+        /// Resting.
+        /// </summary>
+        MOVE_RESTING,
+
+        /// <summary>
+        /// Jumping.
+        /// </summary>
+        MOVE_JUMP,
+
+        /// <summary>
+        /// Grabbing an item from a container.
+        /// </summary>
+        ITEM_GRAB_CONTAINER,
+
+        /// <summary>
+        /// Grabbing an item from the floor.
+        /// </summary>
+        ITEM_GRAB_FLOOR,
+
+        /// <summary>
+        /// Unequiping an item.
+        /// </summary>
+        ITEM_UNEQUIP,
+
+        /// <summary>
+        /// Equiping an item.
+        /// </summary>
+        ITEM_EQUIP,
+
+        /// <summary>
+        /// Barricading material.
+        /// </summary>
+        ITEM_TYPE_BARRICADING,
+
+        /// <summary>
+        /// Dropping an item.
+        /// </summary>
+        ITEM_DROP,
+
+        /// <summary>
+        /// Using an item.
+        /// </summary>
+        ITEM_USE,
+
+        /// <summary>
+        /// Flashlights.
+        /// </summary>
+        FLASHLIGHT,
+
+        /// <summary>
+        /// Cellphones.
+        /// </summary>
+        CELLPHONES,
+
+        /// <summary>
+        /// Using spraypaint.
+        /// </summary>
+        SPRAYS_PAINT,
+
+        /// <summary>
+        /// Using scent sprays.
+        /// </summary>
+        SPRAYS_SCENT,
+
+        /// <summary>
+        /// Firing a weapon.
+        /// </summary>
+        WEAPON_FIRE,
+
+        /// <summary>
+        /// Reloading a weapon.
+        /// </summary>
+        WEAPON_RELOAD,
+
+        /// <summary>
+        /// Using grenades.
+        /// </summary>
+        GRENADE,
+
+        /// <summary>
+        /// Opening a door/window.
+        /// </summary>
+        DOORWINDOW_OPEN,
+
+        /// <summary>
+        /// Closing a door/window.
+        /// </summary>
+        DOORWINDOW_CLOSE,
+
+        /// <summary>
+        /// Pushing objects.
+        /// </summary>
+        OBJECT_PUSH,
+
+        /// <summary>
+        /// Breaking objects.
+        /// </summary>
+        OBJECT_BREAK,
+
+        /// <summary>
+        /// Barricading.
+        /// </summary>
+        BARRICADE,
+
+        /// <summary>
+        /// Using an exit such as ladders, stairs.
+        /// </summary>
+        EXIT_STAIRS_LADDERS,
+
+        /// <summary>
+        /// Using an exit to leave the district.
+        /// </summary>
+        EXIT_LEAVING_DISTRICT,
+
+        /// <summary>
+        /// Sleeping.
+        /// </summary>
+        STATE_SLEEPY,
+
+        /// <summary>
+        /// Eating.
+        /// </summary>
+        STATE_HUNGRY,
+
+        /// <summary>
+        /// Trading with NPCs.
+        /// </summary>
+        NPC_TRADE,
+
+        /// <summary>
+        /// Giving items.
+        /// </summary>
+        NPC_GIVING_ITEM,
+
+        /// <summary>
+        /// Shouting.
+        /// </summary>
+        NPC_SHOUTING,
+
+        /// <summary>
+        /// Building fortifications.
+        /// </summary>
+        BUILD_FORTIFICATION,
+
+        /// <summary>
+        /// Leading : need Leadership skill.
+        /// </summary>
+        LEADING_NEED_SKILL,
+
+        /// <summary>
+        /// Leading : can recruit someone.
+        /// </summary>
+        LEADING_CAN_RECRUIT,
+
+        /// <summary>
+        /// Leading : give orders.
+        /// </summary>
+        LEADING_GIVE_ORDERS,
+
+        /// <summary>
+        /// Leading : switching place.
+        /// </summary>
+        LEADING_SWITCH_PLACE,
+
+        /// <summary>
+        /// Saving/Loading.
+        /// </summary>
+        GAME_SAVE_LOAD,
+
+        /// <summary>
+        /// City Information.
+        /// </summary>
+        CITY_INFORMATION,
+
+        /// <summary>
+        /// Butchering corpses.
+        /// </summary>
+        CORPSE_BUTCHER,
+
+        /// <summary>
+        /// Eating corpses.
+        /// </summary>
+        CORPSE_EAT,
+
+        /// <summary>
+        /// Dragging corpses.
+        /// </summary>
+        CORPSE_DRAG_START,
+
+        /// <summary>
+        /// Moving dragged corpses.
+        /// </summary>
+        CORPSE_DRAG_MOVE,
+
+        _COUNT
     }
 
-    public Map CurrentMap
+    [Serializable]
+    class UniqueActor
     {
-      get
-      {
-        return this.m_CurrentMap;
-      }
-      set
-      {
-        this.m_CurrentMap = value;
-      }
+        public bool IsSpawned { get; set; }
+        public Actor TheActor { get; set; }
+        public bool IsWithRefugees { get; set; }
+        public string EventThemeMusic { get; set; }
+        public string EventMessage { get; set; }
     }
 
-    public Scoring Scoring
+    [Serializable]
+    class UniqueActors
     {
-      get
-      {
-        return this.m_Scoring;
-      }
-    }
+        public UniqueActor BigBear { get; set; }
+        public UniqueActor Duckman { get; set; }
+        public UniqueActor FamuFataru { get; set; }
+        public UniqueActor HansVonHanz { get; set; }
+        public UniqueActor JasonMyers { get; set; }
+        public UniqueActor PoliceStationPrisonner { get; set; }
+        public UniqueActor Roguedjack { get; set; }
+        public UniqueActor Santaman { get; set; }
+        public UniqueActor TheSewersThing { get; set; }
 
-    public UniqueActors UniqueActors { get; set; }
-
-    public UniqueItems UniqueItems { get; set; }
-
-    public UniqueMaps UniqueMaps { get; set; }
-
-    public bool PlayerKnows_CHARUndergroundFacilityLocation { get; set; }
-
-    public bool PlayerKnows_TheSewersThingLocation { get; set; }
-
-    public bool CHARUndergroundFacility_Activated { get; set; }
-
-    public ScriptStage ScriptStage_PoliceStationPrisonner { get; set; }
-
-    private Session()
-    {
-      this.Reset();
-    }
-
-    public void Reset()
-    {
-      this.Seed = (int) DateTime.UtcNow.TimeOfDay.Ticks;
-      this.m_CurrentMap = (Map) null;
-      this.m_Scoring = new Scoring();
-      this.m_World = (World) null;
-      this.m_WorldTime = new WorldTime();
-      this.LastTurnPlayerActed = 0;
-      int length = 6;
-      GameOptions options = RogueGame.Options;
-      int citySize1 = options.CitySize;
-      options = RogueGame.Options;
-      int citySize2 = options.CitySize;
-      this.m_Event_Raids = new int[length, citySize1, citySize2];
-      for (int index1 = 0; index1 < 6; ++index1)
-      {
-        for (int index2 = 0; index2 < RogueGame.Options.CitySize; ++index2)
+        public UniqueActor[] ToArray()
         {
-          for (int index3 = 0; index3 < RogueGame.Options.CitySize; ++index3)
-            this.m_Event_Raids[index1, index2, index3] = -1;
+            return new UniqueActor[] { BigBear, Duckman, FamuFataru, HansVonHanz, PoliceStationPrisonner, Roguedjack, Santaman, TheSewersThing };
         }
-      }
-      this.CHARUndergroundFacility_Activated = false;
-      this.PlayerKnows_CHARUndergroundFacilityLocation = false;
-      this.PlayerKnows_TheSewersThingLocation = false;
-      this.ScriptStage_PoliceStationPrisonner = ScriptStage.STAGE_0;
-      this.UniqueActors = new UniqueActors();
-      this.UniqueItems = new UniqueItems();
-      this.UniqueMaps = new UniqueMaps();
     }
 
-    public bool HasRaidHappened(RaidType raid, District district)
+    [Serializable]
+    class UniqueItem
     {
-      if (district == null)
-        throw new ArgumentNullException(nameof (district));
-      int[,,] eventRaids = this.m_Event_Raids;
-      int index = (int) raid;
-      Point worldPosition = district.WorldPosition;
-      int x = worldPosition.X;
-      worldPosition = district.WorldPosition;
-      int y = worldPosition.Y;
-      return eventRaids[index, x, y] > -1;
+        public bool IsSpawned { get; set; }
+        public Item TheItem { get; set; }
     }
 
-    public int LastRaidTime(RaidType raid, District district)
+    [Serializable]
+    class UniqueItems
     {
-      if (district == null)
-        throw new ArgumentNullException(nameof (district));
-      int[,,] eventRaids = this.m_Event_Raids;
-      int index = (int) raid;
-      Point worldPosition = district.WorldPosition;
-      int x = worldPosition.X;
-      worldPosition = district.WorldPosition;
-      int y = worldPosition.Y;
-      return eventRaids[index, x, y];
+        public UniqueItem TheSubwayWorkerBadge { get; set; }
     }
 
-    public void SetLastRaidTime(RaidType raid, District district, int turnCounter)
+    [Serializable]
+    class UniqueMap
     {
-      if (district == null)
-        throw new ArgumentNullException(nameof (district));
-      lock (this.m_Event_Raids)
-        this.m_Event_Raids[(int) raid, district.WorldPosition.X, district.WorldPosition.Y] = turnCounter;
+        public Map TheMap { get; set; }
     }
 
-    public static void Save(Session session, string filepath, Session.SaveFormat format)
+    [Serializable]
+    class UniqueMaps
     {
-      session.World.OptimizeBeforeSaving();
-      switch (format)
-      {
-        case Session.SaveFormat.FORMAT_BIN:
-          Session.SaveBin(session, filepath);
-          break;
-        case Session.SaveFormat.FORMAT_SOAP:
-          Session.SaveSoap(session, filepath);
-          break;
-        case Session.SaveFormat.FORMAT_XML:
-          Session.SaveXml(session, filepath);
-          break;
-      }
+        public UniqueMap CHARUndergroundFacility { get; set; }
+        public UniqueMap PoliceStation_OfficesLevel { get; set; }
+        public UniqueMap PoliceStation_JailsLevel { get; set; }
+        public UniqueMap Hospital_Admissions { get; set; }
+        public UniqueMap Hospital_Offices { get; set; }
+        public UniqueMap Hospital_Patients { get; set; }
+        public UniqueMap Hospital_Storage { get; set; }
+        public UniqueMap Hospital_Power { get; set; }
     }
 
-    public static bool Load(string filepath, Session.SaveFormat format)
+    /// <summary>
+    /// All the data that is needed to represent the game state, or in other words everything that need to be saved and loaded.
+    /// </summary>
+    [Serializable]
+    class Session
     {
-      switch (format)
-      {
-        case Session.SaveFormat.FORMAT_BIN:
-          return Session.LoadBin(filepath);
-        case Session.SaveFormat.FORMAT_SOAP:
-          return Session.LoadSoap(filepath);
-        case Session.SaveFormat.FORMAT_XML:
-          return Session.LoadXml(filepath);
-        default:
-          return false;
-      }
-    }
-
-    private static void SaveBin(Session session, string filepath)
-    {
-      if (session == null)
-        throw new ArgumentNullException(nameof (session));
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session...");
-      using (Stream stream = Session.CreateStream(filepath, true))
-      {
-        Session.CreateFormatter().Serialize(stream, (object) session);
-        stream.Flush();
-        stream.Close();
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
-    }
-
-    private static bool LoadBin(string filepath)
-    {
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
-      try
-      {
-        using (Stream stream = Session.CreateStream(filepath, false))
+        public enum SaveFormat
         {
-          Session.s_TheSession = (Session) Session.CreateFormatter().Deserialize(stream);
-          stream.Close();
+            FORMAT_BIN,
+            FORMAT_SOAP,
+            FORMAT_XML
         }
-        Session.s_TheSession.ReconstructAuxiliaryFields();
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, string.Format("load exception : {0}.", (object) ex.ToString()));
-        Session.s_TheSession = (Session) null;
-        return false;
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
-      return true;
-    }
 
-    private static void SaveSoap(Session session, string filepath)
-    {
-      if (session == null)
-        throw new ArgumentNullException(nameof (session));
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session...");
-      using (Stream stream = Session.CreateStream(filepath, true))
-      {
-        Session.CreateSoapFormatter().Serialize(stream, (object) session);
-        stream.Flush();
-        stream.Close();
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
-    }
+        #region Fields
 
-    private static bool LoadSoap(string filepath)
-    {
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
-      try
-      {
-        using (Stream stream = Session.CreateStream(filepath, false))
+        #region Game Mode
+        GameMode m_GameMode;
+        #endregion
+
+        #region World map
+        WorldTime m_WorldTime;
+        World m_World;
+        Map m_CurrentMap;
+        #endregion
+
+        #region Scoring
+        Scoring m_Scoring;
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// [RaidType, District.WorldPosition.X, District.WorldPosition.Y] -> turnCounter
+        /// </summary>
+        int[, ,] m_Event_Raids;
+        #endregion
+
+        #region Advisor
+
+        #endregion
+
+        [NonSerialized]
+        static Session s_TheSession;
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Gets the curent Session (singleton).
+        /// </summary>
+        public static Session Get
         {
-          Session.s_TheSession = (Session) Session.CreateSoapFormatter().Deserialize(stream);
-          stream.Close();
+            get 
+            {
+                if (s_TheSession == null)
+                    s_TheSession = new Session();
+                return s_TheSession; 
+            }
         }
-        Session.s_TheSession.ReconstructAuxiliaryFields();
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, string.Format("load exception : {0}.", (object) ex.ToString()));
-        Session.s_TheSession = (Session) null;
-        return false;
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
-      return true;
-    }
 
-    private static void SaveXml(Session session, string filepath)
-    {
-      if (session == null)
-        throw new ArgumentNullException(nameof (session));
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session...");
-      using (Stream stream = Session.CreateStream(filepath, true))
-      {
-        new XmlSerializer(typeof (Session)).Serialize(stream, (object) session);
-        stream.Flush();
-        stream.Close();
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
-    }
-
-    private static bool LoadXml(string filepath)
-    {
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
-      try
-      {
-        using (Stream stream = Session.CreateStream(filepath, false))
+        public GameMode GameMode
         {
-          Session.s_TheSession = (Session) new XmlSerializer(typeof (Session)).Deserialize(stream);
-          stream.Flush();
-          stream.Close();
+            get { return m_GameMode; }
+            set { m_GameMode = value; }
         }
-        Session.s_TheSession.ReconstructAuxiliaryFields();
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, string.Format("load exception : {0}.", (object) ex.ToString()));
-        Session.s_TheSession = (Session) null;
-        return false;
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
-      return true;
-    }
 
-    public static bool Delete(string filepath)
-    {
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "deleting saved game...");
-      bool flag = false;
-      try
-      {
-        File.Delete(filepath);
-        flag = true;
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to delete saved game (no save?)");
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "exception :");
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, ex.ToString());
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "failing silently.");
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "deleting saved game... done!");
-      return flag;
-    }
+        public int Seed { get; set; }
+        public WorldTime WorldTime { get { return m_WorldTime; } }
+        public int LastTurnPlayerActed { get; set; }
 
-    private static IFormatter CreateFormatter()
-    {
-      return (IFormatter) new BinaryFormatter();
-    }
-
-    private static IFormatter CreateSoapFormatter()
-    {
-      return (IFormatter) new SoapFormatter();
-    }
-
-    private static Stream CreateStream(string saveFileName, bool save)
-    {
-      return (Stream) new FileStream(saveFileName, save ? FileMode.Create : FileMode.Open, save ? FileAccess.Write : FileAccess.Read, FileShare.None);
-    }
-
-    private void ReconstructAuxiliaryFields()
-    {
-      for (int index1 = 0; index1 < this.m_World.Size; ++index1)
-      {
-        for (int index2 = 0; index2 < this.m_World.Size; ++index2)
+        public World World
         {
-          foreach (Map map in this.m_World[index1, index2].Maps)
-            map.ReconstructAuxiliaryFields();
+            get { return m_World; }
+            set { m_World = value; }
         }
-      }
-    }
 
-    public static string DescGameMode(GameMode mode)
-    {
-      switch (mode)
-      {
-        case GameMode.GM_STANDARD:
-          return "STD - Standard Game";
-        case GameMode.GM_CORPSES_INFECTION:
-          return "C&I - Corpses & Infection";
-        case GameMode.GM_VINTAGE:
-          return "VTG - Vintage Zombies";
-        default:
-          throw new Exception("unhandled game mode");
-      }
-    }
+        public Map CurrentMap
+        {
+            get { return m_CurrentMap; }
+            set { m_CurrentMap = value; }
+        }
 
-    public static string DescShortGameMode(GameMode mode)
-    {
-      switch (mode)
-      {
-        case GameMode.GM_STANDARD:
-          return "STD";
-        case GameMode.GM_CORPSES_INFECTION:
-          return "C&I";
-        case GameMode.GM_VINTAGE:
-          return "VTG";
-        default:
-          throw new Exception("unhandled game mode");
-      }
-    }
+        public Scoring Scoring
+        {
+            get { return m_Scoring; }
+        }
 
-    public enum SaveFormat
-    {
-      FORMAT_BIN,
-      FORMAT_SOAP,
-      FORMAT_XML,
+        #region Uniques
+
+        public UniqueActors UniqueActors { get; set; }
+        public UniqueItems UniqueItems { get; set; }
+        public UniqueMaps UniqueMaps {get; set; }
+  
+        #endregion
+
+        #region Special flags
+        public bool PlayerKnows_CHARUndergroundFacilityLocation
+        {
+            get;
+            set;
+        }
+
+        public bool PlayerKnows_TheSewersThingLocation
+        {
+            get;
+            set;
+        }
+
+        public bool CHARUndergroundFacility_Activated
+        {
+            get;
+            set;
+        }
+
+        public ScriptStage ScriptStage_PoliceStationPrisonner
+        {
+            get;
+            set;
+        }
+        #endregion
+
+        #endregion
+
+        #region Init
+        Session()
+        {
+            Reset();
+        }
+
+        public void Reset()
+        {
+            this.Seed = (int)DateTime.UtcNow.TimeOfDay.Ticks;
+            m_CurrentMap = null;
+            m_Scoring = new Scoring();
+            m_World = null;
+            m_WorldTime = new WorldTime();
+            this.LastTurnPlayerActed = 0;
+
+            m_Event_Raids = new int[(int)RaidType._COUNT, RogueGame.Options.CitySize, RogueGame.Options.CitySize];
+            for (int i = (int)RaidType._FIRST; i < (int)RaidType._COUNT; i++)
+            {
+                for (int x = 0; x < RogueGame.Options.CitySize; x++)
+                    for (int y = 0; y < RogueGame.Options.CitySize; y++)
+                    {
+                        m_Event_Raids[i, x, y] = -1;
+                    }
+            }
+
+            ////////////////////////////
+            // Reset special properties.
+            ////////////////////////////
+            this.CHARUndergroundFacility_Activated = false;
+            this.PlayerKnows_CHARUndergroundFacilityLocation = false;
+            this.PlayerKnows_TheSewersThingLocation = false;
+            this.ScriptStage_PoliceStationPrisonner = ScriptStage.STAGE_0;
+            this.UniqueActors = new UniqueActors();
+            this.UniqueItems = new UniqueItems();
+            this.UniqueMaps = new UniqueMaps();
+        }
+        #endregion
+
+        #region Events
+        public bool HasRaidHappened(RaidType raid, District district)
+        {
+            if (district == null)
+                throw new ArgumentNullException("district");
+
+            return m_Event_Raids[(int)raid, district.WorldPosition.X, district.WorldPosition.Y] > -1;
+        }
+
+        public int LastRaidTime(RaidType raid, District district)
+        {
+            if (district == null)
+                throw new ArgumentNullException("district");
+
+            return m_Event_Raids[(int)raid, district.WorldPosition.X, district.WorldPosition.Y];
+        }
+
+        public void SetLastRaidTime(RaidType raid, District district, int turnCounter)
+        {
+            if (district == null)
+                throw new ArgumentNullException("district");
+
+            lock (m_Event_Raids) // thread safe.
+            {
+                m_Event_Raids[(int)raid, district.WorldPosition.X, district.WorldPosition.Y] = turnCounter;
+            }
+        }
+        #endregion
+
+        #region Saving & Loading
+        public static void Save(Session session, string filepath, SaveFormat format)
+        {
+            // optimize.
+            session.World.OptimizeBeforeSaving();
+
+            // save.
+            switch (format)
+            {
+                case SaveFormat.FORMAT_BIN: SaveBin(session, filepath); break;
+                case SaveFormat.FORMAT_SOAP: SaveSoap(session, filepath); break;
+                case SaveFormat.FORMAT_XML: SaveXml(session, filepath); break;
+            }
+        }
+
+        public static bool Load(string filepath, SaveFormat format)
+        {
+            switch (format)
+            {
+                case SaveFormat.FORMAT_BIN: return LoadBin(filepath);
+                case SaveFormat.FORMAT_SOAP: return LoadSoap(filepath); 
+                case SaveFormat.FORMAT_XML: return LoadXml(filepath);
+                default: return false;
+            }
+        }
+
+        static void SaveBin(Session session, string filepath)
+        {
+            if (session == null)
+                throw new ArgumentNullException("session");
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session...");
+
+            IFormatter formatter = CreateFormatter();
+            using (Stream stream = CreateStream(filepath, true))
+            {
+                formatter.Serialize(stream, session);
+                stream.Flush();
+                stream.Close();
+            }
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
+        }
+
+        /// <summary>
+        /// Try to load, null if failed.
+        /// </summary>
+        /// <returns></returns>
+        static bool LoadBin(string filepath)
+        {
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
+
+            try
+            {
+                // deserialize.
+                IFormatter formatter = CreateFormatter();
+                using (Stream stream = CreateStream(filepath, false))
+                {
+                    s_TheSession = (Session)formatter.Deserialize(stream);
+                    stream.Close();
+                }
+
+                // reconstruct auxiliary fields.
+                s_TheSession.ReconstructAuxiliaryFields();
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
+                s_TheSession = null;
+                return false;
+            }
+
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
+            return true;
+        }
+
+        static void SaveSoap(Session session, string filepath)
+        {
+            if (session == null)
+                throw new ArgumentNullException("session");
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session...");
+
+            IFormatter formatter = CreateSoapFormatter();
+            using (Stream stream = CreateStream(filepath, true))
+            {
+                formatter.Serialize(stream, session);
+                stream.Flush();
+                stream.Close();
+            }
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
+        }
+
+        /// <summary>
+        /// Try to load, null if failed.
+        /// </summary>
+        /// <returns></returns>
+        static bool LoadSoap(string filepath)
+        {
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
+
+            try
+            {
+                // deserialize.
+                IFormatter formatter = CreateSoapFormatter();
+                using (Stream stream = CreateStream(filepath, false))
+                {
+                    s_TheSession = (Session)formatter.Deserialize(stream);
+                    stream.Close();
+                }
+
+                // reconstruct auxiliary fields.
+                s_TheSession.ReconstructAuxiliaryFields();
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
+                s_TheSession = null;
+                return false;
+            }
+
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
+            return true;
+        }
+
+        static void SaveXml(Session session, string filepath)
+        {
+            if (session == null)
+                throw new ArgumentNullException("session");
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session...");
+
+            XmlSerializer xs = new XmlSerializer(typeof(Session));
+            using (Stream stream = CreateStream(filepath, true))
+            {
+                xs.Serialize(stream, session);
+                stream.Flush();
+                stream.Close();
+            }
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
+        }
+
+        /// <summary>
+        /// Try to load, null if failed.
+        /// </summary>
+        /// <returns></returns>
+        static bool LoadXml(string filepath)
+        {
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
+
+            try
+            {
+                // deserialize.
+                XmlSerializer xs = new XmlSerializer(typeof(Session));
+                using (Stream stream = CreateStream(filepath, false))
+                {
+                    s_TheSession = (Session)xs.Deserialize(stream);
+                    stream.Flush();
+                    stream.Close();
+                }
+
+                // reconstruct auxiliary fields.
+                s_TheSession.ReconstructAuxiliaryFields();
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game?).");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
+                s_TheSession = null;
+                return false;
+            }
+
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
+            return true;
+        }
+
+        public static bool Delete(string filepath)
+        {
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "deleting saved game...");
+
+            bool hasDeleted = false;
+            try
+            {
+                File.Delete(filepath);
+                hasDeleted = true;
+            }
+            catch (Exception e) 
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to delete saved game (no save?)");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "exception :");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, e.ToString());
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failing silently.");
+            }
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "deleting saved game... done!");
+
+            return hasDeleted;
+        }
+
+        static IFormatter CreateFormatter()
+        {
+            return new BinaryFormatter();
+        }
+
+        static IFormatter CreateSoapFormatter()
+        {
+            return new SoapFormatter();
+        }
+
+        static Stream CreateStream(string saveFileName, bool save)
+        {
+            return new FileStream(saveFileName,
+                save ? FileMode.Create : FileMode.Open,
+                save ? FileAccess.Write : FileAccess.Read,
+                FileShare.None);
+        }
+
+        void ReconstructAuxiliaryFields()
+        {
+            // reconstruct all maps auxiliary fields.
+            for(int x = 0; x < m_World.Size;x++)
+                for (int y = 0; y < m_World.Size; y++)
+                {
+                    foreach (Map map in m_World[x, y].Maps)
+                        map.ReconstructAuxiliaryFields();
+                }
+        }
+        #endregion
+
+        #region Helpers
+        public static string DescGameMode(GameMode mode)
+        {
+            switch (mode)
+            {
+                case GameMode.GM_STANDARD: return "STD - Standard Game";
+                case GameMode.GM_CORPSES_INFECTION: return "C&I - Corpses & Infection";
+                case GameMode.GM_VINTAGE: return "VTG - Vintage Zombies";
+                default: throw new Exception("unhandled game mode");
+            }
+        }
+
+        public static string DescShortGameMode(GameMode mode)
+        {
+            switch (mode)
+            {
+                case GameMode.GM_STANDARD: return "STD";
+                case GameMode.GM_CORPSES_INFECTION: return "C&I";
+                case GameMode.GM_VINTAGE: return "VTG";
+                default: throw new Exception("unhandled game mode");
+            }
+        }
+        #endregion
+
+#if DEBUG_STATS
+        [Serializable]
+        public class DistrictStat
+        {
+            [Serializable]
+            public struct Record
+            {
+                public int livings;
+                public int undeads;
+            }
+
+            public Dictionary<int, Record> TurnRecords = new Dictionary<int, Record>();
+        }
+
+        DistrictStat[,] m_Stats;
+
+        #region Dev
+        public void UpdateStats(District d)
+        {
+            if (m_Stats == null)
+            {
+                m_Stats = new DistrictStat[World.Size, World.Size];
+                for (int x = 0; x < World.Size; x++)
+                    for (int y = 0; y < World.Size; y++)
+                        m_Stats[x, y] = new DistrictStat();
+            }
+
+            if (m_Stats[d.WorldPosition.X, d.WorldPosition.Y].TurnRecords.ContainsKey(d.EntryMap.LocalTime.TurnCounter))
+                return;
+
+            int l = 0;
+            int u = 0;
+            foreach (Map m in d.Maps)
+            {
+                foreach (Actor a in m.Actors)
+                {
+                    if (a.IsDead) continue;
+                    if (a.Model.Abilities.IsUndead)
+                        ++u;
+                    else
+                        ++l;
+                }
+            }
+            m_Stats[d.WorldPosition.X, d.WorldPosition.Y].TurnRecords.Add(d.EntryMap.LocalTime.TurnCounter,
+                new DistrictStat.Record()
+                {
+                    livings = l,
+                    undeads = u
+                });
+        }
+
+        public DistrictStat.Record? GetStatRecord(District d, int turn)
+        {
+            DistrictStat.Record record;
+            if (!m_Stats[d.WorldPosition.X, d.WorldPosition.Y].TurnRecords.TryGetValue(turn, out record))
+                return null;
+            return record;
+        }
+        #endregion
+#endif
     }
-  }
 }

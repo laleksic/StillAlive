@@ -1,24 +1,56 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Data.Activity
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace djack.RogueSurvivor.Data
 {
-  [Serializable]
-  internal enum Activity
-  {
-    IDLE,
-    CHASING,
-    FIGHTING,
-    TRACKING,
-    FLEEING,
-    FOLLOWING,
-    SLEEPING,
-    FOLLOWING_ORDER,
-    FLEEING_FROM_EXPLOSIVE,
-  }
+    [Serializable]
+    enum Activity
+    {
+        /// <summary>
+        /// Doing nothing in particular.
+        /// </summary>
+        IDLE,
+
+        /// <summary>
+        /// Chasing an enemy.
+        /// </summary>
+        CHASING,
+
+        /// <summary>
+        /// Fighting an enemy.
+        /// </summary>
+        FIGHTING,
+
+        /// <summary>
+        /// Following a track.
+        /// </summary>
+        TRACKING,
+
+        /// <summary>
+        /// Fleeing from a danger/enemy.
+        /// </summary>
+        FLEEING,
+
+        /// <summary>
+        /// Following another actor.
+        /// </summary>
+        FOLLOWING,
+
+        /// <summary>
+        /// zzzZZZzzz...
+        /// </summary>
+        SLEEPING,
+
+        /// <summary>
+        /// Following an order.
+        /// </summary>
+        FOLLOWING_ORDER,
+
+        /// <summary>
+        /// Fleeing from a primed explosive.
+        /// </summary>
+        FLEEING_FROM_EXPLOSIVE
+    }
 }

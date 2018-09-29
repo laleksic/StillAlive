@@ -1,635 +1,790 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.UI.DXGameCanvas
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Data;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+
+using GDIFont = System.Drawing.Font;
+using DXFont = Microsoft.DirectX.Direct3D.Font;
+
+using djack.RogueSurvivor.Engine;
+
 namespace djack.RogueSurvivor.UI
 {
-  public class DXGameCanvas : UserControl, IGameCanvas
-  {
-    private bool m_NeedRedraw = true;
-    private Color m_ClearColor = Color.CornflowerBlue;
-    private List<DXGameCanvas.IGfx> m_Gfxs = new List<DXGameCanvas.IGfx>(100);
-    private Dictionary<Image, Texture> m_ImageToTextures = new Dictionary<Image, Texture>(32);
-    private Dictionary<System.Drawing.Font, Microsoft.DirectX.Direct3D.Font> m_FontsToFonts = new Dictionary<System.Drawing.Font, Microsoft.DirectX.Direct3D.Font>(3);
-    private Color[,] m_MinimapColors = new Color[200, 200];
-    private byte[] m_MinimapBytes = new byte[160000];
-    private RogueForm m_RogueForm;
-    private bool m_DXInitialized;
-    private PresentParameters m_PresentParameters;
-    private Device m_Device;
-    private Texture m_RenderTexture;
-    private Surface m_RenderSurface;
-    private RenderToSurface m_RenderToSurface;
-    private Sprite m_Sprite;
-    private Sprite m_TextSprite;
-    private Texture m_BlankTexture;
-    private Texture m_MinimapTexture;
-    private IContainer components;
-
-    public bool ShowFPS { get; set; }
-
-    public bool NeedRedraw
+    public partial class DXGameCanvas : UserControl, IGameCanvas
     {
-      get
-      {
-        return this.m_NeedRedraw;
-      }
-      set
-      {
-        this.m_NeedRedraw = value;
-      }
-    }
-
-    public Point MouseLocation { get; set; }
-
-    public float ScaleX
-    {
-      get
-      {
-        if (this.m_RogueForm == null)
-          return 1f;
-        return (float) this.m_RogueForm.ClientRectangle.Width / 1024f;
-      }
-    }
-
-    public float ScaleY
-    {
-      get
-      {
-        if (this.m_RogueForm == null)
-          return 1f;
-        return (float) this.m_RogueForm.ClientRectangle.Height / 768f;
-      }
-    }
-
-    public DXGameCanvas()
-    {
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "DXGameCanvas::InitializeComponent");
-      this.InitializeComponent();
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "DXGameCanvas::SetStyle");
-      this.SetStyle(ControlStyles.UserPaint | ControlStyles.Opaque | ControlStyles.AllPaintingInWmPaint | ControlStyles.EnableNotifyMessage, true);
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "DXGameCanvas() done.");
-    }
-
-    public void InitDX()
-    {
-      this.m_PresentParameters = new PresentParameters()
-      {
-        Windowed = true,
-        SwapEffect = SwapEffect.Discard
-      };
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "creating device...");
-      this.m_Device = new Device(0, DeviceType.Hardware, (Control) this, CreateFlags.SoftwareVertexProcessing, new PresentParameters[1]
-      {
-        this.m_PresentParameters
-      });
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "device info :");
-      AdapterDetails adapterDetails = Manager.Adapters[0].Information;
-      Caps caps = this.m_Device.DeviceCaps;
-      Logger.WriteLine(Logger.Stage.INIT_GFX, string.Format("- device desc           : {0}", (object) adapterDetails.Description));
-      Logger.WriteLine(Logger.Stage.INIT_GFX, string.Format("- max texture size      : {0}x{1}", (object) caps.MaxTextureWidth, (object) caps.MaxTextureHeight));
-      Logger.WriteLine(Logger.Stage.INIT_GFX, string.Format("- vertex shader version : {0}", (object) caps.VertexShaderVersion.ToString()));
-      Logger.WriteLine(Logger.Stage.INIT_GFX, string.Format("- pixel shader version  : {0}", (object) caps.PixelShaderVersion.ToString()));
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "device reset..");
-      this.m_Device_DeviceReset((object) this.m_Device, (EventArgs) null);
-      this.m_Device.DeviceLost += new EventHandler(this.m_Device_DeviceLost);
-      this.m_Device.DeviceReset += new EventHandler(this.m_Device_DeviceReset);
-      this.m_DXInitialized = true;
-    }
-
-    private void m_Device_DeviceLost(object sender, EventArgs e)
-    {
-      if (this.m_Device == (Device) null || this.m_Device.Disposed)
-        return;
-label_2:
-      Thread.Sleep(100);
-      int result;
-      if (this.m_Device.CheckCooperativeLevel(out result))
-        return;
-      switch (result)
-      {
-        case -2005530520:
-          goto label_2;
-        case -2005530519:
-          this.m_Device.Reset(this.m_PresentParameters);
-          break;
-      }
-    }
-
-    private void m_Device_DeviceReset(object sender, EventArgs e)
-    {
-      this.m_Device.RenderState.CullMode = Cull.None;
-      this.m_Device.RenderState.AlphaBlendEnable = true;
-      this.m_ImageToTextures.Clear();
-      this.m_FontsToFonts.Clear();
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "creating sprite...");
-      this.m_Sprite = new Sprite(this.m_Device);
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "creating text sprite...");
-      this.m_TextSprite = new Sprite(this.m_Device);
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "creating blank texture...");
-      this.m_BlankTexture = new Texture(this.m_Device, new Bitmap("Resources\\Images\\blank_texture.png"), Usage.None, Pool.Managed);
-      if (this.m_RenderTexture != (Texture) null)
-      {
-        Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing render texture...");
-        this.m_RenderTexture.Dispose();
-        this.m_RenderTexture = (Texture) null;
-      }
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "creating render texture...");
-      this.m_RenderTexture = new Texture(this.m_Device, 1024, 768, 1, Usage.RenderTarget, Microsoft.DirectX.Direct3D.Format.A8R8G8B8, Pool.Default);
-      this.m_RenderSurface = this.m_RenderTexture.GetSurfaceLevel(0);
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "creating render surface...");
-      this.m_RenderToSurface = new RenderToSurface(this.m_Device, 1024, 768, Microsoft.DirectX.Direct3D.Format.A8R8G8B8, false, DepthFormat.Unknown);
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "creating minimap texture...");
-      this.m_MinimapTexture = new Texture(this.m_Device, 200, 200, 1, Usage.SoftwareProcessing, Microsoft.DirectX.Direct3D.Format.A8R8G8B8, Pool.Managed);
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "init done.");
-    }
-
-    protected override void OnCreateControl()
-    {
-      if (!this.DesignMode)
-        this.InitDX();
-      base.OnCreateControl();
-    }
-
-    protected override void OnKeyDown(KeyEventArgs e)
-    {
-      base.OnKeyDown(e);
-      this.m_RogueForm.UI_PostKey(e);
-    }
-
-    protected override bool IsInputKey(Keys keyData)
-    {
-      return true;
-    }
-
-    protected override void OnMouseMove(MouseEventArgs e)
-    {
-      base.OnMouseMove(e);
-      this.MouseLocation = e.Location;
-    }
-
-    protected override void OnMouseClick(MouseEventArgs e)
-    {
-      base.OnMouseClick(e);
-      this.m_RogueForm.UI_PostMouseButtons(e.Button);
-    }
-
-    protected override void OnSizeChanged(EventArgs e)
-    {
-      base.OnSizeChanged(e);
-      this.NeedRedraw = true;
-      this.Invalidate();
-    }
-
-    protected override void OnPaint(PaintEventArgs e)
-    {
-      if (!this.m_DXInitialized)
-        return;
-      DateTime utcNow = DateTime.UtcNow;
-      TimeSpan timeOfDay = utcNow.TimeOfDay;
-      double totalMilliseconds1 = timeOfDay.TotalMilliseconds;
-      if (this.NeedRedraw)
-      {
-        this.DoDraw(this.m_Device);
-        this.m_NeedRedraw = false;
-      }
-      this.m_Device.Present();
-      utcNow = DateTime.UtcNow;
-      timeOfDay = utcNow.TimeOfDay;
-      double totalMilliseconds2 = timeOfDay.TotalMilliseconds;
-      if (!this.ShowFPS)
-        return;
-      double num = totalMilliseconds2 - totalMilliseconds1;
-      if (num == 0.0)
-        num = double.Epsilon;
-      e.Graphics.DrawString(string.Format("Frame time={0:F} FPS={1:F}", (object) num, (object) (1000.0 / num)), this.Font, Brushes.Yellow, (float) (this.ClientRectangle.Right - 200), (float) (this.ClientRectangle.Bottom - 64));
-    }
-
-    private void DoDraw(Device dev)
-    {
-      if (this.m_RogueForm == null)
-        return;
-      this.m_RenderToSurface.BeginScene(this.m_RenderSurface);
-      dev.Clear(ClearFlags.Target, this.m_ClearColor, 1f, 0);
-      foreach (DXGameCanvas.IGfx gfx in this.m_Gfxs)
-        gfx.Draw(dev);
-      this.m_RenderToSurface.EndScene(Microsoft.DirectX.Direct3D.Filter.None);
-      this.m_Device.BeginScene();
-      this.m_Sprite.Begin(SpriteFlags.None);
-      Sprite sprite = this.m_Sprite;
-      Texture renderTexture = this.m_RenderTexture;
-      Rectangle srcRectangle = new Rectangle(0, 0, 1024, 768);
-      Rectangle clientRectangle = this.m_RogueForm.ClientRectangle;
-      double width = (double) clientRectangle.Width;
-      clientRectangle = this.m_RogueForm.ClientRectangle;
-      double height = (double) clientRectangle.Height;
-      SizeF destinationSize = new SizeF((float) width, (float) height);
-      PointF empty = PointF.Empty;
-      Color white = Color.White;
-      sprite.Draw2D(renderTexture, srcRectangle, destinationSize, empty, white);
-      this.m_Sprite.End();
-      this.m_Device.EndScene();
-    }
-
-    public void BindForm(RogueForm form)
-    {
-      this.m_RogueForm = form;
-      this.FillGameForm();
-    }
-
-    public void FillGameForm()
-    {
-      this.Location = new Point(0, 0);
-      if (this.m_RogueForm == null)
-        return;
-      this.Size = this.MinimumSize = this.MaximumSize = this.m_RogueForm.Size;
-    }
-
-    public void Clear(Color clearColor)
-    {
-      this.m_ClearColor = clearColor;
-      this.m_Gfxs.Clear();
-      this.m_NeedRedraw = true;
-    }
-
-    public void AddImage(Image img, int x, int y)
-    {
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxSprite(this.m_Sprite, new SizeF((float) img.Width, (float) img.Height), img.Width, img.Height, this.GetTexture(img), Color.White, x, y));
-      this.m_NeedRedraw = true;
-    }
-
-    public void AddImage(Image img, int x, int y, Color tint)
-    {
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxSprite(this.m_Sprite, new SizeF((float) img.Width, (float) img.Height), img.Width, img.Height, this.GetTexture(img), tint, x, y));
-      this.m_NeedRedraw = true;
-    }
-
-    public void AddImageTransform(Image img, int x, int y, float rotation, float scale)
-    {
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxSpriteTransform(rotation, scale, this.m_Sprite, new SizeF((float) img.Width, (float) img.Height), img.Width, img.Height, this.GetTexture(img), Color.White, x, y));
-    }
-
-    public void AddTransparentImage(float alpha, Image img, int x, int y)
-    {
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxSprite(this.m_Sprite, new SizeF((float) img.Width, (float) img.Height), img.Width, img.Height, this.GetTexture(img), Color.FromArgb((int) ((double) byte.MaxValue * (double) alpha), Color.White), x, y));
-      this.m_NeedRedraw = true;
-    }
-
-    public void AddPoint(Color color, int x, int y)
-    {
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxRect(color, new Rectangle(x, y, 1, 1)));
-      this.m_NeedRedraw = true;
-    }
-
-    public void AddLine(Color color, int xFrom, int yFrom, int xTo, int yTo)
-    {
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxLine(color, xFrom, yFrom, xTo, yTo));
-      this.m_NeedRedraw = true;
-    }
-
-    public void AddString(System.Drawing.Font font, Color color, string text, int gx, int gy)
-    {
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxString(this.m_TextSprite, color, this.GetDXFont(font), text, gx, gy));
-      this.m_NeedRedraw = true;
-    }
-
-    public void AddRect(Color color, Rectangle rect)
-    {
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxRect(color, rect));
-      this.m_NeedRedraw = true;
-    }
-
-    public void AddFilledRect(Color color, Rectangle rect)
-    {
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxSprite(this.m_Sprite, new SizeF((float) rect.Width, (float) rect.Height), 4, 4, this.m_BlankTexture, color, rect.Left, rect.Top));
-      this.m_NeedRedraw = true;
-    }
-
-    public void ClearMinimap(Color color)
-    {
-      for (int x = 0; x < 100; ++x)
-      {
-        for (int y = 0; y < 100; ++y)
-          this.SetMinimapColor(x, y, color);
-      }
-    }
-
-    public void SetMinimapColor(int x, int y, Color color)
-    {
-      int num1 = x * 2;
-      int num2 = y * 2;
-      for (int index1 = 0; index1 < 2; ++index1)
-      {
-        for (int index2 = 0; index2 < 2; ++index2)
-          this.m_MinimapColors[num1 + index1, num2 + index2] = color;
-      }
-    }
-
-    public void DrawMinimap(int gx, int gy)
-    {
-      int pitch;
-      GraphicsStream graphicsStream = this.m_MinimapTexture.LockRectangle(0, LockFlags.None, out pitch);
-      for (int index1 = 0; index1 < 200; ++index1)
-      {
-        for (int index2 = 0; index2 < 200; ++index2)
+        #region Types
+        interface IGfx
         {
-          Color minimapColor = this.m_MinimapColors[index2, index1];
-          graphicsStream.Position = (long) (index1 * pitch + index2 * 4);
-          graphicsStream.WriteByte(minimapColor.B);
-          graphicsStream.WriteByte(minimapColor.G);
-          graphicsStream.WriteByte(minimapColor.R);
-          graphicsStream.WriteByte(minimapColor.A);
+            void Draw(Device dev);
         }
-      }
-      this.m_MinimapTexture.UnlockRectangle(0);
-      this.m_Gfxs.Add((DXGameCanvas.IGfx) new DXGameCanvas.GfxSprite(this.m_Sprite, new SizeF(200f, 200f), 200, 200, this.m_MinimapTexture, Color.White, gx, gy));
-      this.NeedRedraw = true;
+        #endregion
+
+        #region Fields
+        RogueForm m_RogueForm;
+        bool m_NeedRedraw = true;
+        Color m_ClearColor = Color.CornflowerBlue;
+        List<IGfx> m_Gfxs = new List<IGfx>(100);
+
+        #region DirectX
+        bool m_DXInitialized;
+        PresentParameters m_PresentParameters;
+        Device m_Device;
+
+        #region Automatic zoom support
+
+        /// <summary>
+        /// We render the scene to this texture.
+        /// </summary>
+        Texture m_RenderTexture;
+
+        Surface m_RenderSurface;
+
+        /// <summary>
+        /// Helper to render to the texture.
+        /// </summary>
+        RenderToSurface m_RenderToSurface;
+        #endregion
+
+        /// <summary>
+        /// GDI+ images to DirectX textures.
+        /// </summary>
+        Dictionary<Image, Texture> m_ImageToTextures = new Dictionary<Image, Texture>(32);
+
+        /// <summary>
+        /// GDI+ fonts to DirectX fonts.
+        /// </summary>
+        Dictionary<GDIFont, DXFont> m_FontsToFonts = new Dictionary<GDIFont, DXFont>(3);
+
+        /// <summary>
+        /// Sprite helper used to draw images.
+        /// </summary>
+        Sprite m_Sprite;
+
+        /// <summary>
+        /// Sprite helper used to draw text.
+        /// </summary>
+        Sprite m_TextSprite;
+
+        /// <summary>
+        /// Blank texture to draw colored shapes.
+        /// </summary>
+        Texture m_BlankTexture;
+
+        /// <summary>
+        /// Texture where to draw minimap.
+        /// </summary>
+        Texture m_MinimapTexture;
+
+        /// <summary>
+        /// Minimap
+        /// </summary>
+        Color[,] m_MinimapColors = new Color[RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH, RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT];
+        byte[] m_MinimapBytes = new byte[4 * RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH * RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT];
+
+        #endregion
+
+        #endregion
+
+        #region Properties
+        public bool ShowFPS { get; set; }
+
+        public bool NeedRedraw
+        {
+            get { return m_NeedRedraw; }
+            set { m_NeedRedraw = value; }
+        }
+
+        public Point MouseLocation { get; set; }
+
+        public float ScaleX
+        {
+            get
+            {
+                if (m_RogueForm == null)
+                    return 1f;
+                return (float)m_RogueForm.ClientRectangle.Width / (float)RogueGame.CANVAS_WIDTH;
+            }
+        }
+
+        public float ScaleY
+        {
+            get
+            {
+                if (m_RogueForm == null)
+                    return 1f;
+                return (float)m_RogueForm.ClientRectangle.Height / (float)RogueGame.CANVAS_HEIGHT;
+            }
+        }
+        #endregion
+
+        #region Init
+        public DXGameCanvas()
+        {
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "DXGameCanvas::InitializeComponent");
+            InitializeComponent();
+
+            // prevent flickering (gdi conflicting with directx)
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "DXGameCanvas::SetStyle");
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.Opaque | ControlStyles.EnableNotifyMessage, true);
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "DXGameCanvas() done.");
+        }
+        #endregion
+
+        #region DirectX creation/maintenance
+        public void InitDX()
+        {
+            m_PresentParameters = new PresentParameters()
+            {
+                Windowed = true,
+                SwapEffect = SwapEffect.Discard
+            };
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "creating device...");
+            m_Device = new Device(0, DeviceType.Hardware, this, CreateFlags.SoftwareVertexProcessing, m_PresentParameters);
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "device info :");
+            AdapterDetails devInfo = Manager.Adapters[0].Information;
+            Caps devCaps = m_Device.DeviceCaps;
+            Logger.WriteLine(Logger.Stage.INIT_GFX, String.Format("- device desc           : {0}", devInfo.Description));
+            Logger.WriteLine(Logger.Stage.INIT_GFX, String.Format("- max texture size      : {0}x{1}", devCaps.MaxTextureWidth, devCaps.MaxTextureHeight));
+            Logger.WriteLine(Logger.Stage.INIT_GFX, String.Format("- vertex shader version : {0}", devCaps.VertexShaderVersion.ToString()));
+            Logger.WriteLine(Logger.Stage.INIT_GFX, String.Format("- pixel shader version  : {0}", devCaps.PixelShaderVersion.ToString()));
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "device reset..");
+            m_Device_DeviceReset(m_Device, null);
+
+            m_Device.DeviceLost += new EventHandler(m_Device_DeviceLost);
+            m_Device.DeviceReset += new EventHandler(m_Device_DeviceReset);
+
+            m_DXInitialized = true;
+        }
+
+        void m_Device_DeviceLost(object sender, EventArgs e)
+        {
+            // Device Lost
+            // http://msdn.microsoft.com/en-us/library/bb174714(VS.85).aspx
+            // Result Codes
+            // http://msdn.microsoft.com/en-us/library/ms858172.aspx
+
+            // ignore if device disposed.
+            if (m_Device == null || m_Device.Disposed)
+                return;
+
+            // while device lost, loop.
+            int result;
+            while(true)
+            {
+                Thread.Sleep(100);
+                if (m_Device.CheckCooperativeLevel(out result))
+                    return;
+                if (result != (int)ResultCode.DeviceLost)
+                    break;
+            }
+
+            // if ready for reset, do it.
+            if (result == (int)ResultCode.DeviceNotReset)
+                m_Device.Reset(m_PresentParameters);
+        }
+
+        void m_Device_DeviceReset(object sender, EventArgs e)
+        {
+            m_Device.RenderState.CullMode = Cull.None;
+            m_Device.RenderState.AlphaBlendEnable = true;
+
+            m_ImageToTextures.Clear();
+            m_FontsToFonts.Clear();
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "creating sprite...");
+            m_Sprite = new Sprite(m_Device);
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "creating text sprite...");
+            m_TextSprite = new Sprite(m_Device);
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "creating blank texture...");
+            m_BlankTexture = new Texture(m_Device, new Bitmap(@"Resources\Images\blank_texture.png"), 0, Pool.Managed);
+
+            if (m_RenderTexture != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing render texture...");
+                m_RenderTexture.Dispose();
+                m_RenderTexture = null;
+            }
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "creating render texture...");
+            m_RenderTexture = new Texture(m_Device, RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+            m_RenderSurface = m_RenderTexture.GetSurfaceLevel(0);
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "creating render surface...");
+            m_RenderToSurface = new RenderToSurface(m_Device, RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT, Format.A8R8G8B8, false, DepthFormat.Unknown);
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "creating minimap texture...");
+            const int numLevels = 1;    // 0 = crash on some cards plus it means generate a bunch of mipmaps so bad anyway.
+            m_MinimapTexture = new Texture(m_Device,
+                RogueGame.MAP_MAX_WIDTH * RogueGame.MINITILE_SIZE, RogueGame.MAP_MAX_HEIGHT * RogueGame.MINITILE_SIZE,
+                numLevels, Usage.SoftwareProcessing,
+                Format.A8R8G8B8,
+                Pool.Managed);
+
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "init done.");
+        }
+        #endregion
+
+        #region UserControl
+        protected override void OnCreateControl()
+        {
+            if (!DesignMode)
+            {
+                InitDX();
+            }
+
+            base.OnCreateControl();
+
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+            m_RogueForm.UI_PostKey(e);
+        }
+
+        protected override bool IsInputKey(Keys keyData)
+        {
+            return true;
+#if false
+            switch (keyData)
+            {
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Left:
+                case Keys.Right:
+                    return true;
+
+                default:
+                    return base.IsInputKey(keyData);
+            }
+#endif
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            this.MouseLocation = e.Location;
+        }
+
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            base.OnMouseClick(e);
+            m_RogueForm.UI_PostMouseButtons(e.Button);
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            NeedRedraw = true;
+            Invalidate();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (!m_DXInitialized)
+                return;
+
+            double T0 = DateTime.UtcNow.TimeOfDay.TotalMilliseconds;
+
+            if (NeedRedraw)
+            {
+                DoDraw(m_Device);
+                m_NeedRedraw = false;
+            }
+            m_Device.Present();
+
+            double T1 = DateTime.UtcNow.TimeOfDay.TotalMilliseconds;
+
+            if (ShowFPS)
+            {
+                double DT = T1 - T0;
+                if (DT == 0) DT = Double.Epsilon;
+                e.Graphics.DrawString(String.Format("Frame time={0:F} FPS={1:F}", DT, 1000.0 / DT), Font, Brushes.Yellow, ClientRectangle.Right - 200, ClientRectangle.Bottom - 64);
+            }
+
+        }
+        #endregion
+
+        #region Drawing
+        void DoDraw(Device dev)
+        {
+            if (m_RogueForm == null)
+                return;
+
+            ///////////////////////////////////
+            // Render the scene to the texture
+            ///////////////////////////////////
+            m_RenderToSurface.BeginScene(m_RenderSurface);
+            {
+                /////////
+                // Clear
+                /////////
+                dev.Clear(ClearFlags.Target, m_ClearColor, 1.0f, 0);
+
+                ///////////////////
+                // Render each gfx
+                ///////////////////
+                foreach (IGfx gfx in m_Gfxs)
+                {
+                    gfx.Draw(dev);
+                }
+            }
+            m_RenderToSurface.EndScene(Filter.None);
+
+            //////////////////////////////////////////////////////
+            // Then draw scene texture scaled to fit whole canvas
+            //////////////////////////////////////////////////////
+            m_Device.BeginScene();
+            {
+                m_Sprite.Begin(SpriteFlags.None);
+                {
+                    m_Sprite.Draw2D(m_RenderTexture, new Rectangle(0, 0, RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT),
+                        new SizeF(m_RogueForm.ClientRectangle.Width, m_RogueForm.ClientRectangle.Height), PointF.Empty, Color.White);
+                }
+                m_Sprite.End();
+            }
+            m_Device.EndScene();
+        }
+        #endregion
+
+        #region IGameCanvas implementation
+        public void BindForm(RogueForm form)
+        {
+            m_RogueForm = form;
+            FillGameForm();
+        }
+
+        public void FillGameForm()
+        {
+            Location = new Point(0, 0);
+            if (m_RogueForm != null)
+                Size = MinimumSize = MaximumSize = m_RogueForm.Size;
+        }
+
+        public void Clear(Color clearColor)
+        {
+            m_ClearColor = clearColor;
+            m_Gfxs.Clear();
+
+            m_NeedRedraw = true;
+        }
+
+        public void AddImage(Image img, int x, int y)
+        {
+            m_Gfxs.Add(new GfxSprite(m_Sprite, new SizeF(img.Width, img.Height), img.Width, img.Height, GetTexture(img), Color.White, x, y));
+            m_NeedRedraw = true;
+        }
+
+        public void AddImage(Image img, int x, int y, Color tint)
+        {
+            m_Gfxs.Add(new GfxSprite(m_Sprite, new SizeF(img.Width, img.Height), img.Width, img.Height, GetTexture(img), tint, x, y));
+            m_NeedRedraw = true;
+        }
+
+        public void AddImageTransform(Image img, int x, int y, float rotation, float scale)
+        {
+            m_Gfxs.Add(new GfxSpriteTransform(rotation, scale, m_Sprite, new SizeF(img.Width, img.Height), img.Width, img.Height, GetTexture(img), Color.White, x, y));
+        }
+
+        public void AddTransparentImage(float alpha, Image img, int x, int y)
+        {
+            m_Gfxs.Add(new GfxSprite(m_Sprite, new SizeF(img.Width, img.Height), img.Width, img.Height, GetTexture(img), Color.FromArgb((int)(255 * alpha), Color.White), x, y));
+            m_NeedRedraw = true;
+        }
+
+        public void AddPoint(Color color, int x, int y)
+        {
+            m_Gfxs.Add(new GfxRect(color, new Rectangle(x, y, 1, 1)));
+            m_NeedRedraw = true;
+        }
+
+        public void AddLine(Color color, int xFrom, int yFrom, int xTo, int yTo)
+        {
+            m_Gfxs.Add(new GfxLine(color, xFrom, yFrom, xTo, yTo));
+            m_NeedRedraw = true;
+        }
+
+        public void AddString(GDIFont font, Color color, string text, int gx, int gy)
+        {
+            m_Gfxs.Add(new GfxString(m_TextSprite, color, GetDXFont(font), text, gx, gy));
+            m_NeedRedraw = true;
+        }
+
+        public void AddRect(Color color, Rectangle rect)
+        {
+            m_Gfxs.Add(new GfxRect(color, rect));
+            m_NeedRedraw = true;
+        }
+
+        public void AddFilledRect(Color color, Rectangle rect)
+        {
+            m_Gfxs.Add(new GfxSprite(m_Sprite, new SizeF(rect.Width, rect.Height), 4, 4, m_BlankTexture, color, rect.Left, rect.Top));
+            m_NeedRedraw = true;
+        }
+
+        public void ClearMinimap(Color color)
+        {
+            for (int x = 0; x < RogueGame.MAP_MAX_WIDTH; x++)
+                for (int y = 0; y < RogueGame.MAP_MAX_HEIGHT; y++)
+                    SetMinimapColor(x, y, color);
+        }
+
+        public void SetMinimapColor(int x, int y, Color color)
+        {
+            // Set color in minimap.
+            int x0 = x * RogueGame.MINITILE_SIZE;
+            int y0 = y * RogueGame.MINITILE_SIZE;
+            for (int px = 0; px < RogueGame.MINITILE_SIZE; px++)
+                for (int py = 0; py < RogueGame.MINITILE_SIZE; py++)
+                    m_MinimapColors[x0 + px, y0 + py] = color;
+        }
+
+        public void DrawMinimap(int gx, int gy)
+        {
+            /////////////////////////////////
+            // Write minimapColor to texture     
+            /////////////////////////////////
+#if false
+            // BUGGY: assumes texture pitch = texture width, which DirectX does NOT garantee. 
+            // convert colors to bytes and write all at once (much faster than convert+writing one by one)
+            int iByte = 0;
+            for (int y = 0; y < RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT; y++)
+                for (int x = 0; x < RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH; x++)
+                {
+                    m_MinimapBytes[iByte++] = m_MinimapColors[x, y].B;
+                    m_MinimapBytes[iByte++] = m_MinimapColors[x, y].G;
+                    m_MinimapBytes[iByte++] = m_MinimapColors[x, y].R;
+                    m_MinimapBytes[iByte++] = m_MinimapColors[x, y].A;
+                }
+            GraphicsStream gs = m_MinimapTexture.LockRectangle(0, LockFlags.None);
+            gs.Write(m_MinimapBytes, 0, m_MinimapBytes.Length);
+            m_MinimapTexture.UnlockRectangle(0);
+#endif
+
+#if true
+            // correct way to do it, uses pitch.
+            int pitch;  // pitch = width of texture in memory, does not necessary equal to texture.Width.
+            const int bytesPerPixel = 4; // A8R8G8B8
+            GraphicsStream gs = m_MinimapTexture.LockRectangle(0, LockFlags.None, out pitch);
+            for (int y = 0; y < RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT; y++)
+                for (int x = 0; x < RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH; x++)
+                {
+                    Color color = m_MinimapColors[x, y];
+                    gs.Position = (y * pitch) + (x * bytesPerPixel);
+                    gs.WriteByte(color.B);
+                    gs.WriteByte(color.G);
+                    gs.WriteByte(color.R);
+                    gs.WriteByte(color.A);
+                }
+            m_MinimapTexture.UnlockRectangle(0);
+#endif
+
+            ///////////
+            // Add gfx.
+            ///////////
+            m_Gfxs.Add(new GfxSprite(m_Sprite, new SizeF(RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH, RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT),
+                RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH, RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT,
+                m_MinimapTexture,
+                Color.White,
+                gx, gy));
+
+            NeedRedraw = true;
+        }
+
+        public string SaveScreenShot(string filePath)
+        {
+            string file = filePath + "." + ScreenshotExtension();
+            Logger.WriteLine(Logger.Stage.RUN_GFX, "taking screenshot...");
+            try
+            {
+                SurfaceLoader.Save(filePath, ImageFileFormat.Png, m_RenderSurface);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_GFX, String.Format("exception when taking screenshot : {0}", e.ToString()));
+                return null;
+            }
+            Logger.WriteLine(Logger.Stage.RUN_GFX, "taking screenshot... done!");
+            return file;
+        }
+
+        public string ScreenshotExtension()
+        {
+            return "png";
+        }
+
+        public void DisposeUnmanagedResources()
+        {
+            DisposeD3D();
+        }
+        #endregion
+
+        #region DirectX resources
+        Texture GetTexture(Image img)
+        {
+            Texture texture;
+            if (m_ImageToTextures.TryGetValue(img, out texture))
+                return texture;
+
+            texture = Texture.FromBitmap(m_Device, new Bitmap(img), Usage.SoftwareProcessing, Pool.Managed);
+            m_ImageToTextures.Add(img, texture);
+            return texture;
+        }
+
+        DXFont GetDXFont(GDIFont font)
+        {
+            DXFont dxFont;
+            if (m_FontsToFonts.TryGetValue(font, out dxFont))
+                return dxFont;
+
+            dxFont = new DXFont(m_Device, font);
+            m_FontsToFonts.Add(font, dxFont);
+            return dxFont;
+        }
+        #endregion
+
+        #region Concrete gfxs
+        class GfxSprite : IGfx
+        {
+            readonly Sprite m_Sprite;
+            readonly Texture m_Texture;
+            readonly Color m_Color;
+            readonly int m_X;
+            readonly int m_Y;
+            readonly SizeF m_Size;
+            readonly int m_TexWidth;
+            readonly int m_TexHeight;
+
+            public GfxSprite(Sprite sprite, SizeF size, int texWidth, int texHeight, Texture texture, Color color, int x, int y)
+            {
+                m_Sprite = sprite;
+                m_Texture = texture;
+                m_Color = color;
+                m_X = x;
+                m_Y = y;
+                m_Size = size;
+                m_TexWidth = texWidth;
+                m_TexHeight = texHeight;
+            }
+
+            public void Draw(Device dev)
+            {
+                m_Sprite.Begin(SpriteFlags.AlphaBlend);
+                {
+                    m_Sprite.Draw2D(m_Texture, new Rectangle(0, 0, m_TexWidth, m_TexHeight), m_Size, new PointF(m_X, m_Y), m_Color);
+                }
+                m_Sprite.End();
+            }
+        }
+
+        class GfxSpriteTransform : IGfx
+        {
+            readonly float m_Rotation;
+            readonly float m_Scale;
+            readonly Sprite m_Sprite;
+            readonly Texture m_Texture;
+            readonly Color m_Color;
+            readonly int m_X;
+            readonly int m_Y;
+            readonly SizeF m_Size;
+            readonly SizeF m_SizeScaled;
+            readonly int m_TexWidth;
+            readonly int m_TexHeight;
+            readonly PointF m_RotationCenter;
+
+            public GfxSpriteTransform(float rotation, float scale, Sprite sprite, SizeF size, int texWidth, int texHeight, Texture texture, Color color, int x, int y)
+            {
+                m_Rotation = (rotation * (float)Math.PI) / 180.0f;
+                m_Scale = scale;
+                m_Sprite = sprite;
+                m_Texture = texture;
+                m_Color = color;
+                m_X = x;
+                m_Y = y;
+                m_Size = size;
+                m_TexWidth = texWidth;
+                m_TexHeight = texHeight;
+                m_SizeScaled = new SizeF(size.Width * scale, size.Height * scale);
+                m_RotationCenter = new PointF(texWidth / 2, texHeight / 2);
+            }
+
+            public void Draw(Device dev)
+            {
+                m_Sprite.Begin(SpriteFlags.AlphaBlend);
+                {
+                    m_Sprite.Draw2D(m_Texture, new Rectangle(0, 0, m_TexWidth, m_TexHeight), m_SizeScaled, m_RotationCenter, m_Rotation,
+                        new PointF(m_X + m_SizeScaled.Width / 2, m_Y + m_SizeScaled.Height / 2), m_Color);
+                }
+                m_Sprite.End();
+            }
+        }
+
+        class GfxLine : IGfx
+        {
+            readonly CustomVertex.TransformedColored[] m_Points = new CustomVertex.TransformedColored[2];
+
+            public GfxLine(Color color, int xFrom, int yFrom, int xTo, int yTo)
+            {
+                const float Z = 0;
+                const float W = 1;
+
+                int argb = color.ToArgb();
+
+                m_Points[0].Position = new Vector4(xFrom, yFrom, Z, W);
+                m_Points[0].Color = argb;
+
+                m_Points[1].Position = new Vector4(xTo, yTo, Z, W);
+                m_Points[1].Color = argb;
+            }
+
+            public void Draw(Device dev)
+            {
+                dev.VertexFormat = CustomVertex.TransformedColored.Format;
+                dev.SetTexture(0, null);
+                dev.DrawUserPrimitives(PrimitiveType.LineList, 1, m_Points);
+            }
+        }
+
+        class GfxString : IGfx
+        {
+            readonly Color m_Color;
+            readonly DXFont m_Font;
+            readonly string m_Text;
+            readonly int m_X;
+            readonly int m_Y;
+            readonly Sprite m_TextSprite;
+
+            public GfxString(Sprite textSprite, Color color, DXFont font, string text, int x, int y)
+            {
+                m_Color = color;
+                m_Font = font;
+                m_Text = text;
+                m_X = x;
+                m_Y = y;
+                m_TextSprite = textSprite;
+            }
+
+            public void Draw(Device dev)
+            {
+                m_TextSprite.Begin(SpriteFlags.AlphaBlend);
+                {
+                    m_Font.DrawText(m_TextSprite, m_Text, m_X, m_Y, m_Color);
+                }
+                m_TextSprite.End();
+            }
+        }
+
+        class GfxRect : IGfx
+        {
+            readonly CustomVertex.TransformedColored[] m_Points = new CustomVertex.TransformedColored[4];
+            static readonly Int16[] s_Indices = new Int16[8] { 0, 1, 2, 3, 0, 2, 1, 3 };
+
+            public GfxRect(Color color, Rectangle rect)
+            {
+                const float Z = 0;
+                const float W = 1;
+
+                int argb = color.ToArgb();
+
+                m_Points[0].Position = new Vector4(rect.Left, rect.Top, Z, W);
+                m_Points[0].Color = argb;
+
+                m_Points[1].Position = new Vector4(rect.Right, rect.Top, Z, W);
+                m_Points[1].Color = argb;
+
+                m_Points[2].Position = new Vector4(rect.Left, rect.Bottom, Z, W);
+                m_Points[2].Color = argb;
+
+                m_Points[3].Position = new Vector4(rect.Right, rect.Bottom, Z, W);
+                m_Points[3].Color = argb;
+            }
+
+            public void Draw(Device dev)
+            {
+                dev.VertexFormat = CustomVertex.TransformedColored.Format;
+                dev.SetTexture(0, null);
+                dev.DrawIndexedUserPrimitives(PrimitiveType.LineList, 0, 4, 4, s_Indices, true, m_Points);
+            }
+        }
+        #endregion
+
+        #region Disposing
+        void DisposeD3D()
+        {
+            Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing...");
+
+            foreach (Texture t in m_ImageToTextures.Values)
+                t.Dispose();
+            m_ImageToTextures.Clear();
+
+            foreach (DXFont f in m_FontsToFonts.Values)
+                f.Dispose();
+            m_FontsToFonts.Clear();
+
+            if (m_BlankTexture != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing blank texture...");
+                m_BlankTexture.Dispose();
+                m_BlankTexture = null;
+            }
+
+            if (m_MinimapTexture != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing minimap texture...");
+                m_MinimapTexture.Dispose();
+                m_MinimapTexture = null;
+            }
+
+            if (m_Sprite != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing sprite...");
+                m_Sprite.Dispose();
+                m_Sprite = null;
+            }
+
+            if (m_TextSprite != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing text sprite...");
+                m_TextSprite.Dispose();
+                m_TextSprite = null;
+            }
+
+            if (m_RenderToSurface != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing render surface...");
+                m_RenderToSurface.Dispose();
+                m_RenderToSurface = null;
+            }
+
+            if (m_RenderTexture != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing render texture...");
+                m_RenderTexture.Dispose();
+                m_RenderTexture = null;
+            }
+
+            if (m_Device != null)
+            {
+                Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing device...");
+                m_Device.Dispose();
+                m_Device = null;
+            }
+
+            Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing done.");
+        }
+        #endregion
     }
-
-    public string SaveScreenShot(string filePath)
-    {
-      string str = filePath + "." + this.ScreenshotExtension();
-      Logger.WriteLine(Logger.Stage.RUN_GFX, "taking screenshot...");
-      try
-      {
-        SurfaceLoader.Save(filePath, ImageFileFormat.Png, this.m_RenderSurface);
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.RUN_GFX, string.Format("exception when taking screenshot : {0}", (object) ex.ToString()));
-        return (string) null;
-      }
-      Logger.WriteLine(Logger.Stage.RUN_GFX, "taking screenshot... done!");
-      return str;
-    }
-
-    public string ScreenshotExtension()
-    {
-      return "png";
-    }
-
-    public void DisposeUnmanagedResources()
-    {
-      this.DisposeD3D();
-    }
-
-    private Texture GetTexture(Image img)
-    {
-      Texture texture1;
-      if (this.m_ImageToTextures.TryGetValue(img, out texture1))
-        return texture1;
-      Texture texture2 = Texture.FromBitmap(this.m_Device, new Bitmap(img), Usage.SoftwareProcessing, Pool.Managed);
-      this.m_ImageToTextures.Add(img, texture2);
-      return texture2;
-    }
-
-    private Microsoft.DirectX.Direct3D.Font GetDXFont(System.Drawing.Font font)
-    {
-      Microsoft.DirectX.Direct3D.Font font1;
-      if (this.m_FontsToFonts.TryGetValue(font, out font1))
-        return font1;
-      Microsoft.DirectX.Direct3D.Font font2 = new Microsoft.DirectX.Direct3D.Font(this.m_Device, font);
-      this.m_FontsToFonts.Add(font, font2);
-      return font2;
-    }
-
-    private void DisposeD3D()
-    {
-      Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing...");
-      foreach (Texture texture in this.m_ImageToTextures.Values)
-        texture.Dispose();
-      this.m_ImageToTextures.Clear();
-      foreach (Microsoft.DirectX.Direct3D.Font font in this.m_FontsToFonts.Values)
-        font.Dispose();
-      this.m_FontsToFonts.Clear();
-      if (this.m_BlankTexture != (Texture) null)
-      {
-        Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing blank texture...");
-        this.m_BlankTexture.Dispose();
-        this.m_BlankTexture = (Texture) null;
-      }
-      if (this.m_MinimapTexture != (Texture) null)
-      {
-        Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing minimap texture...");
-        this.m_MinimapTexture.Dispose();
-        this.m_MinimapTexture = (Texture) null;
-      }
-      if (this.m_Sprite != (Sprite) null)
-      {
-        Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing sprite...");
-        this.m_Sprite.Dispose();
-        this.m_Sprite = (Sprite) null;
-      }
-      if (this.m_TextSprite != (Sprite) null)
-      {
-        Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing text sprite...");
-        this.m_TextSprite.Dispose();
-        this.m_TextSprite = (Sprite) null;
-      }
-      if (this.m_RenderToSurface != (RenderToSurface) null)
-      {
-        Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing render surface...");
-        this.m_RenderToSurface.Dispose();
-        this.m_RenderToSurface = (RenderToSurface) null;
-      }
-      if (this.m_RenderTexture != (Texture) null)
-      {
-        Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing render texture...");
-        this.m_RenderTexture.Dispose();
-        this.m_RenderTexture = (Texture) null;
-      }
-      if (this.m_Device != (Device) null)
-      {
-        Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing device...");
-        this.m_Device.Dispose();
-        this.m_Device = (Device) null;
-      }
-      Logger.WriteLine(Logger.Stage.CLEAN_GFX, "disposing done.");
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing && this.components != null)
-        this.components.Dispose();
-      base.Dispose(disposing);
-    }
-
-    private void InitializeComponent()
-    {
-      this.SuspendLayout();
-      this.AutoScaleMode = AutoScaleMode.None;
-      this.Name = nameof (DXGameCanvas);
-      this.ResumeLayout(false);
-    }
-
-    private interface IGfx
-    {
-      void Draw(Device dev);
-    }
-
-    private class GfxSprite : DXGameCanvas.IGfx
-    {
-      private readonly Sprite m_Sprite;
-      private readonly Texture m_Texture;
-      private readonly Color m_Color;
-      private readonly int m_X;
-      private readonly int m_Y;
-      private readonly SizeF m_Size;
-      private readonly int m_TexWidth;
-      private readonly int m_TexHeight;
-
-      public GfxSprite(Sprite sprite, SizeF size, int texWidth, int texHeight, Texture texture, Color color, int x, int y)
-      {
-        this.m_Sprite = sprite;
-        this.m_Texture = texture;
-        this.m_Color = color;
-        this.m_X = x;
-        this.m_Y = y;
-        this.m_Size = size;
-        this.m_TexWidth = texWidth;
-        this.m_TexHeight = texHeight;
-      }
-
-      public void Draw(Device dev)
-      {
-        this.m_Sprite.Begin(SpriteFlags.AlphaBlend);
-        this.m_Sprite.Draw2D(this.m_Texture, new Rectangle(0, 0, this.m_TexWidth, this.m_TexHeight), this.m_Size, new PointF((float) this.m_X, (float) this.m_Y), this.m_Color);
-        this.m_Sprite.End();
-      }
-    }
-
-    private class GfxSpriteTransform : DXGameCanvas.IGfx
-    {
-      private readonly float m_Rotation;
-      private readonly float m_Scale;
-      private readonly Sprite m_Sprite;
-      private readonly Texture m_Texture;
-      private readonly Color m_Color;
-      private readonly int m_X;
-      private readonly int m_Y;
-      private readonly SizeF m_Size;
-      private readonly SizeF m_SizeScaled;
-      private readonly int m_TexWidth;
-      private readonly int m_TexHeight;
-      private readonly PointF m_RotationCenter;
-
-      public GfxSpriteTransform(float rotation, float scale, Sprite sprite, SizeF size, int texWidth, int texHeight, Texture texture, Color color, int x, int y)
-      {
-        this.m_Rotation = (float) ((double) rotation * 3.14159274101257 / 180.0);
-        this.m_Scale = scale;
-        this.m_Sprite = sprite;
-        this.m_Texture = texture;
-        this.m_Color = color;
-        this.m_X = x;
-        this.m_Y = y;
-        this.m_Size = size;
-        this.m_TexWidth = texWidth;
-        this.m_TexHeight = texHeight;
-        this.m_SizeScaled = new SizeF(size.Width * scale, size.Height * scale);
-        this.m_RotationCenter = new PointF((float) (texWidth / 2), (float) (texHeight / 2));
-      }
-
-      public void Draw(Device dev)
-      {
-        this.m_Sprite.Begin(SpriteFlags.AlphaBlend);
-        this.m_Sprite.Draw2D(this.m_Texture, new Rectangle(0, 0, this.m_TexWidth, this.m_TexHeight), this.m_SizeScaled, this.m_RotationCenter, this.m_Rotation, new PointF((float) this.m_X + this.m_SizeScaled.Width / 2f, (float) this.m_Y + this.m_SizeScaled.Height / 2f), this.m_Color);
-        this.m_Sprite.End();
-      }
-    }
-
-    private class GfxLine : DXGameCanvas.IGfx
-    {
-      private readonly CustomVertex.TransformedColored[] m_Points = new CustomVertex.TransformedColored[2];
-
-      public GfxLine(Color color, int xFrom, int yFrom, int xTo, int yTo)
-      {
-        int argb = color.ToArgb();
-        this.m_Points[0].Position = new Vector4((float) xFrom, (float) yFrom, 0.0f, 1f);
-        this.m_Points[0].Color = argb;
-        this.m_Points[1].Position = new Vector4((float) xTo, (float) yTo, 0.0f, 1f);
-        this.m_Points[1].Color = argb;
-      }
-
-      public void Draw(Device dev)
-      {
-        dev.VertexFormat = VertexFormats.Diffuse | VertexFormats.Transformed;
-        dev.SetTexture(0, (BaseTexture) null);
-        dev.DrawUserPrimitives(PrimitiveType.LineList, 1, (object) this.m_Points);
-      }
-    }
-
-    private class GfxString : DXGameCanvas.IGfx
-    {
-      private readonly Color m_Color;
-      private readonly Microsoft.DirectX.Direct3D.Font m_Font;
-      private readonly string m_Text;
-      private readonly int m_X;
-      private readonly int m_Y;
-      private readonly Sprite m_TextSprite;
-
-      public GfxString(Sprite textSprite, Color color, Microsoft.DirectX.Direct3D.Font font, string text, int x, int y)
-      {
-        this.m_Color = color;
-        this.m_Font = font;
-        this.m_Text = text;
-        this.m_X = x;
-        this.m_Y = y;
-        this.m_TextSprite = textSprite;
-      }
-
-      public void Draw(Device dev)
-      {
-        this.m_TextSprite.Begin(SpriteFlags.AlphaBlend);
-        this.m_Font.DrawText(this.m_TextSprite, this.m_Text, this.m_X, this.m_Y, this.m_Color);
-        this.m_TextSprite.End();
-      }
-    }
-
-    private class GfxRect : DXGameCanvas.IGfx
-    {
-      private static readonly short[] s_Indices = new short[8]
-      {
-        (short) 0,
-        (short) 1,
-        (short) 2,
-        (short) 3,
-        (short) 0,
-        (short) 2,
-        (short) 1,
-        (short) 3
-      };
-      private readonly CustomVertex.TransformedColored[] m_Points = new CustomVertex.TransformedColored[4];
-
-      public GfxRect(Color color, Rectangle rect)
-      {
-        int argb = color.ToArgb();
-        this.m_Points[0].Position = new Vector4((float) rect.Left, (float) rect.Top, 0.0f, 1f);
-        this.m_Points[0].Color = argb;
-        this.m_Points[1].Position = new Vector4((float) rect.Right, (float) rect.Top, 0.0f, 1f);
-        this.m_Points[1].Color = argb;
-        this.m_Points[2].Position = new Vector4((float) rect.Left, (float) rect.Bottom, 0.0f, 1f);
-        this.m_Points[2].Color = argb;
-        this.m_Points[3].Position = new Vector4((float) rect.Right, (float) rect.Bottom, 0.0f, 1f);
-        this.m_Points[3].Color = argb;
-      }
-
-      public void Draw(Device dev)
-      {
-        dev.VertexFormat = VertexFormats.Diffuse | VertexFormats.Transformed;
-        dev.SetTexture(0, (BaseTexture) null);
-        dev.DrawIndexedUserPrimitives(PrimitiveType.LineList, 0, 4, 4, (object) DXGameCanvas.GfxRect.s_Indices, true, (object) this.m_Points);
-      }
-    }
-  }
 }

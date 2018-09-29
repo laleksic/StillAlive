@@ -1,94 +1,98 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Data.World
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace djack.RogueSurvivor.Data
 {
-  [Serializable]
-  internal class World
-  {
-    private District[,] m_DistrictsGrid;
-    private int m_Size;
-    private Weather m_Weather;
-
-    public int Size
+    [Serializable]
+    class World
     {
-      get
-      {
-        return this.m_Size;
-      }
-    }
+        #region Fields
+        District[,] m_DistrictsGrid;
+        int m_Size;
+        Weather m_Weather;
 
-    public District this[int x, int y]
-    {
-      get
-      {
-        if (x < 0 || x >= this.m_Size)
-          throw new ArgumentOutOfRangeException(nameof (x));
-        if (y < 0 || y >= this.m_Size)
-          throw new ArgumentOutOfRangeException(nameof (y));
-        return this.m_DistrictsGrid[x, y];
-      }
-      set
-      {
-        if (x < 0 || x >= this.m_Size)
-          throw new ArgumentOutOfRangeException(nameof (x));
-        if (y < 0 || y >= this.m_Size)
-          throw new ArgumentOutOfRangeException(nameof (y));
-        this.m_DistrictsGrid[x, y] = value;
-      }
-    }
+        #endregion
 
-    public Weather Weather
-    {
-      get
-      {
-        return this.m_Weather;
-      }
-      set
-      {
-        this.m_Weather = value;
-      }
-    }
+        #region Properties
+        public int Size
+        {
+            get { return m_Size; }
+        }
 
-    public World(int size)
-    {
-      if (size <= 0)
-        throw new ArgumentOutOfRangeException("size <=0");
-      this.m_DistrictsGrid = new District[size, size];
-      this.m_Size = size;
-      this.m_Weather = Weather._FIRST;
-    }
+        public District this[int x, int y]
+        {
+            get 
+            {
+                if (x < 0 || x >= m_Size)
+                    throw new ArgumentOutOfRangeException("x");
+                if (y < 0 || y >= m_Size)
+                    throw new ArgumentOutOfRangeException("y");
+                return m_DistrictsGrid[x, y]; 
+            }
+            set
+            {
+                if (x < 0 || x >= m_Size)
+                    throw new ArgumentOutOfRangeException("x");
+                if (y < 0 || y >= m_Size)
+                    throw new ArgumentOutOfRangeException("y");
+                m_DistrictsGrid[x, y] = value;
+            }
+        }
 
-    public void TrimToBounds(ref int x, ref int y)
-    {
-      if (x < 0)
-        x = 0;
-      if (x >= this.m_Size)
-        x = this.m_Size - 1;
-      if (y < 0)
-        y = 0;
-      if (y < this.m_Size)
-        return;
-      y = this.m_Size - 1;
-    }
+        public Weather Weather
+        {
+            get { return m_Weather; }
+            set { m_Weather = value; }
+        }
+        #endregion
 
-    public static string CoordToString(int x, int y)
-    {
-      return string.Format("{0}{1}", (object) (char) (65 + x), (object) y);
-    }
+        #region Init
+        public World(int size)
+        {
+            if (size <= 0)
+                throw new ArgumentOutOfRangeException("size <=0");
 
-    public void OptimizeBeforeSaving()
-    {
-      for (int index1 = 0; index1 < this.m_Size; ++index1)
-      {
-        for (int index2 = 0; index2 < this.m_Size; ++index2)
-          this.m_DistrictsGrid[index1, index2].OptimizeBeforeSaving();
-      }
+            m_DistrictsGrid = new District[size, size];
+            m_Size = size;
+            m_Weather = Weather.CLEAR;
+        }
+        #endregion
+
+        #region Coordinates
+        /// <summary>
+        /// Trim district coordinates to world bounds.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void TrimToBounds(ref int x, ref int y)
+        {
+            if (x < 0) x = 0;
+            if (x >= m_Size) x = m_Size - 1;
+            if (y < 0) y = 0;
+            if (y >= m_Size) y = m_Size - 1;
+        }
+
+        /// <summary>
+        /// District coordinates to string.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns>[A-Z][0-9]</returns>
+        public static string CoordToString(int x, int y)
+        {
+            return String.Format("{0}{1}", (char)('A'+x), y);
+        }
+        #endregion
+
+        #region Pre-saving
+        public void OptimizeBeforeSaving()
+        {
+            for (int x = 0; x < m_Size; x++)
+                for (int y = 0; y < m_Size; y++)
+                    m_DistrictsGrid[x, y].OptimizeBeforeSaving();
+        }
+        #endregion
     }
-  }
 }

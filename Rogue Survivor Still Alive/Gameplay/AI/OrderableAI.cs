@@ -1,370 +1,532 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Gameplay.AI.OrderableAI
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Engine.Actions;
 using djack.RogueSurvivor.Engine.AI;
+using djack.RogueSurvivor.Engine.Items;
 using djack.RogueSurvivor.Engine.MapObjects;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+using djack.RogueSurvivor.Gameplay.AI.Sensors;
 
 namespace djack.RogueSurvivor.Gameplay.AI
 {
-  [Serializable]
-  internal abstract class OrderableAI : BaseAI
-  {
-    protected Percept m_LastEnemySaw;
-    protected Percept m_LastItemsSaw;
-    protected Percept m_LastSoldierSaw;
-    protected Percept m_LastRaidHeard;
-    protected bool m_ReachedPatrolPoint;
-    protected int m_ReportStage;
-
-    public bool DontFollowLeader { get; set; }
-
-    public override void SetOrder(ActorOrder newOrder)
+    /// <summary>
+    /// Base class for AIs that can follow orders and is notified of raid events.
+    /// </summary>
+    [Serializable]
+    abstract class OrderableAI : BaseAI
     {
-      base.SetOrder(newOrder);
-      this.m_ReachedPatrolPoint = false;
-      this.m_ReportStage = 0;
-    }
+        #region Fields
+        protected Percept m_LastEnemySaw;
+        protected Percept m_LastItemsSaw;
+        protected Percept m_LastSoldierSaw;
+        protected Percept m_LastRaidHeard;
 
-    protected ActorAction ExecuteOrder(RogueGame game, ActorOrder order, List<Percept> percepts)
-    {
-      if (this.m_Actor.Leader == null || this.m_Actor.Leader.IsDead)
-        return (ActorAction) null;
-      switch (order.Task)
-      {
-        case ActorTasks.BARRICADE_ONE:
-          return this.ExecuteBarricading(game, order.Location, false);
-        case ActorTasks.BARRICADE_MAX:
-          return this.ExecuteBarricading(game, order.Location, true);
-        case ActorTasks.GUARD:
-          return this.ExecuteGuard(game, order.Location, percepts);
-        case ActorTasks.PATROL:
-          return this.ExecutePatrol(game, order.Location, percepts);
-        case ActorTasks.DROP_ALL_ITEMS:
-          return this.ExecuteDropAllItems(game);
-        case ActorTasks.BUILD_SMALL_FORTIFICATION:
-          return this.ExecuteBuildFortification(game, order.Location, false);
-        case ActorTasks.BUILD_LARGE_FORTIFICATION:
-          return this.ExecuteBuildFortification(game, order.Location, true);
-        case ActorTasks.REPORT_EVENTS:
-          return this.ExecuteReport(game, percepts);
-        case ActorTasks.SLEEP_NOW:
-          return this.ExecuteSleepNow(game, percepts);
-        case ActorTasks.FOLLOW_TOGGLE:
-          return this.ExecuteToggleFollow(game);
-        case ActorTasks.WHERE_ARE_YOU:
-          return this.ExecuteReportPosition(game);
-        default:
-          throw new NotImplementedException("order task not handled");
-      }
-    }
+        protected bool m_ReachedPatrolPoint;
+        protected int m_ReportStage;
+        #endregion
 
-    private ActorAction ExecuteBarricading(RogueGame game, Location location, bool toTheMax)
-    {
-      if (this.m_Actor.Location.Map != location.Map)
-        return (ActorAction) null;
-      DoorWindow mapObjectAt = location.Map.GetMapObjectAt(location.Position) as DoorWindow;
-      if (mapObjectAt == null)
-        return (ActorAction) null;
-      if (!game.Rules.CanActorBarricadeDoor(this.m_Actor, mapObjectAt))
-        return (ActorAction) null;
-      if (game.Rules.IsAdjacent(this.m_Actor.Location.Position, location.Position))
-      {
-        ActorAction actorAction = (ActorAction) new ActionBarricadeDoor(this.m_Actor, game, mapObjectAt);
-        if (!actorAction.IsLegal())
-          return (ActorAction) null;
-        if (!toTheMax)
-          this.SetOrder((ActorOrder) null);
-        return actorAction;
-      }
-      ActorAction actorAction1 = this.BehaviorIntelligentBumpToward(game, location.Position);
-      if (actorAction1 == null)
-        return (ActorAction) null;
-      this.RunIfPossible(game.Rules);
-      return actorAction1;
-    }
+        #region Properties
+        public bool DontFollowLeader { get; set; }
+        #endregion
 
-    private ActorAction ExecuteBuildFortification(RogueGame game, Location location, bool isLarge)
-    {
-      if (this.m_Actor.Location.Map != location.Map)
-        return (ActorAction) null;
-      if (!game.Rules.CanActorBuildFortification(this.m_Actor, location.Position, isLarge))
-        return (ActorAction) null;
-      if (game.Rules.IsAdjacent(this.m_Actor.Location.Position, location.Position))
-      {
-        ActorAction actorAction = (ActorAction) new ActionBuildFortification(this.m_Actor, game, location.Position, isLarge);
-        if (!actorAction.IsLegal())
-          return (ActorAction) null;
-        this.SetOrder((ActorOrder) null);
-        return actorAction;
-      }
-      ActorAction actorAction1 = this.BehaviorIntelligentBumpToward(game, location.Position);
-      if (actorAction1 == null)
-        return (ActorAction) null;
-      this.RunIfPossible(game.Rules);
-      return actorAction1;
-    }
-
-    private ActorAction ExecuteGuard(RogueGame game, Location location, List<Percept> percepts)
-    {
-      List<Percept> percepts1 = this.FilterEnemies(game, percepts);
-      if (percepts1 != null)
-      {
-        this.SetOrder((ActorOrder) null);
-        Actor percepted = this.FilterNearest(game, percepts1).Percepted as Actor;
-        if (percepted == null)
-          throw new InvalidOperationException("null nearest enemy");
-        return (ActorAction) new ActionShout(this.m_Actor, game, string.Format("{0} sighted!!", (object) percepted.Name));
-      }
-      ActorAction actorAction1 = this.BehaviorEquipCellPhone(game);
-      if (actorAction1 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction1;
-      }
-      ActorAction actorAction2 = this.BehaviorUnequipCellPhoneIfLeaderHasNot(game);
-      if (actorAction2 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction2;
-      }
-      if (this.m_Actor.Location.Position != location.Position)
-      {
-        ActorAction actorAction3 = this.BehaviorIntelligentBumpToward(game, location.Position);
-        if (actorAction3 != null)
+        #region Orders
+        public override void SetOrder(ActorOrder newOrder)
         {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction3;
+            base.SetOrder(newOrder);
+
+            // reset order states.
+            m_ReachedPatrolPoint = false;
+            m_ReportStage = 0;
         }
-      }
-      if (game.Rules.IsActorHungry(this.m_Actor))
-      {
-        ActorAction actorAction3 = this.BehaviorEat(game);
-        if (actorAction3 != null)
+
+        protected ActorAction ExecuteOrder(RogueGame game, ActorOrder order, List<Percept> percepts)
         {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction3;
-        }
-      }
-      ActorAction actorAction4 = this.BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
-      if (actorAction4 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction4;
-      }
-      this.m_Actor.Activity = Activity.IDLE;
-      return (ActorAction) new ActionWait(this.m_Actor, game);
-    }
+            // cancel if leader is dead!
+            if (m_Actor.Leader == null || m_Actor.Leader.IsDead)
+                return null;
 
-    private ActorAction ExecutePatrol(RogueGame game, Location location, List<Percept> percepts)
-    {
-      List<Percept> percepts1 = this.FilterEnemies(game, percepts);
-      if (percepts1 != null)
-      {
-        this.SetOrder((ActorOrder) null);
-        Actor percepted = this.FilterNearest(game, percepts1).Percepted as Actor;
-        if (percepted == null)
-          throw new InvalidOperationException("null nearest enemy");
-        return (ActorAction) new ActionShout(this.m_Actor, game, string.Format("{0} sighted!!", (object) percepted.Name));
-      }
-      if (!this.m_ReachedPatrolPoint)
-        this.m_ReachedPatrolPoint = this.m_Actor.Location.Position == location.Position;
-      ActorAction actorAction1 = this.BehaviorEquipCellPhone(game);
-      if (actorAction1 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction1;
-      }
-      ActorAction actorAction2 = this.BehaviorUnequipCellPhoneIfLeaderHasNot(game);
-      if (actorAction2 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction2;
-      }
-      if (!this.m_ReachedPatrolPoint)
-      {
-        ActorAction actorAction3 = this.BehaviorIntelligentBumpToward(game, location.Position);
-        if (actorAction3 != null)
+            // execute task.
+            switch (order.Task)
+            {
+                case ActorTasks.BARRICADE_ONE:
+                    return ExecuteBarricading(game, order.Location, false);
+                case ActorTasks.BARRICADE_MAX:
+                    return ExecuteBarricading(game, order.Location, true);
+                case ActorTasks.BUILD_SMALL_FORTIFICATION:
+                    return ExecuteBuildFortification(game, order.Location, false);
+                case ActorTasks.BUILD_LARGE_FORTIFICATION:
+                    return ExecuteBuildFortification(game, order.Location, true);
+                case ActorTasks.DROP_ALL_ITEMS:
+                    return ExecuteDropAllItems(game);
+                case ActorTasks.GUARD:
+                    return ExecuteGuard(game, order.Location, percepts);
+                case ActorTasks.PATROL:
+                    return ExecutePatrol(game, order.Location, percepts);
+                case ActorTasks.REPORT_EVENTS:
+                    return ExecuteReport(game, percepts);
+                case ActorTasks.SLEEP_NOW:
+                    return ExecuteSleepNow(game, percepts);
+                case ActorTasks.FOLLOW_TOGGLE:
+                    return ExecuteToggleFollow(game);
+                case ActorTasks.WHERE_ARE_YOU:
+                    return ExecuteReportPosition(game);
+
+                default:
+                    throw new NotImplementedException("order task not handled");
+            }
+        }
+
+        #region Barricading
+        ActorAction ExecuteBarricading(RogueGame game, Location location, bool toTheMax)
         {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction3;
+            /////////////////////
+            // 1. Check validity.
+            // 2. Perform.
+            /////////////////////
+
+            // 1. Check validity.
+            if (m_Actor.Location.Map != location.Map)
+                return null;
+            DoorWindow door = location.Map.GetMapObjectAt(location.Position) as DoorWindow;
+            if (door == null)
+                return null;
+            if (!game.Rules.CanActorBarricadeDoor(m_Actor, door))
+                return null;
+
+            // 2. Perform.
+            // 2.1 If adjacent, barricade.
+            // 2.2 Move closer.
+
+            // 2.1 If adjacent, barricade.
+            if (game.Rules.IsAdjacent(m_Actor.Location.Position, location.Position))
+            {
+                ActorAction barricadeAction = new ActionBarricadeDoor(m_Actor, game, door);
+                if (barricadeAction.IsLegal())
+                {
+                    if (!toTheMax)
+                    {
+                        SetOrder(null);
+                    }
+                    return barricadeAction;
+                }
+                else
+                    return null;
+            }
+
+            // 2.2 Move closer.
+            ActorAction moveAction = BehaviorIntelligentBumpToward(game, location.Position);
+            if (moveAction != null)
+            {
+                RunIfPossible(game.Rules);
+                return moveAction;
+            }
+            else
+                return null;
         }
-      }
-      if (game.Rules.IsActorHungry(this.m_Actor))
-      {
-        ActorAction actorAction3 = this.BehaviorEat(game);
-        if (actorAction3 != null)
+        #endregion
+
+        #region Building fortification
+        ActorAction ExecuteBuildFortification(RogueGame game, Location location, bool isLarge)
         {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction3;
+            /////////////////////
+            // 1. Check validity.
+            // 2. Perform.
+            /////////////////////
+
+            // 1. Check validity.
+            if (m_Actor.Location.Map != location.Map)
+                return null;
+            if (!game.Rules.CanActorBuildFortification(m_Actor, location.Position, isLarge))
+                return null;
+
+            // 2. Perform.
+            // 2.1 If adjacent, build.
+            // 2.2 Move closer.
+
+            // 2.1 If adjacent, build.
+            if (game.Rules.IsAdjacent(m_Actor.Location.Position, location.Position))
+            {
+                ActorAction buildAction = new ActionBuildFortification(m_Actor, game, location.Position, isLarge);
+                if (buildAction.IsLegal())
+                {
+                    SetOrder(null);
+                    return buildAction;
+                }
+                else
+                    return null;
+            }
+
+            // 2.2 Move closer.
+            ActorAction moveAction = BehaviorIntelligentBumpToward(game, location.Position);
+            if (moveAction != null)
+            {
+                RunIfPossible(game.Rules);
+                return moveAction;
+            }
+            else
+                return null;
         }
-      }
-      ActorAction actorAction4 = this.BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
-      if (actorAction4 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction4;
-      }
-      List<Zone> patrolZones = location.Map.GetZonesAt(this.Order.Location.Position.X, this.Order.Location.Position.Y);
-      return this.BehaviorWander(game, (Predicate<Location>) (loc =>
-      {
-        Map map = loc.Map;
-        Point position = loc.Position;
-        int x = position.X;
-        position = loc.Position;
-        int y = position.Y;
-        List<Zone> zonesAt = map.GetZonesAt(x, y);
-        if (zonesAt == null)
-          return false;
-        foreach (Zone zone1 in zonesAt)
+        #endregion
+
+        #region Guarding
+        ActorAction ExecuteGuard(RogueGame game, Location location, List<Percept> percepts)
         {
-          foreach (Zone zone2 in patrolZones)
-          {
-            if (zone1 == zone2)
-              return true;
-          }
+            ////////////////////////////////
+            // Interrupt guard:
+            // 1. See enemy => raise alarm.
+            ////////////////////////////////
+
+            // 1. See enemy => raise alarm.
+            List<Percept> enemies = FilterEnemies(game, percepts);
+            if (enemies != null)
+            {
+                // ALAAAARRMM!!
+                SetOrder(null);
+                Actor nearestEnemy = FilterNearest(game, enemies).Percepted as Actor;
+                if (nearestEnemy == null)
+                    throw new InvalidOperationException("null nearest enemy");
+                return new ActionShout(m_Actor, game, String.Format("{0} sighted!!", nearestEnemy.Name));
+            }
+
+            //////////////////////////////
+            // Guard duty actions:
+            // 1. Mimick leader cell phone usage.
+            // 2. Move to guard position.
+            // 3. Eat if hungry.
+            // 4. Heal if need to.
+            // 5. Wait.
+            /////////////////////////////
+
+            // 1. Mimick leader cell phone usage.
+            ActorAction phoneAction = BehaviorEquipCellPhone(game);
+            if (phoneAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return phoneAction;
+            }
+            phoneAction = BehaviorUnequipCellPhoneIfLeaderHasNot(game);
+            if (phoneAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return phoneAction;
+            }
+
+            // 2. Move to guard position.
+            if (m_Actor.Location.Position != location.Position)
+            {
+                ActorAction bumpAction = BehaviorIntelligentBumpToward(game, location.Position);
+                if (bumpAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return bumpAction;
+                }
+            }
+
+            // 3. Eat if hungry.
+            if (game.Rules.IsActorHungry(m_Actor))
+            {
+                ActorAction eatAction = BehaviorEat(game);
+                if (eatAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return eatAction;
+                }
+            }
+
+            // 4. Heal if need to.
+            ActorAction useMedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
+            if (useMedAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return useMedAction;
+            }
+
+            // 5. Wait.
+            m_Actor.Activity = Activity.IDLE;
+            return new ActionWait(m_Actor, game);
         }
-        return false;
-      }));
-    }
+        #endregion
 
-    private ActorAction ExecuteDropAllItems(RogueGame game)
-    {
-      if (this.m_Actor.Inventory.IsEmpty)
-        return (ActorAction) null;
-      Item it = this.m_Actor.Inventory[0];
-      if (it.IsEquipped)
-        return (ActorAction) new ActionUnequipItem(this.m_Actor, game, it);
-      return (ActorAction) new ActionDropItem(this.m_Actor, game, it);
-    }
+        #region Patrolling
+        ActorAction ExecutePatrol(RogueGame game, Location location, List<Percept> percepts)
+        {
+            ////////////////////////////////
+            // Interrupt patrol
+            // 1. See enemy => raise alarm.
+            ////////////////////////////////
 
-    private ActorAction ExecuteReport(RogueGame game, List<Percept> percepts)
-    {
-      List<Percept> percepts1 = this.FilterEnemies(game, percepts);
-      if (percepts1 != null)
-      {
-        this.SetOrder((ActorOrder) null);
-        Actor percepted = this.FilterNearest(game, percepts1).Percepted as Actor;
-        if (percepted == null)
-          throw new InvalidOperationException("null nearest enemy");
-        return (ActorAction) new ActionShout(this.m_Actor, game, string.Format("{0} sighted!!", (object) percepted.Name));
-      }
-      ActorAction actorAction = (ActorAction) null;
-      bool flag = false;
-      switch (this.m_ReportStage)
-      {
-        case 0:
-          actorAction = this.m_LastRaidHeard == null ? (ActorAction) new ActionSay(this.m_Actor, game, this.m_Actor.Leader, "No raids heard.", RogueGame.Sayflags.NONE) : this.BehaviorTellFriendAboutPercept(game, this.m_LastRaidHeard);
-          ++this.m_ReportStage;
-          break;
-        case 1:
-          actorAction = this.m_LastEnemySaw == null ? (ActorAction) new ActionSay(this.m_Actor, game, this.m_Actor.Leader, "No enemies sighted.", RogueGame.Sayflags.NONE) : this.BehaviorTellFriendAboutPercept(game, this.m_LastEnemySaw);
-          ++this.m_ReportStage;
-          break;
-        case 2:
-          actorAction = this.m_LastItemsSaw == null ? (ActorAction) new ActionSay(this.m_Actor, game, this.m_Actor.Leader, "No items sighted.", RogueGame.Sayflags.NONE) : this.BehaviorTellFriendAboutPercept(game, this.m_LastItemsSaw);
-          ++this.m_ReportStage;
-          break;
-        case 3:
-          actorAction = this.m_LastSoldierSaw == null ? (ActorAction) new ActionSay(this.m_Actor, game, this.m_Actor.Leader, "No soldiers sighted.", RogueGame.Sayflags.NONE) : this.BehaviorTellFriendAboutPercept(game, this.m_LastSoldierSaw);
-          ++this.m_ReportStage;
-          break;
-        case 4:
-          flag = true;
-          actorAction = (ActorAction) new ActionSay(this.m_Actor, game, this.m_Actor.Leader, "That's it.", RogueGame.Sayflags.NONE);
-          break;
-      }
-      if (flag)
-        this.SetOrder((ActorOrder) null);
-      return actorAction ?? (ActorAction) new ActionSay(this.m_Actor, game, this.m_Actor.Leader, "Let me think...", RogueGame.Sayflags.NONE);
-    }
+            // 1. See enemy => raise alarm.
+            List<Percept> enemies = FilterEnemies(game, percepts);
+            if (enemies != null)
+            {
+                // ALAAAARRMM!!
+                SetOrder(null);
+                Actor nearestEnemy = FilterNearest(game, enemies).Percepted as Actor;
+                if (nearestEnemy == null)
+                    throw new InvalidOperationException("null nearest enemy");
+                return new ActionShout(m_Actor, game, String.Format("{0} sighted!!", nearestEnemy.Name));
+            }
 
-    private ActorAction ExecuteSleepNow(RogueGame game, List<Percept> percepts)
-    {
-      List<Percept> percepts1 = this.FilterEnemies(game, percepts);
-      if (percepts1 != null)
-      {
-        this.SetOrder((ActorOrder) null);
-        Actor percepted = this.FilterNearest(game, percepts1).Percepted as Actor;
-        if (percepted == null)
-          throw new InvalidOperationException("null nearest enemy");
-        return (ActorAction) new ActionShout(this.m_Actor, game, string.Format("{0} sighted!!", (object) percepted.Name));
-      }
-      string reason;
-      if (game.Rules.CanActorSleep(this.m_Actor, out reason))
-      {
-        if (this.m_Actor.Location.Map.LocalTime.TurnCounter % 2 == 0)
-          return (ActorAction) new ActionSleep(this.m_Actor, game);
-        return (ActorAction) new ActionWait(this.m_Actor, game);
-      }
-      this.SetOrder((ActorOrder) null);
-      game.DoEmote(this.m_Actor, string.Format("I can't sleep now : {0}.", (object) reason));
-      return (ActorAction) new ActionWait(this.m_Actor, game);
-    }
+            //////////////////////////////
+            // Patrol duty actions:
+            // Check if patrol position reached.
+            // 1. Mimick leader cell phone usage.
+            // 2. Move to patrol position.
+            // 3. Eat if hungry.
+            // 4. Heal if need to.
+            // 5. Wander in patrol zone.
+            /////////////////////////////
 
-    private ActorAction ExecuteToggleFollow(RogueGame game)
-    {
-      this.SetOrder((ActorOrder) null);
-      this.DontFollowLeader = !this.DontFollowLeader;
-      game.DoEmote(this.m_Actor, this.DontFollowLeader ? "OK I'll do my stuff, see you soon!" : "I'm ready!");
-      return (ActorAction) new ActionWait(this.m_Actor, game);
-    }
+            // Check patrol position reached.
+            if (!m_ReachedPatrolPoint)
+            {
+                m_ReachedPatrolPoint = m_Actor.Location.Position == location.Position;
+            }
 
-    private ActorAction ExecuteReportPosition(RogueGame game)
-    {
-      this.SetOrder((ActorOrder) null);
-      string format = "I'm in {0} at {1},{2}.";
-      Location location = this.m_Actor.Location;
-      string name = location.Map.Name;
-      location = this.m_Actor.Location;
-      Point position = location.Position;
-      // ISSUE: variable of a boxed type
-      __Boxed<int> x = (ValueType) position.X;
-      location = this.m_Actor.Location;
-      position = location.Position;
-      // ISSUE: variable of a boxed type
-      __Boxed<int> y = (ValueType) position.Y;
-      string text = string.Format(format, (object) name, (object) x, (object) y);
-      return (ActorAction) new ActionSay(this.m_Actor, game, this.m_Actor.Leader, text, RogueGame.Sayflags.NONE);
-    }
+            // 1. Mimick leader cell phone usage.
+            ActorAction phoneAction = BehaviorEquipCellPhone(game);
+            if (phoneAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return phoneAction;
+            }
+            phoneAction = BehaviorUnequipCellPhoneIfLeaderHasNot(game);
+            if (phoneAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return phoneAction;
+            }
 
-    public void OnRaid(RaidType raid, Location location, int turn)
-    {
-      if (this.m_Actor.IsSleeping)
-        return;
-      string str;
-      switch (raid)
-      {
-        case RaidType._FIRST:
-          str = "motorcycles coming";
-          break;
-        case RaidType.GANGSTA:
-          str = "cars coming";
-          break;
-        case RaidType.BLACKOPS:
-          str = "a chopper hovering";
-          break;
-        case RaidType.SURVIVORS:
-          str = "honking coming";
-          break;
-        case RaidType.NATGUARD:
-          str = "the army coming";
-          break;
-        case RaidType.ARMY_SUPLLIES:
-          str = "a chopper hovering";
-          break;
-        default:
-          throw new ArgumentOutOfRangeException(string.Format("unhandled raidtype {0}", (object) raid.ToString()));
-      }
-      this.m_LastRaidHeard = new Percept((object) str, turn, location);
+            // 2. Move to patrol position.
+            if (!m_ReachedPatrolPoint)
+            {
+                ActorAction bumpAction = BehaviorIntelligentBumpToward(game, location.Position);
+                if (bumpAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return bumpAction;
+                }
+            }
+
+            // 3. Eat if hungry.
+            if (game.Rules.IsActorHungry(m_Actor))
+            {
+                ActorAction eatAction = BehaviorEat(game);
+                if (eatAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return eatAction;
+                }
+            }
+
+            // 4. Heal if need to.
+            ActorAction useMedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
+            if (useMedAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return useMedAction;
+            }
+
+            // 5. Wander in patrol zones.
+            List<Zone> patrolZones = location.Map.GetZonesAt(Order.Location.Position.X, Order.Location.Position.Y);
+            return BehaviorWander(game, (loc) =>
+            {
+                List<Zone> zonesHere = loc.Map.GetZonesAt(loc.Position.X, loc.Position.Y);
+                if (zonesHere == null)
+                    return false;
+                foreach (Zone zHere in zonesHere)
+                    foreach (Zone zPatrol in patrolZones)
+                        if (zHere == zPatrol)
+                            return true;
+                return false;
+            }
+            );
+        }
+        #endregion
+
+        #region Dropping all items
+        ActorAction ExecuteDropAllItems(RogueGame game)
+        {
+            // if no more items, done.
+            if (m_Actor.Inventory.IsEmpty)
+                return null;
+
+            // drop next item.
+            Item dropIt = m_Actor.Inventory[0];
+            if (dropIt.IsEquipped)
+                return new ActionUnequipItem(m_Actor, game, dropIt);
+            else
+                return new ActionDropItem(m_Actor, game, dropIt);
+        }
+        #endregion
+
+        #region Reporting
+        ActorAction ExecuteReport(RogueGame game, List<Percept> percepts)
+        {
+            ////////////////////////////////
+            // Interrupt report
+            // 1. See enemy => raise alarm.
+            ////////////////////////////////
+
+            // 1. See enemy => raise alarm.
+            List<Percept> enemies = FilterEnemies(game, percepts);
+            if (enemies != null)
+            {
+                // ALAAAARRMM!!
+                SetOrder(null);
+                Actor nearestEnemy = FilterNearest(game, enemies).Percepted as Actor;
+                if (nearestEnemy == null)
+                    throw new InvalidOperationException("null nearest enemy");
+                return new ActionShout(m_Actor, game, String.Format("{0} sighted!!", nearestEnemy.Name));
+            }
+
+            //////////////////////
+            // Continue reporting.
+            //////////////////////
+            ActorAction reportAction = null;
+            bool isReportDone = false;
+
+            switch (m_ReportStage)
+            {
+                case 0: // events.
+                    if (m_LastRaidHeard != null)
+                        reportAction = BehaviorTellFriendAboutPercept(game, m_LastRaidHeard);
+                    else
+                        reportAction = new ActionSay(m_Actor, game, m_Actor.Leader, "No raids heard.", RogueGame.Sayflags.NONE);
+
+                    ++m_ReportStage;
+                    break;
+
+                case 1: // enemies.
+                    if (m_LastEnemySaw != null)
+                        reportAction = BehaviorTellFriendAboutPercept(game, m_LastEnemySaw);
+                    else
+                        reportAction = new ActionSay(m_Actor, game, m_Actor.Leader, "No enemies sighted.", RogueGame.Sayflags.NONE);
+
+                    ++m_ReportStage;
+                    break;
+
+                case 2: // items.
+                    if (m_LastItemsSaw != null)
+                        reportAction = BehaviorTellFriendAboutPercept(game, m_LastItemsSaw);
+                    else
+                        reportAction = new ActionSay(m_Actor, game, m_Actor.Leader, "No items sighted.", RogueGame.Sayflags.NONE);
+
+                    ++m_ReportStage;
+                    break;
+
+                case 3: // soldiers.
+                    if (m_LastSoldierSaw != null)
+                        reportAction = BehaviorTellFriendAboutPercept(game, m_LastSoldierSaw);
+                    else
+                        reportAction = new ActionSay(m_Actor, game, m_Actor.Leader, "No soldiers sighted.", RogueGame.Sayflags.NONE);
+
+                    ++m_ReportStage;
+                    break;
+
+                case 4: // end of report.
+                    isReportDone = true;
+                    reportAction = new ActionSay(m_Actor, game, m_Actor.Leader, "That's it.", RogueGame.Sayflags.NONE);
+                    break;
+
+            }
+
+            if (isReportDone)
+                SetOrder(null);
+            if (reportAction != null)
+                return reportAction;
+            else
+                return new ActionSay(m_Actor, game, m_Actor.Leader, "Let me think...", RogueGame.Sayflags.NONE);
+        }
+        #endregion
+
+        #region Sleeping now
+        ActorAction ExecuteSleepNow(RogueGame game, List<Percept> percepts)
+        {
+            // interrupt if seeing an enemy.
+            List<Percept> enemies = FilterEnemies(game, percepts);
+            if (enemies != null)
+            {
+                // ALAAAARRMM!!
+                SetOrder(null);
+                Actor nearestEnemy = FilterNearest(game, enemies).Percepted as Actor;
+                if (nearestEnemy == null)
+                    throw new InvalidOperationException("null nearest enemy");
+                return new ActionShout(m_Actor, game, String.Format("{0} sighted!!", nearestEnemy.Name));
+            }
+
+            // try to sleep.
+            string reason;
+            if (game.Rules.CanActorSleep(m_Actor, out reason))
+            {
+                // start sleeping only one even turns so the player has at least one turn to cancel the order...
+                if (m_Actor.Location.Map.LocalTime.TurnCounter % 2 == 0)
+                    return new ActionSleep(m_Actor, game);
+                else
+                    return new ActionWait(m_Actor, game);
+            }
+            else
+            {
+                SetOrder(null);
+                game.DoEmote(m_Actor, String.Format("I can't sleep now : {0}.", reason));
+                return new ActionWait(m_Actor, game);
+            }
+        }
+        #endregion
+
+        #region Toggle following
+        ActorAction ExecuteToggleFollow(RogueGame game)
+        {
+            // consider it done.
+            SetOrder(null);
+
+            // toggle.
+            DontFollowLeader = !DontFollowLeader;
+
+            // emote.
+            game.DoEmote(m_Actor, DontFollowLeader ? "OK I'll do my stuff, see you soon!" : "I'm ready!");
+            return new ActionWait(m_Actor, game);
+        }
+        #endregion
+
+        #region Where are you?
+        ActorAction ExecuteReportPosition(RogueGame game)
+        {
+            // consider it done. 
+            SetOrder(null);
+
+            // do it.
+            string reportTxt = String.Format("I'm in {0} at {1},{2}.", m_Actor.Location.Map.Name, m_Actor.Location.Position.X, m_Actor.Location.Position.Y);
+            return new ActionSay(m_Actor, game, m_Actor.Leader, reportTxt, RogueGame.Sayflags.NONE);
+        }
+        #endregion
+
+        #endregion
+
+        #region Raid notification.
+        public void OnRaid(RaidType raid, Location location, int turn)
+        {
+            if (m_Actor.IsSleeping)
+                return;
+
+            string raidDesc;
+            switch (raid)
+            {
+                case RaidType.ARMY_SUPLLIES: raidDesc = "a chopper hovering"; break;
+                case RaidType.BIKERS: raidDesc = "motorcycles coming"; break;
+                case RaidType.BLACKOPS: raidDesc = "a chopper hovering"; break;
+                case RaidType.GANGSTA: raidDesc = "cars coming"; break;
+                case RaidType.NATGUARD: raidDesc = "the army coming"; break;
+                case RaidType.SURVIVORS: raidDesc = "honking coming"; break;
+                default:
+                    throw new ArgumentOutOfRangeException(String.Format("unhandled raidtype {0}", raid.ToString()));
+            }
+
+            m_LastRaidHeard = new Percept(raidDesc, turn, location);
+        }
+        #endregion
     }
-  }
 }

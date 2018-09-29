@@ -1,25 +1,31 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemExplosive
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
-using System;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  [Serializable]
-  internal class ItemExplosive : Item
-  {
-    public int PrimedModelID { get; private set; }
-
-    public ItemExplosive(ItemModel model, ItemModel primedModel)
-      : base(model)
+    [Serializable]
+    class ItemExplosive : Item
     {
-      if (!(model is ItemExplosiveModel))
-        throw new ArgumentException("model is not ItemExplosiveModel");
-      this.PrimedModelID = primedModel.ID;
+        #region Fields
+     
+        #endregion
+
+        #region Properties
+        public int PrimedModelID { get; private set; }
+        #endregion
+
+        #region Init
+        public ItemExplosive(ItemModel model, ItemModel primedModel)
+            : base(model)
+        {
+            if (!(model is ItemExplosiveModel))
+                throw new ArgumentException("model is not ItemExplosiveModel");
+
+            this.PrimedModelID = primedModel.ID;
+        }
+        #endregion
     }
-  }
 }

@@ -1,55 +1,48 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemRangedWeaponModel
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  internal class ItemRangedWeaponModel : ItemWeaponModel
-  {
-    private int m_MaxAmmo;
-    private AmmoType m_AmmoType;
-
-    public bool IsFireArm
+    class ItemRangedWeaponModel : ItemWeaponModel
     {
-      get
-      {
-        return this.Attack.Kind == AttackKind.FIREARM;
-      }
-    }
+        #region Fields
+        int m_MaxAmmo;
+        AmmoType m_AmmoType;
+        #endregion
 
-    public bool IsBow
-    {
-      get
-      {
-        return this.Attack.Kind == AttackKind.BOW;
-      }
-    }
+        #region Properties
+        public bool IsFireArm
+        {
+            get { return this.Attack.Kind == AttackKind.FIREARM; }
+        }
 
-    public int MaxAmmo
-    {
-      get
-      {
-        return this.m_MaxAmmo;
-      }
-    }
+        public bool IsBow
+        {
+            get { return this.Attack.Kind == AttackKind.BOW; }
+        }
 
-    public AmmoType AmmoType
-    {
-      get
-      {
-        return this.m_AmmoType;
-      }
-    }
+        public int MaxAmmo
+        {
+            get { return m_MaxAmmo; }
+        }
 
-    public ItemRangedWeaponModel(string aName, string theNames, string imageID, Attack attack, int maxAmmo, AmmoType ammoType)
-      : base(aName, theNames, imageID, attack)
-    {
-      this.m_MaxAmmo = maxAmmo;
-      this.m_AmmoType = ammoType;
+        public AmmoType AmmoType
+        {
+            get { return m_AmmoType; }
+        }
+        #endregion
+
+        #region Init
+        public ItemRangedWeaponModel(string aName, string theNames, string imageID, Attack attack, int maxAmmo, AmmoType ammoType)
+            : base(aName, theNames, imageID, attack)
+        {
+            m_MaxAmmo = maxAmmo;
+            m_AmmoType = ammoType;
+        }
+        #endregion
     }
-  }
 }

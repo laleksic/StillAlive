@@ -1,237 +1,284 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.MDXSoundManager
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using Microsoft.DirectX;
-using Microsoft.DirectX.AudioVideoPlayback;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.DirectX.AudioVideoPlayback;
+using Microsoft.DirectX;
 
 namespace djack.RogueSurvivor.Engine
 {
-  internal class MDXSoundManager : ISoundManager, IDisposable
-  {
-    private bool m_IsMusicEnabled;
-    private int m_Volume;
-    private int m_Attenuation;
-    private Dictionary<string, Audio> m_Musics;
-
-    public bool IsMusicEnabled
+    class MDXSoundManager : ISoundManager
     {
-      get
-      {
-        return this.m_IsMusicEnabled;
-      }
-      set
-      {
-        this.m_IsMusicEnabled = value;
-      }
-    }
+        #region Fields
+        bool m_IsAudioEnabled; //@@MP renamed (Release 2)
+        int m_Volume;
+        int m_Attenuation;
+        Dictionary<string, Audio> m_Musics;
+        #endregion
 
-    public int Volume
-    {
-      get
-      {
-        return this.m_Volume;
-      }
-      set
-      {
-        this.m_Volume = value;
-        this.OnVolumeChange();
-      }
-    }
-
-    public MDXSoundManager()
-    {
-      this.m_Musics = new Dictionary<string, Audio>();
-      this.Volume = 100;
-    }
-
-    private string FullName(string fileName)
-    {
-      return fileName + ".mp3";
-    }
-
-    public bool Load(string musicname, string filename)
-    {
-      filename = this.FullName(filename);
-      Logger.WriteLine(Logger.Stage.INIT_SOUND, string.Format("loading music {0} file {1}", (object) musicname, (object) filename));
-      try
-      {
-        Audio audio = new Audio(filename);
-        this.m_Musics.Add(musicname, audio);
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.INIT_SOUND, string.Format("failed to load music file {0} exception {1}.", (object) filename, (object) ex.ToString()));
-      }
-      return true;
-    }
-
-    public void Unload(string musicname)
-    {
-      this.m_Musics.Remove(musicname);
-    }
-
-    private void OnVolumeChange()
-    {
-      this.m_Attenuation = this.ComputeDXAttenuationFromVolume();
-      foreach (Audio audio in this.m_Musics.Values)
-      {
-        try
+        #region Properties
+        public bool IsAudioEnabled
         {
-          audio.Volume = -this.m_Attenuation;
+            get { return m_IsAudioEnabled; }
+            set { m_IsAudioEnabled = value; }
         }
-        catch (DirectXException ex)
+        public int Volume 
         {
+            get { return m_Volume; }
+            set 
+            { 
+                m_Volume = value;
+                OnVolumeChange();
+            }
         }
-      }
-    }
+        #endregion
 
-    private int ComputeDXAttenuationFromVolume()
-    {
-      if (this.m_Volume <= 0)
-        return 10000;
-      return (100 - this.m_Volume) * 2500 / 100;
-    }
-
-    public void Play(string musicname)
-    {
-      Audio audio;
-      if (!this.m_IsMusicEnabled || !this.m_Musics.TryGetValue(musicname, out audio))
-        return;
-      Logger.WriteLine(Logger.Stage.RUN_SOUND, string.Format("playing music {0}.", (object) musicname));
-      this.Play(audio);
-    }
-
-    public void PlayIfNotAlreadyPlaying(string musicname)
-    {
-      Audio audio;
-      if (!this.m_IsMusicEnabled || !this.m_Musics.TryGetValue(musicname, out audio) || this.IsPlaying(audio))
-        return;
-      this.Play(audio);
-    }
-
-    public void PlayLooping(string musicname)
-    {
-      Audio audio;
-      if (!this.m_IsMusicEnabled || !this.m_Musics.TryGetValue(musicname, out audio))
-        return;
-      Logger.WriteLine(Logger.Stage.RUN_SOUND, string.Format("playing looping music {0}.", (object) musicname));
-      audio.Ending += new EventHandler(this.music_Ending);
-      this.Play(audio);
-    }
-
-    public void ResumeLooping(string musicname)
-    {
-      Audio audio;
-      if (!this.m_IsMusicEnabled || !this.m_Musics.TryGetValue(musicname, out audio))
-        return;
-      Logger.WriteLine(Logger.Stage.RUN_SOUND, string.Format("resuming looping music {0}.", (object) musicname));
-      this.Resume(audio);
-    }
-
-    private void music_Ending(object sender, EventArgs e)
-    {
-      this.Play((Audio) sender);
-    }
-
-    public void Stop(string musicname)
-    {
-      Audio audio;
-      if (!this.m_Musics.TryGetValue(musicname, out audio))
-        return;
-      Logger.WriteLine(Logger.Stage.RUN_SOUND, string.Format("stopping music {0}.", (object) musicname));
-      this.Stop(audio);
-    }
-
-    public void StopAll()
-    {
-      Logger.WriteLine(Logger.Stage.RUN_SOUND, "stopping all musics.");
-      foreach (Audio audio in this.m_Musics.Values)
-        this.Stop(audio);
-    }
-
-    public bool IsPlaying(string musicname)
-    {
-      Audio audio;
-      if (this.m_Musics.TryGetValue(musicname, out audio))
-        return this.IsPlaying(audio);
-      return false;
-    }
-
-    public bool IsPaused(string musicname)
-    {
-      Audio audio;
-      if (this.m_Musics.TryGetValue(musicname, out audio))
-        return this.IsPaused(audio);
-      return false;
-    }
-
-    public bool HasEnded(string musicname)
-    {
-      Audio audio;
-      if (this.m_Musics.TryGetValue(musicname, out audio))
-        return this.HasEnded(audio);
-      return false;
-    }
-
-    private void Stop(Audio audio)
-    {
-      audio.Ending -= new EventHandler(this.music_Ending);
-      audio.Pause();
-    }
-
-    private void Play(Audio audio)
-    {
-      audio.Stop();
-      audio.SeekCurrentPosition(0.0, SeekPositionFlags.AbsolutePositioning);
-      audio.Volume = -this.m_Attenuation;
-      audio.Play();
-    }
-
-    private void Resume(Audio audio)
-    {
-      audio.Play();
-    }
-
-    private bool IsPlaying(Audio audio)
-    {
-      if (audio.CurrentPosition > 0.0 && audio.CurrentPosition < audio.Duration)
-        return audio.State == StateFlags.Running;
-      return false;
-    }
-
-    private bool IsPaused(Audio audio)
-    {
-      return (uint) (audio.State & StateFlags.Paused) > 0U;
-    }
-
-    private bool HasEnded(Audio audio)
-    {
-      return audio.CurrentPosition >= audio.Duration;
-    }
-
-    public void Dispose()
-    {
-      Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing MDXMusicManager...");
-      foreach (string key in this.m_Musics.Keys)
-      {
-        Audio music = this.m_Musics[key];
-        if (music == null)
+        #region Init
+        public MDXSoundManager()
         {
-          Logger.WriteLine(Logger.Stage.CLEAN_SOUND, string.Format("WARNING: null music for key {0}", (object) key));
+            m_Musics = new Dictionary<string, Audio>();
+            this.Volume = 100;
         }
-        else
+
+        string FullName(string fileName)
         {
-          Logger.WriteLine(Logger.Stage.CLEAN_SOUND, string.Format("disposing music {0}.", (object) key));
-          music.Dispose();
+            return fileName + ".mp3";
         }
-      }
-      this.m_Musics.Clear();
-      Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing MDXMusicManager done.");
+        #endregion
+
+        #region Loading music
+        public bool Load(string musicname, string filename)
+        {
+            filename = FullName(filename);
+            Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("loading music {0} file {1}", musicname, filename));
+            try
+            {
+                Audio music = new Audio(filename);
+                m_Musics.Add(musicname, music);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(Logger.Stage.INIT_SOUND, String.Format("failed to load music file {0} exception {1}.", filename, e.ToString()));
+            }
+
+
+            return true;
+        }
+
+        public void Unload(string musicname)
+        {
+            m_Musics.Remove(musicname);
+        }
+        #endregion
+
+        #region Playing music
+
+        private void OnVolumeChange()
+        {
+            m_Attenuation = ComputeDXAttenuationFromVolume();
+            foreach (Audio a in m_Musics.Values)
+                try
+                {
+                    a.Volume = -m_Attenuation; // yep mdx volume is negative and means attenuation instead of volume.
+                }
+                catch (DirectXException)
+                {
+                }
+        }
+
+        /**
+         * MDX is retarded, "volume" audio property means attenuation instead and 0 is max volume and -10000 is zero db.
+         * Go figure.
+         */
+        private int ComputeDXAttenuationFromVolume()
+        {
+            const int MIN_ATT = 10000;
+            const int ATT_FACTOR = 2500; // should be min_att but it doesn't work. mdx is weird like that.
+            if (m_Volume <= 0)
+                return MIN_ATT;
+            int att = ((100 - m_Volume) * ATT_FACTOR) / 100;
+            return att;
+        }
+
+        /// <summary>
+        /// Restart playing a music from the beginning if music is enabled.
+        /// </summary>
+        /// <param name="musicname"></param>
+        public void Play(string musicname)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            Audio music;
+            if (m_Musics.TryGetValue(musicname, out music))
+            {
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing music {0}.", musicname));
+                Play(music);
+            }
+        }
+
+        /// <summary>
+        /// Start playing a music from the beginning if not already playing and if music is enabled.
+        /// </summary>
+        /// <param name="musicname"></param>
+        public void PlayIfNotAlreadyPlaying(string musicname)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            Audio music;
+            if (m_Musics.TryGetValue(musicname, out music))
+            {
+                if (!IsPlaying(music))
+                    Play(music);
+            }
+        }
+
+        /// <summary>
+        /// Restart playing in a loop a music from the beginning if music is enabled.
+        /// </summary>
+        /// <param name="musicname"></param>
+        public void PlayLooping(string musicname)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            Audio music;
+            if (m_Musics.TryGetValue(musicname, out music))
+            {
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping music {0}.", musicname));
+                music.Ending += new EventHandler(music_Ending);
+                Play(music);
+            }
+        }
+
+        public void ResumeLooping(string musicname)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            Audio music;
+            if (m_Musics.TryGetValue(musicname, out music))
+            {
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming looping music {0}.", musicname));
+                Resume(music);
+            }
+        }
+
+        void music_Ending(object sender, EventArgs e)
+        {
+            Audio music = (Audio)sender;
+            Play(music);
+        }
+
+        public void Stop(string musicname)
+        {
+            Audio music;
+            if (m_Musics.TryGetValue(musicname, out music))
+            {
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("stopping music {0}.", musicname));
+                Stop(music);
+            }
+        }
+
+        public void StopAll()
+        {
+            Logger.WriteLine(Logger.Stage.RUN_SOUND, "stopping all musics.");
+            foreach (Audio a in m_Musics.Values)
+            {
+                Stop(a);
+            }
+        }
+
+        public bool IsPlaying(string musicname)
+        {
+            Audio music;
+            if (m_Musics.TryGetValue(musicname, out music))
+            {
+                return IsPlaying(music);
+            }
+            else
+                return false;
+        }
+
+        public bool IsPaused(string musicname)
+        {
+            Audio music;
+            if (m_Musics.TryGetValue(musicname, out music))
+            {
+                return IsPaused(music);
+            }
+            else
+                return false;
+        }
+
+        public bool HasEnded(string musicname)
+        {
+            Audio music;
+            if (m_Musics.TryGetValue(musicname, out music))
+            {
+                return HasEnded(music);
+            }
+            else
+                return false;
+        }
+
+        void Stop(Audio audio)
+        {
+            audio.Ending -= music_Ending;
+            //audio.Pause(); //@@MP (Release 2)
+            if (audio.Playing)
+                audio.Stop();
+        }
+
+        void Play(Audio audio)
+        {
+            audio.Stop();
+            audio.SeekCurrentPosition(0, SeekPositionFlags.AbsolutePositioning);
+            audio.Volume = -m_Attenuation;
+            audio.Play();
+        }
+
+        void Resume(Audio audio)
+        {
+            audio.Play();
+        }
+
+        bool IsPlaying(Audio audio)
+        {
+            return audio.CurrentPosition > 0 && audio.CurrentPosition < audio.Duration && audio.State == StateFlags.Running;
+        }
+
+        bool IsPaused(Audio audio)
+        {
+            return (audio.State & StateFlags.Paused) != 0;
+        }
+
+        bool HasEnded(Audio audio)
+        {
+            return audio.CurrentPosition >= audio.Duration;
+        }
+        #endregion
+
+        #region IDisposable
+        public void Dispose()
+        {
+            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing MDXMusicManager...");
+            foreach (string musicname in m_Musics.Keys)
+            {
+                Audio music = m_Musics[musicname];
+                if(music==null)
+                {
+                    Logger.WriteLine(Logger.Stage.CLEAN_SOUND, String.Format("WARNING: null music for key {0}", musicname));
+                    continue;
+                }
+                Logger.WriteLine(Logger.Stage.CLEAN_SOUND, String.Format("disposing music {0}.", musicname));
+                music.Dispose();
+            }
+
+            m_Musics.Clear();
+            Logger.WriteLine(Logger.Stage.CLEAN_SOUND, "disposing MDXMusicManager done.");
+        }
+        #endregion
     }
-  }
 }

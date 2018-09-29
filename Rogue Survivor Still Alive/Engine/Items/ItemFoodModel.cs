@@ -1,56 +1,58 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemFoodModel
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  internal class ItemFoodModel : ItemModel
-  {
-    private int m_Nutrition;
-    private bool m_IsPerishable;
-    private int m_BestBeforeDays;
-
-    public int Nutrition
+    class ItemFoodModel : ItemModel
     {
-      get
-      {
-        return this.m_Nutrition;
-      }
-    }
+        #region Fields
+        int m_Nutrition;
+        bool m_IsPerishable;
+        int m_BestBeforeDays;
+        #endregion
 
-    public bool IsPerishable
-    {
-      get
-      {
-        return this.m_IsPerishable;
-      }
-    }
+        #region Properties
+        public int Nutrition
+        {
+            get { return m_Nutrition; }
+        }
 
-    public int BestBeforeDays
-    {
-      get
-      {
-        return this.m_BestBeforeDays;
-      }
-    }
+        public bool IsPerishable
+        {
+            get { return m_IsPerishable; }
+        }
 
-    public ItemFoodModel(string aName, string theNames, string imageID, int nutrition, int bestBeforeDays)
-      : base(aName, theNames, imageID)
-    {
-      this.m_Nutrition = nutrition;
-      if (bestBeforeDays < 0)
-      {
-        this.m_IsPerishable = false;
-      }
-      else
-      {
-        this.m_IsPerishable = true;
-        this.m_BestBeforeDays = bestBeforeDays;
-      }
+        public int BestBeforeDays
+        {
+            get { return m_BestBeforeDays; }
+        }
+        #endregion
+
+        #region Init
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="aName"></param>
+        /// <param name="theNames"></param>
+        /// <param name="imageID"></param>
+        /// <param name="nutrition"></param>
+        /// <param name="bestBeforeDays">-1 for non perishable food.</param>
+        public ItemFoodModel(string aName, string theNames, string imageID, int nutrition, int bestBeforeDays)
+            : base(aName, theNames, imageID)
+        {
+            m_Nutrition = nutrition;
+            if (bestBeforeDays < 0)
+                m_IsPerishable = false;
+            else
+            {
+                m_IsPerishable = true;
+                m_BestBeforeDays = bestBeforeDays;
+            }
+        }
+        #endregion
     }
-  }
 }

@@ -1,105 +1,117 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Gameplay.Generators.StdTownGenerator
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Drawing;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
-using System;
-using System.Drawing;
+using djack.RogueSurvivor.Engine.MapObjects;
+using djack.RogueSurvivor.Gameplay;
+using djack.RogueSurvivor.Gameplay.AI;
+using djack.RogueSurvivor.UI;
 
 namespace djack.RogueSurvivor.Gameplay.Generators
 {
-  internal class StdTownGenerator : BaseTownGenerator
-  {
-    public StdTownGenerator(RogueGame game, BaseTownGenerator.Parameters parameters)
-      : base(game, parameters)
+    class StdTownGenerator : BaseTownGenerator
     {
-    }
-
-    public override Map Generate(int seed)
-    {
-      Map map = base.Generate(seed);
-      map.Name = "Std City";
-      int maxTries = 10 * map.Width * map.Height;
-      int num1 = 0;
-      GameOptions options;
-      while (true)
-      {
-        int num2 = num1;
-        options = RogueGame.Options;
-        int maxCivilians = options.MaxCivilians;
-        if (num2 < maxCivilians)
+        public StdTownGenerator(RogueGame game, BaseTownGenerator.Parameters parameters)
+            : base(game, parameters)
         {
-          if (this.m_DiceRoller.RollChance(this.Params.PolicemanChance))
-          {
-            Actor newPoliceman = this.CreateNewPoliceman(0);
-            this.ActorPlace(this.m_DiceRoller, maxTries, map, newPoliceman, (Predicate<Point>) (pt => !map.GetTileAt(pt.X, pt.Y).IsInside));
-          }
-          else
-          {
-            Actor newCivilian = this.CreateNewCivilian(0, 0, 1);
-            this.ActorPlace(this.m_DiceRoller, maxTries, map, newCivilian, (Predicate<Point>) (pt => map.GetTileAt(pt.X, pt.Y).IsInside));
-          }
-          ++num1;
         }
-        else
-          break;
-      }
-      int num3 = 0;
-      while (true)
-      {
-        int num2 = num3;
-        options = RogueGame.Options;
-        int maxDogs = options.MaxDogs;
-        if (num2 < maxDogs)
-        {
-          Actor newFeralDog = this.CreateNewFeralDog(0);
-          this.ActorPlace(this.m_DiceRoller, maxTries, map, newFeralDog, (Predicate<Point>) (pt => !map.GetTileAt(pt.X, pt.Y).IsInside));
-          ++num3;
-        }
-        else
-          break;
-      }
-      options = RogueGame.Options;
-      int maxUndeads = options.MaxUndeads;
-      options = RogueGame.Options;
-      int zeroUndeadsPercent = options.DayZeroUndeadsPercent;
-      int num4 = maxUndeads * zeroUndeadsPercent / 100;
-      for (int index = 0; index < num4; ++index)
-      {
-        Actor newUndead = this.CreateNewUndead(0);
-        this.ActorPlace(this.m_DiceRoller, maxTries, map, newUndead, (Predicate<Point>) (pt => !map.GetTileAt(pt.X, pt.Y).IsInside));
-      }
-      return map;
-    }
 
-    public override Map GenerateSewersMap(int seed, District district)
-    {
-      Map sewersMap = base.GenerateSewersMap(seed, district);
-      if (Rules.HasZombiesInSewers(this.m_Game.Session.GameMode))
-      {
-        int maxTries = 10 * sewersMap.Width * sewersMap.Height;
-        double num1 = 0.5;
-        GameOptions options = RogueGame.Options;
-        int maxUndeads = options.MaxUndeads;
-        options = RogueGame.Options;
-        int zeroUndeadsPercent = options.DayZeroUndeadsPercent;
-        double num2 = (double) (maxUndeads * zeroUndeadsPercent);
-        int num3 = (int) (num1 * num2 / 100.0);
-        for (int index = 0; index < num3; ++index)
+        public override Map Generate(int seed)
         {
-          Actor newSewersUndead = this.CreateNewSewersUndead(0);
-          this.ActorPlace(this.m_DiceRoller, maxTries, sewersMap, newSewersUndead);
-        }
-      }
-      return sewersMap;
-    }
+            Map map = base.Generate(seed);
+            map.Name = "Std City";
 
-    public override Map GenerateSubwayMap(int seed, District district)
-    {
-      return base.GenerateSubwayMap(seed, district);
+            /////////////////////////////////
+            // People and undeads in surface.
+            /////////////////////////////////
+            int maxTries = 10 * map.Width * map.Height;
+#if true
+            // civilians (includes police)
+            for (int i = 0; i < RogueGame.Options.MaxCivilians; i++)
+            {
+                // policeman, civilian?
+                if (m_DiceRoller.RollChance(this.Params.PolicemanChance))
+                {
+                    // create policeman.
+                    Actor cop = CreateNewPoliceman(0);
+                    // policeman on patrol starts outside.
+                    base.ActorPlace(m_DiceRoller, maxTries, map, cop, (pt) => !map.GetTileAt(pt.X, pt.Y).IsInside);
+                }
+                else
+                {
+                    // create civilian with 1 skill.
+                    Actor civilian = CreateNewCivilian(0, 0, 1);
+                    // civilian starts inside.
+                    base.ActorPlace(m_DiceRoller, maxTries, map, civilian, (pt) => map.GetTileAt(pt.X, pt.Y).IsInside);
+                }
+            }
+            // dogs
+            for (int i = 0; i < RogueGame.Options.MaxDogs; i++)
+            {
+                // feral.
+                Actor dog = CreateNewFeralDog(0);
+                base.ActorPlace(m_DiceRoller, maxTries, map, dog, (pt) => !map.GetTileAt(pt.X, pt.Y).IsInside);
+            }
+#if true
+            // start with day zero nb of undeads.
+            int nbUndeads = (RogueGame.Options.MaxUndeads * RogueGame.Options.DayZeroUndeadsPercent) / 100;
+            for (int i = 0; i < nbUndeads; i++)
+            {
+                Actor undead = CreateNewUndead(0);
+                base.ActorPlace(m_DiceRoller, maxTries, map, undead, (pt) => !map.GetTileAt(pt.X, pt.Y).IsInside);
+            }
+#endif
+
+#endif
+            return map;
+        }
+
+        public override Map GenerateSewersMap(int seed, District district)
+        {
+            Map sewers = base.GenerateSewersMap(seed, district);
+
+            ////////////////////////////////
+            // People and undeads in sewers
+            ////////////////////////////////
+            if (Rules.HasZombiesInSewers(m_Game.Session.GameMode))
+            {
+                int maxTries = 10 * sewers.Width * sewers.Height;
+                // start with day zero nb of undeads.
+                int nbUndeads = (int)(RogueGame.SEWERS_UNDEADS_FACTOR * (RogueGame.Options.MaxUndeads * RogueGame.Options.DayZeroUndeadsPercent) / 100);
+                for (int i = 0; i < nbUndeads; i++)
+                {
+                    Actor undead = CreateNewSewersUndead(0);
+                    base.ActorPlace(m_DiceRoller, maxTries, sewers, undead);
+                }
+            }
+
+            return sewers;
+        }
+
+
+        public override Map GenerateSubwayMap(int seed, District district)
+        {
+            Map subway = base.GenerateSubwayMap(seed, district);
+
+#if false
+            DISABLED
+            ////////////////////////////////
+            // People and undeads in subways.
+            ////////////////////////////////
+            // undeads, in rails zone.
+            int nbUndeads = (int)(RogueGame.SUBWAY_UNDEADS_FACTOR * (RogueGame.Options.MaxUndeads * RogueGame.Options.DayZeroUndeadsPercent) / 100);
+            for (int i = 0; i < nbUndeads; i++)
+            {
+                Actor undead = CreateNewSubwayUndead(0);
+                base.ActorPlace(m_DiceRoller, 1000, subway, undead,
+                    (pt) => subway.HasZonePartiallyNamedAt(pt, "rails"));
+            }
+#endif
+            return subway;
+        }
     }
-  }
 }

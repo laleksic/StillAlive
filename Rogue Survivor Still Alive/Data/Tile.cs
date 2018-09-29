@@ -1,145 +1,121 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Data.Tile
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace djack.RogueSurvivor.Data
 {
-  [Serializable]
-  internal class Tile
-  {
-    private int m_ModelID;
-    private Tile.Flags m_Flags;
-    private List<string> m_Decorations;
-
-    public TileModel Model
+    [Serializable]
+    class Tile
     {
-      get
-      {
-        return Models.Tiles[this.m_ModelID];
-      }
-      set
-      {
-        this.m_ModelID = value.ID;
-      }
-    }
+        #region Flags
+        [Flags]
+        enum Flags
+        {
+            NONE = 0,
+            IS_INSIDE = (1 << 0),
+            IS_IN_VIEW = (1 << 1),
+            IS_VISITED = (1 << 2)
+        }
+        #endregion
 
-    public bool IsInside
-    {
-      get
-      {
-        return (uint) (this.m_Flags & Tile.Flags.IS_INSIDE) > 0U;
-      }
-      set
-      {
-        if (value)
-          this.m_Flags |= Tile.Flags.IS_INSIDE;
-        else
-          this.m_Flags &= ~Tile.Flags.IS_INSIDE;
-      }
-    }
+        #region Fields
+        int m_ModelID;
+        Flags m_Flags;
+        List<string> m_Decorations = null;
+        #endregion
 
-    public bool IsInView
-    {
-      get
-      {
-        return (uint) (this.m_Flags & Tile.Flags.IS_IN_VIEW) > 0U;
-      }
-      set
-      {
-        if (value)
-          this.m_Flags |= Tile.Flags.IS_IN_VIEW;
-        else
-          this.m_Flags &= ~Tile.Flags.IS_IN_VIEW;
-      }
-    }
+        #region Properties
+        public TileModel Model
+        {
+            get { return Models.Tiles[m_ModelID]; }
+            set { m_ModelID = value.ID; }
+        }
 
-    public bool IsVisited
-    {
-      get
-      {
-        return (uint) (this.m_Flags & Tile.Flags.IS_VISITED) > 0U;
-      }
-      set
-      {
-        if (value)
-          this.m_Flags |= Tile.Flags.IS_VISITED;
-        else
-          this.m_Flags &= ~Tile.Flags.IS_VISITED;
-      }
-    }
+        public bool IsInside
+        {
+            get { return (m_Flags & Flags.IS_INSIDE) != 0; }
+            set { if (value) m_Flags |= Flags.IS_INSIDE; else m_Flags &= ~Flags.IS_INSIDE; }
+        }
 
-    public bool HasDecorations
-    {
-      get
-      {
-        return this.m_Decorations != null;
-      }
-    }
+        public bool IsInView
+        {
+            get { return (m_Flags & Flags.IS_IN_VIEW) != 0; }
+            set { if (value) m_Flags |= Flags.IS_IN_VIEW; else m_Flags &= ~Flags.IS_IN_VIEW; }
+        }
 
-    public IEnumerable<string> Decorations
-    {
-      get
-      {
-        return (IEnumerable<string>) this.m_Decorations;
-      }
-    }
+        public bool IsVisited
+        {
+            get { return (m_Flags & Flags.IS_VISITED) != 0; }
+            set { if (value) m_Flags |= Flags.IS_VISITED; else m_Flags &= ~Flags.IS_VISITED; }
+        }
 
-    public Tile(TileModel model)
-    {
-      if (model == null)
-        throw new ArgumentNullException(nameof (model));
-      this.m_ModelID = model.ID;
-    }
+        public bool HasDecorations
+        {
+            get { return m_Decorations != null; }
+        }
 
-    public void AddDecoration(string imageID)
-    {
-      if (this.m_Decorations == null)
-        this.m_Decorations = new List<string>(1);
-      if (this.m_Decorations.Contains(imageID))
-        return;
-      this.m_Decorations.Add(imageID);
-    }
+        /// <summary>
+        /// Get tile decorations enumeration, null if no decorations.
+        /// </summary>
+        public IEnumerable<string> Decorations
+        {
+            get { return m_Decorations; }
+        }
+        #endregion
 
-    public bool HasDecoration(string imageID)
-    {
-      if (this.m_Decorations == null)
-        return false;
-      return this.m_Decorations.Contains(imageID);
-    }
+        #region Init
+        public Tile(TileModel model)
+        {
+            if (model == null)
+                throw new ArgumentNullException("model");
 
-    public void RemoveAllDecorations()
-    {
-      if (this.m_Decorations != null)
-        this.m_Decorations.Clear();
-      this.m_Decorations = (List<string>) null;
-    }
+            m_ModelID = model.ID;
+        }
+        #endregion
 
-    public void RemoveDecoration(string imageID)
-    {
-      if (this.m_Decorations == null || !this.m_Decorations.Remove(imageID) || this.m_Decorations.Count != 0)
-        return;
-      this.m_Decorations = (List<string>) null;
-    }
+        #region Decorations
+        public void AddDecoration(string imageID)
+        {
+            if (m_Decorations == null)
+                m_Decorations = new List<string>(1);
+            if (m_Decorations.Contains(imageID))
+                return;
+            m_Decorations.Add(imageID);
+        }
 
-    public void OptimizeBeforeSaving()
-    {
-      if (this.m_Decorations == null)
-        return;
-      this.m_Decorations.TrimExcess();
-    }
+        public bool HasDecoration(string imageID)
+        {
+            if (m_Decorations == null)
+                return false;
+            return m_Decorations.Contains(imageID);
+        }
 
-    [System.Flags]
-    private enum Flags
-    {
-      NONE = 0,
-      IS_INSIDE = 1,
-      IS_IN_VIEW = 2,
-      IS_VISITED = 4,
+        public void RemoveAllDecorations()
+        {
+            if (m_Decorations != null)
+                m_Decorations.Clear();
+            m_Decorations = null;
+        }
+
+        public void RemoveDecoration(string imageID)
+        {
+            if (m_Decorations == null) return;
+            if (m_Decorations.Remove(imageID))
+            {
+                if (m_Decorations.Count == 0)
+                    m_Decorations = null;
+            }
+        }
+        #endregion
+
+        #region Pre-saving
+        public void OptimizeBeforeSaving()
+        {
+            if (m_Decorations != null)
+                m_Decorations.TrimExcess();
+        }
+        #endregion
+
     }
-  }
 }

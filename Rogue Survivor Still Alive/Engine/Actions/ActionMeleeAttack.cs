@@ -1,34 +1,39 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Actions.ActionMeleeAttack
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
-using System;
 
 namespace djack.RogueSurvivor.Engine.Actions
 {
-  internal class ActionMeleeAttack : ActorAction
-  {
-    private readonly Actor m_Target;
-
-    public ActionMeleeAttack(Actor actor, RogueGame game, Actor target)
-      : base(actor, game)
+    class ActionMeleeAttack : ActorAction
     {
-      if (target == null)
-        throw new ArgumentNullException(nameof (target));
-      this.m_Target = target;
-    }
+        #region Fields
+        readonly Actor m_Target;
+        #endregion
 
-    public override bool IsLegal()
-    {
-      return true;
-    }
+        #region Init
+        public ActionMeleeAttack(Actor actor, RogueGame game, Actor target)
+            : base(actor, game)
+        {
+            if (target == null)
+                throw new ArgumentNullException("target");
 
-    public override void Perform()
-    {
-      this.m_Game.DoMeleeAttack(this.m_Actor, this.m_Target);
+            m_Target = target;
+        }
+        #endregion
+
+        #region ActorAction
+        public override bool IsLegal()
+        {
+            return true;    // handled before in rules
+        }
+
+        public override void Perform()
+        {
+            m_Game.DoMeleeAttack(m_Actor, m_Target);
+        }
+        #endregion
     }
-  }
 }

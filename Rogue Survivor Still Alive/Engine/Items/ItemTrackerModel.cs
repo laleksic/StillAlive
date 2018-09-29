@@ -1,49 +1,65 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemTrackerModel
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  internal class ItemTrackerModel : ItemModel
-  {
-    private ItemTrackerModel.TrackingFlags m_Tracking;
-    private int m_MaxBatteries;
-
-    public ItemTrackerModel.TrackingFlags Tracking
+    class ItemTrackerModel : ItemModel
     {
-      get
-      {
-        return this.m_Tracking;
-      }
-    }
+        #region Types
+        [Flags]
+        public enum TrackingFlags
+        {
+            /// <summary>
+            /// Followers and Leaders can track each other.
+            /// </summary>
+            FOLLOWER_AND_LEADER = (1 << 0),
 
-    public int MaxBatteries
-    {
-      get
-      {
-        return this.m_MaxBatteries;
-      }
-    }
+            /// <summary>
+            /// Can track undeads within close range.
+            /// </summary>
+            UNDEADS = (1 << 1),
 
-    public ItemTrackerModel(string aName, string theNames, string imageID, ItemTrackerModel.TrackingFlags tracking, int maxBatteries)
-      : base(aName, theNames, imageID)
-    {
-      this.m_Tracking = tracking;
-      this.m_MaxBatteries = maxBatteries;
-      this.DontAutoEquip = true;
-    }
+            /// <summary>
+            /// Can track all BlackOps faction members on the map.
+            /// </summary>
+            BLACKOPS_FACTION = (1 << 2),
 
-    [System.Flags]
-    public enum TrackingFlags
-    {
-      FOLLOWER_AND_LEADER = 1,
-      UNDEADS = 2,
-      BLACKOPS_FACTION = 4,
-      POLICE_FACTION = 8,
+            /// <summary>
+            /// Can track all Police faction members on the map.
+            /// </summary>
+            POLICE_FACTION = (1 << 3)
+        }
+        #endregion
+
+        #region Fields
+        TrackingFlags m_Tracking;
+        int m_MaxBatteries;
+        #endregion
+
+        #region Properties
+        public TrackingFlags Tracking
+        {
+            get { return m_Tracking; }
+        }
+
+        public int MaxBatteries
+        {
+            get { return m_MaxBatteries; }
+        }
+        #endregion
+
+        #region Init
+        public ItemTrackerModel(string aName, string theNames, string imageID, TrackingFlags tracking, int maxBatteries)
+            : base(aName, theNames, imageID)
+        {
+            m_Tracking = tracking;
+            m_MaxBatteries = maxBatteries;
+            this.DontAutoEquip = true;
+        }
+        #endregion
     }
-  }
 }

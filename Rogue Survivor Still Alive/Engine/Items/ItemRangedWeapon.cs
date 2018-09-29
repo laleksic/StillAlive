@@ -1,48 +1,45 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemRangedWeapon
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
-using System;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  [Serializable]
-  internal class ItemRangedWeapon : ItemWeapon
-  {
-    private int m_Ammo;
-    private AmmoType m_AmmoType;
-
-    public int Ammo
+    [Serializable]
+    class ItemRangedWeapon : ItemWeapon
     {
-      get
-      {
-        return this.m_Ammo;
-      }
-      set
-      {
-        this.m_Ammo = value;
-      }
-    }
+        #region Fields
+        int m_Ammo;
+        AmmoType m_AmmoType;
+        #endregion
 
-    public AmmoType AmmoType
-    {
-      get
-      {
-        return this.m_AmmoType;
-      }
-    }
+        #region Properties
+        public int Ammo
+        {
+            get { return m_Ammo; }
+            set { m_Ammo = value; }
+        }
 
-    public ItemRangedWeapon(ItemModel model)
-      : base(model)
-    {
-      if (!(model is ItemRangedWeaponModel))
-        throw new ArgumentException("model is not RangedWeaponModel");
-      ItemRangedWeaponModel rangedWeaponModel = model as ItemRangedWeaponModel;
-      this.m_Ammo = rangedWeaponModel.MaxAmmo;
-      this.m_AmmoType = rangedWeaponModel.AmmoType;
+        public AmmoType AmmoType
+        {
+            get { return m_AmmoType; }
+        }
+        #endregion
+
+        #region Init
+        public ItemRangedWeapon(ItemModel model)
+            : base(model)
+        {
+            if(!(model is ItemRangedWeaponModel))
+                throw new ArgumentException("model is not RangedWeaponModel");
+
+            ItemRangedWeaponModel m = model as ItemRangedWeaponModel;
+
+            m_Ammo = m.MaxAmmo;
+            m_AmmoType = m.AmmoType;
+        }
+        #endregion
     }
-  }
 }

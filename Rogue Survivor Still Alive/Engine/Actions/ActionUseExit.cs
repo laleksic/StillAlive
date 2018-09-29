@@ -1,32 +1,36 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Actions.ActionUseExit
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Drawing;
 
 using djack.RogueSurvivor.Data;
-using System.Drawing;
 
 namespace djack.RogueSurvivor.Engine.Actions
 {
-  internal class ActionUseExit : ActorAction
-  {
-    private Point m_ExitPoint;
-
-    public ActionUseExit(Actor actor, Point exitPoint, RogueGame game)
-      : base(actor, game)
+    class ActionUseExit : ActorAction
     {
-      this.m_ExitPoint = exitPoint;
-    }
+        #region Fields
+        Point m_ExitPoint;
+        #endregion
 
-    public override bool IsLegal()
-    {
-      return this.m_Game.Rules.CanActorUseExit(this.m_Actor, this.m_ExitPoint, out this.m_FailReason);
-    }
+        #region Init
+        public ActionUseExit(Actor actor, Point exitPoint, RogueGame game)
+            : base(actor, game)
+        {
+            m_ExitPoint = exitPoint;
+        }
+        #endregion
 
-    public override void Perform()
-    {
-      this.m_Game.DoUseExit(this.m_Actor, this.m_ExitPoint);
+        #region ActorAction implementation
+        public override bool IsLegal()
+        {
+            return m_Game.Rules.CanActorUseExit(m_Actor, m_ExitPoint, out m_FailReason);
+        }
+
+        public override void Perform()
+        {
+            m_Game.DoUseExit(m_Actor, m_ExitPoint);
+        }
+        #endregion
     }
-  }
 }

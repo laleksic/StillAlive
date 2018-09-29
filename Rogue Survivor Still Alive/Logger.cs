@@ -1,105 +1,120 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Logger
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
+
+using djack.RogueSurvivor.Engine;
 
 namespace djack.RogueSurvivor
 {
-  internal static class Logger
-  {
-    private static List<string> s_Lines = new List<string>();
-    private static object s_Mutex = new object();
-
-    public static IEnumerable<string> Lines
+    static class Logger
     {
-      get
-      {
-        return (IEnumerable<string>) Logger.s_Lines;
-      }
-    }
+        public enum Stage
+        {
+            INIT_MAIN,
+            RUN_MAIN,
+            CLEAN_MAIN,
 
-    public static void Clear()
-    {
-      Monitor.Enter(Logger.s_Mutex);
-      Logger.s_Lines.Clear();
-      Monitor.Exit(Logger.s_Mutex);
-    }
+            INIT_GFX,
+            RUN_GFX,
+            CLEAN_GFX,
 
-    public static void CreateFile()
-    {
-      Monitor.Enter(Logger.s_Mutex);
-      if (File.Exists(Logger.LogFilePath()))
-        File.Delete(Logger.LogFilePath());
-      Directory.CreateDirectory(SetupConfig.DirPath);
-      using (StreamWriter text = File.CreateText(Logger.LogFilePath()))
-        text.Close();
-      Monitor.Exit(Logger.s_Mutex);
-    }
+            INIT_SOUND,
+            RUN_SOUND,
+            CLEAN_SOUND
+        };            
 
-    public static void WriteLine(Logger.Stage stage, string text)
-    {
-      Monitor.Enter(Logger.s_Mutex);
-      string str = string.Format("{0} {1} : {2}", (object) Logger.s_Lines.Count, (object) Logger.StageToString(stage), (object) text);
-      Logger.s_Lines.Add(str);
-      Console.Out.WriteLine(str);
-      using (StreamWriter streamWriter = File.AppendText(Logger.LogFilePath()))
-      {
-        streamWriter.WriteLine(str);
-        streamWriter.Flush();
-        streamWriter.Close();
-      }
-      Monitor.Exit(Logger.s_Mutex);
-    }
+        static List<string> s_Lines = new List<string>();
 
-    private static string LogFilePath()
-    {
-      return SetupConfig.DirPath + "\\log.txt";
-    }
+        static Object s_Mutex = new Object();  // for thread safe writing
 
-    private static string StageToString(Logger.Stage s)
-    {
-      switch (s)
-      {
-        case Logger.Stage.INIT_MAIN:
-          return "init main";
-        case Logger.Stage.RUN_MAIN:
-          return "run main";
-        case Logger.Stage.CLEAN_MAIN:
-          return "clean main";
-        case Logger.Stage.INIT_GFX:
-          return "init gfx";
-        case Logger.Stage.RUN_GFX:
-          return "run gfx";
-        case Logger.Stage.CLEAN_GFX:
-          return "clean gfx";
-        case Logger.Stage.INIT_SOUND:
-          return "init sound";
-        case Logger.Stage.RUN_SOUND:
-          return "run sound";
-        case Logger.Stage.CLEAN_SOUND:
-          return "clean sound";
-        default:
-          return "misc";
-      }
-    }
+        public static IEnumerable<string> Lines
+        {
+            get { return s_Lines; }
+        }
 
-    public enum Stage
-    {
-      INIT_MAIN,
-      RUN_MAIN,
-      CLEAN_MAIN,
-      INIT_GFX,
-      RUN_GFX,
-      CLEAN_GFX,
-      INIT_SOUND,
-      RUN_SOUND,
-      CLEAN_SOUND,
+        public static void Clear()
+        {
+            // get lock.
+            Monitor.Enter(s_Mutex);
+
+            // clear lines.
+            s_Lines.Clear();
+
+            // release lock.
+            Monitor.Exit(s_Mutex);
+        }
+
+        public static void CreateFile()
+        {
+            // get lock.
+            Monitor.Enter(s_Mutex);
+
+            // delete previous file.
+            if (File.Exists(LogFilePath()))
+            {
+                File.Delete(LogFilePath());
+            }
+
+            // create new one.
+            Directory.CreateDirectory(SetupConfig.DirPath);// Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Rogue Survivor\" + SetupConfig.GAME_VERSION);
+            using (StreamWriter emptyFile = File.CreateText(LogFilePath()))
+            {
+                emptyFile.Close();
+            }
+
+            // release lock.
+            Monitor.Exit(s_Mutex);
+        }     
+       
+
+        public static void WriteLine(Stage stage, string text)
+        {
+            // get lock.
+            Monitor.Enter(s_Mutex);
+
+            // format.
+            string s = String.Format("{0} {1} : {2}", s_Lines.Count, StageToString(stage), text);
+
+            // add line.
+            s_Lines.Add(s);
+
+            // print to console.
+            Console.Out.WriteLine(s);
+
+            // write to log file.
+            using (StreamWriter stream = File.AppendText(LogFilePath()))
+            {
+                stream.WriteLine(s);
+                stream.Flush();
+                stream.Close();
+            }
+
+            // release lock.
+            Monitor.Exit(s_Mutex);
+        }
+
+        static string LogFilePath()
+        {
+            return SetupConfig.DirPath + @"\log.txt";
+        }
+
+        static string StageToString(Stage s)
+        {
+            switch (s)
+            {
+                case Stage.CLEAN_GFX: return "clean gfx";
+                case Stage.CLEAN_SOUND: return "clean sound";
+                case Stage.CLEAN_MAIN: return "clean main";
+                case Stage.INIT_GFX: return "init gfx";
+                case Stage.INIT_SOUND: return "init sound";
+                case Stage.INIT_MAIN: return "init main";
+                case Stage.RUN_GFX: return "run gfx";
+                case Stage.RUN_MAIN: return "run main";
+                case Stage.RUN_SOUND: return "run sound";
+                default: return "misc";
+            }
+        }
     }
-  }
 }

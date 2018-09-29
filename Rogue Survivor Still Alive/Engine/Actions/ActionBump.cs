@@ -1,55 +1,55 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Actions.ActionBump
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
 
 namespace djack.RogueSurvivor.Engine.Actions
 {
-  internal class ActionBump : ActorAction
-  {
-    private readonly Direction m_Direction;
-    private readonly Location m_NewLocation;
-    private readonly ActorAction m_ConcreteAction;
-
-    public Direction Direction
+    /// <summary>
+    /// High-level bump action that translate into a concrete action (move, use, attack, chat...). Very usefull for "intelligent" AI.
+    /// </summary>
+    class ActionBump : ActorAction
     {
-      get
-      {
-        return this.m_Direction;
-      }
-    }
+        #region Fields
+        readonly Direction m_Direction;
+        readonly Location m_NewLocation;
+        readonly ActorAction m_ConcreteAction;
+        #endregion
 
-    public ActorAction ConcreteAction
-    {
-      get
-      {
-        return this.m_ConcreteAction;
-      }
-    }
+        #region Properties
+        public Direction Direction { get { return m_Direction; } }
+        public ActorAction ConcreteAction { get { return m_ConcreteAction; } }
+        #endregion
 
-    public ActionBump(Actor actor, RogueGame game, Direction direction)
-      : base(actor, game)
-    {
-      this.m_Direction = direction;
-      this.m_NewLocation = actor.Location + direction;
-      this.m_ConcreteAction = game.Rules.IsBumpableFor(this.m_Actor, game, this.m_NewLocation, out this.m_FailReason);
-    }
+        #region Init
+        public ActionBump(Actor actor, RogueGame game, Direction direction)
+            : base(actor, game)
+        {
+            m_Direction = direction;
+            m_NewLocation = actor.Location + direction;
 
-    public override bool IsLegal()
-    {
-      if (this.m_ConcreteAction == null)
-        return false;
-      return this.m_ConcreteAction.IsLegal();
-    }
+            m_ConcreteAction = game.Rules.IsBumpableFor(m_Actor, game, m_NewLocation, out m_FailReason);
+        }
+        #endregion
 
-    public override void Perform()
-    {
-      if (this.m_ConcreteAction == null)
-        return;
-      this.m_ConcreteAction.Perform();
+        #region ActorAction implementation
+        public override bool IsLegal()
+        {
+            if (m_ConcreteAction == null)
+                return false;
+            else
+                return m_ConcreteAction.IsLegal();
+        }
+
+        public override void Perform()
+        {
+            if (m_ConcreteAction == null)
+                return;
+            else
+                m_ConcreteAction.Perform();
+        }
+        #endregion
     }
-  }
 }

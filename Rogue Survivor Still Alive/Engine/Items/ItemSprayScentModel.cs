@@ -1,49 +1,45 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemSprayScentModel
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  internal class ItemSprayScentModel : ItemModel
-  {
-    private int m_MaxSprayQuantity;
-    private Odor m_Odor;
-    private int m_Strength;
-
-    public int MaxSprayQuantity
+    class ItemSprayScentModel : ItemModel
     {
-      get
-      {
-        return this.m_MaxSprayQuantity;
-      }
-    }
+        #region Fields
+        int m_MaxSprayQuantity;
+        Odor m_Odor;
+        int m_Strength;
+        #endregion
 
-    public int Strength
-    {
-      get
-      {
-        return this.m_Strength;
-      }
-    }
+        #region Properties
+        public int MaxSprayQuantity
+        {
+            get { return m_MaxSprayQuantity;}
+        }
 
-    public Odor Odor
-    {
-      get
-      {
-        return this.m_Odor;
-      }
-    }
+        public int Strength
+        {
+            get { return m_Strength; }
+        }
 
-    public ItemSprayScentModel(string aName, string theNames, string imageID, int sprayQuantity, Odor odor, int strength)
-      : base(aName, theNames, imageID)
-    {
-      this.m_MaxSprayQuantity = sprayQuantity;
-      this.m_Odor = odor;
-      this.m_Strength = strength;
+        public Odor Odor
+        {
+            get { return m_Odor;}
+        }
+
+        #endregion
+
+        #region Init
+        public ItemSprayScentModel(string aName, string theNames, string imageID, int sprayQuantity, Odor odor, int strength)
+            : base(aName, theNames, imageID)
+        {
+            m_MaxSprayQuantity = sprayQuantity;
+            m_Odor = odor;
+            m_Strength = strength;
+        }
+        #endregion
     }
-  }
 }

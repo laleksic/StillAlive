@@ -1,38 +1,41 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Data.TimedTask
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace djack.RogueSurvivor.Data
 {
-  [Serializable]
-  internal abstract class TimedTask
-  {
-    public int TurnsLeft { get; set; }
-
-    public bool IsCompleted
+    [Serializable]
+    abstract class TimedTask
     {
-      get
-      {
-        return this.TurnsLeft <= 0;
-      }
-    }
+        #region Properties
+        public int TurnsLeft
+        {
+            get;
+            set;
+        }
 
-    protected TimedTask(int turnsLeft)
-    {
-      this.TurnsLeft = turnsLeft;
-    }
+        public bool IsCompleted
+        {
+            get { return this.TurnsLeft <= 0; }
+        }
+        #endregion
 
-    public void Tick(Map m)
-    {
-      if (--this.TurnsLeft > 0)
-        return;
-      this.Trigger(m);
-    }
+        #region Init
+        protected TimedTask(int turnsLeft)
+        {
+            this.TurnsLeft = turnsLeft;
+        }
+        #endregion
 
-    public abstract void Trigger(Map m);
-  }
+        #region Process
+        public void Tick(Map m)
+        {
+            if (--this.TurnsLeft <= 0)
+                Trigger(m);
+        }
+
+        public abstract void Trigger(Map m);
+        #endregion
+    }
 }

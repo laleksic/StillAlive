@@ -1,0 +1,89 @@
+﻿Rogue Survivor is a free zombie survival roguelike sandbox game with unique features and (limited) modding support.
+The game takes place in a town famous for being the headquarters of the powerful CHAR Corporation. You wake up amidst the chaos and you must find ways to survive. 
+
+Survive in the city
+-Play as living or undead
+-Survive the zombies... and the humans
+-The undeads get stronger every day 
+-Find food and shelter... but you're not alone
+-Reincarnate when you die and continue playing as another character
+-Graphic tiles, mouse support and musics
+
+Interact with NPCs
+-Fight raiding gangs 
+-AI controlled survivors are trying to survive just like you
+-Trade with other survivors
+-Lead a band of survivors   
+-Get help from the National Guard
+-Commit murders... but watch out for the police
+
+A dynamic, procedurally generated game world
+-A city with different districts, buildings, sewers and subway
+-Push or destroy objects, build barricades
+-Day/night cycle
+-Weather 
+-Things happen all the time, the world is not waiting for you
+
+Get tools, skills and friends
+-Learn skills by surviving to see a new sunrise
+-Scavenge items and barricading material
+-Various weapons and items  
+-Get followers and turn them into useful buddies
+
+Learn, customize and mod
+-In-game manual and hint system 
+-Redefine the keys
+-Wide range of options to configure the gameplay and the difficulty
+-Resizable game window, playable on any resolution
+-More than 10 original musics
+-Mod the graphics, musics, actors, items and skills
+-Option of rendering and audio engines
+
+--------------------------------------------------------------------
+
+SOUND CREDITS
+
+Each file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant link below.
+All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
+
+-Melee attack : https://freesound.org/people/Pinball_Wiz/sounds/394874/
+-Melee attack miss : https://freesound.org/people/timmy_h123/sounds/160500/
+-Pistol : https://freesound.org/people/morganpurkis/sounds/391328/
+-Hunting rifle : https://freesound.org/people/morganpurkis/sounds/387692/
+-Shotgun : https://freesound.org/people/morganpurkis/sounds/397886/
+-Crossbow : https://freesound.org/people/Erdie/sounds/65733/
+-Explosion (eg grenade) : https://freesound.org/people/Quaker540/sounds/245372/
+-Flamethrower : https://freesound.org/people/Vosvoy/sounds/123632/
+-Spray scent : https://freesound.org/people/debsound/sounds/123036/
+-Spray paint : https://freesound.org/people/SmartWentCody/sounds/179008/
+-Scream 01 : https://freesound.org/people/adriancalzon/sounds/219858/
+-Boy Scream : https://freesound.org/people/pablocandel/sounds/219880/
+-Man screaming : https://freesound.org/people/mariateresa_garcia/sounds/219719/
+-Helmut scream short : https://freesound.org/people/creativeheroes/sounds/84353/
+-Girl Scream : https://freesound.org/people/benjaminharveydesign/sounds/315827/
+-Woman Scream : https://freesound.org/people/ritola27/sounds/220646/
+-Woman Scream AAA : https://freesound.org/people/thanvannispen/sounds/9429/
+-Chain link fence : https://freesound.org/people/RHumphries/sounds/7150/
+-Zipper : https://freesound.org/people/Q.K./sounds/56274/
+-Bash : https://freesound.org/people/qubodup/sounds/151624/
+-Vomit : https://freesound.org/people/Anko6/sounds/388525/
+-Eating : https://freesound.org/people/Sethroph/sounds/334209/
+-Barricade : https://freesound.org/people/cognito%20perceptu/sounds/17012/
+-Molotov : https://freesound.org/people/Benboncan/sounds/74899/
+-Commotion : https://freesound.org/people/MrProfDrDickweed/sounds/271206/
+-Jump on car : https://freesound.org/people/nmscher/sounds/86233/
+-Equip gun : https://freesound.org/people/SmartWentCody/sounds/179011/
+-Torch click : https://freesound.org/people/joedeshon/sounds/119415/
+-Can trap : https://freesound.org/people/iternetcone/sounds/343819/
+-Wooden door open : https://freesound.org/people/skyumori/sounds/104533/
+-Wooden door close : https://freesound.org/people/CastIronCarousel/sounds/216872/
+-Glass door : https://freesound.org/people/BMacZero/sounds/94134/
+-Medkit / bandage : https://freesound.org/people/JakLocke/sounds/261397/
+-Pills : https://freesound.org/people/gneube/sounds/315836/
+-Male Screaming Out Loud : https://freesound.org/people/AlbertTrepat/sounds/222535/
+-Militant shouting : https://freesound.org/people/freesound/sounds/50147/
+-Voice shouting stop stop : https://freesound.org/people/Robinhood76/sounds/60521/
+-Woman yelling run : https://freesound.org/people/Corsica_S/sounds/250550/
+-Man yelling in German : https://freesound.org/people/tontoepfer/sounds/221670/
+-Man yelling hey : https://freesound.org/people/klankbeeld/sounds/368824/
+-Woman crying where are you : https://freesound.org/people/11linda/sounds/207860/

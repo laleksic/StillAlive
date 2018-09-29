@@ -1,39 +1,54 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.ISoundManager
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace djack.RogueSurvivor.Engine
 {
-  internal interface ISoundManager : IDisposable
-  {
-    bool IsMusicEnabled { get; set; }
+    interface ISoundManager : IDisposable
+    {
+        #region Properties
+        bool IsAudioEnabled { get; set; } //@@MP renamed (Release 2)
+        int Volume { get; set; }
+        #endregion
 
-    int Volume { get; set; }
 
-    bool Load(string musicname, string filename);
+        #region Loading music
+        bool Load(string musicname, string filename);
 
-    void Unload(string musicname);
+        void Unload(string musicname);
+        #endregion
 
-    void Play(string musicname);
+        #region Playing music
+        /// <summary>
+        /// Restart playing a music from the beginning if music is enabled.
+        /// </summary>
+        /// <param name="musicname"></param>
+        void Play(string musicname);
 
-    void PlayIfNotAlreadyPlaying(string musicname);
+        /// <summary>
+        /// Start playing a music from the beginning if not already playing and if music is enabled.
+        /// </summary>
+        /// <param name="musicname"></param>
+        void PlayIfNotAlreadyPlaying(string musicname);
 
-    void PlayLooping(string musicname);
+        /// <summary>
+        /// Restart playing in a loop a music from the beginning if music is enabled.
+        /// </summary>
+        /// <param name="musicname"></param>
+        void PlayLooping(string musicname);
 
-    void ResumeLooping(string musicname);
+        void ResumeLooping(string musicname);
 
-    void Stop(string musicname);
+        void Stop(string musicname);
 
-    void StopAll();
+        void StopAll();
 
-    bool IsPlaying(string musicname);
+        bool IsPlaying(string musicname);
 
-    bool IsPaused(string musicname);
+        bool IsPaused(string musicname);
 
-    bool HasEnded(string musicname);
-  }
+        bool HasEnded(string musicname);
+        #endregion
+    }
 }

@@ -1,34 +1,40 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Actions.ActionEatFoodOnGround
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Drawing;
 
 using djack.RogueSurvivor.Data;
-using System;
 
 namespace djack.RogueSurvivor.Engine.Actions
 {
-  internal class ActionEatFoodOnGround : ActorAction
-  {
-    private Item m_Item;
-
-    public ActionEatFoodOnGround(Actor actor, RogueGame game, Item it)
-      : base(actor, game)
+    class ActionEatFoodOnGround : ActorAction
     {
-      if (it == null)
-        throw new ArgumentNullException("item");
-      this.m_Item = it;
-    }
+        #region Fields
+        Item m_Item;
+        #endregion
 
-    public override bool IsLegal()
-    {
-      return this.m_Game.Rules.CanActorEatFoodOnGround(this.m_Actor, this.m_Item, out this.m_FailReason);
-    }
+        #region Init
+        public ActionEatFoodOnGround(Actor actor, RogueGame game, Item it)
+            : base(actor, game)
+        {
+            if (it == null)
+                throw new ArgumentNullException("item");
 
-    public override void Perform()
-    {
-      this.m_Game.DoEatFoodFromGround(this.m_Actor, this.m_Item);
+            m_Item = it;
+        }
+        #endregion
+
+        #region ActorAction
+        public override bool IsLegal()
+        {
+            return m_Game.Rules.CanActorEatFoodOnGround(m_Actor, m_Item, out m_FailReason); 
+        }
+
+        public override void Perform()
+        {
+            m_Game.DoEatFoodFromGround(m_Actor, m_Item);
+        }
+        #endregion
     }
-  }
 }

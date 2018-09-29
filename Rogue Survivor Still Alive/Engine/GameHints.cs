@@ -1,102 +1,115 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.GameHintsStatus
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace djack.RogueSurvivor.Engine
 {
-  [Serializable]
-  internal class GameHintsStatus
-  {
-    private bool[] m_AdvisorHints = new bool[46];
-
-    public void ResetAllHints()
+    [Serializable]
+    class GameHintsStatus
     {
-      for (int index = 0; index < 46; ++index)
-        this.m_AdvisorHints[index] = false;
-    }
+        #region Fields
+        bool[] m_AdvisorHints = new bool[(int)AdvisorHint._COUNT];
+        #endregion
 
-    public bool IsAdvisorHintGiven(AdvisorHint hint)
-    {
-      return this.m_AdvisorHints[(int) hint];
-    }
+        #region Status
+        public void ResetAllHints()
+        {
+            for (int i = (int)AdvisorHint._FIRST; i < (int)AdvisorHint._COUNT; i++)
+                m_AdvisorHints[i] = false;
+        }
 
-    public void SetAdvisorHintAsGiven(AdvisorHint hint)
-    {
-      this.m_AdvisorHints[(int) hint] = true;
-    }
+        public bool IsAdvisorHintGiven(AdvisorHint hint)
+        {
+            return m_AdvisorHints[(int)hint];
+        }
 
-    public int CountAdvisorHintsGiven()
-    {
-      int num = 0;
-      for (int index = 0; index < 46; ++index)
-      {
-        if (this.m_AdvisorHints[index])
-          ++num;
-      }
-      return num;
-    }
+        public void SetAdvisorHintAsGiven(AdvisorHint hint)
+        {
+            m_AdvisorHints[(int)hint] = true;
+        }
 
-    public bool HasAdvisorGivenAllHints()
-    {
-      return this.CountAdvisorHintsGiven() >= 46;
-    }
+        public int CountAdvisorHintsGiven()
+        {
+            int count = 0;
+            for (int i = (int)AdvisorHint._FIRST; i < (int)AdvisorHint._COUNT; i++)
+                if (m_AdvisorHints[i])
+                    ++count;
 
-    public static void Save(GameHintsStatus hints, string filepath)
-    {
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving hints...");
-      IFormatter formatter = GameHintsStatus.CreateFormatter();
-      Stream stream = GameHintsStatus.CreateStream(filepath, true);
-      Stream serializationStream = stream;
-      GameHintsStatus gameHintsStatus = hints;
-      formatter.Serialize(serializationStream, (object) gameHintsStatus);
-      stream.Flush();
-      stream.Close();
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving hints... done!");
-    }
+            return count;
+        }
 
-    public static GameHintsStatus Load(string filepath)
-    {
-      if (filepath == null)
-        throw new ArgumentNullException(nameof (filepath));
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading hints...");
-      GameHintsStatus gameHintsStatus;
-      try
-      {
-        IFormatter formatter = GameHintsStatus.CreateFormatter();
-        Stream stream = GameHintsStatus.CreateStream(filepath, false);
-        Stream serializationStream = stream;
-        gameHintsStatus = (GameHintsStatus) formatter.Deserialize(serializationStream);
-        stream.Close();
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load hints (first run?).");
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, string.Format("load exception : {0}.", (object) ex.ToString()));
-        Logger.WriteLine(Logger.Stage.RUN_MAIN, "resetting.");
-        gameHintsStatus = new GameHintsStatus();
-        gameHintsStatus.ResetAllHints();
-      }
-      Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading options... done!");
-      return gameHintsStatus;
-    }
+        public bool HasAdvisorGivenAllHints()
+        {
+            return CountAdvisorHintsGiven() >= (int)AdvisorHint._COUNT;
+        }
+        #endregion
 
-    private static IFormatter CreateFormatter()
-    {
-      return (IFormatter) new BinaryFormatter();
-    }
+        #region Saving & Loading
+        public static void Save(GameHintsStatus hints, string filepath)
+        {
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
 
-    private static Stream CreateStream(string saveFileName, bool save)
-    {
-      return (Stream) new FileStream(saveFileName, save ? FileMode.Create : FileMode.Open, save ? FileAccess.Write : FileAccess.Read, FileShare.None);
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving hints...");
+
+            IFormatter formatter = CreateFormatter();
+            Stream stream = CreateStream(filepath, true);
+
+            formatter.Serialize(stream, hints);
+            stream.Flush();
+            stream.Close();
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving hints... done!");
+        }
+
+        /// <summary>
+        /// Try to load, null if failed.
+        /// </summary>
+        /// <returns></returns>
+        public static GameHintsStatus Load(string filepath)
+        {
+            if (filepath == null)
+                throw new ArgumentNullException("filepath");
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading hints...");
+
+            GameHintsStatus hints;
+            try
+            {
+                IFormatter formatter = CreateFormatter();
+                Stream stream = CreateStream(filepath, false);
+
+                hints = (GameHintsStatus)formatter.Deserialize(stream);
+                stream.Close();
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load hints (first run?).");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("load exception : {0}.", e.ToString()));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "resetting.");
+                hints = new GameHintsStatus();
+                hints.ResetAllHints();
+            }
+
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading options... done!");
+            return hints;
+        }
+
+        static IFormatter CreateFormatter()
+        {
+            return new BinaryFormatter();
+        }
+
+        static Stream CreateStream(string saveFileName, bool save)
+        {
+            return new FileStream(saveFileName,
+                save ? FileMode.Create : FileMode.Open,
+                save ? FileAccess.Write : FileAccess.Read,
+                FileShare.None);
+        }
+        #endregion
     }
-  }
 }

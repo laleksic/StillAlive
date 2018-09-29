@@ -1,38 +1,38 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemMedicine
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
-using System;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  [Serializable]
-  internal class ItemMedicine : Item
-  {
-    public int Healing { get; private set; }
-
-    public int StaminaBoost { get; private set; }
-
-    public int SleepBoost { get; private set; }
-
-    public int InfectionCure { get; private set; }
-
-    public int SanityCure { get; private set; }
-
-    public ItemMedicine(ItemModel model)
-      : base(model)
+    [Serializable]
+    class ItemMedicine : Item
     {
-      if (!(model is ItemMedicineModel))
-        throw new ArgumentException("model is not a MedecineModel");
-      ItemMedicineModel itemMedicineModel = model as ItemMedicineModel;
-      this.Healing = itemMedicineModel.Healing;
-      this.StaminaBoost = itemMedicineModel.StaminaBoost;
-      this.SleepBoost = itemMedicineModel.SleepBoost;
-      this.InfectionCure = itemMedicineModel.InfectionCure;
-      this.SanityCure = itemMedicineModel.SanityCure;
+        #region Properties
+        public int Healing { get; private set; }
+        public int StaminaBoost { get; private set; }
+        public int SleepBoost { get; private set; }
+        public int InfectionCure { get; private set; }
+        public int SanityCure { get; private set; }
+        #endregion
+
+        #region Init
+        public ItemMedicine(ItemModel model)
+            : base(model)
+        {
+            if (!(model is ItemMedicineModel))
+                throw new ArgumentException("model is not a MedecineModel");
+
+            ItemMedicineModel m = model as ItemMedicineModel;
+            this.Healing = m.Healing;
+            this.StaminaBoost = m.StaminaBoost;
+            this.SleepBoost = m.SleepBoost;
+            this.InfectionCure = m.InfectionCure;
+            this.SanityCure = m.SanityCure;
+        }
+        #endregion
+
     }
-  }
 }

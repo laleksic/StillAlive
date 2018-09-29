@@ -1,261 +1,182 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Gameplay.GameFactions
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
+using djack.RogueSurvivor.Engine;
 
 namespace djack.RogueSurvivor.Gameplay
 {
-  internal class GameFactions : FactionDB
-  {
-    public static readonly GameItems.IDs[] BAD_POLICE_OUTFITS = new GameItems.IDs[2]
+    class GameFactions : FactionDB
     {
-      GameItems.IDs.ARMOR_FREE_ANGELS_JACKET,
-      GameItems.IDs.ARMOR_HELLS_SOULS_JACKET
-    };
-    public static readonly GameItems.IDs[] GOOD_POLICE_OUTFITS = new GameItems.IDs[2]
-    {
-      GameItems.IDs.ARMOR_POLICE_JACKET,
-      GameItems.IDs.ARMOR_POLICE_RIOT
-    };
-    private Faction[] m_Factions = new Faction[11];
-
-    public override Faction this[int id]
-    {
-      get
-      {
-        return this.m_Factions[id];
-      }
-    }
-
-    public Faction this[GameFactions.IDs id]
-    {
-      get
-      {
-        return this[(int) id];
-      }
-      private set
-      {
-        this.m_Factions[(int) id] = value;
-        this.m_Factions[(int) id].ID = (int) id;
-      }
-    }
-
-    public Faction TheArmy
-    {
-      get
-      {
-        return this[GameFactions.IDs.TheArmy];
-      }
-    }
-
-    public Faction TheBikers
-    {
-      get
-      {
-        return this[GameFactions.IDs.TheBikers];
-      }
-    }
-
-    public Faction TheBlackOps
-    {
-      get
-      {
-        return this[GameFactions.IDs.TheBlackOps];
-      }
-    }
-
-    public Faction TheCHARCorporation
-    {
-      get
-      {
-        return this[GameFactions.IDs._FIRST];
-      }
-    }
-
-    public Faction TheCivilians
-    {
-      get
-      {
-        return this[GameFactions.IDs.TheCivilians];
-      }
-    }
-
-    public Faction TheGangstas
-    {
-      get
-      {
-        return this[GameFactions.IDs.TheGangstas];
-      }
-    }
-
-    public Faction ThePolice
-    {
-      get
-      {
-        return this[GameFactions.IDs.ThePolice];
-      }
-    }
-
-    public Faction TheUndeads
-    {
-      get
-      {
-        return this[GameFactions.IDs.TheUndeads];
-      }
-    }
-
-    public Faction ThePsychopaths
-    {
-      get
-      {
-        return this[GameFactions.IDs.ThePsychopaths];
-      }
-    }
-
-    public Faction TheSurvivors
-    {
-      get
-      {
-        return this[GameFactions.IDs.TheSurvivors];
-      }
-    }
-
-    public Faction TheFerals
-    {
-      get
-      {
-        return this[GameFactions.IDs.TheFerals];
-      }
-    }
-
-    public GameFactions()
-    {
-      Models.Factions = (FactionDB) this;
-      this[GameFactions.IDs.TheArmy] = new Faction("Army", "soldier")
-      {
-        LeadOnlyBySameFaction = true
-      };
-      this[GameFactions.IDs.TheBikers] = new Faction("Bikers", "biker")
-      {
-        LeadOnlyBySameFaction = true
-      };
-      this[GameFactions.IDs.TheBlackOps] = new Faction("BlackOps", "blackOp")
-      {
-        LeadOnlyBySameFaction = true
-      };
-      this[GameFactions.IDs._FIRST] = new Faction("CHAR Corp.", "CHAR employee")
-      {
-        LeadOnlyBySameFaction = true
-      };
-      this[GameFactions.IDs.TheCivilians] = new Faction("Civilians", "civilian");
-      this[GameFactions.IDs.TheGangstas] = new Faction("Gangstas", "gangsta")
-      {
-        LeadOnlyBySameFaction = true
-      };
-      this[GameFactions.IDs.ThePolice] = new Faction("Police", "police officer")
-      {
-        LeadOnlyBySameFaction = true
-      };
-      this[GameFactions.IDs.TheUndeads] = new Faction("Undeads", "undead");
-      this[GameFactions.IDs.ThePsychopaths] = new Faction("Psychopaths", "psychopath");
-      this[GameFactions.IDs.TheSurvivors] = new Faction("Survivors", "survivor");
-      this[GameFactions.IDs.TheFerals] = new Faction("Ferals", "feral")
-      {
-        LeadOnlyBySameFaction = true
-      };
-      this[GameFactions.IDs.TheArmy].AddEnemy(this[GameFactions.IDs.TheBikers]);
-      this[GameFactions.IDs.TheArmy].AddEnemy(this[GameFactions.IDs.TheBlackOps]);
-      this[GameFactions.IDs.TheArmy].AddEnemy(this[GameFactions.IDs.TheGangstas]);
-      this[GameFactions.IDs.TheArmy].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      this[GameFactions.IDs.TheArmy].AddEnemy(this[GameFactions.IDs.ThePsychopaths]);
-      this[GameFactions.IDs.TheBikers].AddEnemy(this[GameFactions.IDs.TheArmy]);
-      this[GameFactions.IDs.TheBikers].AddEnemy(this[GameFactions.IDs.TheBlackOps]);
-      this[GameFactions.IDs.TheBikers].AddEnemy(this[GameFactions.IDs._FIRST]);
-      this[GameFactions.IDs.TheBikers].AddEnemy(this[GameFactions.IDs.TheGangstas]);
-      this[GameFactions.IDs.TheBikers].AddEnemy(this[GameFactions.IDs.ThePolice]);
-      this[GameFactions.IDs.TheBikers].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      this[GameFactions.IDs.TheBikers].AddEnemy(this[GameFactions.IDs.ThePsychopaths]);
-      this[GameFactions.IDs.TheBlackOps].AddEnemy(this[GameFactions.IDs.TheArmy]);
-      this[GameFactions.IDs.TheBlackOps].AddEnemy(this[GameFactions.IDs.TheBikers]);
-      this[GameFactions.IDs.TheBlackOps].AddEnemy(this[GameFactions.IDs._FIRST]);
-      this[GameFactions.IDs.TheBlackOps].AddEnemy(this[GameFactions.IDs.TheCivilians]);
-      this[GameFactions.IDs.TheBlackOps].AddEnemy(this[GameFactions.IDs.TheGangstas]);
-      this[GameFactions.IDs.TheBlackOps].AddEnemy(this[GameFactions.IDs.ThePolice]);
-      this[GameFactions.IDs.TheBlackOps].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      this[GameFactions.IDs.TheBlackOps].AddEnemy(this[GameFactions.IDs.ThePsychopaths]);
-      this[GameFactions.IDs.TheBlackOps].AddEnemy(this[GameFactions.IDs.TheSurvivors]);
-      this[GameFactions.IDs._FIRST].AddEnemy(this[GameFactions.IDs.TheArmy]);
-      this[GameFactions.IDs._FIRST].AddEnemy(this[GameFactions.IDs.TheBlackOps]);
-      this[GameFactions.IDs._FIRST].AddEnemy(this[GameFactions.IDs.TheBikers]);
-      this[GameFactions.IDs._FIRST].AddEnemy(this[GameFactions.IDs.TheGangstas]);
-      this[GameFactions.IDs._FIRST].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      this[GameFactions.IDs._FIRST].AddEnemy(this[GameFactions.IDs.ThePsychopaths]);
-      this[GameFactions.IDs.TheCivilians].AddEnemy(this[GameFactions.IDs.TheBlackOps]);
-      this[GameFactions.IDs.TheCivilians].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      this[GameFactions.IDs.TheCivilians].AddEnemy(this[GameFactions.IDs.ThePsychopaths]);
-      this[GameFactions.IDs.TheGangstas].AddEnemy(this[GameFactions.IDs.TheArmy]);
-      this[GameFactions.IDs.TheGangstas].AddEnemy(this[GameFactions.IDs.TheBikers]);
-      this[GameFactions.IDs.TheGangstas].AddEnemy(this[GameFactions.IDs.TheBlackOps]);
-      this[GameFactions.IDs.TheGangstas].AddEnemy(this[GameFactions.IDs._FIRST]);
-      this[GameFactions.IDs.TheGangstas].AddEnemy(this[GameFactions.IDs.ThePolice]);
-      this[GameFactions.IDs.TheGangstas].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      this[GameFactions.IDs.TheGangstas].AddEnemy(this[GameFactions.IDs.ThePsychopaths]);
-      this[GameFactions.IDs.ThePolice].AddEnemy(this[GameFactions.IDs.TheBikers]);
-      this[GameFactions.IDs.ThePolice].AddEnemy(this[GameFactions.IDs.TheBlackOps]);
-      this[GameFactions.IDs.ThePolice].AddEnemy(this[GameFactions.IDs.TheGangstas]);
-      this[GameFactions.IDs.ThePolice].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      this[GameFactions.IDs.ThePolice].AddEnemy(this[GameFactions.IDs.ThePsychopaths]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs.TheArmy]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs.TheBikers]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs.TheBlackOps]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs._FIRST]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs.TheCivilians]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs.TheGangstas]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs.ThePolice]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs.ThePsychopaths]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs.TheSurvivors]);
-      this[GameFactions.IDs.TheUndeads].AddEnemy(this[GameFactions.IDs.TheFerals]);
-      this[GameFactions.IDs.ThePsychopaths].AddEnemy(this[GameFactions.IDs.TheArmy]);
-      this[GameFactions.IDs.ThePsychopaths].AddEnemy(this[GameFactions.IDs.TheBikers]);
-      this[GameFactions.IDs.ThePsychopaths].AddEnemy(this[GameFactions.IDs.TheBlackOps]);
-      this[GameFactions.IDs.ThePsychopaths].AddEnemy(this[GameFactions.IDs._FIRST]);
-      this[GameFactions.IDs.ThePsychopaths].AddEnemy(this[GameFactions.IDs.TheCivilians]);
-      this[GameFactions.IDs.ThePsychopaths].AddEnemy(this[GameFactions.IDs.TheGangstas]);
-      this[GameFactions.IDs.ThePsychopaths].AddEnemy(this[GameFactions.IDs.ThePolice]);
-      this[GameFactions.IDs.ThePsychopaths].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      this[GameFactions.IDs.ThePsychopaths].AddEnemy(this[GameFactions.IDs.TheSurvivors]);
-      this[GameFactions.IDs.TheSurvivors].AddEnemy(this[GameFactions.IDs.TheBlackOps]);
-      this[GameFactions.IDs.TheSurvivors].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      this[GameFactions.IDs.TheSurvivors].AddEnemy(this[GameFactions.IDs.ThePsychopaths]);
-      this[GameFactions.IDs.TheFerals].AddEnemy(this[GameFactions.IDs.TheUndeads]);
-      foreach (Faction faction in this.m_Factions)
-      {
-        foreach (Faction enemy in faction.Enemies)
+        #region IDs
+        public enum IDs
         {
-          if (!enemy.IsEnemyOf(enemy))
-            enemy.AddEnemy(faction);
+            _FIRST,
+
+            TheCHARCorporation = _FIRST,
+            TheCivilians,
+            TheUndeads,
+            TheArmy,
+            TheBikers,
+            TheGangstas,
+            ThePolice,
+            TheBlackOps,
+            ThePsychopaths,
+            TheSurvivors,
+            TheFerals,
+
+            _COUNT
         }
-      }
+        #endregion
+
+        #region Fields
+        Faction[] m_Factions = new Faction[(int)IDs._COUNT];
+        #endregion
+
+        #region Properties
+        public override Faction this[int id]
+        {
+            get { return m_Factions[id]; }
+        }
+
+        public Faction this[IDs id]
+        {
+            get { return this[(int)id]; }
+            private set
+            {
+                m_Factions[(int)id] = value;
+                m_Factions[(int)id].ID = (int)id;
+            }
+        }
+        public Faction TheArmy { get { return this[IDs.TheArmy]; } }
+        public Faction TheBikers { get { return this[IDs.TheBikers]; } }
+        public Faction TheBlackOps { get { return this[IDs.TheBlackOps]; } }
+        public Faction TheCHARCorporation { get { return this[IDs.TheCHARCorporation]; } }
+        public Faction TheCivilians { get { return this[IDs.TheCivilians]; } }
+        public Faction TheGangstas { get { return this[IDs.TheGangstas]; } }
+        public Faction ThePolice { get { return this[IDs.ThePolice]; } }
+        public Faction TheUndeads { get { return this[IDs.TheUndeads]; } }
+        public Faction ThePsychopaths { get { return this[IDs.ThePsychopaths]; } }
+        public Faction TheSurvivors { get { return this[IDs.TheSurvivors]; } }
+        public Faction TheFerals { get { return this[IDs.TheFerals]; } }
+        #endregion
+
+        public static readonly GameItems.IDs[] BAD_POLICE_OUTFITS = new GameItems.IDs[] 
+        { 
+            GameItems.IDs.ARMOR_FREE_ANGELS_JACKET, GameItems.IDs.ARMOR_HELLS_SOULS_JACKET 
+        };
+        public static readonly GameItems.IDs[] GOOD_POLICE_OUTFITS = new GameItems.IDs[] 
+        { 
+            GameItems.IDs.ARMOR_POLICE_JACKET, GameItems.IDs.ARMOR_POLICE_RIOT 
+        };
+
+        public GameFactions()
+        {
+            // bind
+            Models.Factions = this;
+
+            // factions
+            this[IDs.TheArmy] = new Faction("Army", "soldier") { LeadOnlyBySameFaction = true };
+            this[IDs.TheBikers] = new Faction("Bikers", "biker") { LeadOnlyBySameFaction = true };
+            this[IDs.TheBlackOps] = new Faction("BlackOps", "blackOp") { LeadOnlyBySameFaction = true };
+            this[IDs.TheCHARCorporation] = new Faction("CHAR Corp.", "CHAR employee") { LeadOnlyBySameFaction = true };
+            this[IDs.TheCivilians] = new Faction("Civilians", "civilian");
+            this[IDs.TheGangstas] = new Faction("Gangstas", "gangsta") { LeadOnlyBySameFaction = true };
+            this[IDs.ThePolice] = new Faction("Police", "police officer") { LeadOnlyBySameFaction = true };
+            this[IDs.TheUndeads] = new Faction("Undeads", "undead");
+            this[IDs.ThePsychopaths] = new Faction("Psychopaths", "psychopath");
+            this[IDs.TheSurvivors] = new Faction("Survivors", "survivor");
+            this[IDs.TheFerals] = new Faction("Ferals", "feral") { LeadOnlyBySameFaction = true };
+
+            // relations.
+            this[IDs.TheArmy].AddEnemy(this[IDs.TheBikers]);
+            this[IDs.TheArmy].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.TheArmy].AddEnemy(this[IDs.TheGangstas]);
+            this[IDs.TheArmy].AddEnemy(this[IDs.TheUndeads]);
+            this[IDs.TheArmy].AddEnemy(this[IDs.ThePsychopaths]);
+            
+            this[IDs.TheBikers].AddEnemy(this[IDs.TheArmy]);
+            this[IDs.TheBikers].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.TheBikers].AddEnemy(this[IDs.TheCHARCorporation]);
+            this[IDs.TheBikers].AddEnemy(this[IDs.TheGangstas]);
+            this[IDs.TheBikers].AddEnemy(this[IDs.ThePolice]);
+            this[IDs.TheBikers].AddEnemy(this[IDs.TheUndeads]);
+            this[IDs.TheBikers].AddEnemy(this[IDs.ThePsychopaths]);
+
+            this[IDs.TheBlackOps].AddEnemy(this[IDs.TheArmy]);
+            this[IDs.TheBlackOps].AddEnemy(this[IDs.TheBikers]);
+            this[IDs.TheBlackOps].AddEnemy(this[IDs.TheCHARCorporation]);
+            this[IDs.TheBlackOps].AddEnemy(this[IDs.TheCivilians]);
+            this[IDs.TheBlackOps].AddEnemy(this[IDs.TheGangstas]);
+            this[IDs.TheBlackOps].AddEnemy(this[IDs.ThePolice]);
+            this[IDs.TheBlackOps].AddEnemy(this[IDs.TheUndeads]);
+            this[IDs.TheBlackOps].AddEnemy(this[IDs.ThePsychopaths]);
+            this[IDs.TheBlackOps].AddEnemy(this[IDs.TheSurvivors]);
+
+            this[IDs.TheCHARCorporation].AddEnemy(this[IDs.TheArmy]);
+            this[IDs.TheCHARCorporation].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.TheCHARCorporation].AddEnemy(this[IDs.TheBikers]);
+            this[IDs.TheCHARCorporation].AddEnemy(this[IDs.TheGangstas]);
+            this[IDs.TheCHARCorporation].AddEnemy(this[IDs.TheUndeads]);
+            this[IDs.TheCHARCorporation].AddEnemy(this[IDs.ThePsychopaths]);
+
+            this[IDs.TheCivilians].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.TheCivilians].AddEnemy(this[IDs.TheUndeads]);
+            this[IDs.TheCivilians].AddEnemy(this[IDs.ThePsychopaths]);
+
+            this[IDs.TheGangstas].AddEnemy(this[IDs.TheArmy]);
+            this[IDs.TheGangstas].AddEnemy(this[IDs.TheBikers]);
+            this[IDs.TheGangstas].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.TheGangstas].AddEnemy(this[IDs.TheCHARCorporation]);
+            this[IDs.TheGangstas].AddEnemy(this[IDs.ThePolice]);
+            this[IDs.TheGangstas].AddEnemy(this[IDs.TheUndeads]);
+            this[IDs.TheGangstas].AddEnemy(this[IDs.ThePsychopaths]);
+
+            this[IDs.ThePolice].AddEnemy(this[IDs.TheBikers]);
+            this[IDs.ThePolice].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.ThePolice].AddEnemy(this[IDs.TheGangstas]);
+            this[IDs.ThePolice].AddEnemy(this[IDs.TheUndeads]);
+            this[IDs.ThePolice].AddEnemy(this[IDs.ThePsychopaths]);
+
+            this[IDs.TheUndeads].AddEnemy(this[IDs.TheArmy]);
+            this[IDs.TheUndeads].AddEnemy(this[IDs.TheBikers]);
+            this[IDs.TheUndeads].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.TheUndeads].AddEnemy(this[IDs.TheCHARCorporation]);
+            this[IDs.TheUndeads].AddEnemy(this[IDs.TheCivilians]);
+            this[IDs.TheUndeads].AddEnemy(this[IDs.TheGangstas]);
+            this[IDs.TheUndeads].AddEnemy(this[IDs.ThePolice]);
+            this[IDs.TheUndeads].AddEnemy(this[IDs.ThePsychopaths]);
+            this[IDs.TheUndeads].AddEnemy(this[IDs.TheSurvivors]);
+            this[IDs.TheUndeads].AddEnemy(this[IDs.TheFerals]);
+
+            this[IDs.ThePsychopaths].AddEnemy(this[IDs.TheArmy]);
+            this[IDs.ThePsychopaths].AddEnemy(this[IDs.TheBikers]);
+            this[IDs.ThePsychopaths].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.ThePsychopaths].AddEnemy(this[IDs.TheCHARCorporation]);
+            this[IDs.ThePsychopaths].AddEnemy(this[IDs.TheCivilians]);
+            this[IDs.ThePsychopaths].AddEnemy(this[IDs.TheGangstas]);
+            this[IDs.ThePsychopaths].AddEnemy(this[IDs.ThePolice]);
+            this[IDs.ThePsychopaths].AddEnemy(this[IDs.TheUndeads]);
+            this[IDs.ThePsychopaths].AddEnemy(this[IDs.TheSurvivors]);
+
+            this[IDs.TheSurvivors].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.TheSurvivors].AddEnemy(this[IDs.TheUndeads]);
+            this[IDs.TheSurvivors].AddEnemy(this[IDs.ThePsychopaths]);
+
+            this[IDs.TheFerals].AddEnemy(this[IDs.TheUndeads]);
+
+            // make sure relations are symetric!
+            foreach (Faction f in m_Factions)
+            {
+                foreach (Faction fe in f.Enemies)
+                {
+                    if (!fe.IsEnemyOf(fe))
+                        fe.AddEnemy(f);
+                }
+            }
+        }
     }
 
-    public enum IDs
-    {
-      TheCHARCorporation = 0,
-      _FIRST = 0,
-      TheCivilians = 1,
-      TheUndeads = 2,
-      TheArmy = 3,
-      TheBikers = 4,
-      TheGangstas = 5,
-      ThePolice = 6,
-      TheBlackOps = 7,
-      ThePsychopaths = 8,
-      TheSurvivors = 9,
-      TheFerals = 10, // 0x0000000A
-      _COUNT = 11, // 0x0000000B
-    }
-  }
 }

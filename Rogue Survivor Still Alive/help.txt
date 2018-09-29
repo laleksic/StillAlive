@@ -1,0 +1,24 @@
+﻿REQUIREMENTS
+
+Operating system: XP, Vista, Win7
+Minimum resolution: 800*600
+Disk space: 120mb
+.NET Framework: 3.5
+
+
+TROUBLESHOOTING
+
+-(Intel onboard GPU) The game text is blurry
+	In your Intel control panel set "3Dtexture" to "Quality".
+
+-(sound) I can't hear any sounds or music
+	Run the game configuration utility (RSConfing.exe) and set the audio engine to SFML.
+
+-(Vista, Win 7) Game crash when multitasking
+	Run the game configuration utility (RSConfing.exe) and set the video engine to GDI+ and the audio engine to SFML.
+
+-(ffdshow) ffdshow spams instances in the task bar
+	Open ffdshow configuration, go to DirectShow and set "Multiple ffdshow instances" to "none".
+
+-(general information)
+	Check the wiki at http://roguesurvivor.wikia.com/wiki/Main_Page or the forums at http://roguesurvivor.proboards.com/

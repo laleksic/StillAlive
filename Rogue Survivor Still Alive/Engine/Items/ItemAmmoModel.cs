@@ -1,39 +1,52 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.Items.ItemAmmoModel
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using djack.RogueSurvivor.Data;
 
 namespace djack.RogueSurvivor.Engine.Items
 {
-  internal class ItemAmmoModel : ItemModel
-  {
-    private AmmoType m_AmmoType;
-
-    public AmmoType AmmoType
+    enum AmmoType
     {
-      get
-      {
-        return this.m_AmmoType;
-      }
+        _FIRST = 0,
+
+        LIGHT_PISTOL = _FIRST,
+        HEAVY_PISTOL,
+        SHOTGUN,
+        LIGHT_RIFLE,
+        HEAVY_RIFLE,
+        BOLT,
+
+        _COUNT
     }
 
-    public int MaxQuantity
+    class ItemAmmoModel : ItemModel
     {
-      get
-      {
-        return this.StackingLimit;
-      }
-    }
+        #region Fields
+        AmmoType m_AmmoType;
+        #endregion
 
-    public ItemAmmoModel(string aName, string theNames, string imageID, AmmoType ammoType, int maxQuantity)
-      : base(aName, theNames, imageID)
-    {
-      this.m_AmmoType = ammoType;
-      this.IsStackable = true;
-      this.StackingLimit = maxQuantity;
+        #region Properties
+        public AmmoType AmmoType
+        {
+            get { return m_AmmoType; }
+        }
+
+        public int MaxQuantity
+        {
+            get { return this.StackingLimit; }
+        }
+        #endregion
+
+        #region Init
+        public ItemAmmoModel(string aName, string theNames, string imageID, AmmoType ammoType, int maxQuantity)
+            : base(aName, theNames, imageID)
+        {
+            m_AmmoType = ammoType;
+            this.IsStackable = true;
+            this.StackingLimit = maxQuantity;
+        }
+        #endregion
     }
-  }
 }

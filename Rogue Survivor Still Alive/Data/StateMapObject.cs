@@ -1,39 +1,41 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Data.StateMapObject
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace djack.RogueSurvivor.Data
 {
-  [Serializable]
-  internal class StateMapObject : MapObject
-  {
-    private int m_State;
-
-    public int State
+    [Serializable]
+    class StateMapObject : MapObject
     {
-      get
-      {
-        return this.m_State;
-      }
-    }
+        #region Fields
+        int m_State;
+        #endregion
 
-    public StateMapObject(string name, string hiddenImageID)
-      : base(name, hiddenImageID)
-    {
-    }
+        #region Properties
+        public int State
+        {
+            get { return m_State; }
+        }
+        #endregion
 
-    public StateMapObject(string name, string hiddenImageID, MapObject.Break breakable, MapObject.Fire burnable, int hitPoints)
-      : base(name, hiddenImageID, breakable, burnable, hitPoints)
-    {
-    }
+        #region Init
+        public StateMapObject(string name, string hiddenImageID)
+            : base(name, hiddenImageID)
+        {
+        }
 
-    public virtual void SetState(int newState)
-    {
-      this.m_State = newState;
+        public StateMapObject(string name, string hiddenImageID, Break breakable, Fire burnable, int hitPoints)
+            : base(name, hiddenImageID, breakable, burnable, hitPoints)
+        {
+        }
+        #endregion
+
+        #region Changing state
+        public virtual void SetState(int newState)
+        {
+            m_State = newState;
+        }
+        #endregion
     }
-  }
 }

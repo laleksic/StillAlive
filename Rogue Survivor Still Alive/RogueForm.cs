@@ -1,387 +1,470 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.RogueForm
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Gameplay;
-using djack.RogueSurvivor.UI;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
+using djack.RogueSurvivor.Data;
+using djack.RogueSurvivor.Engine;
+using djack.RogueSurvivor.Gameplay;
+using djack.RogueSurvivor.UI;
+
 namespace djack.RogueSurvivor
 {
-  public class RogueForm : Form, IRogueUI
-  {
-    private RogueGame m_Game;
-    private Font m_NormalFont;
-    private Font m_BoldFont;
-    private const int CP_NOCLOSE_BUTTON = 512;
-    private bool m_HasKey;
-    private KeyEventArgs m_InKey;
-    private bool m_HasMouseButtons;
-    private MouseButtons m_MouseButtons;
-    private IContainer components;
-    private IGameCanvas m_GameCanvas;
-
-    internal RogueGame Game
+    public partial class RogueForm : Form, IRogueUI
     {
-      get
-      {
-        return this.m_Game;
-      }
-    }
+        #region Fields
+        RogueGame m_Game;
+        Font m_NormalFont;
+        Font m_BoldFont;
+        #endregion
 
-    public RogueForm()
-    {
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form...");
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::InitializeComponent...");
-      this.InitializeComponent();
-      this.Text = "Rogue Survivor - " + SetupConfig.GAME_VERSION;
-      if (SetupConfig.Video == SetupConfig.eVideo.VIDEO_GDI_PLUS)
-        this.Text += " (GDI+)";
-      switch (SetupConfig.Sound)
-      {
-        case SetupConfig.eSound.SOUND_SFML:
-          this.Text += " (sndSFML)";
-          break;
-        case SetupConfig.eSound.SOUND_NOSOUND:
-          this.Text += " (nosound)";
-          break;
-      }
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::SetClientSizeCore...");
-      this.SetClientSizeCore(1024, 768);
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::SetStyle...");
-      this.SetStyle(ControlStyles.Opaque | ControlStyles.AllPaintingInWmPaint, true);
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "create font 1...");
-      this.m_NormalFont = new Font("Lucida Console", 8.25f, FontStyle.Regular);
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "create font 2...");
-      this.m_BoldFont = new Font("Lucida Console", 8.25f, FontStyle.Bold);
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "create RogueGame...");
-      this.m_Game = new RogueGame((IRogueUI) this);
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "bind form...");
-      this.m_GameCanvas.BindForm(this);
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form done.");
-    }
+        #region Properties
+        internal RogueGame Game
+        {
+            get { return m_Game; }
+        }
+        #endregion
 
-    private void LoadResources()
-    {
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images...");
-      GameImages.LoadResources((IRogueUI) this);
-      Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images done");
-    }
+        #region Init
+        public RogueForm()
+        {
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form...");
 
-    protected override CreateParams CreateParams
-    {
-      get
-      {
-        CreateParams createParams = base.CreateParams;
-        createParams.ClassStyle |= 512;
-        return createParams;
-      }
-    }
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::InitializeComponent...");
+            InitializeComponent();
+            this.Text = "Rogue Survivor - " + SetupConfig.GAME_VERSION;
+            if (SetupConfig.Video == SetupConfig.eVideo.VIDEO_GDI_PLUS) this.Text += " (GDI+)";
+            switch (SetupConfig.Sound)
+            {
+                case SetupConfig.eSound.SOUND_NOSOUND: this.Text += " (nosound)"; break;
+                case SetupConfig.eSound.SOUND_SFML: this.Text += " (sndSFML)"; break;
+            }
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::SetClientSizeCore...");
+            SetClientSizeCore(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
+            // prevent flickering (gdi conflicting with directx?)
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::SetStyle...");
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque, true);
 
-    protected override void OnShown(EventArgs e)
-    {
-      base.OnShown(e);
-      this.LoadResources();
-      this.m_Game.Run();
-    }
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "create font 1...");
+            m_NormalFont = new Font("Lucida Console", 8.25f, FontStyle.Regular);
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "create font 2...");
+            m_BoldFont = new Font("Lucida Console", 8.25f, FontStyle.Bold);
 
-    protected override void OnSizeChanged(EventArgs e)
-    {
-      base.OnSizeChanged(e);
-      this.m_GameCanvas.FillGameForm();
-      this.Invalidate(true);
-    }
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "create RogueGame...");
+            m_Game = new RogueGame(this);
 
-    protected override void OnClosing(CancelEventArgs e)
-    {
-      if (!this.m_Game.IsGameRunning)
-        return;
-      e.Cancel = true;
-      int num = (int) MessageBox.Show("The game is still running. Please quit inside the game.");
-    }
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "bind form...");
+            m_GameCanvas.BindForm(this);
+            //m_GameCanvas.ShowFPS = true;
 
-    public KeyEventArgs UI_WaitKey()
-    {
-      this.m_HasKey = false;
-      while (true)
-      {
-        Application.DoEvents();
-        if (!this.m_HasKey)
-          Thread.Sleep(1);
-        else
-          break;
-      }
-      return this.m_InKey;
-    }
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form done.");
+        }
 
-    public KeyEventArgs UI_PeekKey()
-    {
-      Thread.Sleep(1);
-      Application.DoEvents();
-      if (!this.m_HasKey)
-        return (KeyEventArgs) null;
-      this.m_HasKey = false;
-      return this.m_InKey;
-    }
+        void LoadResources()
+        {
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images...");
+            GameImages.LoadResources(this);
+            Logger.WriteLine(Logger.Stage.INIT_GFX, "loading images done");
+        }
+        #endregion
 
-    public void UI_PostKey(KeyEventArgs e)
-    {
-      switch (e.KeyCode)
-      {
-        case Keys.ShiftKey:
-        case Keys.ControlKey:
-          break;
-        case Keys.LShiftKey:
-        case Keys.RShiftKey:
-        case Keys.LControlKey:
-        case Keys.RControlKey:
-          break;
-        case Keys.Shift:
-          break;
-        case Keys.Control:
-          break;
-        case Keys.Alt:
-          break;
-        default:
-          this.m_HasKey = true;
-          this.m_InKey = e;
-          e.Handled = true;
-          break;
-      }
-    }
+        #region Form overloads
+        #region Disable close button
+        private const int CP_NOCLOSE_BUTTON = 0x200;
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= CP_NOCLOSE_BUTTON;
+                return cp;
+            }
+        }
+        #endregion
 
-    public Point UI_GetMousePosition()
-    {
-      Thread.Sleep(1);
-      Application.DoEvents();
-      return this.m_GameCanvas.MouseLocation;
-    }
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
 
-    public void UI_PostMouseButtons(MouseButtons buttons)
-    {
-      this.m_HasMouseButtons = true;
-      this.m_MouseButtons = buttons;
-    }
+            LoadResources();
+            m_Game.Run();
+        }
 
-    public MouseButtons? UI_PeekMouseButtons()
-    {
-      if (!this.m_HasMouseButtons)
-        return new MouseButtons?();
-      this.m_HasMouseButtons = false;
-      return new MouseButtons?(this.m_MouseButtons);
-    }
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            m_GameCanvas.FillGameForm();
+            Invalidate(true);
+        }
 
-    public void UI_SetCursor(Cursor cursor)
-    {
-      if (cursor == this.Cursor)
-        return;
-      this.Cursor = cursor;
-      Application.DoEvents();
-    }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (m_Game.IsGameRunning)
+            {
+                e.Cancel = true;
+                MessageBox.Show("The game is still running. Please quit inside the game.");
+            }
+        }
+        #endregion
 
-    public void UI_Wait(int msecs)
-    {
-      this.UI_Repaint();
-      Thread.Sleep(msecs);
-    }
+        #region IRogueUI implementation
+        
+        #region Input
+        bool m_HasKey = false;
+        KeyEventArgs m_InKey;
 
-    public void UI_Repaint()
-    {
-      this.Refresh();
-      Application.DoEvents();
-    }
+        public KeyEventArgs UI_WaitKey()
+        {
+            m_HasKey = false;
+            while (true)
+            {
+                Application.DoEvents();
+                if (m_HasKey)
+                    break;
+                Thread.Sleep(1);
+            }
+            return m_InKey;
+        }
 
-    public void UI_Clear(Color clearColor)
-    {
-      this.m_GameCanvas.Clear(clearColor);
-    }
+        public KeyEventArgs UI_PeekKey()
+        {
+            Thread.Sleep(1);
+            Application.DoEvents();
+            if (m_HasKey)
+            {
+                m_HasKey = false;
+                return m_InKey;
+            }
+            else
+                return null;
+        }
 
-    public void UI_DrawImage(string imageID, int gx, int gy)
-    {
-      this.m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy);
-    }
+        public void UI_PostKey(KeyEventArgs e)
+        {
+            // ignore Shift/Ctrl/Alt alone.
+            switch (e.KeyCode)
+            {
+                case Keys.ShiftKey:
+                case Keys.Shift:
+                case Keys.LShiftKey:
+                case Keys.RShiftKey:
+                case Keys.Control:
+                case Keys.ControlKey:
+                case Keys.RControlKey:
+                case Keys.LControlKey:
+                case Keys.Alt:
+                    return;
+                default: 
+                    break;
+            }
 
-    public void UI_DrawImage(string imageID, int gx, int gy, Color tint)
-    {
-      this.m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy, tint);
-    }
+            m_HasKey = true;
+            m_InKey = e;
+            e.Handled = true;
 
-    public void UI_DrawImageTransform(string imageID, int gx, int gy, float rotation, float scale)
-    {
-      this.m_GameCanvas.AddImageTransform(GameImages.Get(imageID), gx, gy, rotation, scale);
-    }
+            /////////////////////
+            // Cheats / Dev Tools
+            /////////////////////
+#if DEBUG
+            // F6 - CHEAT - reveal all. //@@MP - and refill status (basically god mode)
+            if (e.KeyCode == Keys.F6)
+            {
+                if (m_Game.Session != null && m_Game.Session.CurrentMap != null)
+                {
+                    m_Game.Session.CurrentMap.SetAllAsVisited();
+                    UI_Repaint();
+                }
+                m_Game.Player.HitPoints = m_Game.Rules.ActorMaxHPs(m_Game.Player);
+                m_Game.Player.StaminaPoints = m_Game.Rules.ActorMaxSTA(m_Game.Player);
+                m_Game.Player.FoodPoints = m_Game.Rules.ActorMaxFood(m_Game.Player);
+                m_Game.Player.SleepPoints = m_Game.Rules.ActorMaxSleep(m_Game.Player);
+                if (m_Game.Session.GameMode == GameMode.GM_STANDARD) m_Game.Player.Infection = 0;
+                if (GameOptions.m_SanityGlobal) m_Game.Player.Sanity = m_Game.Rules.ActorMaxSanity(m_Game.Player);
+            }
+            // F7 - DEV - toggle FPS
+            if (e.KeyCode == Keys.F7)
+            {
+                m_GameCanvas.ShowFPS = !m_GameCanvas.ShowFPS;
+                UI_Repaint();
+            }
+            // F8 - DEV - resize to normal size
+            if (e.KeyCode == Keys.F8)
+            {
+                m_GameCanvas.NeedRedraw = true;
+                SetClientSizeCore(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
+                UI_Repaint();
+            }
+            // F9 - DEV - Show actors stats
+            if (e.KeyCode == Keys.F9)
+            {
+                m_Game.DEV_ToggleShowActorsStats();
+                UI_Repaint();
+            }
+            // F10 - DEV - Show pop graph.
+#if DEBUG_STATS
+            if (e.KeyCode == Keys.F10)
+            {
+                District d = m_Game.Player.Location.Map.District;
 
-    public void UI_DrawGrayLevelImage(string imageID, int gx, int gy)
-    {
-      this.m_GameCanvas.AddImage(GameImages.GetGrayLevel(imageID), gx, gy);
-    }
+                UI_Clear(Color.Black);
+                // axis
+                UI_DrawLine(Color.White, 0, 0, 0, RogueGame.CANVAS_HEIGHT);
+                UI_DrawLine(Color.White, 0, RogueGame.CANVAS_HEIGHT, RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
+                // plot.
+                int prevL = 0;
+                int prevU = 0;
+                const int XSCALE = WorldTime.TURNS_PER_HOUR;
+                const int YSCALE = 10;
+                for (int turn = 0; turn < m_Game.Session.WorldTime.TurnCounter; turn += XSCALE)
+                {
+                    if (turn % WorldTime.TURNS_PER_DAY == 0)
+                        UI_DrawLine(Color.White, turn / XSCALE, RogueGame.CANVAS_HEIGHT, turn / XSCALE, 0);
 
-    public void UI_DrawTransparentImage(float alpha, string imageID, int gx, int gy)
-    {
-      this.m_GameCanvas.AddTransparentImage(alpha, GameImages.Get(imageID), gx, gy);
-    }
+                    Session.DistrictStat.Record? r = m_Game.Session.GetStatRecord(d, turn);
+                    if (r == null) break;
+                    int L = r.Value.livings;
+                    UI_DrawLine(Color.Green, 
+                        (turn - 1)/XSCALE, RogueGame.CANVAS_HEIGHT - YSCALE * prevL, 
+                        turn/XSCALE, RogueGame.CANVAS_HEIGHT - YSCALE * L);
+                    int U = r.Value.undeads;
+                    UI_DrawLine(Color.Red, 
+                        (turn - 1)/XSCALE, RogueGame.CANVAS_HEIGHT - YSCALE * prevU, 
+                        turn/XSCALE, RogueGame.CANVAS_HEIGHT - YSCALE * U);
+                    prevL = L;
+                    prevU = U;
+                }
+                UI_Repaint();
+                UI_WaitKey();
+            }
+#endif
+#endif
+        }
 
-    public void UI_DrawPoint(Color color, int gx, int gy)
-    {
-      this.m_GameCanvas.AddPoint(color, gx, gy);
-    }
+        public Point UI_GetMousePosition()
+        {
+            Thread.Sleep(1);
+            Application.DoEvents();
+            return m_GameCanvas.MouseLocation;
+        }
 
-    public void UI_DrawLine(Color color, int gxFrom, int gyFrom, int gxTo, int gyTo)
-    {
-      this.m_GameCanvas.AddLine(color, gxFrom, gyFrom, gxTo, gyTo);
-    }
+        bool m_HasMouseButtons = false;
+        MouseButtons m_MouseButtons;
 
-    public void UI_DrawString(Color color, string text, int gx, int gy, Color? shadowColor)
-    {
-      if (shadowColor.HasValue)
-        this.m_GameCanvas.AddString(this.m_NormalFont, shadowColor.Value, text, gx + 1, gy + 1);
-      this.m_GameCanvas.AddString(this.m_NormalFont, color, text, gx, gy);
-    }
+        public void UI_PostMouseButtons(MouseButtons buttons)
+        {
+            m_HasMouseButtons = true;
+            m_MouseButtons = buttons;
+        }
 
-    public void UI_DrawStringBold(Color color, string text, int gx, int gy, Color? shadowColor)
-    {
-      if (shadowColor.HasValue)
-        this.m_GameCanvas.AddString(this.m_BoldFont, shadowColor.Value, text, gx + 1, gy + 1);
-      this.m_GameCanvas.AddString(this.m_BoldFont, color, text, gx, gy);
-    }
+        public MouseButtons? UI_PeekMouseButtons()
+        {
+            if (!m_HasMouseButtons)
+                return null;
 
-    public void UI_DrawRect(Color color, Rectangle rect)
-    {
-      if (rect.Width <= 0 || rect.Height <= 0)
-        throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
-      this.m_GameCanvas.AddRect(color, rect);
-    }
+            m_HasMouseButtons = false;
+            return m_MouseButtons;
+        }
 
-    public void UI_FillRect(Color color, Rectangle rect)
-    {
-      if (rect.Width <= 0 || rect.Height <= 0)
-        throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
-      this.m_GameCanvas.AddFilledRect(color, rect);
-    }
+        public void UI_SetCursor(Cursor cursor)
+        {
+            if (cursor == Cursor)            
+                return;
 
-    public void UI_DrawPopup(string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
-    {
-      int num1 = 0;
-      int num2 = 0;
-      Size[] sizeArray = new Size[lines.Length];
-      for (int index = 0; index < lines.Length; ++index)
-      {
-        sizeArray[index] = TextRenderer.MeasureText(lines[index], this.m_BoldFont);
-        if (sizeArray[index].Width > num1)
-          num1 = sizeArray[index].Width;
-        num2 += sizeArray[index].Height;
-      }
-      Point location = new Point(gx, gy);
-      Size size = new Size(num1 + 4, num2 + 4);
-      Rectangle rect = new Rectangle(location, size);
-      try
-      {
-        this.m_GameCanvas.AddFilledRect(boxFillColor, rect);
-        this.m_GameCanvas.AddRect(boxBorderColor, rect);
-      }
-      catch (Exception ex)
-      {
-        Logger.WriteLine(Logger.Stage.RUN_GFX, "failed to draw popup box:: " + ex.ToString());
-      }
-      int gx1 = location.X + 2;
-      int gy1 = location.Y + 2;
-      for (int index = 0; index < lines.Length; ++index)
-      {
-        this.m_GameCanvas.AddString(this.m_BoldFont, textColor, lines[index], gx1, gy1);
-        gy1 += sizeArray[index].Height;
-      }
-    }
+            this.Cursor = cursor;
+            Application.DoEvents();
+        }
+        #endregion
 
-    public void UI_ClearMinimap(Color color)
-    {
-      this.m_GameCanvas.ClearMinimap(color);
-    }
+        #region Delay
+        public void UI_Wait(int msecs)
+        {
+            UI_Repaint();
+            Thread.Sleep(msecs);
+        }
+        #endregion
 
-    public void UI_SetMinimapColor(int x, int y, Color color)
-    {
-      this.m_GameCanvas.SetMinimapColor(x, y, color);
-    }
+        #region Canvas Painting
+        public void UI_Repaint()
+        {
+            /*Invalidate();
+            Update();*/
+            Refresh();
+            Application.DoEvents();
+        }
 
-    public void UI_DrawMinimap(int gx, int gy)
-    {
-      this.m_GameCanvas.DrawMinimap(gx, gy);
-    }
+        public void UI_Clear(Color clearColor)
+        {
+            m_GameCanvas.Clear(clearColor);
+        }
 
-    public float UI_GetCanvasScaleX()
-    {
-      return this.m_GameCanvas.ScaleX;
-    }
+        public void UI_DrawImage(string imageID, int gx, int gy)
+        {
+            m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy);
+        }
 
-    public float UI_GetCanvasScaleY()
-    {
-      return this.m_GameCanvas.ScaleY;
-    }
 
-    public string UI_SaveScreenshot(string filePath)
-    {
-      return this.m_GameCanvas.SaveScreenShot(filePath);
-    }
+        public void UI_DrawImage(string imageID, int gx, int gy, Color tint)
+        {
+            m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy, tint);
+        }
 
-    public string UI_ScreenshotExtension()
-    {
-      return this.m_GameCanvas.ScreenshotExtension();
-    }
+        public void UI_DrawImageTransform(string imageID, int gx, int gy, float rotation, float scale)
+        {
+            m_GameCanvas.AddImageTransform(GameImages.Get(imageID), gx, gy, rotation, scale);
+        }
 
-    public void UI_DoQuit()
-    {
-      this.Close();
-    }
+        public void UI_DrawGrayLevelImage(string imageID, int gx, int gy)
+        {
+            m_GameCanvas.AddImage(GameImages.GetGrayLevel(imageID), gx, gy);
+        }
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing && this.m_GameCanvas != null)
-        this.m_GameCanvas.DisposeUnmanagedResources();
-      if (disposing && this.components != null)
-        this.components.Dispose();
-      base.Dispose(disposing);
-    }
+        public void UI_DrawTransparentImage(float alpha, string imageID, int gx, int gy)
+        {
+            m_GameCanvas.AddTransparentImage(alpha, GameImages.Get(imageID), gx, gy);
+        }
 
-    private void InitializeComponent()
-    {
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating GameCanvas...");
-      if (SetupConfig.Video == SetupConfig.eVideo.VIDEO_MANAGED_DIRECTX)
-      {
-        Logger.WriteLine(Logger.Stage.INIT_MAIN, "DXGameCanvas implementation...");
-        this.m_GameCanvas = (IGameCanvas) new DXGameCanvas();
-      }
-      else
-      {
-        Logger.WriteLine(Logger.Stage.INIT_MAIN, "GDIPlusGameCanvas implementation...");
-        this.m_GameCanvas = (IGameCanvas) new GDIPlusGameCanvas();
-      }
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "SuspendLayout...");
-      this.SuspendLayout();
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "setup GameCanvas...");
-      this.m_GameCanvas.NeedRedraw = true;
-      UserControl gameCanvas = this.m_GameCanvas as UserControl;
-      gameCanvas.Location = new Point(279, 83);
-      gameCanvas.Name = "canvasCtrl";
-      gameCanvas.Size = new Size(150, 150);
-      gameCanvas.TabIndex = 0;
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "setup RogueForm");
-      this.AutoScaleMode = AutoScaleMode.None;
-      this.ClientSize = new Size(800, 600);
-      this.Controls.Add((Control) gameCanvas);
-      this.Icon = new Icon("IconPNG.ico");
-      this.Name = nameof (RogueForm);
-      this.StartPosition = FormStartPosition.CenterScreen;
-      this.Text = "Rogue Survivor";
-      this.WindowState = FormWindowState.Maximized;
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "ResumeLayout");
-      this.ResumeLayout(false);
-      Logger.WriteLine(Logger.Stage.INIT_MAIN, "InitializeComponent() done.");
+        public void UI_DrawPoint(Color color, int gx, int gy)
+        {
+            m_GameCanvas.AddPoint(color, gx, gy);
+        }
+
+        public void UI_DrawLine(Color color, int gxFrom, int gyFrom, int gxTo, int gyTo)
+        {
+            m_GameCanvas.AddLine(color, gxFrom, gyFrom, gxTo, gyTo);
+        }
+
+        public void UI_DrawString(Color color, string text, int gx, int gy, Color? shadowColor)
+        {
+            if (shadowColor != null)
+                m_GameCanvas.AddString(m_NormalFont, shadowColor.Value, text, gx + 1, gy + 1);
+            m_GameCanvas.AddString(m_NormalFont, color, text, gx, gy);
+        }
+
+        public void UI_DrawStringBold(Color color, string text, int gx, int gy, Color? shadowColor)
+        {
+            if (shadowColor != null)
+                m_GameCanvas.AddString(m_BoldFont, shadowColor.Value, text, gx + 1, gy + 1);
+            m_GameCanvas.AddString(m_BoldFont, color, text, gx, gy);
+        }
+
+        public void UI_DrawRect(Color color, Rectangle rect)
+        {
+            if (rect.Width <= 0 || rect.Height <= 0)
+                throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
+
+            m_GameCanvas.AddRect(color, rect);
+        }
+
+        public void UI_FillRect(Color color, Rectangle rect)
+        {
+            if (rect.Width <= 0 || rect.Height <= 0)
+                throw new ArgumentOutOfRangeException("rectangle Width/Height <= 0");
+
+            m_GameCanvas.AddFilledRect(color, rect);
+        }
+
+        public void UI_DrawPopup(string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
+        { //@@MP - the popup that appears when you hover the mouse over actors/items in-game
+            /////////////////
+            // Measure lines
+            /////////////////
+            int longestLineWidth = 0;
+            int totalLineHeight = 0;
+            Size[] linesSize = new Size[lines.Length];
+            for (int i = 0; i < lines.Length; i++)
+            {
+                linesSize[i] = TextRenderer.MeasureText(lines[i], m_BoldFont);
+                if (linesSize[i].Width > longestLineWidth)
+                    longestLineWidth = linesSize[i].Width;
+                totalLineHeight += linesSize[i].Height;                
+            }
+
+            ///////////////////
+            // Setup popup box
+            ///////////////////
+            const int BOX_MARGIN = 2;
+            Point boxPos = new Point(gx,gy);
+            Size boxSize = new Size(longestLineWidth + 2 * BOX_MARGIN, totalLineHeight + 2 * BOX_MARGIN);
+            Rectangle boxRect = new Rectangle(boxPos, boxSize);
+
+            //////////////////
+            // Draw popup box
+            //////////////////
+            try
+            {
+                m_GameCanvas.AddFilledRect(boxFillColor, boxRect);
+                m_GameCanvas.AddRect(boxBorderColor, boxRect);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_GFX, "failed to draw popup box:: " + e.ToString());
+            }
+
+            //////////////
+            // Draw lines
+            //////////////
+            int lineX = boxPos.X + BOX_MARGIN;
+            int lineY = boxPos.Y + BOX_MARGIN;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                m_GameCanvas.AddString(m_BoldFont, textColor, lines[i], lineX, lineY);
+                lineY += linesSize[i].Height;
+            }
+        }
+
+        public void UI_ClearMinimap(Color color)
+        {
+            m_GameCanvas.ClearMinimap(color);
+        }
+
+        public void UI_SetMinimapColor(int x, int y, Color color)
+        {
+            m_GameCanvas.SetMinimapColor(x, y, color);
+        }
+
+        public void UI_DrawMinimap(int gx, int gy)
+        {
+            m_GameCanvas.DrawMinimap(gx, gy);
+        }
+        
+        #endregion
+
+        #region Canvas scaling
+        public float UI_GetCanvasScaleX()
+        {
+            return m_GameCanvas.ScaleX;
+        }
+
+        public float UI_GetCanvasScaleY()
+        {
+            return m_GameCanvas.ScaleY;
+        }
+        #endregion
+
+        #region Screenshot
+        public string UI_SaveScreenshot(string filePath)
+        {
+            return m_GameCanvas.SaveScreenShot(filePath);
+        }
+
+        public string UI_ScreenshotExtension()
+        {
+            return m_GameCanvas.ScreenshotExtension();
+        }
+        #endregion
+
+        #region Exiting
+        public void UI_DoQuit()
+        {
+            Close();
+        }
+        #endregion
+        #endregion
     }
-  }
 }

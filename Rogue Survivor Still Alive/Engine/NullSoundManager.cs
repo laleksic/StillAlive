@@ -1,69 +1,50 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.NullSoundManager
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace djack.RogueSurvivor.Engine
 {
-  internal class NullSoundManager : ISoundManager, IDisposable
-  {
-    public bool IsMusicEnabled { get; set; }
-
-    public int Volume { get; set; }
-
-    public bool Load(string musicname, string filename)
+    class NullSoundManager : ISoundManager
     {
-      return true;
-    }
+        #region Properties
+        public bool IsAudioEnabled { get; set; } //@@MP renamed (Release 2)
+        public int Volume { get; set; }
+        #endregion
 
-    public void Unload(string musicname)
-    {
-    }
+        #region Init
+        public NullSoundManager() { }
+        #endregion
 
-    public void Play(string musicname)
-    {
-    }
+        #region Loading music
+        public bool Load(string musicname, string filename) { return true;  }
 
-    public void PlayIfNotAlreadyPlaying(string musicname)
-    {
-    }
+        public void Unload(string musicname) { }
+        #endregion
 
-    public void PlayLooping(string musicname)
-    {
-    }
+        #region Playing music
 
-    public void ResumeLooping(string musicname)
-    {
-    }
+        public void Play(string musicname) { }
 
-    public void Stop(string musicname)
-    {
-    }
+        public void PlayIfNotAlreadyPlaying(string musicname) { }
 
-    public void StopAll()
-    {
-    }
+        public void PlayLooping(string musicname) { }
 
-    public bool IsPlaying(string musicname)
-    {
-      return false;
-    }
+        public void ResumeLooping(string musicname) { }
 
-    public bool IsPaused(string musicname)
-    {
-      return false;
-    }
+        public void Stop(string musicname) { }
 
-    public bool HasEnded(string musicname)
-    {
-      return true;
-    }
+        public void StopAll() { }
 
-    public void Dispose()
-    {
+        public bool IsPlaying(string musicname) { return false; }
+
+        public bool IsPaused(string musicname) { return false;  }
+
+        public bool HasEnded(string musicname) { return true;  }
+        #endregion
+
+        #region IDisposable
+        public void Dispose() { }
+        #endregion
     }
-  }
 }

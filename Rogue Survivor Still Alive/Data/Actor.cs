@@ -1,953 +1,918 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Data.Actor
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using djack.RogueSurvivor.Gameplay;
 
 namespace djack.RogueSurvivor.Data
 {
-  [Serializable]
-  internal class Actor
-  {
-    private Actor.Flags m_Flags;
-    private int m_ModelID;
-    private int m_FactionID;
-    private int m_GangID;
-    private string m_Name;
-    private ActorController m_Controller;
-    private ActorSheet m_Sheet;
-    private int m_SpawnTime;
-    private Inventory m_Inventory;
-    private Doll m_Doll;
-    private int m_HitPoints;
-    private int m_previousHitPoints;
-    private int m_StaminaPoints;
-    private int m_previousStamina;
-    private int m_FoodPoints;
-    private int m_previousFoodPoints;
-    private int m_SleepPoints;
-    private int m_previousSleepPoints;
-    private int m_Sanity;
-    private int m_previousSanity;
-    private Location m_Location;
-    private int m_ActionPoints;
-    private int m_LastActionTurn;
-    private Activity m_Activity;
-    private Actor m_TargetActor;
-    private int m_AudioRangeMod;
-    private Attack m_CurrentMeleeAttack;
-    private Attack m_CurrentRangedAttack;
-    private Defence m_CurrentDefence;
-    private Actor m_Leader;
-    private List<Actor> m_Followers;
-    private int m_TrustInLeader;
-    private List<TrustRecord> m_TrustList;
-    private int m_KillsCount;
-    private List<Actor> m_AggressorOf;
-    private List<Actor> m_SelfDefenceFrom;
-    private int m_MurdersCounter;
-    private int m_Infection;
-    private Corpse m_DraggedCorpse;
-    private List<Item> m_BoringItems;
-
-    public ActorModel Model
+    [Serializable]
+    class TrustRecord
     {
-      get
-      {
-        return Models.Actors[this.m_ModelID];
-      }
-      set
-      {
-        this.m_ModelID = value.ID;
-        this.OnModelSet();
-      }
+        public Actor Actor { get; set; }
+        public int Trust { get; set; }
     }
 
-    public bool IsUnique
+    [Serializable]
+    class Actor
     {
-      get
-      {
-        return this.GetFlag(Actor.Flags.IS_UNIQUE);
-      }
-      set
-      {
-        this.SetFlag(Actor.Flags.IS_UNIQUE, value);
-      }
-    }
-
-    public Faction Faction
-    {
-      get
-      {
-        return Models.Factions[this.m_FactionID];
-      }
-      set
-      {
-        this.m_FactionID = value.ID;
-      }
-    }
-
-    public string Name
-    {
-      get
-      {
-        if (!this.IsPlayer)
-          return this.m_Name;
-        return "(YOU) " + this.m_Name;
-      }
-      set
-      {
-        this.m_Name = value;
-        if (value == null)
-          return;
-        this.m_Name.Replace("(YOU) ", "");
-      }
-    }
-
-    public string UnmodifiedName
-    {
-      get
-      {
-        return this.m_Name;
-      }
-    }
-
-    public bool IsProperName
-    {
-      get
-      {
-        return this.GetFlag(Actor.Flags.IS_PROPER_NAME);
-      }
-      set
-      {
-        this.SetFlag(Actor.Flags.IS_PROPER_NAME, value);
-      }
-    }
-
-    public bool IsPluralName
-    {
-      get
-      {
-        return this.GetFlag(Actor.Flags.IS_PLURAL_NAME);
-      }
-      set
-      {
-        this.SetFlag(Actor.Flags.IS_PLURAL_NAME, value);
-      }
-    }
-
-    public string TheName
-    {
-      get
-      {
-        if (!this.IsProperName && !this.IsPluralName)
-          return "the " + this.m_Name;
-        return this.Name;
-      }
-    }
-
-    public ActorController Controller
-    {
-      get
-      {
-        return this.m_Controller;
-      }
-      set
-      {
-        if (this.m_Controller != null)
-          this.m_Controller.LeaveControl();
-        this.m_Controller = value;
-        if (this.m_Controller == null)
-          return;
-        this.m_Controller.TakeControl(this);
-      }
-    }
-
-    public bool IsPlayer
-    {
-      get
-      {
-        if (this.m_Controller != null)
-          return this.m_Controller is PlayerController;
-        return false;
-      }
-    }
-
-    public int SpawnTime
-    {
-      get
-      {
-        return this.m_SpawnTime;
-      }
-    }
-
-    public int GangID
-    {
-      get
-      {
-        return this.m_GangID;
-      }
-      set
-      {
-        this.m_GangID = value;
-      }
-    }
-
-    public bool IsInAGang
-    {
-      get
-      {
-        return (uint) this.m_GangID > 0U;
-      }
-    }
-
-    public Doll Doll
-    {
-      get
-      {
-        return this.m_Doll;
-      }
-    }
-
-    public bool IsDead
-    {
-      get
-      {
-        return this.GetFlag(Actor.Flags.IS_DEAD);
-      }
-      set
-      {
-        this.SetFlag(Actor.Flags.IS_DEAD, value);
-      }
-    }
-
-    public bool IsSleeping
-    {
-      get
-      {
-        return this.GetFlag(Actor.Flags.IS_SLEEPING);
-      }
-      set
-      {
-        this.SetFlag(Actor.Flags.IS_SLEEPING, value);
-      }
-    }
-
-    public bool IsRunning
-    {
-      get
-      {
-        return this.GetFlag(Actor.Flags.IS_RUNNING);
-      }
-      set
-      {
-        this.SetFlag(Actor.Flags.IS_RUNNING, value);
-      }
-    }
-
-    public Inventory Inventory
-    {
-      get
-      {
-        return this.m_Inventory;
-      }
-      set
-      {
-        this.m_Inventory = value;
-      }
-    }
-
-    public int HitPoints
-    {
-      get
-      {
-        return this.m_HitPoints;
-      }
-      set
-      {
-        this.m_HitPoints = value;
-      }
-    }
-
-    public int PreviousHitPoints
-    {
-      get
-      {
-        return this.m_previousHitPoints;
-      }
-      set
-      {
-        this.m_previousHitPoints = value;
-      }
-    }
-
-    public int StaminaPoints
-    {
-      get
-      {
-        return this.m_StaminaPoints;
-      }
-      set
-      {
-        this.m_StaminaPoints = value;
-      }
-    }
-
-    public int PreviousStaminaPoints
-    {
-      get
-      {
-        return this.m_previousStamina;
-      }
-      set
-      {
-        this.m_previousStamina = value;
-      }
-    }
-
-    public int FoodPoints
-    {
-      get
-      {
-        return this.m_FoodPoints;
-      }
-      set
-      {
-        this.m_FoodPoints = value;
-      }
-    }
-
-    public int PreviousFoodPoints
-    {
-      get
-      {
-        return this.m_previousFoodPoints;
-      }
-      set
-      {
-        this.m_previousFoodPoints = value;
-      }
-    }
-
-    public int SleepPoints
-    {
-      get
-      {
-        return this.m_SleepPoints;
-      }
-      set
-      {
-        this.m_SleepPoints = value;
-      }
-    }
-
-    public int PreviousSleepPoints
-    {
-      get
-      {
-        return this.m_previousSleepPoints;
-      }
-      set
-      {
-        this.m_previousSleepPoints = value;
-      }
-    }
-
-    public int Sanity
-    {
-      get
-      {
-        return this.m_Sanity;
-      }
-      set
-      {
-        this.m_Sanity = value;
-      }
-    }
-
-    public int PreviousSanity
-    {
-      get
-      {
-        return this.m_previousSanity;
-      }
-      set
-      {
-        this.m_previousSanity = value;
-      }
-    }
-
-    public ActorSheet Sheet
-    {
-      get
-      {
-        return this.m_Sheet;
-      }
-    }
-
-    public int ActionPoints
-    {
-      get
-      {
-        return this.m_ActionPoints;
-      }
-      set
-      {
-        this.m_ActionPoints = value;
-      }
-    }
-
-    public int LastActionTurn
-    {
-      get
-      {
-        return this.m_LastActionTurn;
-      }
-      set
-      {
-        this.m_LastActionTurn = value;
-      }
-    }
-
-    public Location Location
-    {
-      get
-      {
-        return this.m_Location;
-      }
-      set
-      {
-        this.m_Location = value;
-      }
-    }
-
-    public Activity Activity
-    {
-      get
-      {
-        return this.m_Activity;
-      }
-      set
-      {
-        this.m_Activity = value;
-      }
-    }
-
-    public Actor TargetActor
-    {
-      get
-      {
-        return this.m_TargetActor;
-      }
-      set
-      {
-        this.m_TargetActor = value;
-      }
-    }
-
-    public int AudioRange
-    {
-      get
-      {
-        return this.m_Sheet.BaseAudioRange + this.m_AudioRangeMod;
-      }
-    }
-
-    public int AudioRangeMod
-    {
-      get
-      {
-        return this.m_AudioRangeMod;
-      }
-      set
-      {
-        this.m_AudioRangeMod = value;
-      }
-    }
-
-    public Attack CurrentMeleeAttack
-    {
-      get
-      {
-        return this.m_CurrentMeleeAttack;
-      }
-      set
-      {
-        this.m_CurrentMeleeAttack = value;
-      }
-    }
-
-    public Attack CurrentRangedAttack
-    {
-      get
-      {
-        return this.m_CurrentRangedAttack;
-      }
-      set
-      {
-        this.m_CurrentRangedAttack = value;
-      }
-    }
-
-    public Defence CurrentDefence
-    {
-      get
-      {
-        return this.m_CurrentDefence;
-      }
-      set
-      {
-        this.m_CurrentDefence = value;
-      }
-    }
-
-    public Actor Leader
-    {
-      get
-      {
-        return this.m_Leader;
-      }
-    }
-
-    public bool HasLeader
-    {
-      get
-      {
-        if (this.m_Leader != null)
-          return !this.m_Leader.IsDead;
-        return false;
-      }
-    }
-
-    public int TrustInLeader
-    {
-      get
-      {
-        return this.m_TrustInLeader;
-      }
-      set
-      {
-        this.m_TrustInLeader = value;
-      }
-    }
-
-    public IEnumerable<Actor> Followers
-    {
-      get
-      {
-        return (IEnumerable<Actor>) this.m_Followers;
-      }
-    }
-
-    public int CountFollowers
-    {
-      get
-      {
-        if (this.m_Followers == null)
-          return 0;
-        return this.m_Followers.Count;
-      }
-    }
-
-    public int KillsCount
-    {
-      get
-      {
-        return this.m_KillsCount;
-      }
-      set
-      {
-        this.m_KillsCount = value;
-      }
-    }
-
-    public IEnumerable<Actor> AggressorOf
-    {
-      get
-      {
-        return (IEnumerable<Actor>) this.m_AggressorOf;
-      }
-    }
-
-    public int CountAggressorOf
-    {
-      get
-      {
-        if (this.m_AggressorOf == null)
-          return 0;
-        return this.m_AggressorOf.Count;
-      }
-    }
-
-    public IEnumerable<Actor> SelfDefenceFrom
-    {
-      get
-      {
-        return (IEnumerable<Actor>) this.m_SelfDefenceFrom;
-      }
-    }
-
-    public int CountSelfDefenceFrom
-    {
-      get
-      {
-        if (this.m_SelfDefenceFrom == null)
-          return 0;
-        return this.m_SelfDefenceFrom.Count;
-      }
-    }
-
-    public int MurdersCounter
-    {
-      get
-      {
-        return this.m_MurdersCounter;
-      }
-      set
-      {
-        this.m_MurdersCounter = value;
-      }
-    }
-
-    public int Infection
-    {
-      get
-      {
-        return this.m_Infection;
-      }
-      set
-      {
-        this.m_Infection = value;
-      }
-    }
-
-    public Corpse DraggedCorpse
-    {
-      get
-      {
-        return this.m_DraggedCorpse;
-      }
-      set
-      {
-        this.m_DraggedCorpse = value;
-      }
-    }
-
-    public Actor(ActorModel model, Faction faction, string name, bool isProperName, bool isPluralName, int spawnTime)
-    {
-      if (model == null)
-        throw new ArgumentNullException(nameof (model));
-      if (faction == null)
-        throw new ArgumentNullException(nameof (faction));
-      if (name == null)
-        throw new ArgumentNullException(nameof (name));
-      this.m_ModelID = model.ID;
-      this.m_FactionID = faction.ID;
-      this.m_GangID = 0;
-      this.m_Name = name;
-      this.IsProperName = isProperName;
-      this.IsPluralName = isPluralName;
-      this.m_Location = new Location();
-      this.m_SpawnTime = spawnTime;
-      this.IsUnique = false;
-      this.IsDead = false;
-      this.OnModelSet();
-    }
-
-    public Actor(ActorModel model, Faction faction, int spawnTime)
-      : this(model, faction, model.Name, false, false, spawnTime)
-    {
-    }
-
-    private void OnModelSet()
-    {
-      ActorModel model = this.Model;
-      this.m_Doll = new Doll(model.DollBody);
-      this.m_Sheet = new ActorSheet(model.StartingSheet);
-      this.m_ActionPoints = this.m_Doll.Body.Speed;
-      this.m_HitPoints = this.m_previousHitPoints = this.m_Sheet.BaseHitPoints;
-      this.m_StaminaPoints = this.m_previousStamina = this.m_Sheet.BaseStaminaPoints;
-      this.m_FoodPoints = this.m_previousFoodPoints = this.m_Sheet.BaseFoodPoints;
-      this.m_SleepPoints = this.m_previousSleepPoints = this.m_Sheet.BaseSleepPoints;
-      this.m_Sanity = this.m_previousSanity = this.m_Sheet.BaseSanity;
-      if (model.Abilities.HasInventory)
-        this.m_Inventory = new Inventory(model.StartingSheet.BaseInventoryCapacity);
-      this.m_CurrentMeleeAttack = model.StartingSheet.UnarmedAttack;
-      this.m_CurrentDefence = model.StartingSheet.BaseDefence;
-      this.m_CurrentRangedAttack = Attack.BLANK;
-    }
-
-    public void AddFollower(Actor other)
-    {
-      if (other == null)
-        throw new ArgumentNullException(nameof (other));
-      if (this.m_Followers != null && this.m_Followers.Contains(other))
-        throw new ArgumentException("other is already a follower");
-      if (this.m_Followers == null)
-        this.m_Followers = new List<Actor>(1);
-      this.m_Followers.Add(other);
-      if (other.Leader != null)
-        other.Leader.RemoveFollower(other);
-      other.m_Leader = this;
-    }
-
-    public void RemoveFollower(Actor other)
-    {
-      if (other == null)
-        throw new ArgumentNullException(nameof (other));
-      if (this.m_Followers == null)
-        throw new InvalidOperationException("no followers");
-      this.m_Followers.Remove(other);
-      if (this.m_Followers.Count == 0)
-        this.m_Followers = (List<Actor>) null;
-      other.m_Leader = (Actor) null;
-      AIController controller = other.Controller as AIController;
-      if (controller == null)
-        return;
-      controller.Directives.Reset();
-      controller.SetOrder((ActorOrder) null);
-    }
-
-    public void RemoveAllFollowers()
-    {
-      while (this.m_Followers != null && this.m_Followers.Count > 0)
-        this.RemoveFollower(this.m_Followers[0]);
-    }
-
-    public void SetTrustIn(Actor other, int trust)
-    {
-      if (this.m_TrustList == null)
-      {
-        this.m_TrustList = new List<TrustRecord>(1)
+        #region Flags
+        [Flags]
+        enum Flags
         {
-          new TrustRecord() { Actor = other, Trust = trust }
-        };
-      }
-      else
-      {
-        foreach (TrustRecord trust1 in this.m_TrustList)
-        {
-          if (trust1.Actor == other)
-          {
-            trust1.Trust = trust;
-            return;
-          }
+            NONE = 0,
+            IS_UNIQUE = (1 << 0),
+            IS_PROPER_NAME = (1 << 1),
+            IS_PLURAL_NAME = (1 << 2),
+            IS_DEAD = (1 << 3),
+            IS_RUNNING = (1 << 4),
+            IS_SLEEPING = (1 << 5)
         }
-        this.m_TrustList.Add(new TrustRecord()
+        #endregion
+
+        #region Fields
+        Flags m_Flags;
+
+        #region Definition
+        int m_ModelID;
+        /*bool m_IsUnique;*/
+        int m_FactionID;
+        int m_GangID;
+        string m_Name;
+        /*bool m_IsProperName;
+        bool m_IsPluralName;*/
+        ActorController m_Controller;
+        ActorSheet m_Sheet;
+        int m_SpawnTime;
+        #endregion
+
+        #region State
+        Inventory m_Inventory = null;
+        Doll m_Doll;
+        int m_HitPoints;
+        int m_previousHitPoints;
+        int m_StaminaPoints;
+        int m_previousStamina;
+        int m_FoodPoints;
+        int m_previousFoodPoints;
+        int m_SleepPoints;
+        int m_previousSleepPoints;
+        int m_Sanity;
+        int m_previousSanity;
+        Location m_Location;
+        int m_ActionPoints;
+        int m_LastActionTurn;
+        Activity m_Activity = Activity.IDLE;
+        Actor m_TargetActor;
+        int m_AudioRangeMod;
+        Attack m_CurrentMeleeAttack;
+        Attack m_CurrentRangedAttack;
+        Defence m_CurrentDefence;
+        Actor m_Leader;
+        List<Actor> m_Followers = null;
+        int m_TrustInLeader;
+        List<TrustRecord> m_TrustList = null;
+        int m_KillsCount;
+        List<Actor> m_AggressorOf = null;
+        List<Actor> m_SelfDefenceFrom = null;
+        int m_MurdersCounter;
+        int m_Infection;
+        Corpse m_DraggedCorpse;
+        List<Item> m_BoringItems = null;
+        #endregion
+        #endregion
+
+        #region Properties
+        #region Definition
+
+        /// <summary>
+        /// Gets or sets model. Setting model reset inventory and all stats to the model default values.
+        /// </summary>
+        public ActorModel Model
         {
-          Actor = other,
-          Trust = trust
-        });
-      }
-    }
-
-    public void AddTrustIn(Actor other, int amount)
-    {
-      this.SetTrustIn(other, this.GetTrustIn(other) + amount);
-    }
-
-    public int GetTrustIn(Actor other)
-    {
-      if (this.m_TrustList == null)
-        return 0;
-      foreach (TrustRecord trust in this.m_TrustList)
-      {
-        if (trust.Actor == other)
-          return trust.Trust;
-      }
-      return 0;
-    }
-
-    public void MarkAsAgressorOf(Actor other)
-    {
-      if (other == null || other.IsDead)
-        return;
-      if (this.m_AggressorOf == null)
-        this.m_AggressorOf = new List<Actor>(1);
-      else if (this.m_AggressorOf.Contains(other))
-        return;
-      this.m_AggressorOf.Add(other);
-    }
-
-    public void MarkAsSelfDefenceFrom(Actor other)
-    {
-      if (other == null || other.IsDead)
-        return;
-      if (this.m_SelfDefenceFrom == null)
-        this.m_SelfDefenceFrom = new List<Actor>(1);
-      else if (this.m_SelfDefenceFrom.Contains(other))
-        return;
-      this.m_SelfDefenceFrom.Add(other);
-    }
-
-    public bool IsAggressorOf(Actor other)
-    {
-      if (this.m_AggressorOf == null)
-        return false;
-      return this.m_AggressorOf.Contains(other);
-    }
-
-    public bool IsSelfDefenceFrom(Actor other)
-    {
-      if (this.m_SelfDefenceFrom == null)
-        return false;
-      return this.m_SelfDefenceFrom.Contains(other);
-    }
-
-    public void RemoveAggressorOf(Actor other)
-    {
-      if (this.m_AggressorOf == null)
-        return;
-      this.m_AggressorOf.Remove(other);
-      if (this.m_AggressorOf.Count != 0)
-        return;
-      this.m_AggressorOf = (List<Actor>) null;
-    }
-
-    public void RemoveSelfDefenceFrom(Actor other)
-    {
-      if (this.m_SelfDefenceFrom == null)
-        return;
-      this.m_SelfDefenceFrom.Remove(other);
-      if (this.m_SelfDefenceFrom.Count != 0)
-        return;
-      this.m_SelfDefenceFrom = (List<Actor>) null;
-    }
-
-    public void RemoveAllAgressorSelfDefenceRelations()
-    {
-      while (this.m_AggressorOf != null)
-      {
-        Actor other = this.m_AggressorOf[0];
-        this.RemoveAggressorOf(other);
-        other.RemoveSelfDefenceFrom(this);
-      }
-      while (this.m_SelfDefenceFrom != null)
-      {
-        Actor other = this.m_SelfDefenceFrom[0];
-        this.RemoveSelfDefenceFrom(other);
-        other.RemoveAggressorOf(this);
-      }
-    }
-
-    public bool AreDirectEnemies(Actor other)
-    {
-      return other != null && !other.IsDead && (this.m_AggressorOf != null && this.m_AggressorOf.Contains(other) || this.m_SelfDefenceFrom != null && this.m_SelfDefenceFrom.Contains(other) || (other.IsAggressorOf(this) || other.IsSelfDefenceFrom(this)));
-    }
-
-    public bool AreIndirectEnemies(Actor other)
-    {
-      if (other == null || other.IsDead)
-        return false;
-      if (this.HasLeader)
-      {
-        if (this.m_Leader.AreDirectEnemies(other) || other.HasLeader && this.m_Leader.AreDirectEnemies(other.Leader))
-          return true;
-        foreach (Actor follower in this.m_Leader.Followers)
-        {
-          if (follower != this && follower.AreDirectEnemies(other))
-            return true;
+            get { return Models.Actors[m_ModelID]; }
+            set
+            {
+                m_ModelID = value.ID;
+                OnModelSet();
+            }
         }
-      }
-      if (this.CountFollowers > 0)
-      {
-        foreach (Actor follower in this.m_Followers)
+
+        public bool IsUnique
         {
-          if (follower.AreDirectEnemies(other))
-            return true;
+            get { return GetFlag(Flags.IS_UNIQUE); }
+            set { SetFlag(Flags.IS_UNIQUE, value); }
         }
-      }
-      if (other.HasLeader)
-      {
-        if (other.Leader.AreDirectEnemies(this) || this.HasLeader && other.Leader.AreDirectEnemies(this.m_Leader))
-          return true;
-        foreach (Actor follower in other.Leader.Followers)
+
+        public Faction Faction
         {
-          if (follower != other && follower.AreDirectEnemies(this))
-            return true;
+            get { return Models.Factions[m_FactionID]; }
+            set { m_FactionID = value.ID; }
         }
-      }
-      return false;
-    }
 
-    public void AddBoringItem(Item it)
-    {
-      if (this.m_BoringItems == null)
-        this.m_BoringItems = new List<Item>(1);
-      if (this.m_BoringItems.Contains(it))
-        return;
-      this.m_BoringItems.Add(it);
-    }
+        /// <summary>
+        /// Appends "(YOU) " if the actor is the player.
+        /// </summary>
+        public string Name
+        {
+            get { return IsPlayer ? "(YOU) " + m_Name : m_Name; }
+            set
+            {
+                m_Name = value;
+                if (value != null)
+                    m_Name.Replace("(YOU) ", "");
+            }
+        }
 
-    public bool IsBoredOf(Item it)
-    {
-      if (this.m_BoringItems == null)
-        return false;
-      return this.m_BoringItems.Contains(it);
-    }
+        /// <summary>
+        /// Raw name without "(YOU) " for the player.
+        /// </summary>
+        public string UnmodifiedName
+        {
+            get { return m_Name; }
+        }
 
-    public Item GetEquippedItem(DollPart part)
-    {
-      if (this.m_Inventory == null || part == DollPart.NONE)
-        return (Item) null;
-      foreach (Item obj in this.m_Inventory.Items)
-      {
-        if (obj.EquippedPart == part)
-          return obj;
-      }
-      return (Item) null;
-    }
+        public bool IsProperName
+        {
+            get { return GetFlag(Flags.IS_PROPER_NAME); }
+            set { SetFlag(Flags.IS_PROPER_NAME, value); }
+        }
 
-    public Item GetEquippedWeapon()
-    {
-      return this.GetEquippedItem(DollPart._FIRST);
-    }
+        public bool IsPluralName
+        {
+            get { return GetFlag(Flags.IS_PLURAL_NAME); }
+            set { SetFlag(Flags.IS_PLURAL_NAME, value); }
+        }
 
-    private bool GetFlag(Actor.Flags f)
-    {
-      return (uint) (this.m_Flags & f) > 0U;
-    }
+        public string TheName
+        {
+            get { return IsProperName || IsPluralName ? Name : "the " + m_Name; }
+        }
 
-    private void SetFlag(Actor.Flags f, bool value)
-    {
-      if (value)
-        this.m_Flags |= f;
-      else
-        this.m_Flags &= ~f;
-    }
+        public ActorController Controller
+        {
+            get { return m_Controller; }
+            set
+            {
+                if (m_Controller != null)
+                    m_Controller.LeaveControl();
+                m_Controller = value;
+                if (m_Controller != null)
+                    m_Controller.TakeControl(this);
+            }
+        }
 
-    private void OneFlag(Actor.Flags f)
-    {
-      this.m_Flags |= f;
-    }
+        /// <summary>
+        /// Gets if this actor is controlled by the player.
+        /// </summary>
+        public bool IsPlayer
+        {
+            get { return m_Controller != null && m_Controller is PlayerController; }
+        }
 
-    private void ZeroFlag(Actor.Flags f)
-    {
-      this.m_Flags &= ~f;
-    }
+        public int SpawnTime
+        {
+            get { return m_SpawnTime; }
+        }
 
-    public void OptimizeBeforeSaving()
-    {
-      if (this.m_TargetActor != null && this.m_TargetActor.IsDead)
-        this.m_TargetActor = (Actor) null;
-      if (this.m_BoringItems == null)
-        return;
-      this.m_BoringItems.TrimExcess();
-    }
+        public int GangID
+        {
+            get { return m_GangID; }
+            set { m_GangID = value; }
+        }
 
-    [System.Flags]
-    private enum Flags
-    {
-      NONE = 0,
-      IS_UNIQUE = 1,
-      IS_PROPER_NAME = 2,
-      IS_PLURAL_NAME = 4,
-      IS_DEAD = 8,
-      IS_RUNNING = 16, // 0x00000010
-      IS_SLEEPING = 32, // 0x00000020
+        public bool IsInAGang
+        {
+            get { return m_GangID != (int)GameGangs.IDs.NONE; }
+        }
+        #endregion
+
+        #region State
+        public Doll Doll
+        {
+            get { return m_Doll; }
+        }
+
+        public bool IsDead
+        {
+            get { return GetFlag(Flags.IS_DEAD); }
+            set { SetFlag(Flags.IS_DEAD, value); }
+        }
+
+        public bool IsSleeping
+        {
+            get { return GetFlag(Flags.IS_SLEEPING); }
+            set { SetFlag(Flags.IS_SLEEPING, value); }
+        }
+
+        public bool IsRunning
+        {
+            get { return GetFlag(Flags.IS_RUNNING); }
+            set { SetFlag(Flags.IS_RUNNING, value); }
+        }
+
+        public Inventory Inventory
+        {
+            get { return m_Inventory; }
+            set { m_Inventory = value; }
+        }
+
+        public int HitPoints
+        {
+            get { return m_HitPoints; }
+            set { m_HitPoints = value; }
+        }
+
+        public int PreviousHitPoints
+        {
+            get { return m_previousHitPoints; }
+            set { m_previousHitPoints = value; }
+        }
+
+        public int StaminaPoints
+        {
+            get { return m_StaminaPoints; }
+            set { m_StaminaPoints = value; }
+        }
+
+        public int PreviousStaminaPoints
+        {
+            get { return m_previousStamina; }
+            set { m_previousStamina = value; }
+        }
+
+        public int FoodPoints
+        {
+            get { return m_FoodPoints; }
+            set { m_FoodPoints = value; }
+        }
+
+        public int PreviousFoodPoints
+        {
+            get { return m_previousFoodPoints; }
+            set { m_previousFoodPoints = value; }
+        }
+
+        public int SleepPoints
+        {
+            get { return m_SleepPoints; }
+            set { m_SleepPoints = value; }
+        }
+
+        public int PreviousSleepPoints
+        {
+            get { return m_previousSleepPoints; }
+            set { m_previousSleepPoints = value; }
+        }
+
+        public int Sanity
+        {
+            get { return m_Sanity; }
+            set { m_Sanity = value; }
+        }
+
+        public int PreviousSanity
+        {
+            get { return m_previousSanity; }
+            set { m_previousSanity = value; }
+        }
+
+        public ActorSheet Sheet
+        {
+            get { return m_Sheet; }
+        }
+
+        public int ActionPoints
+        {
+            get { return m_ActionPoints; }
+            set { m_ActionPoints = value; }
+        }
+
+        public int LastActionTurn
+        {
+            get { return m_LastActionTurn; }
+            set { m_LastActionTurn = value; }
+        }
+
+        public Location Location
+        {
+            get { return m_Location; }
+            set { m_Location = value; }
+        }
+
+        public Activity Activity
+        {
+            get { return m_Activity; }
+            set { m_Activity = value; }
+        }
+
+        public Actor TargetActor
+        {
+            get { return m_TargetActor; }
+            set { m_TargetActor = value; }
+        }
+
+        public int AudioRange
+        {
+            get { return m_Sheet.BaseAudioRange + m_AudioRangeMod; }
+        }
+
+        public int AudioRangeMod
+        {
+            get { return m_AudioRangeMod; }
+            set { m_AudioRangeMod = value; }
+        }
+
+        public Attack CurrentMeleeAttack
+        {
+            get { return m_CurrentMeleeAttack; }
+            set { m_CurrentMeleeAttack = value; }
+        }
+
+        public Attack CurrentRangedAttack
+        {
+            get { return m_CurrentRangedAttack; }
+            set { m_CurrentRangedAttack = value; }
+        }
+
+        public Defence CurrentDefence
+        {
+            get { return m_CurrentDefence; }
+            set { m_CurrentDefence = value; }
+        }
+
+        public Actor Leader
+        {
+            get { return m_Leader; }
+        }
+
+        /// <summary>
+        /// Gets if has a leader and he is alive.
+        /// </summary>
+        public bool HasLeader
+        {
+            get { return m_Leader != null && !m_Leader.IsDead; }
+        }
+
+        public int TrustInLeader
+        {
+            get { return m_TrustInLeader; }
+            set { m_TrustInLeader = value; }
+        }
+
+        public IEnumerable<Actor> Followers
+        {
+            get { return m_Followers; }
+        }
+
+        public int CountFollowers
+        {
+            get
+            {
+                if (m_Followers == null)
+                    return 0;
+                return m_Followers.Count;
+            }
+        }
+
+        public int KillsCount
+        {
+            get { return m_KillsCount; }
+            set { m_KillsCount = value; }
+        }
+
+        public IEnumerable<Actor> AggressorOf
+        {
+            get { return m_AggressorOf; }
+        }
+
+        public int CountAggressorOf
+        {
+            get
+            {
+                if (m_AggressorOf == null)
+                    return 0;
+                return m_AggressorOf.Count;
+            }
+        }
+
+        public IEnumerable<Actor> SelfDefenceFrom
+        {
+            get { return m_SelfDefenceFrom; }
+        }
+
+        public int CountSelfDefenceFrom
+        {
+            get
+            {
+                if (m_SelfDefenceFrom == null)
+                    return 0;
+                return m_SelfDefenceFrom.Count;
+            }
+        }
+
+        public int MurdersCounter
+        {
+            get { return m_MurdersCounter; }
+            set { m_MurdersCounter = value; }
+        }
+
+        public int Infection
+        {
+            get { return m_Infection; }
+            set { m_Infection = value; }
+        }
+
+        public Corpse DraggedCorpse
+        {
+            get { return m_DraggedCorpse; }
+            set { m_DraggedCorpse = value; }
+        }
+        #endregion
+        #endregion
+
+        #region Init
+        public Actor(ActorModel model, Faction faction, string name, bool isProperName, bool isPluralName, int spawnTime)
+        {
+            if (model == null)
+                throw new ArgumentNullException("model");
+            if (faction == null)
+                throw new ArgumentNullException("faction");
+            if (name == null)
+                throw new ArgumentNullException("name");
+
+            m_ModelID = model.ID;
+            m_FactionID = faction.ID;
+            m_GangID = (int)GameGangs.IDs.NONE;
+            m_Name = name;
+            this.IsProperName = isProperName;
+            this.IsPluralName = isPluralName;
+            m_Location = new Location();
+            m_SpawnTime = spawnTime;
+            this.IsUnique = false;
+            this.IsDead = false;
+
+            OnModelSet();
+        }
+
+        public Actor(ActorModel model, Faction faction, int spawnTime)
+            : this(model, faction, model.Name, false, false, spawnTime)
+        {
+        }
+
+        void OnModelSet()
+        {
+            ActorModel model = this.Model;
+
+            m_Doll = new Doll(model.DollBody);
+            m_Sheet = new ActorSheet(model.StartingSheet);
+
+            // starting points maxed.
+            m_ActionPoints = m_Doll.Body.Speed;
+            m_HitPoints = m_previousHitPoints = m_Sheet.BaseHitPoints;
+            m_StaminaPoints = m_previousStamina = m_Sheet.BaseStaminaPoints;
+            m_FoodPoints = m_previousFoodPoints = m_Sheet.BaseFoodPoints;
+            m_SleepPoints = m_previousSleepPoints = m_Sheet.BaseSleepPoints;
+            m_Sanity = m_previousSanity = m_Sheet.BaseSanity;
+
+            // create inventory.
+            if (model.Abilities.HasInventory)
+                m_Inventory = new Inventory(model.StartingSheet.BaseInventoryCapacity);
+
+            // starting attacks.
+            m_CurrentMeleeAttack = model.StartingSheet.UnarmedAttack;
+            m_CurrentDefence = model.StartingSheet.BaseDefence;
+            m_CurrentRangedAttack = Attack.BLANK;
+        }
+        #endregion
+
+        #region Followers & Trust
+        public void AddFollower(Actor other)
+        {
+            if (other == null)
+                throw new ArgumentNullException("other");
+            if (m_Followers != null && m_Followers.Contains(other))
+                throw new ArgumentException("other is already a follower");
+
+            if (m_Followers == null)
+                m_Followers = new List<Actor>(1);
+            m_Followers.Add(other);
+
+            if (other.Leader != null)
+                other.Leader.RemoveFollower(other);
+            other.m_Leader = this;
+        }
+
+        public void RemoveFollower(Actor other)
+        {
+            if (other == null)
+                throw new ArgumentNullException("other");
+            if (m_Followers == null)
+                throw new InvalidOperationException("no followers");
+
+            m_Followers.Remove(other);
+            if (m_Followers.Count == 0)
+                m_Followers = null;
+
+            other.m_Leader = null;
+
+            // reset directives & order.
+            AIController ai = other.Controller as AIController;
+            if (ai != null)
+            {
+                ai.Directives.Reset();
+                ai.SetOrder(null);
+            }
+        }
+
+        public void RemoveAllFollowers()
+        {
+            while (m_Followers != null && m_Followers.Count > 0)
+            {
+                RemoveFollower(m_Followers[0]);
+            }
+        }
+
+        public void SetTrustIn(Actor other, int trust)
+        {
+            if (m_TrustList == null)
+            {
+                m_TrustList = new List<TrustRecord>(1) { new TrustRecord() { Actor = other, Trust = trust } };
+                return;
+            }
+
+            foreach (TrustRecord r in m_TrustList)
+            {
+                if (r.Actor == other)
+                {
+                    r.Trust = trust;
+                    return;
+                }
+            }
+
+            m_TrustList.Add(new TrustRecord() { Actor = other, Trust = trust });
+        }
+
+
+        public void AddTrustIn(Actor other, int amount)
+        {
+            SetTrustIn(other, GetTrustIn(other) + amount);
+        }
+
+        public int GetTrustIn(Actor other)
+        {
+            if (m_TrustList == null) return 0;
+            foreach (TrustRecord r in m_TrustList)
+            {
+                if (r.Actor == other)
+                    return r.Trust;
+            }
+            return 0;
+        }
+        #endregion
+
+        #region Aggressor & Self Defence
+        public void MarkAsAgressorOf(Actor other)
+        {
+            if (other == null || other.IsDead)
+                return;
+
+            if (m_AggressorOf == null)
+                m_AggressorOf = new List<Actor>(1);
+            else if (m_AggressorOf.Contains(other))
+                return;
+            m_AggressorOf.Add(other);
+        }
+
+        public void MarkAsSelfDefenceFrom(Actor other)
+        {
+            if (other == null || other.IsDead)
+                return;
+
+            if (m_SelfDefenceFrom == null)
+                m_SelfDefenceFrom = new List<Actor>(1);
+            else if (m_SelfDefenceFrom.Contains(other))
+                return;
+            m_SelfDefenceFrom.Add(other);
+        }
+
+        public bool IsAggressorOf(Actor other)
+        {
+            if (m_AggressorOf == null)
+                return false;
+            return m_AggressorOf.Contains(other);
+        }
+
+        public bool IsSelfDefenceFrom(Actor other)
+        {
+            if (m_SelfDefenceFrom == null)
+                return false;
+            return m_SelfDefenceFrom.Contains(other);
+        }
+
+        public void RemoveAggressorOf(Actor other)
+        {
+            if (m_AggressorOf == null)
+                return;
+            m_AggressorOf.Remove(other);
+            if (m_AggressorOf.Count == 0)
+                m_AggressorOf = null;
+        }
+
+        public void RemoveSelfDefenceFrom(Actor other)
+        {
+            if (m_SelfDefenceFrom == null)
+                return;
+            m_SelfDefenceFrom.Remove(other);
+            if (m_SelfDefenceFrom.Count == 0)
+                m_SelfDefenceFrom = null;
+        }
+
+        public void RemoveAllAgressorSelfDefenceRelations()
+        {
+            while (m_AggressorOf != null)
+            {
+                Actor other = m_AggressorOf[0];
+                RemoveAggressorOf(other);
+                other.RemoveSelfDefenceFrom(this);
+            }
+            while (m_SelfDefenceFrom != null)
+            {
+                Actor other = m_SelfDefenceFrom[0];
+                RemoveSelfDefenceFrom(other);
+                other.RemoveAggressorOf(this);
+            }
+        }
+
+        public bool AreDirectEnemies(Actor other)
+        {
+            if (other == null || other.IsDead)
+                return false;
+
+            if (m_AggressorOf != null)
+            {
+                if (m_AggressorOf.Contains(other))
+                    return true;
+            }
+            if (m_SelfDefenceFrom != null)
+            {
+                if (m_SelfDefenceFrom.Contains(other))
+                    return true;
+            }
+
+            if (other.IsAggressorOf(this))
+                return true;
+            if (other.IsSelfDefenceFrom(this))
+                return true;
+
+            // nope.
+            return false;
+        }
+
+        public bool AreIndirectEnemies(Actor other)
+        {
+            if (other == null || other.IsDead)
+                return false;
+
+            // check my leader and my mates, if any.
+            if (this.HasLeader)
+            {
+                // my leader.
+                if (m_Leader.AreDirectEnemies(other))
+                    return true;
+                if (other.HasLeader && m_Leader.AreDirectEnemies(other.Leader))
+                    return true;
+                // my mates = my leader followers.
+                foreach (Actor mate in m_Leader.Followers)
+                    if (mate != this && mate.AreDirectEnemies(other))
+                        return true;
+            }
+
+            // check my followers, if any.
+            if (this.CountFollowers > 0)
+            {
+                foreach (Actor fo in m_Followers)
+                    if (fo.AreDirectEnemies(other))
+                        return true;
+            }
+
+            // check their leader and mates.
+            if (other.HasLeader)
+            {
+                // his leader.
+                if (other.Leader.AreDirectEnemies(this))
+                    return true;
+                if (HasLeader && other.Leader.AreDirectEnemies(m_Leader))
+                    return true;
+                // his mates = his leader followers.
+                foreach (Actor mate in other.Leader.Followers)
+                    if (mate != other && mate.AreDirectEnemies(this))
+                        return true;
+            }
+
+            // nope.
+            return false;
+        }
+
+#if false
+        /// <summary>
+        /// Make sure another actor is added to the list of personal enemies.
+        /// </summary>
+        /// <param name="e"></param>
+        public void MarkAsPersonalEnemy(Actor e)
+        {
+            if (e == null || e.IsDead)
+                return;
+
+            if (m_PersonalEnemies == null)
+                m_PersonalEnemies = new List<Actor>(1);
+            else if (m_PersonalEnemies.Contains(e))
+                return;
+
+            m_PersonalEnemies.Add(e);
+        }
+
+        public void RemoveAsPersonalEnemy(Actor e)
+        {
+            if (m_PersonalEnemies == null)
+                return;
+
+            m_PersonalEnemies.Remove(e);
+
+            // minimize data size.
+            if (m_PersonalEnemies.Count == 0)
+                m_PersonalEnemies = null; 
+        }
+
+        public void RemoveAllPersonalEnemies()
+        {
+            if (m_PersonalEnemies == null)
+                return;
+
+            while (m_PersonalEnemies.Count > 0)
+            {
+                Actor e = m_PersonalEnemies[0];
+                e.RemoveAsPersonalEnemy(this);
+                m_PersonalEnemies.Remove(e);
+            }
+        }
+
+        /// <summary>
+        /// Checks for own personal enemy as well as our band (leader & followers).
+        /// So in a band we share all personal enemies.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool HasActorAsPersonalEnemy(Actor other)
+        {
+            if (other == null || other.IsDead)
+                return false;
+
+            // first check personal list.
+            if (m_PersonalEnemies != null)
+            {
+                if (m_PersonalEnemies.Contains(other))
+                    return true;
+            }
+
+            // check my leader and my mates, if any.
+            if (this.HasLeader)
+            {
+                // my leader.
+                if (m_Leader.HasDirectPersonalEnemy(other))
+                    return true;
+                // my mates = my leader followers.
+                foreach (Actor mate in m_Leader.Followers)
+                    if (mate != this && mate.HasDirectPersonalEnemy(other))
+                        return true;
+            }
+
+            // check my followers, if any.
+            if (this.CountFollowers > 0)
+            {
+                foreach (Actor fo in m_Followers)
+                    if (fo.HasDirectPersonalEnemy(other))
+                        return true;
+            }
+
+            // nope.
+            return false;
+        }
+
+        /// <summary>
+        /// Checks only personal enemy list, do not check our band.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        bool HasDirectPersonalEnemy(Actor other)
+        {
+            if (m_PersonalEnemies == null)
+                return false;
+            return m_PersonalEnemies.Contains(other);
+        }
+
+        public void MarkAsSelfDefence(Actor e)
+        {
+            if (e == null || e.IsDead)
+                return;
+
+            if (m_SelfDefence == null)
+                m_SelfDefence = new List<Actor>(1);
+            else if (m_SelfDefence.Contains(e))
+                return;
+
+            m_SelfDefence.Add(e);
+        }
+
+        public void RemoveAsSelfDefence(Actor e)
+        {
+            if (m_SelfDefence == null)
+                return;
+
+            m_SelfDefence.Remove(e);
+
+            // minimize data size.
+            if (m_SelfDefence.Count == 0)
+                m_SelfDefence = null;
+        }
+
+        public void RemoveAllSelfDefence()
+        {
+            if (m_SelfDefence == null)
+                return;
+
+            while (m_SelfDefence.Count > 0)
+            {
+                Actor e = m_SelfDefence[0];
+                e.RemoveAsSelfDefence(this);
+                m_SelfDefence.Remove(e);
+            }
+        }
+
+        public bool HasDirectSelfDefence(Actor other)
+        {
+            if (m_SelfDefence == null)
+                return false;
+            return m_SelfDefence.Contains(other);
+        }
+#endif
+        #endregion
+
+        #region Boring items
+        public void AddBoringItem(Item it)
+        {
+            if (m_BoringItems == null) m_BoringItems = new List<Item>(1);
+            if (m_BoringItems.Contains(it)) return;
+            m_BoringItems.Add(it);
+        }
+
+        public bool IsBoredOf(Item it)
+        {
+            if (m_BoringItems == null) return false;
+            return m_BoringItems.Contains(it);
+        }
+        #endregion
+
+        #region Equipment helpers
+        public Item GetEquippedItem(DollPart part)
+        {
+            if (m_Inventory == null || part == DollPart.NONE)
+                return null;
+
+            foreach (Item it in m_Inventory.Items)
+                if (it.EquippedPart == part)
+                    return it;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Assumed to be equiped at Right hand.
+        /// </summary>
+        /// <returns></returns>
+        public Item GetEquippedWeapon()
+        {
+            return GetEquippedItem(DollPart.RIGHT_HAND);
+        }
+        #endregion
+
+        #region Flags helpers
+        private bool GetFlag(Flags f) { return (m_Flags & f) != 0; }
+        private void SetFlag(Flags f, bool value) { if (value) m_Flags |= f; else m_Flags &= ~f; }
+        private void OneFlag(Flags f) { m_Flags |= f; }
+        private void ZeroFlag(Flags f) { m_Flags &= ~f; }
+        #endregion
+
+        #region Pre-save
+        public void OptimizeBeforeSaving()
+        {
+            // remove dead target.
+            if (m_TargetActor != null && m_TargetActor.IsDead) m_TargetActor = null;
+
+            // trim.
+            if (m_BoringItems != null) m_BoringItems.TrimExcess();
+        }
+        #endregion
     }
-  }
 }

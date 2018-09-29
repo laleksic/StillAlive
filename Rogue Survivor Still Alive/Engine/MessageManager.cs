@@ -1,92 +1,98 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Engine.MessageManager
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Drawing;
 
 using djack.RogueSurvivor.Data;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace djack.RogueSurvivor.Engine
 {
-  internal class MessageManager
-  {
-    private readonly List<Message> m_Messages = new List<Message>();
-    private int m_LinesSpacing;
-    private int m_FadeoutFactor;
-    private readonly List<Message> m_History;
-    private int m_HistorySize;
-
-    public int Count
+    class MessageManager
     {
-      get
-      {
-        return this.m_Messages.Count;
-      }
-    }
+        #region Fields
+        readonly List<Message> m_Messages = new List<Message>();
+        int m_LinesSpacing;
+        int m_FadeoutFactor;
+        readonly List<Message> m_History;
+        int m_HistorySize;
+        #endregion
 
-    public IEnumerable<Message> History
-    {
-      get
-      {
-        return (IEnumerable<Message>) this.m_History;
-      }
-    }
+        #region Properties
+        public int Count
+        {
+            get { return m_Messages.Count; }
+        }
 
-    public MessageManager(int linesSpacing, int fadeoutFactor, int historySize)
-    {
-      if (linesSpacing < 0)
-        throw new ArgumentOutOfRangeException("linesSpacing < 0");
-      if (fadeoutFactor < 0)
-        throw new ArgumentOutOfRangeException("fadeoutFactor < 0");
-      this.m_LinesSpacing = linesSpacing;
-      this.m_FadeoutFactor = fadeoutFactor;
-      this.m_HistorySize = historySize;
-      this.m_History = new List<Message>(historySize);
-    }
+        public IEnumerable<Message> History
+        {
+            get { return m_History; }
+        }
+        #endregion
 
-    public void Clear()
-    {
-      this.m_Messages.Clear();
-    }
+        #region Init
+        public MessageManager(int linesSpacing, int fadeoutFactor, int historySize)
+        {
+            if (linesSpacing < 0)
+                throw new ArgumentOutOfRangeException("linesSpacing < 0");
+            if (fadeoutFactor < 0)
+                throw new ArgumentOutOfRangeException("fadeoutFactor < 0");
 
-    public void ClearHistory()
-    {
-      this.m_History.Clear();
-    }
+            m_LinesSpacing = linesSpacing;
+            m_FadeoutFactor = fadeoutFactor;
+            m_HistorySize = historySize;
+            m_History = new List<Message>(historySize);
+        }
+        #endregion
 
-    public void Add(Message msg)
-    {
-      this.m_Messages.Add(msg);
-      this.m_History.Add(msg);
-      if (this.m_History.Count <= this.m_HistorySize)
-        return;
-      this.m_History.RemoveAt(0);
-    }
+        #region Managing messages
+        public void Clear()
+        {
+            m_Messages.Clear();
+        }
 
-    public void RemoveLastMessage()
-    {
-      if (this.m_Messages.Count == 0)
-        return;
-      this.m_Messages.RemoveAt(this.m_Messages.Count - 1);
-    }
+        public void ClearHistory()
+        {
+            m_History.Clear();
+        }
 
-    public void Draw(IRogueUI ui, int freshMessagesTurn, int gx, int gy)
-    {
-      for (int index = 0; index < this.m_Messages.Count; ++index)
-      {
-        Message message = this.m_Messages[index];
-        int alpha = Math.Max(64, (int) byte.MaxValue - this.m_FadeoutFactor * (this.m_Messages.Count - 1 - index));
-        int num = this.m_Messages[index].Turn >= freshMessagesTurn ? 1 : 0;
-        Color color = Color.FromArgb(alpha, message.Color);
-        if (num != 0)
-          ui.UI_DrawStringBold(color, message.Text, gx, gy, new Color?());
-        else
-          ui.UI_DrawString(color, message.Text, gx, gy, new Color?());
-        gy += this.m_LinesSpacing;
-      }
+        public void Add(Message msg)
+        {
+            m_Messages.Add(msg);
+            m_History.Add(msg);
+            if (m_History.Count > m_HistorySize)
+            {
+                m_History.RemoveAt(0);
+            }
+        }
+
+        public void RemoveLastMessage()
+        {
+            if (m_Messages.Count == 0)
+                return;
+            m_Messages.RemoveAt(m_Messages.Count - 1);
+        }
+        #endregion
+
+        #region Drawing
+        public void Draw(IRogueUI ui, int freshMessagesTurn, int gx, int gy)
+        {
+            for(int i = 0; i < m_Messages.Count; i++)
+            {
+                Message msg = m_Messages[i];
+
+                int alpha = Math.Max(64, 255 - m_FadeoutFactor * (m_Messages.Count - 1 - i));
+                bool isLatest = (m_Messages[i].Turn >= freshMessagesTurn);
+                Color dimmedColor = Color.FromArgb(alpha, msg.Color);
+
+                if(isLatest)
+                    ui.UI_DrawStringBold(dimmedColor, msg.Text, gx, gy);
+                else
+                    ui.UI_DrawString(dimmedColor, msg.Text, gx, gy);
+
+                gy += m_LinesSpacing;
+            }
+        }
+        #endregion
     }
-  }
 }

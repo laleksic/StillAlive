@@ -1,692 +1,955 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Gameplay.AI.CivilianAI
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Drawing;   // Point
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Engine.Actions;
 using djack.RogueSurvivor.Engine.AI;
 using djack.RogueSurvivor.Engine.Items;
+using djack.RogueSurvivor.Engine.MapObjects;
 using djack.RogueSurvivor.Gameplay.AI.Sensors;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace djack.RogueSurvivor.Gameplay.AI
 {
-  [Serializable]
-  internal class CivilianAI : OrderableAI
-  {
-    private static string[] FIGHT_EMOTES = new string[3]
+    [Serializable]
+    /// <summary>
+    /// Civilian AI : Civilians, Survivors, Cops.
+    /// </summary>
+    class CivilianAI : OrderableAI
     {
-      "Go away",
-      "Damn it I'm trapped!",
-      "I'm not afraid"
-    };
-    private static string[] BIG_BEAR_EMOTES = new string[3]
-    {
-      "You fool",
-      "I'm fooled!",
-      "Be a man"
-    };
-    private static string[] FAMU_FATARU_EMOTES = new string[3]
-    {
-      "Bakemono",
-      "Nani!?",
-      "Kawaii"
-    };
-    private static string[] SANTAMAN_EMOTES = new string[3]
-    {
-      "DEM BLOODY KIDS!",
-      "LEAVE ME ALONE I AIN'T HAVE NO PRESENTS!",
-      "MERRY FUCKIN' CHRISTMAS"
-    };
-    private static string[] ROGUEDJACK_EMOTES = new string[3]
-    {
-      "Sorry butt I am le busy,",
-      "I should have redone ze AI rootines!",
-      "Let me test le something on you"
-    };
-    private static string[] DUCKMAN_EMOTES = new string[3]
-    {
-      "I'LL QUACK YOU BACK",
-      "THIS IS MY FINAL QUACK",
-      "I'M GONNA QUACK YOU"
-    };
-    private static string[] HANS_VON_HANZ_EMOTES = new string[3]
-    {
-      "RAUS",
-      "MEIN FUHRER!",
-      "KOMM HIER BITE"
-    };
-    private const int FOLLOW_NPCLEADER_MAXDIST = 1;
-    private const int FOLLOW_PLAYERLEADER_MAXDIST = 1;
-    private const int EXPLORATION_MAX_LOCATIONS = 30;
-    private const int EXPLORATION_MAX_ZONES = 3;
-    private const int USE_EXIT_CHANCE = 20;
-    private const int BUILD_TRAP_CHANCE = 50;
-    private const int BUILD_SMALL_FORT_CHANCE = 20;
-    private const int BUILD_LARGE_FORT_CHANCE = 50;
-    private const int START_FORT_LINE_CHANCE = 1;
-    private const int TELL_FRIEND_ABOUT_RAID_CHANCE = 20;
-    private const int TELL_FRIEND_ABOUT_ENEMY_CHANCE = 10;
-    private const int TELL_FRIEND_ABOUT_ITEMS_CHANCE = 10;
-    private const int TELL_FRIEND_ABOUT_SOLDIER_CHANCE = 20;
-    private const int MIN_TURNS_SAFE_TO_SLEEP = 10;
-    private const int USE_STENCH_KILLER_CHANCE = 75;
-    private const int HUNGRY_CHARGE_EMOTE_CHANCE = 50;
-    private const int HUNGRY_PUSH_OBJECTS_CHANCE = 25;
-    private const int LAW_ENFORCE_CHANCE = 30;
-    private const int DONT_LEAVE_BEHIND_EMOTE_CHANCE = 50;
-    private LOSSensor m_LOSSensor;
-    private int m_SafeTurns;
-    private ExplorationData m_Exploration;
-    private string[] m_Emotes;
+        #region Constants
+        const int FOLLOW_NPCLEADER_MAXDIST = 1;
+        const int FOLLOW_PLAYERLEADER_MAXDIST = 1;
 
-    public override void TakeControl(Actor actor)
-    {
-      base.TakeControl(actor);
-      this.m_SafeTurns = 0;
-      this.m_Exploration = new ExplorationData(30, 3);
-      this.m_LastEnemySaw = (Percept) null;
-      this.m_LastItemsSaw = (Percept) null;
-      this.m_LastSoldierSaw = (Percept) null;
-      this.m_LastRaidHeard = (Percept) null;
-      this.m_Emotes = (string[]) null;
-    }
+        const int EXPLORATION_MAX_LOCATIONS = 30;
+        const int EXPLORATION_MAX_ZONES = 3;
 
-    protected override void CreateSensors()
-    {
-      this.m_LOSSensor = new LOSSensor(LOSSensor.SensingFilter.ACTORS | LOSSensor.SensingFilter.ITEMS | LOSSensor.SensingFilter.CORPSES);
-    }
+        const int USE_EXIT_CHANCE = 20;
 
-    protected override List<Percept> UpdateSensors(RogueGame game)
-    {
-      if (this.m_Emotes == null)
-        this.m_Emotes = !this.m_Actor.IsUnique ? CivilianAI.FIGHT_EMOTES : (this.m_Actor != game.Session.UniqueActors.BigBear.TheActor ? (this.m_Actor != game.Session.UniqueActors.FamuFataru.TheActor ? (this.m_Actor != game.Session.UniqueActors.Santaman.TheActor ? (this.m_Actor != game.Session.UniqueActors.Roguedjack.TheActor ? (this.m_Actor != game.Session.UniqueActors.Duckman.TheActor ? (this.m_Actor != game.Session.UniqueActors.HansVonHanz.TheActor ? CivilianAI.FIGHT_EMOTES : CivilianAI.HANS_VON_HANZ_EMOTES) : CivilianAI.DUCKMAN_EMOTES) : CivilianAI.ROGUEDJACK_EMOTES) : CivilianAI.SANTAMAN_EMOTES) : CivilianAI.FAMU_FATARU_EMOTES) : CivilianAI.BIG_BEAR_EMOTES);
-      return this.m_LOSSensor.Sense(game, this.m_Actor);
-    }
+        const int BUILD_TRAP_CHANCE = 50;
+        const int BUILD_SMALL_FORT_CHANCE = 20;
+        const int BUILD_LARGE_FORT_CHANCE = 50;
+        const int START_FORT_LINE_CHANCE = 1;
 
-    protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
-    {
-      List<Percept> percepts1 = this.FilterSameMap(game, percepts);
-      if (this.Order != null)
-      {
-        ActorAction actorAction = this.ExecuteOrder(game, this.Order, percepts1);
-        if (actorAction == null)
+        const int TELL_FRIEND_ABOUT_RAID_CHANCE = 20;
+        const int TELL_FRIEND_ABOUT_ENEMY_CHANCE = 10;
+        const int TELL_FRIEND_ABOUT_ITEMS_CHANCE = 10;
+        const int TELL_FRIEND_ABOUT_SOLDIER_CHANCE = 20;
+
+        const int MIN_TURNS_SAFE_TO_SLEEP = 10;
+
+        const int USE_STENCH_KILLER_CHANCE = 75;
+
+        const int HUNGRY_CHARGE_EMOTE_CHANCE = 50;
+        const int HUNGRY_PUSH_OBJECTS_CHANCE = 25;
+
+        const int LAW_ENFORCE_CHANCE = 30;
+
+        const int DONT_LEAVE_BEHIND_EMOTE_CHANCE = 50;
+
+        static string[] FIGHT_EMOTES = 
         {
-          this.SetOrder((ActorOrder) null);
+            "Go away",                  // flee
+            "Damn it I'm trapped!",     // trapped
+            "I'm not afraid"            // fight
+        };      
+
+        // Unique emotes.
+        static string[] BIG_BEAR_EMOTES =
+        {
+            "You fool",                 // flee
+            "I'm fooled!",              // trapped
+            "Be a man"                  // fight
+        };
+        static string[] FAMU_FATARU_EMOTES =
+        {
+            "Bakemono",       // flee
+            "Nani!?",         // trapped
+            "Kawaii"      // fight
+        };
+        static string[] SANTAMAN_EMOTES =
+        {
+            "DEM BLOODY KIDS!",                          // flee
+            "LEAVE ME ALONE I AIN'T HAVE NO PRESENTS!",  // trapped
+            "MERRY FUCKIN' CHRISTMAS"                   // fight
+        };
+        static string[] ROGUEDJACK_EMOTES =
+        {
+            "Sorry butt I am le busy,",                 // flee
+            "I should have redone ze AI rootines!",     // trapped
+            "Let me test le something on you"           // fight
+        };
+        static string[] DUCKMAN_EMOTES =
+        {
+            "I'LL QUACK YOU BACK",     // flee
+            "THIS IS MY FINAL QUACK",  // trapped
+            "I'M GONNA QUACK YOU"      // fight
+        };
+        static string[] HANS_VON_HANZ_EMOTES =
+        {
+            "RAUS",             // flee
+            "MEIN FUHRER!",     // trapped
+            "KOMM HIER BITE"    // fight
+        };        
+
+        #endregion
+
+        #region Fields
+        LOSSensor m_LOSSensor;
+
+        int m_SafeTurns;
+        ExplorationData m_Exploration;
+
+        string[] m_Emotes;
+        #endregion
+
+        #region BaseAI
+        public override void TakeControl(Actor actor)
+        {
+            base.TakeControl(actor);
+        
+            m_SafeTurns = 0;
+            m_Exploration = new ExplorationData(EXPLORATION_MAX_LOCATIONS, EXPLORATION_MAX_ZONES);
+
+            m_LastEnemySaw = null;
+            m_LastItemsSaw = null;
+            m_LastSoldierSaw = null;
+            m_LastRaidHeard = null;
+            m_Emotes = null;
         }
-        else
+
+        protected override void CreateSensors()
         {
-          this.m_Actor.Activity = Activity.FOLLOWING_ORDER;
-          return actorAction;
+            m_LOSSensor = new LOSSensor(LOSSensor.SensingFilter.ACTORS | LOSSensor.SensingFilter.ITEMS | LOSSensor.SensingFilter.CORPSES);
         }
-      }
-      this.m_Actor.IsRunning = false;
-      List<Percept> perceptList1 = this.FilterEnemies(game, percepts1);
-      bool flag1 = perceptList1 != null && perceptList1.Count > 0;
-      bool flag2 = this.m_Actor.HasLeader && !this.DontFollowLeader;
-      Location location1;
-      int num;
-      if (flag2)
-      {
-        HashSet<Point> fov = this.m_LOSSensor.FOV;
-        location1 = this.m_Actor.Leader.Location;
-        Point position = location1.Position;
-        num = fov.Contains(position) ? 1 : 0;
-      }
-      else
-        num = 0;
-      bool hasVisibleLeader = num != 0;
-      bool isLeaderFighting = flag2 && this.IsAdjacentToEnemy(game, this.m_Actor.Leader);
-      bool flag3 = flag2 & hasVisibleLeader & isLeaderFighting && !game.Rules.IsActorTired(this.m_Actor);
-      if (flag1)
-        this.m_SafeTurns = 0;
-      else
-        ++this.m_SafeTurns;
-      this.m_Exploration.Update(this.m_Actor.Location);
-      location1 = this.m_Actor.Location;
-      if (location1.Map.LocalTime.TurnCounter % 30 != 0)
-      {
-        Location prevLocation = this.PrevLocation;
-        location1 = this.PrevLocation;
-        Map map1 = location1.Map;
-        location1 = this.m_Actor.Location;
-        Map map2 = location1.Map;
-        if (map1 == map2)
-          goto label_13;
-      }
-      this.ClearTabooTiles();
-label_13:
-      location1 = this.m_Actor.Location;
-      if (location1.Map.LocalTime.TurnCounter % 720 == 0)
-        this.ClearTabooTrades();
-      if (flag1)
-        this.m_LastEnemySaw = perceptList1[game.Rules.Roll(0, perceptList1.Count)];
-      ActorAction actorAction1 = this.BehaviorFleeFromExplosives(game, this.FilterStacks(game, percepts1));
-      if (actorAction1 != null)
-      {
-        this.m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
-        return actorAction1;
-      }
-      if (!this.Directives.CanThrowGrenades)
-      {
-        ItemGrenade equippedWeapon = this.m_Actor.GetEquippedWeapon() as ItemGrenade;
-        if (equippedWeapon != null)
+
+        protected override List<Percept> UpdateSensors(RogueGame game)
         {
-          ActionUnequipItem actionUnequipItem = new ActionUnequipItem(this.m_Actor, game, (Item) equippedWeapon);
-          if (actionUnequipItem.IsLegal())
-          {
-            this.m_Actor.Activity = Activity.IDLE;
-            return (ActorAction) actionUnequipItem;
-          }
-        }
-      }
-      if (flag1)
-      {
-        ActorAction actorAction2 = this.BehaviorThrowGrenade(game, this.m_LOSSensor.FOV, perceptList1);
-        if (actorAction2 != null)
-          return actorAction2;
-      }
-      ActorAction actorAction3 = this.BehaviorEquipWeapon(game);
-      if (actorAction3 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction3;
-      }
-      ActorAction actorAction4 = this.BehaviorEquipBodyArmor(game);
-      if (actorAction4 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction4;
-      }
-      if (flag1 && this.Directives.CanFireWeapons && this.m_Actor.GetEquippedWeapon() is ItemRangedWeapon)
-      {
-        List<Percept> percepts2 = this.FilterFireTargets(game, perceptList1);
-        if (percepts2 != null)
-        {
-          Percept percept = this.FilterNearest(game, percepts2);
-          Actor percepted = percept.Percepted as Actor;
-          Rules rules = game.Rules;
-          location1 = percept.Location;
-          Point position1 = location1.Position;
-          location1 = this.m_Actor.Location;
-          Point position2 = location1.Position;
-          if (rules.GridDistance(position1, position2) == 1 && !this.HasEquipedRangedWeapon(percepted) && this.HasSpeedAdvantage(game, this.m_Actor, percepted))
-          {
-            ActorAction actorAction2 = this.BehaviorWalkAwayFrom(game, percept);
-            if (actorAction2 != null)
+            // emotes!
+            if (m_Emotes == null)
             {
-              this.RunIfPossible(game.Rules);
-              this.m_Actor.Activity = Activity.FLEEING;
-              return actorAction2;
+                // FIXME: uggly code.
+                if (m_Actor.IsUnique)
+                {
+                    if (m_Actor == game.Session.UniqueActors.BigBear.TheActor)
+                        m_Emotes = BIG_BEAR_EMOTES;
+                    else if (m_Actor == game.Session.UniqueActors.FamuFataru.TheActor)
+                        m_Emotes = FAMU_FATARU_EMOTES;
+                    else if (m_Actor == game.Session.UniqueActors.Santaman.TheActor)
+                        m_Emotes = SANTAMAN_EMOTES;
+                    else if (m_Actor == game.Session.UniqueActors.Roguedjack.TheActor)
+                        m_Emotes = ROGUEDJACK_EMOTES;
+                    else if (m_Actor == game.Session.UniqueActors.Duckman.TheActor)
+                        m_Emotes = DUCKMAN_EMOTES;
+                    else if (m_Actor == game.Session.UniqueActors.HansVonHanz.TheActor)
+                        m_Emotes = HANS_VON_HANZ_EMOTES;
+                    else
+                        m_Emotes = FIGHT_EMOTES;
+                }
+                else
+                    m_Emotes = FIGHT_EMOTES;
             }
-          }
-          ActorAction actorAction5 = this.BehaviorRangedAttack(game, percept);
-          if (actorAction5 != null)
-          {
-            this.m_Actor.Activity = Activity.FIGHTING;
-            this.m_Actor.TargetActor = percepted;
-            return actorAction5;
-          }
+
+            // sense.
+            return m_LOSSensor.Sense(game, m_Actor);
         }
-      }
-      if (flag1)
-      {
-        if (game.Rules.RollChance(50))
+
+        protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
-          List<Percept> friends = this.FilterNonEnemies(game, percepts1);
-          if (friends != null)
-          {
-            ActorAction actorAction2 = this.BehaviorWarnFriends(game, friends, this.FilterNearest(game, perceptList1).Percepted as Actor);
-            if (actorAction2 != null)
+            List<Percept> mapPercepts = FilterSameMap(game, percepts);
+
+            ///////////////////////
+            // 1. Follow order
+            // 2. Normal behavior.
+            ///////////////////////
+
+            // 1. Follow order
+            #region
+            if (this.Order != null)
             {
-              this.m_Actor.Activity = Activity.IDLE;
-              return actorAction2;
+                ActorAction orderAction = ExecuteOrder(game, this.Order, mapPercepts);
+                if (orderAction == null)
+                    SetOrder(null);
+                else
+                {
+                    m_Actor.Activity = Activity.FOLLOWING_ORDER;
+                    return orderAction;
+                }
             }
-          }
-        }
-        ActorAction actorAction5 = this.BehaviorFightOrFlee(game, perceptList1, hasVisibleLeader, isLeaderFighting, this.Directives.Courage, this.m_Emotes);
-        if (actorAction5 != null)
-          return actorAction5;
-      }
-      ActorAction actorAction6 = this.BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
-      if (actorAction6 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction6;
-      }
-      if (this.BehaviorRestIfTired(game) != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return (ActorAction) new ActionWait(this.m_Actor, game);
-      }
-      if (flag1 & flag3)
-      {
-        Percept target = this.FilterNearest(game, perceptList1);
-        ActorAction actorAction2 = this.BehaviorChargeEnemy(game, target);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.FIGHTING;
-          this.m_Actor.TargetActor = target.Percepted as Actor;
-          return actorAction2;
-        }
-      }
-      if (game.Rules.IsActorHungry(this.m_Actor))
-      {
-        ActorAction actorAction2 = this.BehaviorEat(game);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-        if (game.Rules.IsActorStarving(this.m_Actor) || game.Rules.IsActorInsane(this.m_Actor))
-        {
-          ActorAction actorAction5 = this.BehaviorGoEatCorpse(game, this.FilterCorpses(game, percepts1));
-          if (actorAction5 != null)
-          {
-            this.m_Actor.Activity = Activity.IDLE;
-            return actorAction5;
-          }
-        }
-      }
-      if (this.m_SafeTurns >= 10 && this.Directives.CanSleep && (this.WouldLikeToSleep(game, this.m_Actor) && this.IsInside(this.m_Actor)) && game.Rules.CanActorSleep(this.m_Actor))
-      {
-        ActorAction actorAction2 = this.BehaviorSecurePerimeter(game, this.m_LOSSensor.FOV);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-        ActorAction actorAction5 = this.BehaviorSleep(game, this.m_LOSSensor.FOV);
-        if (actorAction5 != null)
-        {
-          if (actorAction5 is ActionSleep)
-            this.m_Actor.Activity = Activity.SLEEPING;
-          return actorAction5;
-        }
-      }
-      ActorAction actorAction7 = this.BehaviorDropUselessItem(game);
-      if (actorAction7 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction7;
-      }
-      bool flag4 = this.m_Actor.HasLeader || this.m_Actor.CountFollowers > 0;
-      bool flag5 = this.NeedsLight(game);
-      RogueGame game1 = game;
-      location1 = this.m_Actor.Location;
-      Map map3 = location1.Map;
-      location1 = this.m_Actor.Location;
-      Point position3 = location1.Position;
-      bool flag6 = this.IsGoodStenchKillerSpot(game1, map3, position3);
-      if (!flag4 && !flag5 && !flag6)
-      {
-        ActorAction actorAction2 = this.BehaviorUnequipLeftItem(game);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      if (flag4)
-      {
-        ActorAction actorAction2 = this.BehaviorEquipCellPhone(game);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      else if (flag5)
-      {
-        ActorAction actorAction2 = this.BehaviorEquipLight(game);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      else if (flag6)
-      {
-        ActorAction actorAction2 = this.BehaviorEquipStenchKiller(game);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      if (!flag1 && this.Directives.CanTakeItems)
-      {
-        location1 = this.m_Actor.Location;
-        Map map = location1.Map;
-        List<Percept> perceptList2 = this.FilterOut(game, this.FilterStacks(game, percepts1), (Predicate<Percept>) (p =>
-        {
-          if (p.Turn == map.LocalTime.TurnCounter)
-          {
-            Map map1 = map;
-            Location location2 = p.Location;
-            Point position1 = location2.Position;
-            if (!this.IsOccupiedByOther(map1, position1))
-            {
-              location2 = p.Location;
-              if (!this.IsTileTaboo(location2.Position))
-                return !this.HasAnyInterestingItem(game, p.Percepted as Inventory);
-            }
-          }
-          return true;
-        }));
-        if (perceptList2 != null)
-        {
-          Percept percept = this.FilterNearest(game, perceptList2);
-          this.m_LastItemsSaw = percept;
-          ActorAction actorAction2 = this.BehaviorMakeRoomForFood(game, perceptList2);
-          if (actorAction2 != null)
-          {
-            this.m_Actor.Activity = Activity.IDLE;
-            return actorAction2;
-          }
-          RogueGame game2 = game;
-          location1 = percept.Location;
-          Point position1 = location1.Position;
-          Inventory percepted = percept.Percepted as Inventory;
-          ActorAction actorAction5 = this.BehaviorGrabFromStack(game2, position1, percepted);
-          if (actorAction5 != null)
-          {
-            this.m_Actor.Activity = Activity.IDLE;
-            return actorAction5;
-          }
-          location1 = percept.Location;
-          this.MarkTileAsTaboo(location1.Position);
-          game.DoEmote(this.m_Actor, "Mmmh. Looks like I can't reach what I want.");
-        }
-        if (this.Directives.CanTrade)
-        {
-          List<Percept> percepts2 = this.FilterOut(game, this.FilterNonEnemies(game, percepts1), (Predicate<Percept>) (p =>
-          {
-            if (p.Turn != map.LocalTime.TurnCounter)
-              return true;
-            Actor percepted = p.Percepted as Actor;
-            return percepted.IsPlayer || !game.Rules.CanActorInitiateTradeWith(this.m_Actor, percepted) || (this.IsActorTabooTrade(percepted) || !this.HasAnyInterestingItem(game, percepted.Inventory)) || !(percepted.Controller as BaseAI).HasAnyInterestingItem(game, this.m_Actor.Inventory);
-          }));
-          if (percepts2 != null)
-          {
-            Actor percepted = this.FilterNearest(game, percepts2).Percepted as Actor;
-            if (game.Rules.IsAdjacent(this.m_Actor.Location, percepted.Location))
-            {
-              ActorAction actorAction2 = (ActorAction) new ActionTrade(this.m_Actor, game, percepted);
-              if (actorAction2.IsLegal())
-              {
-                this.MarkActorAsRecentTrade(percepted);
-                game.DoSay(this.m_Actor, percepted, string.Format("Hey {0}, let's make a deal!", (object) percepted.Name), RogueGame.Sayflags.NONE);
-                return actorAction2;
-              }
-            }
+            #endregion
+
+            // 2. Normal behavior.
+            #region
+            //////////////////////////////////////////////////////////////////////
+            // BEHAVIOR
+            // - FLAGS
+            // "courageous" : has leader, see leader, he is fighting and actor not tired.
+            // - RULES
+            // 0 run away from primed explosives.
+            // 1 throw grenades at enemies.
+            // 2 equip weapon/armor
+            // 3 fire at nearest (always if has leader, half of the time if not)  - check directives
+            // 4 fight or flee, shout
+            // 5 use medicine
+            // 6 rest if tired
+            // 7 charge enemy if courageous
+            // 8 eat when hungry (also eat corpses)
+            // 9 sleep when almost sleepy and safe.
+            // 10 drop light/tracker with no batteries
+            // 11 equip light/tracker/scent spray
+            // 12 make room for food items if needed.
+            // 13 get nearby item/trade (not if seeing enemy) - check directives.
+            // 14 if hungry and no food, charge at people for food (option, not follower or law enforcer)
+            // 15 use stench killer.
+            // 16 close door behind me.
+            // 17 use entertainment
+            // 18 follow leader.
+            // 19 take lead (if leadership)
+            // 20 if hungry, tear down barricades & push objects.
+            // 21 go revive corpse.
+            // 22 use exit.
+            // 23 build trap or fortification.
+            // 24 tell friend about latest raid.
+            // 25 tell friend about latest friendly soldier.
+            // 26 tell friend about latest enemy.
+            // 27 tell friend about latest items.
+            // 28 (law enforcer) watch for murderers.
+            // 29 (leader) don't leave followers behind.
+            // 30 explore.
+            // 31 wander.
+            //////////////////////////////////////////////////////////////////////
+
+            // don't run by default.
+            m_Actor.IsRunning = false;
+
+            // get data.
+            List<Percept> enemies = FilterEnemies(game, mapPercepts);
+            bool hasEnemies = enemies != null && enemies.Count > 0;
+            bool checkOurLeader = m_Actor.HasLeader && !DontFollowLeader;
+            bool seeLeader = checkOurLeader && m_LOSSensor.FOV.Contains(m_Actor.Leader.Location.Position);
+            bool isLeaderFighting = checkOurLeader && IsAdjacentToEnemy(game, m_Actor.Leader);
+            bool isCourageous = checkOurLeader && seeLeader && isLeaderFighting && !game.Rules.IsActorTired(m_Actor);
+
+            // safety counter.
+            if (hasEnemies)
+                m_SafeTurns = 0;
             else
+                ++m_SafeTurns;
+
+            // exploration.
+            m_Exploration.Update(m_Actor.Location);
+
+            // clear taboo tiles : periodically or when changing maps.
+            if (m_Actor.Location.Map.LocalTime.TurnCounter % WorldTime.TURNS_PER_HOUR == 0 || 
+                (PrevLocation != null && PrevLocation.Map != m_Actor.Location.Map))
             {
-              RogueGame game2 = game;
-              location1 = percepted.Location;
-              Point position1 = location1.Position;
-              ActorAction actorAction2 = this.BehaviorIntelligentBumpToward(game2, position1);
-              if (actorAction2 != null)
-              {
-                this.m_Actor.Activity = Activity.FOLLOWING;
-                this.m_Actor.TargetActor = percepted;
-                return actorAction2;
-              }
+                ClearTabooTiles();
             }
-          }
-        }
-      }
-      if (RogueGame.Options.IsAggressiveHungryCiviliansOn && percepts1 != null && (!this.m_Actor.HasLeader && !this.m_Actor.Model.Abilities.IsLawEnforcer) && (game.Rules.IsActorHungry(this.m_Actor) && this.HasNoFoodItems(this.m_Actor)))
-      {
-        Percept target = this.FilterNearest(game, this.FilterActors(game, percepts1, (Predicate<Actor>) (a =>
-        {
-          if (a == this.m_Actor || a.IsDead || (a.Inventory == null || a.Inventory.IsEmpty) || (a.Leader == this.m_Actor || this.m_Actor.Leader == a))
-            return false;
-          if (a.Inventory.HasItemOfType(typeof (ItemFood)))
-            return true;
-          Location location2 = a.Location;
-          Map map1 = location2.Map;
-          location2 = a.Location;
-          Point position1 = location2.Position;
-          Inventory itemsAt = map1.GetItemsAt(position1);
-          if (itemsAt == null || itemsAt.IsEmpty)
-            return false;
-          return itemsAt.HasItemOfType(typeof (ItemFood));
-        })));
-        if (target != null)
-        {
-          ActorAction actorAction2 = this.BehaviorChargeEnemy(game, target);
-          if (actorAction2 != null)
-          {
-            if (game.Rules.RollChance(50))
-              game.DoSay(this.m_Actor, target.Percepted as Actor, "HEY! YOU! SHARE SOME FOOD!", RogueGame.Sayflags.IS_FREE_ACTION);
-            this.m_Actor.Activity = Activity.FIGHTING;
-            this.m_Actor.TargetActor = target.Percepted as Actor;
-            return actorAction2;
-          }
-        }
-      }
-      if (game.Rules.RollChance(75))
-      {
-        ActorAction actorAction2 = this.BehaviorUseStenchKiller(game);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      ActorAction actorAction8 = this.BehaviorCloseDoorBehindMe(game, this.PrevLocation);
-      if (actorAction8 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction8;
-      }
-      if (this.m_Actor.Model.Abilities.HasSanity)
-      {
-        if ((double) this.m_Actor.Sanity < 0.75 * (double) game.Rules.ActorMaxSanity(this.m_Actor))
-        {
-          ActorAction actorAction2 = this.BehaviorUseEntertainment(game);
-          if (actorAction2 != null)
-          {
-            this.m_Actor.Activity = Activity.IDLE;
-            return actorAction2;
-          }
-        }
-        ActorAction actorAction5 = this.BehaviorDropBoringEntertainment(game);
-        if (actorAction5 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction5;
-        }
-      }
-      if (flag2)
-      {
-        location1 = this.m_Actor.Leader.Location;
-        Point position1 = location1.Position;
-        HashSet<Point> fov = this.m_LOSSensor.FOV;
-        location1 = this.m_Actor.Leader.Location;
-        Point position2 = location1.Position;
-        bool isVisible = fov.Contains(position2);
-        int maxDist = this.m_Actor.Leader.IsPlayer ? 1 : 1;
-        ActorAction actorAction2 = this.BehaviorFollowActor(game, this.m_Actor.Leader, position1, isVisible, maxDist);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.FOLLOWING;
-          this.m_Actor.TargetActor = this.m_Actor.Leader;
-          return actorAction2;
-        }
-      }
-      if (this.m_Actor.Sheet.SkillTable.GetSkillLevel(9) >= 1 && (flag2 ? 0 : (this.m_Actor.CountFollowers < game.Rules.ActorMaxFollowers(this.m_Actor) ? 1 : 0)) != 0)
-      {
-        Percept target = this.FilterNearest(game, this.FilterNonEnemies(game, percepts1));
-        if (target != null)
-        {
-          ActorAction actorAction2 = this.BehaviorLeadActor(game, target);
-          if (actorAction2 != null)
-          {
-            this.m_Actor.Activity = Activity.IDLE;
-            this.m_Actor.TargetActor = target.Percepted as Actor;
-            return actorAction2;
-          }
-        }
-      }
-      if (game.Rules.IsActorHungry(this.m_Actor))
-      {
-        ActorAction actorAction2 = this.BehaviorAttackBarricade(game);
-        if (actorAction2 != null)
-        {
-          game.DoEmote(this.m_Actor, "Open damn it! I know there is food there!");
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-        if (game.Rules.RollChance(25))
-        {
-          ActorAction actorAction5 = this.BehaviorPushNonWalkableObject(game);
-          if (actorAction5 != null)
-          {
-            game.DoEmote(this.m_Actor, "Where is all the damn food?!");
-            this.m_Actor.Activity = Activity.IDLE;
-            return actorAction5;
-          }
-        }
-      }
-      ActorAction actorAction9 = this.BehaviorGoReviveCorpse(game, this.FilterCorpses(game, percepts1));
-      if (actorAction9 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction9;
-      }
-      if (game.Rules.RollChance(20))
-      {
-        ActorAction actorAction2 = this.BehaviorUseExit(game, BaseAI.UseExitFlags.DONT_BACKTRACK);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      if (game.Rules.RollChance(50))
-      {
-        ActorAction actorAction2 = this.BehaviorBuildTrap(game);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      if (game.Rules.RollChance(50))
-      {
-        ActorAction actorAction2 = this.BehaviorBuildLargeFortification(game, 1);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      if (game.Rules.RollChance(20))
-      {
-        ActorAction actorAction2 = this.BehaviorBuildSmallFortification(game);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      if (this.m_LastRaidHeard != null && game.Rules.RollChance(20))
-      {
-        ActorAction actorAction2 = this.BehaviorTellFriendAboutPercept(game, this.m_LastRaidHeard);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      Percept percept1 = this.FilterFirst(game, percepts1, (Predicate<Percept>) (p =>
-      {
-        Actor percepted = p.Percepted as Actor;
-        if (percepted == null || percepted == this.m_Actor)
-          return false;
-        return this.IsSoldier(percepted);
-      }));
-      if (percept1 != null)
-        this.m_LastSoldierSaw = percept1;
-      if (game.Rules.RollChance(20) && this.m_LastSoldierSaw != null)
-      {
-        ActorAction actorAction2 = this.BehaviorTellFriendAboutPercept(game, this.m_LastSoldierSaw);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      if (game.Rules.RollChance(10) && this.m_LastEnemySaw != null)
-      {
-        ActorAction actorAction2 = this.BehaviorTellFriendAboutPercept(game, this.m_LastEnemySaw);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      if (game.Rules.RollChance(10) && this.m_LastItemsSaw != null)
-      {
-        ActorAction actorAction2 = this.BehaviorTellFriendAboutPercept(game, this.m_LastItemsSaw);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
-        }
-      }
-      if (this.m_Actor.Model.Abilities.IsLawEnforcer && percepts1 != null && game.Rules.RollChance(30))
-      {
-        Actor target;
-        ActorAction actorAction2 = this.BehaviorEnforceLaw(game, percepts1, out target);
-        if (actorAction2 != null)
-        {
-          this.m_Actor.TargetActor = target;
-          return actorAction2;
-        }
-      }
-      if (this.m_Actor.CountFollowers > 0)
-      {
-        Actor target;
-        ActorAction actorAction2 = this.BehaviorDontLeaveFollowersBehind(game, 2, out target);
-        if (actorAction2 != null)
-        {
-          if (game.Rules.RollChance(50))
-          {
-            if (target.IsSleeping)
+            // clear trades.
+            if (m_Actor.Location.Map.LocalTime.TurnCounter % WorldTime.TURNS_PER_DAY == 0)
             {
-              game.DoEmote(this.m_Actor, string.Format("patiently waits for {0} to wake up.", (object) target.Name));
+                ClearTabooTrades();
             }
-            else
+
+            // last enemy saw.
+            if (hasEnemies)
+                m_LastEnemySaw = enemies[game.Rules.Roll(0, enemies.Count)];            
+
+            // 0 run away from primed explosives.
+            #region
+            ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
+            if (runFromExplosives != null)
             {
-              HashSet<Point> fov = this.m_LOSSensor.FOV;
-              location1 = target.Location;
-              Point position1 = location1.Position;
-              if (fov.Contains(position1))
-                game.DoEmote(this.m_Actor, string.Format("Come on {0}! Hurry up!", (object) target.Name));
-              else
-                game.DoEmote(this.m_Actor, string.Format("Where the hell is {0}?", (object) target.Name));
+                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                return runFromExplosives;
             }
-          }
-          this.m_Actor.Activity = Activity.IDLE;
-          return actorAction2;
+            #endregion
+
+            // 1 throw grenades at enemies.
+            #region
+            // if directive off, unequip.
+            if (!this.Directives.CanThrowGrenades)
+            {
+                // unequip grenade?
+                ItemGrenade eqGrenade = m_Actor.GetEquippedWeapon() as ItemGrenade;
+                if (eqGrenade != null)
+                {
+                    ActionUnequipItem unequipGre = new ActionUnequipItem(m_Actor, game, eqGrenade);
+                    if (unequipGre.IsLegal())
+                    {
+                        m_Actor.Activity = Activity.IDLE;
+                        return unequipGre;
+                    }
+                }
+            }
+            // throw?
+            if (hasEnemies)
+            {
+                ActorAction throwAction = BehaviorThrowGrenade(game, m_LOSSensor.FOV, enemies);
+                if (throwAction != null)
+                {
+                    return throwAction;
+                }
+            }
+            #endregion
+
+            // 2 equip weapon/armor
+            #region
+            ActorAction equipWpnAction = BehaviorEquipWeapon(game);
+            if (equipWpnAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return equipWpnAction;
+            }
+            ActorAction equipArmAction = BehaviorEquipBodyArmor(game);
+            if (equipArmAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return equipArmAction;
+            }
+            #endregion
+
+            // 3 fire at nearest enemy
+            #region
+            if (hasEnemies && this.Directives.CanFireWeapons && m_Actor.GetEquippedWeapon() is ItemRangedWeapon)
+            {
+                List<Percept> fireTargets = FilterFireTargets(game, enemies);
+                if (fireTargets != null)
+                {
+                    Percept nearestTarget = FilterNearest(game, fireTargets);
+                    Actor target = nearestTarget.Percepted as Actor;
+
+                    // flee contact from someone SLOWER with no ranged weapon.
+                    if (game.Rules.GridDistance(nearestTarget.Location.Position, m_Actor.Location.Position) == 1 &&
+                        !HasEquipedRangedWeapon(target) &&
+                        HasSpeedAdvantage(game, m_Actor,target))
+                    {
+                        // flee!
+                        ActorAction fleeAction = BehaviorWalkAwayFrom(game, nearestTarget);
+                        if (fleeAction != null)
+                        {
+                            RunIfPossible(game.Rules);
+                            m_Actor.Activity = Activity.FLEEING;
+                            return fleeAction;
+                        }
+                    }
+
+                    // fire ze missiles!
+                    ActorAction fireAction = BehaviorRangedAttack(game, nearestTarget);
+                    if (fireAction != null)
+                    {
+                        m_Actor.Activity = Activity.FIGHTING;
+                        m_Actor.TargetActor = target;
+                        return fireAction;
+                    }
+
+                }
+            }
+            #endregion
+
+            // 4 fight or flee, shout
+            #region
+            if (hasEnemies)
+            {
+                // shout?
+                if (game.Rules.RollChance(50))
+                {
+                    List<Percept> friends = FilterNonEnemies(game, mapPercepts);
+                    if (friends != null)
+                    {
+                        ActorAction shoutAction = BehaviorWarnFriends(game, friends, FilterNearest(game, enemies).Percepted as Actor);
+                        if (shoutAction != null)
+                        {
+                            m_Actor.Activity = Activity.IDLE;
+                            return shoutAction;
+                        }
+                    }
+                }
+                // fight or flee.
+                ActorAction fightOrFlee = BehaviorFightOrFlee(game, enemies, seeLeader, isLeaderFighting, Directives.Courage, m_Emotes);
+                if (fightOrFlee != null)
+                {
+                    return fightOrFlee;
+                }
+            }
+            #endregion
+
+            // 5 use medicine
+            #region
+            ActorAction useMedAction = BehaviorUseMedecine(game, 2, 1, 2, 4, 2);
+            if (useMedAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return useMedAction;
+            }
+            #endregion
+
+            // 6 rest if tired
+            #region
+            ActorAction restAction = BehaviorRestIfTired(game);
+            if (restAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return new ActionWait(m_Actor, game);
+            }
+            #endregion
+
+            // 7 charge enemy if courageous
+            #region
+            if (hasEnemies && isCourageous)
+            {
+                Percept nearestEnemy = FilterNearest(game, enemies);
+                ActorAction chargeAction = BehaviorChargeEnemy(game, nearestEnemy);
+                if (chargeAction != null)
+                {
+                    m_Actor.Activity = Activity.FIGHTING;
+                    m_Actor.TargetActor = nearestEnemy.Percepted as Actor;
+                    return chargeAction;
+                }
+            }
+            #endregion
+
+            // 8 eat when hungry (also eat corpses)
+            #region
+            if (game.Rules.IsActorHungry(m_Actor))
+            {
+                ActorAction eatAction = BehaviorEat(game);
+                if (eatAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return eatAction;
+                }
+                if (game.Rules.IsActorStarving(m_Actor) || game.Rules.IsActorInsane(m_Actor))
+                {
+                    eatAction = BehaviorGoEatCorpse(game, FilterCorpses(game, mapPercepts));
+                    if (eatAction != null)
+                    {
+                        m_Actor.Activity = Activity.IDLE;
+                        return eatAction;
+                    }
+                }
+            }
+            #endregion
+
+            // 9 sleep when almost sleepy and safe.
+            #region
+            if (m_SafeTurns >= MIN_TURNS_SAFE_TO_SLEEP && this.Directives.CanSleep && 
+                WouldLikeToSleep(game, m_Actor) && IsInside(m_Actor) && game.Rules.CanActorSleep(m_Actor))
+            {               
+                // secure sleep.
+                ActorAction secureSleepAction = BehaviorSecurePerimeter(game, m_LOSSensor.FOV);
+                if (secureSleepAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return secureSleepAction;
+                }
+
+                // sleep.
+                ActorAction sleepAction = BehaviorSleep(game, m_LOSSensor.FOV);
+                if (sleepAction != null)
+                {
+                    if (sleepAction is ActionSleep)
+                        m_Actor.Activity = Activity.SLEEPING;
+                    return sleepAction;
+                }
+            }
+            #endregion
+
+            // 10 drop useless light/tracker/spray
+            #region
+            ActorAction dropUseless = BehaviorDropUselessItem(game);
+            if (dropUseless != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return dropUseless;
+            }
+            #endregion
+
+            // 11 equip light/tracker/spray.
+            #region
+            // tracker : if has leader or is a leader.
+            bool needCellPhone = m_Actor.HasLeader || m_Actor.CountFollowers > 0;
+            // then light.
+            bool needLight = NeedsLight(game);
+            // finally spray.
+            bool needSpray = IsGoodStenchKillerSpot(game, m_Actor.Location.Map, m_Actor.Location.Position);
+            // if tracker/light/spray useless, unequip it.
+            if (!needCellPhone && !needLight && !needSpray)
+            {
+                ActorAction unequipUselessLeftItem = BehaviorUnequipLeftItem(game);
+                if (unequipUselessLeftItem != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return unequipUselessLeftItem;
+                }
+            }
+            // tracker?
+            if(needCellPhone)
+            {
+                ActorAction eqTrackerAction = BehaviorEquipCellPhone(game);
+                if (eqTrackerAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return eqTrackerAction;
+                }
+            }
+            // ...or light?
+            else if (needLight)
+            {
+                ActorAction eqLightAction = BehaviorEquipLight(game);
+                if (eqLightAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return eqLightAction;
+                }
+
+            }
+            // ... scent spray?
+            else if (needSpray)
+            {
+                ActorAction eqScentSpray = BehaviorEquipStenchKiller(game);
+                if (eqScentSpray != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return eqScentSpray;
+                }
+            }
+            #endregion
+
+            // 12 make room for food items if needed.
+            // &&
+            // 13 get nearby item/trade (not if seeing enemy)
+            // ignore not currently visible items & blocked items.
+            #region
+            if (!hasEnemies && this.Directives.CanTakeItems)
+            {
+                Map map = m_Actor.Location.Map;
+
+                #region Get nearby item
+                // list visible items.
+                List<Percept> interestingStacks = FilterOut(game, FilterStacks(game, mapPercepts),
+                    (p) => (p.Turn != map.LocalTime.TurnCounter) || 
+                            IsOccupiedByOther(map, p.Location.Position) || 
+                            IsTileTaboo(p.Location.Position) ||
+                            !HasAnyInterestingItem(game, p.Percepted as Inventory));
+
+                // if some items...
+                if (interestingStacks != null)
+                {
+                    // update last percept saw.
+                    Percept nearestStack = FilterNearest(game, interestingStacks);
+                    m_LastItemsSaw = nearestStack;
+
+                    // 12: make room for food if needed.
+                    ActorAction makeRoomForFood = BehaviorMakeRoomForFood(game, interestingStacks);
+                    if (makeRoomForFood != null)
+                    {
+                        m_Actor.Activity = Activity.IDLE;
+                        return makeRoomForFood;
+                    }
+
+                    // 13: try to grab.
+                    ActorAction grabAction = BehaviorGrabFromStack(game, nearestStack.Location.Position, nearestStack.Percepted as Inventory);
+                    if (grabAction != null)
+                    {
+                        m_Actor.Activity = Activity.IDLE;
+                        return grabAction;
+                    }
+                    // we can't grab the item. mark the tile as taboo.
+                    MarkTileAsTaboo(nearestStack.Location.Position);
+                    // emote
+                    game.DoEmote(m_Actor, "Mmmh. Looks like I can't reach what I want.");
+                }
+                #endregion
+
+                #region Trade
+                if (Directives.CanTrade)
+                {
+                    // get actors we want to trade with.
+                    List<Percept> tradingActors = FilterOut(game, FilterNonEnemies(game, mapPercepts),
+                        (p) =>
+                        {
+                            if (p.Turn != map.LocalTime.TurnCounter) return true;
+                            Actor other = p.Percepted as Actor;
+                            // dont bother player or someone we can't trade with or already did trade.
+                            if (other.IsPlayer) return true;
+                            if (!game.Rules.CanActorInitiateTradeWith(m_Actor, other)) return true;
+                            if (IsActorTabooTrade(other)) return true;
+                            // dont bother if no interesting items.
+                            if (!HasAnyInterestingItem(game, other.Inventory)) return true;
+                            if (!((other.Controller as BaseAI).HasAnyInterestingItem(game, m_Actor.Inventory))) return true;
+                            // don't reject.
+                            return false;
+                        });
+                    // trade with nearest.
+                    if (tradingActors != null)
+                    {
+                        Actor tradeTarget = FilterNearest(game, tradingActors).Percepted as Actor;
+                        if (game.Rules.IsAdjacent(m_Actor.Location, tradeTarget.Location))
+                        {
+                            ActorAction tradeAction = new ActionTrade(m_Actor, game, tradeTarget);
+                            if (tradeAction.IsLegal())
+                            {
+                                // remember we tried to trade.
+                                MarkActorAsRecentTrade(tradeTarget);
+                                // say, so we make sure we spend a turn and won't loop.
+                                game.DoSay(m_Actor, tradeTarget, String.Format("Hey {0}, let's make a deal!", tradeTarget.Name), RogueGame.Sayflags.NONE);
+                                return tradeAction;
+                            }
+                        }
+                        else
+                        {
+                            ActorAction bump = BehaviorIntelligentBumpToward(game, tradeTarget.Location.Position);
+                            if (bump != null)
+                            {
+                                m_Actor.Activity = Activity.FOLLOWING;
+                                m_Actor.TargetActor = tradeTarget;
+                                return bump;
+                            }
+                        }
+                    }
+                }
+                #endregion
+            }
+            #endregion
+
+            // 14 if hungry and no food, charge at people for food (option, not follower or law enforcer)
+            #region
+            if (RogueGame.Options.IsAggressiveHungryCiviliansOn && 
+                mapPercepts != null && !m_Actor.HasLeader && !m_Actor.Model.Abilities.IsLawEnforcer &&
+                game.Rules.IsActorHungry(m_Actor) && HasNoFoodItems(m_Actor))
+            {
+                Percept targetForFood = FilterNearest(game, FilterActors(game, mapPercepts,
+                    (a) =>
+                    {
+                        // reject self, dead and leader/follower.
+                        if (a == m_Actor) return false;
+                        if (a.IsDead) return false;
+                        if (a.Inventory == null || a.Inventory.IsEmpty) return false;
+                        if (a.Leader == m_Actor || m_Actor.Leader == a) return false;
+
+                        // actor has food or is standing on food.
+                        if (a.Inventory.HasItemOfType(typeof(ItemFood))) return true;
+                        Inventory groundInv = a.Location.Map.GetItemsAt(a.Location.Position);
+                        if (groundInv == null || groundInv.IsEmpty) return false;
+                        return groundInv.HasItemOfType(typeof(ItemFood));
+                    }));
+
+                if (targetForFood != null)
+                {
+                    ActorAction chargeAction = BehaviorChargeEnemy(game, targetForFood);
+                    if (chargeAction != null)
+                    {
+                        // randomly emote.
+                        if (game.Rules.RollChance(HUNGRY_CHARGE_EMOTE_CHANCE))
+                            game.DoSay(m_Actor, targetForFood.Percepted as Actor, "HEY! YOU! SHARE SOME FOOD!", RogueGame.Sayflags.IS_FREE_ACTION);
+
+                        // chaaarge!
+                        m_Actor.Activity = Activity.FIGHTING;
+                        m_Actor.TargetActor = targetForFood.Percepted as Actor;
+                        return chargeAction;
+                    }
+                }
+            }
+            #endregion
+
+            // 15 use stench killer.
+            #region
+            if (game.Rules.RollChance(USE_STENCH_KILLER_CHANCE))
+            {
+                ActorAction sprayAction = BehaviorUseStenchKiller(game);
+                if (sprayAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return sprayAction;
+                }
+            }
+            #endregion
+
+            // 16 close door behind me.
+            #region
+            ActorAction closeBehindMe = BehaviorCloseDoorBehindMe(game, PrevLocation);
+            if (closeBehindMe != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return closeBehindMe;
+            }
+            #endregion
+
+            // 17 use entertainment
+            #region
+            if (m_Actor.Model.Abilities.HasSanity)
+            {
+                if (m_Actor.Sanity < 0.75f * game.Rules.ActorMaxSanity(m_Actor))
+                {
+                    ActorAction entAction = BehaviorUseEntertainment(game);
+                    if (entAction != null)
+                    {
+                        m_Actor.Activity = Activity.IDLE;
+                        return entAction;
+                    }
+                }
+                ActorAction dropEnt = BehaviorDropBoringEntertainment(game);
+                if (dropEnt != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return dropEnt;
+                }                
+            }
+            #endregion
+
+            // 18 follow leader
+            #region
+            if (checkOurLeader)
+            {
+                Point lastKnownLeaderPosition = m_Actor.Leader.Location.Position;
+                bool isLeaderVisible = m_LOSSensor.FOV.Contains(m_Actor.Leader.Location.Position);
+                int maxDist = m_Actor.Leader.IsPlayer ? FOLLOW_PLAYERLEADER_MAXDIST : FOLLOW_NPCLEADER_MAXDIST;
+                ActorAction followAction = BehaviorFollowActor(game, m_Actor.Leader, lastKnownLeaderPosition, isLeaderVisible, maxDist);
+                if (followAction != null)
+                {
+                    m_Actor.Activity = Activity.FOLLOWING;
+                    m_Actor.TargetActor = m_Actor.Leader;
+                    return followAction;
+                }
+            }
+            #endregion
+
+            // 19 take lead (if leadership)
+            #region
+            bool hasLeadership = m_Actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LEADERSHIP) >= 1;
+            if (hasLeadership)
+            {
+                bool canLead = !checkOurLeader && m_Actor.CountFollowers < game.Rules.ActorMaxFollowers(m_Actor);
+                if (canLead)
+                {
+                    Percept nearestFriend = FilterNearest(game, FilterNonEnemies(game, mapPercepts));
+                    if (nearestFriend != null)
+                    {
+                        ActorAction leadAction = BehaviorLeadActor(game, nearestFriend);
+                        if (leadAction != null)
+                        {
+                            m_Actor.Activity = Activity.IDLE;
+                            m_Actor.TargetActor = nearestFriend.Percepted as Actor;
+                            return leadAction;
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            // 20 if hungry, tear down barricades & push objects.
+            #region
+            if (game.Rules.IsActorHungry(m_Actor))
+            {
+                ActorAction attackBarricadeAction = BehaviorAttackBarricade(game);
+                if (attackBarricadeAction != null)
+                {
+                    // emote.
+                    game.DoEmote(m_Actor, "Open damn it! I know there is food there!");
+
+                    // go!
+                    m_Actor.Activity = Activity.IDLE;
+                    return attackBarricadeAction;
+                }
+                if (game.Rules.RollChance(HUNGRY_PUSH_OBJECTS_CHANCE))
+                {
+                    ActorAction pushAction = BehaviorPushNonWalkableObject(game);
+                    if (pushAction != null)
+                    {
+                        // emote.
+                        game.DoEmote(m_Actor, "Where is all the damn food?!");
+
+                        // go!
+                        m_Actor.Activity = Activity.IDLE;
+                        return pushAction;
+                    }
+                }
+            }
+            #endregion
+
+            // 21 go revive corpse.
+            ActorAction revive = BehaviorGoReviveCorpse(game, FilterCorpses(game, mapPercepts));
+            if (revive != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return revive;
+            }
+
+            // 22 use exit.
+            #region
+            if (game.Rules.RollChance(USE_EXIT_CHANCE))
+            {
+                ActorAction useExit = BehaviorUseExit(game, UseExitFlags.DONT_BACKTRACK);
+                if (useExit != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return useExit;
+                }
+            }
+            #endregion
+
+            // 23 build trap or fortification.
+            #region
+            if (game.Rules.RollChance(BUILD_TRAP_CHANCE))
+            {
+                ActorAction trapAction = BehaviorBuildTrap(game);
+                if (trapAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return trapAction;
+                }
+            }
+            // large fortification.
+            if (game.Rules.RollChance(BUILD_LARGE_FORT_CHANCE))
+            {
+                ActorAction buildAction = BehaviorBuildLargeFortification(game, START_FORT_LINE_CHANCE);
+                if (buildAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return buildAction;
+                }
+            }
+            // small fortification.
+            if (game.Rules.RollChance(BUILD_SMALL_FORT_CHANCE))
+            {
+                ActorAction buildAction = BehaviorBuildSmallFortification(game);
+                if (buildAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return buildAction;
+                }
+            }
+            #endregion
+
+            // 24 tell friend about latest raid.
+            #region
+            // tell?
+            if (m_LastRaidHeard != null && game.Rules.RollChance(TELL_FRIEND_ABOUT_RAID_CHANCE))
+            {
+                ActorAction tellAction = BehaviorTellFriendAboutPercept(game, m_LastRaidHeard);
+                if (tellAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return tellAction;
+                }
+            }
+            #endregion
+
+            // 25 tell friend about latest soldier.
+            #region
+            // update percept.
+            Percept seeingSoldier = FilterFirst(game, mapPercepts, 
+                (p) =>
+                {
+                    Actor other = p.Percepted as Actor;
+                    if (other == null || other == m_Actor)
+                        return false;
+                    return IsSoldier(other);
+                });
+            if (seeingSoldier != null)
+                m_LastSoldierSaw = seeingSoldier;
+            // tell?
+            if (game.Rules.RollChance(TELL_FRIEND_ABOUT_SOLDIER_CHANCE) && m_LastSoldierSaw != null)
+            {
+                ActorAction tellAction = BehaviorTellFriendAboutPercept(game, m_LastSoldierSaw);
+                if (tellAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return tellAction;
+                }
+            }
+            #endregion
+
+            // 26 tell friend about latest enemy.
+            #region
+            if (game.Rules.RollChance(TELL_FRIEND_ABOUT_ENEMY_CHANCE) && m_LastEnemySaw != null)
+            {
+                ActorAction tellAction = BehaviorTellFriendAboutPercept(game, m_LastEnemySaw);
+                if (tellAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return tellAction;
+                }
+            }
+            #endregion
+
+            // 27 tell friend about latest items.
+            #region
+            if (game.Rules.RollChance(TELL_FRIEND_ABOUT_ITEMS_CHANCE) && m_LastItemsSaw != null)
+            {
+                ActorAction tellAction = BehaviorTellFriendAboutPercept(game, m_LastItemsSaw);
+                if (tellAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return tellAction;
+                }
+            }
+            #endregion
+
+            // 28 (law enforcer) watch for murderers.
+            #region
+            if (m_Actor.Model.Abilities.IsLawEnforcer && mapPercepts != null && game.Rules.RollChance(LAW_ENFORCE_CHANCE))
+            {
+                Actor target;
+                ActorAction lawAction = BehaviorEnforceLaw(game, mapPercepts, out target);
+                if (lawAction != null)
+                {
+                    m_Actor.TargetActor = target;
+                    return lawAction;
+                }
+            }
+            #endregion
+
+            // 29 (leader) don't leave followers behind.
+            #region
+            if (m_Actor.CountFollowers > 0)
+            {
+                Actor target;
+                ActorAction stickTogether = BehaviorDontLeaveFollowersBehind(game, 2, out target);
+                if (stickTogether != null)
+                {
+                    // emote?
+                    if (game.Rules.RollChance(DONT_LEAVE_BEHIND_EMOTE_CHANCE))
+                    {
+                        if (target.IsSleeping)
+                            game.DoEmote(m_Actor, String.Format("patiently waits for {0} to wake up.", target.Name));
+                        else
+                        {
+                            if (m_LOSSensor.FOV.Contains(target.Location.Position))
+                                game.DoEmote(m_Actor, String.Format("Come on {0}! Hurry up!", target.Name));
+                            else
+                                game.DoEmote(m_Actor, String.Format("Where the hell is {0}?", target.Name));
+                        }
+                    }
+
+                    // go!
+                    m_Actor.Activity = Activity.IDLE;
+                    return stickTogether;
+                }
+            }
+            #endregion
+
+            // 30 explore
+            #region
+            ActorAction exploreAction = BehaviorExplore(game, m_Exploration);
+            if (exploreAction != null)
+            {
+                m_Actor.Activity = Activity.IDLE;
+                return exploreAction;
+            }
+            #endregion
+
+            // 31 wander.
+            #region
+            m_Actor.Activity = Activity.IDLE;
+            return BehaviorWander(game);
+            #endregion
+
+            #endregion
         }
-      }
-      ActorAction actorAction10 = this.BehaviorExplore(game, this.m_Exploration);
-      if (actorAction10 != null)
-      {
-        this.m_Actor.Activity = Activity.IDLE;
-        return actorAction10;
-      }
-      this.m_Actor.Activity = Activity.IDLE;
-      return this.BehaviorWander(game);
+        #endregion
     }
-  }
 }

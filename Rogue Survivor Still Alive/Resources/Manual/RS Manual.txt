@@ -1,8 +1,8 @@
- CONTENTS
+ CONTENTS (press a number key to go straight to that section)
 1. THE GAME
 2. THE CITY
 3. THE PLAYER SHEET
-4. ACTIONS & COMMANDS
+4. KEY BINDINGS
 5. SKILLS
 6. ITEMS
 7. FOLLOWERS
@@ -17,7 +17,7 @@
  SETTING & OBJECTIVE
  -------------------
 It's a zombie apocalypse. You have to find ways to survive: food, shelter, weapons and companions.
-Livings need to eat and sleep, and can die if you become starved. Most of the manual is written with playing a living survivor in mind.
+Livings need to eat and sleep, and can die if you become starved. The manual is mainly written with playing a living survivor in mind.
 You can also reincarnate into different characters when you die, or play the game as an undead.
 Your town is known for being the headquarters of the world famous C.H.A.R. Corporation. You've heard strange rumors about them...
 
@@ -54,8 +54,8 @@ Undeads, however, play very differently from livings...
 
  EVENTS
  ------
-From time to time scpecial events will happen. The game will inform you when relevant, and you will learn them as you play.
-You can miss some events notification when sleeping or being in the wrong district. Life goes on without you.
+From time to time special events will happen. The game will inform you when relevant, and you will learn them as you play.
+You can miss some events when sleeping or being in the wrong district. Life goes on without you.
 
 
  INFECTION (for Vintage and C&I modes)
@@ -70,21 +70,21 @@ Dead people become corpses. Corpses decay over time and will rot away.
 Infected corpses might rise as new undeads. They are more likely to rise if they are fresh, infected and at night.
 
 
-ADVISOR
--------
+ ADVISOR
+ -------
 The game has a hint system for new players called the Advisor. You can enable or disable the Advisor in the options.
 The hints will teach you most game controls and the gameplay basics. The advisor is focused on learning the game as a survivor.
 
 
-REINCARNATION
--------------
+ REINCARNATION
+ -------------
 After you die you can have the chance to reincarnate into another character in the same district.
 That means you can continue playing the game with an actor that was previously controlled by the AI (ie an NPC).
 You get a variety of choices, but not all of which may not be available at the time of your death.
-- Random Actor     : an actor
+- Random Actor     : an actor, could be undead
 - Random Living    : a living actor
 - Random Undead    : an undead actor
-- Random Follower  : one of your follower
+- Random Follower  : one of your followers
 - Your Killer      : the actor who directly killed you
 - Your Zombie Self : if zombified, your ex-character turned zombie
 
@@ -703,7 +703,6 @@ Your followers will most of the time stick with you, but those guys have their o
 Sometimes they will help you fight, other times they will attempt to flee from danger.
 If they see an interesting item they might go and pick it up, unless told not to.
 If they need to eat or sleep they will do so, unless your directives disallow it.
-There are pattern to their behaviors which you can use to your benefit.
 You can give items to them with the Give action. You can also still trade items with them like a normal civilian or ask them to drop all their items.
 From time to time you will see other people hanging with followers too. You're not the only wanna be hero in town you know.
 

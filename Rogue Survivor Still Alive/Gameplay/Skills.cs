@@ -1,299 +1,436 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Gameplay.Skills
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
-
-using djack.RogueSurvivor.Engine;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Drawing;
 using System.IO;
 
+using djack.RogueSurvivor;
+using djack.RogueSurvivor.Data;
+using djack.RogueSurvivor.Engine;
+
 namespace djack.RogueSurvivor.Gameplay
 {
-  internal static class Skills
-  {
-    private static string[] s_Names = new string[29];
-    public static Skills.IDs[] UNDEAD_SKILLS = new Skills.IDs[9]
+    static class Skills
     {
-      Skills.IDs._FIRST_UNDEAD,
-      Skills.IDs.Z_EATER,
-      Skills.IDs.Z_GRAB,
-      Skills.IDs.Z_INFECTOR,
-      Skills.IDs.Z_LIGHT_EATER,
-      Skills.IDs.Z_LIGHT_FEET,
-      Skills.IDs.Z_STRONG,
-      Skills.IDs.Z_TOUGH,
-      Skills.IDs.Z_TRACKER
-    };
-
-    public static string Name(Skills.IDs id)
-    {
-      return Skills.s_Names[(int) id];
-    }
-
-    public static string Name(int id)
-    {
-      return Skills.Name((Skills.IDs) id);
-    }
-
-    public static int MaxSkillLevel(Skills.IDs id)
-    {
-      return id == Skills.IDs.HAULER ? 3 : 5;
-    }
-
-    public static int MaxSkillLevel(int id)
-    {
-      return Skills.MaxSkillLevel((Skills.IDs) id);
-    }
-
-    public static Skills.IDs RollLiving(DiceRoller roller)
-    {
-      return (Skills.IDs) roller.Roll(0, 20);
-    }
-
-    public static Skills.IDs RollUndead(DiceRoller roller)
-    {
-      return (Skills.IDs) roller.Roll(20, 29);
-    }
-
-    private static void Notify(IRogueUI ui, string what, string stage)
-    {
-      ui.UI_Clear(Color.Black);
-      ui.UI_DrawStringBold(Color.White, "Loading " + what + " data : " + stage, 0, 0, new Color?());
-      ui.UI_Repaint();
-    }
-
-    private static CSVLine FindLineForModel(CSVTable table, Skills.IDs skillID)
-    {
-      foreach (CSVLine line in table.Lines)
-      {
-        if (line[0].ParseText() == skillID.ToString())
-          return line;
-      }
-      return (CSVLine) null;
-    }
-
-    private static _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(IRogueUI ui, CSVTable table, Func<CSVLine, _DATA_TYPE_> fn, Skills.IDs skillID)
-    {
-      CSVLine lineForModel = Skills.FindLineForModel(table, skillID);
-      if (lineForModel == null)
-        throw new InvalidOperationException(string.Format("skill {0} not found", (object) skillID.ToString()));
-      try
-      {
-        return fn(lineForModel);
-      }
-      catch (Exception ex)
-      {
-        throw new InvalidOperationException(string.Format("invalid data format for skill {0}; exception : {1}", (object) skillID.ToString(), (object) ex.ToString()));
-      }
-    }
-
-    private static bool LoadDataFromCSV<_DATA_TYPE_>(IRogueUI ui, string path, string kind, int fieldsCount, Func<CSVLine, _DATA_TYPE_> fn, Skills.IDs[] idsToRead, out _DATA_TYPE_[] data)
-    {
-      Skills.Notify(ui, kind, "loading file...");
-      List<string> stringList = new List<string>();
-      bool flag = true;
-      using (StreamReader streamReader = File.OpenText(path))
-      {
-        while (!streamReader.EndOfStream)
+        [Serializable]
+        public enum IDs
         {
-          string str = streamReader.ReadLine();
-          if (flag)
-            flag = false;
-          else
-            stringList.Add(str);
+            _FIRST = 0,
+
+            #region Living skills
+
+            _FIRST_LIVING = _FIRST,
+
+            /// <summary>
+            /// Bonus to melee hit & defence.
+            /// </summary>
+            AGILE = _FIRST_LIVING,
+
+            /// <summary>
+            /// Bonus to max sleep.
+            /// </summary>
+            AWAKE,
+
+            /// <summary>
+            /// Bonus to bows attack.
+            /// </summary>
+            BOWS,
+
+            /// <summary>
+            /// Bonus to barricading points; can build fortifications, consume less material.
+            /// </summary>
+            CARPENTRY,
+
+            /// <summary>
+            /// Bonus to trust gain.
+            /// </summary>
+            CHARISMATIC,
+
+            /// <summary>
+            /// Bonus to firearms attack.
+            /// </summary>
+            FIREARMS,
+
+            /// <summary>
+            /// Can sleep heal anywhere, increase sleep healing chance.
+            /// </summary>
+            HARDY,
+
+            /// <summary>
+            /// Bonus to inventory capacity.
+            /// </summary>
+            HAULER,
+
+            /// <summary>
+            /// Bonus to max stamina.
+            /// </summary>
+            HIGH_STAMINA,
+
+            /// <summary>
+            /// Bonus to max followers.
+            /// </summary>
+            LEADERSHIP,
+
+            /// <summary>
+            /// Bonus to max food.
+            /// </summary>
+            LIGHT_EATER,
+
+            /// <summary>
+            /// Avoid traps.
+            /// </summary>
+            LIGHT_FEET,
+
+            /// <summary>
+            /// Easier wake up.
+            /// </summary>
+            LIGHT_SLEEPER,
+
+            /// <summary>
+            /// Better unarmed fighting.
+            /// </summary>
+            MARTIAL_ARTS,
+
+            /// <summary>
+            /// Bonus to medecine effects.
+            /// </summary>
+            MEDIC,
+
+            /// <summary>
+            /// Dead things.
+            /// </summary>
+            NECROLOGY,
+
+            /// <summary>
+            /// Bonus to melee damage.
+            /// </summary>
+            STRONG,
+
+            /// <summary>
+            /// Sanity resistance.
+            /// </summary>
+            STRONG_PSYCHE,
+
+            /// <summary>
+            /// Bonus to max HPs
+            /// </summary>
+            TOUGH,
+
+            /// <summary>
+            /// Bonus to evade murders.
+            /// </summary>
+            UNSUSPICIOUS,
+
+            _LAST_LIVING = UNSUSPICIOUS,
+
+            #endregion
+
+            #region Undead skills
+            _FIRST_UNDEAD,
+            Z_AGILE = _FIRST_UNDEAD,
+            Z_EATER,
+            Z_GRAB,
+            Z_INFECTOR,
+            Z_LIGHT_EATER,
+            Z_LIGHT_FEET,
+            Z_STRONG,
+            Z_TOUGH,
+            Z_TRACKER,
+            _LAST_UNDEAD = Z_TRACKER,
+            #endregion
+
+            _COUNT
         }
-        streamReader.Close();
-      }
-      Skills.Notify(ui, kind, "parsing CSV...");
-      CSVTable toTable = new CSVParser().ParseToTable(stringList.ToArray(), fieldsCount);
-      Skills.Notify(ui, kind, "reading data...");
-      data = new _DATA_TYPE_[idsToRead.Length];
-      for (int index = 0; index < idsToRead.Length; ++index)
-        data[index] = Skills.GetDataFromCSVTable<_DATA_TYPE_>(ui, toTable, fn, idsToRead[index]);
-      Skills.Notify(ui, kind, "done!");
-      return true;
-    }
 
-    public static bool LoadSkillsFromCSV(IRogueUI ui, string path)
-    {
-      Skills.SkillData[] data;
-      Skills.LoadDataFromCSV<Skills.SkillData>(ui, path, "skills", 6, new Func<CSVLine, Skills.SkillData>(Skills.SkillData.FromCSVLine), new Skills.IDs[29]
-      {
-        Skills.IDs._FIRST,
-        Skills.IDs.AWAKE,
-        Skills.IDs.BOWS,
-        Skills.IDs.CARPENTRY,
-        Skills.IDs.CHARISMATIC,
-        Skills.IDs.FIREARMS,
-        Skills.IDs.HARDY,
-        Skills.IDs.HAULER,
-        Skills.IDs.HIGH_STAMINA,
-        Skills.IDs.LEADERSHIP,
-        Skills.IDs.LIGHT_EATER,
-        Skills.IDs.LIGHT_FEET,
-        Skills.IDs.LIGHT_SLEEPER,
-        Skills.IDs.MARTIAL_ARTS,
-        Skills.IDs.MEDIC,
-        Skills.IDs.NECROLOGY,
-        Skills.IDs.STRONG,
-        Skills.IDs.STRONG_PSYCHE,
-        Skills.IDs.TOUGH,
-        Skills.IDs.UNSUSPICIOUS,
-        Skills.IDs._FIRST_UNDEAD,
-        Skills.IDs.Z_EATER,
-        Skills.IDs.Z_GRAB,
-        Skills.IDs.Z_INFECTOR,
-        Skills.IDs.Z_LIGHT_EATER,
-        Skills.IDs.Z_LIGHT_FEET,
-        Skills.IDs.Z_STRONG,
-        Skills.IDs.Z_TOUGH,
-        Skills.IDs.Z_TRACKER
-      }, out data);
-      for (int index = 0; index < 29; ++index)
-        Skills.s_Names[index] = data[index].NAME;
-      Skills.SkillData skillData = data[0];
-      Rules.SKILL_AGILE_ATK_BONUS = (int) skillData.VALUE1;
-      Rules.SKILL_AGILE_DEF_BONUS = (int) skillData.VALUE2;
-      skillData = data[1];
-      Rules.SKILL_AWAKE_SLEEP_BONUS = skillData.VALUE1;
-      Rules.SKILL_AWAKE_SLEEP_REGEN_BONUS = skillData.VALUE2;
-      skillData = data[2];
-      Rules.SKILL_BOWS_ATK_BONUS = (int) skillData.VALUE1;
-      Rules.SKILL_BOWS_DMG_BONUS = (int) skillData.VALUE2;
-      skillData = data[3];
-      Rules.SKILL_CARPENTRY_BARRICADING_BONUS = skillData.VALUE1;
-      Rules.SKILL_CARPENTRY_LEVEL3_BUILD_BONUS = (int) skillData.VALUE2;
-      skillData = data[4];
-      Rules.SKILL_CHARISMATIC_TRUST_BONUS = (int) skillData.VALUE1;
-      Rules.SKILL_CHARISMATIC_TRADE_BONUS = (int) skillData.VALUE2;
-      skillData = data[5];
-      Rules.SKILL_FIREARMS_ATK_BONUS = (int) skillData.VALUE1;
-      Rules.SKILL_FIREARMS_DMG_BONUS = (int) skillData.VALUE2;
-      skillData = data[6];
-      Rules.SKILL_HARDY_HEAL_CHANCE_BONUS = (int) skillData.VALUE1;
-      skillData = data[7];
-      Rules.SKILL_HAULER_INV_BONUS = (int) skillData.VALUE1;
-      skillData = data[8];
-      Rules.SKILL_HIGH_STAMINA_STA_BONUS = (int) skillData.VALUE1;
-      skillData = data[9];
-      Rules.SKILL_LEADERSHIP_FOLLOWER_BONUS = (int) skillData.VALUE1;
-      skillData = data[10];
-      Rules.SKILL_LIGHT_EATER_FOOD_BONUS = skillData.VALUE1;
-      Rules.SKILL_LIGHT_EATER_MAXFOOD_BONUS = skillData.VALUE2;
-      skillData = data[11];
-      Rules.SKILL_LIGHT_FEET_TRAP_BONUS = (int) skillData.VALUE1;
-      skillData = data[12];
-      Rules.SKILL_LIGHT_SLEEPER_WAKEUP_CHANCE_BONUS = (int) skillData.VALUE1;
-      skillData = data[13];
-      Rules.SKILL_MARTIAL_ARTS_ATK_BONUS = (int) skillData.VALUE1;
-      Rules.SKILL_MARTIAL_ARTS_DMG_BONUS = (int) skillData.VALUE2;
-      skillData = data[14];
-      Rules.SKILL_MEDIC_BONUS = skillData.VALUE1;
-      Rules.SKILL_MEDIC_REVIVE_BONUS = (int) skillData.VALUE2;
-      skillData = data[15];
-      Rules.SKILL_NECROLOGY_UNDEAD_BONUS = (int) skillData.VALUE1;
-      Rules.SKILL_NECROLOGY_CORPSE_BONUS = (int) skillData.VALUE2;
-      skillData = data[16];
-      Rules.SKILL_STRONG_DMG_BONUS = (int) skillData.VALUE1;
-      Rules.SKILL_STRONG_THROW_BONUS = (int) skillData.VALUE2;
-      skillData = data[17];
-      Rules.SKILL_STRONG_PSYCHE_LEVEL_BONUS = skillData.VALUE1;
-      Rules.SKILL_STRONG_PSYCHE_ENT_BONUS = skillData.VALUE2;
-      skillData = data[18];
-      Rules.SKILL_TOUGH_HP_BONUS = (int) skillData.VALUE1;
-      skillData = data[19];
-      Rules.SKILL_UNSUSPICIOUS_BONUS = (int) skillData.VALUE1;
-      skillData = data[20];
-      Rules.SKILL_ZAGILE_ATK_BONUS = (int) skillData.VALUE1;
-      Rules.SKILL_ZAGILE_DEF_BONUS = (int) skillData.VALUE2;
-      skillData = data[21];
-      Rules.SKILL_ZEATER_REGEN_BONUS = skillData.VALUE1;
-      skillData = data[23];
-      Rules.SKILL_ZINFECTOR_BONUS = skillData.VALUE1;
-      skillData = data[22];
-      Rules.SKILL_ZGRAB_CHANCE = (int) skillData.VALUE1;
-      skillData = data[24];
-      Rules.SKILL_ZLIGHT_EATER_FOOD_BONUS = skillData.VALUE1;
-      Rules.SKILL_ZLIGHT_EATER_MAXFOOD_BONUS = skillData.VALUE2;
-      skillData = data[25];
-      Rules.SKILL_ZLIGHT_FEET_TRAP_BONUS = (int) skillData.VALUE1;
-      skillData = data[26];
-      Rules.SKILL_ZSTRONG_DMG_BONUS = (int) skillData.VALUE1;
-      skillData = data[27];
-      Rules.SKILL_ZTOUGH_HP_BONUS = (int) skillData.VALUE1;
-      skillData = data[28];
-      Rules.SKILL_ZTRACKER_SMELL_BONUS = skillData.VALUE1;
-      return true;
-    }
+        static string[] s_Names = new string[(int)IDs._COUNT];
 
-    [Serializable]
-    public enum IDs
-    {
-      AGILE = 0,
-      _FIRST = 0,
-      _FIRST_LIVING = 0,
-      AWAKE = 1,
-      BOWS = 2,
-      CARPENTRY = 3,
-      CHARISMATIC = 4,
-      FIREARMS = 5,
-      HARDY = 6,
-      HAULER = 7,
-      HIGH_STAMINA = 8,
-      LEADERSHIP = 9,
-      LIGHT_EATER = 10, // 0x0000000A
-      LIGHT_FEET = 11, // 0x0000000B
-      LIGHT_SLEEPER = 12, // 0x0000000C
-      MARTIAL_ARTS = 13, // 0x0000000D
-      MEDIC = 14, // 0x0000000E
-      NECROLOGY = 15, // 0x0000000F
-      STRONG = 16, // 0x00000010
-      STRONG_PSYCHE = 17, // 0x00000011
-      TOUGH = 18, // 0x00000012
-      UNSUSPICIOUS = 19, // 0x00000013
-      _LAST_LIVING = 19, // 0x00000013
-      Z_AGILE = 20, // 0x00000014
-      _FIRST_UNDEAD = 20, // 0x00000014
-      Z_EATER = 21, // 0x00000015
-      Z_GRAB = 22, // 0x00000016
-      Z_INFECTOR = 23, // 0x00000017
-      Z_LIGHT_EATER = 24, // 0x00000018
-      Z_LIGHT_FEET = 25, // 0x00000019
-      Z_STRONG = 26, // 0x0000001A
-      Z_TOUGH = 27, // 0x0000001B
-      Z_TRACKER = 28, // 0x0000001C
-      _LAST_UNDEAD = 28, // 0x0000001C
-      _COUNT = 29, // 0x0000001D
-    }
-
-    private struct SkillData
-    {
-      public const int COUNT_FIELDS = 6;
-
-      public string NAME { get; set; }
-
-      public float VALUE1 { get; set; }
-
-      public float VALUE2 { get; set; }
-
-      public float VALUE3 { get; set; }
-
-      public float VALUE4 { get; set; }
-
-      public static Skills.SkillData FromCSVLine(CSVLine line)
-      {
-        return new Skills.SkillData()
+        public static IDs[] UNDEAD_SKILLS = new IDs[]
         {
-          NAME = line[1].ParseText(),
-          VALUE1 = line[2].ParseFloat(),
-          VALUE2 = line[3].ParseFloat(),
-          VALUE3 = line[4].ParseFloat(),
-          VALUE4 = line[5].ParseFloat()
+            IDs.Z_AGILE,
+            IDs.Z_EATER,
+            IDs.Z_GRAB,
+            IDs.Z_INFECTOR,
+            IDs.Z_LIGHT_EATER,
+            IDs.Z_LIGHT_FEET,
+            IDs.Z_STRONG,
+            IDs.Z_TOUGH,
+            IDs.Z_TRACKER
         };
-      }
+
+        public static string Name(IDs id)
+        {
+            return s_Names[(int)id];
+        }
+
+        public static string Name(int id)
+        {
+            return Name((IDs)id);
+        }
+
+        public static int MaxSkillLevel(IDs id)
+        {
+            switch (id)
+            {
+                case IDs.HAULER:
+                    return 3;
+
+                default:
+                    return 5;
+            }
+        }
+
+        public static int MaxSkillLevel(int id)
+        {
+            return MaxSkillLevel((IDs)id);
+        }
+
+        public static IDs RollLiving(DiceRoller roller)
+        {
+            return (IDs)roller.Roll((int)IDs._FIRST_LIVING, (int)IDs._LAST_LIVING + 1);
+        }
+
+        public static IDs RollUndead(DiceRoller roller)
+        {
+            return (IDs)roller.Roll((int)IDs._FIRST_UNDEAD, (int)IDs._LAST_UNDEAD + 1);
+        }
+
+        #region Data
+        struct SkillData
+        {
+            public const int COUNT_FIELDS = 6;
+
+            public string NAME { get; set; }
+            public float VALUE1 { get; set; }
+            public float VALUE2 { get; set; }
+            public float VALUE3 { get; set; }
+            public float VALUE4 { get; set; }
+
+            public static SkillData FromCSVLine(CSVLine line)
+            {
+                return new SkillData()
+                {
+                    NAME = line[1].ParseText(),
+                    VALUE1 = line[2].ParseFloat(),
+                    VALUE2 = line[3].ParseFloat(),
+                    VALUE3 = line[4].ParseFloat(),
+                    VALUE4 = line[5].ParseFloat()
+                };
+            }
+        }
+
+        #region Helpers
+        static void Notify(IRogueUI ui, string what, string stage)
+        {
+            ui.UI_Clear(Color.Black);
+            ui.UI_DrawStringBold(Color.White, "Loading " + what + " data : " + stage, 0, 0);
+            ui.UI_Repaint();
+        }
+
+        static CSVLine FindLineForModel(CSVTable table, IDs skillID)
+        {
+            foreach (CSVLine l in table.Lines)
+            {
+                if (l[0].ParseText() == skillID.ToString())
+                    return l;
+            }
+
+            return null;
+        }
+
+        static _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(IRogueUI ui, CSVTable table, Func<CSVLine, _DATA_TYPE_> fn, IDs skillID)
+        {
+            // get line for id in table.
+            CSVLine line = FindLineForModel(table, skillID);
+            if (line == null)
+                throw new InvalidOperationException(String.Format("skill {0} not found", skillID.ToString()));
+
+            // get data from line.
+            _DATA_TYPE_ data;
+            try
+            {
+                data = fn(line);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException(String.Format("invalid data format for skill {0}; exception : {1}", skillID.ToString(), e.ToString()));
+            }
+
+            // ok.
+            return data;
+        }
+
+        static bool LoadDataFromCSV<_DATA_TYPE_>(IRogueUI ui, string path, string kind, int fieldsCount, Func<CSVLine, _DATA_TYPE_> fn, IDs[] idsToRead, out _DATA_TYPE_[] data)
+        {
+            //////////////////////////
+            // Read & parse csv file.
+            //////////////////////////
+            Notify(ui, kind, "loading file...");
+            // read the whole file.
+            List<string> allLines = new List<string>();
+            bool ignoreHeader = true;
+            using (StreamReader reader = File.OpenText(path))
+            {
+                while (!reader.EndOfStream)
+                {
+                    string inLine = reader.ReadLine();
+                    if (ignoreHeader)
+                    {
+                        ignoreHeader = false;
+                        continue;
+                    }
+                    allLines.Add(inLine);
+                }
+                reader.Close();
+            }
+            // parse all the lines read.
+            Notify(ui, kind, "parsing CSV...");
+            CSVParser parser = new CSVParser();
+            CSVTable table = parser.ParseToTable(allLines.ToArray(), fieldsCount);
+
+            /////////////
+            // Set data.
+            /////////////
+            Notify(ui, kind, "reading data...");
+
+            data = new _DATA_TYPE_[idsToRead.Length];
+            for (int i = 0; i < idsToRead.Length; i++)
+            {
+                data[i] = GetDataFromCSVTable<_DATA_TYPE_>(ui, table, fn, idsToRead[i]);
+            }
+
+            //////////////
+            // all fine.
+            /////////////
+            Notify(ui, kind, "done!");
+            return true;
+        }
+        #endregion
+
+        #region Loading
+        public static bool LoadSkillsFromCSV(IRogueUI ui, string path)
+        {
+            SkillData[] data;
+
+            LoadDataFromCSV<SkillData>(ui, path, "skills", SkillData.COUNT_FIELDS, SkillData.FromCSVLine,
+                new IDs[] { IDs.AGILE, IDs.AWAKE, IDs.BOWS, IDs.CARPENTRY, IDs.CHARISMATIC, IDs.FIREARMS, IDs.HARDY, IDs.HAULER,
+                            IDs.HIGH_STAMINA, IDs.LEADERSHIP, IDs.LIGHT_EATER, IDs.LIGHT_FEET, IDs.LIGHT_SLEEPER, IDs.MARTIAL_ARTS, IDs.MEDIC,
+                            IDs.NECROLOGY, IDs.STRONG, IDs.STRONG_PSYCHE, IDs.TOUGH, IDs.UNSUSPICIOUS,
+                            IDs.Z_AGILE, IDs.Z_EATER, IDs.Z_GRAB, IDs.Z_INFECTOR, IDs.Z_LIGHT_EATER, IDs.Z_LIGHT_FEET, IDs.Z_STRONG, IDs.Z_TOUGH, IDs.Z_TRACKER },
+                out data);
+
+            // names.
+            for (int i = (int)IDs._FIRST; i < (int)IDs._COUNT; i++)
+                s_Names[i] = data[i].NAME;
+
+
+            // then skills value.
+            SkillData s;
+
+            s = data[(int)IDs.AGILE];
+            Rules.SKILL_AGILE_ATK_BONUS = (int)s.VALUE1;
+            Rules.SKILL_AGILE_DEF_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.AWAKE];
+            Rules.SKILL_AWAKE_SLEEP_BONUS = s.VALUE1;
+            Rules.SKILL_AWAKE_SLEEP_REGEN_BONUS = s.VALUE2;
+
+            s = data[(int)IDs.BOWS];
+            Rules.SKILL_BOWS_ATK_BONUS = (int)s.VALUE1;
+            Rules.SKILL_BOWS_DMG_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.CARPENTRY];
+            Rules.SKILL_CARPENTRY_BARRICADING_BONUS = s.VALUE1;
+            Rules.SKILL_CARPENTRY_LEVEL3_BUILD_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.CHARISMATIC];
+            Rules.SKILL_CHARISMATIC_TRUST_BONUS = (int)s.VALUE1;
+            Rules.SKILL_CHARISMATIC_TRADE_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.FIREARMS];
+            Rules.SKILL_FIREARMS_ATK_BONUS = (int)s.VALUE1;
+            Rules.SKILL_FIREARMS_DMG_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.HARDY];
+            Rules.SKILL_HARDY_HEAL_CHANCE_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.HAULER];
+            Rules.SKILL_HAULER_INV_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.HIGH_STAMINA];
+            Rules.SKILL_HIGH_STAMINA_STA_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.LEADERSHIP];
+            Rules.SKILL_LEADERSHIP_FOLLOWER_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.LIGHT_EATER];
+            Rules.SKILL_LIGHT_EATER_FOOD_BONUS = s.VALUE1;
+            Rules.SKILL_LIGHT_EATER_MAXFOOD_BONUS = s.VALUE2;
+
+            s = data[(int)IDs.LIGHT_FEET];
+            Rules.SKILL_LIGHT_FEET_TRAP_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.LIGHT_SLEEPER];
+            Rules.SKILL_LIGHT_SLEEPER_WAKEUP_CHANCE_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.MARTIAL_ARTS];
+            Rules.SKILL_MARTIAL_ARTS_ATK_BONUS = (int)s.VALUE1;
+            Rules.SKILL_MARTIAL_ARTS_DMG_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.MEDIC];
+            Rules.SKILL_MEDIC_BONUS = s.VALUE1;
+            Rules.SKILL_MEDIC_REVIVE_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.NECROLOGY];
+            Rules.SKILL_NECROLOGY_UNDEAD_BONUS = (int)s.VALUE1;
+            Rules.SKILL_NECROLOGY_CORPSE_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.STRONG];
+            Rules.SKILL_STRONG_DMG_BONUS = (int)s.VALUE1;
+            Rules.SKILL_STRONG_THROW_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.STRONG_PSYCHE];
+            Rules.SKILL_STRONG_PSYCHE_LEVEL_BONUS = s.VALUE1;
+            Rules.SKILL_STRONG_PSYCHE_ENT_BONUS = s.VALUE2;
+
+            s = data[(int)IDs.TOUGH];
+            Rules.SKILL_TOUGH_HP_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.UNSUSPICIOUS];
+            Rules.SKILL_UNSUSPICIOUS_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.Z_AGILE];
+            Rules.SKILL_ZAGILE_ATK_BONUS = (int)s.VALUE1;
+            Rules.SKILL_ZAGILE_DEF_BONUS = (int)s.VALUE2;
+
+            s = data[(int)IDs.Z_EATER];
+            Rules.SKILL_ZEATER_REGEN_BONUS = s.VALUE1;
+
+            s = data[(int)IDs.Z_INFECTOR];
+            Rules.SKILL_ZINFECTOR_BONUS = s.VALUE1;
+
+            s = data[(int)IDs.Z_GRAB];
+            Rules.SKILL_ZGRAB_CHANCE = (int)s.VALUE1;
+
+            s = data[(int)IDs.Z_LIGHT_EATER];
+            Rules.SKILL_ZLIGHT_EATER_FOOD_BONUS = s.VALUE1;
+            Rules.SKILL_ZLIGHT_EATER_MAXFOOD_BONUS = s.VALUE2;
+
+            s = data[(int)IDs.Z_LIGHT_FEET];
+            Rules.SKILL_ZLIGHT_FEET_TRAP_BONUS = (int)s.VALUE1;
+            
+            s = data[(int)IDs.Z_STRONG];
+            Rules.SKILL_ZSTRONG_DMG_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.Z_TOUGH];
+            Rules.SKILL_ZTOUGH_HP_BONUS = (int)s.VALUE1;
+
+            s = data[(int)IDs.Z_TRACKER];
+            Rules.SKILL_ZTRACKER_SMELL_BONUS = s.VALUE1;
+
+            return true;
+        }
+        #endregion
+
+        #endregion
     }
-  }
 }

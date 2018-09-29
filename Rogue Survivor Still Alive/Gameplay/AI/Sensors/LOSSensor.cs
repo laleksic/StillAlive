@@ -1,146 +1,138 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: djack.RogueSurvivor.Gameplay.AI.Sensors.LOSSensor
-// Assembly: Rogue Survivor Still Alive, Version=1.1.8.0, Culture=neutral, PublicKeyToken=null
-// MVID: 88F4F53B-0FB3-47F1-8E67-3B4712FB1F1B
-// Assembly location: C:\Users\Mark\Documents\Visual Studio 2017\Projects\Rogue Survivor Still Alive\New folder\Rogue Survivor Still Alive.exe
+﻿using System;
+using System.Collections.Generic;
+//using System.Linq;
+using System.Text;
+using System.Drawing;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Engine.AI;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace djack.RogueSurvivor.Gameplay.AI.Sensors
 {
-  [Serializable]
-  internal class LOSSensor : Sensor
-  {
-    private HashSet<Point> m_FOV;
-    private LOSSensor.SensingFilter m_Filters;
-
-    public HashSet<Point> FOV
+    [Serializable]
+    class LOSSensor : Sensor
     {
-      get
-      {
-        return this.m_FOV;
-      }
-    }
-
-    public LOSSensor.SensingFilter Filters
-    {
-      get
-      {
-        return this.m_Filters;
-      }
-      set
-      {
-        this.m_Filters = value;
-      }
-    }
-
-    public LOSSensor(LOSSensor.SensingFilter filters)
-    {
-      this.m_Filters = filters;
-    }
-
-    public override List<Percept> Sense(RogueGame game, Actor actor)
-    {
-      this.m_FOV = LOS.ComputeFOVFor(game.Rules, actor, actor.Location.Map.LocalTime, game.Session.World.Weather);
-      int num1 = game.Rules.ActorFOV(actor, actor.Location.Map.LocalTime, game.Session.World.Weather);
-      List<Percept> perceptList1 = new List<Percept>();
-      if ((this.m_Filters & LOSSensor.SensingFilter.ACTORS) != (LOSSensor.SensingFilter) 0)
-      {
-        int num2 = num1 * num1;
-        Location location1 = actor.Location;
-        int countActors = location1.Map.CountActors;
-        if (num2 < countActors)
+        #region Types
+        [Flags]
+        public enum SensingFilter
         {
-          foreach (Point point in this.m_FOV)
-          {
-            location1 = actor.Location;
-            Actor actorAt = location1.Map.GetActorAt(point.X, point.Y);
-            if (actorAt != null && actorAt != actor)
-            {
-              List<Percept> perceptList2 = perceptList1;
-              Actor actor1 = actorAt;
-              location1 = actor.Location;
-              int turnCounter = location1.Map.LocalTime.TurnCounter;
-              Location location2 = actorAt.Location;
-              Percept percept = new Percept((object) actor1, turnCounter, location2);
-              perceptList2.Add(percept);
-            }
-          }
+            /// <summary>
+            /// Actors.
+            /// </summary>
+            ACTORS = (1<<0),
+
+            /// <summary>
+            /// Stacks of items (Inventory).
+            /// </summary>
+            ITEMS = (1<<1),
+
+            /// <summary>
+            /// Stacks of corpses (List of Corpse>
+            /// </summary>
+            CORPSES = (1<<2)
         }
-        else
+        #endregion
+
+        #region Fields
+        HashSet<Point> m_FOV;
+        SensingFilter m_Filters;
+        #endregion
+
+        #region Properties
+        public HashSet<Point> FOV
         {
-          location1 = actor.Location;
-          foreach (Actor actor1 in location1.Map.Actors)
-          {
-            if (actor1 != actor)
+            get { return m_FOV; }
+        }
+
+        public SensingFilter Filters
+        {
+            get { return m_Filters; }
+            set { m_Filters = value; }
+        }
+        #endregion
+
+        #region Init
+        public LOSSensor(SensingFilter filters)
+        {
+            m_Filters = filters;
+        }
+        #endregion
+
+        #region Sensor
+        public override List<Percept> Sense(RogueGame game, Actor actor)
+        {
+            // compute FOV
+            m_FOV = LOS.ComputeFOVFor(game.Rules, actor, actor.Location.Map.LocalTime, game.Session.World.Weather);
+            int maxRange = game.Rules.ActorFOV(actor, actor.Location.Map.LocalTime, game.Session.World.Weather);
+
+            // compute percepts.
+            List<Percept> list = new List<Percept>();
+
+            #region Actors
+            if ((m_Filters & SensingFilter.ACTORS) != 0)
             {
-              Rules rules = game.Rules;
-              location1 = actor.Location;
-              Point position1 = location1.Position;
-              location1 = actor1.Location;
-              Point position2 = location1.Position;
-              if ((double) rules.LOSDistance(position1, position2) <= (double) num1)
-              {
-                HashSet<Point> fov = this.m_FOV;
-                location1 = actor1.Location;
-                Point position3 = location1.Position;
-                if (fov.Contains(position3))
+                // roughly estimate time for two sensing methods.
+                int searchFovMethodTime = maxRange * maxRange;
+                int searchActorsListMethodTime = actor.Location.Map.CountActors;
+
+                // choose method which seems less costly in time.
+                if (searchFovMethodTime < searchActorsListMethodTime)
                 {
-                  List<Percept> perceptList2 = perceptList1;
-                  Actor actor2 = actor1;
-                  location1 = actor.Location;
-                  int turnCounter = location1.Map.LocalTime.TurnCounter;
-                  Location location2 = actor1.Location;
-                  Percept percept = new Percept((object) actor2, turnCounter, location2);
-                  perceptList2.Add(percept);
+                    // FOV check : bad when few actors, good when many actors.
+                    foreach (Point p in m_FOV)
+                    {
+                        Actor other = actor.Location.Map.GetActorAt(p.X, p.Y);
+                        if (other != null && other != actor)
+                            list.Add(new Percept(other, actor.Location.Map.LocalTime.TurnCounter, other.Location));
+                    }
                 }
-              }
-            }
-          }
-        }
-      }
-      if ((this.m_Filters & LOSSensor.SensingFilter.ITEMS) != (LOSSensor.SensingFilter) 0)
-      {
-        foreach (Point position in this.m_FOV)
-        {
-          Location location1 = actor.Location;
-          Inventory itemsAt = location1.Map.GetItemsAt(position);
-          if (itemsAt != null && !itemsAt.IsEmpty)
-          {
-            List<Percept> perceptList2 = perceptList1;
-            Inventory inventory = itemsAt;
-            location1 = actor.Location;
-            int turnCounter = location1.Map.LocalTime.TurnCounter;
-            location1 = actor.Location;
-            Location location2 = new Location(location1.Map, position);
-            Percept percept = new Percept((object) inventory, turnCounter, location2);
-            perceptList2.Add(percept);
-          }
-        }
-      }
-      if ((this.m_Filters & LOSSensor.SensingFilter.CORPSES) != (LOSSensor.SensingFilter) 0)
-      {
-        foreach (Point position in this.m_FOV)
-        {
-          List<Corpse> corpsesAt = actor.Location.Map.GetCorpsesAt(position.X, position.Y);
-          if (corpsesAt != null)
-            perceptList1.Add(new Percept((object) corpsesAt, actor.Location.Map.LocalTime.TurnCounter, new Location(actor.Location.Map, position)));
-        }
-      }
-      return perceptList1;
-    }
+                else
+                {
+                    // Actors list check : good when few actors, bad when many actors.
+                    foreach (Actor other in actor.Location.Map.Actors)
+                    {
+                        if (other == actor)
+                            continue;
 
-    [System.Flags]
-    public enum SensingFilter
-    {
-      ACTORS = 1,
-      ITEMS = 2,
-      CORPSES = 4,
+                        if (game.Rules.LOSDistance(actor.Location.Position, other.Location.Position) > maxRange)
+                            continue;
+
+                        if (m_FOV.Contains(other.Location.Position))
+                            list.Add(new Percept(other, actor.Location.Map.LocalTime.TurnCounter, other.Location));
+                    }
+                }
+            }
+            #endregion
+
+            #region Items
+            if ((m_Filters & SensingFilter.ITEMS) != 0)
+            {
+                foreach (Point p in m_FOV)
+                {
+                    Inventory inv = actor.Location.Map.GetItemsAt(p);
+                    if (inv == null || inv.IsEmpty)
+                        continue;
+                    list.Add(new Percept(inv, actor.Location.Map.LocalTime.TurnCounter, new Location(actor.Location.Map, p)));
+                }
+            }
+            #endregion
+
+            #region Corpses
+            if ((m_Filters & SensingFilter.CORPSES) != 0)
+            {
+                foreach (Point p in m_FOV)
+                {
+                    List<Corpse> corpses = actor.Location.Map.GetCorpsesAt(p.X, p.Y);
+                    if (corpses != null)
+                        list.Add(new Percept(corpses, actor.Location.Map.LocalTime.TurnCounter, new Location(actor.Location.Map, p)));
+                }
+            }
+            #endregion
+
+            // done.
+            return list;
+        }
+        #endregion
     }
-  }
 }
