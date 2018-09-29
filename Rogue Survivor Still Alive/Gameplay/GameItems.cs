@@ -15,18 +15,27 @@ namespace djack.RogueSurvivor.Gameplay
         #region IDs
         public enum IDs
         {
-            _FIRST = 0,
+            //_FIRST = 0, //@@MP - took _FIRST out because for some reason it became totally bugged (Release 4)
 
-            MEDICINE_BANDAGES = _FIRST,
+            MEDICINE_BANDAGES,
             MEDICINE_MEDIKIT,
             MEDICINE_PILLS_STA,
             MEDICINE_PILLS_SLP,
             MEDICINE_PILLS_SAN,
             MEDICINE_PILLS_ANTIVIRAL,
+            //@@MP (Release 4)
+            MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN,
+            MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN,
+            MEDICINE_ALCOHOL_BEER_CAN_BLUE,
+            MEDICINE_ALCOHOL_BEER_CAN_RED,
+            MEDICINE_ALCOHOL_LIQUOR_AMBER,
+            MEDICINE_ALCOHOL_LIQUOR_CLEAR,
+            MEDICINE_CIGARETTES,
 
             FOOD_ARMY_RATION,
             FOOD_GROCERIES,
             FOOD_CANNED_FOOD,
+            FOOD_WILD_BERRIES, //@@MP (Release 4)
 
             MELEE_BASEBALLBAT,
             MELEE_COMBAT_KNIFE,
@@ -53,6 +62,11 @@ namespace djack.RogueSurvivor.Gameplay
 
             EXPLOSIVE_GRENADE,
             EXPLOSIVE_GRENADE_PRIMED,
+            //@@MP (Release 4)
+            EXPLOSIVE_MOLOTOV,
+            EXPLOSIVE_MOLOTOV_PRIMED,
+            EXPLOSIVE_DYNAMITE,
+            EXPLOSIVE_DYNAMITE_PRIMED,
 
             BAR_WOODEN_PLANK,
 
@@ -185,6 +199,21 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemMedicineModel PILLS_SAN { get { return this[IDs.MEDICINE_PILLS_SAN] as ItemMedicineModel; } }
         MedecineData DATA_MEDICINE_PILLS_ANTIVIRAL;
         public ItemMedicineModel PILLS_ANTIVIRAL { get { return this[IDs.MEDICINE_PILLS_ANTIVIRAL] as ItemMedicineModel; } }
+        //@@MP (Release 4)
+        MedecineData DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN;
+        public ItemMedicineModel ALCOHOL_BEER_BOTTLE_BROWN { get { return this[IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN] as ItemMedicineModel; } }
+        MedecineData DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN;
+        public ItemMedicineModel ALCOHOL_BEER_BOTTLE_GREEN { get { return this[IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN] as ItemMedicineModel; } }
+        MedecineData DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE;
+        public ItemMedicineModel ALCOHOL_BEER_CAN_BLUE { get { return this[IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE] as ItemMedicineModel; } }
+        MedecineData DATA_MEDICINE_ALCOHOL_BEER_CAN_RED;
+        public ItemMedicineModel ALCOHOL_BEER_CAN_RED { get { return this[IDs.MEDICINE_ALCOHOL_BEER_CAN_RED] as ItemMedicineModel; } }
+        MedecineData DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER;
+        public ItemMedicineModel ALCOHOL_LIQUOR_AMBER { get { return this[IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER] as ItemMedicineModel; } }
+        MedecineData DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR;
+        public ItemMedicineModel ALCOHOL_LIQUOR_CLEAR { get { return this[IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR] as ItemMedicineModel; } }
+        MedecineData DATA_MEDICINE_CIGARETTES;
+        public ItemMedicineModel CIGARETTES { get { return this[IDs.MEDICINE_CIGARETTES] as ItemMedicineModel; } }
         #endregion
 
         #region Food
@@ -219,6 +248,8 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemFoodModel GROCERIES { get { return this[IDs.FOOD_GROCERIES] as ItemFoodModel; } }
         FoodData DATA_FOOD_CANNED_FOOD;
         public ItemFoodModel CANNED_FOOD { get { return this[IDs.FOOD_CANNED_FOOD] as ItemFoodModel; } }
+        FoodData DATA_FOOD_WILD_BERRIES; //@MP (Release 4)
+        public ItemFoodModel WILD_BERRIES { get { return this[IDs.FOOD_WILD_BERRIES] as ItemFoodModel; } }
         #endregion
 
         #region Melee weapons
@@ -396,6 +427,13 @@ namespace djack.RogueSurvivor.Gameplay
         ExplosiveData DATA_EXPLOSIVE_GRENADE;
         public ItemGrenadeModel GRENADE { get { return this[IDs.EXPLOSIVE_GRENADE] as ItemGrenadeModel; } }
         public ItemGrenadePrimedModel GRENADE_PRIMED { get { return this[IDs.EXPLOSIVE_GRENADE_PRIMED] as ItemGrenadePrimedModel; } }
+        //@@MP (Release 4)
+        ExplosiveData DATA_EXPLOSIVE_MOLOTOV;
+        public ItemGrenadeModel MOLOTOV { get { return this[IDs.EXPLOSIVE_MOLOTOV] as ItemGrenadeModel; } }
+        public ItemGrenadePrimedModel MOLOTOV_PRIMED { get { return this[IDs.EXPLOSIVE_MOLOTOV_PRIMED] as ItemGrenadePrimedModel; } }
+        ExplosiveData DATA_EXPLOSIVE_DYNAMITE;
+        public ItemGrenadeModel DYNAMITE { get { return this[IDs.EXPLOSIVE_DYNAMITE] as ItemGrenadeModel; } }
+        public ItemGrenadePrimedModel DYNAMITE_PRIMED { get { return this[IDs.EXPLOSIVE_DYNAMITE_PRIMED] as ItemGrenadePrimedModel; } }
         #endregion
 
         #region Barricades
@@ -768,7 +806,63 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = DATA_MEDICINE_PILLS_ANTIVIRAL.STACKINGLIMIT,
                 FlavorDescription = DATA_MEDICINE_PILLS_ANTIVIRAL.FLAVOR
             };
-
+            //@@MP (Release 4)
+            this[IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.NAME, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.PLURAL, GameImages.ITEM_BEER_BOTTLE_BROWN,
+                DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.HEALING, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.STAMINABOOST, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.SANITYCURE)
+            {
+                IsPlural = true,
+                IsStackable = true,
+                StackingLimit = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.STACKINGLIMIT,
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN.FLAVOR
+            };
+            this[IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.NAME, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.PLURAL, GameImages.ITEM_BEER_BOTTLE_GREEN,
+                DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.HEALING, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.STAMINABOOST, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.SANITYCURE)
+            {
+                IsPlural = true,
+                IsStackable = true,
+                StackingLimit = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.STACKINGLIMIT,
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN.FLAVOR
+            };
+            this[IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.NAME, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.PLURAL, GameImages.ITEM_BEER_CAN_BLUE,
+                DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.HEALING, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.STAMINABOOST, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.SANITYCURE)
+            {
+                IsPlural = true,
+                IsStackable = true,
+                StackingLimit = DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.STACKINGLIMIT,
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE.FLAVOR
+            };
+            this[IDs.MEDICINE_ALCOHOL_BEER_CAN_RED] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.NAME, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.PLURAL, GameImages.ITEM_BEER_CAN_RED,
+                DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.HEALING, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.STAMINABOOST, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.SANITYCURE)
+            {
+                IsPlural = true,
+                IsStackable = true,
+                StackingLimit = DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.STACKINGLIMIT,
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.FLAVOR
+            };
+            this[IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.NAME, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.PLURAL, GameImages.ITEM_LIQUOR_BOTTLE_AMBER,
+                DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.HEALING, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.STAMINABOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.SANITYCURE)
+            {
+                IsPlural = true,
+                IsStackable = true,
+                StackingLimit = DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.STACKINGLIMIT,
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.FLAVOR
+            };
+            this[IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.NAME, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.PLURAL, GameImages.ITEM_LIQUOR_BOTTLE_CLEAR,
+                DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.HEALING, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.STAMINABOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.SANITYCURE)
+            {
+                IsPlural = true,
+                IsStackable = true,
+                StackingLimit = DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.STACKINGLIMIT,
+                FlavorDescription = DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.FLAVOR
+            };
+            this[IDs.MEDICINE_CIGARETTES] = new ItemMedicineModel(DATA_MEDICINE_CIGARETTES.NAME, DATA_MEDICINE_CIGARETTES.PLURAL, GameImages.ITEM_CIGARETTES,
+                DATA_MEDICINE_CIGARETTES.HEALING, DATA_MEDICINE_CIGARETTES.STAMINABOOST, DATA_MEDICINE_CIGARETTES.SLEEPBOOST, DATA_MEDICINE_CIGARETTES.INFECTIONCURE, DATA_MEDICINE_CIGARETTES.SANITYCURE)
+            {
+                IsPlural = true,
+                IsStackable = true,
+                StackingLimit = DATA_MEDICINE_CIGARETTES.STACKINGLIMIT,
+                FlavorDescription = DATA_MEDICINE_CIGARETTES.FLAVOR
+            };
             #endregion
 
             #region Food
@@ -795,6 +889,15 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = DATA_FOOD_CANNED_FOOD.STACKINGLIMIT,
                 IsStackable = true,
                 FlavorDescription = DATA_FOOD_CANNED_FOOD.FLAVOR
+            };
+
+            this[IDs.FOOD_WILD_BERRIES] = new ItemFoodModel(DATA_FOOD_WILD_BERRIES.NAME, DATA_FOOD_WILD_BERRIES.PLURAL, GameImages.ITEM_WILD_BERRIES, DATA_FOOD_WILD_BERRIES.NUTRITION, DATA_FOOD_WILD_BERRIES.BESTBEFORE)
+            {  //@MP (Release 4)
+                IsAn = StartsWithVowel(DATA_FOOD_WILD_BERRIES.NAME),
+                IsPlural = CheckPlural(DATA_FOOD_WILD_BERRIES.NAME, DATA_FOOD_WILD_BERRIES.PLURAL),
+                StackingLimit = DATA_FOOD_WILD_BERRIES.STACKINGLIMIT,
+                IsStackable = true,
+                FlavorDescription = DATA_FOOD_WILD_BERRIES.FLAVOR
             };
             #endregion
 
@@ -1178,6 +1281,7 @@ namespace djack.RogueSurvivor.Gameplay
             ExplosiveData exData;
             int[] exArray;
 
+            //GRENADE
             exData = DATA_EXPLOSIVE_GRENADE;
             exArray = new int[exData.RADIUS + 1];
             for (int i = 0; i < exData.RADIUS + 1; i++)
@@ -1192,6 +1296,44 @@ namespace djack.RogueSurvivor.Gameplay
                 };
 
             this[IDs.EXPLOSIVE_GRENADE_PRIMED] = new ItemGrenadePrimedModel("primed " +exData.NAME, "primed "+exData.PLURAL, GameImages.ITEM_GRENADE_PRIMED, this[IDs.EXPLOSIVE_GRENADE] as ItemGrenadeModel)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND
+            };
+
+            //@@MP - MOLOTOV (Release 4)
+            exData = DATA_EXPLOSIVE_MOLOTOV;
+            exArray = new int[exData.RADIUS + 1];
+            for (int i = 0; i < exData.RADIUS + 1; i++)
+                exArray[i] = exData.DMG[i];
+            this[IDs.EXPLOSIVE_MOLOTOV] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_MOLOTOV,
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, false, false), GameImages.ICON_BLAST, exData.MAXTHROW)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsStackable = true,
+                StackingLimit = exData.STACKLINGLIMIT,
+                FlavorDescription = exData.FLAVOR
+            };
+
+            this[IDs.EXPLOSIVE_MOLOTOV_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_MOLOTOV_PRIMED, this[IDs.EXPLOSIVE_MOLOTOV] as ItemGrenadeModel)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND
+            };
+
+            //@@MP - DYNAMITE (Release 4)
+            exData = DATA_EXPLOSIVE_DYNAMITE;
+            exArray = new int[exData.RADIUS + 1];
+            for (int i = 0; i < exData.RADIUS + 1; i++)
+                exArray[i] = exData.DMG[i];
+            this[IDs.EXPLOSIVE_DYNAMITE] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_DYNAMITE,
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsStackable = true,
+                StackingLimit = exData.STACKLINGLIMIT,
+                FlavorDescription = exData.FLAVOR
+            };
+
+            this[IDs.EXPLOSIVE_DYNAMITE_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_DYNAMITE_PRIMED, this[IDs.EXPLOSIVE_DYNAMITE] as ItemGrenadeModel)
             {
                 EquipmentPart = DollPart.RIGHT_HAND
             };
@@ -1477,7 +1619,8 @@ namespace djack.RogueSurvivor.Gameplay
             #endregion
 
             #region Fixes/Post processing
-            for (int i = (int)IDs._FIRST; i < (int)IDs._COUNT; i++)
+            //for (int i = (int)IDs._FIRST; i < (int)IDs._COUNT; i++)
+            for (int i = 0; i < (int)IDs._COUNT; i++) //@@MP - took _FIRST out because for some reason it became totally bugged (Release 4)
             {
                 ItemModel model = this[i];
 
@@ -1514,12 +1657,12 @@ namespace djack.RogueSurvivor.Gameplay
             return null;
         }
 
-        _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(IRogueUI ui, CSVTable table, Func<CSVLine, _DATA_TYPE_> fn, IDs modelID)
+        _DATA_TYPE_ GetDataFromCSVTable<_DATA_TYPE_>(IRogueUI ui, CSVTable table, Func<CSVLine, _DATA_TYPE_> fn, IDs modelID, string path)
         {
             // get line for model in table.
             CSVLine line = FindLineForModel(table, modelID);
             if (line == null)
-                throw new InvalidOperationException(String.Format("model {0} not found", modelID.ToString()));
+                throw new InvalidOperationException(String.Format("model {0} not found : path= {1}", modelID.ToString(), path));
 
             // get data from line.
             _DATA_TYPE_ data;
@@ -1572,7 +1715,7 @@ namespace djack.RogueSurvivor.Gameplay
             data = new _DATA_TYPE_[idsToRead.Length];
             for (int i = 0; i < idsToRead.Length; i++)
             {
-                data[i] = GetDataFromCSVTable<_DATA_TYPE_>(ui, table, fn, idsToRead[i]);
+                data[i] = GetDataFromCSVTable<_DATA_TYPE_>(ui, table, fn, idsToRead[i], path);
             }
 
             //////////////
@@ -1590,7 +1733,8 @@ namespace djack.RogueSurvivor.Gameplay
 
             LoadDataFromCSV<MedecineData>(ui, path, "medicine items", MedecineData.COUNT_FIELDS, MedecineData.FromCSVLine,
                 new IDs[] { IDs.MEDICINE_BANDAGES, IDs.MEDICINE_MEDIKIT, IDs.MEDICINE_PILLS_SLP, IDs.MEDICINE_PILLS_STA,  IDs.MEDICINE_PILLS_SAN,
-                            IDs.MEDICINE_PILLS_ANTIVIRAL },
+                            IDs.MEDICINE_PILLS_ANTIVIRAL, IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN, IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN, IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE,
+                            IDs.MEDICINE_ALCOHOL_BEER_CAN_RED, IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER, IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR, IDs.MEDICINE_CIGARETTES },
                 out data);
 
             DATA_MEDICINE_BANDAGE = data[0];
@@ -1599,6 +1743,14 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_MEDICINE_PILLS_STA = data[3];
             DATA_MEDICINE_PILLS_SAN = data[4];
             DATA_MEDICINE_PILLS_ANTIVIRAL = data[5];
+            //@@MP (Release 4)
+            DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN = data[6];
+            DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN = data[7];
+            DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE = data[8];
+            DATA_MEDICINE_ALCOHOL_BEER_CAN_RED = data[9];
+            DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER = data[10];
+            DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR = data[11];
+            DATA_MEDICINE_CIGARETTES = data[12];
 
             return true;
         }
@@ -1610,12 +1762,13 @@ namespace djack.RogueSurvivor.Gameplay
             FoodData[] data;
 
             LoadDataFromCSV<FoodData>(ui, path, "food items", FoodData.COUNT_FIELDS, FoodData.FromCSVLine,
-                new IDs[] { IDs.FOOD_ARMY_RATION, IDs.FOOD_CANNED_FOOD, IDs.FOOD_GROCERIES },
+                new IDs[] { IDs.FOOD_ARMY_RATION, IDs.FOOD_CANNED_FOOD, IDs.FOOD_GROCERIES, IDs.FOOD_WILD_BERRIES },
                 out data);
 
             DATA_FOOD_ARMY_RATION = data[0];
             DATA_FOOD_CANNED_FOOD = data[1];
             DATA_FOOD_GROCERIES = data[2];
+            DATA_FOOD_WILD_BERRIES = data[3];
 
             return true;
         }
@@ -1693,10 +1846,13 @@ namespace djack.RogueSurvivor.Gameplay
             ExplosiveData[] data;
 
             LoadDataFromCSV<ExplosiveData>(ui, path, "explosives items", ExplosiveData.COUNT_FIELDS, ExplosiveData.FromCSVLine,
-                new IDs[] { IDs.EXPLOSIVE_GRENADE },
+                new IDs[] { IDs.EXPLOSIVE_GRENADE, IDs.EXPLOSIVE_MOLOTOV, IDs.EXPLOSIVE_DYNAMITE }, //@@MP (Release 4)
                 out data);
 
             DATA_EXPLOSIVE_GRENADE = data[0];
+            //@@MP (Release 4)
+            DATA_EXPLOSIVE_MOLOTOV = data[1];
+            DATA_EXPLOSIVE_DYNAMITE = data[2];
 
             return true;
         }

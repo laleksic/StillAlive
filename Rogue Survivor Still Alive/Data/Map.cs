@@ -341,6 +341,9 @@ namespace djack.RogueSurvivor.Data
                 case @"Tiles\floor_concrete":
                 case @"Tiles\floor_walkway":
                 case @"Tiles\floor_planks":
+                case @"Tiles\floor_red_carpet": //@@MP (Release 4)
+                case @"Tiles\floor_blue_carpet": //@@MP (Release 4)
+                case @"Tiles\floor_dirt": //@@MP (Release 4)
                 case @"Tiles\floor_sewer_water":
                 case @"Tiles\floor_sewer_water_anim1":
                 case @"Tiles\floor_sewer_water_anim2":

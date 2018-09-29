@@ -62,11 +62,6 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string TORCH_CLICK_PLAYER = "clicks torch";
         public static readonly string TORCH_CLICK_PLAYER_FILE = PATH + "torch_click_player";
 
-        public static readonly string EXPLOSION_VISIBLE = "loud explosion";
-        public static readonly string EXPLOSION_VISIBLE_FILE = PATH + "explosion";
-        public static readonly string EXPLOSION_NEARBY = "explosion nearby";
-        public static readonly string EXPLOSION_NEARBY_FILE = PATH + "explosion_nearby";
-
         public static readonly string CLIMB_FENCE_PLAYER = "climbing fence";
         public static readonly string CLIMB_FENCE_PLAYER_FILE = PATH + "climb_fence_player";
         public static readonly string CLIMB_FENCE_NEARBY = "climbing fence nearby";
@@ -176,5 +171,27 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string CAN_TRAP_FAR_FILE = PATH + "can_trap_far";
         public static readonly string BEAR_TRAP_FAR = "bear trap somewhere";
         public static readonly string BEAR_TRAP_FAR_FILE = PATH + "bear_trap_far";
+
+        //@@MP (Release 4)
+        public static readonly string DYNAMITE_VISIBLE = "dynamite explosion"; //@@MP - renamed from Release 2
+        public static readonly string DYNAMITE_VISIBLE_FILE = PATH + "dynamite_visible"; //@@MP - renamed from Release 2
+        public static readonly string DYNAMITE_AUDIBLE = "dynamite explosion nearby"; //@@MP - renamed from Release 2
+        public static readonly string DYNAMITE_AUDIBLE_FILE = PATH + "dynamite_audible"; //@@MP - renamed from Release 2
+
+        public static readonly string GRENADE_VISIBLE = "grenade explosion";
+        public static readonly string GRENADE_VISIBLE_FILE = PATH + "grenade_visible";
+        public static readonly string GRENADE_AUDIBLE = "grenade explosion nearby";
+        public static readonly string GRENADE_AUDIBLE_FILE = PATH + "grenade_audible";
+
+        public static readonly string MOLOTOV_VISIBLE = "molotov explosion";
+        public static readonly string MOLOTOV_VISIBLE_FILE = PATH + "molotov_visible";
+        public static readonly string MOLOTOV_AUDIBLE = "molotov explosion nearby";
+        public static readonly string MOLOTOV_AUDIBLE_FILE = PATH + "molotov_audible";
+
+        public static readonly string SMOKING = "player smokes";
+        public static readonly string SMOKING_FILE = PATH + "smoking";
+
+        public static readonly string ROLLER_DOOR = "roller door";
+        public static readonly string ROLLER_DOOR_FILE = PATH + "roller_door";
     }
 }

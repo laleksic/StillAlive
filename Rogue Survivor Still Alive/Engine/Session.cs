@@ -291,6 +291,11 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         CORPSE_DRAG_MOVE,
 
+        /// <summary>
+        /// Turn liquor into molotov.
+        /// </summary>
+        MAKE_MOLOTOV, //@@MP (Release 4)
+
         _COUNT
     }
 

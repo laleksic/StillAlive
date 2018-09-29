@@ -85,6 +85,9 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Bear trap : https://freesound.org/people/ThePriest909/sounds/278203/ by ThePriest909
 -Barbed wire trap : https://freesound.org/people/zxz41/sounds/241931/ by zxz41
 -Spikes trap : https://freesound.org/people/Anthousai/sounds/337522/ by Anthousai
+-Grenade :  https://freesound.org/people/Peeper66/sounds/269455/ by Peeper66
+-Smoking : https://freesound.org/people/sbaneat/sounds/393049/ by sbaneat
+-Roller door : https://freesound.org/people/captainvince/sounds/223549/ by captainvince
 
 
 IMAGE CREDITS
@@ -100,3 +103,6 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Piano and sofa : https://opengameart.org/content/crimelike-furniture by extradave
 -House shelves, drawers, oven, bookshelf and kitchen counter : https://opengameart.org/content/lpc-house-insides by Lanea Zimmerman (AKA Sharm)
 -Fence : https://opengameart.org/content/platformer-sprites by yd
+-Tombstones : https://opengameart.org/content/roguelike-dungeonworld-tiles by Joe Williamson (Twitter= @JoeCreates)
+-Church wall hangings : https://opengameart.org/content/2d-castle-platformer-assets-2 by pudman
+-Bush : https://opengameart.org/content/bushes-2 by SpiderDave

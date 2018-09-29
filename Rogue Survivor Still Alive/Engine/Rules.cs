@@ -98,7 +98,7 @@ namespace djack.RogueSurvivor.Engine
 
         #region Weapons & Firing
         public const int MELEE_WEAPON_BREAK_CHANCE = 1;
-        public const int MELEE_WEAPON_FRAGILE_BREAK_CHANCE = 3;
+        public const int MELEE_WEAPON_FRAGILE_BREAK_CHANCE = 25; //@@MP - upped from 3 to make fragility realistic (Release 4)
         public const int FIREARM_JAM_CHANCE_NO_RAIN = 1;
         public const int FIREARM_JAM_CHANCE_RAIN = 3;
         const int FIRE_DISTANCE_VS_RANGE_MODIFIER = 2;
@@ -559,21 +559,38 @@ namespace djack.RogueSurvivor.Engine
                 throw new ArgumentNullException("actor");
 
             ////////////////////////////////////
-            // Cant if any is true:
-            // 1. Map object is not a container.
-            // 2. There is no items there.
-            // 3. Actor cannot take the item.
+            // Can't if any is true:
+            // 1. Is a locked door
+            // 2. They're exhausted
+            // 3. Map object is not a container.
+            // 4. There is no items there.
+            // 5. Actor cannot take the item.
             ////////////////////////////////////
 
-            // 1. Map object is not a container.
             MapObject mapObj = actor.Location.Map.GetMapObjectAt(position);
+
+            // 1. it's a well locked door, like a bank vault //@@MP (Release 4)
+            if (mapObj.AName == "a locked door")
+            {
+                reason = "this door cannot be opened";
+                return false;
+            }
+
+            // 2. to exhausted to climb //@@MP (Release 4)
+            if (mapObj.IsJumpable && actor.StaminaPoints < STAMINA_MIN_FOR_ACTIVITY)
+            {
+                reason = "not enough stamina to climb on that";
+                return false;
+            }
+
+            // 3. Map object is not a container.
             if (mapObj == null || !mapObj.IsContainer)
             {
                 reason = "object is not a container";
                 return false;
             }
 
-            // 2. There is no items there.
+            // 4. There is no items there.
             Inventory invThere = actor.Location.Map.GetItemsAt(position);
             if (invThere == null || invThere.IsEmpty)
             {
@@ -581,7 +598,7 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // 3. Actor cannot take the item.
+            // 5. Actor cannot take the item.
             if (!actor.Model.Abilities.HasInventory ||
                 !actor.Model.Abilities.CanUseMapObjects ||
                 actor.Inventory == null ||
@@ -2313,6 +2330,11 @@ namespace djack.RogueSurvivor.Engine
             return a.Model.Abilities.HasToEat && a.FoodPoints <= FOOD_HUNGRY_LEVEL;
         }
 
+        public bool IsActorReallyHungry(Actor a) //@@MP - more than Hungry but less than Starving (Release 4)
+        {
+            return a.Model.Abilities.HasToEat && a.FoodPoints <= (FOOD_HUNGRY_LEVEL / 2);
+        }
+
         public bool IsActorStarving(Actor a)
         {
             return a.Model.Abilities.HasToEat && a.FoodPoints <= 0;
@@ -3904,7 +3926,7 @@ namespace djack.RogueSurvivor.Engine
         {
             MapObject mobj = map.GetMapObjectAt(pos);
             if (mobj == null) return false;
-            // mobj is NOT walkable and a door and NOT jumpable (eg:shelves,large fort)
+            // mobj is NOT walkable and NOT a door and NOT jumpable (eg:shelves,large fort)
             return !mobj.IsWalkable && !mobj.IsJumpable && !(mobj is DoorWindow);
         }
         #endregion

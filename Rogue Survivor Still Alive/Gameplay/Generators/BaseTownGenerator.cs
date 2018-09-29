@@ -229,6 +229,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             CONSTRUCTION,
             GUNSHOP,
             HUNTING,
+            LIQUOR, //@@MP (Release 4)
 
             _COUNT
         }
@@ -247,7 +248,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             MapWidth = RogueGame.MAP_MAX_WIDTH,
             MapHeight = RogueGame.MAP_MAX_HEIGHT,
-            MinBlockSize = 11, // 12 for 75x75 map size; 10 gives to many small buildings.
+            MinBlockSize = 11, // 12 for 75x75 map size; 10 gives too many small buildings.
             WreckedCarChance = 10,
             ShopBuildingChance = 10,
             ParkBuildingChance = 10,
@@ -261,6 +262,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         const int PARK_TREE_CHANCE = 25;
         const int PARK_BENCH_CHANCE = 5;
         const int PARK_ITEM_CHANCE = 5;
+        const int PARK_GRAVE_OR_TREE_CHANCE = 33; //@@MP (Release 4)
 
         const int MAX_CHAR_GUARDS_PER_OFFICE = 3;
 
@@ -364,8 +366,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             completedBlocks.Clear();
             foreach (Block b in emptyBlocks)
             {
-                if (m_DiceRoller.RollChance(m_Params.ShopBuildingChance) &&
-                    MakeShopBuilding(map, b))
+                if (m_DiceRoller.RollChance(m_Params.ShopBuildingChance) && MakeShopBuilding(map, b))
                     completedBlocks.Add(b);
             }
             foreach (Block b in completedBlocks)
@@ -376,16 +377,48 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             int charOfficesCount = 0;
             foreach (Block b in emptyBlocks)
             {
-                if ((m_Params.District.Kind == DistrictKind.BUSINESS && charOfficesCount == 0) || m_DiceRoller.RollChance(m_Params.CHARBuildingChance))
+                //if (m_Params.District.Kind == DistrictKind.BUSINESS) && charOfficesCount == 0) || m_DiceRoller.RollChance(m_Params.CHARBuildingChance)) //@@MP (Release 4)
+                if (m_Params.District.Kind == DistrictKind.BUSINESS || m_DiceRoller.RollChance(m_Params.CHARBuildingChance))
                 {
-                    CHARBuildingType btype = MakeCHARBuilding(map, b);
-                    if (btype == CHARBuildingType.OFFICE)
+                    bool NoCHARBuildingMade = false;
+                    int rolled = m_DiceRoller.Roll(0, 99);
+                    if (rolled < 60 || charOfficesCount == 0) //60%
                     {
-                        ++charOfficesCount;
-                        PopulateCHAROfficeBuilding(map, b);
+                        CHARBuildingType btype = MakeCHARBuilding(map, b);
+                        if (btype != CHARBuildingType.NONE)
+                        {
+                            if (btype == CHARBuildingType.OFFICE)
+                            {
+                                ++charOfficesCount;
+                                PopulateCHAROfficeBuilding(map, b);
+                            }
+                            completedBlocks.Add(b);
+                            continue;
+                        }
+                        else
+                            NoCHARBuildingMade = true; //@@MP - tracks if an Agency or no building at all was created, as we then have a block to fill with something else
                     }
-                    if (btype != CHARBuildingType.NONE)
+
+                    if (rolled >= 60 || NoCHARBuildingMade == true) //@@MP (Release 4)
+                    {
+                        //@@MP - the first 2 need specific sizes, the other 3 are good for whatever
+                        if ((b.InsideRect.Width <= 7 && b.InsideRect.Height < 10) || (b.InsideRect.Width < 10 && b.InsideRect.Height <= 7))
+                            MakeMechanicWorkshop(map, b);
+                        else if (b.InsideRect.Width > 10 || b.InsideRect.Height > 10)
+                            MakeLibraryBuilding(map, b);
+                        else
+                        {
+                            int roll2 = m_DiceRoller.Roll(0, 3);
+                            switch (roll2)
+                            {
+                                case 0: MakeBarBuilding(map, b); break;
+                                case 1: MakeBankBuilding(map, b); break;
+                                case 2: MakeClinicBuilding(map, b); break;
+                            }
+                        }
+
                         completedBlocks.Add(b);
+                    }
                 }
             }
             foreach (Block b in completedBlocks)
@@ -395,9 +428,18 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             completedBlocks.Clear();
             foreach (Block b in emptyBlocks)
             {
-                if (m_DiceRoller.RollChance(m_Params.ParkBuildingChance) &&
-                    MakeParkBuilding(map, b))
+                if (m_DiceRoller.RollChance(m_Params.ParkBuildingChance)) //@@MP (Release 4)
+                {
+                    int rolled = m_DiceRoller.Roll(0, 99);
+                    if (rolled >= 30)
+                        MakeParkBuilding(map, b, false); //@@MP - ordinary park, 70%
+                    else if (rolled >= 15 && rolled < 29)
+                        MakeParkBuilding(map, b, true); //@@MP - graveyard, 15%
+                    else
+                        MakeJunkyard(map, b); //15%
+
                     completedBlocks.Add(b);
+                }
             }
             foreach (Block b in completedBlocks)
                 emptyBlocks.Remove(b);
@@ -406,7 +448,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             completedBlocks.Clear();
             foreach (Block b in emptyBlocks)
             {
-                MakeHousingBuilding(map, b);
+                int rolled = m_DiceRoller.Roll(0, 99);
+                if (rolled >= 89) //@@MP (Release 4)
+                    MakeChurchBuilding(map, b);
+                else
+                    MakeHousingBuilding(map, b);
+
                 completedBlocks.Add(b);
             }
             foreach (Block b in completedBlocks)
@@ -1310,6 +1357,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     shopImage = GameImages.DECO_SHOP_HUNTING;
                     shopName = "Hunting Shop";
                     break;
+                case ShopType.LIQUOR: //@@MP (Release 4)
+                    shopImage = GameImages.DECO_SHOP_LIQUOR;
+                    shopName = "Liquor Store";
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException("unhandled shoptype");
             }
@@ -1532,7 +1583,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 if (blocker != null)
                     map.RemoveMapObjectAt(cornerpt.X, cornerpt.Y); // remove any blocking object in the shop. it should only ever be a shelf if anything, as we checked for exits already
                 if (map.IsWalkable(cornerpt.X, cornerpt.Y)) // make sure we haven't somehow got a wall or other inaccessible spot
+                {
                     map.PlaceMapObjectAt(MakeObjCashRegister(GameImages.OBJ_CASH_REGISTER), cornerpt);
+                    if ((shopType == ShopType.CONSTRUCTION) && m_DiceRoller.RollChance(50)) //@@MP - roll to add dynamite if it's a Construction store (Release 4)
+                        map.DropItemAt(MakeItemDynamite(), cornerpt);
+                }
             }
             #endregion
 
@@ -1582,12 +1637,1377 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return cornersFreeCode;
         }
 
+
+        protected virtual bool MakeLibraryBuilding(Map map, Block b) //@@MP (Release 4)
+        {
+            ////////////////////////
+            // 0. Check suitability
+            ////////////////////////
+            if (b.InsideRect.Width < 6 || b.InsideRect.Height < 6)
+                return false;
+
+            /////////////////////////////
+            // 1. Walkway, floor & walls
+            /////////////////////////////
+            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            base.TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
+            base.TileFill(map, m_Game.GameTiles.FLOOR_BLUE_CARPET, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+
+            //////////////////////////////////////////
+            // 2. Make sections alleys with displays.
+            //////////////////////////////////////////            
+            #region
+            int alleysStartX = b.InsideRect.Left;
+            int alleysStartY = b.InsideRect.Top;
+            int alleysEndX = b.InsideRect.Right;
+            int alleysEndY = b.InsideRect.Bottom;
+            bool horizontalAlleys = b.Rectangle.Width >= b.Rectangle.Height;
+            int centralAlley;
+
+            if (horizontalAlleys)
+            {
+                ++alleysStartX;
+                --alleysEndX;
+                centralAlley = b.InsideRect.Left + b.InsideRect.Width / 2;
+            }
+            else
+            {
+                ++alleysStartY;
+                --alleysEndY;
+                centralAlley = b.InsideRect.Top + b.InsideRect.Height / 2;
+            }
+            Rectangle alleysRect = Rectangle.FromLTRB(alleysStartX, alleysStartY, alleysEndX, alleysEndY);
+
+            base.MapObjectFill(map, alleysRect,
+                (pt) =>
+                {
+                    bool addShelf;
+
+                    if (horizontalAlleys)
+                        addShelf = ((pt.Y - alleysRect.Top) % 2 == 1) && pt.X != centralAlley;
+                    else
+                        addShelf = ((pt.X - alleysRect.Left) % 2 == 1) && pt.Y != centralAlley;
+
+                    if (addShelf)
+                        return base.MakeObjShelf(GameImages.OBJ_BOOK_SHELVES);
+                    else
+                        return null;
+                });
+            #endregion
+
+            ///////////////////////////////
+            // 3. Entry door with shop ids
+            //    Might add window(s).
+            ///////////////////////////////
+            #region
+            int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
+            int midY = b.Rectangle.Top + b.Rectangle.Height / 2;
+            string strDoorSide; //@@MP - hold the side of the door for use when creating a cash register at step 6
+
+            // make doors on one side.
+            if (horizontalAlleys)
+            {
+                bool west = m_DiceRoller.RollChance(50);
+
+                if (west)
+                {
+                    // west
+                    strDoorSide = "west";
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    if (b.InsideRect.Height >= 8) //@@MP adds up to two more doors depending on how big the shop is
+                    {
+                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        if (b.InsideRect.Height >= 12)
+                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    }
+                }
+                else
+                {
+                    // east
+                    strDoorSide = "east";
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    if (b.InsideRect.Height >= 8)
+                    {
+                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        if (b.InsideRect.Height >= 12)
+                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    }
+                }
+            }
+            else
+            {
+                bool north = m_DiceRoller.RollChance(50);
+
+                if (north)
+                {
+                    // north
+                    strDoorSide = "north";
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    if (b.InsideRect.Width >= 8)
+                    {
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        if (b.InsideRect.Width >= 12)
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    }
+                }
+                else
+                {
+                    // south
+                    strDoorSide = "south";
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    if (b.InsideRect.Width >= 8)
+                    {
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                        if (b.InsideRect.Width >= 12)
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+                    }
+                }
+            }
+
+            // add shop image next to doors.
+            string shopName = "Library";
+            DecorateOutsideWalls(map, b.BuildingRect, (x, y) => map.GetMapObjectAt(x, y) == null && CountAdjDoors(map, x, y) >= 1 ? GameImages.DECO_LIBRARY : null);
+
+            // window
+            // pick a random side.
+            int side = m_DiceRoller.Roll(0, 4);
+            int wx, wy;
+            switch (side)
+            {
+                case 0: wx = b.BuildingRect.Left + b.BuildingRect.Width / 2; wy = b.BuildingRect.Top; break;
+                case 1: wx = b.BuildingRect.Left + b.BuildingRect.Width / 2; wy = b.BuildingRect.Bottom - 1; break;
+                case 2: wx = b.BuildingRect.Left; wy = b.BuildingRect.Top + b.BuildingRect.Height / 2; break;
+                case 3: wx = b.BuildingRect.Right - 1; wy = b.BuildingRect.Top + b.BuildingRect.Height / 2; break;
+                default: throw new ArgumentOutOfRangeException("unhandled side");
+            }
+            // check it is ok to make a window there.
+            bool isGoodWindowPos = true;
+            if (map.GetTileAt(wx, wy).Model.IsWalkable) isGoodWindowPos = false;
+            // do it?
+            if (isGoodWindowPos)
+            {
+                PlaceDoor(map, wx, wy, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjGlassDoor());
+            }
+            #endregion
+
+            ///////////////////////////
+            // 4. Add items to shelves.
+            ///////////////////////////
+            #region
+            base.ItemsDrop(map, b.InsideRect,
+                (pt) =>
+                {
+                    MapObject mapObj = map.GetMapObjectAt(pt);
+                    if (mapObj == null)
+                        return false;
+                    return mapObj.ImageID == GameImages.OBJ_BOOK_SHELVES;
+                },
+                (pt) => MakeItemBook());
+            #endregion
+
+            ///////////
+            // 5. Zone
+            ///////////
+            // shop building.
+            map.AddZone(MakeUniqueZone(shopName, b.BuildingRect));
+            // walkway zones.
+            MakeWalkwayZones(map, b);
+
+            ///////////////////
+            // 6. Cash register
+            // @@MP - add a cash register in an corner near the door
+            ///////////////////
+            #region
+            Point cornerpt = new Point();
+            int cornersFreeCode = 0;
+            bool skipThisRegister = false;
+            switch (strDoorSide)
+            {
+                case "west":
+                    cornerpt.X = b.InsideRect.Left;
+                    cornersFreeCode = TopOrBottomCornersFree(map, cornerpt.X, b.InsideRect.Top, b.InsideRect.Bottom - 1); //the door is on the west wall, so we must check the corners directly north and south of it for a place to put the cash register
+                    switch (cornersFreeCode)
+                    {
+                        case 1:
+                            cornerpt.Y = b.InsideRect.Top;
+                            break;
+                        case 2:
+                            cornerpt.Y = b.InsideRect.Bottom - 1;
+                            break;
+                        case 3: //both free, pick one at random
+                            cornerpt.Y = m_DiceRoller.RollChance(50) ? b.InsideRect.Top : b.InsideRect.Bottom - 1;
+                            break;
+                        default:
+                            skipThisRegister = true;  //don't create a cash register because the corners are not free
+                            break;
+                    }
+                    break;
+                case "east":
+                    cornerpt.X = b.InsideRect.Right - 1;
+                    cornersFreeCode = TopOrBottomCornersFree(map, cornerpt.X, b.InsideRect.Top, b.InsideRect.Bottom - 1); //the door is on the east wall, so we must check the corners directly north and south of it for a place to put the cash register
+                    switch (cornersFreeCode)
+                    {
+                        case 1:
+                            cornerpt.Y = b.InsideRect.Top;
+                            break;
+                        case 2:
+                            cornerpt.Y = b.InsideRect.Bottom - 1;
+                            break;
+                        case 3: //both free, pick one at random
+                            cornerpt.Y = m_DiceRoller.RollChance(50) ? b.InsideRect.Top : b.InsideRect.Bottom - 1;
+                            break;
+                        default:
+                            skipThisRegister = true;  //don't create a cash register because the corners are not free
+                            break;
+                    }
+                    break;
+                case "north":
+                    cornerpt.Y = b.InsideRect.Top;
+                    cornersFreeCode = LeftOrRightCornersFree(map, cornerpt.Y, b.InsideRect.Left, b.InsideRect.Right - 1); //the door is on the north wall, so we must check the corners directly east and west of it for a place to put the cash register
+                    switch (cornersFreeCode)
+                    {
+                        case 1:
+                            cornerpt.X = b.InsideRect.Left;
+                            break;
+                        case 2:
+                            cornerpt.X = b.InsideRect.Right - 1;
+                            break;
+                        case 3: //both free, pick one at random
+                            cornerpt.X = m_DiceRoller.RollChance(50) ? b.InsideRect.Left : b.InsideRect.Right - 1;
+                            break;
+                        default:
+                            skipThisRegister = true;  //don't create a cash register because the corners are not free
+                            break;
+                    }
+                    break;
+                case "south":
+                    cornerpt.Y = b.InsideRect.Bottom - 1;
+                    cornersFreeCode = LeftOrRightCornersFree(map, cornerpt.Y, b.InsideRect.Left, b.InsideRect.Right - 1); //the door is on the south wall, so we must check the corners directly east and west of it for a place to put the cash register
+                    switch (cornersFreeCode)
+                    {
+                        case 1:
+                            cornerpt.X = b.InsideRect.Left;
+                            break;
+                        case 2:
+                            cornerpt.X = b.InsideRect.Right - 1;
+                            break;
+                        case 3: //both free, pick one at random
+                            cornerpt.X = m_DiceRoller.RollChance(50) ? b.InsideRect.Left : b.InsideRect.Right - 1;
+                            break;
+                        default:
+                            skipThisRegister = true;  //don't create a cash register because the corners are not free
+                            break;
+                    }
+                    break;
+            }
+            if (!skipThisRegister) //there wasn't a free spot for it
+            {
+                MapObject blocker = map.GetMapObjectAt(cornerpt);
+                if (blocker != null)
+                    map.RemoveMapObjectAt(cornerpt.X, cornerpt.Y); // remove any blocking object in the shop. it should only ever be a shelf if anything, as we checked for exits already
+                if (map.IsWalkable(cornerpt.X, cornerpt.Y)) // make sure we haven't somehow got a wall or other inaccessible spot
+                    map.PlaceMapObjectAt(MakeObjCashRegister(GameImages.OBJ_CASH_REGISTER), cornerpt);
+            }
+            #endregion
+
+            // Done
+            return true;
+        }
+
+        protected virtual bool MakeChurchBuilding(Map map, Block b) //@@MP (Release 4)
+        {
+            ////////////////////////
+            // 0. Check suitability
+            ////////////////////////
+            if (b.InsideRect.Width < 5 || b.InsideRect.Height < 5)
+                return false;
+
+            /////////////////////////////
+            // 1. Walkway, floor & walls
+            /////////////////////////////
+            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            base.TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
+            base.TileFill(map, m_Game.GameTiles.FLOOR_PLANKS, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+
+            //////////////////////////////////////////
+            // 2. Make rows of pews.
+            //////////////////////////////////////////            
+            #region
+            int alleysStartX = b.InsideRect.Left;
+            int alleysStartY = b.InsideRect.Top;
+            int alleysEndX = b.InsideRect.Right;
+            int alleysEndY = b.InsideRect.Bottom;
+            bool horizontalAlleys = b.Rectangle.Width >= b.Rectangle.Height;
+            int centralAlley;
+
+            if (horizontalAlleys)
+            {
+                ++alleysStartX;
+                --alleysEndX;
+                centralAlley = b.InsideRect.Left + b.InsideRect.Width / 2;
+            }
+            else
+            {
+                ++alleysStartY;
+                --alleysEndY;
+                centralAlley = b.InsideRect.Top + b.InsideRect.Height / 2;
+            }
+            Rectangle alleysRect = Rectangle.FromLTRB(alleysStartX, alleysStartY, alleysEndX, alleysEndY);
+
+            base.MapObjectFill(map, alleysRect,
+                (pt) =>
+                {
+                    bool addShelf;
+
+                    if (horizontalAlleys)
+                    {
+                        addShelf = ((pt.Y - alleysRect.Top) % 2 == 1) && pt.X != centralAlley;
+                        if (pt.X == centralAlley)
+                            map.SetTileModelAt(pt.X, pt.Y, m_Game.GameTiles.FLOOR_RED_CARPET);
+                    }
+                    else
+                    {
+                        addShelf = ((pt.X - alleysRect.Left) % 2 == 1) && pt.Y != centralAlley;
+                        if (pt.Y == centralAlley)
+                            map.SetTileModelAt(pt.X, pt.Y, m_Game.GameTiles.FLOOR_RED_CARPET);
+                    }
+
+                    if (addShelf && CountAdjWalls(map, pt.X, pt.Y) == 0)
+                        return base.MakeObjBench(GameImages.OBJ_CHURCH_PEW);
+                    else
+                        return null;
+                });
+            #endregion
+
+            ///////////////////////////////
+            // 3. Entry door with shop ids
+            //    Add lectern and hangings.
+            ///////////////////////////////
+            #region
+            int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
+            int midY = b.Rectangle.Top + b.Rectangle.Height / 2;
+            string[] CHURCH_HANGINGS = { GameImages.DECO_CHURCH_HANGING1, GameImages.DECO_CHURCH_HANGING2, GameImages.DECO_CHURCH_HANGING3, GameImages.DECO_CHURCH_HANGING4 };
+            string chosenHanging = CHURCH_HANGINGS[m_DiceRoller.Roll(0, CHURCH_HANGINGS.Length)];
+
+            // make doors on one side.
+            if (!horizontalAlleys)
+            {
+                bool west = m_DiceRoller.RollChance(50);
+
+                if (west)
+                {
+                    // west
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+
+                    //@@MP - lectern opposite to the door
+                    Point pt = new Point(b.BuildingRect.Right - 2, midY);
+                    map.PlaceMapObjectAt(MakeObjDrawer(GameImages.OBJ_LECTERN), pt);
+                    //@@MP - wall hanging behind lectern
+                    Tile tile = map.GetTileAt(b.BuildingRect.Right - 2, midY - 1);
+                    tile.AddDecoration(chosenHanging);
+                    tile = map.GetTileAt(b.BuildingRect.Right - 2, midY + 1);
+                    tile.AddDecoration(chosenHanging);
+                }
+                else
+                {
+                    // east
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+
+                    //@@MP - lectern opposite to the door
+                    Point pt = new Point(b.BuildingRect.Left + 1, midY);
+                    map.PlaceMapObjectAt(MakeObjDrawer(GameImages.OBJ_LECTERN), pt);
+                    //@@MP - wall hanging behind lectern
+                    Tile tile = map.GetTileAt(b.BuildingRect.Left + 1, midY - 1);
+                    tile.AddDecoration(chosenHanging);
+                    tile = map.GetTileAt(b.BuildingRect.Left + 1, midY + 1);
+                    tile.AddDecoration(chosenHanging);
+                }
+            }
+            else
+            {
+                bool north = m_DiceRoller.RollChance(50);
+
+                if (north)
+                {
+                    // north
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+
+                    //@@MP - lectern opposite to the door
+                    Point pt = new Point(midX, b.BuildingRect.Bottom - 2);
+                    map.PlaceMapObjectAt(MakeObjDrawer(GameImages.OBJ_LECTERN), pt);
+                    //@@MP - wall hanging behind lectern
+                    Tile tile = map.GetTileAt(midX + 1, b.BuildingRect.Bottom - 2);
+                    tile.AddDecoration(chosenHanging);
+                    tile = map.GetTileAt(midX - 1, b.BuildingRect.Bottom - 2);
+                    tile.AddDecoration(chosenHanging);
+                }
+                else
+                {
+                    // south
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+
+                    //@@MP - lectern opposite to the door
+                    Point pt = new Point(midX, b.BuildingRect.Top + 1);
+                    map.PlaceMapObjectAt(MakeObjDrawer(GameImages.OBJ_LECTERN), pt);
+                    //@@MP - wall hanging behind lectern
+                    Tile tile = map.GetTileAt(midX + 1, b.BuildingRect.Top + 1);
+                    tile.AddDecoration(chosenHanging);
+                    tile = map.GetTileAt(midX - 1, b.BuildingRect.Top + 1);
+                    tile.AddDecoration(chosenHanging);
+                }
+            }
+
+            // add building image next to doors.
+            DecorateOutsideWalls(map, b.BuildingRect, (x, y) => map.GetMapObjectAt(x, y) == null && CountAdjDoors(map, x, y) >= 1 ? GameImages.DECO_CHURCH : null);
+            #endregion
+
+            ///////////
+            // 4. Zone
+            ///////////
+            // demark building.
+            string buildingName = "Church";
+            map.AddZone(MakeUniqueZone(buildingName, b.BuildingRect));
+            // walkway zones.
+            MakeWalkwayZones(map, b);
+            
+            // Done
+            return true;
+        }
+
+        protected virtual bool MakeBarBuilding(Map map, Block b) //@@MP (Release 4)
+        {
+            ////////////////////////
+            // 0. Check suitability
+            ////////////////////////
+            if (b.InsideRect.Width < 5 || b.InsideRect.Height < 5)
+                return false;
+
+            /////////////////////////////
+            // 1. Walkway, floor & walls
+            /////////////////////////////
+            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            base.TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
+            base.TileFill(map, m_Game.GameTiles.FLOOR_PLANKS, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+
+            ///////////////////////////////
+            // 2. Entry door with shop ids
+            //    Add lectern and hangings.
+            ///////////////////////////////
+            #region
+            int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
+            int midY = b.Rectangle.Top + b.Rectangle.Height / 2;
+
+            //hold the area within the bar. after the door position is determined we'll reduce the area held to only in front of the counter.
+            //we'll use this held area to place tables later
+            int tablesareabottom = b.InsideRect.Bottom;
+            int tablesareatop = b.InsideRect.Top;
+            int tablesarealeft = b.InsideRect.Left;
+            int tablesarearight = b.InsideRect.Right;
+
+            // make doors on one side.
+            int doorside = m_DiceRoller.Roll(0, 4);
+            switch (doorside)
+            {
+                case 0:
+                    // west
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+
+                    //place velvet entry rope
+                    Point westropept = new Point(b.BuildingRect.Left - 1, midY);
+                    map.RemoveMapObjectAt(westropept.X, westropept.Y); //get rid of cars
+                    Tile westtile = map.GetTileAt(westropept.X, westropept.Y);
+                    westtile.AddDecoration(GameImages.DECO_VELVET_ROPE);
+
+                    //center the sink opposite the door
+                    Point eastsinkpt = new Point(b.InsideRect.Right - 1, midY);
+                    map.PlaceMapObjectAt(MakeObjKitchenSink(GameImages.OBJ_KITCHEN_SINK), eastsinkpt);
+
+                    //create the shelves and counters
+                    tablesarearight -= 4;
+                    int eastshelvesX = b.InsideRect.Right - 1;
+                    for (int i = 1; i <= b.InsideRect.Height; i++)
+                    {
+                        int y = b.InsideRect.Bottom - i;
+
+                        //place a shelf with alcohol, but not the middle as we put the sink there
+                        Point shelfpt = new Point(eastshelvesX, y);
+                        if (map.IsWalkable(shelfpt) && y != midY)
+                        {
+                            westtile = map.GetTileAt(eastshelvesX, y);
+                            map.PlaceMapObjectAt(MakeObjShelf(GameImages.OBJ_BAR_SHELVES), shelfpt);
+                            map.DropItemAt(MakeItemAlcohol(), shelfpt);
+                        }
+
+                        //place a bar counter another 2 tiles in from the shelves
+                        Point counterpt = new Point(eastshelvesX - 2, y);
+                        if (map.IsWalkable(counterpt))
+                        {
+                            westtile = map.GetTileAt(counterpt.X, counterpt.Y);
+                            map.PlaceMapObjectAt(MakeObjKitchenCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt);
+                            map.DropItemAt(MakeItemAlcohol(), shelfpt);
+                        }
+                    }
+                    break;
+                case 1:
+                    // east
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+
+                    //place velvet entry rope
+                    Point eastropept = new Point(b.BuildingRect.Right, midY);
+                    map.RemoveMapObjectAt(eastropept.X, eastropept.Y); //get rid of cars
+                    Tile easttile = map.GetTileAt(eastropept.X, eastropept.Y);
+                    easttile.AddDecoration(GameImages.DECO_VELVET_ROPE);
+
+                    //center the sink opposite the door
+                    Point westsinkpt = new Point(b.InsideRect.Left, midY);
+                    map.PlaceMapObjectAt(MakeObjKitchenSink(GameImages.OBJ_KITCHEN_SINK), westsinkpt);
+
+                    //create the shelves and counters
+                    tablesarealeft += 4;
+                    int westshelvesX = b.InsideRect.Left;
+                    for (int i = 1; i <= b.InsideRect.Height; i++)
+                    {
+                        int y = b.InsideRect.Bottom - i;
+
+                        //place a shelf with alcohol, but not the middle as we put the sink there
+                        Point shelfpt = new Point(westshelvesX, y);
+                        if (map.IsWalkable(shelfpt) && y != midY)
+                        {
+                            easttile = map.GetTileAt(westshelvesX, y);
+                            map.PlaceMapObjectAt(MakeObjShelf(GameImages.OBJ_BAR_SHELVES), shelfpt);
+                            map.DropItemAt(MakeItemAlcohol(), shelfpt);
+                        }
+
+                        //place a bar counter another 2 tiles in from the shelves
+                        Point counterpt = new Point(westshelvesX + 2, y);
+                        if (map.IsWalkable(counterpt))
+                        {
+                            westtile = map.GetTileAt(counterpt.X, counterpt.Y);
+                            map.PlaceMapObjectAt(MakeObjKitchenCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt);
+                            map.DropItemAt(MakeItemAlcohol(), shelfpt);
+                        }
+                    }
+                    break;
+                case 2:
+                    // north
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+
+                    //place velvet entry rope
+                    Point northropept = new Point(midX, b.BuildingRect.Top - 1);
+                    map.RemoveMapObjectAt(northropept.X, northropept.Y); //get rid of cars
+                    Tile northtile = map.GetTileAt(northropept.X, northropept.Y);
+                    northtile.AddDecoration(GameImages.DECO_VELVET_ROPE);
+
+                    //center the sink opposite the door
+                    Point southsinkpt = new Point(midX, b.InsideRect.Bottom - 1);
+                    map.PlaceMapObjectAt(MakeObjKitchenSink(GameImages.OBJ_KITCHEN_SINK), southsinkpt);
+
+                    //create the shelves and counters
+                    tablesareabottom -= 4;
+                    int southshelvesY = b.InsideRect.Bottom - 1;
+                    for (int i = 0; i <= b.InsideRect.Width; i++)
+                    {
+                        int x = b.InsideRect.Left + i;
+
+                        //place a shelf with alcohol, but not the middle as we put the sink there
+                        Point shelfpt = new Point(x, southshelvesY);
+                        if (map.IsWalkable(shelfpt) && x != midX)
+                        {
+                            easttile = map.GetTileAt(x, southshelvesY);
+                            map.PlaceMapObjectAt(MakeObjShelf(GameImages.OBJ_BAR_SHELVES), shelfpt);
+                            map.DropItemAt(MakeItemAlcohol(), shelfpt);
+                        }
+
+                        //place a bar counter another 2 tiles in from the shelves
+                        Point counterpt = new Point(x, southshelvesY - 2);
+                        if (map.IsWalkable(counterpt))
+                        {
+                            westtile = map.GetTileAt(counterpt.X, counterpt.Y);
+                            map.PlaceMapObjectAt(MakeObjKitchenCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt);
+                            map.DropItemAt(MakeItemAlcohol(), shelfpt);
+                        }
+                    }
+                    break;
+                case 3:
+                    // south
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjWoodenDoor());
+
+                    //place velvet entry rope
+                    Point southropept = new Point(midX, b.BuildingRect.Bottom);
+                    map.RemoveMapObjectAt(southropept.X, southropept.Y); //get rid of cars
+                    Tile southtile = map.GetTileAt(southropept.X, southropept.Y);
+                    southtile.AddDecoration(GameImages.DECO_VELVET_ROPE);
+
+                    //center the sink opposite the door
+                    Point northsinkpt = new Point(midX, b.InsideRect.Top);
+                    map.PlaceMapObjectAt(MakeObjKitchenSink(GameImages.OBJ_KITCHEN_SINK), northsinkpt);
+
+                    //create the shelves and counters
+                    tablesareatop += 4;
+                    int northshelvesY = b.InsideRect.Top;
+                    for (int i = 0; i <= b.InsideRect.Width; i++)
+                    {
+                        int x = b.InsideRect.Left + i;
+
+                        //place a shelf with alcohol, but not the middle as we put the sink there
+                        Point shelfpt = new Point(x, northshelvesY);
+                        if (map.IsWalkable(shelfpt) && x != midX)
+                        {
+                            easttile = map.GetTileAt(x, northshelvesY);
+                            map.PlaceMapObjectAt(MakeObjShelf(GameImages.OBJ_BAR_SHELVES), shelfpt);
+                            map.DropItemAt(MakeItemAlcohol(), shelfpt);
+                        }
+
+                        //place a bar counter another 2 tiles in from the shelves
+                        Point counterpt = new Point(x, northshelvesY + 2);
+                        if (map.IsWalkable(counterpt))
+                        {
+                            westtile = map.GetTileAt(counterpt.X, counterpt.Y);
+                            map.PlaceMapObjectAt(MakeObjKitchenCounter(GameImages.OBJ_KITCHEN_COUNTER), counterpt);
+                            map.DropItemAt(MakeItemAlcohol(), shelfpt);
+                        }
+                    }
+                    break;
+            }
+
+            // add building image next to doors.
+            DecorateOutsideWalls(map, b.BuildingRect, (x, y) => map.GetMapObjectAt(x, y) == null && CountAdjDoors(map, x, y) >= 1 ? GameImages.DECO_BAR : null);
+            #endregion
+
+            ///////////
+            // 3. Add tables and chairs
+            ///////////
+            #region
+            int nbTables = 0;
+            switch (doorside)
+            {
+                case 0:
+                case 1:
+                    nbTables = m_DiceRoller.Roll(Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height), 2 * Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height));
+                    break;
+                case 2:
+                case 3:
+                    nbTables = m_DiceRoller.Roll(Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)), 2 * Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)));
+                    break;
+            }
+
+            int tablesareawidth = Math.Abs(tablesarealeft - tablesarearight);
+            int tablesareaheight = Math.Abs(tablesareabottom - tablesareatop);
+            Rectangle insideRoom = new Rectangle(tablesarealeft, tablesareatop, tablesareawidth, tablesareaheight);
+            for (int i = 0; i < nbTables; i++)
+            {
+                MapObjectPlaceInGoodPosition(map, insideRoom,
+                    (pt) => !IsADoorNSEW(map, pt.X, pt.Y),
+                    m_DiceRoller,
+                    (pt) =>
+                    {
+                        // three chairs around //@@MP (Release 3)
+                        Rectangle adjTableRect = new Rectangle(pt.X - 1, pt.Y - 1, 3, 3);
+                        adjTableRect.Intersect(insideRoom);
+                        MapObjectPlaceInGoodPosition(map, adjTableRect,
+                            (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                            m_DiceRoller,
+                            (pt2) => MakeObjChair(GameImages.OBJ_CHAIR));
+                        MapObjectPlaceInGoodPosition(map, adjTableRect,
+                            (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                            m_DiceRoller,
+                            (pt2) => MakeObjChair(GameImages.OBJ_CHAIR));
+                        MapObjectPlaceInGoodPosition(map, adjTableRect,
+                            (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                            m_DiceRoller,
+                            (pt2) => MakeObjChair(GameImages.OBJ_CHAIR));
+                        MapObjectPlaceInGoodPosition(map, adjTableRect,
+                            (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                            m_DiceRoller,
+                            (pt2) => MakeObjChair(GameImages.OBJ_CHAIR));
+
+                        /*// items.
+                        if (m_DiceRoller.RollChance(20))
+                        {
+                            for (int ii = 0; ii < HOUSE_LIVINGROOM_ITEMS_ON_TABLE; ii++)
+                            {
+                                Item it = MakeItemAlcohol();
+                                if (it != null)
+                                    map.DropItemAt(it, pt);
+                            }
+                        }*/
+
+                        // table.
+                        MapObject table = MakeObjTable(GameImages.OBJ_TABLE);
+                        return table;
+                    });
+            };
+            #endregion
+
+            ///////////
+            // 4. Zone
+            ///////////
+            // demark building.
+            string buildingName = "Bar";
+            map.AddZone(MakeUniqueZone(buildingName, b.BuildingRect));
+            // walkway zones.
+            MakeWalkwayZones(map, b);
+
+            // Done
+            return true;
+        }
+        
+        protected virtual bool MakeMechanicWorkshop(Map map, Block b) //@@MP (Release 4)
+        {
+            ////////////////////////
+            // 0. Check suitability
+            ////////////////////////
+            if (b.InsideRect.Width < 5 || b.InsideRect.Height < 5)
+                return false;
+
+            /////////////////////////////
+            // 1. Walkway, floor & walls
+            /////////////////////////////
+            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            base.TileRectangle(map, m_Game.GameTiles.WALL_STONE, b.BuildingRect);
+            base.TileFill(map, m_Game.GameTiles.FLOOR_CONCRETE, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+
+            ///////////////////////////////
+            // 2. Entry door with shop ids
+            //    Add lectern and hangings.
+            ///////////////////////////////
+            #region
+            int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
+            int midY = b.Rectangle.Top + b.Rectangle.Height / 2;
+
+            // make doors on one side.
+            int doorside = m_DiceRoller.Roll(0, 4);
+            switch (doorside)
+            {
+                case 0:
+                    // west
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+
+                    //place driveway
+                    Point westdrivewaypt = new Point(b.BuildingRect.Left - 1, midY);
+                    map.RemoveMapObjectAt(westdrivewaypt.X, westdrivewaypt.Y); //get rid of cars
+                    map.SetTileModelAt(westdrivewaypt.X, westdrivewaypt.Y, m_Game.GameTiles.FLOOR_ASPHALT);
+
+                    break;
+                case 1:
+                    // east
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+
+                    //place driveway
+                    Point eastdrivewaypt = new Point(b.BuildingRect.Right, midY);
+                    map.RemoveMapObjectAt(eastdrivewaypt.X, eastdrivewaypt.Y); //get rid of cars
+                    map.SetTileModelAt(eastdrivewaypt.X, eastdrivewaypt.Y, m_Game.GameTiles.FLOOR_ASPHALT);
+
+                    break;
+                case 2:
+                    // north
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+
+                    //place driveway
+                    Point northdrivewaypt = new Point(midX, b.BuildingRect.Top - 1);
+                    map.RemoveMapObjectAt(northdrivewaypt.X, northdrivewaypt.Y); //get rid of cars
+                    map.SetTileModelAt(northdrivewaypt.X, northdrivewaypt.Y, m_Game.GameTiles.FLOOR_ASPHALT);
+
+                    break;
+                case 3:
+                    // south
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjRollerDoor());
+
+                    //place driveway
+                    Point southdrivewaypt = new Point(midX, b.BuildingRect.Bottom);
+                    map.RemoveMapObjectAt(southdrivewaypt.X, southdrivewaypt.Y); //get rid of cars
+                    map.SetTileModelAt(southdrivewaypt.X, southdrivewaypt.Y, m_Game.GameTiles.FLOOR_ASPHALT);
+
+                    break;
+            }
+
+            // add building image next to doors.
+            DecorateOutsideWalls(map, b.BuildingRect, (x, y) => map.GetMapObjectAt(x, y) == null && CountAdjDoors(map, x, y) >= 1 ? GameImages.DECO_MECHANIC : null);
+            #endregion
+
+            ///////////
+            // 3. Add workbenches and cars
+            ///////////
+            #region
+            MapObjectFill(map, b.InsideRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) < 3)
+                        return null;
+                    else if (m_DiceRoller.RollChance(20))
+                        map.DropItemAt(MakeShopConstructionItem(), pt);
+                    return MakeObjKitchenCounter(GameImages.OBJ_WORKBENCH);
+                });
+
+            MapObjectFill(map, b.InsideRect,
+                            (pt) =>
+                            {
+                                if (m_DiceRoller.RollChance(m_Params.WreckedCarChance))
+                                {
+                                    Tile tile = map.GetTileAt(pt.X, pt.Y);
+                                    if (tile.IsInside && tile.Model.IsWalkable)// && tile.Model != m_Game.GameTiles.WALL_STONE)
+                                    {
+                                        MapObject car = base.MakeObjWreckedCar(m_DiceRoller);
+                                        return car;
+                                    }
+                                }
+                                return null;
+                            });
+            #endregion
+
+            ///////////
+            // 4. Zone
+            ///////////
+            // demark building.
+            string buildingName = "Mechanic";
+            map.AddZone(MakeUniqueZone(buildingName, b.BuildingRect));
+            // walkway zones.
+            MakeWalkwayZones(map, b);
+
+            // Done
+            return true;
+        }
+
+        protected virtual bool MakeClinicBuilding(Map map, Block b) //@@MP (Release 4)
+        {
+            ////////////////////////
+            // 0. Check suitability
+            ////////////////////////
+            if (b.InsideRect.Width < 5 || b.InsideRect.Height < 5)
+                return false;
+
+            /////////////////////////////
+            // 1. Walkway, floor & walls
+            /////////////////////////////
+            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            base.TileRectangle(map, m_Game.GameTiles.WALL_STONE, b.BuildingRect);
+            base.TileFill(map, m_Game.GameTiles.FLOOR_TILES, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+
+            ///////////////////////////////
+            // 2. Entry door with shop ids
+            //    Add lectern and hangings.
+            ///////////////////////////////
+            #region
+            int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
+            int midY = b.Rectangle.Top + b.Rectangle.Height / 2;
+
+            //hold the area within the clinic. after the door position is determined we'll use this held area to place objects
+            int tablesareabottom = b.InsideRect.Bottom;
+            int tablesareatop = b.InsideRect.Top;
+            int tablesarealeft = b.InsideRect.Left;
+            int tablesarearight = b.InsideRect.Right;
+
+            // make doors on one side.
+            Point receptiondeskpt;
+            int doorside = m_DiceRoller.Roll(0, 4);
+            switch (doorside)
+            {
+                case 0:
+                    // west
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjHospitalDoor());
+
+                    //place desk by the door
+                    receptiondeskpt = new Point(b.BuildingRect.Left + 1, midY - 1);
+                    if (map.IsWalkable(receptiondeskpt.X, receptiondeskpt.Y)) // make sure we haven't somehow got a wall or other inaccessible spot
+                        map.PlaceMapObjectAt(MakeObjReceptionDesk(GameImages.OBJ_CLINIC_DESK), receptiondeskpt);
+                    break;
+                case 1:
+                    // east
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjHospitalDoor());
+
+                    //place desk by the door
+                    receptiondeskpt = new Point(b.BuildingRect.Right - 2, midY + 1);
+                    if (map.IsWalkable(receptiondeskpt.X, receptiondeskpt.Y)) // make sure we haven't somehow got a wall or other inaccessible spot
+                        map.PlaceMapObjectAt(MakeObjReceptionDesk(GameImages.OBJ_CLINIC_DESK), receptiondeskpt);
+                    break;
+                case 2:
+                    // north
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjHospitalDoor());
+
+                    //place desk by the door
+                    receptiondeskpt = new Point(midX - 1, b.BuildingRect.Top + 1);
+                    if (map.IsWalkable(receptiondeskpt.X, receptiondeskpt.Y)) // make sure we haven't somehow got a wall or other inaccessible spot
+                        map.PlaceMapObjectAt(MakeObjReceptionDesk(GameImages.OBJ_CLINIC_DESK), receptiondeskpt);
+                    break;
+                case 3:
+                    // south
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_CONCRETE, base.MakeObjHospitalDoor());
+
+                    //place desk by the door
+                    receptiondeskpt = new Point(midX + 1, b.BuildingRect.Bottom - 2);
+                    if (map.IsWalkable(receptiondeskpt.X, receptiondeskpt.Y)) // make sure we haven't somehow got a wall or other inaccessible spot
+                        map.PlaceMapObjectAt(MakeObjReceptionDesk(GameImages.OBJ_CLINIC_DESK), receptiondeskpt);
+                    break;
+            }
+
+            // add building image next to doors.
+            DecorateOutsideWalls(map, b.BuildingRect, (x, y) => map.GetMapObjectAt(x, y) == null && CountAdjDoors(map, x, y) >= 1 ? GameImages.DECO_CLINIC_SIGN : null);
+            #endregion
+
+            ///////////
+            // 3. Work out dimensions for placement
+            ///////////
+            #region
+            int nbTables = 0;
+            switch (doorside)
+            {
+                case 0:
+                case 1:
+                    nbTables = m_DiceRoller.Roll(Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height), 2 / Math.Max((tablesarealeft - tablesarearight), b.InsideRect.Height));
+                    break;
+                case 2:
+                case 3:
+                    nbTables = m_DiceRoller.Roll(Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)), 2 / Math.Max(b.InsideRect.Width, (tablesareabottom - tablesareatop)));
+                    break;
+            }
+
+            int tablesareawidth = Math.Abs(tablesarealeft - tablesarearight);
+            int tablesareaheight = Math.Abs(tablesareabottom - tablesareatop);
+            Rectangle insideRoom = new Rectangle(tablesarealeft, tablesareatop, tablesareawidth, tablesareaheight);
+            #endregion
+
+            ///////////
+            // 4. Add beds, curtains, cupboards, 
+            ///////////
+            #region
+            //cupboards
+            MapObjectFill(map, b.InsideRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) < 3)
+                        return null;
+                    else if (m_DiceRoller.RollChance(50))
+                    {
+                        map.DropItemAt(MakeShopPharmacyItem(), pt);
+                        return MakeObjShelf(GameImages.OBJ_CLINIC_CUPBOARD);
+                    }
+                    else
+                        return null;
+                });
+
+            // beds, curtain, machinery
+            for (int i = 0; i < nbTables; i++)
+            {
+                MapObjectPlaceInGoodPosition(map, insideRoom,
+                    (pt) => !IsADoorNSEW(map, pt.X, pt.Y), // && CountAdjWalls(map, pt.X, pt.Y) == 0
+                    m_DiceRoller,
+                    (pt) =>
+                    {
+                        // curtain and machinery around, with item on the bed
+                        Rectangle adjBedRect = new Rectangle(pt.X - 1, pt.Y - 1, 3, 3);
+                        adjBedRect.Intersect(insideRoom);
+                        MapObjectPlaceInGoodPosition(map, adjBedRect,
+                            (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                            m_DiceRoller,
+                            (pt2) => MakeObjCurtain(GameImages.OBJ_CLINIC_CURTAIN));
+
+                        MapObjectPlaceInGoodPosition(map, adjBedRect,
+                            (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                            m_DiceRoller,
+                            (pt2) => MakeObjMachinery(GameImages.OBJ_CLINIC_MACHINERY));
+
+                        // item.
+                        map.DropItemAt(MakeShopPharmacyItem(), pt);
+
+                        // bed.
+                        MapObject bed = MakeObjBed(GameImages.OBJ_CLINIC_BED);
+                        return bed;
+                    });
+            }
+            #endregion
+
+            ///////////
+            // 5. Zone
+            ///////////
+            // demark building.
+            string buildingName = "Clinic";
+            map.AddZone(MakeUniqueZone(buildingName, b.BuildingRect));
+            // walkway zones.
+            MakeWalkwayZones(map, b);
+
+            // Done
+            return true;
+        }
+
+        protected virtual bool MakeJunkyard(Map map, Block b) //@@MP (Release 4)
+        {
+            ////////////////////////
+            // 0. Check suitability
+            ////////////////////////
+            if (b.InsideRect.Width < 5 || b.InsideRect.Height < 5)
+                return false;
+
+            /////////////////////////////
+            // 1. Walkway, floor & walls
+            /////////////////////////////
+            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            base.MapObjectFill(map, b.BuildingRect,
+                (pt) =>
+                {
+                    bool placeFence = (pt.X == b.BuildingRect.Left || pt.X == b.BuildingRect.Right - 1 || pt.Y == b.BuildingRect.Top || pt.Y == b.BuildingRect.Bottom - 1);
+                    if (placeFence)
+                    {
+                        map.SetTileModelAt(pt.X, pt.Y, m_Game.GameTiles.FLOOR_DIRT);
+                        return base.MakeObjFence(GameImages.OBJ_FENCE);
+                    }
+                    else
+                        return null;
+                    });
+            base.TileFill(map, m_Game.GameTiles.FLOOR_DIRT, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+
+            ///////////////////////////////
+            // 2. Entry door with shop ids
+            //    Add lectern and hangings.
+            ///////////////////////////////
+            #region
+            int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
+            int midY = b.Rectangle.Top + b.Rectangle.Height / 2;
+
+            // make doors on one side.
+            int doorside = m_DiceRoller.Roll(0, 4);
+            switch (doorside)
+            {
+                case 0:
+                    // west
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+
+                    //place driveway
+                    Point westdrivewaypt = new Point(b.BuildingRect.Left - 1, midY);
+                    map.RemoveMapObjectAt(westdrivewaypt.X, westdrivewaypt.Y); //get rid of cars
+                    map.SetTileModelAt(westdrivewaypt.X, westdrivewaypt.Y, m_Game.GameTiles.FLOOR_ASPHALT);
+
+                    break;
+                case 1:
+                    // east
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+
+                    //place driveway
+                    Point eastdrivewaypt = new Point(b.BuildingRect.Right, midY);
+                    map.RemoveMapObjectAt(eastdrivewaypt.X, eastdrivewaypt.Y); //get rid of cars
+                    map.SetTileModelAt(eastdrivewaypt.X, eastdrivewaypt.Y, m_Game.GameTiles.FLOOR_ASPHALT);
+
+                    break;
+                case 2:
+                    // north
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+
+                    //place driveway
+                    Point northdrivewaypt = new Point(midX, b.BuildingRect.Top - 1);
+                    map.RemoveMapObjectAt(northdrivewaypt.X, northdrivewaypt.Y); //get rid of cars
+                    map.SetTileModelAt(northdrivewaypt.X, northdrivewaypt.Y, m_Game.GameTiles.FLOOR_ASPHALT);
+
+                    break;
+                case 3:
+                    // south
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+                    PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_DIRT, base.MakeObjRollerDoor());
+
+                    //place driveway
+                    Point southdrivewaypt = new Point(midX, b.BuildingRect.Bottom);
+                    map.RemoveMapObjectAt(southdrivewaypt.X, southdrivewaypt.Y); //get rid of cars
+                    map.SetTileModelAt(southdrivewaypt.X, southdrivewaypt.Y, m_Game.GameTiles.FLOOR_ASPHALT);
+
+                    break;
+            }
+
+            // add building image next to doors.
+            DecorateOutsideWalls(map, b.BuildingRect, (x, y) => map.GetMapObjectAt(x, y) == null && CountAdjDoors(map, x, y) >= 1 ? GameImages.DECO_JUNKYARD : null);
+            #endregion
+
+            ///////////
+            // 3. Add junk
+            ///////////
+            #region
+            MapObjectFill(map, b.InsideRect,
+                            (pt) =>
+                            {
+                                if (m_DiceRoller.RollChance(65))
+                                {
+                                    Tile tile = map.GetTileAt(pt.X, pt.Y);
+                                    if (tile.IsInside && tile.Model.IsWalkable)// && tile.Model != m_Game.GameTiles.WALL_STONE)
+                                    {
+                                        MapObject thing;
+                                        int rolled = m_DiceRoller.Roll(0, 99);
+                                        if (rolled >= 80)
+                                            thing = base.MakeObjWreckedCar(m_DiceRoller); //20%
+                                        else if (rolled >= 40 && rolled < 79)
+                                            thing = base.MakeObjJunk(GameImages.OBJ_JUNK); //40%
+                                        else
+                                            thing = base.MakeObjBarrels(GameImages.OBJ_BARRELS); //40%
+
+                                        return thing;
+                                    }
+                                }
+                                return null;
+                            });
+            #endregion
+
+            ///////////
+            // 4. Zone
+            ///////////
+            // demark building.
+            string buildingName = "Junkyard";
+            map.AddZone(MakeUniqueZone(buildingName, b.BuildingRect));
+            // walkway zones.
+            MakeWalkwayZones(map, b);
+
+            // Done
+            return true;
+        }
+
+        protected virtual bool MakeBankBuilding(Map map, Block b) //@@MP (Release 4)
+        {
+            ////////////////////////
+            // 0. Check suitability
+            ////////////////////////
+            if (b.InsideRect.Width < 5 || b.InsideRect.Height < 5)
+                return false;
+
+            /////////////////////////////
+            // 1. Walkway, floor & walls
+            /////////////////////////////
+            base.TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            base.TileRectangle(map, m_Game.GameTiles.WALL_LIGHT_BROWN, b.BuildingRect);
+            base.TileFill(map, m_Game.GameTiles.FLOOR_BLUE_CARPET, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+
+            ///////////////////////////////
+            // 2. Entry door with shop ids
+            //    Add lectern and hangings.
+            ///////////////////////////////
+            #region
+            int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
+            int midY = b.Rectangle.Top + b.Rectangle.Height / 2;
+
+            //hold the area within the bank. after the door position is determined we'll reduce the area held to only in front of the counter.
+            //we'll use this held area to place tables later
+            int customerareabottom = b.InsideRect.Bottom;
+            int customerareatop = b.InsideRect.Top;
+            int customerarealeft = b.InsideRect.Left;
+            int customerarearight = b.InsideRect.Right;
+
+            // make doors on one side.
+            int doorside = m_DiceRoller.Roll(0, 4);
+            switch (doorside)
+            {
+                case 0:
+                    // west
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+
+                    //create the back room, safes and counters
+                    customerarearight -= 6;
+                    for (int i = 1; i <= b.InsideRect.Height; i++)
+                    {
+                        int y = b.InsideRect.Bottom - i;
+
+                        //place a safes along the wall
+                        Point safept = new Point(b.InsideRect.Right - 1, y);
+                        if (map.IsWalkable(safept))
+                            map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
+
+                        //place a wall another 2 tiles in from the safes
+                        Point wallpt = new Point(b.InsideRect.Right - 3, y);
+                        if (map.IsWalkable(wallpt) && wallpt.Y != midY)
+                            map.SetTileModelAt(wallpt.X, y, m_Game.GameTiles.WALL_HOSPITAL);
+                        else if (wallpt.Y == midY)
+                        {
+                            //center the secure door opposite the main entrance
+                            Point vaultpt = new Point(wallpt.X, midY);
+                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), vaultpt);
+                        }
+
+                        Point counterpt = new Point(b.InsideRect.Right - 5, y);
+                        //place the counters, with a openable door opposite the main entrance
+                        if (map.IsWalkable(counterpt) && counterpt.Y != midY)
+                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
+                        else if (counterpt.Y == midY)
+                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjWoodenDoor());
+                    }
+                    break;
+                case 1:
+                    // east
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+
+                    //create the back room, safes and counters
+                    customerarealeft += 6;
+                    for (int i = 1; i <= b.InsideRect.Height; i++)
+                    {
+                        int y = b.InsideRect.Bottom - i;
+
+                        //place a safes along the wall
+                        Point safept = new Point(b.InsideRect.Left, y);
+                        if (map.IsWalkable(safept))
+                            map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
+
+                        //place a wall another 2 tiles in from the safes
+                        Point wallpt = new Point(b.InsideRect.Left + 2, y);
+                        if (map.IsWalkable(wallpt) && wallpt.Y != midY)
+                            map.SetTileModelAt(wallpt.X, y, m_Game.GameTiles.WALL_HOSPITAL);
+                        else if (wallpt.Y == midY)
+                        {
+                            //center the secure door opposite the main entrance
+                            Point vaultpt = new Point(wallpt.X, midY);
+                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), vaultpt);
+                        }
+
+                        Point counterpt = new Point(b.InsideRect.Left + 4, y);
+                        //place the counters, with a openable door opposite the main entrance
+                        if (map.IsWalkable(counterpt) && counterpt.Y != midY)
+                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
+                        else if (counterpt.Y == midY)
+                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjWoodenDoor());
+                    }
+                    break;
+                case 2:
+                    // north
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+
+                    //create the back room, safes and counters
+                    customerareabottom -= 6;
+                    for (int i = 0; i <= b.InsideRect.Width; i++)
+                    {
+                        int x = b.InsideRect.Left + i;
+
+                        //place a safes along the wall
+                        Point safept = new Point(x, b.InsideRect.Bottom - 1);
+                        if (map.IsWalkable(safept))
+                            map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
+
+                        //place a wall another 2 tiles in from the safes
+                        Point wallpt = new Point(x, b.InsideRect.Bottom - 3);
+                        if (map.IsWalkable(wallpt) && wallpt.X != midX)
+                            map.SetTileModelAt(x, wallpt.Y, m_Game.GameTiles.WALL_HOSPITAL);
+                        else if (wallpt.X == midX)
+                        {
+                            //center the secure door opposite the main entrance
+                            Point vaultpt = new Point(midX, wallpt.Y);
+                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), vaultpt);
+                        }
+
+                        Point counterpt = new Point(x, b.InsideRect.Bottom - 5);
+                        //place the counters, with a openable door opposite the main entrance
+                        if (map.IsWalkable(counterpt) && counterpt.X != midX)
+                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
+                        else if (counterpt.X == midX)
+                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjWoodenDoor());
+                    }
+                    break;
+                case 3:
+                    // south
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
+
+                    //create the back room, safes and counters
+                    customerareatop += 6;
+                    for (int i = 0; i <= b.InsideRect.Width; i++)
+                    {
+                        int x = b.InsideRect.Left + i;
+
+                        //place a safes along the wall
+                        Point safept = new Point(x, b.InsideRect.Top);
+                        if (map.IsWalkable(safept))
+                            map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
+
+                        //place a wall another 2 tiles in from the safes
+                        Point wallpt = new Point(x, b.InsideRect.Top + 2);
+                        if (map.IsWalkable(wallpt) && wallpt.X != midX)
+                            map.SetTileModelAt(x, wallpt.Y, m_Game.GameTiles.WALL_HOSPITAL);
+                        else if (wallpt.X == midX)
+                        {
+                            //center the secure door opposite the main entrance
+                            Point vaultpt = new Point(midX, wallpt.Y);
+                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), vaultpt);
+                        }
+
+                        Point counterpt = new Point(x, b.InsideRect.Top + 4);
+                        //place the counters, with a openable door opposite the main entrance
+                        if (map.IsWalkable(counterpt) && counterpt.X != midX)
+                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
+                        else if (counterpt.X == midX)
+                            PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, base.MakeObjWoodenDoor());
+                    }
+                    break;
+            }
+
+            // add building image next to doors.
+            DecorateOutsideWalls(map, b.BuildingRect, (x, y) => map.GetMapObjectAt(x, y) == null && CountAdjDoors(map, x, y) >= 1 ? GameImages.DECO_BANK_SIGN : null);
+            #endregion
+
+            ///////////
+            // 3. Add tables and chairs
+            ///////////
+            #region
+            int nbTables = 0;
+            switch (doorside)
+            {
+                case 0:
+                case 1:
+                    nbTables = m_DiceRoller.Roll(Math.Max((customerarealeft - customerarearight), b.InsideRect.Height), Math.Max((customerarealeft - customerarearight), b.InsideRect.Height) / 3);
+                    break;
+                case 2:
+                case 3:
+                    nbTables = m_DiceRoller.Roll(Math.Max(b.InsideRect.Width, (customerareabottom - customerareatop)), Math.Max(b.InsideRect.Width, (customerareabottom - customerareatop) / 3));
+                    break;
+            }
+
+            int tablesareawidth = Math.Abs(customerarealeft - customerarearight);
+            int tablesareaheight = Math.Abs(customerareabottom - customerareatop);
+            Rectangle insideRoom = new Rectangle(customerarealeft, customerareatop, tablesareawidth, tablesareaheight);
+            for (int i = 0; i < nbTables; i++)
+            {
+                MapObjectPlaceInGoodPosition(map, insideRoom,
+                    (pt) => !IsADoorNSEW(map, pt.X, pt.Y),
+                    m_DiceRoller,
+                    (pt) =>
+                    {
+                        // two chairs around //@@MP (Release 3)
+                        Rectangle adjTableRect = new Rectangle(pt.X - 1, pt.Y - 1, 3, 3);
+                        adjTableRect.Intersect(insideRoom);
+                        MapObjectPlaceInGoodPosition(map, adjTableRect,
+                            (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                            m_DiceRoller,
+                            (pt2) => MakeObjChair(GameImages.OBJ_CHAIR));
+                        MapObjectPlaceInGoodPosition(map, adjTableRect,
+                            (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                            m_DiceRoller,
+                            (pt2) => MakeObjChair(GameImages.OBJ_CHAIR));
+
+                        // table.
+                        MapObject table = MakeObjTable(GameImages.OBJ_TABLE);
+                        return table;
+                    });
+            };
+            #endregion
+
+            ///////////
+            // 4. Zone
+            ///////////
+            // demark building.
+            string buildingName = "Bank";
+            map.AddZone(MakeUniqueZone(buildingName, b.BuildingRect));
+            // walkway zones.
+            MakeWalkwayZones(map, b);
+
+            // Done
+            return true;
+        }
+
         /// <summary>
         /// Either an Office (for large enough buildings) or an Agency (for small buildings).
         /// </summary>
-        /// <param name="map"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
         protected virtual CHARBuildingType MakeCHARBuilding(Map map, Block b)
         {
             ///////////////////////////////
@@ -2046,7 +3466,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return true;
         }
 
-        protected virtual bool MakeParkBuilding(Map map, Block b)
+        protected virtual bool MakeParkBuilding(Map map, Block b, bool isgraveyard) //@@MP - added graveyard argument (Release 4)
         {
             ////////////////////////
             // 0. Check suitability
@@ -2064,7 +3484,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     bool placeFence = (pt.X == b.BuildingRect.Left || pt.X == b.BuildingRect.Right - 1 || pt.Y == b.BuildingRect.Top || pt.Y == b.BuildingRect.Bottom - 1);
                     if (placeFence)
-                        return base.MakeObjFence(GameImages.OBJ_FENCE);
+                    {
+                        if (!isgraveyard) //@@MP (Release 4)
+                            return base.MakeObjFence(GameImages.OBJ_FENCE);
+                        else
+                            return base.MakeObjFence(GameImages.OBJ_GRAVEYARD_FENCE);
+                    }
                     else
                         return null;
                 });
@@ -2072,15 +3497,52 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             ///////////////////////////////
             // 2. Random trees and benches
             ///////////////////////////////
-            base.MapObjectFill(map, b.InsideRect,
+            if (isgraveyard) //@@MP - added the chance to become a graveyard (Release 4)
+            {
+                base.MapObjectFill(map, b.InsideRect,
+                (pt) =>
+                {
+                    bool placeGraveOrTree = m_DiceRoller.RollChance(PARK_GRAVE_OR_TREE_CHANCE); //@@MP - use the original tree chance, but within that a higher chance to be a grave instead
+                    if (placeGraveOrTree)
+                    {
+                        int placeObject = m_DiceRoller.Roll(0, 10);
+                        switch (placeObject)
+                        {
+                            case 0: return base.MakeObjTree(GameImages.OBJ_TREE); //10%
+                            case 1: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
+                            case 2: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
+                            case 3: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
+                            case 4: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
+                            case 5: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
+                            case 6: return base.MakeObjTombstone(GameImages.OBJ_PLAIN_TOMBSTONE);
+                            case 7: return base.MakeObjTombstone(GameImages.OBJ_CROSS_TOMBSTONE);
+                            case 8: return base.MakeObjTombstone(GameImages.OBJ_CROSS_TOMBSTONE);
+                            case 9: return base.MakeObjTombstone(GameImages.OBJ_CROSS_TOMBSTONE);
+                            default:
+                                return null;
+                        }
+                    }
+                    else
+                        return null;
+                });
+            }
+            else //trees
+            {
+                base.MapObjectFill(map, b.InsideRect,
                 (pt) =>
                 {
                     bool placeTree = m_DiceRoller.RollChance(PARK_TREE_CHANCE);
                     if (placeTree)
                         return base.MakeObjTree(GameImages.OBJ_TREE);
+                    else if (m_DiceRoller.RollChance(PARK_ITEM_CHANCE)) //@@MP (Release 4)
+                    {
+                        //map.DropItemAt(MakeItemWildBerries(), pt);
+                        return base.MakeObjBerryBush(GameImages.OBJ_BERRY_BUSH);
+                    }
                     else
                         return null;
                 });
+            }
 
             base.MapObjectFill(map, b.InsideRect,
                 (pt) =>
@@ -2122,9 +3584,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             ////////////
             // 4. Items
             ////////////
-            base.ItemsDrop(map, b.InsideRect,
+            if (!isgraveyard) //@@MP - only add stuff to parks
+            {
+                base.ItemsDrop(map, b.InsideRect,
                 (pt) => map.GetMapObjectAt(pt) == null && m_DiceRoller.RollChance(PARK_ITEM_CHANCE),
                 (pt) => MakeRandomParkItem());
+            }
 
             ///////////
             // 5. Zone
@@ -3064,6 +4529,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     return MakeShopSportsWearItem();
                 case ShopType.HUNTING:
                     return MakeHuntingShopItem();
+                case ShopType.LIQUOR: //@@MP (Release 4)
+                    return MakeItemAlcohol();
                 default:
                     throw new ArgumentOutOfRangeException("unhandled shoptype");
 
@@ -3254,15 +4721,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeShopGeneralItem()
         {
-            int roll = m_DiceRoller.Roll(0, 5);
+            int roll = m_DiceRoller.Roll(0, 6);
             switch (roll)
-            {
+            { //@@MP - changed the items to be more realistic (Release 4)
                 case 0: return MakeShopPharmacyItem();
-                case 1: return MakeShopSportsWearItem();
-                case 2: return MakeShopConstructionItem();
+                case 1: return MakeShopPharmacyItem();
+                case 2: return MakeItemFlashlight();
                 case 3: return MakeShopGroceryItem();
-                case 4: return MakeRandomBedroomItem();
-                //case 5: return MakeHuntingShopItem(); //@@MP (Release 3)
+                case 4: return MakeItemMagazines();
+                case 5: return MakeItemCigarettes();
                 default: 
                     throw new ArgumentOutOfRangeException("unhandled roll");
             }
@@ -3299,7 +4766,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         
         public Item MakeRandomBedroomItem() //@@ MP (Release 1)(Release 3)
         {
-            int randomItem = m_DiceRoller.Roll(0, 24);
+            int randomItem = m_DiceRoller.Roll(0, 25);
 
             switch (randomItem)
             {
@@ -3349,9 +4816,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 18: return MakeItemPipeWrench(); //@@MP (Release 3)
                 case 19: return MakeItemStenchKiller();
                 case 20: return MakeItemHunterVest();
-                case 21:
+                case 21: return MakeItemCigarettes(); //@@MP (Release 4)
                 case 22:
                 case 23:
+                case 24:
                     if (m_DiceRoller.RollChance(50))
                         return MakeItemBook();
                     else
@@ -3414,13 +4882,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeRandomParkItem()
         {
-            int randomItem = m_DiceRoller.Roll(0, 8);
+            int randomItem = m_DiceRoller.Roll(0, 9);
             switch (randomItem)
             {
                 case 0: return MakeItemSprayPaint();
                 case 1: return MakeItemBaseballBat();
                 case 2: return MakeItemCannedFood(); //return MakeItemPillsSLP(); //@@MP originally SLP (Release 1)
-                case 3: return MakeItemBandages(); //return MakeItemPillsSTA(); //@@MP originally STA (Release 1)
+                case 3: return MakeItemAlcohol(); //return MakeItemPillsSTA(); //@@MP originally STA (Release 1)
                 case 4: //return MakeItemPillsSAN(); //@@MP originally SAN (Release 1)
                     if (m_DiceRoller.RollChance(50))
                         return MakeItemBook();
@@ -3429,8 +4897,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 5: return MakeItemFlashlight();
                 case 6: return MakeItemCellPhone();
                 case 7: return MakeItemWoodenPlank();
+                case 8: return MakeItemCigarettes(); //@@MP (Release 4)
                 default: throw new ArgumentOutOfRangeException("unhandled item roll");
             }
+        }
+
+        public Item MakeRandomLiquorStoreItem() //@@MP (Release 4)
+        {
+            return MakeItemAlcohol();
         }
         #endregion
 

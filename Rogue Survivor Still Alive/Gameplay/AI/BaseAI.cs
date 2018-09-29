@@ -549,6 +549,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     {
                         if (IsAnyActivatedTrapThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position))
                             score -= 1000;
+
+                        if (IsAnyTileFireThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position)) //@@MP - avoid fires on walkable tiles (Release 4)
+                            score -= 2000;
                     }
                     return score;
                 },
@@ -657,17 +660,25 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return float.NaN;
 
                     // avoid stepping on damaging traps, unless starving or courageous.
-                    if (!imStarvingOrCourageous)
+                    if (m_Actor.Model.Abilities.IsIntelligent && !imStarvingOrCourageous) //@@MP - added intelligence check (Release 4)
                     {
-                        int trapsDamage = ComputeTrapsMaxDamage(m_Actor.Location.Map, ptA);
+                        int trapsDamage = ComputeTrapsMaxDamage(m_Actor.Location.Map, goal); //@@MP - was ptA, not goal. that seemed wrong... (Release 4)
+                        int trapsChance = ComputeTrapsTriggerChance(m_Actor.Location.Map, goal); //@@MP (Release 4)
                         if (trapsDamage > 0)
                         {
-                            // if death, don't do it.
-                            if (trapsDamage >= m_Actor.HitPoints)
+                            // if death or a big chunk of health, don't do it.
+                            if (trapsDamage >= (m_Actor.HitPoints / 2)) //@@MP - added division by 2 (Release 4)
                                 return float.NaN;
+                            else if (trapsChance >= 33) //@@MP (Release 4)
+                                return float.NaN;
+
                             // avoid.
                             distance += MOVE_DISTANCE_PENALTY;
                         }
+
+                        //@@MP - intelligent AI won't step on fire if it will kill them (Release 4)
+                        if (IsAnyTileFireThere(m_Actor.Location.Map, goal))
+                            return float.NaN;
                     }
 
                     return distance;
@@ -1032,6 +1043,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // if not interesting, ignore.
                 if (!IsInterestingItem(game, it))
                     continue;
+                //@@MP - don't grab dynamite. they're so rare we want them for the player (Release 4)
+                //ai can't use them anyway because dynamite must be deployed within the blast radius, which goes against BehaviorThrowGrenade()
+                if (it.Model.ID == (int)GameItems.IDs.EXPLOSIVE_DYNAMITE)
+                    continue;
                 // gettable and interesting, get it.
                 goodItem = it;
                 break;
@@ -1209,6 +1224,22 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 trp = it as ItemTrap;
                 if (trp == null) continue;
                 sum += trp.TrapModel.Damage;
+            }
+            return sum;
+        }
+
+        protected int ComputeTrapsTriggerChance(Map map, Point pos) //@@MP (Release 4)
+        {
+            Inventory inv = map.GetItemsAt(pos);
+            if (inv == null) return 0;
+
+            int sum = 0;
+            ItemTrap trp = null;
+            foreach (Item it in inv.Items)
+            {
+                trp = it as ItemTrap;
+                if (trp == null) continue;
+                sum += trp.TrapModel.TriggerChance;
             }
             return sum;
         }
@@ -1574,7 +1605,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 (a, b) => a > b);
 
             // if no suitable items or best item scores zero, do not want!
-            if (bestMedChoice == null || bestMedChoice.Value <= 0)
+            if (bestMedChoice == null || bestMedChoice.Value <= 0) //@@MP - this is why booze should give a postive overall score, even though it has stamina negatives
                 return null;
                 
             // use med.
@@ -2245,12 +2276,23 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     Map map = next.Map;
                     Point pos = next.Position;
 
-                    // intelligent NPC: forbid stepping on deadly traps, unless starving or courageous (desperate).
+                    // intelligent NPC: forbid stepping on deadly traps, unless starving (desperate) or 'courageous' (stupid)
                     if (m_Actor.Model.Abilities.IsIntelligent && !imStarvingOrCourageous)
                     {
                         int trapsDamage = ComputeTrapsMaxDamage(map, pos);
-                        if (trapsDamage >= m_Actor.HitPoints)
-                            return float.NaN;
+                        int trapsChance = ComputeTrapsTriggerChance(map, pos);
+                        //@@MP - used to only check for traps that would probably kill. now a little more robust (Release 4)
+                        if (trapsDamage > 0) //otherwise it's probably just a can
+                        {
+                            // if death or a big chunk of health, don't do it.
+                            if (trapsDamage >= (m_Actor.HitPoints / 2)) //@@MP - added division by 2 (Release 4)
+                                return float.NaN;
+                            else if (trapsChance >= 33)
+                                return float.NaN;
+                        }
+
+                        //@@MP - intelligent AI won't step on fire if it will kill them (Release 4)
+                        if (IsAnyTileFireThere(map, pos)) return float.NaN;
                     }
 
                     // Heuristic scoring:
@@ -2261,13 +2303,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     // 5th Prefer inside during the night vs outside during the day.
                     // 6th Prefer continue in same direction.
                     // 7th Small randomness.
+                    // 8th Avoid fires.
                     const int EXPLORE_ZONES = 1000;
                     const int EXPLORE_LOCS = 500;
                     const int EXPLORE_BARRICADES = 100;
-                    const int AVOID_TRAPS = -50;
+                    const int AVOID_TRAPS = -500; //@@MP - altered from vanilla's -50 (Release 4)
                     const int EXPLORE_INOUT = 50;
                     const int EXPLORE_DIRECTION = 25;
                     const int EXPLORE_RANDOM = 10;
+                    const int AVOID_FIRES = -1500; //@@MP - added (Release 4)
 
                     int score = 0;
                     // 1st Prefer unexplored zones.
@@ -2281,25 +2325,26 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (mapObj != null && (mapObj.IsMovable || mapObj is DoorWindow))
                         score += EXPLORE_BARRICADES;
                     // 4th Punish stepping on activated traps.
-                    if (IsAnyActivatedTrapThere(map, pos))
+                    if (m_Actor.Model.Abilities.IsIntelligent && IsAnyActivatedTrapThere(map, pos)) //@@MP - added a check for intelligence, as 'dumb' AI shouldn't consider traps (Release 4)
                         score += AVOID_TRAPS;
                     // 5th Prefer inside during the night vs outside during the day.
                     bool isInside = map.GetTileAt(pos.X, pos.Y).IsInside;
                     if (isInside)
                     {
-                        if (map.LocalTime.IsNight)
-                            score += EXPLORE_INOUT;
+                        if (map.LocalTime.IsNight) score += EXPLORE_INOUT;
                     }
                     else
                     {
-                        if (!map.LocalTime.IsNight)
-                            score += EXPLORE_INOUT;
+                        if (!map.LocalTime.IsNight) score += EXPLORE_INOUT;
                     }
                     // 6th Prefer continue in same direction.
                     if (dir == prevDirection)
                         score += EXPLORE_DIRECTION;
                     // 7th Small randomness.
                     score += game.Rules.Roll(0, EXPLORE_RANDOM);
+                    // 8th Avoid fires //@@MP - livings and smart undead know that jumping into fire is really stupid (Release 4)
+                    if (m_Actor.Model.Abilities.IsIntelligent && IsAnyTileFireThere(map, pos))
+                        score += AVOID_FIRES;
 
                     // done.
                     return score;
@@ -2441,7 +2486,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         }
         #endregion
 
-        #region Explosives
+        #region Explosives & Fire
         protected ActorAction BehaviorFleeFromExplosives(RogueGame game, List<Percept> itemStacks)
         {
             // if no items in view, don't bother.
@@ -2458,7 +2503,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     foreach (Item it in stack.Items)
                     {
                         ItemPrimedExplosive explosive = it as ItemPrimedExplosive;
-                        if (explosive == null)
+                        if (explosive == null || explosive.Model.ID == (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED) //@@MP - can't run from molotovs as they don't have a fuse (Release 4)
                             continue;
                         // found a primed explosive.
                         return true;
@@ -2479,14 +2524,46 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return runAway;
         }
 
-        protected ActorAction BehaviorThrowGrenade(RogueGame game, HashSet<Point> fov, List<Percept> enemies)
+        protected ActorAction BehaviorFleeFromFires(RogueGame game, Location location) //@@MP - flee from ground (not object) fires (Release 4)
         {
-            // don't bother if no enemies.
-            if (enemies == null || enemies.Count == 0)
+            // if no fire don't bother.
+            if (!IsAnyTileFireThere(location.Map,location.Position))
                 return null;
 
-            // only throw if enough enemies.
-            if (enemies.Count < 3)
+            ChoiceEval<Direction> bestAwayDir = Choose<Direction>(game,
+                Direction.COMPASS_LIST,
+                (dir) =>
+                {
+                    Location next = m_Actor.Location + dir;
+                    ActorAction bumpAction = game.Rules.IsBumpableFor(m_Actor, game, next);
+                    return IsValidFleeingAction(bumpAction);
+                },
+                (dir) =>
+                {
+                    Location next = m_Actor.Location + dir;
+                    // check that the next dir isn't also fire
+                    float safetyValue = 1;
+                    if (IsAnyTileFireThere(next.Map,next.Position))
+                    {
+                        safetyValue -= 1;
+                    }
+                    return safetyValue;
+                },
+                (a, b) => a > b);
+
+            if (bestAwayDir != null)// && bestAwayDir.Value > notMovingValue) nope, moving is always better than not moving
+            {
+                RunIfPossible(game.Rules);
+                return new ActionBump(m_Actor, game, bestAwayDir.Choice);
+            }
+            else
+                return null;
+        }
+
+        protected ActorAction BehaviorThrowGrenade(RogueGame game, HashSet<Point> fov, List<Percept> enemies)
+        {
+            // don't bother if no enemies or not enough enemies //@@MP - merged as count was checked twice (Release 4)
+            if (enemies == null || enemies.Count < 3)
                 return null;
 
             // don't bother if no grenade in inventory.
@@ -3218,7 +3295,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 8 Lights.
             // 9 Reject primed explosives!
             // 10 Reject boring items.
-            // 11 Rest.
+            // 11 Reject dynamite.
+            // 12 Other.
             /////////////////////////////////////////////////////////////////////////////
 
             bool onlyOneSlotLeft = (m_Actor.Inventory.CountItems == game.Rules.ActorMaxInv(m_Actor) - 1);
@@ -3250,8 +3328,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 4 Food
             if (it is ItemFood)
             {
-                // accept any food if hungry.
-                if (game.Rules.IsActorHungry(m_Actor))
+                // accept any food if hungry or without food.
+                if (game.Rules.IsActorHungry(m_Actor) || HasNoFoodItems(m_Actor)) //@@MP - added check for NoFood (Release 4)
                     return true;
 
                 bool hasEnoughFood = HasEnoughFoodFor(game, m_Actor.Sheet.BaseFoodPoints / 2);
@@ -3298,6 +3376,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 7 Melee weapons, Medecine
             // Reject melee weapons if we are skilled in martial arts or we alreay have 2.
             // Reject medecine if we alredy have full stacks.
+            //@@MP - also added one more specific for alcohol, as each type is a different model
             if (it is ItemMeleeWeapon)
             {
                 // martial artists ignore melee weapons.
@@ -3306,10 +3385,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // only two melee weapons max.
                 int nbMeleeWeaponsInInventory = CountItemQuantityOfType(typeof(ItemMeleeWeapon));
                 return nbMeleeWeaponsInInventory < 2;
-            }            
-            if(it is ItemMedicine)
+            }
+
+            if (it is ItemMedicine) //@@MP - added alcohol-specific check (Release 4)
             {
-                return !HasAtLeastFullStackOfItemTypeOrModel(it, 2);
+                //@@MP - these are double-negatives
+                if (AlreadyHasEnoughAlcoholInInventory(it, 1)) //there's 6 unique models of alcohol, so if left to just the next check the AI would be able to go nuts and take way too much booze. this fixes that
+                    return false;
+                else if (HasAtLeastFullStackOfItemTypeOrModel(it, 1)) //@@MP - reduced from 2 (Release 4)
+                    return false;
+                else
+                    return true;
             }
 
             // 8 Lights : ignore out of batteries.
@@ -3324,8 +3410,44 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.IsBoredOf(it))
                 return false;
 
-            // 11 Rest : if has less than one full stack.
+            // 11 Reject dynamite //@@MP - AI don't want dynamite they can't use (Release 4)
+            if (it.Model.ID == (int)GameItems.IDs.EXPLOSIVE_DYNAMITE)
+                return false;
+
+            // 12 Other
+            // if has less than one full stack.
             return !HasAtLeastFullStackOfItemTypeOrModel(it, 1);
+        }
+
+        protected bool AlreadyHasEnoughAlcoholInInventory(Item it, int n) //@@MP (Release 4)
+        {
+            if (m_Actor.Inventory == null || m_Actor.Inventory.IsEmpty)
+                return false;
+
+            /*List<GameItems.IDs> alcohollist = new List<GameItems.IDs>(new GameItems.IDs[] { GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN, GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN,
+                GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE, GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_RED, GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER, GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR });
+            for (int i = 0; i < alcohollist.Count; i++)
+            {
+                if (it.Model.ID == (int)alcohollist[i])*/
+            List<int> alcohollist = new List<int>(new int[] { (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN, (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN,
+                (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE, (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_RED, (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER, (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR });
+            if (alcohollist.Exists(x => x == it.Model.ID))
+            {
+                foreach (Item invitem in m_Actor.Inventory.Items)
+                {
+                    for (int y = 0; y < alcohollist.Count; y++)
+                    {
+                        if (invitem.Model.ID == (int)alcohollist[y])
+                        {
+                            if (invitem.Model.IsStackable)
+                                return CountItemsQuantityOfModel(invitem.Model) >= n * invitem.Model.StackingLimit; // we want N stacks of it.
+                            else
+                                return CountItemsOfSameType(invitem.GetType()) >= n; // not stackable, we are happy with N items of its type.
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         public bool HasAnyInterestingItem(RogueGame game, Inventory inv)
@@ -3376,7 +3498,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (it.Model.IsStackable)
             {
                 // we want N stacks of it.
-                return CountItemsQuantityOfModel(it.Model) >= n * it.Model.StackingLimit;
+                return CountItemsQuantityOfModel(it.Model) >= n * (it.Model.StackingLimit / 2); //@@MP - too alleviate some of the hoarding that AI do eg pills (Release 4)
             }
             else
             {
@@ -4141,6 +4263,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return inv.GetFirstMatching((it) => { ItemTrap trap = it as ItemTrap; return trap != null && trap.IsActivated; }) != null;
         }
 
+        public static bool IsAnyTileFireThere(Map map, Point pos) //@@MP - check for fires on particular tiles (Release 4)
+        {
+            Tile tile = map.GetTileAt(pos.X, pos.Y);
+            if (tile.HasDecoration(GameImages.EFFECT_ONFIRE))
+                return true;
+            else
+                return false;
+        }
+
         public static bool IsZoneChange(Map map, Point pos)
         {
             List<Zone> zonesHere = map.GetZonesAt(pos.X, pos.Y);
@@ -4160,6 +4291,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         }
         #endregion
 
+        #region Random position near
         protected Point RandomPositionNear(Rules rules, Map map, Point goal, int range)
         {
             int x = goal.X + rules.Roll(-range, +range);
@@ -4169,6 +4301,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             return new Point(x, y);
         }
+        #endregion
+
         #endregion
 
         #region Taboo items

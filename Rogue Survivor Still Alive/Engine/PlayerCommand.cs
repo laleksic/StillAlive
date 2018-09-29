@@ -42,6 +42,7 @@ namespace djack.RogueSurvivor.Engine
         GIVE_ITEM,
         INITIATE_TRADE,
         LEAD_MODE,
+        MAKE_MOLOTOV, //@@MP (Release 4)
         MARK_ENEMIES_MODE,
         ORDER_MODE,
         PUSH_MODE,

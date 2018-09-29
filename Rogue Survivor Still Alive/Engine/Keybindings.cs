@@ -58,6 +58,7 @@ namespace djack.RogueSurvivor.Engine
             Set(PlayerCommand.HINTS_SCREEN_MODE, Keys.H | Keys.Control);
             Set(PlayerCommand.INITIATE_TRADE, Keys.E);
             Set(PlayerCommand.LOAD_GAME, Keys.L | Keys.Shift);
+            Set(PlayerCommand.MAKE_MOLOTOV, Keys.M); //@@MP (Release 4)
             Set(PlayerCommand.MARK_ENEMIES_MODE, Keys.E | Keys.Control);
             Set(PlayerCommand.MESSAGE_LOG, Keys.M | Keys.Shift);
             Set(PlayerCommand.MOVE_E, Keys.NumPad6);

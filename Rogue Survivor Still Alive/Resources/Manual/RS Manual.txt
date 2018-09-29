@@ -1,4 +1,6 @@
- CONTENTS (press a number key to go straight to that section)
+***CONTENTS***
+(press a number key to go straight to that section)
+0. DEFAULT HOTKEYS
 1. THE GAME
 2. THE CITY
 3. THE PLAYER SHEET
@@ -8,6 +10,24 @@
 7. FOLLOWERS
 8. FRIENDS & FOES
 9. OPTIONS & HINTS
+*************
+
+0. DEFAULT HOTKEYS
+---------------
+
+MOVE : Numpad 1-4,6-9           ITEM SLOTS : 1-10               RUN : R		
+SLEEP : Z                       WAIT 1 TURN : Numpad 5          WAIT 1 HOUR : W
+CITY INFO : I                   MESSAGES LOG : Shift + M
+FIRE : F                        MARK ENEMIES : E                MAKE MOLOTOVS : M
+CLOSE : C                       USE LADDER/STAIRS : X           USE SPRAY : A
+BREAK : K                       PUSH : P					
+BARRICADE :	B                   BUILD SMALL FORT. : N           BUILD LARGE FORT : Ctrl + N
+INITIATE TRADE : E              GIVE : G                        SHOUT : S
+LEAD FOLLOWER : L               ORDER FOLLOWER : O              SWITCH PLACE : Ctrl + S
+ABANDON GAME : Shift + A        QUIT GAME : Shift + Q           SAVE GAME : Shift + S
+OPTIONS : Shift + O             ADVISOR HINT : Shift + H        HELP : H
+REDEFINE KEYS : Shift + K       SCREENSHOT : Shift + N          LOAD GAME : Shift + L
+
 
 
 <SECTION>
@@ -132,6 +152,7 @@ Shops carry different items. But it's an apocalypse, so sooner or later there wi
 - Gunshop       : guns, the shopkeeper barricaded the doors but that shouldn't stop you
 - Pharmacy      : medicines and first aid
 - Sportswear    : bats, clubs and if you are lucky hunting tools or weapons
+- Liquor        : alcohol; good for restoring some sanity, and making molotovs
 
 
 > OTHER BUILDINGS
@@ -208,6 +229,7 @@ Below a certain level you become Sleepy and at zero points you are Exhausted.
 -Sleepy : your Speed, Attack, Defence and FOV decrease.
 -Exhausted : the penalties are much worse.
 Use of some medicines recovers SLP. Sleeping recovers SLP. See the Sleeping action for more details.
+
 
 > SANITY (SAN)
 Sanity points slowly descrease each turn. You can read books and magazines, or kill undead to regain sanity.
@@ -310,8 +332,8 @@ Walk or run around. If you try to move where you cannot you might "bump" into so
 -Attacking an actor or a barricade
 
 
-> USING AN EXIT  (default X)
-Some exits (such as ladders and holes) allow you to move between maps. Stand on an exit and use the command.
+> USING LADDERS AND STAIRS  (default X)
+Some exits (such as ladders and stairs) allow you to move between maps. Stand on an exit and use the command.
 
 
 > RUNNING   (default R)
@@ -371,11 +393,12 @@ When firing the line of fire is drawn:
 Your aiming accuracy is penalized if you are sleepy, exhausted, tired, or your stamina bar is not full.
 
 
-> THROWING GRENADES  (Firing)
-Equip a grenade and use the Fire action, targeting a tile. The distance of the throw depends on the grenade item and your Strong skill.
-The throw is blocked only by walls and larger objects. You can lob grenades over people and some objects.
+> THROWING EXPLOSIVES  (Firing)
+Equip an explosive and use the Fire action, targeting a tile. The distance of the throw depends on the item and your Strong skill.
+The throw is blocked only by walls and larger objects. You can lob some explosives over people and some objects.
 You do not need to have a view on the targeted tile; in other words you can often throw farther than your FoV.
 The explosion always hits people or objects in the blast radius. It does more damage the closer one is to the center of the blast.
+Dynamite has a huge blast radius and will blow holes in walls, but can't be thrown. Molotovs start fires around the impact.
 
 
 > TAKING AND DROPING ITEMS  (mouse)
@@ -454,6 +477,11 @@ Give orders or directives to your followers. See the Followers section for more 
 
 > SHOUTING  (default S)
 Make a lot of noise. Useful to try to wake up nearby sleepers. The closer you are when shouting the more chance they have to wake up.
+
+
+> MAKE MOLOTOV  (default M)
+Press M then the number key that corresponds with the inventory slot containing the liquor that you want to convert to a molotov.
+Press 0 for inventory slot 10. You can now equip and throw the molotov like a grenade (F).
 
 
 > USE SPRAY  (default A)
@@ -607,7 +635,7 @@ Increase the chances for a nearby law enforcer or gang member to ignore you.
 - Ranged Weapon      : use to equip; fire action to fire.
   - Firearms         : the best ranged weapons.
   - Bows             : weaker and shorter range but ammunition is more available.
-- Grenades           : have a fuse that last a few turns before exploding; fire action to throw.  
+- Grenades           : have a fuse that last x turns before exploding; fire action to throw.  
 - Spray Paint        : tag places you want to remember; use the tag action.
 - Spray Scent        : neutralize odors, typically to erase your tracks.
 - Tracker            : keep contact with your people; use to equip.
@@ -765,8 +793,8 @@ You might encounter some other people. Friendly or hostile, it's for you to find
 OPTIONS
 -------
 
-> "Music"
-Musics are not essential for gameplay. If you can't hear music, try the configuration program in the installation directory.
+> "Music" and "Sound Effects"
+Audio is not essential for gameplay. If you can't hear audio, try the configuration program in the installation directory.
 
 
 > "Animations Delay"
@@ -825,7 +853,7 @@ Allow or disallow NPCs (mostly other civilians) to starve to death like the play
 
 
 > "Starved Zombification"
-If living NPCs can starve to death, chance of them turning into a zombie.
+If living NPCs can starve to death, the chance of them turning into a zombie.
 
 
 > "Districts Simulation"
@@ -877,8 +905,8 @@ Don't be surprised if you see civilians fighting each other. Survival of the fit
 
 > "Event - National Guard"
 Affect how often the national guard will show up. A value of zero entirely disables the National Guard event.
-The higher the option, the more often the national guard will show up. This makes the living game easier.
-In any case, the NG only show up between certain dates and conditions. A high value doesn't mean the event will always fire.
+The higher the value, the more often the national guard will show up, but doesn't mean the event will always fire.
+In any case, the NG only show up between certain dates and conditions. This makes the living game easier.
 
 
 > "Event - Supplies Drop"

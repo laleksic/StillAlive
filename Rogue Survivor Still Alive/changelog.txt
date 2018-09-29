@@ -1,4 +1,44 @@
-﻿STILL ALIVE 1.2.17.4 (aka Release 3, 22/10/2017) [Author: MP]
+﻿STILL ALIVE 1.3.21.9 (aka Release 4, 7/12/2017) [Author: MP]
+--------------------
+
+Features:
+-Added liquor shop and alcoholic drinks.
+-Added churches, libraries, banks, graveyards, mechanic workshops and bars.
+-Added molotovs, which set the ground on fire around the point of impact. (AI will not make molotovs... yet)
+|Currently it will transform the whole stack (max 3) of liquor in an inventory slot.
+-Added dynamite to some hardware stores, which has a huge radius and can destroy walls. (AI will not use dynamite)
+-Original grenade sfx now assigned to dynamite. Grenades given a new sfx.
+-Tweaked grenade damage.
+-Increased likelihood of fragile melee weapons breaking. Much closer to realistic now. Partly because
+	it just makes sense, and partly because I have changed a few defaults in previous releases.
+-Added functionality for tiles to be on fire (previously only objects could be).
+|'Intelligent' NPCs (livings, evolved undead) don't risk stepping on fire when exploring/wandering if it will kill
+	or seriously hurt them, like with traps, unless they are desperate for food or stupidly courageous.
+|Increased 'intelligent' NPCs likelihood to avoid activated traps.
+|Living NPCs caught in a tile fire will flee in panic.
+|Skeletons are not harmed by tile fires.
+-The post-game, high score 'graveyard' now lists all modifiers, rather than just those changed from default.
+-Added hotkeys to the top of the manual for quick reference (press H in-game).
+-Changed the minimap color of some floors and walls to better match their aesthetic, and to allow for the new buildings.
+
+Fixes:
+-Fixed lack of fragility of certain melee weapons.
+-Tailored the warning message when stamina is too low to climb on/over an object.
+-Destroying walls now also removes decorations (eg shop signage).
+-Cops now might only trade their gun or radio if they are hungry and have no food.
+-'Dumb' undead now no longer consider traps when exploring.
+-'Intelligent' AI are now less likely to plow through traps without care.
+-More realistic items in General Stores.
+-To be more realistic, extended the expiry of groceries and removed the expiry of army rations.
+-Chairs and potted plants don't need to be jumped over, but beds do.
+-Alleviated some of the hoarding that AI do, especially pills and ammo.
+
+Developerment:
+-Added a check between IsHungry and IsStarving called IsActorReallyHungry.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.2.17.4 (aka Release 3, 22/10/2017) [Author: MP]
 --------------------
 
 Features:
@@ -16,6 +56,8 @@ Features:
 -Tweaked stats of existing melee weapons.
 -Improved graphics of a few more tiles/objects (eg chain link fence).
 -Improved some sounds from Release 2.
+
+Fixes:
 -Fixed sfx and music disablement.
 
 Development:

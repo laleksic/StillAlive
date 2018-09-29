@@ -89,6 +89,10 @@ namespace djack.RogueSurvivor.Gameplay
         public const string TILE_FLOOR_SEWER_WATER_COVER = @"Tiles\floor_sewer_water_cover";
         public const string TILE_FLOOR_TILES = @"Tiles\floor_tiles";             
         public const string TILE_FLOOR_WALKWAY = @"Tiles\floor_walkway";
+        //@@MP (Release 4)
+        public const string TILE_FLOOR_RED_CARPET = @"Tiles\floor_red_carpet";
+        public const string TILE_FLOOR_BLUE_CARPET = @"Tiles\floor_blue_carpet";
+        public const string TILE_FLOOR_DIRT = @"Tiles\floor_dirt";
 
         public const string TILE_ROAD_ASPHALT_NS = @"Tiles\road_asphalt_ns";
         public const string TILE_ROAD_ASPHALT_EW = @"Tiles\road_asphalt_ew";
@@ -98,7 +102,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string TILE_WALL_CHAR_OFFICE = @"Tiles\wall_char_office";
         public const string TILE_WALL_HOSPITAL = @"Tiles\wall_hospital";
         public const string TILE_WALL_SEWER = @"Tiles\wall_sewer";
-        public const string TILE_WALL_STONE = @"Tiles\wall_stone";        
+        public const string TILE_WALL_STONE = @"Tiles\wall_stone";
+        public const string TILE_WALL_LIGHT_BROWN = @"Tiles\wall_light_brown"; //@@MP (Release 4)
         #endregion
 
         #region Tile decorations
@@ -127,12 +132,19 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_SHOP_PHARMACY = @"Tiles\Decoration\shop_pharmacy";
         public const string DECO_SHOP_SPORTSWEAR = @"Tiles\Decoration\shop_sportswear";
         public const string DECO_SHOP_HUNTING = @"Tiles\Decoration\shop_hunting";
+        public const string DECO_SHOP_LIQUOR = @"Tiles\Decoration\shop_liquor";//@@MP (Release 4)
 
         public const string DECO_CHAR_OFFICE = @"Tiles\Decoration\char_office";
         public const string DECO_CHAR_FLOOR_LOGO = @"Tiles\Decoration\char_floor_logo";
         public const string DECO_CHAR_POSTER1 = @"Tiles\Decoration\char_poster1";
         public const string DECO_CHAR_POSTER2 = @"Tiles\Decoration\char_poster2";
         public const string DECO_CHAR_POSTER3 = @"Tiles\Decoration\char_poster3";
+
+        //@@MP (Release 4)
+        public const string DECO_CHURCH_HANGING1 = @"Tiles\Decoration\hanging_purple";
+        public const string DECO_CHURCH_HANGING2 = @"Tiles\Decoration\hanging_red";
+        public const string DECO_CHURCH_HANGING3 = @"Tiles\Decoration\hanging_green";
+        public const string DECO_CHURCH_HANGING4 = @"Tiles\Decoration\hanging_blue";
 
         public const string DECO_PLAYER_TAG1 = @"Tiles\Decoration\player_tag";
         public const string DECO_PLAYER_TAG2 = @"Tiles\Decoration\player_tag2";
@@ -151,6 +163,15 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_POWER_SIGN_BIG = @"Tiles\Decoration\power_sign_big";
         public const string DECO_POLICE_STATION = @"Tiles\Decoration\police_station";
         public const string DECO_HOSPITAL = @"Tiles\Decoration\hospital";
+        //@@MP (Release 4)
+        public const string DECO_CHURCH = @"Tiles\Decoration\church_sign";
+        public const string DECO_LIBRARY = @"Tiles\Decoration\shop_library";
+        public const string DECO_MECHANIC = @"Tiles\Decoration\shop_mechanic";
+        public const string DECO_JUNKYARD = @"Tiles\Decoration\junkyard";
+        public const string DECO_BAR = @"Tiles\Decoration\shop_bar";
+        public const string DECO_VELVET_ROPE = @"Tiles\Decoration\velvet_rope";
+        public const string DECO_BANK_SIGN = @"Tiles\Decoration\bank_sign";
+        public const string DECO_CLINIC_SIGN = @"Tiles\Decoration\clinic_sign";
 
         //@@MP (Release 2)
         public const string DECO_SCORCH_MARK_CENTER = @"Tiles\Decoration\scorched_center";
@@ -163,10 +184,14 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_WALL_HOSPITAL_DAMAGED = @"Tiles\Decoration\wall_hospital_damaged";
         public const string DECO_WALL_SEWER_DAMAGED = @"Tiles\Decoration\wall_sewer_damaged";
         public const string DECO_WALL_STONE_DAMAGED = @"Tiles\Decoration\wall_stone_damaged";
+        public const string DECO_WALL_LIGHT_BROWN_DAMAGED = @"Tiles\Decoration\wall_light_brown_damaged"; //@@MP (Release 4)
         #endregion
 
         #region Map objects
         public const string OBJ_TREE = @"MapObjects\tree";
+        //@@MP (Release 4)
+        public const string OBJ_PLAIN_TOMBSTONE = @"MapObjects\plain_tombstone";
+        public const string OBJ_CROSS_TOMBSTONE = @"MapObjects\cross_tombstone";
 
         public const string OBJ_WOODEN_DOOR_CLOSED = @"MapObjects\wooden_door_closed";
         public const string OBJ_WOODEN_DOOR_OPEN = @"MapObjects\wooden_door_open";
@@ -184,8 +209,28 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_WINDOW_OPEN = @"MapObjects\window_open";
         public const string OBJ_WINDOW_BROKEN = @"MapObjects\window_broken";
 
+        //@@MP (Release 4)
+        public const string OBJ_ROLLER_DOOR_CLOSED = @"MapObjects\roller_door_closed";
+        public const string OBJ_ROLLER_DOOR_OPEN = @"MapObjects\roller_door_open";
+        public const string OBJ_ROLLER_DOOR_BROKEN = @"MapObjects\roller_door_broken";
+
         public const string OBJ_BENCH = @"MapObjects\bench";
         public const string OBJ_FENCE = @"MapObjects\fence";
+        //@@MP (Release 4)
+        public const string OBJ_GRAVEYARD_FENCE = @"MapObjects\graveyard_fence";
+        public const string OBJ_CHURCH_PEW = @"MapObjects\church_pew";
+        public const string OBJ_LECTERN = @"MapObjects\lectern";
+        public const string OBJ_BAR_STOOL = @"MapObjects\bar_stool";
+        public const string OBJ_BAR_SHELVES = @"MapObjects\bar_shelves";
+        public const string OBJ_WORKBENCH = @"MapObjects\workbench";
+        public const string OBJ_BANK_SAFE = @"MapObjects\bank_safe";
+        public const string OBJ_BANK_TELLER = @"MapObjects\bank_teller";
+        public const string OBJ_BERRY_BUSH = @"MapObjects\berry_bush";
+        public const string OBJ_CLINIC_BED = @"MapObjects\clinic_bed";
+        public const string OBJ_CLINIC_CUPBOARD = @"MapObjects\clinic_cupboard";
+        public const string OBJ_CLINIC_CURTAIN = @"MapObjects\clinic_curtain";
+        public const string OBJ_CLINIC_DESK = @"MapObjects\clinic_desk";
+        public const string OBJ_CLINIC_MACHINERY = @"MapObjects\clinic_machinery";
 
         public const string OBJ_CAR1 = @"MapObjects\car1";
         public const string OBJ_CAR2 = @"MapObjects\car2";
@@ -398,8 +443,12 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_ARMY_RIFLE = @"Items\item_army_rifle";
         public const string ITEM_BANDAGES = @"Items\item_bandages";
         public const string ITEM_BARBED_WIRE = @"Items\item_barbed_wire";
-        public const string ITEM_BEAR_TRAP = @"Items\item_bear_trap";
         public const string ITEM_BASEBALL_BAT = @"Items\item_baseballbat";
+        public const string ITEM_BEAR_TRAP = @"Items\item_bear_trap";
+        public const string ITEM_BEER_BOTTLE_BROWN = @"Items\item_beer_bottle_brown"; //@@MP (Release 4)
+        public const string ITEM_BEER_BOTTLE_GREEN = @"Items\item_beer_bottle_green"; //@@MP (Release 4)
+        public const string ITEM_BEER_CAN_BLUE = @"Items\item_beer_can_blue"; //@@MP (Release 4)
+        public const string ITEM_BEER_CAN_RED = @"Items\item_beer_can_red"; //@@MP (Release 4)
         public const string ITEM_BIGBEAR_BAT = @"Items\item_bigbear_bat";
         public const string ITEM_BIG_FLASHLIGHT = @"Items\item_big_flashlight";
         public const string ITEM_BIG_FLASHLIGHT_OUT = @"Items\item_big_flashlight_out";
@@ -409,8 +458,11 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_CELL_PHONE = @"Items\item_cellphone";
         public const string ITEM_CHAR_DOCUMENT = @"Items\item_CHAR_document"; //@@MP (Release 3)
         public const string ITEM_CHAR_LIGHT_BODYARMOR = @"Items\item_CHAR_light_bodyarmor";
+        public const string ITEM_CIGARETTES = @"Items\item_cigarettes"; //@@MP (Release 4)
         public const string ITEM_CROWBAR = @"Items\item_crowbar";
         public const string ITEM_COMBAT_KNIFE = @"Items\item_combat_knife";
+        public const string ITEM_DYNAMITE = @"Items\item_dynamite"; //@@MP (Release 4)
+        public const string ITEM_DYNAMITE_PRIMED = @"Items\item_dynamite_primed"; //@@MP (Release 4)
         public const string ITEM_EMPTY_CAN = @"Items\item_empty_can";
         public const string ITEM_FAMU_FATARU_KATANA = @"Items\item_famu_fataru_katana";
         public const string ITEM_FLASHLIGHT = @"Items\item_flashlight";
@@ -432,9 +484,13 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_IMPROVISED_SPEAR = @"Items\item_improvised_spear";
         public const string ITEM_IRON_GOLF_CLUB = @"Items\item_iron_golfclub";
         public const string ITEM_KOLT_REVOLVER = @"Items\item_kolt_revolver";
+        public const string ITEM_LIQUOR_BOTTLE_AMBER = @"Items\item_liquor_bottle_amber"; //@@MP (Release 4)
+        public const string ITEM_LIQUOR_BOTTLE_CLEAR = @"Items\item_liquor_bottle_clear"; //@@MP (Release 4)
         public const string ITEM_MACHETE = @"Items\item_machete"; //@@MP (Release 3)
         public const string ITEM_MAGAZINE = @"Items\item_magazine";
         public const string ITEM_MEDIKIT = @"Items\item_medikit";
+        public const string ITEM_MOLOTOV = @"Items\item_molotov"; //@@MP (Release 4)
+        public const string ITEM_MOLOTOV_PRIMED = @"Items\item_molotov_primed"; //@@MP (Release 4)
         public const string ITEM_PICKAXE = @"Items\item_pickaxe"; //@@MP (Release 3)
         public const string ITEM_PILLS_ANTIVIRAL = @"Items\item_pills_antiviral";
         public const string ITEM_PILLS_BLUE = @"Items\item_pills_blue";
@@ -462,6 +518,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_SUBWAY_BADGE = @"Items\item_subway_badge";
         public const string ITEM_TENNIS_RACKET = @"Items\item_tennis_racket"; //@@MP (Release 3)
         public const string ITEM_TRUNCHEON = @"Items\item_truncheon";
+        public const string ITEM_WILD_BERRIES = @"Items\item_wild_berries"; //@@MP (Release 4)
         public const string ITEM_WOODEN_PLANK = @"Items\item_wooden_plank";
         public const string ITEM_ZTRACKER = @"Items\item_ztracker";
         #endregion
@@ -591,6 +648,10 @@ namespace djack.RogueSurvivor.Gameplay
             Load(TILE_FLOOR_SEWER_WATER_COVER);
             Load(TILE_FLOOR_TILES);
             Load(TILE_FLOOR_WALKWAY);
+            //@@MP (Release 4)
+            Load(TILE_FLOOR_RED_CARPET);
+            Load(TILE_FLOOR_BLUE_CARPET);
+            Load(TILE_FLOOR_DIRT);
 
             Load(TILE_ROAD_ASPHALT_NS);
             Load(TILE_ROAD_ASPHALT_EW);
@@ -601,6 +662,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(TILE_WALL_HOSPITAL);
             Load(TILE_WALL_SEWER);
             Load(TILE_WALL_STONE);
+            Load(TILE_WALL_LIGHT_BROWN); //@@MP (Release 4)
 
             #endregion
 
@@ -608,10 +670,10 @@ namespace djack.RogueSurvivor.Gameplay
             Notify(ui, "tile decorations...");
             Load(DECO_BLOODIED_FLOOR);
             Load(DECO_BLOODIED_WALL);
-            Load(DECO_BLOODIED_FLOOR_SMALL);//@@MP (Release 2)
-            Load(DECO_BLOODIED_WALL_SMALL);//@@MP (Release 2)
+            Load(DECO_BLOODIED_FLOOR_SMALL); //@@MP (Release 2)
+            Load(DECO_BLOODIED_WALL_SMALL); //@@MP (Release 2)
             Load(DECO_ZOMBIE_REMAINS);
-            Load(DECO_SKELETON_REMAINS);//@@MP (Release 2)
+            Load(DECO_SKELETON_REMAINS); //@@MP (Release 2)
             Load(DECO_VOMIT);
 
             Load(DECO_POSTERS1);
@@ -631,12 +693,19 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_SHOP_PHARMACY);
             Load(DECO_SHOP_SPORTSWEAR);
             Load(DECO_SHOP_HUNTING);
+            Load(DECO_SHOP_LIQUOR); //@@MP (Release 4)
 
             Load(DECO_CHAR_OFFICE);
             Load(DECO_CHAR_FLOOR_LOGO);
             Load(DECO_CHAR_POSTER1);
             Load(DECO_CHAR_POSTER2);
             Load(DECO_CHAR_POSTER3);
+
+            //@@MP (Release 4)
+            Load(DECO_CHURCH_HANGING1);
+            Load(DECO_CHURCH_HANGING2);
+            Load(DECO_CHURCH_HANGING3);
+            Load(DECO_CHURCH_HANGING4);
 
             Load(DECO_PLAYER_TAG1);
             Load(DECO_PLAYER_TAG2);
@@ -657,8 +726,16 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_POWER_SIGN_BIG);
 
             Load(DECO_POLICE_STATION);
-
             Load(DECO_HOSPITAL);
+            //@@MP (Release 4)
+            Load(DECO_CHURCH);
+            Load(DECO_MECHANIC);
+            Load(DECO_LIBRARY);
+            Load(DECO_JUNKYARD);
+            Load(DECO_BAR);
+            Load(DECO_VELVET_ROPE);
+            Load(DECO_BANK_SIGN);
+            Load(DECO_CLINIC_SIGN);
 
             //@@MP (Release 2)
             Load(DECO_SCORCH_MARK_CENTER);
@@ -671,11 +748,15 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_WALL_HOSPITAL_DAMAGED);
             Load(DECO_WALL_SEWER_DAMAGED);
             Load(DECO_WALL_STONE_DAMAGED);
+            Load(DECO_WALL_LIGHT_BROWN_DAMAGED); //@@MP (Release 4)
             #endregion
 
-        #region Map objects
+            #region Map objects
             Notify(ui, "map objects...");
             Load(OBJ_TREE);
+            //@@MP (Release 4)
+            Load(OBJ_PLAIN_TOMBSTONE);
+            Load(OBJ_CROSS_TOMBSTONE);
 
             Load(OBJ_WOODEN_DOOR_CLOSED);
             Load(OBJ_WOODEN_DOOR_OPEN);
@@ -693,8 +774,28 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_WINDOW_OPEN);
             Load(OBJ_WINDOW_BROKEN);
 
+            //@@MP (Release 4)
+            Load(OBJ_ROLLER_DOOR_CLOSED);
+            Load(OBJ_ROLLER_DOOR_OPEN);
+            Load(OBJ_ROLLER_DOOR_BROKEN);
+
             Load(OBJ_BENCH);
             Load(OBJ_FENCE);
+            //@@MP (Release 4)
+            Load(OBJ_GRAVEYARD_FENCE);
+            Load(OBJ_CHURCH_PEW);
+            Load(OBJ_LECTERN);
+            Load(OBJ_BAR_STOOL);
+            Load(OBJ_BAR_SHELVES);
+            Load(OBJ_WORKBENCH);
+            Load(OBJ_BANK_SAFE);
+            Load(OBJ_BANK_TELLER);
+            Load(OBJ_BERRY_BUSH);
+            Load(OBJ_CLINIC_BED);
+            Load(OBJ_CLINIC_CUPBOARD);
+            Load(OBJ_CLINIC_CURTAIN);
+            Load(OBJ_CLINIC_DESK);
+            Load(OBJ_CLINIC_MACHINERY);
 
             Load(OBJ_CAR1);
             Load(OBJ_CAR2);
@@ -912,6 +1013,10 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_BARBED_WIRE);
             Load(ITEM_BASEBALL_BAT);
             Load(ITEM_BEAR_TRAP);
+            Load(ITEM_BEER_BOTTLE_BROWN); //@@MP (Release 4)
+            Load(ITEM_BEER_BOTTLE_GREEN); //@@MP (Release 4)
+            Load(ITEM_BEER_CAN_BLUE); //@@MP (Release 4)
+            Load(ITEM_BEER_CAN_RED); //@@MP (Release 4)
             Load(ITEM_BIGBEAR_BAT);
             Load(ITEM_BIG_FLASHLIGHT);
             Load(ITEM_BIG_FLASHLIGHT_OUT);
@@ -921,8 +1026,11 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_CELL_PHONE);
             Load(ITEM_CHAR_DOCUMENT); //@@MP (Release 3)
             Load(ITEM_CHAR_LIGHT_BODYARMOR);
+            Load(ITEM_CIGARETTES); //@@MP (Release 4)
             Load(ITEM_COMBAT_KNIFE);
             Load(ITEM_CROWBAR);
+            Load(ITEM_DYNAMITE); //@@MP (Release 4)
+            Load(ITEM_DYNAMITE_PRIMED); //@@MP (Release 4)
             Load(ITEM_EMPTY_CAN);
             Load(ITEM_FAMU_FATARU_KATANA);
             Load(ITEM_FLASHLIGHT);
@@ -944,9 +1052,13 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_JASON_MYERS_AXE);
             Load(ITEM_HANS_VON_HANZ_PISTOL);
             Load(ITEM_KOLT_REVOLVER);
+            Load(ITEM_LIQUOR_BOTTLE_AMBER); //@@MP (Release 4)
+            Load(ITEM_LIQUOR_BOTTLE_CLEAR); //@@MP (Release 4)
             Load(ITEM_MACHETE); //@@MP (Release 3)
             Load(ITEM_MAGAZINE);
             Load(ITEM_MEDIKIT);
+            Load(ITEM_MOLOTOV); //@@MP (Release 4)
+            Load(ITEM_MOLOTOV_PRIMED); //@@MP (Release 4)
             Load(ITEM_PICKAXE); //@@MP (Release 3)
             Load(ITEM_PILLS_ANTIVIRAL);
             Load(ITEM_PILLS_BLUE);
@@ -974,6 +1086,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_SUBWAY_BADGE);
             Load(ITEM_TENNIS_RACKET); //@@MP (Release 3)
             Load(ITEM_TRUNCHEON);
+            Load(ITEM_WILD_BERRIES); //@@MP (Release 4)
             Load(ITEM_WOODEN_PLANK);
             Load(ITEM_ZTRACKER);
             #endregion

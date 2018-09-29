@@ -619,7 +619,7 @@ namespace djack.RogueSurvivor.Engine
             switch (option)
             {
                 case IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS:      return "(Living) Aggressive Hungry Civilians";
-                case IDs.GAME_ALLOW_UNDEADS_EVOLUTION:          return "(Undead) Allow Undeads Evolution";
+                case IDs.GAME_ALLOW_UNDEADS_EVOLUTION:          return "(Undead) Allow Undeads Evolution (non-VTG)";
                 case IDs.GAME_CITY_SIZE:                        return "   (Map) City Size";
                 case IDs.GAME_DAY_ZERO_UNDEADS_PERCENT:         return "(Undead) Day 0 Undeads";
                 case IDs.GAME_DEATH_SCREENSHOT:                 return " (Death) Death Screenshot";

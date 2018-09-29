@@ -187,7 +187,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // - FLAGS
             // "courageous" : has leader, see leader, he is fighting and actor not tired.
             // - RULES
-            // 0 run away from primed explosives.
+            // 0 run away from primed explosives (and fires //@@MP (Release 4)).
             // 1 throw grenades at enemies.
             // 2 equip weapon/armor
             // 3 fire at nearest (always if has leader, half of the time if not)  - check directives
@@ -232,6 +232,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             bool isLeaderFighting = checkOurLeader && IsAdjacentToEnemy(game, m_Actor.Leader);
             bool isCourageous = checkOurLeader && seeLeader && isLeaderFighting && !game.Rules.IsActorTired(m_Actor);
 
+            //setup
+            #region setup
             // safety counter.
             if (hasEnemies)
                 m_SafeTurns = 0;
@@ -255,10 +257,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // last enemy saw.
             if (hasEnemies)
-                m_LastEnemySaw = enemies[game.Rules.Roll(0, enemies.Count)];            
+                m_LastEnemySaw = enemies[game.Rules.Roll(0, enemies.Count)];
+            #endregion
 
-            // 0 run away from primed explosives.
+            // 0 run away from primed explosives (and fires //@@MP (Release 4)).
             #region
+            ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
+            if (runFromFires != null)
+            {
+                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                return runFromFires;
+            }
+
             ActorAction runFromExplosives = BehaviorFleeFromExplosives(game, FilterStacks(game, mapPercepts));
             if (runFromExplosives != null)
             {
@@ -748,7 +758,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (attackBarricadeAction != null)
                 {
                     // emote.
-                    game.DoEmote(m_Actor, "Open damn it! I know there is food there!");
+                    game.DoEmote(m_Actor, "Open damn it! I know there's food in there!");
 
                     // go!
                     m_Actor.Activity = Activity.IDLE;
@@ -760,7 +770,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (pushAction != null)
                     {
                         // emote.
-                        game.DoEmote(m_Actor, "Where is all the damn food?!");
+                        game.DoEmote(m_Actor, "Where's all the damn food?!");
 
                         // go!
                         m_Actor.Activity = Activity.IDLE;
@@ -771,12 +781,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endregion
 
             // 21 go revive corpse.
+            #region
             ActorAction revive = BehaviorGoReviveCorpse(game, FilterCorpses(game, mapPercepts));
             if (revive != null)
             {
                 m_Actor.Activity = Activity.IDLE;
                 return revive;
             }
+            #endregion
 
             // 22 use exit.
             #region
