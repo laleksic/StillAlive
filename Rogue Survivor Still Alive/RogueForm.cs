@@ -206,7 +206,15 @@ namespace djack.RogueSurvivor
                 m_Game.DEV_ToggleShowActorsStats();
                 UI_Repaint();
             }
-            // F10 - DEV - Show pop graph.
+            // F10 - DEV DEBUG - Reveal CHAR underground
+            if (e.KeyCode == Keys.F10)
+            {
+                m_Game.Session.PlayerKnows_CHARUndergroundFacilityLocation = true;
+                m_Game.Session.CHARUndergroundFacility_Activated = true;
+                m_Game.Session.UniqueMaps.CHARUndergroundFacility.TheMap.IsSecret = false;
+            }
+
+            // F10 - DEV STATS - Show pop graph.
 #if DEBUG_STATS
             if (e.KeyCode == Keys.F10)
             {

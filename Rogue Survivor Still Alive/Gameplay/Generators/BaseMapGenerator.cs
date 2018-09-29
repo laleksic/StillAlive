@@ -168,15 +168,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             "Ben", "Bill", "Bob", "Brad", "Brandon", "Brian", "Bruce",
             "Caine", "Carl", "Carlton", "Charlie", "Clark", "Cody", "Cris", "Cristobal",
             "Dan", "Danny", "Dave", "David", "Dirk", "Don", "Donovan", "Doug", "Dustin",
-            "Ed", "Eddy", "Edward", "Elias", "Elie", "Elmer", "Elton", "Eric", "Eugene",
+            "Ed", "Eddy", "Edward", "Elias", "Elmer", "Elton", "Eric", "Eugene","Edmond",
             "Francis", "Frank", "Fred",
-            "Garry", "Georges", "Greg", "Guy", "Gordon",
+            "Garry", "Georges", "Greg", "Guy", "Gordon","Gerry",
             "Hank", "Harold", "Harvey", "Henry", "Hubert",
-            "Indy",
+            "Indy","Imran",
             "Jack", "Jake", "James", "Jarvis", "Jason", "Jeff", "Jeffrey", "Jeremy", "Jessie", "Jesus", "Jim", "John", "Johnny", "Jonas", "Joseph", "Julian",
             "Karl", "Keith", "Ken", 
             "Larry", "Lars", "Lee", "Lennie", "Lewis",
-            "Mark", "Mathew", "Max", "Michael", "Mickey", "Mike", "Mitch",
+            "Mark", "Matthew", "Max", "Michael", "Mickey", "Mike", "Mitch","Martin","Marty","Miles",
             "Ned", "Neil", "Nick", "Norman",
             "Oliver", "Orlando", "Oscar",
             "Pablo", "Patrick", "Pete", "Peter", "Phil", "Philip", "Preston",
@@ -187,9 +187,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             "Ulrich",
             "Val", "Vince", "Vincent", "Vinnie",
             "Walter", "Wayne",
-            "Xavier"
-            // Y
-            // Z
+            "Xavier",
+            "Yuri",
+            "Zane"
         };
 
         static readonly string[] FEMALE_FIRST_NAMES = 
@@ -202,7 +202,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             "Felicia", "Fiona", "Fran",
             "Gina", "Ginger", "Gloria", "Grace",
             "Helen", "Helena", "Hilary", "Holy",
-            "Ingrid", "Isabela",
+            "Ingrid", "Isabela","Irma","Iris",
             "Jackie", "Jennifer", "Jess", "Jill", "Joana",
             "Kate", "Kathleen", "Kathy", "Katrin", "Kim", "Kira",
             "Leonor", "Leslie", "Linda", "Lindsay", "Lisa", "Liz", "Lorraine", "Lucia", "Lucy",
@@ -213,41 +213,41 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // Q
             "Rachel", "Raquel", "Regina", "Roberta", "Ruth",
             "Sabrina", "Samantha", "Sandra", "Sarah", "Sofia", "Sue", "Susan",
-            "Tabatha", "Tanya", "Teresa", "Tess", "Tifany", "Tori",
-            // U
+            "Tabatha", "Tanya", "Teresa", "Tess", "Tiffany", "Tori",
+            "Ursela",
             "Veronica", "Victoria", "Vivian",
             "Wendy", "Winona",
-            // X
+            "Xena",
             // Y
             "Zora"
         };
 
         static readonly string[] LAST_NAMES = 
         {
-            "Anderson", "Austin",
-            "Bent", "Black", "Bradley", "Brown", "Bush",
-            "Carpenter", "Carter", "Collins", "Cordell",
-            "Dobbs",
-            "Engels",
-            "Finch", "Ford", "Forrester",
-            "Gates",
-            "Hewlett", "Holtz",
-            "Irvin",
-            "Jones",
-            "Kennedy",
+            "Anderson", "Austin","Alsop","Andrews","Ablett",
+            "Bent", "Black", "Bradley", "Brown", "Bush","Brewster",
+            "Carpenter", "Carter", "Collins", "Cordell","Chen","Carpenter","Camden",
+            "Dobbs","Davies","Dawson",
+            "Engels","Epstein","Ericson","Ellis",
+            "Finch", "Ford", "Forrester","Frampton",
+            "Gates","Gavins","Gregson","Granger","Godfreys",
+            "Hewlett", "Holtz","Himmel","Hampson","Hernandez",
+            "Irvin","Ipswitch",
+            "Jones","Jameson","Jefferson","Johnstone","Jacobs",
+            "Kennedy","Kevins",
             "Lambert", "Lesaint", "Lee", "Lewis",
-            "McAllister", "Malory", "McGready",
-            "Norton",
-            "O'Brien", "Oswald",
-            "Patterson", "Paul", "Pitt",
+            "McAllister", "Malory", "McGready","Maynard","Morgan",
+            "Norton","Newnes","Nguyen",
+            "O'Brien", "Oswald","Orson",
+            "Patterson", "Paulson", "Pitt","Peters",
             "Quinn",
-            "Ramirez", "Reeves", "Rockwell", "Rogers", "Robertson",
-            "Sanchez", "Smith", "Stevens", "Steward",
-            "Tarver", "Taylor",
-            "Ulrich",
-            "Vance",
-            "Washington", "Walters", "White"
-            // X
+            "Ramirez", "Reeves", "Rockwell", "Rogers", "Robertson","Reynolds",
+            "Sanchez", "Smith", "Stevens", "Steward","Sampson",
+            "Tarver", "Taylor","Tulev",
+            "Ulrich","Ulman",
+            "Vance","Vermont","Vincent",
+            "Washington", "Walters", "White","Williams","Watson",
+            "Xiao"
             // Y
             // Z
         };
@@ -495,7 +495,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected MapObject MakeObjWardrobe(string wardrobeImageID)
         {
-            return new MapObject("wardrobe", wardrobeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 6)
+            return new MapObject("wardrobe", wardrobeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
                 IsMaterialTransparent = false,
                 IsContainer = true,
@@ -510,6 +510,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new MapObject("drawer", drawerImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
                 IsMaterialTransparent = true,
+                JumpLevel = 1,
                 IsContainer = true,
                 GivesWood = true,
                 IsMovable = true,
@@ -577,7 +578,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected MapObject MakeObjBarrels(string barrelsImageID)
         {
-            return new MapObject("barrels", barrelsImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, 2 * DoorWindow.BASE_HITPOINTS)
+            return new MapObject("barrels", barrelsImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
                 IsPlural = true,
                 IsMaterialTransparent = true,
@@ -595,6 +596,155 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         public MapObject MakeObjBoard(string imageID, string[] text)
         {
             return new Board("board", imageID, text);
+        }
+
+        //@@MP (Release 3)
+        protected MapObject MakeObjCHARvat(string vatImageID)
+        {
+            return new MapObject("CHAR vat", vatImageID);
+        }
+
+        protected MapObject MakeObjCHARdesktop(string CHARdesktopImageID)
+        {
+            return new MapObject("CHAR desktop", CHARdesktopImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                GivesWood = true,
+                IsMovable = true,
+            };
+        }
+
+        protected MapObject MakeObjHouseDrawers(string houseDrawersImageID)
+        {
+            return new MapObject("house drawers", houseDrawersImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                IsContainer = true,
+                IsPlural = true,
+                GivesWood = true,
+                IsMovable = true,
+                Weight = 10
+            };
+        }
+
+        protected MapObject MakeObjHouseShelves(string houseShelvesImageID)
+        {
+            return new MapObject("house shelves", houseShelvesImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            {
+                IsContainer = true,
+                IsPlural = true,
+                GivesWood = true,
+                IsMovable = true,
+                Weight = 10
+            };
+        }
+
+        protected MapObject MakeObjPiano(string pianoImageID)
+        {
+            return new MapObject("piano", pianoImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            {
+                IsContainer = true,
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                GivesWood = true,
+                IsMovable = true,
+                Weight = 15
+            };
+        }
+
+        protected MapObject MakeObjPottedPlant(string pottedPlantImageID)
+        {
+            return new MapObject("potted plant", pottedPlantImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 6)
+            {
+                IsMaterialTransparent = true,
+                IsMovable = true,
+                Weight = 1
+            };
+        }
+
+        protected MapObject MakeObjTelevision(string televisionImageID)
+        {
+            return new MapObject("television", televisionImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 3)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                IsMovable = true,
+                Weight = 3
+            };
+        }
+
+        protected MapObject MakeObjStandingLamp(string standingLampImageID)
+        {
+            return new MapObject("standing lamp", standingLampImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 6)
+            {
+                IsMaterialTransparent = true,
+                IsMovable = true,
+                IsWalkable = true,
+                Weight = 1
+            };
+        }
+
+        protected MapObject MakeObjStoveOven(string stoveOvenImageID)
+        {
+            return new MapObject("stove oven", stoveOvenImageID)
+            {
+                IsMaterialTransparent = true,
+            };
+        }
+
+        protected MapObject MakeObjKitchenSink(string kitchenSinkImageID)
+        {
+            return new MapObject("kitchen sink", kitchenSinkImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                GivesWood = true,
+            };
+        }
+
+        protected MapObject MakeObjBookshelves(string bookshelvesImageID)
+        {
+            return new MapObject("bookshelves", bookshelvesImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                IsContainer = true,
+                IsPlural = true,
+                GivesWood = true,
+                IsMovable = true,
+                Weight = 10
+            };
+        }
+
+        protected MapObject MakeObjCouch(string couchImageID)
+        {
+            return new MapObject("couch", couchImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                GivesWood = true,
+                IsMovable = true,
+                Weight = 3
+            };
+        }
+
+        protected MapObject MakeObjKitchenCounter(string kitchenCounterImageID)
+        {
+            return new MapObject("kitchen counter", kitchenCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            {
+                IsContainer = true,
+                JumpLevel = 1,
+                IsMaterialTransparent = true,
+                GivesWood = true,
+            };
+        }
+
+        protected MapObject MakeObjCashRegister(string cashRegisterImageID)
+        {
+            return new MapObject("cash register", cashRegisterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                GivesWood = true,
+            };
         }
         #endregion
 
@@ -966,6 +1116,37 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 Quantity = m_Rules.Roll(1, m_Game.GameItems.MAGAZINE.StackingLimit)
             };
+        }
+
+        //@@MP (Release 3)
+        public Item MakeItemTennisRacket()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.TENNIS_RACKET);
+        }
+
+        public Item MakeItemHockeyStick()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.HOCKEY_STICK);
+        }
+
+        public Item MakeItemMachete()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.MACHETE);
+        }
+
+        public Item MakeItemStandardAxe()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.STANDARD_AXE);
+        }
+
+        public Item MakeItemPickaxe()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.PICKAXE);
+        }
+
+        public Item MakeItemPipeWrench()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.PIPE_WRENCH);
         }
         #endregion
 

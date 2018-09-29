@@ -46,44 +46,57 @@ SOUND CREDITS
 Each file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant link below.
 All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
 
--Melee attack : https://freesound.org/people/Pinball_Wiz/sounds/394874/
--Melee attack miss : https://freesound.org/people/timmy_h123/sounds/160500/
--Pistol : https://freesound.org/people/morganpurkis/sounds/391328/
--Hunting rifle : https://freesound.org/people/morganpurkis/sounds/387692/
--Shotgun : https://freesound.org/people/morganpurkis/sounds/397886/
--Crossbow : https://freesound.org/people/Erdie/sounds/65733/
--Explosion (eg grenade) : https://freesound.org/people/Quaker540/sounds/245372/
--Flamethrower : https://freesound.org/people/Vosvoy/sounds/123632/
--Spray scent : https://freesound.org/people/debsound/sounds/123036/
--Spray paint : https://freesound.org/people/SmartWentCody/sounds/179008/
--Scream 01 : https://freesound.org/people/adriancalzon/sounds/219858/
--Boy Scream : https://freesound.org/people/pablocandel/sounds/219880/
--Man screaming : https://freesound.org/people/mariateresa_garcia/sounds/219719/
--Helmut scream short : https://freesound.org/people/creativeheroes/sounds/84353/
--Girl Scream : https://freesound.org/people/benjaminharveydesign/sounds/315827/
--Woman Scream : https://freesound.org/people/ritola27/sounds/220646/
--Woman Scream AAA : https://freesound.org/people/thanvannispen/sounds/9429/
--Chain link fence : https://freesound.org/people/RHumphries/sounds/7150/
--Zipper : https://freesound.org/people/Q.K./sounds/56274/
--Bash : https://freesound.org/people/qubodup/sounds/151624/
--Vomit : https://freesound.org/people/Anko6/sounds/388525/
--Eating : https://freesound.org/people/Sethroph/sounds/334209/
--Barricade : https://freesound.org/people/cognito%20perceptu/sounds/17012/
--Molotov : https://freesound.org/people/Benboncan/sounds/74899/
--Commotion : https://freesound.org/people/MrProfDrDickweed/sounds/271206/
--Jump on car : https://freesound.org/people/nmscher/sounds/86233/
--Equip gun : https://freesound.org/people/SmartWentCody/sounds/179011/
--Torch click : https://freesound.org/people/joedeshon/sounds/119415/
--Can trap : https://freesound.org/people/iternetcone/sounds/343819/
--Wooden door open : https://freesound.org/people/skyumori/sounds/104533/
--Wooden door close : https://freesound.org/people/CastIronCarousel/sounds/216872/
--Glass door : https://freesound.org/people/BMacZero/sounds/94134/
--Medkit / bandage : https://freesound.org/people/JakLocke/sounds/261397/
--Pills : https://freesound.org/people/gneube/sounds/315836/
--Male Screaming Out Loud : https://freesound.org/people/AlbertTrepat/sounds/222535/
--Militant shouting : https://freesound.org/people/freesound/sounds/50147/
--Voice shouting stop stop : https://freesound.org/people/Robinhood76/sounds/60521/
--Woman yelling run : https://freesound.org/people/Corsica_S/sounds/250550/
--Man yelling in German : https://freesound.org/people/tontoepfer/sounds/221670/
--Man yelling hey : https://freesound.org/people/klankbeeld/sounds/368824/
--Woman crying where are you : https://freesound.org/people/11linda/sounds/207860/
+-Melee attack : https://freesound.org/people/Pinball_Wiz/sounds/394874/ by Pinball_Wiz
+-Melee attack miss : https://freesound.org/people/timmy_h123/sounds/160500/ by timmy_h123
+-Pistol : https://freesound.org/people/morganpurkis/sounds/391328/ by morganpurkis
+-Hunting rifle : https://freesound.org/people/morganpurkis/sounds/387692/ by morganpurkis
+-Shotgun v2 : https://freesound.org/people/Deganoth/sounds/348671/ by Deganoth (replaced original)
+-Crossbow : https://freesound.org/people/Erdie/sounds/65733/ by Erdie
+-Explosion : https://freesound.org/people/Quaker540/sounds/245372/ by Quaker540
+-Spray scent : https://freesound.org/people/debsound/sounds/123036/ by debsound
+-Spray paint : https://freesound.org/people/SmartWentCody/sounds/179008/ by SmartWentCody
+-Scream 01 : https://freesound.org/people/adriancalzon/sounds/219858/ by adriancalzon
+-Boy Scream : https://freesound.org/people/pablocandel/sounds/219880/ by pablocandel
+-Man screaming : https://freesound.org/people/mariateresa_garcia/sounds/219719/ by mariateresa_garcia
+-Helmut scream short : https://freesound.org/people/creativeheroes/sounds/84353/ by creativeheroes
+-Girl Scream : https://freesound.org/people/benjaminharveydesign/sounds/315827/ by benjaminharveydesign
+-Woman Scream : https://freesound.org/people/ritola27/sounds/220646/ by ritola27
+-Woman Scream AAA : https://freesound.org/people/thanvannispen/sounds/9429/ by thanvannispen
+-Chain link fence : https://freesound.org/people/RHumphries/sounds/7150/ by RHumphries
+-Zipper : https://freesound.org/people/Q.K./sounds/56274/ by Q.K.
+-Bash : https://freesound.org/people/qubodup/sounds/151624/ by qubodup
+-Vomit : https://freesound.org/people/Anko6/sounds/388525/ by Anko6
+-Eating : https://freesound.org/people/Sethroph/sounds/334209/ by Sethroph
+-Building (barricade, fortify, repair) : https://freesound.org/people/cognito%20perceptu/sounds/17012/ by cognito perceptu
+-Molotov : https://freesound.org/people/Benboncan/sounds/74899/ by Benboncan
+-Commotion : https://freesound.org/people/MrProfDrDickweed/sounds/271206/ by MrProfDrDickweed
+-Jump on car : https://freesound.org/people/nmscher/sounds/86233/ by nmscher
+-Equip gun : https://freesound.org/people/SmartWentCody/sounds/179011/ by SmartWentCody
+-Torch click : https://freesound.org/people/joedeshon/sounds/119415/ by joedeshon
+-Can trap : https://freesound.org/people/iternetcone/sounds/343819/ by iternetcone
+-Wooden door open : https://freesound.org/people/skyumori/sounds/104533/ by skyumori
+-Wooden door close : https://freesound.org/people/CastIronCarousel/sounds/216872/ by CastIronCarousel
+-Glass door : https://freesound.org/people/BMacZero/sounds/94134/ by BMacZero
+-Medkit / bandage : https://freesound.org/people/JakLocke/sounds/261397/ by JakLocke
+-Pills : https://freesound.org/people/gneube/sounds/315836/ by gneube
+-Page turn : https://freesound.org/people/alixgaus/sounds/383542/ by alixgaus
+-Shove : https://freesound.org/people/Reitanna/sounds/344004/ by Reitanna
+-Push object : https://freesound.org/people/newagesoup/sounds/337847/ by newagesoup
+-Bear trap : https://freesound.org/people/ThePriest909/sounds/278203/ by ThePriest909
+-Barbed wire trap : https://freesound.org/people/zxz41/sounds/241931/ by zxz41
+-Spikes trap : https://freesound.org/people/Anthousai/sounds/337522/ by Anthousai
+
+
+IMAGE CREDITS
+
+Each file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant link below.
+All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
+
+-Vat (modified potion) : https://opengameart.org/content/potion-phial by TCRChi3ftan / Jao247
+-Computer : https://opengameart.org/content/object-icons-approx-20px by qubodup
+-CHAR document : https://opengameart.org/content/lpc-tabletop-rpg-pizza by pennomi
+-Tennis racket and TV : https://opengameart.org/content/application-silk-icon-set-13 by Mark James
+-Potted plant, cash register and standing lamp : https://opengameart.org/content/office-beat-them-all-pack by Naarshakta
+-Piano and sofa : https://opengameart.org/content/crimelike-furniture by extradave
+-House shelves, drawers, oven, bookshelf and kitchen counter : https://opengameart.org/content/lpc-house-insides by Lanea Zimmerman (AKA Sharm)
+-Fence : https://opengameart.org/content/platformer-sprites by yd

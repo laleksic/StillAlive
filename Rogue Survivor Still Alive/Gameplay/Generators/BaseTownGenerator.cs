@@ -1208,6 +1208,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             #region
             int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
             int midY = b.Rectangle.Top + b.Rectangle.Height / 2;
+            string strDoorSide; //@@MP - hold the side of the door for use when creating a cash register at step 8 (Release 3)
 
             // make doors on one side.
             if (horizontalAlleys)
@@ -1216,19 +1217,27 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                 if (west)
                 {
-
                     // west
+                    strDoorSide = "west";
                     PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
-                    if (b.InsideRect.Height >= 8)
+                    if (b.InsideRect.Height >= 8) //@@MP adds up to two more doors depending on how big the shop is
                     {
                         PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
                         if (b.InsideRect.Height >= 12)
                             PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
                     }
+                    //@@MP - cash register by the door. abandoned it for in a nearby corner; see section 8 (Release 3)
+                    /*int intOffset = 1;
+                    if (CountAdjDoors(map, b.BuildingRect.Left + 1, midY - 1) > 1)
+                        intOffset = 2;
+                    Point pt = new Point(b.BuildingRect.Left + 1, midY - intOffset);
+                    map.PlaceMapObjectAt(MakeObjTelevision(GameImages.OBJ_TELEVISION), pt);*/
+
                 }
                 else
                 {
                     // east
+                    strDoorSide = "east";
                     PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
                     if (b.InsideRect.Height >= 8)
                     {
@@ -1245,6 +1254,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 if (north)
                 {
                     // north
+                    strDoorSide = "north";
                     PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
@@ -1256,6 +1266,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 else
                 {
                     // south
+                    strDoorSide = "south";
                     PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, base.MakeObjGlassDoor());
                     if (b.InsideRect.Width >= 8)
                     {
@@ -1423,11 +1434,152 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                 // add map.
                 m_Params.District.AddUniqueMap(shopBasement);
+
+            }
+            #endregion
+
+            ///////////////////
+            // 8. Cash register
+            // @@MP - add a cash register in an corner near the door (Release 3)
+            ///////////////////
+            #region
+
+            Point cornerpt = new Point();
+            int cornersFreeCode = 0;
+            bool skipThisRegister = false;
+            switch (strDoorSide)
+            {
+                case "west":
+                    cornerpt.X = b.InsideRect.Left;
+                    cornersFreeCode = TopOrBottomCornersFree(map, cornerpt.X, b.InsideRect.Top, b.InsideRect.Bottom - 1); //the door is on the west wall, so we must check the corners directly north and south of it for a place to put the cash register
+                    switch (cornersFreeCode)
+                    {
+                        case 1:
+                            cornerpt.Y = b.InsideRect.Top;
+                            break;
+                        case 2:
+                            cornerpt.Y = b.InsideRect.Bottom - 1;
+                            break;
+                        case 3: //both free, pick one at random
+                            cornerpt.Y = m_DiceRoller.RollChance(50) ? b.InsideRect.Top : b.InsideRect.Bottom - 1;
+                            break;
+                        default:
+                            skipThisRegister = true;  //don't create a cash register because the corners are not free
+                            break;
+                    }                    
+                    break;
+                case "east":
+                    cornerpt.X = b.InsideRect.Right - 1;
+                    cornersFreeCode = TopOrBottomCornersFree(map, cornerpt.X, b.InsideRect.Top, b.InsideRect.Bottom - 1); //the door is on the east wall, so we must check the corners directly north and south of it for a place to put the cash register
+                    switch (cornersFreeCode)
+                    {
+                        case 1:
+                            cornerpt.Y = b.InsideRect.Top;
+                            break;
+                        case 2:
+                            cornerpt.Y = b.InsideRect.Bottom - 1;
+                            break;
+                        case 3: //both free, pick one at random
+                            cornerpt.Y = m_DiceRoller.RollChance(50) ? b.InsideRect.Top : b.InsideRect.Bottom - 1;
+                            break;
+                        default:
+                            skipThisRegister = true;  //don't create a cash register because the corners are not free
+                            break;
+                    }
+                    break;
+                case "north":
+                    cornerpt.Y = b.InsideRect.Top;
+                    cornersFreeCode = LeftOrRightCornersFree(map, cornerpt.Y, b.InsideRect.Left, b.InsideRect.Right - 1); //the door is on the north wall, so we must check the corners directly east and west of it for a place to put the cash register
+                    switch (cornersFreeCode)
+                    {
+                        case 1:
+                            cornerpt.X = b.InsideRect.Left;
+                            break;
+                        case 2:
+                            cornerpt.X = b.InsideRect.Right - 1;
+                            break;
+                        case 3: //both free, pick one at random
+                            cornerpt.X = m_DiceRoller.RollChance(50) ? b.InsideRect.Left : b.InsideRect.Right - 1;
+                            break;
+                        default:
+                            skipThisRegister = true;  //don't create a cash register because the corners are not free
+                            break;
+                    }
+                    break;
+                case "south":
+                    cornerpt.Y = b.InsideRect.Bottom - 1;
+                    cornersFreeCode = LeftOrRightCornersFree(map, cornerpt.Y, b.InsideRect.Left, b.InsideRect.Right - 1); //the door is on the south wall, so we must check the corners directly east and west of it for a place to put the cash register
+                    switch (cornersFreeCode)
+                    {
+                        case 1:
+                            cornerpt.X = b.InsideRect.Left;
+                            break;
+                        case 2:
+                            cornerpt.X = b.InsideRect.Right - 1;
+                            break;
+                        case 3: //both free, pick one at random
+                            cornerpt.X = m_DiceRoller.RollChance(50) ? b.InsideRect.Left : b.InsideRect.Right - 1;
+                            break;
+                        default:
+                            skipThisRegister = true;  //don't create a cash register because the corners are not free
+                            break;
+                    }
+                    break;
+            }
+            if (!skipThisRegister) //there wasn't a free spot for it
+            {
+                MapObject blocker = map.GetMapObjectAt(cornerpt);
+                if (blocker != null)
+                    map.RemoveMapObjectAt(cornerpt.X, cornerpt.Y); // remove any blocking object in the shop. it should only ever be a shelf if anything, as we checked for exits already
+                if (map.IsWalkable(cornerpt.X, cornerpt.Y)) // make sure we haven't somehow got a wall or other inaccessible spot
+                    map.PlaceMapObjectAt(MakeObjCashRegister(GameImages.OBJ_CASH_REGISTER), cornerpt);
             }
             #endregion
 
             // Done
             return true;
+        }
+
+        /// <summary>
+        /// Given two different Y coordinates along the same vertical, which has no exit on it?
+        /// </summary>
+        /// <returns>1=y1 only is free, 2=y2 only is free, 3=both are free</returns>
+        private int TopOrBottomCornersFree(Map map, int x, int y1, int y2) //@@MP (Release 3)
+        {
+            Point cornerpt = new Point();
+            int cornersFreeCode = 0;
+            cornerpt.X = x;
+
+            cornerpt.Y = y1;
+            if (map.GetExitAt(cornerpt) == null)
+                cornersFreeCode += 1;
+
+            cornerpt.Y = y2;
+            if (map.GetExitAt(cornerpt) == null)
+                cornersFreeCode += 2;
+
+            return cornersFreeCode;
+        }
+
+        /// <summary>
+        /// Given two different X coordinates along the same horizontal, which has no exit on it?
+        /// </summary>
+        /// <returns>1= x1 only is free, 2= x2 only is free, 3= both are free</returns>
+        private int LeftOrRightCornersFree(Map map, int y, int x1, int x2) //@@MP (Release 3)
+        {
+            Point cornerpt = new Point();
+            int cornersFreeCode = 0;
+            cornerpt.Y = y;
+
+            cornerpt.X = x1;
+            if (map.GetExitAt(cornerpt) == null)
+                cornersFreeCode += 1;
+
+            cornerpt.X = x2;
+            if (map.GetExitAt(cornerpt) == null)
+                cornersFreeCode += 2;
+
+            return cornersFreeCode;
         }
 
         /// <summary>
@@ -1568,6 +1720,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     tile.AddDecoration(CHAR_POSTERS[m_DiceRoller.Roll(0, CHAR_POSTERS.Length)]);
                 });
+            //@@MP - computers in middle (Release 3)
+            int nbComputers = 8;
+            for (int i = 0; i < nbComputers; i++)
+            {
+                MapObjectPlaceInGoodPosition(map, b.InsideRect,
+                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
+                m_DiceRoller,
+                (pt) => MakeObjCHARdesktop(GameImages.OBJ_CHAR_DESKTOP));
+            }
             #endregion
 
             //////////////
@@ -1827,8 +1988,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 Point tablePos = new Point(roomRect.Left + roomRect.Width / 2, roomRect.Top + roomRect.Height / 2);
                 map.PlaceMapObjectAt(base.MakeObjTable(GameImages.OBJ_CHAR_TABLE), tablePos);
 
-                // try to put chairs around.
-                int nbChairs = 2;
+                // try to put a computer and chair in the room
+                int nbChairs = 1;
                 Rectangle insideRoom = new Rectangle(roomRect.Left + 1, roomRect.Top + 1, roomRect.Width - 2, roomRect.Height - 2);
                 if (!insideRoom.IsEmpty)
                 {
@@ -1840,6 +2001,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                             (pt) => pt != tablePos,
                             m_DiceRoller,
                             (pt) => MakeObjChair(GameImages.OBJ_CHAR_CHAIR));
+
+                        //@@MP - match each chair with a computer (Release 3)
+                        MapObjectPlaceInGoodPosition(map, adjTableRect,
+                            (pt) => pt != tablePos && !IsADoorNSEW(map, pt.X, pt.Y),
+                            m_DiceRoller,
+                            (pt) => MakeObjCHARdesktop(GameImages.OBJ_CHAR_DESKTOP));
                     }
                 }
             }
@@ -2552,13 +2719,37 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 (x, y) => IsInside(map, x, y) || m_DiceRoller.RollChance(outsideDoorChance) ? MakeObjWoodenDoor() : MakeObjWindow());
         }
 
-        protected virtual void FillHousingRoomContents(Map map, Rectangle roomRect)
+        protected virtual void FillHousingRoomContents(Map map, Rectangle roomRect) //@@MP (Release 3)
         {
             Rectangle insideRoom = new Rectangle(roomRect.Left + 1, roomRect.Top + 1, roomRect.Width - 2, roomRect.Height - 2);
 
+            /* @@MP - general object creation patterns
+            kitchen:
+                1 table and 1 chair next to it (in middle)
+                1 fridge (at edges)
+                sink (at edges)    
+                stoveoven (at edges)
+                shelves (at edges)
+                counter (at edges)
+                plant (in middle)
+
+            living room:
+                1 to 3 tables, each with a chair next to it (in middle)
+                1 to 3 drawers (at edges)
+                television (in middle)
+                armchair (in middle)
+                lamp (in middle)
+                piano (in middle)
+
+            bedroom:
+                1 to 3 beds, each with a night table (at edges)
+                1 to 4 wardrobes or drawers (at edges)
+                television (anywhere)
+                lamp (in middle)
+            */
+
             // Decide room role.
             int role = m_DiceRoller.Roll(0, 10);
-
             switch (role)
             {
                 // 1. Bedroom? 0-4 = 50%
@@ -2575,7 +2766,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         for (int i = 0; i < nbBeds; i++)
                         {
                             MapObjectPlaceInGoodPosition(map, insideRoom,
-                                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 3 && CountAdjDoors(map, pt.X, pt.Y) == 0,
+                                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 4 && !IsADoorNSEW(map, pt.X, pt.Y), //CountAdjDoors(map, pt.X, pt.Y) <= 1,
                                 m_DiceRoller,
                                 (pt) =>
                                 {
@@ -2583,7 +2774,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                     Rectangle adjBedRect = new Rectangle(pt.X - 1, pt.Y - 1, 3, 3);
                                     adjBedRect.Intersect(insideRoom);
                                     MapObjectPlaceInGoodPosition(map, adjBedRect,
-                                        (pt2) => pt2 != pt && CountAdjDoors(map, pt2.X, pt2.Y) == 0 && CountAdjWalls(map, pt2.X, pt2.Y) > 0,
+                                        (pt2) => pt2 != pt && CountAdjWalls(map, pt2.X, pt2.Y) >= 0 && !IsADoorNSEW(map, pt2.X, pt2.Y),
                                         m_DiceRoller,
                                         (pt2) =>
                                         {
@@ -2602,12 +2793,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                 });
                         }
 
-                        // wardrobe/drawer with items
-                        int nbWardrobeOrDrawer = m_DiceRoller.Roll(1, 4);
+                        // wardrobe/shelves with items //@@MP (Release 3)
+                        int nbWardrobeOrDrawer = m_DiceRoller.Roll(1, 3);
                         for (int i = 0; i < nbWardrobeOrDrawer; i++)
                         {
                             MapObjectPlaceInGoodPosition(map, insideRoom,
-                                                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 2 && CountAdjDoors(map, pt.X, pt.Y) == 0,
+                                                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 1 && !IsADoorNSEW(map, pt.X, pt.Y),
                                                 m_DiceRoller,
                                                 (pt) =>
                                                 {
@@ -2620,9 +2811,22 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                                     if (m_DiceRoller.RollChance(50))
                                                         return MakeObjWardrobe(GameImages.OBJ_WARDROBE);
                                                     else
-                                                        return MakeObjDrawer(GameImages.OBJ_DRAWER);
+                                                        return MakeObjHouseDrawers(GameImages.OBJ_HOUSE_DRAWERS);
                                                 });
                         }
+
+                        //television //@@MP (Release 3)
+                        MapObjectPlaceInGoodPosition(map, insideRoom,
+                                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                m_DiceRoller,
+                                (pt) => MakeObjTelevision(GameImages.OBJ_TELEVISION));
+
+                        //lamp - lowest priority in terms of space //@@MP (Release 3)
+                        MapObjectPlaceInGoodPosition(map, insideRoom,
+                                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                m_DiceRoller,
+                                (pt) => MakeObjStandingLamp(GameImages.OBJ_STANDING_LAMP));
+
                         break;
                         #endregion
                     }
@@ -2636,12 +2840,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     {
                         #region
                         // tables with chairs.
-                        int nbTables = m_DiceRoller.Roll(1, 3);
-
+                        /*int nbTables = m_DiceRoller.Roll(1, 2);
                         for (int i = 0; i < nbTables; i++)
-                        {
+                        {*/
                             MapObjectPlaceInGoodPosition(map, insideRoom,
-                                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && CountAdjDoors(map, pt.X, pt.Y) == 0,
+                                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
                                 m_DiceRoller,
                                 (pt) =>
                                 {
@@ -2653,29 +2856,80 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                             map.DropItemAt(it, pt);
                                     }
 
-                                    // one chair around.
+                                    // three chairs around //@@MP (Release 3)
                                     Rectangle adjTableRect = new Rectangle(pt.X - 1, pt.Y - 1, 3, 3);
                                     adjTableRect.Intersect(insideRoom);
                                     MapObjectPlaceInGoodPosition(map, adjTableRect,
-                                        (pt2) => pt2 != pt && CountAdjDoors(map, pt2.X, pt2.Y) == 0,
+                                        (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
                                         m_DiceRoller,
                                         (pt2) => MakeObjChair(GameImages.OBJ_CHAIR));
+                                    MapObjectPlaceInGoodPosition(map, adjTableRect,
+                                        (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                                        m_DiceRoller,
+                                        (pt2) => MakeObjChair(GameImages.OBJ_CHAIR));
+                                    MapObjectPlaceInGoodPosition(map, adjTableRect,
+                                        (pt2) => pt2 != pt && !IsADoorNSEW(map, pt2.X, pt2.Y),
+                                        m_DiceRoller,
+                                        (pt2) => MakeObjChair(GameImages.OBJ_CHAIR));
+
 
                                     // table.
                                     MapObject table = MakeObjTable(GameImages.OBJ_TABLE);
                                     return table;
                                 });
+                        //}
+
+                        //television //@@MP (Release 3)
+                        MapObjectPlaceInGoodPosition(map, insideRoom,
+                                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                m_DiceRoller,
+                                (pt) => MakeObjTelevision(GameImages.OBJ_TELEVISION));
+
+                        //couch //@@MP (Release 3)
+                        int nbCouches = m_DiceRoller.Roll(1, 2);
+                        for (int i = 0; i < nbCouches; i++)
+                        {
+                            MapObjectPlaceInGoodPosition(map, insideRoom,
+                                                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                                m_DiceRoller,
+                                                (pt) => MakeObjCouch(GameImages.OBJ_COUCH));
                         }
 
                         // drawers.
-                        int nbDrawers = m_DiceRoller.Roll(1, 3);
+                        int nbDrawers = m_DiceRoller.Roll(1, 2);
                         for (int i = 0; i < nbDrawers; i++)
                         {
                             MapObjectPlaceInGoodPosition(map, insideRoom,
-                                                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 2 && CountAdjDoors(map, pt.X, pt.Y) == 0,
+                                                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 1 && !IsADoorNSEW(map, pt.X, pt.Y),
                                                 m_DiceRoller,
                                                 (pt) => MakeObjDrawer(GameImages.OBJ_DRAWER));
                         }
+
+                        //book shelves //@@MP (Release 3)
+                        int nbBookShelves = m_DiceRoller.Roll(1, 2);
+                        for (int i = 0; i < nbBookShelves; i++)
+                        {
+                            MapObjectPlaceInGoodPosition(map, insideRoom,
+                                            (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 1 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                            m_DiceRoller,
+                                            (pt) =>
+                                            {
+                                                // item.
+                                                Item it = MakeItemBook();
+                                                if (it != null)
+                                                    map.DropItemAt(it, pt);
+
+                                                // wardrobe or drawer
+                                                return MakeObjBookshelves(GameImages.OBJ_BOOK_SHELVES);
+                                            });
+                        }
+
+                        //lamp - lowest priority in terms of space //@@MP (Release 3)
+                        MapObjectPlaceInGoodPosition(map, insideRoom,
+                                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                m_DiceRoller,
+                                (pt) => MakeObjStandingLamp(GameImages.OBJ_STANDING_LAMP));
+
                         break;
                         #endregion
                     }
@@ -2687,8 +2941,75 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 9:
                     {
                         #region
-                        // table with item & chair.
+                        // fridge with items
                         MapObjectPlaceInGoodPosition(map, insideRoom,
+                                            (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 1 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                            m_DiceRoller,
+                                            (pt) =>
+                                            {
+                                                // items.
+                                                for (int ii = 0; ii < HOUSE_KITCHEN_ITEMS_IN_FRIDGE; ii++)
+                                                {
+                                                    Item it = MakeRandomKitchenItem();
+                                                    if (it != null)
+                                                        map.DropItemAt(it, pt);
+                                                }
+
+                                                // fridge
+                                                return MakeObjFridge(GameImages.OBJ_FRIDGE);
+                                            });
+
+                        //sink //@@MP (Release 3)
+                        MapObjectPlaceInGoodPosition(map, insideRoom,
+                                            (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 1 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                            m_DiceRoller,
+                                            (pt) => MakeObjKitchenSink(GameImages.OBJ_KITCHEN_SINK));
+
+                        //stove oven //@@MP (Release 3)
+                        MapObjectPlaceInGoodPosition(map, insideRoom,
+                                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 1 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                m_DiceRoller,
+                                (pt) => MakeObjStoveOven(GameImages.OBJ_STOVEOVEN));
+
+                        //counters //@@MP (Release 3)
+                        int nbCounters = m_DiceRoller.Roll(1, 2);
+                        for (int i = 0; i < nbCounters; i++)
+                        {
+                            MapObjectPlaceInGoodPosition(map, insideRoom,
+                                                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 1 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                                m_DiceRoller,
+                                                (pt) =>
+                                                {
+                                                    // items.
+                                                    for (int ii = 0; ii < HOUSE_KITCHEN_ITEMS_ON_TABLE; ii++)
+                                                    {
+                                                        Item it = MakeRandomKitchenItem();
+                                                        if (it != null)
+                                                            map.DropItemAt(it, pt);
+                                                    }
+
+                                                    return MakeObjKitchenCounter(GameImages.OBJ_KITCHEN_COUNTER);
+                                                });
+                        }
+
+                        //shelves //@@MP (Release 3)
+                        int nbShelves = m_DiceRoller.Roll(1, 2);
+                        for (int i = 0; i < nbShelves; i++)
+                        {
+                            MapObjectPlaceInGoodPosition(map, insideRoom,
+                                                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 3 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                                m_DiceRoller,
+                                                (pt) => MakeObjHouseShelves(GameImages.OBJ_HOUSE_SHELVES));
+                        }
+
+                        //potted plant //@@MP (Release 3)
+                        MapObjectPlaceInGoodPosition(map, insideRoom,
+                                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                m_DiceRoller,
+                                (pt) => MakeObjPottedPlant(GameImages.OBJ_POTTED_PLANT));
+
+                        // table with item & chair - lowest priority in terms of space //@@MP
+                        /*MapObjectPlaceInGoodPosition(map, insideRoom,
                             (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && CountAdjDoors(map, pt.X, pt.Y) == 0,
                             m_DiceRoller,
                             (pt) =>
@@ -2710,25 +3031,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                                 // table.
                                 return MakeObjTable(GameImages.OBJ_TABLE);
-                            });
+                            });*/
 
-                        // fridge with items
-                        MapObjectPlaceInGoodPosition(map, insideRoom,
-                                            (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 2 && CountAdjDoors(map, pt.X, pt.Y) == 0,
-                                            m_DiceRoller,
-                                            (pt) =>
-                                            {
-                                                // items.
-                                                for (int ii = 0; ii < HOUSE_KITCHEN_ITEMS_IN_FRIDGE; ii++)
-                                                {
-                                                    Item it = MakeRandomKitchenItem();
-                                                    if (it != null)
-                                                        map.DropItemAt(it, pt);
-                                                }
-
-                                                // fridge
-                                                return MakeObjFridge(GameImages.OBJ_FRIDGE);
-                                            });
                         break;
                         #endregion
                     }
@@ -2812,74 +3116,48 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
         }
 
-        public Item MakeShopSportsWearItem()
+        public Item MakeShopSportsWearItem() //@@MP (Release 3)
         {
-            int roll = m_DiceRoller.Roll(0, 10);
+            int roll = m_DiceRoller.Roll(0, 11);
 
             switch (roll)
             {
-                case 0:
-                    if (m_DiceRoller.RollChance(30))
-                        return MakeItemHuntingRifle();
-                    else
-                        return MakeItemLightRifleAmmo();
-                case 1:
-                    if (m_DiceRoller.RollChance(30))
-                        return MakeItemHuntingCrossbow();
-                    else
-                        return MakeItemBoltsAmmo();
-                case 2: return MakeItemMagazines();
-                case 3:
+                case 0: 
+                case 1: return MakeItemHockeyStick();
+                case 2: 
+                case 3: return MakeItemGolfClub();
                 case 4:
-                case 5: return MakeItemBaseballBat();       // 30%
-
+                case 5: return MakeItemBaseballBat();
                 case 6:
-                case 7: return MakeItemIronGolfClub();      // 20%
-
-                case 8:
-                case 9: return MakeItemGolfClub();          // 20%
+                case 7: return MakeItemIronGolfClub();
+                case 8: 
+                case 9: return MakeItemTennisRacket();
+                case 10: return MakeItemMagazines();
                 default:
                     throw new ArgumentOutOfRangeException("unhandled roll");
             }
         }
 
-        public Item MakeShopConstructionItem()
+        public Item MakeShopConstructionItem() //@@MP (Release 3)
         {
-            int roll = m_DiceRoller.Roll(0, 24);
+            int roll = m_DiceRoller.Roll(0, 15);
             switch (roll)
             {
-                case 0:
-                case 1:
-                case 2: return m_DiceRoller.RollChance(50) ? MakeItemShovel() : MakeItemShortShovel();
-
-                case 3:
-                case 4:
+                case 0: return MakeItemStandardAxe();
+                case 1: return MakeItemPipeWrench();
+                case 2: return MakeItemShovel(); //m_DiceRoller.RollChance(50) ? MakeItemShovel() : MakeItemShortShovel();
+                case 3: return MakeItemPickaxe();
+                case 4: return MakeItemMachete();
                 case 5: return MakeItemCrowbar();
-
-                case 6: 
-                case 7:
-                case 8: return m_DiceRoller.RollChance(50) ? MakeItemHugeHammer() : MakeItemSmallHammer();
-
-                case 9: return MakeItemSprayPaint();
-                case 10:
-                case 11: return MakeItemWoodenPlank();
-                
-                case 12:
-                case 13:
-                case 14: return MakeItemFlashlight();
-
-                case 15:
-                case 16:
-                case 17: return MakeItemBigFlashlight();
-
-                case 18:
-                case 19: 
-                case 20: return MakeItemSpikes();
-
-                case 21:
-                case 22:
-                case 23: return MakeItemBarbedWire();
-
+                case 6: return MakeItemHugeHammer(); //m_DiceRoller.RollChance(50) ? MakeItemHugeHammer() : MakeItemSmallHammer();
+                case 7: return MakeItemSprayPaint();
+                case 8: return MakeItemWoodenPlank();
+                case 9: return MakeItemFlashlight();
+                case 10: return MakeItemBigFlashlight();
+                case 11: return MakeItemSpikes();
+                case 12: return MakeItemBarbedWire();
+                case 13: return MakeItemSmallHammer();
+                case 14: return MakeItemShortShovel();
                 default:
                     throw new ArgumentOutOfRangeException("unhandled roll");
             }
@@ -2890,30 +3168,34 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // Weapons (40%) vs Ammo (60%)
             if (m_DiceRoller.RollChance(40))
             {
-                int roll = m_DiceRoller.Roll(0, 4);
+                int roll = m_DiceRoller.Roll(0, 7); //@@MP (Release 3)
 
                 switch (roll)
                 {
-                    case 0: return MakeItemRandomPistol();
-                    case 1: return MakeItemShotgun();
-                    case 2: return MakeItemHuntingRifle();
-                    case 3: return MakeItemHuntingCrossbow();
-
+                    case 0: 
+                    case 1: return MakeItemRandomPistol();
+                    case 2: 
+                    case 3: return MakeItemShotgun();
+                    case 4:
+                    case 5: return MakeItemHuntingRifle();
+                    case 6: return MakeItemHuntingCrossbow();
                     default:
                         return null;
                 }
             }
             else
             {
-                int roll = m_DiceRoller.Roll(0, 4);
+                int roll = m_DiceRoller.Roll(0, 7);
 
                 switch (roll)
                 {
-                    case 0: return MakeItemLightPistolAmmo();
-                    case 1: return MakeItemShotgunAmmo();
-                    case 2: return MakeItemLightRifleAmmo();
-                    case 3: return MakeItemBoltsAmmo();
-
+                    case 0: 
+                    case 1: return MakeItemLightPistolAmmo();
+                    case 2: 
+                    case 3: return MakeItemShotgunAmmo();
+                    case 4:
+                    case 5: return MakeItemLightRifleAmmo();
+                    case 6: return MakeItemBoltsAmmo();
                     default:
                         return null;
                 }
@@ -2922,30 +3204,34 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeHuntingShopItem()
         {
-            // Weapons/Ammo (50%) Outfits&Traps (50%)
-            if (m_DiceRoller.RollChance(50))
+            // Weapons/Ammo (60%) Outfits&Traps (40%)
+            if (m_DiceRoller.RollChance(60)) //@@MP (Release 3)
             {
                 // Weapons(40) Ammo(60)
                 if (m_DiceRoller.RollChance(40))
                 {
-                    int roll = m_DiceRoller.Roll(0, 2);
+                    int roll = m_DiceRoller.Roll(0, 4);
 
                     switch (roll)
                     {
                         case 0: return MakeItemHuntingRifle();
                         case 1: return MakeItemHuntingCrossbow();
+                        case 2: return MakeItemShortShovel(); //@@MP (Release 3)
+                        case 3: return MakeItemStandardAxe(); //@@MP (Release 3)
                         default:
                             return null;
                     }
                 }
                 else
                 {
-                    int roll = m_DiceRoller.Roll(0, 2);
+                    int roll = m_DiceRoller.Roll(0, 4);
 
                     switch (roll)
                     {
                         case 0: return MakeItemLightRifleAmmo();
                         case 1: return MakeItemBoltsAmmo();
+                        case 2: return MakeItemCombatKnife(); //@@MP (Release 3)
+                        case 3: return MakeItemMachete(); //@@MP (Release 3)
                         default:
                             return null;
                     }
@@ -2968,15 +3254,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeShopGeneralItem()
         {
-            int roll = m_DiceRoller.Roll(0, 6);
+            int roll = m_DiceRoller.Roll(0, 5);
             switch (roll)
             {
                 case 0: return MakeShopPharmacyItem();
                 case 1: return MakeShopSportsWearItem();
                 case 2: return MakeShopConstructionItem();
                 case 3: return MakeShopGroceryItem();
-                case 4: return MakeHuntingShopItem();
-                case 5: return MakeRandomBedroomItem();
+                case 4: return MakeRandomBedroomItem();
+                //case 5: return MakeHuntingShopItem(); //@@MP (Release 3)
                 default: 
                     throw new ArgumentOutOfRangeException("unhandled roll");
             }
@@ -3011,7 +3297,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
         }
         
-        public Item MakeRandomBedroomItem()
+        public Item MakeRandomBedroomItem() //@@ MP (Release 1)(Release 3)
         {
             int randomItem = m_DiceRoller.Roll(0, 24);
 
@@ -3033,13 +3319,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         else
                             return MakeItemMagazines();
                     }
-                case 5: 
-                case 6:
-                case 7: 
+                case 5: return MakeItemTennisRacket(); //@@MP (Release 3)
+                case 6: return MakeItemSmallHammer(); //@@MP (Release 3)
+                case 7: return MakeItemIronGolfClub(); //@@MP (Release 3)
                 case 8: return MakeItemBaseballBat();
-
                 case 9: return MakeItemRandomPistol();
-
                 case 10: // rare fire weapon
                     if (m_DiceRoller.RollChance(30))
                     {
@@ -3058,18 +3342,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 11: 
                 case 12:
                 case 13: return MakeItemCellPhone();
-
                 case 14:
                 case 15: return MakeItemFlashlight();
-
-                case 16: 
+                case 16: return MakeItemHockeyStick(); //@@MP (Release 3)
                 case 17: return MakeItemLightPistolAmmo();
-
-                case 18: 
+                case 18: return MakeItemPipeWrench(); //@@MP (Release 3)
                 case 19: return MakeItemStenchKiller();
-
                 case 20: return MakeItemHunterVest();
-
                 case 21:
                 case 22:
                 case 23:
@@ -3099,7 +3378,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     // weapons:
                     // - grenade (rare).
                     // - shotgun/ammo
-                    if (m_DiceRoller.RollChance(10))
+                    if (m_DiceRoller.RollChance(20))
                     {
                         // grenade!
                         return MakeItemGrenade();
@@ -3123,16 +3402,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 3:
                     return MakeItemCannedFood();
 
-                case 4: // rare tracker items
+                case 4: // rare tracker items //@@MP - was previously only 50% to drop either (Release 3)
                     if (m_DiceRoller.RollChance(50))
-                    {
-                        if (m_DiceRoller.RollChance(50))
-                            return MakeItemZTracker();
-                        else
-                            return MakeItemBlackOpsGPS();
-                    }
+                        return MakeItemZTracker();
                     else
-                        return null;
+                        return MakeItemBlackOpsGPS();
 
                 default: return null; // 50% chance to find nothing.
             }
@@ -3280,10 +3554,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     if (!basement.IsWalkable(pt.X, pt.Y))
                         return null;
 
-                    int roll = m_DiceRoller.Roll(0, 5);
+                    int roll = m_DiceRoller.Roll(0, 10); //@@MP (Release 3)
                     switch (roll)
                     {
                         case 0: // junk
+                        case 5:
                             return MakeObjJunk(GameImages.OBJ_JUNK);
                         case 1: // barrels.
                             return MakeObjBarrels(GameImages.OBJ_BARRELS);
@@ -3301,7 +3576,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                             };
                         case 4: // bed.
                             return MakeObjBed(GameImages.OBJ_BED);
-
+                        case 6:
+                        case 7:
+                        case 8:
+                        case 9: //@@MP (Release 3)
+                            {
+                                basement.PlaceMapObjectAt(MakeObjShelf(GameImages.OBJ_SHOP_SHELF), pt);
+                                basement.DropItemAt(MakeItemCannedFood(), pt);
+                                return null;
+                            }
                         default:
                             throw new ArgumentOutOfRangeException("unhandled roll");
                     }
@@ -3573,8 +3856,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                             }
                         case 2: // living room.
                             {
-                                roomName = "Living";
-                                MakeCHARLivingRoom(underground, insideRoomRect);
+                                /*roomName = "Living";
+                                MakeCHARLivingRoom(underground, insideRoomRect);*/
+                                roomName = "Lab"; //@@MP - more thematic (Release 3)
+                                MakeCHARLabRoom(underground, insideRoomRect);
                                 break;
                             }
                         case 3: // pharmacy.
@@ -3607,14 +3892,22 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         tile.AddDecoration(CHAR_POSTERS[m_DiceRoller.Roll(0, CHAR_POSTERS.Length)]);
                     }
 
-                    // blood?
-                    if (m_DiceRoller.RollChance(20))
+                    // large blood?
+                    if (m_DiceRoller.RollChance(10)) //@@MP - was 20 (Release 3)
                     {
                         Tile tile = underground.GetTileAt(x, y);
                         if (tile.Model.IsWalkable)
                             tile.AddDecoration(GameImages.DECO_BLOODIED_FLOOR);
                         else
                             tile.AddDecoration(GameImages.DECO_BLOODIED_WALL);
+                    }
+                    else if (m_DiceRoller.RollChance(20)) // small blood? //@@MP (Release 3)
+                    {
+                        Tile tile = underground.GetTileAt(x, y);
+                        if (tile.Model.IsWalkable)
+                            tile.AddDecoration(GameImages.DECO_BLOODIED_FLOOR_SMALL);
+                        else
+                            tile.AddDecoration(GameImages.DECO_BLOODIED_WALL_SMALL);
                     }
                 }
             #endregion
@@ -3647,7 +3940,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             #endregion
 
             // 7. Add uniques.
-            // TODO...
+            // TODO... //@@MP - looks like RoguedJack had some plans for a boss or special items
             #region
             #endregion
 
@@ -3727,7 +4020,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     if (m_DiceRoller.RollChance(50))
                         return m_DiceRoller.RollChance(50) ? MakeObjJunk(GameImages.OBJ_JUNK) : MakeObjBarrels(GameImages.OBJ_BARRELS);
                     else
+                    {
+                        if (m_DiceRoller.RollChance(20)) //@@MP (Release 3)
+                            map.DropItemAt(MakeItemCannedFood(), pt);
                         return null;
+                    }
                 });
 
             // Items.
@@ -3744,7 +4041,91 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 }
         }
 
-        void MakeCHARLivingRoom(Map map, Rectangle roomRect)
+        void MakeCHARLabRoom(Map map, Rectangle roomRect) //@@MP (Release 3)
+        {
+            Boolean boolPlacedCHARdocument = false;
+            // Replace floor with tiles with painted logo.
+            TileFill(map, m_Game.GameTiles.FLOOR_TILES, roomRect);//, (tile, model, x, y) => tile.AddDecoration(GameImages.DECO_CHAR_FLOOR_LOGO));
+
+            // Objects.
+            // vats along walls.
+            MapObjectFill(map, roomRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) < 3)
+                        return null;
+                    // dont block exits!
+                    if (map.GetExitAt(pt) != null)
+                        return null;
+
+                    // bed/fridge?
+                    if (m_DiceRoller.RollChance(50))
+                    {
+                        if (m_DiceRoller.RollChance(75))
+                            return MakeObjCHARvat(GameImages.OBJ_CHAR_VAT); 
+                        else
+                            return MakeObjCHARdesktop(GameImages.OBJ_CHAR_DESKTOP);
+                    }
+                    else
+                        return null;
+                });
+            // desktops and tables in the middle of the room
+            MapObjectFill(map, roomRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) > 0)
+                        return null;
+                    // dont block exits!
+                    if (map.GetExitAt(pt) != null)
+                        return null;
+
+                    // tables/chairs.
+                    if (m_DiceRoller.RollChance(30))
+                    {
+                        if (m_DiceRoller.RollChance(50))
+                            return MakeObjCHARdesktop(GameImages.OBJ_CHAR_DESKTOP);
+                        else
+                            return MakeObjCHARdesktop(GameImages.OBJ_CHAR_TABLE);
+                    }
+                    else
+                    {
+                        if (!boolPlacedCHARdocument)
+                        {
+                            //Item it = new Item(m_Game.GameItems.UNIQUE_CHAR_DOCUMENT) { IsUnique = true, IsForbiddenToAI = true };
+                            Item it = null;
+                            int roll = m_DiceRoller.Roll(0, 5);
+                            switch (roll)
+                            {
+                                case 0:
+                                    it = new Item(m_Game.GameItems.UNIQUE_CHAR_DOCUMENT1) { IsUnique = true, IsForbiddenToAI = true };
+                                    break;
+                                case 1:
+                                    it = new Item(m_Game.GameItems.UNIQUE_CHAR_DOCUMENT2) { IsUnique = true, IsForbiddenToAI = true };
+                                    break;
+                                case 2:
+                                    it = new Item(m_Game.GameItems.UNIQUE_CHAR_DOCUMENT3) { IsUnique = true, IsForbiddenToAI = true };
+                                    break;
+                                case 3:
+                                    it = new Item(m_Game.GameItems.UNIQUE_CHAR_DOCUMENT4) { IsUnique = true, IsForbiddenToAI = true };
+                                    break;
+                                case 4:
+                                    it = new Item(m_Game.GameItems.UNIQUE_CHAR_DOCUMENT5) { IsUnique = true, IsForbiddenToAI = true };
+                                    break;
+                                case 5:
+                                    it = new Item(m_Game.GameItems.UNIQUE_CHAR_DOCUMENT6) { IsUnique = true, IsForbiddenToAI = true };
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException("unhandled roll");
+                            }
+                            map.DropItemAt(it, pt);
+                            boolPlacedCHARdocument = true; //@@MP - only drop one per room
+                        }
+                        return null;
+                    }
+                });
+        }
+
+        void MakeCHARLivingRoom(Map map, Rectangle roomRect) //@@MP - no longer used as of release 3
         {
             // Replace floor with wood with painted logo.
             TileFill(map, m_Game.GameTiles.FLOOR_PLANKS, roomRect, (tile, model, x, y) => tile.AddDecoration(GameImages.DECO_CHAR_FLOOR_LOGO));

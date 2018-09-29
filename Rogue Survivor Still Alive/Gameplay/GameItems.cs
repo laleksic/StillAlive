@@ -101,6 +101,22 @@ namespace djack.RogueSurvivor.Gameplay
             UNIQUE_SANTAMAN_SHOTGUN,
             UNIQUE_HANS_VON_HANZ_PISTOL,
 
+            //@@MP (Release 3)
+            UNIQUE_CHAR_DOCUMENT1,
+            UNIQUE_CHAR_DOCUMENT2,
+            UNIQUE_CHAR_DOCUMENT3,
+            UNIQUE_CHAR_DOCUMENT4,
+            UNIQUE_CHAR_DOCUMENT5,
+            UNIQUE_CHAR_DOCUMENT6,
+
+            //@@MP (Release 3)
+            MELEE_TENNIS_RACKET,
+            MELEE_HOCKEY_STICK,
+            MELEE_MACHETE,
+            MELEE_STANDARD_AXE,
+            MELEE_PICKAXE,
+            MELEE_PIPE_WRENCH,
+
             _COUNT
         }
         #endregion
@@ -267,7 +283,19 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemMeleeWeaponModel UNIQUE_BIGBEAR_BAT { get { return this[IDs.UNIQUE_BIGBEAR_BAT] as ItemMeleeWeaponModel; } }
         MeleeWeaponData DATA_MELEE_UNIQUE_ROGUEDJACK_KEYBOARD;
         public ItemMeleeWeaponModel UNIQUE_ROGUEDJACK_KEYBOARD { get { return this[IDs.UNIQUE_ROGUEDJACK_KEYBOARD] as ItemMeleeWeaponModel; } }
-
+        //@@MP (Release 3)
+        MeleeWeaponData DATA_MELEE_TENNIS_RACKET;
+        public ItemMeleeWeaponModel TENNIS_RACKET { get { return this[IDs.MELEE_TENNIS_RACKET] as ItemMeleeWeaponModel; } }
+        MeleeWeaponData DATA_MELEE_HOCKEY_STICK;
+        public ItemMeleeWeaponModel HOCKEY_STICK { get { return this[IDs.MELEE_HOCKEY_STICK] as ItemMeleeWeaponModel; } }
+        MeleeWeaponData DATA_MELEE_MACHETE;
+        public ItemMeleeWeaponModel MACHETE { get { return this[IDs.MELEE_MACHETE] as ItemMeleeWeaponModel; } }
+        MeleeWeaponData DATA_MELEE_STANDARD_AXE;
+        public ItemMeleeWeaponModel STANDARD_AXE { get { return this[IDs.MELEE_STANDARD_AXE] as ItemMeleeWeaponModel; } }
+        MeleeWeaponData DATA_MELEE_PICKAXE;
+        public ItemMeleeWeaponModel PICKAXE { get { return this[IDs.MELEE_PICKAXE] as ItemMeleeWeaponModel; } }
+        MeleeWeaponData DATA_MELEE_PIPE_WRENCH;
+        public ItemMeleeWeaponModel PIPE_WRENCH { get { return this[IDs.MELEE_PIPE_WRENCH] as ItemMeleeWeaponModel; } }
         #endregion
 
         #region Ranged weapons
@@ -653,6 +681,13 @@ namespace djack.RogueSurvivor.Gameplay
 
         #region Special Uniques
         public ItemModel UNIQUE_SUBWAY_BADGE { get { return this[IDs.UNIQUE_SUBWAY_BADGE]; } }
+        //@MP (Release 3)
+        public ItemModel UNIQUE_CHAR_DOCUMENT1 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT1]; } }
+        public ItemModel UNIQUE_CHAR_DOCUMENT2 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT2]; } }
+        public ItemModel UNIQUE_CHAR_DOCUMENT3 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT3]; } }
+        public ItemModel UNIQUE_CHAR_DOCUMENT4 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT4]; } }
+        public ItemModel UNIQUE_CHAR_DOCUMENT5 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT5]; } }
+        public ItemModel UNIQUE_CHAR_DOCUMENT6 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT6]; } }
         #endregion
 
         #endregion
@@ -925,6 +960,73 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwData.FLAVOR,
                 IsProper = true,
                 IsUnbreakable = true
+            };
+
+            //@@MP (Release 3)
+            mwData = DATA_MELEE_TENNIS_RACKET;
+            this[IDs.MELEE_TENNIS_RACKET] = new ItemMeleeWeaponModel(mwData.NAME, mwData.PLURAL, GameImages.ITEM_TENNIS_RACKET,
+                new Attack(AttackKind.PHYSICAL, new Verb("bash", "bashes"), mwData.ATK, mwData.DMG, mwData.STA))
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = mwData.FLAVOR,
+                IsStackable = (mwData.STACKINGLIMIT > 1),
+                StackingLimit = mwData.STACKINGLIMIT,
+                IsFragile = mwData.ISFRAGILE
+            };
+
+            mwData = DATA_MELEE_HOCKEY_STICK;
+            this[IDs.MELEE_HOCKEY_STICK] = new ItemMeleeWeaponModel(mwData.NAME, mwData.PLURAL, GameImages.ITEM_HOCKEY_STICK,
+                new Attack(AttackKind.PHYSICAL, new Verb("bash", "bashes"), mwData.ATK, mwData.DMG, mwData.STA))
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = mwData.FLAVOR,
+                IsStackable = (mwData.STACKINGLIMIT > 1),
+                StackingLimit = mwData.STACKINGLIMIT,
+                IsFragile = mwData.ISFRAGILE
+            };
+
+            mwData = DATA_MELEE_MACHETE;
+            this[IDs.MELEE_MACHETE] = new ItemMeleeWeaponModel(mwData.NAME, mwData.PLURAL, GameImages.ITEM_MACHETE,
+                new Attack(AttackKind.PHYSICAL, new Verb("slash", "slashes"), mwData.ATK, mwData.DMG, mwData.STA))
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = mwData.FLAVOR,
+                IsStackable = (mwData.STACKINGLIMIT > 1),
+                StackingLimit = mwData.STACKINGLIMIT,
+                IsFragile = mwData.ISFRAGILE
+            };
+
+            mwData = DATA_MELEE_STANDARD_AXE;
+            this[IDs.MELEE_STANDARD_AXE] = new ItemMeleeWeaponModel(mwData.NAME, mwData.PLURAL, GameImages.ITEM_STANDARD_AXE,
+                new Attack(AttackKind.PHYSICAL, new Verb("strike"), mwData.ATK, mwData.DMG, mwData.STA))
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = mwData.FLAVOR,
+                IsStackable = (mwData.STACKINGLIMIT > 1),
+                StackingLimit = mwData.STACKINGLIMIT,
+                IsFragile = mwData.ISFRAGILE
+            };
+
+            mwData = DATA_MELEE_PICKAXE;
+            this[IDs.MELEE_PICKAXE] = new ItemMeleeWeaponModel(mwData.NAME, mwData.PLURAL, GameImages.ITEM_PICKAXE,
+                new Attack(AttackKind.PHYSICAL, new Verb("strike"), mwData.ATK, mwData.DMG, mwData.STA))
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = mwData.FLAVOR,
+                IsStackable = (mwData.STACKINGLIMIT > 1),
+                StackingLimit = mwData.STACKINGLIMIT,
+                IsFragile = mwData.ISFRAGILE
+            };
+
+            mwData = DATA_MELEE_PIPE_WRENCH;
+            this[IDs.MELEE_PIPE_WRENCH] = new ItemMeleeWeaponModel(mwData.NAME, mwData.PLURAL, GameImages.ITEM_PIPE_WRENCH,
+                new Attack(AttackKind.PHYSICAL, new Verb("slash", "slashes"), mwData.ATK, mwData.DMG, mwData.STA))
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = mwData.FLAVOR,
+                IsStackable = (mwData.STACKINGLIMIT > 1),
+                StackingLimit = mwData.STACKINGLIMIT,
+                IsFragile = mwData.ISFRAGILE
             };
             #endregion
 
@@ -1342,6 +1444,36 @@ namespace djack.RogueSurvivor.Gameplay
                 EquipmentPart = DollPart.LEFT_HAND,
                 FlavorDescription = "You got yourself a new job!"
             };
+
+            //@@MP (Release 3)
+            this[IDs.UNIQUE_CHAR_DOCUMENT1] = new ItemModel("CHAR document", "CHAR documents", GameImages.ITEM_CHAR_DOCUMENT)
+            {
+                FlavorDescription = "Notes that suggest CHAR were trying mutation experiments on rats."
+            };
+
+            this[IDs.UNIQUE_CHAR_DOCUMENT2] = new ItemModel("CHAR document", "CHAR documents", GameImages.ITEM_CHAR_DOCUMENT)
+            {
+                FlavorDescription = @"""TEST #240 subjects showing violent tendencies yet decreased vital signs."""
+            };
+
+            this[IDs.UNIQUE_CHAR_DOCUMENT3] = new ItemModel("CHAR document", "CHAR documents", GameImages.ITEM_CHAR_DOCUMENT)
+            {
+                FlavorDescription = @"""Skin decay greatly accelerated in many but not all cases."""
+            };
+
+            this[IDs.UNIQUE_CHAR_DOCUMENT4] = new ItemModel("CHAR document", "CHAR documents", GameImages.ITEM_CHAR_DOCUMENT)
+            {
+                FlavorDescription = @"""Effects vary by subject; speculate genetic differences manifest in patterns."""
+            };
+
+            this[IDs.UNIQUE_CHAR_DOCUMENT5] = new ItemModel("CHAR document", "CHAR documents", GameImages.ITEM_CHAR_DOCUMENT)
+            {
+                FlavorDescription = @"""TEST #241 should alter marker 17 for enhanced stength and smell."""
+            };
+            this[IDs.UNIQUE_CHAR_DOCUMENT6] = new ItemModel("CHAR document", "CHAR documents", GameImages.ITEM_CHAR_DOCUMENT)
+            {
+                FlavorDescription = "Operation manual regarding restoring power to the facility."
+            };
             #endregion
 
             #region Fixes/Post processing
@@ -1451,7 +1583,7 @@ namespace djack.RogueSurvivor.Gameplay
         }
         #endregion
 
-        #region Medecine
+        #region Medicine
         public bool LoadMedicineFromCSV(IRogueUI ui, string path)
         {
             MedecineData[] data;
@@ -1498,7 +1630,8 @@ namespace djack.RogueSurvivor.Gameplay
                 new IDs[] { IDs.MELEE_BASEBALLBAT, IDs.MELEE_COMBAT_KNIFE, IDs.MELEE_CROWBAR, IDs.MELEE_GOLFCLUB, IDs.MELEE_HUGE_HAMMER, IDs.MELEE_IRON_GOLFCLUB,
                             IDs.MELEE_SHOVEL, IDs.MELEE_SHORT_SHOVEL, IDs.MELEE_TRUNCHEON, IDs.UNIQUE_JASON_MYERS_AXE,
                             IDs.MELEE_IMPROVISED_CLUB, IDs.MELEE_IMPROVISED_SPEAR, IDs.MELEE_SMALL_HAMMER, 
-                            IDs.UNIQUE_FAMU_FATARU_KATANA, IDs.UNIQUE_BIGBEAR_BAT, IDs.UNIQUE_ROGUEDJACK_KEYBOARD },
+                            IDs.UNIQUE_FAMU_FATARU_KATANA, IDs.UNIQUE_BIGBEAR_BAT, IDs.UNIQUE_ROGUEDJACK_KEYBOARD,
+                            IDs.MELEE_TENNIS_RACKET, IDs.MELEE_HOCKEY_STICK, IDs.MELEE_MACHETE, IDs.MELEE_STANDARD_AXE, IDs.MELEE_PICKAXE, IDs.MELEE_PIPE_WRENCH }, //@@MP (Release 3)
                 out data);
 
             DATA_MELEE_BASEBALLBAT = data[0];
@@ -1517,6 +1650,13 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_MELEE_UNIQUE_FAMU_FATARU_KATANA = data[13];
             DATA_MELEE_UNIQUE_BIGBEAR_BAT = data[14];
             DATA_MELEE_UNIQUE_ROGUEDJACK_KEYBOARD = data[15];
+            //@@MP (Release 3)
+            DATA_MELEE_TENNIS_RACKET = data[16];
+            DATA_MELEE_HOCKEY_STICK = data[17];
+            DATA_MELEE_MACHETE = data[18];
+            DATA_MELEE_STANDARD_AXE = data[19];
+            DATA_MELEE_PICKAXE = data[20];
+            DATA_MELEE_PIPE_WRENCH = data[21];
 
             return true;
         }

@@ -1105,8 +1105,8 @@ namespace djack.RogueSurvivor.Engine
             m_UI.UI_DrawStringBold(Color.White, "Loading sfxs...", 0, 0);
             m_UI.UI_Repaint();
 
-            m_SFXManager.Load(GameSounds.UNDEAD_EAT, GameSounds.UNDEAD_EAT_FILE);
-            m_SFXManager.Load(GameSounds.UNDEAD_RISE, GameSounds.UNDEAD_RISE_FILE);
+            m_SFXManager.Load(GameSounds.UNDEAD_EAT_PLAYER, GameSounds.UNDEAD_EAT_PLAYER_FILE); //@@MP - added a NEARBY (Release 3)
+            m_SFXManager.Load(GameSounds.UNDEAD_RISE_PLAYER, GameSounds.UNDEAD_RISE_PLAYER_FILE); //@@MP - added a NEARBY (Release 3)
             m_SFXManager.Load(GameSounds.NIGHTMARE, GameSounds.NIGHTMARE_FILE);
             //@@MP - new sounds below here (Release 2)
             m_SFXManager.Load(GameSounds.COMMOTION, GameSounds.COMMOTION_FILE);
@@ -1125,7 +1125,6 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.PISTOL_FIRE_FAR, GameSounds.PISTOL_FIRE_FAR_FILE);
             m_SFXManager.Load(GameSounds.HUNTING_RIFLE_FIRE_FAR, GameSounds.HUNTING_RIFLE_FIRE_FAR_FILE);
             m_SFXManager.Load(GameSounds.SHOTGUN_FIRE_FAR, GameSounds.SHOTGUN_FIRE_FAR_FILE);
-            m_SFXManager.Load(GameSounds.CROSSBOW_FIRE_FAR, GameSounds.CROSSBOW_FIRE_FAR_FILE);
             m_SFXManager.Load(GameSounds.ARMOR_ZIPPER, GameSounds.ARMOR_ZIPPER_FILE);
             m_SFXManager.Load(GameSounds.EQUIP_GUN_PLAYER, GameSounds.EQUIP_GUN_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.TORCH_CLICK_PLAYER, GameSounds.TORCH_CLICK_PLAYER_FILE);
@@ -1138,7 +1137,7 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.SPRAY_SCENT, GameSounds.SPRAY_SCENT_FILE);
             m_SFXManager.Load(GameSounds.SPRAY_TAG, GameSounds.SPRAY_TAG_FILE);
             m_SFXManager.Load(GameSounds.EAT_FOOD, GameSounds.EAT_FOOD_FILE);
-            m_SFXManager.Load(GameSounds.VOMIT, GameSounds.VOMIT_FILE);
+            m_SFXManager.Load(GameSounds.VOMIT_PLAYER, GameSounds.VOMIT_PLAYER_FILE); //@@MP - added a NEARBY (Release 3)
             m_SFXManager.Load(GameSounds.GLASS_DOOR, GameSounds.GLASS_DOOR_FILE);
             m_SFXManager.Load(GameSounds.WOODEN_DOOR_OPEN, GameSounds.WOODEN_DOOR_OPEN_FILE);
             m_SFXManager.Load(GameSounds.WOODEN_DOOR_CLOSE, GameSounds.WOODEN_DOOR_CLOSE_FILE);
@@ -1158,6 +1157,26 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.SCREAM_FAR_05, GameSounds.SCREAM_FAR_05_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_06, GameSounds.SCREAM_FAR_06_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_07, GameSounds.SCREAM_FAR_07_FILE);
+            //@@MP (Release 3)
+            m_SFXManager.Load(GameSounds.BASH_PLAYER, GameSounds.BASH_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.BASH_NEARBY, GameSounds.BASH_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.TURN_PAGE, GameSounds.TURN_PAGE_FILE);
+            m_SFXManager.Load(GameSounds.UNDEAD_EAT_NEARBY, GameSounds.UNDEAD_EAT_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.UNDEAD_RISE_NEARBY, GameSounds.UNDEAD_RISE_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.VOMIT_NEARBY, GameSounds.VOMIT_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.SHOVE_PLAYER, GameSounds.SHOVE_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.SHOVE_NEARBY, GameSounds.SHOVE_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.PUSH_OBJECT_VISIBLE, GameSounds.PUSH_OBJECT_VISIBLE_FILE);
+            m_SFXManager.Load(GameSounds.PUSH_OBJECT_AUDIBLE, GameSounds.PUSH_OBJECT_AUDIBLE_FILE);
+            m_SFXManager.Load(GameSounds.BUILDING, GameSounds.BUILDING_FILE);
+            m_SFXManager.Load(GameSounds.CAN_TRAP_PLAYER, GameSounds.CAN_TRAP_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.BEAR_TRAP_PLAYER, GameSounds.BEAR_TRAP_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.SPIKE_TRAP, GameSounds.SPIKE_TRAP_FILE);
+            m_SFXManager.Load(GameSounds.BARBED_WIRE_TRAP_PLAYER, GameSounds.BARBED_WIRE_TRAP_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.CAN_TRAP_NEARBY, GameSounds.CAN_TRAP_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.BEAR_TRAP_NEARBY, GameSounds.BEAR_TRAP_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.CAN_TRAP_FAR, GameSounds.CAN_TRAP_FAR_FILE);
+            m_SFXManager.Load(GameSounds.BEAR_TRAP_FAR, GameSounds.BEAR_TRAP_FAR_FILE);
 
             m_UI.UI_Clear(Color.Black);
             m_UI.UI_DrawStringBold(Color.White, "Loading sfxs... done!", 0, 0);
@@ -1478,9 +1497,11 @@ namespace djack.RogueSurvivor.Engine
                         descMode = new string[] {
                             "This is the standard game setting:",
                             "- All the various types of undeads.",
-                            "- Undeads can evolve and gain abilities.", 
-                            "- Livings can zombify instantly when dead.",
-                            "- Suited for beginners or those looking for a less punishing challenge."
+                            "- Undeads can evolve and gain abilities.",
+                            "- Undeads will not infect livings when hurting them.",
+                            "- If enabled, livings may zombify instantly if starved to death.",
+                            "- Otherwise, and by default, corpses will not rise again.",
+                            "> Suited for beginners or those looking for a different take on undeads."
                         };
                         break;
                     case 1:
@@ -1489,9 +1510,8 @@ namespace djack.RogueSurvivor.Engine
                             "- All the various types of undeads.",
                             "- Undeads can evolve and gain abilities.",
                             "- Some undeads can infect livings when hurting them.",
-                            "- Livings become corpses when dead.",
-                            "- Corpses will slowy rot, but may rise as undead if infected.",
-                            "- Suited for veterans or those looking for more of a challenge."
+                            "- Corpses will slowly rot, but may rise as undead if infected.",
+                            "> Suited for veterans or those looking for more of a challenge."
                         };
                         break;
                     case 2:
@@ -1499,11 +1519,11 @@ namespace djack.RogueSurvivor.Engine
                             "This is the setting for classic zombie fans: ",
                             "- Undeads are only zombified men and women.",
                             "- Undeads don't evolve and don't gain abilities.", 
-                            "- Some undeads can infect livings when hurting them.",
-                            "- Livings become corpses when dead.",
-                            "- Corpses will slowy rot, but may rise as undead if infected.",
+                            "- Undeads can infect livings when hurting them.",
+                            "- Corpses will slowly rot, but may rise as undead if infected.",
+                            "> Suited for those who want the true zombie apocalypse experience",
                             "",
-                            "NOTE: This mode forces undead evolution OFF.",
+                            "IMPORTANT: This mode forces undead evolution OFF.",
                             "Remember to set them back ON again when you play other modes!"
                         };
                         break;
@@ -2240,12 +2260,14 @@ namespace djack.RogueSurvivor.Engine
             m_UI.UI_DrawString(Color.White, @"Incorporates some of Deon's 'Deonapocalypse' tileset", 0, gy);
             gy += BOLD_LINE_SPACING;
             m_UI.UI_DrawString(Color.White, @"Grab the whole set: http://roguesurvivor.proboards.com/thread/264/alpha-9-deonapocalypse", 0, gy);
-            /*gy += 2 * BOLD_LINE_SPACING;
-            m_UI.UI_DrawString(Color.White, @"Incorporates sounds from https://freesound.org/. For full list of sounds and their authors please see about.txt in the game directory", 0, gy);
+            gy += 2 * BOLD_LINE_SPACING;
+            m_UI.UI_DrawString(Color.White, @"Incorporates images from https://opengameart.org. For full list of images and their authors please see about.txt in the game directory", 0, gy);
+            gy += BOLD_LINE_SPACING;
+            m_UI.UI_DrawString(Color.White, @"Incorporates sounds from https://freesound.org. For full list of sounds and their authors please see about.txt in the game directory", 0, gy);
             gy += BOLD_LINE_SPACING;
             m_UI.UI_DrawString(Color.White, @"<tba>", 0, gy);
             gy += 2 * BOLD_LINE_SPACING;
-            m_UI.UI_DrawString(Color.White, @"Discuss the mod: <tba>", 0, gy);*/
+            m_UI.UI_DrawString(Color.White, @"Discuss the mod: <tba>", 0, gy);
 
             DrawFootnote(Color.White, "ESC to leave");
             m_UI.UI_Repaint();
@@ -2377,8 +2399,8 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_DISTRICT_SIZE: s_Options.DistrictSize -= 5; break;
                             case GameOptions.IDs.UI_MUSIC: s_Options.PlayMusic = !s_Options.PlayMusic; break;
                             case GameOptions.IDs.UI_MUSIC_VOLUME: s_Options.MusicVolume -= 5; break;
-                            case GameOptions.IDs.UI_SFXS: s_Options.PlaySFXs = !s_Options.PlaySFXs; break;//@@MP (Release 2)
-                            case GameOptions.IDs.UI_SFXS_VOLUME: s_Options.SFXVolume -= 5; break;//@@MP (Release 2)
+                            case GameOptions.IDs.UI_SFXS: s_Options.PlaySFXs = !s_Options.PlaySFXs; break; //@@MP (Release 2)
+                            case GameOptions.IDs.UI_SFXS_VOLUME: s_Options.SFXVolume -= 5; break; //@@MP (Release 2)
                             case GameOptions.IDs.UI_ANIM_DELAY: s_Options.IsAnimDelayOn = !s_Options.IsAnimDelayOn; break;
                             case GameOptions.IDs.UI_SHOW_MINIMAP: s_Options.IsMinimapOn = !s_Options.IsMinimapOn; break;
                             case GameOptions.IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP: s_Options.ShowPlayerTagsOnMinimap = !s_Options.ShowPlayerTagsOnMinimap; break;
@@ -2449,8 +2471,8 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_DISTRICT_SIZE: s_Options.DistrictSize += 5; break;
                             case GameOptions.IDs.UI_MUSIC: s_Options.PlayMusic = !s_Options.PlayMusic; break;
                             case GameOptions.IDs.UI_MUSIC_VOLUME: s_Options.MusicVolume += 5; break;
-                            case GameOptions.IDs.UI_SFXS: s_Options.PlaySFXs = !s_Options.PlaySFXs; break;//@@MP (Release 2)
-                            case GameOptions.IDs.UI_SFXS_VOLUME: s_Options.SFXVolume += 5; break;//@@MP (Release 2)
+                            case GameOptions.IDs.UI_SFXS: s_Options.PlaySFXs = !s_Options.PlaySFXs; break; //@@MP (Release 2)
+                            case GameOptions.IDs.UI_SFXS_VOLUME: s_Options.SFXVolume += 5; break; //@@MP (Release 2)
                             case GameOptions.IDs.UI_ANIM_DELAY: s_Options.IsAnimDelayOn = !s_Options.IsAnimDelayOn; break;
                             case GameOptions.IDs.UI_SHOW_MINIMAP: s_Options.IsMinimapOn = !s_Options.IsMinimapOn; break;
                             case GameOptions.IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP: s_Options.ShowPlayerTagsOnMinimap = !s_Options.ShowPlayerTagsOnMinimap; break;
@@ -2512,6 +2534,7 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_SKELETONS_UPGRADE:
                                 if (m_Session.GameMode == GameMode.GM_VINTAGE)
                                     s_Options.SkeletonsUpgrade = false;
+                                else
                                     s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade; 
                                 break;    
                         }
@@ -3195,7 +3218,10 @@ namespace djack.RogueSurvivor.Engine
                                     if (IsVisibleToPlayer(map, c.Position))
                                     {
                                         AddMessage(new Message(String.Format("The corpse of {0} rise again!!", c.DeadGuy.Name), map.LocalTime.TurnCounter, Color.Red));
-                                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_RISE);
+                                        if (zombified.IsPlayer) //@@MP (Release 3)
+                                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_RISE_PLAYER);
+                                        else
+                                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_RISE_NEARBY);
                                     }
                                 }
                             }
@@ -3538,11 +3564,9 @@ namespace djack.RogueSurvivor.Engine
                                 if (IsVisibleToPlayer(actor))
                                     AddMessage(MakeMessage(actor, String.Format("{0} from a horrible nightmare!", Conjugate(actor, VERB_WAKE_UP))));
                                 // if player, sfx.
+                                m_MusicManager.StopAll();
                                 if (actor.IsPlayer)
-                                {
-                                    m_MusicManager.StopAll();
                                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.NIGHTMARE);
-                                }
                             }
                         }
                         else
@@ -4278,7 +4302,7 @@ namespace djack.RogueSurvivor.Engine
                 {
                     if (unique.EventThemeMusic != null)
                     {
-                        //m_MusicManager.StopAll(); //@@MP (Release 2)
+                        m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
                         m_MusicManager.Play(unique.EventThemeMusic);
                     }
                     // message.
@@ -4352,7 +4376,7 @@ namespace djack.RogueSurvivor.Engine
             if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
             {
                 // music.
-                //m_MusicManager.StopAll(); //@@MP (Release 2)
+                m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
                 m_MusicManager.Play(GameMusics.ARMY);
 
                 // message.
@@ -4442,7 +4466,7 @@ namespace djack.RogueSurvivor.Engine
             if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
             {
                 // music.
-                //m_MusicManager.StopAll(); //@@MP (Release 2)
+                m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
                 m_MusicManager.Play(GameMusics.ARMY);
 
                 // message.
@@ -4582,7 +4606,7 @@ namespace djack.RogueSurvivor.Engine
             if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
             {
                 // music.
-                //m_MusicManager.StopAll(); //@@MP (Release 2)
+                m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
                 m_MusicManager.Play(GameMusics.BIKER);
 
                 // message.
@@ -4661,7 +4685,7 @@ namespace djack.RogueSurvivor.Engine
             if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
             {
                 // music.
-                //m_MusicManager.StopAll(); //@@MP (Release 2)
+                m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
                 m_MusicManager.Play(GameMusics.GANGSTA);
 
                 // message.
@@ -4728,7 +4752,7 @@ namespace djack.RogueSurvivor.Engine
             if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
             {
                 // music.
-                //m_MusicManager.StopAll(); //@@MP (Release 2)
+                m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
                 m_MusicManager.Play(GameMusics.ARMY);
 
                 // message.
@@ -4789,7 +4813,7 @@ namespace djack.RogueSurvivor.Engine
             if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
             {
                 // music.
-                //m_MusicManager.StopAll(); //@@MP (Release 2)
+                m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
                 m_MusicManager.Play(GameMusics.SURVIVORS);
 
                 // message.
@@ -6800,7 +6824,10 @@ namespace djack.RogueSurvivor.Engine
             if (isVisible)
             {
                 AddMessage(MakeMessage(a, String.Format("{0} {1} corpse.", Conjugate(a, VERB_FEAST_ON), c.DeadGuy.Name, dmg)));
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT);
+                if (a.IsPlayer) //@@MP (Release 3)
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_PLAYER);
+                else
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_NEARBY);
             }
 
             // dmh corpse.
@@ -11689,7 +11716,7 @@ namespace djack.RogueSurvivor.Engine
                 // show.
                 if (actor.IsPlayer || IsVisibleToPlayer(actor))// || IsAudibleToPlayer(newLocation)) //@@MP (Release 2)
                 {
-                    if (s_Options.PlayMusic)
+                    if (s_Options.PlaySFXs)
                     {
                         if (mapObj.TheName == "the fence") //@@MP - allows for other jumped on sounds added as elseifs. order them by most common descending
                         {
@@ -11755,9 +11782,9 @@ namespace djack.RogueSurvivor.Engine
                 // player hears?
                 DiceRoller roller = new DiceRoller();
                 int screamSelected = roller.Roll(0, 6); //@@MP - there are multiple screams, this will randomise which one is heard
-                if (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && !IsVisibleToPlayer(actor) && IsAudibleToPlayer(actor.Location))
+                if (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && !IsVisibleToPlayer(actor) && IsAudibleToPlayer(actor.Location)) //@@MP - people scream a lot, so I can see why it only had a 10% chance
                 {
-                    if (s_Options.PlayMusic) //@@MP (Release 2)
+                    if (s_Options.PlaySFXs) //@@MP (Release 2)
                     {
                         switch (screamSelected)
                         {
@@ -11777,7 +11804,7 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else if (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && IsVisibleToPlayer(actor)) //@@MP (Release 2)
                 {
-                    if (s_Options.PlayMusic)
+                    if (s_Options.PlaySFXs)
                     {
                         switch (screamSelected)
                         {
@@ -12051,9 +12078,17 @@ namespace djack.RogueSurvivor.Engine
 
             // effect: damage on victim? (actor)
             int damage = model.Damage * trap.Quantity;
-            if (damage > 0 && victim != null)
+            if (damage > 0 && victim != null) //@@MP - victim can be null if an object (eg chair) is pushed onto the tile
             {
                 InflictDamage(victim, damage);
+                switch (trap.TheName.ToString()) //@@MP - ensure at least some blood is dropped for the nastier traps (Release 3)
+                {
+                    case "the bear trap":
+                    case "the spike":
+                        SplatterBlood(map, pos, true);
+                        break;
+                    default: break;
+                }
                 if (visible)
                 {
                     AddMessage(MakeMessage(victim, String.Format("is hurt by {0} for {1} damage!", trap.AName, damage)));
@@ -12078,7 +12113,99 @@ namespace djack.RogueSurvivor.Engine
                 OnLoudNoise(map, pos, model.NoiseName);
             }
 
-            // if one time trigger = desactivate.
+            //@@MP - play sounds as relevant (Release 3)
+            if (victim != null && victim.IsPlayer)
+            {
+                switch (trap.TheName.ToString())
+                {
+                    case "the empty can":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CAN_TRAP_PLAYER);
+                        break;
+                    case "the bear trap":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BEAR_TRAP_PLAYER);
+                        break;
+                    case "the spike":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SPIKE_TRAP);
+                        break;
+                    case "the barbed wire":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BARBED_WIRE_TRAP_PLAYER);
+                        break;
+                    default: break;
+                }
+            }
+            else if (victim != null && visible)
+            {
+                bool actorScream = false;
+                switch (trap.TheName.ToString())
+                {
+                    case "the empty can":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CAN_TRAP_NEARBY);
+                        break;
+                    case "the bear trap":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BEAR_TRAP_NEARBY);
+                        actorScream = true;
+                        break;
+                    case "the spike":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SPIKE_TRAP);
+                        actorScream = true;
+                        break;
+                    default: break;
+                }
+                if (actorScream)
+                {
+                    DiceRoller roller = new DiceRoller();
+                    int screamSelected = roller.Roll(0, 6);
+                    switch (screamSelected)
+                    {
+                        case 0: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_01); break;
+                        case 1: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_02); break;
+                        case 2: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_03); break;
+                        case 3: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_04); break;
+                        case 4: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_05); break;
+                        case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_06); break;
+                        case 6: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_07); break;
+                        default:
+                            throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
+                    }
+                }
+            }
+            else if (victim != null && IsAudibleToPlayer(victim.Location))
+            {
+                bool actorScream = false;
+                switch (trap.TheName.ToString())
+                {
+                    case "the empty can":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CAN_TRAP_FAR);
+                        break;
+                    case "the bear trap":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BEAR_TRAP_FAR);
+                        actorScream = true;
+                        break;
+                    case "the spike":
+                        actorScream = true;
+                        break;
+                    default: break;
+                }
+                if (actorScream)
+                {
+                    DiceRoller roller = new DiceRoller();
+                    int screamSelected = roller.Roll(0, 6);
+                    switch (screamSelected)
+                    {
+                        case 0: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_01); break;
+                        case 1: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_02); break;
+                        case 2: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_03); break;
+                        case 3: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_04); break;
+                        case 4: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_05); break;
+                        case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_06); break;
+                        case 6: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_07); break;
+                        default:
+                            throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
+                    }
+                }
+            }
+
+            // if one time trigger = deactivate.
             if (model.IsOneTimeUse)
                 trap.IsActivated = false;
 
@@ -12653,15 +12780,10 @@ namespace djack.RogueSurvivor.Engine
             if (hitRoll > defRoll)
             {
                 //hear //@@MP (Release 2)
-                if (isPlayer & s_Options.PlayMusic)
-                {
+                if (isPlayer)
                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_PLAYER);
-                }
                 else if (isDefVisible || isAttVisible)
-                {
-                    if (s_Options.PlayMusic)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_NEARBY);
-                }
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_NEARBY);
 
                 // roll damage - double potential if def is sleeping.
                 int dmgRoll = m_Rules.RollDamage(defender.IsSleeping ? attack.DamageValue * 2 : attack.DamageValue) - defence.Protection_Hit;
@@ -12764,17 +12886,13 @@ namespace djack.RogueSurvivor.Engine
             }   // end of hit
             else // miss
             {
-                //hear //@@MP (Release 2)
-                if (isPlayer & s_Options.PlayMusic)
+                if (isPlayer || isAttVisible || isDefVisible) //@@MP - moved isPlayer into this if (Release 3)
                 {
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_MISS_PLAYER);
-                }
-                if (isAttVisible || isDefVisible)
-                {
-                    if (s_Options.PlayMusic)
-                    {
+                    if (isPlayer) //hear //@@MP (Release 2)
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_MISS_PLAYER);
+                    else
                         m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_MISS_NEARBY);
-                    }
+
                     // show
                     AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_MISS), defender));
                     AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_MELEE_MISS));
@@ -12947,7 +13065,7 @@ namespace djack.RogueSurvivor.Engine
             }
             else if (!isDefVisible && !isAttVisible) //&& !isPlayer && m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP - the noise is within earshot somewhere, so play the far-off sound (Release 2)
             {
-                if (s_Options.PlayMusic && IsAudibleToPlayer(attacker.Location))
+                if (IsAudibleToPlayer(attacker.Location))
                 {
                     switch (weapon.TheName.ToString())
                     {
@@ -12965,9 +13083,6 @@ namespace djack.RogueSurvivor.Engine
                         case "the shotgun":
                         case "the Santaman shotgun":
                             m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_FAR);
-                            break;
-                        case "the hunting crossbow":
-                            //m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CROSSBOW_FIRE_FAR); //changed my mind; this shouldn't be heard
                             break;
                         default: break;
                     }
@@ -13259,9 +13374,9 @@ namespace djack.RogueSurvivor.Engine
                 AnimDelay(DELAY_LONG);
                 RedrawPlayScreen();
             }
-            else if (IsAudibleToPlayer(location)) //(m_Rules.RollChance(PLAYER_HEAR_EXPLOSION_CHANCE))
+            else if (IsAudibleToPlayer(location)) //(m_Rules.RollChance(PLAYER_HEAR_EXPLOSION_CHANCE)) //@@MP (Release 2)
             {
-                if (s_Options.PlayMusic)
+                if (s_Options.PlaySFXs)
                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.EXPLOSION_NEARBY);
                 else
                     AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You hear an explosion", location.Position));
@@ -13381,9 +13496,6 @@ namespace djack.RogueSurvivor.Engine
             // if no damage, don't bother.
             if (modifiedDamage <= 0)
                 return 0;
-
-            //@@MP - add scorch sprite where ground was blasted
-            ScorchBurntGround(location, modifiedDamage);
 
             // damage actor / carried explosives chain reaction.
             #region
@@ -13511,10 +13623,21 @@ namespace djack.RogueSurvivor.Engine
             #endregion
 
             // destroy walls?
+            bool wallDestroyed = false;
             if (blast.CanDestroyWalls)
             {
-                throw new NotImplementedException("blast.destroyWalls");
+                //@@MP (Release 3)
+                if (map.IsDestructibleWallAt(location))
+                {
+                    //map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_RUBBLE);
+                    ReplaceDestroyedWall(location);
+                    wallDestroyed = true;
+                }
+                //throw new NotImplementedException("blast.destroyWalls");
             }
+
+            if (!wallDestroyed) //@@MP - add scorch sprite where ground or surviving wall was blasted (Release 2)
+                ScorchBurntGround(location, modifiedDamage);
 
             // return damage done.
             return modifiedDamage;
@@ -13592,11 +13715,87 @@ namespace djack.RogueSurvivor.Engine
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_SCORCH_MARK_OUTER);
                     break;
                 default: //outside the blast wave, do nothing
-                    map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.UNDEF);
+                    //map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.UNDEF);
                     break;
             }
         }
 
+        /// <summary>
+        /// Replaces the wall tile with the appropriate type of floor tile and damaged wall section
+        /// </summary>
+        private void ReplaceDestroyedWall(Location location)  //@@MP (Release 3)
+        {
+            Map map = location.Map;
+
+            //replace the wall tile with a decoration of a damaged image of the wall
+            TileModel walltilemodel = map.GetTileAt(location.Position.X, location.Position.Y).Model;
+            switch (walltilemodel.ImageID)
+            {
+                case @"Tiles\wall_brick":
+                    map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_BRICK_DAMAGED);
+                    break;
+                case @"Tiles\wall_char_office":
+                    map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_CHAR_OFFICE_DAMAGED);
+                    break;
+                case @"Tiles\wall_hospital":
+                    map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_HOSPITAL_DAMAGED);
+                    break;
+                case @"Tiles\wall_sewer":
+                    map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_SEWER_DAMAGED);
+                    break;
+                case @"Tiles\wall_stone":
+                    map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_STONE_DAMAGED);
+                    break;
+                default:
+                    throw new NotSupportedException("unexpected ImageID for TileModel of given wall");
+            }
+
+            //get an adjacent floor tile
+            TileModel floortilemodel;
+            if (map.IsBuildingFloorTileAt(location.Position.X, location.Position.Y + 1)) //north
+                floortilemodel = map.GetTileAt(location.Position.X, location.Position.Y + 1).Model;
+            else if (map.IsBuildingFloorTileAt(location.Position.X, location.Position.Y - 1)) //south
+                floortilemodel = map.GetTileAt(location.Position.X, location.Position.Y - 1).Model;
+            else if (map.IsBuildingFloorTileAt(location.Position.X + 1, location.Position.Y)) //east
+                floortilemodel = map.GetTileAt(location.Position.X + 1, location.Position.Y).Model;
+            else if (map.IsBuildingFloorTileAt(location.Position.X - 1, location.Position.Y)) //west
+                floortilemodel = map.GetTileAt(location.Position.X - 1, location.Position.Y).Model;
+            else
+            {
+                map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_ASPHALT);
+                return;
+            }
+
+            //use the adjacent floor tile as the tile underneath the new damaged wall decoration (to show the player it can be walked through)
+            switch (floortilemodel.ImageID)
+            {
+                case @"Tiles\floor_office":
+                    map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_OFFICE);
+                    break;
+                case @"Tiles\floor_tiles":
+                    map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_TILES);
+                    break;
+                case @"Tiles\floor_concrete":
+                    map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_CONCRETE);
+                    break;
+                case @"Tiles\floor_walkway":
+                    map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_WALKWAY);
+                    break;
+                case @"Tiles\floor_planks":
+                    map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_PLANKS);
+                    break;
+                case @"Tiles\floor_sewer_water":
+                case @"Tiles\floor_sewer_water_anim1":
+                case @"Tiles\floor_sewer_water_anim2":
+                case @"Tiles\floor_sewer_water_anim3":
+                case @"Tiles\floor_sewer_water_cover":
+                    map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_SEWER_WATER);
+                    break;
+                default:
+                    map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_WALKWAY);
+                    break;
+            }
+        }
         #endregion
 
         #region Chatting, Trading, Saying and Shouting.
@@ -14247,10 +14446,13 @@ namespace djack.RogueSurvivor.Engine
 
             // message.
             bool isVisible = IsVisibleToPlayer(actor);
-            if ((actor.IsPlayer) && (s_Options.PlayMusic)) //@@MP (Release 2)
-                m_SFXManager.Play(GameSounds.UNDEAD_EAT); //reuse the sound
-            if (isVisible)
+            if (actor.IsPlayer) //@@MP (Release 2)(Release 3)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_PLAYER); //@@MP reused the sound
+            else if (isVisible)
+            {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_NEARBY); //@@MP reused the sound
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_EAT), food));
+            }
 
             // vomit?
             if (m_Rules.IsFoodSpoiled(food, actor.Location.Map.LocalTime.TurnCounter))
@@ -14296,8 +14498,8 @@ namespace djack.RogueSurvivor.Engine
 
             // message.
             bool isVisible = IsVisibleToPlayer(actor);
-            if ((actor.IsPlayer) && (s_Options.PlayMusic)) //@@MP (Release 2)
-                m_SFXManager.Play(GameSounds.EAT_FOOD);
+            if (actor.IsPlayer) //@@MP (Release 2)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.EAT_FOOD);
             else if (isVisible)
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_EAT), food));
 
@@ -14330,8 +14532,10 @@ namespace djack.RogueSurvivor.Engine
             map.GetTileAt(loc.Position.X, loc.Position.Y).AddDecoration(GameImages.DECO_VOMIT);
 
             //@@MP (Release 2)
-            if ((actor.IsPlayer) && (s_Options.PlayMusic))
-                m_SFXManager.Play(GameSounds.VOMIT);
+            if (actor.IsPlayer)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.VOMIT_PLAYER);
+            else if (IsVisibleToPlayer(actor)) //@@MP (Release 3)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.VOMIT_NEARBY);
         }
 
         void DoUseMedicineItem(Actor actor, ItemMedicine med)
@@ -14376,22 +14580,21 @@ namespace djack.RogueSurvivor.Engine
             // message.
             if (actor.IsPlayer) //@@MP (Release 2)
             {
-                if (s_Options.PlayMusic)
-                    switch (med.TheName)
-                    {
-                        case "the medikit":
-                        case "some bandages":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.USE_MEDICINE);
-                            break;
-                        case "some green pills":
-                        case "some blue pills":
-                        case "some orange pills":
-                        case "some antiviral pills":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.USE_PILLS);
-                            break;
-                        default: //unexpected, do nothing
-                            break;
-                    }
+                switch (med.TheName)
+                {
+                    case "the medikit":
+                    case "some bandages":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.USE_MEDICINE);
+                        break;
+                    case "some green pills":
+                    case "some blue pills":
+                    case "some orange pills":
+                    case "some antiviral pills":
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.USE_PILLS);
+                        break;
+                    default: //unexpected, do nothing
+                        break;
+                }
             }
             else if (IsVisibleToPlayer(actor))
             {
@@ -14442,14 +14645,10 @@ namespace djack.RogueSurvivor.Engine
             map.ModifyScentAt(model.Odor, model.Strength, actor.Location.Position);
 
             // message.
-            if ((actor.IsPlayer) && (s_Options.PlayMusic)) //@@MP (Release 2)
-            {
+            if (actor.IsPlayer) //@@MP (Release 2)
                 m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SPRAY_SCENT);
-            }
             else if (IsVisibleToPlayer(actor))
-            {
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_SPRAY), spray));
-            }
         }
 
         void DoUseTrapItem(Actor actor, ItemTrap trap)
@@ -14467,6 +14666,10 @@ namespace djack.RogueSurvivor.Engine
 
         void DoUseEntertainmentItem(Actor actor, ItemEntertainment ent)
         {
+            //play sound
+            if (actor.IsPlayer) //@@MP (Release 3)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.TURN_PAGE);
+
             bool visible = IsVisibleToPlayer(actor);
 
             // spend APs.
@@ -14475,12 +14678,7 @@ namespace djack.RogueSurvivor.Engine
             // recover san.
             RegenActorSanity(actor, Rules.ActorSanRegenValue(actor, ent.EntertainmentModel.Value));
 
-            // message.
-            if (visible)
-                AddMessage(MakeMessage(actor, Conjugate(actor, VERB_ENJOY), ent));
-
-            // check boring chance.
-            // 100% means discard it.
+            // check boring chance. 100% means discard it.
             int boreChance = ent.EntertainmentModel.BoreChance;
             bool bored = false;
             bool discarded = false;
@@ -14497,9 +14695,10 @@ namespace djack.RogueSurvivor.Engine
             if (bored)
                 actor.AddBoringItem(ent);
 
-            // message.
+            // messages.
             if (visible)
             {
+                AddMessage(MakeMessage(actor, Conjugate(actor, VERB_ENJOY), ent));
                 if (bored)
                     AddMessage(MakeMessage(actor, String.Format("{0} now bored of {1}.", Conjugate(actor, VERB_BE), ent.TheName)));
                 if (discarded)
@@ -14542,14 +14741,12 @@ namespace djack.RogueSurvivor.Engine
             // Message.
             if (actor.IsPlayer || IsVisibleToPlayer(actor) || IsVisibleToPlayer(door))
             {
-                if (s_Options.PlayMusic) //@@MP (Release 2)
-                {
-                    if (door.GivesWood)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.WOODEN_DOOR_OPEN);
-                    else
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GLASS_DOOR);
-                }
-                else if (!actor.IsPlayer)
+                if (door.GivesWood)
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.WOODEN_DOOR_OPEN);
+                else
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GLASS_DOOR);
+
+                if (!actor.IsPlayer)
                 {
                     AddMessage(MakeMessage(actor, Conjugate(actor, VERB_OPEN), door));
                 }
@@ -14569,14 +14766,11 @@ namespace djack.RogueSurvivor.Engine
             // Message.
             if (actor.IsPlayer || IsVisibleToPlayer(actor) || IsVisibleToPlayer(door))
             {
-                if (s_Options.PlayMusic) //@@MP (Release 2)
-                {
-                    if (door.GivesWood)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.WOODEN_DOOR_CLOSE);
-                    else
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GLASS_DOOR);
-                }
-                else if (!actor.IsPlayer)
+                if (door.GivesWood)
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.WOODEN_DOOR_CLOSE);
+                else
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GLASS_DOOR);
+                if (!actor.IsPlayer)
                 {
                     AddMessage(MakeMessage(actor, Conjugate(actor, VERB_CLOSE), door));
                 }
@@ -14602,6 +14796,7 @@ namespace djack.RogueSurvivor.Engine
             bool isVisible = IsVisibleToPlayer(actor) || IsVisibleToPlayer(door);
             if (isVisible)
             {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING); //@@MP (Release 3)
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_BARRICADE), door));
             }
 
@@ -14632,6 +14827,7 @@ namespace djack.RogueSurvivor.Engine
             // message.
             if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(new Location(actor.Location.Map, buildPos)))
             {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING); //@@MP (Release 3)
                 AddMessage(MakeMessage(actor, String.Format("{0} a {1} fortification.", Conjugate(actor, VERB_BUILD), isLarge ? "large" : "small")));
             }
 
@@ -14657,6 +14853,7 @@ namespace djack.RogueSurvivor.Engine
             // message.
             if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(fort))
             {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING); //@@MP (Release 3)
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_REPAIR), fort));
             }
         }
@@ -14672,7 +14869,7 @@ namespace djack.RogueSurvivor.Engine
             powGen.TogglePower();
 
             // message.
-            if ((actor.IsPlayer) && (s_Options.PlayMusic)) //@@MP (Release 2)
+            if ((actor.IsPlayer) && (s_Options.PlaySFXs)) //@@MP (Release 2)
             {
                 m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER); //@@MP reuse the sound
             }
@@ -14742,6 +14939,13 @@ namespace djack.RogueSurvivor.Engine
 
         public void DoBreak(Actor actor, MapObject mapObj)
         {
+
+            //@@MP - play the appropriate sfx (Release 3)
+            if (actor.IsPlayer)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_PLAYER);
+            else if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(mapObj))
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_NEARBY);
+
             Attack bashAttack = m_Rules.ActorMeleeAttack(actor, actor.CurrentMeleeAttack, null);
 
             #region Attacking a barricaded door.
@@ -14768,7 +14972,6 @@ namespace djack.RogueSurvivor.Engine
                 {
                     if (m_Rules.RollChance(PLAYER_HEAR_BASH_CHANCE))
                         AddMessageIfAudibleForPlayer(door.Location, MakePlayerCentricMessage("You hear someone bashing barricades", door.Location.Position));
-
                 }
 
                 // done.
@@ -14908,6 +15111,7 @@ namespace djack.RogueSurvivor.Engine
             // noise/message.
             if (isVisible)
             {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_OBJECT_VISIBLE); //@@MP (Release 3)
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_PUSH), mapObj));
                 RedrawPlayScreen();
             }
@@ -14915,10 +15119,10 @@ namespace djack.RogueSurvivor.Engine
             {
                 // loud noise.
                 OnLoudNoise(map, toPos, "Something being pushed");
-
                 // player hears?
                 if (m_Rules.RollChance(PLAYER_HEAR_PUSH_CHANCE))
                 {
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_OBJECT_AUDIBLE); //@@MP (Release 3)
                     AddMessageIfAudibleForPlayer(mapObj.Location, MakePlayerCentricMessage("You hear something being pushed", toPos));
                 } 
             }
@@ -14964,6 +15168,11 @@ namespace djack.RogueSurvivor.Engine
             bool isVisible = IsVisibleToPlayer(actor) || IsVisibleToPlayer(target) || IsVisibleToPlayer(map, toPos);
             if (isVisible)
             {
+                if (actor.IsPlayer) //@@MP (Release 3)
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOVE_PLAYER);
+                else
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOVE_NEARBY);
+
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_SHOVE), target));
                 RedrawPlayScreen();
             }
@@ -15024,14 +15233,10 @@ namespace djack.RogueSurvivor.Engine
             map.GetTileAt(pos.X, pos.Y).AddDecoration((spray.Model as ItemSprayPaintModel).TagImageID);
 
             // message.
-            if ((actor.IsPlayer) && (s_Options.PlayMusic)) //@@MP (Release 2)
-            {
+            if ((actor.IsPlayer) && (s_Options.PlaySFXs)) //@@MP (Release 2)
                 m_SFXManager.Play(GameSounds.SPRAY_TAG);
-            }
             else if (IsVisibleToPlayer(actor))
-            {
                 AddMessage(MakeMessage(actor, String.Format("{0} a tag.", Conjugate(actor, VERB_SPRAY))));
-            }
         }
         #endregion
 
@@ -18431,6 +18636,9 @@ namespace djack.RogueSurvivor.Engine
                 && map.GetTileAt(position.X, position.Y).IsInView;
         }
 
+        /// <summary>
+        /// Is player or location is visible to player
+        /// </summary>
         bool IsVisibleToPlayer(Actor actor)
         {
             return actor == m_Player || IsVisibleToPlayer(actor.Location);
@@ -18536,6 +18744,7 @@ namespace djack.RogueSurvivor.Engine
         bool LoadGame(string saveName)
         {
             // load session object.
+            m_MusicManager.StopAll(); //@@MP (Release 3)
             bool loaded = Session.Load(saveName, Session.SaveFormat.FORMAT_BIN);
             if (!loaded)
                 return false;
@@ -19941,8 +20150,8 @@ namespace djack.RogueSurvivor.Engine
             else if (m_MusicManager.IsPlaying(GameMusics.SUBWAY))
                 m_MusicManager.Stop(GameMusics.SUBWAY);
 
-            if (map == m_Session.UniqueMaps.Hospital_Admissions.TheMap || map == m_Session.UniqueMaps.Hospital_Offices.TheMap || 
-                map == m_Session.UniqueMaps.Hospital_Patients.TheMap || map == m_Session.UniqueMaps.Hospital_Power.TheMap || 
+            if (map == m_Session.UniqueMaps.Hospital_Admissions.TheMap || map == m_Session.UniqueMaps.Hospital_Offices.TheMap ||
+                map == m_Session.UniqueMaps.Hospital_Patients.TheMap || map == m_Session.UniqueMaps.Hospital_Power.TheMap ||
                 map == m_Session.UniqueMaps.Hospital_Storage.TheMap)
             {
                 if (!m_MusicManager.IsPlaying(GameMusics.HOSPITAL))
@@ -20248,7 +20457,7 @@ namespace djack.RogueSurvivor.Engine
             m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format("** Achievement : {0} for {1} points. **", title, ach.ScoreValue));
 
             // music.
-            //m_MusicManager.StopAll(); //@@MP (Release 2)
+            m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
             m_MusicManager.Play(musicToPlay);
 
             // prepare banner.
@@ -20276,7 +20485,7 @@ namespace djack.RogueSurvivor.Engine
         void ShowSpecialDialogue(Actor speaker, string[] text)
         {
             // music.
-            m_MusicManager.StopAll();
+            m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
             m_MusicManager.Play(GameMusics.INTERLUDE);
 
             // overlays.
@@ -20396,7 +20605,7 @@ namespace djack.RogueSurvivor.Engine
                             m_Session.PlayerKnows_TheSewersThingLocation = true;
 
                             // message + music, so the player notices it.
-                            m_MusicManager.StopAll();
+                            m_MusicManager.StopAll(); //@@MP - was commented out in Release 2 (Release 3)
                             m_MusicManager.Play(GameMusics.FIGHT);
                             ClearMessages();
                             AddMessage(new Message("What the hell is that thing!?", m_Session.WorldTime.TurnCounter, Color.Yellow));

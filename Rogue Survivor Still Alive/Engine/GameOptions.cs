@@ -121,7 +121,7 @@ namespace djack.RogueSurvivor.Engine
         public const int DEFAULT_ZOMBIFICATION_CHANCE = 100;
         public const int DEFAULT_DAY_ZERO_UNDEADS_PERCENT = 30;
         public const int DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE = 5;
-        public const int DEFAULT_STARVED_ZOMBIFICATION_CHANCE = 50;
+        public const int DEFAULT_STARVED_ZOMBIFICATION_CHANCE = 0; //@@MP - vanilla = 50 (Release 3)
         public const int DEFAULT_MAX_REINCARNATIONS = 1;
         public const int DEFAULT_NATGUARD_FACTOR = 100;
         public const int DEFAULT_SUPPLIESDROP_FACTOR = 100;
@@ -618,7 +618,7 @@ namespace djack.RogueSurvivor.Engine
         {
             switch (option)
             {
-                case IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS:      return "(Living) Aggressive Hungry Civsilians";
+                case IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS:      return "(Living) Aggressive Hungry Civilians";
                 case IDs.GAME_ALLOW_UNDEADS_EVOLUTION:          return "(Undead) Allow Undeads Evolution";
                 case IDs.GAME_CITY_SIZE:                        return "   (Map) City Size";
                 case IDs.GAME_DAY_ZERO_UNDEADS_PERCENT:         return "(Undead) Day 0 Undeads";
@@ -629,7 +629,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_MAX_REINCARNATIONS:               return " (Reinc) Max Reincarnations";
                 case IDs.GAME_MAX_UNDEADS:                      return "(Undead) Max Undeads";
                 case IDs.GAME_NATGUARD_FACTOR:                  return " (Event) National Guard";
-                case IDs.GAME_NPC_CAN_STARVE_TO_DEATH:          return "(Living) NPCs can starve to death";
+                case IDs.GAME_NPC_CAN_STARVE_TO_DEATH:          return "(Living) NPCs can Starve to death";
                 case IDs.GAME_PERMADEATH:                       return " (Death) Permadeath";
                 case IDs.GAME_RATS_UPGRADE:                     return "(Undead) Rats Skill Upgrade";
                 case IDs.GAME_REVEAL_STARTING_DISTRICT:         return "   (Map) Reveal Starting District";
@@ -644,10 +644,10 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_SPAWN_SKELETON_CHANCE:            return "(Undead) Spawn Skeleton chance";
                 case IDs.GAME_SPAWN_ZOMBIE_CHANCE:              return "(Undead) Spawn Zombie chance";
                 case IDs.GAME_SPAWN_ZOMBIE_MASTER_CHANCE:       return "(Undead) Spawn Zombie Master chance";
-                case IDs.GAME_STARVED_ZOMBIFICATION_CHANCE:     return "(Living) Starved Zombification";
+                case IDs.GAME_STARVED_ZOMBIFICATION_CHANCE:     return "(Living) Zombify if Starved Chance (STD)";
                 case IDs.GAME_SUPPLIESDROP_FACTOR:              return " (Event) Supplies Drop";
                 case IDs.GAME_UNDEADS_UPGRADE_DAYS:             return "(Undead) Undeads Skills Upgrade Days";
-                case IDs.GAME_ZOMBIFICATION_CHANCE:             return "(Living) Zombification Chance";
+                case IDs.GAME_ZOMBIFICATION_CHANCE:             return "(Living) Zombification Chance (C&I, VTG)";
                 case IDs.GAME_SANITY:                           return "(Living) Sanity Loss"; //@@MP (Release 1)
                 case IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE:   return "(Undead) Invasion Daily Increase";
                 case IDs.UI_ANIM_DELAY:                         return "   (Gfx) Animations Delay";

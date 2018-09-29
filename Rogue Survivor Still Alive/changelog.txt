@@ -1,10 +1,37 @@
-﻿STILL ALIVE 1.2.12.3 (aka Release 2, 30/9/2017) [Author: MP]
+﻿STILL ALIVE 1.2.17.4 (aka Release 3, 22/10/2017) [Author: MP]
+--------------------
+
+Features:
+-Traps are more deadly and must be taken seriously now.
+-Added more thematic objects to the CHAR underground facility.
+-Tweaked the blood splatter in the CHAR underground facility.
+-Added more furniture to houses and CHAR buildings, and shops now have registers.
+-Added 6 more melee weapons, each with tailored stats.
+-Added some shelving and canned food to house basements.
+-Expanded stocked item varieties in hunting shop.
+-Tweaked stocked items in various shops.
+-Added more sound effects (eg bashing on barricades, triggering traps, moving furniture).
+-Guaranteed blood splatter for the damaging traps.
+-Changed default chance to zombify on starvation chance from 50% from 0% (STD).
+-Tweaked stats of existing melee weapons.
+-Improved graphics of a few more tiles/objects (eg chain link fence).
+-Improved some sounds from Release 2.
+-Fixed sfx and music disablement.
+
+Development:
+-Added cheat to reveal CHAR underground facility location.
+-Improved lambda for furniture placement around doors in houses and CHAR offices.
+-Added ability for explosions to damage walls (grenades do not).
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.2.12.3 (aka Release 2, 30/9/2017) [Author: MP]
 --------------------
 
 Features:
 -Grenades leave behind scorch marks on the tiles that were caught in the blast.
 -Added numerous sound effects for the player and some for nearby, audible actors.
--Added ability to disable and change volume music and sound effects separately
+-Added ability to disable and change volume music and sound effects separately.
 -Hearing weapon firing is no longer a 25% only. If it's in audible range, you hear it.
 -Skeletons now drop bones, other undead still drop bloody remains.
 -Wounding has a chance to drop small blood splatters. Corpses bleed out.
@@ -15,12 +42,12 @@ Features:
 
 Fixes:
 -Fixed MDX audio crash by using hard stop rather than the original pause method.
--Removed duplicated torso drawing
--Fixed hunters vest sizing and positioning
--Spelling mistakes
+-Removed duplicated torso drawing.
+-Fixed hunters vest sizing and positioning.
+-Spelling mistakes.
 
 Development:
--Separated music and sound effects into distinct instances
+-Separated music and sound effects into distinct instances.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -28,23 +55,23 @@ STILL ALIVE 1.1.8.0 (aka Release 1, 30/8/2017) [Author: MP]
 -------------------
 
 In-game changes:
--Added option to disable Sanity loss, which decreases the score multiplier (default: enabled)
--Added option to show/hide corpses in STD game mode, for flavour only (default: show)
--All 'uncommon' items (eg weapons) are now dropped upon NPC death (was 50%)
--Minor tweaks to which items are generated in various location types (slightly more realistic)
--Nerfed those damned warrior rats
--50% increased sanity reward from undead kills
--Disabled blood splatter dissipation over time
--Minor UI tweaks (eg removed new character random choice confirmations)
--Updated and also trimmed the manual to make it more concise
--Incorporated some of Deon's 'Deonapocalypse' tileset, and modified a few other bits myself
--Other minor tweaks (eg merged some excessive hints, changed NPC descriptions)
+-Added option to disable Sanity loss, which decreases the score multiplier (default: enabled).
+-Added option to show/hide corpses in STD game mode, for flavour only (default: show).
+-All 'uncommon' items (eg weapons) are now dropped upon NPC death (was 50%).
+-Minor tweaks to which items are generated in various location types (slightly more realistic).
+-Nerfed those damned warrior rats.
+-50% increased sanity reward from undead kills.
+-Disabled blood splatter dissipation over time.
+-Minor UI tweaks (eg removed new character random choice confirmations).
+-Updated and also trimmed the manual to make it more concise.
+-Incorporated some of Deon's 'Deonapocalypse' tileset, and modified a few other bits myself.
+-Other minor tweaks (eg merged some excessive hints, changed NPC descriptions).
 
 Development:
--Minor improvements: code comments, optimizations, spelling corrections
--Added a quasi-god mode trigger to debug for testing
+-Minor improvements: code comments, optimizations, spelling corrections.
+-Added a quasi-god mode trigger to debug for testing.
 
-Note: versioning = [major release].[major feature].[minor feature].[bugfix]
+Note: versioning = [major release].[major feature].[minor feature].[bugfix/correction]
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

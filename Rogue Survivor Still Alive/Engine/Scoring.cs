@@ -365,7 +365,6 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Setup scoring for a new life (reincarnation).
         /// </summary>
-        /// <param name="gameTurn"></param>
         public void StartNewLife(int gameTurn)
         {
             // new life.
@@ -537,8 +536,10 @@ namespace djack.RogueSurvivor.Engine
 
             float kDefaultCivStarvation = (float)GameOptions.DEFAULT_MAX_CIVILIANS * (float)GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE;
             float kCivStarvation = (float)(options.MaxCivilians * options.StarvedZombificationChance - kDefaultCivStarvation) / kDefaultCivStarvation;
-            if (!options.NPCCanStarveToDeath)
+
+            if (!options.NPCCanStarveToDeath || (GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE == 0)) //@@MP - added the check for starved chance as I made that 0 by default (Release 3)
                 kCivStarvation = -1;
+
             if (side == DifficultySide.FOR_SURVIVOR)
                 rating += 0.30f * kCivZombification + 0.20f * kCivStarvation;
             else

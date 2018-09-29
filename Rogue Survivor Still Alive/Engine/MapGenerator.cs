@@ -312,7 +312,7 @@ namespace djack.RogueSurvivor.Engine
 
             // pick a good position at random and put the object there.
             if (goodList == null)
-                return;
+                return;             
             int iValid = roller.Roll(0, goodList.Count);
             MapObject mapObj = createFn(goodList[iValid]);
             if (mapObj != null)
@@ -437,6 +437,25 @@ namespace djack.RogueSurvivor.Engine
         public int CountAdjDoors(Map map, int x, int y)
         {
             return CountForEachAdjacent(map, x, y, (pt) => map.GetMapObjectAt(pt.X, pt.Y) as DoorWindow != null);
+        }
+
+        /// <summary>
+        /// Is there a door directly alongside, below or above? Diagonals are ignored
+        /// </summary>
+        public bool IsADoorNSEW(Map map, int x, int y) //@@MP (Release 3)
+        {
+            Point pt = new Point(x, y);
+            //if (map.HasMapObject(MapObjects.DoorWindow))
+            if (map.GetMapObjectAt(pt.X, pt.Y + 1) as DoorWindow != null) //north
+                return true;
+            else if (map.GetMapObjectAt(pt.X, pt.Y - 1) as DoorWindow != null) //south
+                return true;
+            else if (map.GetMapObjectAt(pt.X + 1, pt.Y) as DoorWindow != null) //east
+                return true;
+            else if (map.GetMapObjectAt(pt.X - 1, pt.Y) as DoorWindow != null) //west
+                return true;
+            else
+                return false;
         }
 
         public void PlaceIf(Map map, int x, int y, TileModel floor, Func<int, int, bool> predicateFn, Func<int, int, MapObject> createFn)

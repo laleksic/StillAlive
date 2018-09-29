@@ -9,25 +9,23 @@ namespace djack.RogueSurvivor.Gameplay
     {
         static readonly string PATH = @"Resources\Sfx\";
 
-        public static readonly string UNDEAD_EAT = "undead eat";
-        public static readonly string UNDEAD_EAT_FILE = PATH + "sfx - undead eat";
-
-        public static readonly string UNDEAD_RISE = "undead rise";
-        public static readonly string UNDEAD_RISE_FILE = PATH + "sfx - undead rise";
-
+        public static readonly string UNDEAD_EAT_PLAYER = "player undead eats"; //@@MP - added a NEARBY (Release 3)
+        public static readonly string UNDEAD_EAT_PLAYER_FILE = PATH + "sfx - undead eat";
+        public static readonly string UNDEAD_RISE_PLAYER = "player undead rises"; //@@MP - added a NEARBY (Release 3)
+        public static readonly string UNDEAD_RISE_PLAYER_FILE = PATH + "sfx - undead rise player";
         public static readonly string NIGHTMARE = "nightmare";
         public static readonly string NIGHTMARE_FILE = PATH + "sfx - nightmare";
 
+        //@@MP (Release 2)
         public static readonly string COMMOTION = "commotion";
         public static readonly string COMMOTION_FILE = PATH + "commotion";
 
-        //@@MP (Release 2)
         public static readonly string PISTOL_FIRE_PLAYER = "player fires pistol";
         public static readonly string PISTOL_FIRE_PLAYER_FILE = PATH + "pistol_player";
         public static readonly string HUNTING_RIFLE_FIRE_PLAYER = "player fires hunting rifle";
         public static readonly string HUNTING_RIFLE_FIRE_PLAYER_FILE = PATH + "huntingrifle_player";
         public static readonly string SHOTGUN_FIRE_PLAYER = "player fires shotgun";
-        public static readonly string SHOTGUN_FIRE_PLAYER_FILE = PATH + "shotgun_player";
+        public static readonly string SHOTGUN_FIRE_PLAYER_FILE = PATH + "shotgun-a2_player";
         public static readonly string CROSSBOW_FIRE_PLAYER = "player fires crossbow";
         public static readonly string CROSSBOW_FIRE_PLAYER_FILE = PATH + "crossbow_player";
 
@@ -36,7 +34,7 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string HUNTING_RIFLE_FIRE_NEARBY = "hunting rifle firing nearby";
         public static readonly string HUNTING_RIFLE_FIRE_NEARBY_FILE = PATH + "huntingrifle_nearby";
         public static readonly string SHOTGUN_FIRE_NEARBY = "shotgun firing nearby";
-        public static readonly string SHOTGUN_FIRE_NEARBY_FILE = PATH + "shotgun_nearby";
+        public static readonly string SHOTGUN_FIRE_NEARBY_FILE = PATH + "shotgun-a2_nearby";
         public static readonly string CROSSBOW_FIRE_NEARBY = "crossbow firing nearby";
         public static readonly string CROSSBOW_FIRE_NEARBY_FILE = PATH + "crossbow_nearby";
 
@@ -45,9 +43,7 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string HUNTING_RIFLE_FIRE_FAR = "hunting rifle firing somewhere";
         public static readonly string HUNTING_RIFLE_FIRE_FAR_FILE = PATH + "huntingrifle_far";
         public static readonly string SHOTGUN_FIRE_FAR = "shotgun firing somewhere";
-        public static readonly string SHOTGUN_FIRE_FAR_FILE = PATH + "shotgun_far";
-        public static readonly string CROSSBOW_FIRE_FAR = "crossbow firing somewhere";
-        public static readonly string CROSSBOW_FIRE_FAR_FILE = PATH + "crossbow_far";
+        public static readonly string SHOTGUN_FIRE_FAR_FILE = PATH + "shotgun-a2_far";
 
         public static readonly string MELEE_ATTACK_PLAYER = "player does melee attack";
         public static readonly string MELEE_ATTACK_PLAYER_FILE = PATH + "melee_attack_player";
@@ -87,8 +83,8 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string SPRAY_TAG_FILE = PATH + "spray_tag";
         public static readonly string EAT_FOOD = "eats food";
         public static readonly string EAT_FOOD_FILE = PATH + "eat_food";
-        public static readonly string VOMIT = "vomits";
-        public static readonly string VOMIT_FILE = PATH + "vomit";
+        public static readonly string VOMIT_PLAYER = "vomits";
+        public static readonly string VOMIT_PLAYER_FILE = PATH + "vomit_player";
 
         public static readonly string GLASS_DOOR = "opening glass door";
         public static readonly string GLASS_DOOR_FILE = PATH + "glass_door";
@@ -131,5 +127,54 @@ namespace djack.RogueSurvivor.Gameplay
         public static readonly string SCREAM_FAR_06_FILE = PATH + "scream_far_06";
         public static readonly string SCREAM_FAR_07 = "scream far 07";
         public static readonly string SCREAM_FAR_07_FILE = PATH + "scream_far_07";
+
+        //@@MP (Release 3)
+        public static readonly string BASH_PLAYER = "bash something";
+        public static readonly string BASH_PLAYER_FILE = PATH + "bash_player";
+        public static readonly string BASH_NEARBY = "something bashed nearby";
+        public static readonly string BASH_NEARBY_FILE = PATH + "bash_nearby";
+
+        public static readonly string TURN_PAGE = "turns page";
+        public static readonly string TURN_PAGE_FILE = PATH + "turn_page";
+
+        public static readonly string UNDEAD_EAT_NEARBY = "nearby undead eats";
+        public static readonly string UNDEAD_EAT_NEARBY_FILE = PATH + "sfx - undead eat nearby";
+        public static readonly string UNDEAD_RISE_NEARBY = "nearby undead rises";
+        public static readonly string UNDEAD_RISE_NEARBY_FILE = PATH + "sfx - undead rise nearby";
+
+        public static readonly string VOMIT_NEARBY = "vomits nearby";
+        public static readonly string VOMIT_NEARBY_FILE = PATH + "vomit_nearby";
+
+        public static readonly string SHOVE_PLAYER = "shoves actor";
+        public static readonly string SHOVE_PLAYER_FILE = PATH + "shove_player";
+        public static readonly string SHOVE_NEARBY = "actor shoved nearby";
+        public static readonly string SHOVE_NEARBY_FILE = PATH + "shove_nearby";
+
+        public static readonly string PUSH_OBJECT_VISIBLE = "pushes visible object";
+        public static readonly string PUSH_OBJECT_VISIBLE_FILE = PATH + "push_object_visible";
+        public static readonly string PUSH_OBJECT_AUDIBLE = "pushes audible object";
+        public static readonly string PUSH_OBJECT_AUDIBLE_FILE = PATH + "push_object_audible";
+
+        public static readonly string BUILDING = "barricade repair fortify";
+        public static readonly string BUILDING_FILE = PATH + "building";
+
+        public static readonly string CAN_TRAP_PLAYER = "player steps on can";
+        public static readonly string CAN_TRAP_PLAYER_FILE = PATH + "can_trap_player";
+        public static readonly string BEAR_TRAP_PLAYER = "player triggers bear trap";
+        public static readonly string BEAR_TRAP_PLAYER_FILE = PATH + "can_trap_player";
+        public static readonly string SPIKE_TRAP = "player steps on spikes";
+        public static readonly string SPIKE_TRAP_FILE = PATH + "spike_trap";
+        public static readonly string BARBED_WIRE_TRAP_PLAYER = "player in barbed wire";
+        public static readonly string BARBED_WIRE_TRAP_PLAYER_FILE = PATH + "barbed_wire_player";
+
+        public static readonly string CAN_TRAP_NEARBY = "can trap nearby";
+        public static readonly string CAN_TRAP_NEARBY_FILE = PATH + "can_trap_nearby";
+        public static readonly string BEAR_TRAP_NEARBY = "bear trap nearby";
+        public static readonly string BEAR_TRAP_NEARBY_FILE = PATH + "bear_trap_nearby";
+
+        public static readonly string CAN_TRAP_FAR = "can trap somewhere";
+        public static readonly string CAN_TRAP_FAR_FILE = PATH + "can_trap_far";
+        public static readonly string BEAR_TRAP_FAR = "bear trap somewhere";
+        public static readonly string BEAR_TRAP_FAR_FILE = PATH + "bear_trap_far";
     }
 }

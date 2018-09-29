@@ -329,6 +329,28 @@ namespace djack.RogueSurvivor.Data
 
             m_Tiles[x, y].Model = model;
         }
+
+        public bool IsBuildingFloorTileAt(int x, int y) //@@MP - check whether there's a non-road, non-grass floor tile here (Release 3)
+        {
+            Point pt = new Point(x, y);
+            Tile tile = GetTileAt(pt);
+            switch (tile.Model.ImageID)
+            {
+                case @"Tiles\floor_office":
+                case @"Tiles\floor_tiles":
+                case @"Tiles\floor_concrete":
+                case @"Tiles\floor_walkway":
+                case @"Tiles\floor_planks":
+                case @"Tiles\floor_sewer_water":
+                case @"Tiles\floor_sewer_water_anim1":
+                case @"Tiles\floor_sewer_water_anim2":
+                case @"Tiles\floor_sewer_water_anim3":
+                case @"Tiles\floor_sewer_water_cover":
+                    return true;
+                default:
+                    return false;
+            }
+        }
         #endregion
 
         #region Exits
@@ -1194,6 +1216,37 @@ namespace djack.RogueSurvivor.Data
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Determine if a destructible wall is at particular coordinates
+        /// </summary>
+        public bool IsDestructibleWallAt(Location location) //@@MP (Release 3)
+        {
+            Map map = location.Map;
+            TileModel tilemodel = map.GetTileAt(location.Position.X, location.Position.Y).Model;
+
+            //check if adjacent to OutOfBounds
+            if (!map.IsOnMapBorder(location.Position.X, location.Position.Y))
+            {
+                /*if ((tilemodel == m_GameTiles.WALL_BRICK) | (tilemodel == m_GameTiles.WALL_CHAR_OFFICE) | (tilemodel == m_GameTiles.WALL_HOSPITAL) |
+                    (tilemodel == m_GameTiles.WALL_POLICE_STATION) | (tilemodel == m_GameTiles.WALL_SEWER) | (tilemodel == m_GameTiles.WALL_STONE) | (tilemodel == m_GameTiles.WALL_SUBWAY))*/
+                switch (tilemodel.ImageID)
+                {
+                    case @"Tiles\wall_brick":
+                    case @"Tiles\wall_char_office":
+                    case @"Tiles\wall_hospital":
+                    case @"Tiles\wall_sewer":
+                    case @"Tiles\wall_stone":
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            else
+                return false;
+            /*if (tile.HasDecoration(GameImages.TILE_WALL_BRICK) | tile.HasDecoration(GameImages.TILE_WALL_CHAR_OFFICE) | tile.HasDecoration(GameImages.TILE_WALL_SEWER) |
+                tile.HasDecoration(GameImages.TILE_WALL_HOSPITAL) | tile.HasDecoration(GameImages.TILE_WALL_STONE))*/
         }
         #endregion
 

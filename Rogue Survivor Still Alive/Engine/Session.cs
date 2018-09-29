@@ -334,6 +334,7 @@ namespace djack.RogueSurvivor.Engine
     class UniqueItems
     {
         public UniqueItem TheSubwayWorkerBadge { get; set; }
+        public UniqueItem TheCHARdocument { get; set; }
     }
 
     [Serializable]

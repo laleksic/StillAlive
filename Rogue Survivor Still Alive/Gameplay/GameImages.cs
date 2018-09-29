@@ -143,23 +143,26 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string DECO_SEWER_LADDER = @"Tiles\Decoration\sewer_ladder";
         public const string DECO_SEWER_HOLE = @"Tiles\Decoration\sewer_hole";
-        public const string DECO_SEWERS_BUILDING = @"Tiles\Decoration\sewers_building";
-
-        public const string DECO_SUBWAY_BUILDING = @"Tiles\Decoration\subway_building";
-
         public const string DECO_STAIRS_UP = @"Tiles\Decoration\stairs_up";
         public const string DECO_STAIRS_DOWN = @"Tiles\Decoration\stairs_down";
 
+        public const string DECO_SEWERS_BUILDING = @"Tiles\Decoration\sewers_building";
+        public const string DECO_SUBWAY_BUILDING = @"Tiles\Decoration\subway_building";
         public const string DECO_POWER_SIGN_BIG = @"Tiles\Decoration\power_sign_big";
-
         public const string DECO_POLICE_STATION = @"Tiles\Decoration\police_station";
-
         public const string DECO_HOSPITAL = @"Tiles\Decoration\hospital";
 
         //@@MP (Release 2)
         public const string DECO_SCORCH_MARK_CENTER = @"Tiles\Decoration\scorched_center";
         public const string DECO_SCORCH_MARK_INNER = @"Tiles\Decoration\scorched_inner";
         public const string DECO_SCORCH_MARK_OUTER = @"Tiles\Decoration\scorched_outer";
+
+        //@@MP (Release 3)
+        public const string DECO_WALL_BRICK_DAMAGED = @"Tiles\Decoration\wall_brick_damaged";
+        public const string DECO_WALL_CHAR_OFFICE_DAMAGED = @"Tiles\Decoration\wall_char_office_damaged";
+        public const string DECO_WALL_HOSPITAL_DAMAGED = @"Tiles\Decoration\wall_hospital_damaged";
+        public const string DECO_WALL_SEWER_DAMAGED = @"Tiles\Decoration\wall_sewer_damaged";
+        public const string DECO_WALL_STONE_DAMAGED = @"Tiles\Decoration\wall_stone_damaged";
         #endregion
 
         #region Map objects
@@ -197,8 +200,24 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_DRAWER = @"MapObjects\drawer";
         public const string OBJ_CHAIR = @"MapObjects\chair";
         public const string OBJ_NIGHT_TABLE = @"MapObjects\nighttable";
+        //@@MP (Release 3)
+        public const string OBJ_HOUSE_DRAWERS = @"MapObjects\house_drawers";
+        public const string OBJ_HOUSE_SHELVES = @"MapObjects\house_shelves";
+        public const string OBJ_PIANO = @"MapObjects\piano";
+        public const string OBJ_POTTED_PLANT = @"MapObjects\potted_plant";
+        public const string OBJ_TELEVISION = @"MapObjects\television";
+        public const string OBJ_STANDING_LAMP = @"MapObjects\standing_lamp";
+        public const string OBJ_BOOK_SHELVES = @"MapObjects\bookshelves";
+        public const string OBJ_STOVEOVEN = @"MapObjects\stoveoven";
+        public const string OBJ_KITCHEN_SINK = @"MapObjects\kitchen_sink";
+        public const string OBJ_COUCH = @"MapObjects\couch";
+        public const string OBJ_KITCHEN_COUNTER = @"MapObjects\kitchen_counter";
+        public const string OBJ_CASH_REGISTER = @"MapObjects\cash_register";
+
         public const string OBJ_CHAR_CHAIR = @"MapObjects\char_chair";
         public const string OBJ_CHAR_TABLE = @"MapObjects\char_table";
+        public const string OBJ_CHAR_DESKTOP = @"MapObjects\char_desktop";//@@MP (Release 3)
+        public const string OBJ_CHAR_VAT = @"MapObjects\piped_vat";//@@MP (Release 3)
 
         public const string OBJ_IRON_BENCH = @"MapObjects\iron_bench";
         public const string OBJ_IRON_DOOR_OPEN = @"MapObjects\iron_door_open";
@@ -388,6 +407,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_BLACKOPS_GPS = @"Items\item_blackops_gps";
         public const string ITEM_CANNED_FOOD = @"Items\item_canned_food";
         public const string ITEM_CELL_PHONE = @"Items\item_cellphone";
+        public const string ITEM_CHAR_DOCUMENT = @"Items\item_CHAR_document"; //@@MP (Release 3)
         public const string ITEM_CHAR_LIGHT_BODYARMOR = @"Items\item_CHAR_light_bodyarmor";
         public const string ITEM_CROWBAR = @"Items\item_crowbar";
         public const string ITEM_COMBAT_KNIFE = @"Items\item_combat_knife";
@@ -403,6 +423,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_GROCERIES = @"Items\item_groceries";
         public const string ITEM_HANS_VON_HANZ_PISTOL = @"Items\item_hans_von_hanz_pistol";
         public const string ITEM_HELLS_SOULS_JACKET = @"Items\item_hells_souls_jacket";
+        public const string ITEM_HOCKEY_STICK = @"Items\item_hockey_stick"; //@@MP (Release 3)
         public const string ITEM_HUGE_HAMMER = @"Items\item_huge_hammer";
         public const string ITEM_HUNTER_VEST = @"Items\item_hunter_vest";
         public const string ITEM_HUNTING_CROSSBOW = @"Items\item_hunting_crossbow";
@@ -411,13 +432,16 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_IMPROVISED_SPEAR = @"Items\item_improvised_spear";
         public const string ITEM_IRON_GOLF_CLUB = @"Items\item_iron_golfclub";
         public const string ITEM_KOLT_REVOLVER = @"Items\item_kolt_revolver";
+        public const string ITEM_MACHETE = @"Items\item_machete"; //@@MP (Release 3)
         public const string ITEM_MAGAZINE = @"Items\item_magazine";
         public const string ITEM_MEDIKIT = @"Items\item_medikit";
-        public const string ITEM_PISTOL = @"Items\item_pistol";
+        public const string ITEM_PICKAXE = @"Items\item_pickaxe"; //@@MP (Release 3)
         public const string ITEM_PILLS_ANTIVIRAL = @"Items\item_pills_antiviral";
         public const string ITEM_PILLS_BLUE = @"Items\item_pills_blue";
         public const string ITEM_PILLS_GREEN = @"Items\item_pills_green";
         public const string ITEM_PILLS_SAN = @"Items\item_pills_san";
+        public const string ITEM_PIPE_WRENCH = @"Items\item_pipe_wrench"; //@@MP (Release 3)
+        public const string ITEM_PISTOL = @"Items\item_pistol";
         public const string ITEM_POLICE_JACKET = @"Items\item_police_jacket";
         public const string ITEM_POLICE_RADIO = @"Items\item_police_radio";
         public const string ITEM_POLICE_RIOT_ARMOR = @"Items\item_police_riot_armor";
@@ -433,8 +457,10 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_SPRAYPAINT2 = @"Items\item_spraypaint2";
         public const string ITEM_SPRAYPAINT3 = @"Items\item_spraypaint3";
         public const string ITEM_SPRAYPAINT4 = @"Items\item_spraypaint4";
+        public const string ITEM_STANDARD_AXE = @"Items\item_standard_axe"; //@@MP (Release 3)
         public const string ITEM_STENCH_KILLER = @"Items\item_stench_killer";
         public const string ITEM_SUBWAY_BADGE = @"Items\item_subway_badge";
+        public const string ITEM_TENNIS_RACKET = @"Items\item_tennis_racket"; //@@MP (Release 3)
         public const string ITEM_TRUNCHEON = @"Items\item_truncheon";
         public const string ITEM_WOODEN_PLANK = @"Items\item_wooden_plank";
         public const string ITEM_ZTRACKER = @"Items\item_ztracker";
@@ -638,9 +664,16 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_SCORCH_MARK_CENTER);
             Load(DECO_SCORCH_MARK_INNER);
             Load(DECO_SCORCH_MARK_OUTER);
+
+            //@@MP (Release 3)
+            Load(DECO_WALL_BRICK_DAMAGED);
+            Load(DECO_WALL_CHAR_OFFICE_DAMAGED);
+            Load(DECO_WALL_HOSPITAL_DAMAGED);
+            Load(DECO_WALL_SEWER_DAMAGED);
+            Load(DECO_WALL_STONE_DAMAGED);
             #endregion
 
-            #region Map objects
+        #region Map objects
             Notify(ui, "map objects...");
             Load(OBJ_TREE);
 
@@ -676,9 +709,24 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_DRAWER);
             Load(OBJ_CHAIR);
             Load(OBJ_NIGHT_TABLE);
+            //@@MP (Release 3)
+            Load(OBJ_HOUSE_DRAWERS);
+            Load(OBJ_HOUSE_SHELVES);
+            Load(OBJ_PIANO);
+            Load(OBJ_POTTED_PLANT);
+            Load(OBJ_TELEVISION);
+            Load(OBJ_STANDING_LAMP);
+            Load(OBJ_BOOK_SHELVES);
+            Load(OBJ_STOVEOVEN);
+            Load(OBJ_KITCHEN_SINK);
+            Load(OBJ_COUCH);
+            Load(OBJ_KITCHEN_COUNTER);
+            Load(OBJ_CASH_REGISTER);
 
             Load(OBJ_CHAR_CHAIR);
             Load(OBJ_CHAR_TABLE);
+            Load(OBJ_CHAR_DESKTOP);//@@MP (Release 3)
+            Load(OBJ_CHAR_VAT);//@@MP (Release 3)
 
             Load(OBJ_IRON_BENCH);
             Load(OBJ_IRON_FENCE);
@@ -871,6 +919,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_BOOK);
             Load(ITEM_CANNED_FOOD);
             Load(ITEM_CELL_PHONE);
+            Load(ITEM_CHAR_DOCUMENT); //@@MP (Release 3)
             Load(ITEM_CHAR_LIGHT_BODYARMOR);
             Load(ITEM_COMBAT_KNIFE);
             Load(ITEM_CROWBAR);
@@ -884,6 +933,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_GRENADE_PRIMED);
             Load(ITEM_GROCERIES);
             Load(ITEM_HELLS_SOULS_JACKET);
+            Load(ITEM_HOCKEY_STICK); //@@MP (Release 3)
             Load(ITEM_HUGE_HAMMER);
             Load(ITEM_HUNTER_VEST);
             Load(ITEM_HUNTING_CROSSBOW);
@@ -894,12 +944,15 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_JASON_MYERS_AXE);
             Load(ITEM_HANS_VON_HANZ_PISTOL);
             Load(ITEM_KOLT_REVOLVER);
+            Load(ITEM_MACHETE); //@@MP (Release 3)
             Load(ITEM_MAGAZINE);
             Load(ITEM_MEDIKIT);
+            Load(ITEM_PICKAXE); //@@MP (Release 3)
             Load(ITEM_PILLS_ANTIVIRAL);
             Load(ITEM_PILLS_BLUE);
             Load(ITEM_PILLS_GREEN);
             Load(ITEM_PILLS_SAN);
+            Load(ITEM_PIPE_WRENCH); //@@MP (Release 3)
             Load(ITEM_PISTOL);
             Load(ITEM_POLICE_JACKET);
             Load(ITEM_POLICE_RADIO);
@@ -916,8 +969,10 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_SPRAYPAINT2);
             Load(ITEM_SPRAYPAINT3);
             Load(ITEM_SPRAYPAINT4);
+            Load(ITEM_STANDARD_AXE); //@@MP (Release 3)
             Load(ITEM_STENCH_KILLER);
             Load(ITEM_SUBWAY_BADGE);
+            Load(ITEM_TENNIS_RACKET); //@@MP (Release 3)
             Load(ITEM_TRUNCHEON);
             Load(ITEM_WOODEN_PLANK);
             Load(ITEM_ZTRACKER);

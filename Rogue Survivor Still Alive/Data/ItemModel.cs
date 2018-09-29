@@ -52,6 +52,9 @@ namespace djack.RogueSurvivor.Data
             set { m_IsAn = value; }
         }
 
+        /// <summary>
+        /// Is a proper noun. ie it's a named item eg 'RoguedJack's keyboard' //@@MP
+        /// </summary>
         public bool IsProper
         {
             get { return m_IsProper; }
