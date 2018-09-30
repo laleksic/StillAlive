@@ -1,0 +1,508 @@
+STILL ALIVE 2.0.4.8 (aka Release 6-1, 12/08/2018) [Author: MP]
+---------------------
+
+*******STILL ALIVE CHANGES:
+Features:
+-Autosaving (optional) every 360 turns.
+-Ponds:
+	-Moving through water is a penalty to stamina and movement speed, but does hide your scent.
+	-Intelligent AI have some smarts regarding water.
+-Press F1 to view a legend of icons.
+-Can now reset default options, instead of reverting same-instance changes.
+-New audio for the Black Ops raid and army supplies drop.
+-Separated ambient SFX (eg weather) to its own instance, to allow for background music.
+-Removed option to reveal starting district.
+-Charisma skill influences trade negotiations.
+
+Fixes:
+-Reduced the amount of furniture in bars and clinics.
+-Plants now only fruit every second day.
+-Rain no longer increases the chance of extinguishing an actor who is indoors.
+-Heavy rain is now more likely to extinguish fires than lighter rain.
+-Flammable floor and wall materials are more likely to burn for longer.
+-Rain sound effect stops when it should now.
+-The prisoner will wake when you get near.
+-The prisoner will no longer offer the deal if they've already been released.
+
+Development:
+-Improved tile fires implementation.
+-Modified the way Alpha 10 implemented music, primarily to cater for multiple tracks per non-special map.
+-Modified the way Alpha 10 rates items for the AI.
+
+Known issues:
+-Occasionally, popups (hints, trades) may not be displayed yet the player is still prompted for their interaction.
+-Changing districts performance with simulation enabled decays as the game goes on.
+-Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in later releases.
+-Music is louder than other sounds. They will be normalised in an upcoming release.
+-Random crash/hang bug.
+-Occasionally, random turns take an extra second or two to process.
+-Tile fires were heavily revamped and are probably now broken in some way :P
+
+
+**********ALPHA 10 CHANGES, MERGED INTO STILL ALIVE:
+
+(Stability) Fixed various issues with the sim thread.
+(Gfx) Fixed overlays sometimes being cleared when they should not.
+(Rules) Fixed running actors not dropping scents on every tile they run through.
+(Gfx) Fixed special dialogues overlays not cleared when closed.
+(AI) Char Guards only warn trespassers they can still see. Note due to fov being asymetric, sometimes they can see you while you can't see them.
+(Misc) Fixed bikers jacket being wrongly described as being suspicious/unsuspicious to gangstas while gangstas don't care about them.
+(Rules) Actors dragging corpse cannot push/pull/shove anymore.
+(Rules) Pushing/Shoving did not properly check tiles triggers.
+(GUI) Fixed situation were was saying "Hint available" but when asked to show the hint had none.
+(Misc) Fixed "that person" in "that place" hailing the player even when not visible to the player.
+
+NEW ACTION : PULL  (default Ctrl-P)
+- Similar to pushing, select an adjacent object/actor to pull, then select an adjacent tile you can walk to.
+- If possible, the pulled object/actor will be forcibly moved into your tile, and you move into the walkable tile you selected.
+
+NEW GAMEPLAY : DISARM
+- Each successful melee attack has a chance to disarm the defender. Base chance is 5%.
+- Martial Arts skill adds +10% per level.
+- Defender's Strong skill resists disarm by 5% per level.
+- Some melee weapons give disarm bonus as well.
+- The item on right/left hand will be dropped in an adjacent tile if possible.
+- Rats and Skeletons cannot disarm!
+
+NEW GAMEPLAY : NEGOCIATING TRADE
+- New action: Negociate Trade. Default key E. Select an adjacent npc willing to trade.
+- Opens a window where you can offer or ask for items.
+- You see your inventory and the npc inventory.
+- Items are color coded so you can see if the npc will accept or not and if your Charismatic skill had an effect or not.
+- Removed now obsolete action "offer item to trade".
+- "Fast" trade by bumping into a npc is still there.
+- A succesful trade recovers some Sanity for both parties.
+
+STENCH KILLER OVERHAUL
+- Stench Killer is now sprayed on actors not tiles.
+- You can spray it on yourself or adjacent actors.
+- It suppress all the actor scents for a number of turns : the actor won't drop scents on the tiles.
+- Works on any actor, living or undead.
+- The suppression is subject to decay like other odors (effect of rain on outdoor tiles, etc...).
+
+TRAPS
+- An actor and his group will never trigger traps they have layed when stepping into them.
+- Traps that are safe for the player have green icons and description mentions who setup the trap.
+- Undeads are 30% more likely to trigger traps.
+- Light Feet skill bonus to avoid/escape traps bumped to +15% (was +5%).
+
+RANGED WEAPONS FIRING
+- When firing the interface now shows your average hit chances for each shot and which fire mode you are using.
+- Redone how "Rapid Fire" works, as no one ever used it. Now it is actually an option to consider especially with the Firearms skill.
+- Rapid Fire attack values are now a stat of the ranged weapons, some are a bit better than others at rapid fire.
+Before it was just a flat penalty to each shot irrevelant of the weapon used. As before, Rapid Fire makes you shoot twice for the cost of only one action.
+Keep in mind "rapid fire" means you are not taking the time to aim properly between shots, not that you are using automatic fire or not. Automatic fire doesn't "exist" in the game and is just reflected in the weapons damage or attack stats, some weapons are always assumed to be fired in burst and an "ammo" for them does not represent a single bullet. That was a clarification for weapon nerds out there :)
+- The game remembers your fire mode so you don't have to switch each time you fire.
+- Distance to target is now a % modifier on the ranged attack value and has a bigger effect on hit chances, especially beyond efficient range.
+- Firing penalties (eg sleepy) apply to standard and rapid fire shots
+
+NEW GAMEPLAY : MELEE WEAPONS AS TOOLS
+- Some melee weapons can be "tools". Eg: hammer, crowbar...
+- Equipped tools give bonuses when breaking, barricading, repairing or building.
+- Some tools are better at breaking than building and vice-versa. Eg: the crowbar is best at breaking stuff, the small hammer at building and repairing.
+- Read the melee weapon item description to learn each tool weapon bonuses.
+
+GROUP AND ENEMIES
+- Groups now share enemies :
+- "The enemies of my leader are my enemies"
+eg. A civilian lead by a cop will be enemies with gangs because the cop faction is enemy with the gang faction.
+- "The enemies of my mates are my enemies"
+eg. You decide to attack another civilian. Your follower will be enemy with him too.
+- "The enemies of my followers are my enemies"
+eg. A biker aggress you for your item. All the biker group will now be your enemies too. All your followers will be their enemies too.
+- You got a new follower but he is a murderer. If cops go after the murderer they will go after you too.
+- To "get rid" of the problem of being enemy of a whole group because you have a "problem" with one of them you have
+to break the group links with him, so kill the guy you have a problem with (eg: the one who agressed you) or kill the group leader.
+- Look at the icons and the actors descriptions to understand why they are your enemies.
+
+SKILL UPGRADE INTERFACE
+- Skill Upgrade choices are now shown in a window. Less cramped than message logs!
+- Works for upgrading your followers too and you also see their current skills listed.
+
+SANITY REBALANCE
+- Increased Sanity recovery for having a follower with a bond or killing undeads.
+- Chatting or trading can also recovers Sanity.
+- Sanity Nightmares now also drains some Stamina.
+
+WEATHER & TIME OF DAY AWARENESS
+- Weather is now more dynamic. It stays the same for a very short or very long period of time and then will change, rather than daily.
+So you can have anything from short burst of rains for a few hours to long sunny days and it can change at any time
+- If you can't see the sky (sleeping or sewers/basements maps) :
+- you are not told the time of the day.
+- you are not told the weather and informed of weather changes.
+- Cellphones and Police Radios can give you the time of the day.
+
+MISC GUI
+- Options screen: describe currently selected option and which option/game mode interactions.
+- Actor description shows unusual or unexpected abilities.
+Now you can see what each type of undeads can and cannot do. It removes a bit of mystery but improves gameplay.
+- City map: highlight your current district in green.
+- City map: removed Sewers Maintenance from notable locations.
+- City map: "that place" information has the correct tile coordinates and will be easier to find once you know where it is.
+- Location info: shows fov penalty for time of day and weather.
+- Actors following their leader now have a new icon.
+- When hovering on an actor:
+- Actors in the same group are highlighted with a blue icon.
+- Actors targeting this actor are highlighted with a red icon.
+- Martial Arts and Hardy skills are highlighted green when active.
+- When bashing an object shows how much damage done.
+- Non-threatening things said by actors are in cyan, threatening things in red (brown).
+- Undeads with the Z-Grab skills have an icon as they are very dangerous.
+- Items descriptions mention that you can take/drop them with ctrl/shift keyboard shortcuts.
+- Hints: when a hint is available tells you which one it is.
+- Hints: disabled when playing undead.
+- Game modes description improved.
+
+AI
+- NPCs will check if they can reasonably reach an actor/an item before trying to trade/lead/melee/pick up.
+Prevents them from getting stuck trying to do something they cannot possibly do.
+- NPCs will now use Rapid Fire when shooting weapons if they think its a good idea.
+- Rewrote NPCs item rating and trade logic. They will pick up and trade different items than before and should be better at managing their inventory.
+- NPCs will always equip best items possible.
+- NPCs should be a bit better at escaping.
+- NPCs will get rid of empty cans.
+- NPCs will "defrag" their inventory by merging small stacks to keep their inventory as tight as possible.
+- Tweaks to Fight or Flee logic.
+- Intelligent NPCs more wary of stepping into unsafe damaging traps.
+- Living NPCs a bit more likely to choose Necrology and High Stamina when upgrading.
+- NPCs will not try to trade with people fighting or fleeing.
+- Improved Gangs items scavenging.
+- Some NPCs can try to break or push stuff to get where they want.
+Eg: Gangs now cause more mess. Civilians can get messy if they feel they have to.
+- Updated NPCs use of stench killer, can spray on themselves or their group.
+- Skeletons can now use stairs.
+- Some other tweaks.
+
+MAPGEN
+- Housings can have a small garden or parking lot for variety.
+- Parks can have small sheds with tools.
+- Hospital Storage now starts with some nurses trapped in it.
+
+UNIQUE ACTORS
+- Unique Actors are now invincible until you spot them.
+- When you first spot a Unique Actor it plays its theme music and focus on him.
+
+MISC
+- Actions like barricade now always consume an item from the smallest stack instead of the first one it finds.
+- Rain affect odors decay only on outside tiles.
+- Increased effects of Unsuspicious outfits to 75% (was 50%).
+- Increased effect of Unsuspicious skill to 20% (was 15%).
+- Light Sleeper skill increased to 20% (was 10%).
+- Z-Grab skill increased to 4% (was 2%).
+
+- National Guards have Firearms skill.
+- New Hints for Sanity, Infection and Traps. Merged Corpses hints.
+- Music :
+- Rewrote how music is managed with the concept of background map music vs event music.
+- New bgm for surface maps.
+- Option: Max City Size up to 7 (was 6).
+- Updated descriptions for new stuff like weapon disarm chance etc...
+- Some changes to the manual
+- Item stacks organization on saving
+
+DATA AND MODDING
+- Melee Weapons: new stats "disarm", "toolbashdmgbonus" and "toolbuildbonus".
+- Ranged Weapons: new stats "hit2value" and "hit3value" for Rapid Fire.
+- Trackers: new stat "hasclock".
+- Skills: Martial Arts new stat "disarm".
+- Icons: new icons.
+- Rebalanced ranged weapons.
+- Iron Golf Club sta penalty now 1 (was -2).
+- Rats dmg 2 (was 4) def 6 (was 4).
+
+FOR DEVS
+- Most changes in the source code marked by "// alpha 10". Some dead code is left in commentaries to help find what has changed.
+- "Godmode" for dev: in debug mode you can be toggle player invincibility by pressing F11.
+- New AI helper RouteFinder is a *very simple* pathfinder used to quickly check if NPCs can expect to reach a tile.
+It assumes npcs are using the vanilla movement behavior. It doesn't compute the shortest path, just checks for reachability
+- Boring item is now item centric: moved out of Actor into ItemEntertainment.
+- In debug mode there is code to detect if an ai is looping "ai loop bug detection". You should add a breakpoint here.
+- Some new dead actor reference clean up code reduce saved file size and so load times.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.5.37.9 (aka Release 5-7, 20/07/2018) [Author: MP]
+---------------------
+
+Features:
+-Players can now supply their own character name.
+-Removed rats skill upgrade and reincarnation options.
+-Removed option to hide tags on the minimap.
+-Restored hour-of-day tint.
+-Molotovs now have a chance to set fleshy victims on fire.
+-Each level of Tough increases current HP as well as maximum HP (a la RS Revived)
+-Halved the amount of food and seeds grown by crops.
+-Throwing explosives at survivors will now draw their ire.
+-Survivors are now somewhat more liberal, but also more careful, about using explosives.
+-Survivors now favour multiple targets over tougher targets when using explosives.
+-Enabled permadeath by default (can still be changed).
+-Added reload sfx.
+
+Fixes:
+-Tweaked evolution timeframes restrictions on all undead types.
+-AI won't waste flame weapons on (invulnerable to fire) skeleton types.
+-Fixed bug that prevented undead from being killed by fire when reduced to 0 HP.
+-Reduced molotov damage, and flame duration and damage.
+-Can now drink beer and smoke when sanity is disabled.
+-Reduced the quantity of food grown by planted crops.
+-Civilians followers now correctly obey directives not to use explosives/flame weapons.
+-Restored (albeit delayed) blood splatter cleanup, and added undead corpse cleanup.
+-Fixed bug in saving screenshots.
+-Removed the redundant option for reincarnating in sewers. You can now reinc in sewers.
+
+Known issues:
+-Changing districts performance with simulation enabled decays as the game goes on.
+-Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in later releases.
+
+Development:
+-Minor refactoring of turn processing.
+-Miscellaneous optimizations and housekeeping.
+-Resolved various supressed exceptions and code warnings.
+-Rearrangement/grouping of methods in RogueGame class.
+-Improved optimization of calculating which point is best to throw a flame weapon.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.5.32.11 (aka Release 5-6, 14/04/2018) [Author: MP]
+---------------------
+
+Features:
+-Applied evolution timeframes restrictions to all undead types.
+
+Fixes:
+-Added the missing hint for planting seeds.
+-Fixed a crash upon starting the game as a zombified man/woman.
+-Added keyboard shortcut to tooltips for items related to planting seeds.
+-AI no longer makes silly food trades.
+-PWNN is now detected properly.
+For the following thanks goes to the one-and-only RoguedJack!!:
+-Made iron fences jumpable as AI were getting stuck.
+-Zombification no longer causes crashes in C&I mode.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.5.32.5 (aka Release 5-5, 25/02/2018) [Author: MP]
+--------------------
+
+Features:
+-Game is now fullscreen by default (windowed mode available via RSConfig).
+-Can now use seeds and a shovel/pick to plant vegies.
+
+Fixes:
+-Changed the way berries are grown to avoid stack overflows.
+-When a corpse rises from the dead their body is no longer duplicated.
+-Made rain sfx thread-safe to prevent collision crashes.
+-Adjusted army supplies drop to balance with new food sources.
+-Warning message is more specific for attempts to pick up items with a full inventory.
+-Increased the nutrition value of all foods to varying degrees.
+-Fixed sloppy advisor hints.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.5.30.5 (aka Release 5-4, 2/2/2018) [Author: MP]
+--------------------
+
+Features:
+-Improved pistol sound effect.
+-Breaking down doors now leaves behind a damaged door graphic (like windows do already).
+-Added sound effect for pushing wooden objects.
+-Improved the audiblity check for sound effects.
+
+Fixes:
+-Fixed a crash upon saving when carrying food.
+-Rat corpses now look like rats rather than zombies.
+-Added more chance of cell phones in general stores, because they were too rare.
+-Improved the logic check for barricading doors.
+-Fixed bear traps playing the wrong sound effect.
+-Restored messages that appear when you hear certain sounds or see certain actions.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.5.27.8 (aka Release 5-3[#2], 27/01/2018) [Author: MP]
+--------------------
+
+Features:
+-Bushes in park areas now grow edible berries (24 hour growth time).
+-Added sound effects for breaking doors, windows and wooden furniture.
+-Added sound effects for rain.
+
+Fixes:
+-Fixed a crash caused by map objects not set with the correct container properties.
+-Made SFML sound the default. Resolves audio glitches when multiple sounds play at once.
+-Tweaked audio range for for certain sound effects.
+-Increased Loud noise distance radius, and offset with a reduction to the distance bonus.
+-Spoiled food gives half as much nutrition (still 25% chance to vomit when eaten).
+-Ensured there is no more than one library per district.
+-Seeing undead die in a fire no longer hurts sanity.
+-Tiny performance improvement to taking items.
+
+Development:
+-Upgraded to SFML.NET 2.4-x86 (drops libsndfile and uses Ogg natively), and thus also CSFML 2.4-x86.
+-Removed MP3s and implemented SFML:Sound for effects. Slightly improves load time, lowers game size, less dev effort, and Ogg is open source.
+-Area within junkyards no longer count as being 'inside'.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.4.25.11 (aka Release 5-2, 9/1/2018) [Author: MP]
+---------------------
+
+Features:
+-Fire may now spread on flammable surfaces (wooden floors, grass, carpet).
+-Awake AI now alert sleeping non-enemy livings of nearby fires.
+-Reviving a living fully restores sanity.
+-Antiviral pills can now be disabled for VTG (see Options menu).
+-Revised and added to game tips ('Tip Of The Dead').
+-Added shortcut to Config folder (saves, scores, screenshots) to base game directory.
+
+Fixes:
+-Fires now damage corpses.
+-AI now correctly avoid traps and fires when following a leader.
+-AI now try to avoid traps when fleeing from fires and explosives.
+-Intelligent, non-civilian AI may now flee from fires.
+-Actors caught in a molotov burst no longer have a chance to splatter blood.
+-Removed chain reactions on explosions when carrying explosives, as it was too OP.
+-High scores and graveyard reflect game mode, undead evolution and other previously missing options.
+-VTG mode no longer forces undead evolution options on the user interface (handled in-code instead).
+-Added explanation of 'Synchronous Simulation' option to the manual. Changed the menu to indicate that it's linked to 'Simulate When Sleeping'.
+|I'll fix this properly when all the Options menu is finalised (more planned for later releases).
+-Added a clear to get rid of the prompt, and a message noting it was cancelled, when the player aborts making a molotov.
+-Corrected grammar of the achievements, and improved their teasers.
+
+Development:
+-Checking for sanity loss can now be used for anything, not just where an actor killed another actor.
+-Added a specialised method for inflicting burn damage to actors and corpses.
+-Corrected the original, crappy implementation of the sanity option.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.3.23.3 (aka Release 5-1, 1/1/2018) [Author: MP]
+--------------------
+
+Features:
+-Added nail guns.
+-Living AIs may now make molotovs.
+
+Fixes:
+-Config files (saves, scores, screenshots) now save to \Documents\Rogue Survivor\, which allows non-admins to run the game.
+-Improved the Medic skill bonus from 15% to 30%.
+|Healing rounds down, so it was really only 10%, and that meant medkits only gave 1 extra HP with the skill.
+-Fixed bug where the Prisoner With No Name is already freed before the player stands in front of their cell, but the dialog was still initiated.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.3.21.9 (aka Release 4, 7/12/2017) [Author: MP]
+--------------------
+
+Features:
+-Added liquor shop and alcoholic drinks.
+-Added churches, libraries, banks, graveyards, mechanic workshops and bars.
+-Added molotovs, which set the ground on fire around the point of impact. (AI will not make molotovs... yet)
+|Currently it will transform the whole stack (max 3) of liquor in an inventory slot.
+-Added dynamite to some hardware stores, which has a huge radius and can destroy walls. (AI will not use dynamite)
+-Original grenade sfx now assigned to dynamite. Grenades given a new sfx.
+-Tweaked grenade damage.
+-Increased likelihood of fragile melee weapons breaking. Much closer to realistic now. Partly because
+	it just makes sense, and partly because I have changed a few defaults in previous releases.
+-Added functionality for tiles to be on fire (previously only objects could be).
+|'Intelligent' NPCs (livings, evolved undead) don't risk stepping on fire when exploring/wandering if it will kill
+	or seriously hurt them, like with traps, unless they are desperate for food or stupidly courageous.
+|Increased 'intelligent' NPCs likelihood to avoid activated traps.
+|Living NPCs caught in a tile fire will flee in panic.
+|Skeletons are not harmed by tile fires.
+-The post-game, high score 'graveyard' now lists all modifiers, rather than just those changed from default.
+-Added hotkeys to the top of the manual for quick reference (press H in-game).
+-Changed the minimap color of some floors and walls to better match their aesthetic, and to allow for the new buildings.
+
+Fixes:
+-Fixed lack of fragility of certain melee weapons.
+-Tailored the warning message when stamina is too low to climb on/over an object.
+-Destroying walls now also removes decorations (eg shop signage).
+-Cops now might only trade their gun or radio if they are hungry and have no food.
+-'Dumb' undead now no longer consider traps when exploring.
+-'Intelligent' AI are now less likely to plow through traps without care.
+-More realistic items in General Stores.
+-To be more realistic, extended the expiry of groceries and removed the expiry of army rations.
+-Chairs and potted plants don't need to be jumped over, but beds do.
+-Alleviated some of the hoarding that AI do, especially pills and ammo.
+
+Development:
+-Added a check between IsHungry and IsStarving called IsActorReallyHungry.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.2.17.4 (aka Release 3, 22/10/2017) [Author: MP]
+--------------------
+
+Features:
+-Traps are more deadly and must be taken seriously now.
+-Added more thematic objects to the CHAR underground facility.
+-Tweaked the blood splatter in the CHAR underground facility.
+-Added more furniture to houses and CHAR buildings, and shops now have registers.
+-Added 6 more melee weapons, each with tailored stats.
+-Added some shelving and canned food to house basements.
+-Expanded stocked item varieties in hunting shop.
+-Tweaked stocked items in various shops.
+-Added more sound effects (eg bashing on barricades, triggering traps, moving furniture).
+-Guaranteed blood splatter for the damaging traps.
+-Changed default chance to zombify on starvation chance from 50% from 0% (STD).
+-Tweaked stats of existing melee weapons.
+-Improved graphics of a few more tiles/objects (eg chain link fence).
+-Improved some sounds from Release 2.
+
+Fixes:
+-Fixed sfx and music disablement.
+
+Development:
+-Added cheat to reveal CHAR underground facility location.
+-Improved lambda for furniture placement around doors in houses and CHAR offices.
+-Added ability for explosions to damage walls (grenades do not).
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 1.2.12.3 (aka Release 2, 30/9/2017) [Author: MP]
+--------------------
+
+Features:
+-Grenades leave behind scorch marks on the tiles that were caught in the blast.
+-Added numerous sound effects for the player and some for nearby, audible actors.
+-Added ability to disable and change volume music and sound effects separately.
+-Hearing weapon firing is no longer a 25% only. If it's in audible range, you hear it.
+-Skeletons now drop bones, other undead still drop bloody remains.
+-Wounding has a chance to drop small blood splatters. Corpses bleed out.
+-Bows are now more useful:
+|-Added a chance for fired bolts to rip through an undead, ending up on the ground beside them.
+|-Added a chance for fired bolts to land around the target on a miss.
+|-If a living is hit by a bolt it may stick in them, and they may pull it out and drop it. It may also cause them to drop an item.
+
+Fixes:
+-Fixed MDX audio crash by using hard stop rather than the original pause method.
+-Removed duplicated torso drawing.
+-Fixed hunters vest sizing and positioning.
+-Spelling mistakes.
+
+Development:
+-Separated music and sound effects into distinct instances.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+STILL ALIVE 1.1.8.0 (aka Release 1, 30/8/2017) [Author: MP]
+-------------------
+
+In-game changes:
+-Added option to disable Sanity loss, which decreases the score multiplier (default: enabled).
+-Added option to show/hide corpses in STD game mode, for flavour only (default: show).
+-All 'uncommon' items (eg weapons) are now dropped upon NPC death (was 50%).
+-Minor tweaks to which items are generated in various location types (slightly more realistic).
+-Nerfed those damned warrior rats.
+-50% increased sanity reward from undead kills.
+-Disabled blood splatter dissipation over time.
+-Minor UI tweaks (eg removed new character random choice confirmations).
+-Updated and also trimmed the manual to make it more concise.
+-Incorporated some of Deon's 'Deonapocalypse' tileset, and modified a few other bits myself.
+-Other minor tweaks (eg merged some excessive hints, changed NPC descriptions).
+
+Development:
+-Minor improvements: code comments, optimizations, spelling corrections.
+-Added a quasi-god mode trigger to debug for testing.
+
+Note: versioning = [major release].[major feature].[minor feature].[bugfix/correction]
+Bugfix/correction only applies to the current changelog, reseting with each release.
