@@ -4628,10 +4628,20 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         }
 
                         //lamp - lowest priority in terms of space //@@MP (Release 3)
-                        MapObjectPlaceInGoodPosition(map, insideRoom,
+                        if (m_DiceRoller.RollChance(75))
+                        {
+                            MapObjectPlaceInGoodPosition(map, insideRoom,
                                 (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
                                 m_DiceRoller,
                                 (pt) => MakeObjStandingLamp(GameImages.OBJ_STANDING_LAMP));
+                        }
+                        else //@@MP (Release 6-2)
+                        {
+                            MapObjectPlaceInGoodPosition(map, insideRoom,
+                                (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
+                                m_DiceRoller,
+                                (pt) => MakeObjStandingLamp(GameImages.OBJ_PIANO));
+                        }
 
                         break;
                         #endregion

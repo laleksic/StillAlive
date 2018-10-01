@@ -11,23 +11,25 @@ namespace djack.RogueSurvivor.Engine.Actions
     {
         #region Fields
         Fortification m_Fort;
+        Weather m_Weather; //@@MP - added weather parameter (Release 6-2)
         #endregion
 
         #region Init
-        public ActionRepairFortification(Actor actor, RogueGame game, Fortification fort)
+        public ActionRepairFortification(Actor actor, RogueGame game, Fortification fort, Weather weather) //@@MP - added weather parameter (Release 6-2)
             : base(actor, game)
         {
             if (fort == null)
                 throw new ArgumentNullException("fort");
 
             m_Fort = fort;
+            m_Weather = weather;
         }
         #endregion
 
         #region ActorAction
         public override bool IsLegal()
         {
-            return m_Game.Rules.CanActorRepairFortification(m_Actor, out m_FailReason); //@@MP - unused parameter (Release 5-7)
+            return m_Game.Rules.CanActorRepairFortification(m_Actor, m_Weather, out m_FailReason); //@@MP - unused parameter (Release 5-7)
         }
 
         public override void Perform()

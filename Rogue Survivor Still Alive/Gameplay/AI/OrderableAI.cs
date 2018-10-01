@@ -93,7 +93,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             DoorWindow door = location.Map.GetMapObjectAt(location.Position) as DoorWindow;
             if (door == null)
                 return null;
-            if (!game.Rules.CanActorBarricadeDoor(m_Actor, door))
+            if (!game.Rules.CanActorBarricadeDoor(m_Actor, door, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                 return null;
 
             // 2. Perform.
@@ -103,7 +103,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 2.1 If adjacent, barricade.
             if (game.Rules.IsAdjacent(m_Actor.Location.Position, location.Position))
             {
-                ActorAction barricadeAction = new ActionBarricadeDoor(m_Actor, game, door);
+                ActorAction barricadeAction = new ActionBarricadeDoor(m_Actor, game, door, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
                 if (barricadeAction.IsLegal())
                 {
                     if (!toTheMax)
@@ -139,7 +139,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 1. Check validity.
             if (m_Actor.Location.Map != location.Map)
                 return null;
-            if (!game.Rules.CanActorBuildFortification(m_Actor, location.Position, isLarge))
+            if (!game.Rules.CanActorBuildFortification(m_Actor, location.Position, isLarge, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                 return null;
 
             // 2. Perform.
@@ -149,7 +149,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 2.1 If adjacent, build.
             if (game.Rules.IsAdjacent(m_Actor.Location.Position, location.Position))
             {
-                ActorAction buildAction = new ActionBuildFortification(m_Actor, game, location.Position, isLarge);
+                ActorAction buildAction = new ActionBuildFortification(m_Actor, game, location.Position, isLarge, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
                 if (buildAction.IsLegal())
                 {
                     SetOrder(null);

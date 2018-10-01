@@ -1,4 +1,28 @@
-﻿STILL ALIVE 2.0.4.8 (aka Release 6-1, 12/08/2018) [Author: MP]
+﻿STILL ALIVE 2.0.5.5 (aka Release 6-2, ??/??/2018) [Author: MP]
+---------------------
+
+Features:
+-Torches now have a tint (at night only, of course).
+-Equipping/unequipping immediately updates FOV.
+-Tweaked FOV to be more immersive.
+-In the absolute dark, actors cannot:
+--read books and magazines 
+--build and repair fortifications
+--barricade doors
+--use healing items
+
+Fixes:
+-Removed daylight cycle tint when can't see the sky (eg basements)
+-Fixed warning when you are out of STA and try to climb something.
+-Added pianos to houses (because I forgot to in R3)
+-Trackers and torchlights are no longer deleted when an actor discards them.
+-Dropping items on a spot that already has a full 'inventory' moves them to an adjacent tile instead of deleting an item
+	(credit to DDRjake for spotting this bug)
+-Again no longer hoard alcohol (forgot to merge this with Alpha 10 changes)
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+STILL ALIVE 2.0.4.8 (aka Release 6-1, 12/08/2018) [Author: MP]
 ---------------------
 
 *******STILL ALIVE CHANGES:
@@ -299,7 +323,7 @@ Fixes:
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
-STILL ALIVE 1.5.30.5 (aka Release 5-4[#2], 5/2/2018) [Author: MP]
+STILL ALIVE 1.5.30.5 (aka Release 5-4, 2/2/2018) [Author: MP]
 --------------------
 
 Features:

@@ -80,19 +80,20 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region FOV
-        const int MINIMAL_FOV = 2;
-        #endregion
-
-        #region Day/Night and Weather effects
-        public const int FOV_PENALTY_SUNSET = 1;
-        public const int FOV_PENALTY_EVENING = 2;
-        public const int FOV_PENALTY_MIDNIGHT = 3;
-        public const int FOV_PENALTY_DEEP_NIGHT = 4;
-        public const int FOV_PENALTY_SUNRISE = 2;
-        public const int NIGHT_STA_PENALTY = 2;
-
+        //@@MP - modified these numbers to offset the new BaseView FOV (Release 6-2)
+        const int MINIMAL_FOV = 0;//2; //@@MP - ensures basements and other places without natural light are truly *dark* (Release 6-2)
+        #region -Day/Night and Weather effects
+        public const int FOV_PENALTY_SUNSET = 4;
+        public const int FOV_PENALTY_EVENING = 6;
+        public const int FOV_PENALTY_MIDNIGHT = 5;
+        public const int FOV_PENALTY_DEEP_NIGHT = 7;
+        public const int FOV_PENALTY_SUNRISE = 4;
         public const int FOV_PENALTY_RAIN = 1;
         public const int FOV_PENALTY_HEAVY_RAIN = 2;
+        public const int FOV_STAND_ON_BONUS = 2;//@@MP made constant (Release 6-2)
+
+        public const int NIGHT_STA_PENALTY = 2;
+        #endregion
         #endregion
 
         #region Weapons & Firing
@@ -1867,13 +1868,13 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        public bool CanActorBarricadeDoor(Actor actor, DoorWindow door)
+        public bool CanActorBarricadeDoor(Actor actor, DoorWindow door, Weather weather) //@@MP - added weather parameter (Release 6-2)
         {
             string reason;
-            return CanActorBarricadeDoor(actor, door, out reason);
+            return CanActorBarricadeDoor(actor, door, weather, out reason);
         }
 
-        public bool CanActorBarricadeDoor(Actor actor, DoorWindow door, out string reason)
+        public bool CanActorBarricadeDoor(Actor actor, DoorWindow door, Weather weather, out string reason) //@@MP - added weather parameter (Release 6-2)
         {
             if (actor == null)
                 throw new ArgumentNullException("actor");
@@ -1883,10 +1884,11 @@ namespace djack.RogueSurvivor.Engine
             ////////////////////////////////////
             // Not close if any is true:
             // 1. Actor cannot barricade doors.
-            // 2. Door is not closed or broken.
-            // 3. Barricading limit reached.
-            // 4. An actor is there.
-            // 5. No barricading material.
+            // 2. It's too dark to see
+            // 3. Door is broken or not closed.
+            // 4. Barricading limit reached.
+            // 5. An actor is there.
+            // 6. No barricading material.
             ////////////////////////////////////
 
             // 1. Actor cannot barricade doors.
@@ -1896,35 +1898,42 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
+            // 2. Too dark to see //@@MP - added (Release 6-2)
+            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0) //@@MP - too dark to read (Release 6-2)
+            {
+                reason = "it's too dark too see";
+                return false;
+            }
+
             //@MP -  Trying to barricade an open door told the player it was “not open”. Fixed that, and made the Open and Broken checks separate (Release 5-4)
-            // 2a. Door is not broken.
+            // 3a. Door is broken.
             if (door.State == DoorWindow.STATE_BROKEN)
             {
                 reason = "the door is broken";
                 return false;
             }
-            // 2b. Door is not closed.
+            // 3b. Door is not closed.
             if (door.State != DoorWindow.STATE_CLOSED)
             {
                 reason = "the door is open";
                 return false;
             }
 
-            // 3. Barricading limit reached.
+            // 4. Barricading limit reached.
             if (door.BarricadePoints >= BARRICADING_MAX)
             {
                 reason = "barricade limit reached";
                 return false;
             }
 
-            // 4. An actor is there.
+            // 5. An actor is there.
             if (door.Location.Map.GetActorAt(door.Location.Position) != null)
             {
                 reason = "someone is there";
                 return false;
             }
 
-            // 5. No barricading material.
+            // 6. No barricading material.
             if (actor.Inventory == null || actor.Inventory.IsEmpty)
             {
                 reason = "no items";
@@ -2876,13 +2885,13 @@ namespace djack.RogueSurvivor.Engine
             return count;
         }
 
-        public bool CanActorBuildFortification(Actor actor, Point pos, bool isLarge)
+        public bool CanActorBuildFortification(Actor actor, Point pos, bool isLarge, Weather weather) //@@MP - added weather parameter (Release 6-2)
         {
             string reason;
-            return CanActorBuildFortification(actor, pos, isLarge, out reason);
+            return CanActorBuildFortification(actor, pos, isLarge, weather, out reason);
         }
 
-        public bool CanActorBuildFortification(Actor actor, Point pos, bool isLarge, out string reason)
+        public bool CanActorBuildFortification(Actor actor, Point pos, bool isLarge, Weather weather, out string reason) //@@MP - added weather parameter (Release 6-2)
         {
             if (actor == null)
                 throw new ArgumentNullException("actor");
@@ -2892,10 +2901,11 @@ namespace djack.RogueSurvivor.Engine
             // 1. No carpentry skill.
             // 2. Not walkable.
             // 3. Not engouh material.
-            // 4. Tile occupied.
+            // 4. Too dark to see
+            // 5. Tile occupied.
             ///////////////////////////
 
-            // 1. No carpentry skill.
+            // 2. No carpentry skill.
             if (actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CARPENTRY) == 0)
             {
                 reason = "no skill in carpentry";
@@ -2918,19 +2928,28 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // 4. Tile occupied.
+            // 4. Too dark to see //@@MP - added (Release 6-2)
+            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0) //@@MP - too dark to read (Release 6-2)
+            {
+                reason = "it's too dark to see";
+                return false;
+            }
+
+            // 5. Tile occupied.
             if (map.GetMapObjectAt(pos) != null || map.GetActorAt(pos) != null)
             {
                 reason = "blocked";
                 return false;
             }
+
+
                         
             // all clear.
             reason = "";
             return true;
         }
 
-        public bool CanActorRepairFortification(Actor actor, out string reason) //@@MP - unused parameter (Release 5-7)
+        public bool CanActorRepairFortification(Actor actor, Weather weather, out string reason) //@@MP - unused parameter (Release 5-7), too dark to read (Release 6-2)
         {
             if (actor == null)
                 throw new ArgumentNullException("actor");
@@ -2939,6 +2958,7 @@ namespace djack.RogueSurvivor.Engine
             // Can't if any is true:
             // 1. Cannot use map objects.
             // 2. No material.
+            // 3. Too dark to see
             /////////////////////////////
 
             // 1. Cannot use map objects.
@@ -2953,6 +2973,13 @@ namespace djack.RogueSurvivor.Engine
             if (material <= 0)
             {
                 reason = "no barricading material";
+                return false;
+            }
+
+            // 3. Too dark to see //@@MP - added (Release 6-2)
+            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0) //@@MP - too dark to read (Release 6-2)
+            {
+                reason = "it's too dark to see";
                 return false;
             }
 
@@ -3909,7 +3936,7 @@ namespace djack.RogueSurvivor.Engine
             // standing on some map objects.
             MapObject mobj = actor.Location.Map.GetMapObjectAt(actor.Location.Position);
             if (mobj != null && mobj.StandOnFovBonus)
-                ++FOV;
+                FOV += FOV_STAND_ON_BONUS; //@@MP - now using a const (Release 6-2)
 
             // done.
             FOV = Math.Max(MINIMAL_FOV, FOV);
@@ -3933,7 +3960,7 @@ namespace djack.RogueSurvivor.Engine
             return minSmell;
         }
 
-        bool HasLightOnEquipped(Actor actor)
+        public bool HasLightOnEquipped(Actor actor) //@@MP - made public (Release 6-2)
         {
             ItemLight light = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
             return (light != null && light.Batteries > 0);
@@ -4108,7 +4135,7 @@ namespace djack.RogueSurvivor.Engine
                 return MINIMAL_FOV;
         }
 
-        public int OdorsDecay(Map map, Point pos, Weather weather) //alpha 10 //@@MP can't be static
+        public int OdorsDecay(Map map, Point pos, Weather weather) //alpha 10
         {
             int decay;
 
@@ -4143,7 +4170,7 @@ namespace djack.RogueSurvivor.Engine
             return decay;
         }
 
-        public bool CanActorSeeSky(Actor actor) //alpha 10 //@@MP can't be static
+        public bool CanActorSeeSky(Actor actor) //alpha 10
         {
             if (actor.IsDead)
                 return false;
@@ -4152,7 +4179,7 @@ namespace djack.RogueSurvivor.Engine
             return actor.Location.Map.Lighting == Lighting.OUTSIDE;
         }
 
-        public bool CanActorKnowTime(Actor actor) //@@MP can't be static
+        public bool CanActorKnowTime(Actor actor)
         {
             if (actor.IsDead)
                 return false;

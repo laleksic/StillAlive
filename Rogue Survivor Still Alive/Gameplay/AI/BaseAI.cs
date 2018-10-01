@@ -1349,13 +1349,27 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // left-hand items
             if (canUseLeftHand)
             {
-                // ordered by priority: cellphone -> lights -> spray
-                ItemTracker eqCellphone = GetEquippedCellPhone();
-                ItemLight eqLight = GetEquippedLight();
-                ItemSprayScent eqStenchKiller = GetEquippedStenchKiller();
+                // ordered by priority: lights -> cellphone -> spray
 
-                // cellphone 
-                if (allowCellPhones && WantsCellPhoneEquipped())
+                ItemLight eqLight = GetEquippedLight();
+
+                // lights, if no cellphone equipped
+                if (NeedsLight())
+                {
+                    action = BehaviorEquipBestLight(game);
+                    if (action != null)
+                        return action;
+                }
+                else
+                {
+                    // doesnt need light, unequip if equipped.
+                    if (eqLight != null)
+                        return new ActionUnequipItem(m_Actor, game, eqLight);
+                }
+
+                // cellphone //@@MP - lights are now more important than cellphones now that darkness is revamped (Release 6-1)
+                ItemTracker eqCellphone = GetEquippedCellPhone();
+                if (eqLight == null && allowCellPhones && WantsCellPhoneEquipped())
                 {
                     action = BehaviorEquipBestCellPhone(game);
                     if (action != null)
@@ -1365,23 +1379,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     if (eqCellphone != null)
                         return new ActionUnequipItem(m_Actor, game, eqCellphone);
-                }
-
-                // lights, if no cellphone equipped
-                if (eqCellphone == null)
-                {
-                    if (NeedsLight())
-                    {
-                        action = BehaviorEquipBestLight(game);
-                        if (action != null)
-                            return action;
-                    }
-                    else
-                    {
-                        // doesnt need light, unequip if equipped.
-                        if (eqLight != null)
-                            return new ActionUnequipItem(m_Actor, game, eqLight);
-                    }
                 }
 
                 // spray scent, if no cellphone or light equipped
@@ -1395,6 +1392,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                     else
                     {
+                        ItemSprayScent eqStenchKiller = GetEquippedStenchKiller();
                         if (eqStenchKiller != null)
                             return new ActionUnequipItem(m_Actor, game, eqStenchKiller);
                     }
@@ -1570,10 +1568,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 bool dropIt = false;
 
-                if (it is ItemLight)
-                    dropIt = (it as ItemLight).Batteries <= 0;
-                else if (it is ItemTracker)
+                if (it is ItemTracker)
                     dropIt = (it as ItemTracker).Batteries <= 0;
+                /*else if (it is ItemLight)
+                    dropIt = (it as ItemLight).Batteries <= 0;*/ //@@MP - lights are very important now that darkness is implemented (Release 6-2)
                 else if (it is ItemSprayPaint)
                     dropIt = (it as ItemSprayPaint).PaintQuantity <= 0;
                 else if (it is ItemSprayScent)
@@ -1876,11 +1874,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             Point adj = m_Actor.Location.Position + choice.Choice;
 
             // if can't build there, fail.
-            if (!game.Rules.CanActorBuildFortification(m_Actor, adj, false))
+            if (!game.Rules.CanActorBuildFortification(m_Actor, adj, false, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                 return null;
 
             // ok!
-            return new ActionBuildFortification(m_Actor, game, adj, false);
+            return new ActionBuildFortification(m_Actor, game, adj, false, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
         }
 
         /// <summary>
@@ -1955,11 +1953,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             Point adj = m_Actor.Location.Position + choice.Choice;
 
             // if can't build there, fail.
-            if (!game.Rules.CanActorBuildFortification(m_Actor, adj, true))
+            if (!game.Rules.CanActorBuildFortification(m_Actor, adj, true, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                 return null;
 
             // ok!
-            return new ActionBuildFortification(m_Actor, game, adj, true);
+            return new ActionBuildFortification(m_Actor, game, adj, true, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
         }
 
         #endregion
@@ -2602,7 +2600,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                                 return false;
                             if (!IsBetween(game, m_Actor.Location.Position, pos, enemy.Location.Position))
                                 return false;
-                            if (!game.Rules.CanActorBarricadeDoor(m_Actor, door))
+                            if (!game.Rules.CanActorBarricadeDoor(m_Actor, door, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                                 return false;
                             return true;
                         },
@@ -2613,7 +2611,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         (a, b) => a > b);
                     if (barricadeDoorBetweenDirection != null)
                     {
-                        return new ActionBarricadeDoor(m_Actor, game, m_Actor.Location.Map.GetMapObjectAt(m_Actor.Location.Position + barricadeDoorBetweenDirection.Choice) as DoorWindow);
+                        return new ActionBarricadeDoor(m_Actor, game, m_Actor.Location.Map.GetMapObjectAt(m_Actor.Location.Position + barricadeDoorBetweenDirection.Choice) as DoorWindow, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
                     }
                 }
                 #endregion
@@ -3009,10 +3007,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
 
                 // 2. Barricade unbarricaded windows.
-                if (door.IsWindow && !door.IsBarricaded && game.Rules.CanActorBarricadeDoor(m_Actor,door))
+                if (door.IsWindow && !door.IsBarricaded && game.Rules.CanActorBarricadeDoor(m_Actor,door, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                 {
                     if (game.Rules.IsAdjacent(door.Location.Position, m_Actor.Location.Position))
-                        return new ActionBarricadeDoor(m_Actor, game, door);
+                        return new ActionBarricadeDoor(m_Actor, game, door, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
                     else
                         return BehaviorIntelligentBumpToward(game, door.Location.Position, false, false);                    
                 }
@@ -3357,7 +3355,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 3. get rid of light & sprays.
             // 4. get rid of ammo.
             // 5. get rid of entertainment  // alpha10
-            // 6. get rid of medecine.
+            // 6. get rid of medicine.
             // 7. last resort, get rid of random item.
             Inventory myInv = m_Actor.Inventory;
 
@@ -3372,9 +3370,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return BehaviorDropItem(game, material);
 
             // 3. get rid of light & sprays.
-            Item light = myInv.GetFirstMatching((it) => it is ItemLight);
+            /*Item light = myInv.GetFirstMatching((it) => it is ItemLight); //@@MP - lights are necessary with the darkness revamp (Release 6-2)
             if (light != null)
-                return BehaviorDropItem(game, light);
+                return BehaviorDropItem(game, light);*/
             Item spray = myInv.GetFirstMatching((it) => it is ItemSprayPaint);
             if (spray != null)
                 return BehaviorDropItem(game, spray);
@@ -4189,7 +4187,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 if (it.Model.ID == (int)alcohollist[i])*/
             
-            if (alcoholList.Exists(x => x == it.Model.ID))
+            if (alcoholList.Exists(x => x == it.Model.ID)) //it's an alcohol
             {
                 foreach (Item invitem in m_Actor.Inventory.Items)
                 {
@@ -4352,9 +4350,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 ItemLight itLight = it as ItemLight;
 
-                if (itLight.Batteries <= 0)
-                    return ItemRating.JUNK;
-
                 // light is junk if already has 6 hours of batteries worth.
                 int totalLightsBatteries = 0;
                 m_Actor.Inventory.ForEach((i) =>
@@ -4368,6 +4363,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 });
 
                 if (totalLightsBatteries >= 6 * WorldTime.TURNS_PER_HOUR)
+                    return ItemRating.JUNK;
+                else if (totalLightsBatteries == 0) //@@MP - don't have a light. lights are now very important given the darkness revamp (Release 6-2)
+                    return ItemRating.NEED;
+                else if (itLight.Batteries <= 0)
                     return ItemRating.JUNK;
             }
 
@@ -4432,6 +4431,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // Any meds if none. Other meds if need (or could) it.
             if (it is ItemMedicine)
             {
+                //@@MP - added alcohol-specific check (Release 4)(Release 6-2)
+                if (AlreadyHasEnoughAlcoholInInventory(it, 1)) //there's 6 unique models of alcohol, so if left to just the next check the AI would be able to go nuts and take way too much booze. this fixes that
+                    return ItemRating.JUNK;
+
                 ItemMedicine itMed = it as ItemMedicine;
                 if (CountItemsOfSameType(typeof(ItemMedicine), it) == 0)
                     return ItemRating.NEED;

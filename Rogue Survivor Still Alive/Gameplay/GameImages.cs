@@ -9,7 +9,10 @@ namespace djack.RogueSurvivor.Gameplay
     static class GameImages
     {
         #region Constants
-        const float GRAYLEVEL_DIM_FACTOR = 0.55f;
+        //@@MP - tiles visited but not within current FOV are now darker (Release 6-2)
+        const float DAYTIME_GRAYLEVEL_DIM_FACTOR = 0.55f; //@@MP this was the one and only prior to R6-2
+        const float NIGHTTIME_GRAYLEVEL_DIM_FACTOR = 0.35f;
+        const float UNDERGROUND_GRAYLEVEL_DIM_FACTOR = 0.15f;
         #endregion
 
         #region Images IDs
@@ -459,6 +462,10 @@ namespace djack.RogueSurvivor.Gameplay
         #region Items
         public const string ITEM_SLOT = @"Items\itemslot";
         public const string ITEM_EQUIPPED = @"Items\itemequipped";
+
+        //@MP (Release 6-2)
+        public const string ITEM_FEMALE_NIGHTVISION = @"Actors\Decoration\female_night-vision";
+        public const string ITEM_MALE_NIGHTVISION = @"Actors\Decoration\male_night-vision";
 
         public const string ITEM_AMMO_LIGHT_PISTOL = @"Items\item_ammo_light_pistol";
         public const string ITEM_AMMO_HEAVY_PISTOL = @"Items\item_ammo_heavy_pistol";

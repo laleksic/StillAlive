@@ -2846,17 +2846,17 @@ namespace djack.RogueSurvivor.Engine
 
         bool HandleNewCharacterRace(DiceRoller roller, out bool isUndead)
         {
-            string[] menuEntries = new string[]
+            string[] menuEntries = new string[] //@@MP - re-ordered (Release 6-2)
             {
-                "*random*",
                 "Living",
-                "Undead"
+                "Undead",
+                "*random*"
             };
-            string[] descs = new string[]
+            string[] descs = new string[] //@@MP - re-ordered (Release 6-2)
             {
-                "(picks a race at random for you)",
                 "Try to survive.",
-                "Eat brains!"
+                "Eat brains!",
+                "(picks a race at random for you)"
             };
 
             isUndead = false;
@@ -2896,13 +2896,26 @@ namespace djack.RogueSurvivor.Engine
 
                     case Keys.Enter:    // validate
                         {
-                            switch (selected)
+                            switch (selected) //@@MP - re-ordered (Release 6-2)
                             {
-                                case 0: // random
+                                case 0: // living
+                                    isUndead = false;
+                                    choiceDone = true;
+                                    loop = false;
+                                    break;
+
+                                case 1: // undead
+                                    isUndead = true;
+                                    choiceDone = true;
+                                    loop = false;
+                                    break;
+
+                                case 2: // random
                                     isUndead = roller.RollChance(50);
 
                                     gy += BOLD_LINE_SPACING;
                                     m_UI.UI_DrawStringBold(Color.White, String.Format("Race : {0}.", isUndead ? "Undead" : "Living"), gx, gy);
+                                    //@@MP - remove choice confirmation (Release 1)
                                     /*gy += BOLD_LINE_SPACING;
                                     m_UI.UI_DrawStringBold(Color.Yellow, "Is that OK? Y to confirm, N to cancel.", gx, gy);
                                     m_UI.UI_Repaint();
@@ -2911,18 +2924,6 @@ namespace djack.RogueSurvivor.Engine
                                     choiceDone = true;
                                     loop = false;
                                     //}
-                                    break;
-
-                                case 1: // living
-                                    isUndead = false;
-                                    choiceDone = true;
-                                    loop = false;
-                                    break;
-
-                                case 2: // undead
-                                    isUndead = true;
-                                    choiceDone = true;
-                                    loop = false;
                                     break;
                             }
                             break;
@@ -4885,6 +4886,8 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.PUSH_WOODEN_OBJECT_AUDIBLE, GameSounds.PUSH_WOODEN_OBJECT_AUDIBLE_FILE);
             //@@MP - relocated from music to sfx (Release 6-1)
             m_SFXManager.Load(GameSounds.REINCARNATE, GameSounds.REINCARNATE_FILE);
+            //@@MP (Release 6-2)
+            m_SFXManager.Load(GameSounds.NIGHTVISION, GameSounds.NIGHTVISION_FILE);
 
             //AMBIENT SOUND
             m_AmbientSFXManager.Load(GameAmbients.RAIN_OUTSIDE, GameAmbients.RAIN_OUTSIDE_FILE); //@MP (Release 5-3), separated to own instance (Release 6-1)
@@ -4950,8 +4953,10 @@ namespace djack.RogueSurvivor.Engine
                     UpdateBgMusic();
 
                 //autosave every 360 turns (or 6 world hours) //@@MP (Release 6-1)
+#if !DEBUG
                 if (s_Options.Autosaving && (m_Session.WorldTime.TurnCounter % 360 == 0))
                     DoSaveGame(GetUserSave(), true);
+#endif
             }
         }
 
@@ -6082,7 +6087,6 @@ namespace djack.RogueSurvivor.Engine
                     t.Tick(map);
                     if (t.IsCompleted)
                     {
-                        //AddMessage(new Message(String.Format(map.CountTimers.ToString()), m_Session.WorldTime.TurnCounter, Color.Magenta));
                         if (timersGarbage == null) timersGarbage = new List<TimedTask>(map.CountTimers);
                         timersGarbage.Add(t);
                     }
@@ -10192,7 +10196,7 @@ namespace djack.RogueSurvivor.Engine
                             {
                                 DoorWindow door = mapObj as DoorWindow;
                                 string reason;
-                                if (m_Rules.CanActorBarricadeDoor(player, door, out reason))
+                                if (m_Rules.CanActorBarricadeDoor(player, door, m_Session.World.Weather, out reason)) //@@MP - added weather parameter (Release 6-2)
                                 {
                                     DoBarricadeDoor(player, door);
                                     RedrawPlayScreen();
@@ -10209,7 +10213,7 @@ namespace djack.RogueSurvivor.Engine
                             {
                                 Fortification fort = mapObj as Fortification;
                                 string reason;
-                                if (m_Rules.CanActorRepairFortification(player, out reason)) //@@MP - unused parameter (Release 5-7)
+                                if (m_Rules.CanActorRepairFortification(player, m_Session.World.Weather, out reason)) //@@MP - unused parameter (Release 5-7), added weather parameter (Release 6-2)
                                 {
                                     DoRepairFortification(player, fort);
                                     RedrawPlayScreen();
@@ -10404,7 +10408,7 @@ namespace djack.RogueSurvivor.Engine
                     if (player.Location.Map.IsInBounds(pos))
                     {
                         string reason;
-                        if (m_Rules.CanActorBuildFortification(player, pos, isLarge, out reason))
+                        if (m_Rules.CanActorBuildFortification(player, pos, isLarge, m_Session.World.Weather, out reason)) //@@MP - added weather parameter (Release 6-2)
                         {
                             DoBuildFortification(player, pos, isLarge);
                             RedrawPlayScreen();
@@ -12232,7 +12236,7 @@ namespace djack.RogueSurvivor.Engine
                         {
                             // Check if can build here.
                             string reason;
-                            if (m_Rules.CanActorBuildFortification(follower, mapPos, isLarge, out reason))
+                            if (m_Rules.CanActorBuildFortification(follower, mapPos, isLarge, m_Session.World.Weather, out reason)) //@@MP - added weather parameter (Release 6-2)
                             {
                                 // highlight.
                                 highlightedTile = mapPos;
@@ -12328,7 +12332,7 @@ namespace djack.RogueSurvivor.Engine
                             {
                                 // Check if can barricade here.
                                 string reason;
-                                if (m_Rules.CanActorBarricadeDoor(follower, door, out reason))
+                                if (m_Rules.CanActorBarricadeDoor(follower, door, m_Session.World.Weather, out reason)) //@@MP - added weather parameter (Release 6-2)
                                 {
                                     // highlight.
                                     highlightedTile = mapPos;
@@ -16288,7 +16292,11 @@ namespace djack.RogueSurvivor.Engine
                 ItemLight ltIt = it as ItemLight;
                 --ltIt.Batteries;
                 if (actor.IsPlayer) //@@MP (Release 2)
+                {
                     m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER, AudioPriority.PRIORITY_BGM);
+                    UpdatePlayerFOV(m_Player); //@@MP - update FOV now, don't wait until the next turn (Release 6-2)
+                }
+                    
             }
             else if (it.Model is ItemTrackerModel)
             {
@@ -16321,7 +16329,10 @@ namespace djack.RogueSurvivor.Engine
             else if (it.Model is ItemLightModel) //@@MP (Release 2)
             {
                 if (actor.IsPlayer)
+                {
                     m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER, AudioPriority.PRIORITY_BGM);
+                    UpdatePlayerFOV(m_Player); //@@MP - update FOV now, don't wait until the next turn (Release 6-2)
+                }
             }
         }
 
@@ -16356,15 +16367,15 @@ namespace djack.RogueSurvivor.Engine
             else
             {
                 // drop or discard.
-                if (it is ItemTracker)
+                /*if (it is ItemTracker) //@@MP - don't delete, as trackers and lights are still valuable (Release 6-2)
                 {
                     discardMe = (it as ItemTracker).Batteries <= 0;
                 }
                 else if (it is ItemLight)
                 {
                     discardMe = (it as ItemLight).Batteries <= 0;
-                }
-                else if (it is ItemSprayPaint)
+                }*/
+                if (it is ItemSprayPaint) //@@MP - was else if (Release 6-2)
                 {
                     discardMe = (it as ItemSprayPaint).PaintQuantity <= 0;
                 }
@@ -16407,8 +16418,24 @@ namespace djack.RogueSurvivor.Engine
             // remove from inventory.
             actor.Inventory.RemoveAllQuantity(it);
 
-            // add to ground.
-            actor.Location.Map.DropItemAt(it, actor.Location.Position);
+            // add to ground.  //@@MP - if current spot is full, try adjacents (Release 6-2)
+            Map map = actor.Location.Map;
+            Point position = actor.Location.Position;
+            Point next = position;
+            foreach (Direction d in Direction.COMPASS)
+            {
+                if (map.IsWalkable(next))
+                {
+                    Inventory groundInv = map.GetItemsAt(next);
+                    if (groundInv == null || !groundInv.IsFull)
+                    {
+                        actor.Location.Map.DropItemAt(it, next);
+                        break;
+                    }
+                }
+
+                next = position + d;
+            }
 
             // make sure it is unequipped.
             it.EquippedPart = DollPart.NONE;
@@ -16431,16 +16458,37 @@ namespace djack.RogueSurvivor.Engine
         {
             // alpha10 defrag ai inventories
             bool defragInventory = false;//!actor.IsPlayer && it.Model.IsStackable; //@@MP -  (Release 6-1)
+            bool absoluteDarkness = (m_Rules.ActorFOV(actor, actor.Location.Map.LocalTime, m_Session.World.Weather) == 0); //@@MP - too dark to read (Release 6-2)
 
             // concrete use.
             if (it is ItemFood)
                 DoUseFoodItem(actor, it as ItemFood);
             else if (it is ItemMedicine)
-                DoUseMedicineItem(actor, it as ItemMedicine);
+            {
+                if (absoluteDarkness) //@@MP - too dark to read (Release 6-2)
+                {
+                    if (actor.IsPlayer)
+                        AddMessage(new Message("You can't do that, it's too dark here.", m_Session.WorldTime.TurnCounter, Color.Red));
+
+                    return;
+                }
+                else
+                    DoUseMedicineItem(actor, it as ItemMedicine);
+            }
             else if (it is ItemAmmo)
                 DoUseAmmoItem(actor, it as ItemAmmo);
             else if (it is ItemEntertainment)
-                DoUseEntertainmentItem(actor, it as ItemEntertainment);
+            {
+                if (absoluteDarkness) //@@MP - too dark to read (Release 6-2)
+                {
+                    if (actor.IsPlayer)
+                        AddMessage(new Message("You can't do that, it's too dark here.", m_Session.WorldTime.TurnCounter, Color.Red));
+
+                    return;
+                }
+                else
+                    DoUseEntertainmentItem(actor, it as ItemEntertainment);
+            }
             else if (it is ItemTrap)
                 DoUseTrapItem(actor, it as ItemTrap);
             /*else if (it is ItemSprayScent) // alpha10 new way to use spray scent
@@ -17543,15 +17591,15 @@ namespace djack.RogueSurvivor.Engine
 
             //@@MP - moved from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
             MapObject mapObj = player.Location.Map.GetMapObjectAt(player.Location.Position + direction);
-            if (mapObj != null && !mapObj.IsContainer)
+            if (mapObj != null && mapObj.IsJumpable && player.StaminaPoints < Rules.STAMINA_MIN_FOR_ACTIVITY)
             {
-                AddMessage(MakeErrorMessage("Cannot climb on that"));
+                AddMessage(MakeErrorMessage("Not enough stamina to climb on that"));
                 RedrawPlayScreen();
                 return false;
             }
-            else if (mapObj != null && mapObj.IsJumpable && player.StaminaPoints < Rules.STAMINA_MIN_FOR_ACTIVITY)
+            else if (mapObj != null && !mapObj.IsContainer) //@@MP - swapped the if and else ifs (Release 6-2)
             {
-                AddMessage(MakeErrorMessage("Not enough stamina to climb on that"));
+                AddMessage(MakeErrorMessage("Cannot climb on that"));
                 RedrawPlayScreen();
                 return false;
             }
@@ -18819,7 +18867,11 @@ namespace djack.RogueSurvivor.Engine
             m_UI.UI_Clear(Color.Black);
             {
                 // map & minimap
-                Color mapTint = TintForDayPhase(m_Session.WorldTime.Phase); //@@MP - restored (Release 5-7)
+                Color mapTint = TINT_MIDNIGHT;
+                if (m_Session.WorldTime.IsNight && m_Rules.HasLightOnEquipped(m_Player)) //@@MP - change tint during night if torch on (Release 6-2)
+                    mapTint = TINT_SUNSET; //it's a good colour for a torch too
+                else if (m_Rules.CanActorSeeSky(m_Player)) //@@MP - added check in case they're undergound (Release 6-1)
+                    mapTint = TintForDayPhase(m_Session.WorldTime.Phase); //@@MP - restored (Release 5-7)
                 m_UI.UI_DrawLine(Color.DarkGray, RIGHTPANEL_X, 0, RIGHTPANEL_X, MESSAGES_Y);
                 DrawMap(m_Session.CurrentMap, mapTint);
 
@@ -18982,9 +19034,6 @@ namespace djack.RogueSurvivor.Engine
             return sb.ToString();
         }
 
-        /// <summary>
-        /// OBSOLETE
-        /// </summary>
         Color TintForDayPhase(DayPhase phase)
         {
             switch (phase)
@@ -19052,6 +19101,21 @@ namespace djack.RogueSurvivor.Engine
             bool isUndead = m_Player.Model.Abilities.IsUndead;
             bool hasSmell = m_Player.Model.StartingSheet.BaseSmellRating > 0;
             int playerSmellTheshold = m_Rules.ActorSmellThreshold(m_Player);
+
+            //@@MP - added distinctions for different times and locations. makes the visited but not-in-FOV tiles darker accordingly (Release 6-2)
+            string grayLevel = "default";
+            /*if (m_Rules.CanActorSeeSky(m_Player))
+            {
+                if (m_Session.WorldTime.IsNight)
+                        //draw darker graylevel
+                        else //it's daytime
+                        //draw lightest graylevel
+                }
+            else //we're underground
+            {
+                //draw darkest graylevel
+            }*/
+
             for (int x = left; x < right; x++)
             {
                 position.X = x;
@@ -19065,7 +19129,7 @@ namespace djack.RogueSurvivor.Engine
 
                     // 1. Tile
                     if (map.IsInBounds(x, y))
-                        DrawTile(tile, toScreen, tint);
+                        DrawTile(tile, toScreen, tint, grayLevel); //@@MP - added parameter for GrayLevel (Release 6-1)
                     else if (map.IsMapBoundary(x, y))
                     {
                         if(map.GetExitAt(position) != null)
@@ -19205,7 +19269,7 @@ namespace djack.RogueSurvivor.Engine
             return null;
         }
 
-        public void DrawTile(Tile tile, Point screen, Color tint)
+        public void DrawTile(Tile tile, Point screen, Color tint, string grayLevel) //@@MP - added grayLevel for environment-specific 'fog of war' tuning (Release 6-2)
         {
             if (tile.IsInView)  // visible
             {
@@ -19225,17 +19289,28 @@ namespace djack.RogueSurvivor.Engine
             else if (tile.IsVisited && !IsPlayerSleeping()) // memorized
             {
                 // tile.
-                m_UI.UI_DrawGrayLevelImage(tile.Model.ImageID, screen.X, screen.Y);
+                //@@MP - added distinctions for different times and locations. makes the visited but not-in-FOV tiles darker accordingly (Release 6-2)
+                switch (grayLevel)
+                {
+                    case "underground": m_UI.UI_DrawGrayLevelImage(tile.Model.ImageID, screen.X, screen.Y); break;
+                    case "outside_night": m_UI.UI_DrawGrayLevelImage(tile.Model.ImageID, screen.X, screen.Y); break;
+                    case "outside_day": m_UI.UI_DrawGrayLevelImage(tile.Model.ImageID, screen.X, screen.Y); break;
+                    default: m_UI.UI_DrawGrayLevelImage(tile.Model.ImageID, screen.X, screen.Y); break; //throw new InvalidOperationException("invalid grayLevel");
+                }
 
                 // animation layer.
                 string movingWater = MovingWaterImage(tile.Model, m_Session.WorldTime.TurnCounter);
                 if (movingWater != null)
+                {
                     m_UI.UI_DrawGrayLevelImage(movingWater, screen.X, screen.Y);
+                }
 
                 // decorations.
                 if (tile.HasDecorations)
                     foreach (string deco in tile.Decorations)
+                    {
                         m_UI.UI_DrawGrayLevelImage(deco, screen.X, screen.Y);
+                    }
             }
         }
 
@@ -22143,6 +22218,9 @@ namespace djack.RogueSurvivor.Engine
 
             switch (hint)
             {
+                case AdvisorHint.ABSOLUTE_DARKNESS: //@@MP (Release 6-2)
+                    return (m_Rules.ActorFOV(m_Player, m_Player.Location.Map.LocalTime, m_Session.World.Weather) == 0);
+
                 case AdvisorHint.ACTOR_MELEE:   // adjacent to an enemy.
                     return IsAdjacentToEnemy(map, pos, m_Player);
 
@@ -22152,13 +22230,13 @@ namespace djack.RogueSurvivor.Engine
                         DoorWindow door = map.GetMapObjectAt(pt) as DoorWindow;
                         if (door == null)
                             return false;
-                        return m_Rules.CanActorBarricadeDoor(m_Player, door);
+                        return m_Rules.CanActorBarricadeDoor(m_Player, door, m_Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
                     });
 
                 case AdvisorHint.BUILD_FORTIFICATION: // building fortifications.
                     return map.HasAnyAdjacentInMap(pos, (pt) =>
                     {
-                        return m_Rules.CanActorBuildFortification(m_Player, pt, false);
+                        return m_Rules.CanActorBuildFortification(m_Player, pt, false, m_Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
                     });
 
                 case AdvisorHint.CELLPHONES:
@@ -22484,6 +22562,16 @@ namespace djack.RogueSurvivor.Engine
         {
             switch (hint)
             {
+                case AdvisorHint.ABSOLUTE_DARKNESS: //@@MP (Release 6-2)
+                    title = "ABSOLUTE DARKNESS";
+                    body = new string[] {
+                        "You are currently in absolute darkness, and cannot see around you.",
+                        "Anything may be lurking nearby, and you won't see it coming.",
+                        "You cannot barricade doors, build fortifications, or read books without light.",
+                        "You should try to find a source of light, such as a flashlight."
+                    };
+                    break;
+
                 case AdvisorHint.ACTOR_MELEE:
                     title = "ATTACK AN ENEMY IN MELEE";
                     body = new string[] {
