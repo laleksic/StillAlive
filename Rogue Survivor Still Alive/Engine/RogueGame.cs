@@ -18858,23 +18858,46 @@ namespace djack.RogueSurvivor.Engine
 
         public void RedrawPlayScreen()
         {
-            // alpha10 dont display some infos
-            bool canKnowTime = m_Rules.CanActorKnowTime(m_Player);
+            //shared variables
+            bool canKnowTime = m_Rules.CanActorKnowTime(m_Player); // alpha10 dont display some infos
+            bool isNight = m_Session.WorldTime.IsNight; //@@MP (Release 6-2)
+            bool canActorSeeSky = m_Rules.CanActorSeeSky(m_Player);//@@MP (Release 6-2)
+            bool hasLitTorch = m_Rules.HasLightOnEquipped(m_Player); //@@MP (Release 6-2)
+            Weather currentWeather = m_Session.World.Weather; //@@MP (Release 6-2)
 
             // get mutex.
             Monitor.Enter(m_UI);
 
             m_UI.UI_Clear(Color.Black);
             {
-                // map & minimap
+                // map
+                //// determine tint to apply
                 Color mapTint = TINT_MIDNIGHT;
-                if (m_Session.WorldTime.IsNight && m_Rules.HasLightOnEquipped(m_Player)) //@@MP - change tint during night if torch on (Release 6-2)
+                if (isNight && hasLitTorch) //@@MP - change tint during night if torch on (Release 6-2)
                     mapTint = TINT_SUNSET; //it's a good colour for a torch too
-                else if (m_Rules.CanActorSeeSky(m_Player)) //@@MP - added check in case they're undergound (Release 6-1)
+                else if (canActorSeeSky) //@@MP - added check in case they're undergound (Release 6-1)
                     mapTint = TintForDayPhase(m_Session.WorldTime.Phase); //@@MP - restored (Release 5-7)
-                m_UI.UI_DrawLine(Color.DarkGray, RIGHTPANEL_X, 0, RIGHTPANEL_X, MESSAGES_Y);
-                DrawMap(m_Session.CurrentMap, mapTint);
+                //// determine graylevel for tiles and objects visited but not visible //@@MP (Release 6-2)
+                string grayLevelType = "daytime"; //outside, day (default)
+                if (!canActorSeeSky)
+                {
+                    if (hasLitTorch)
+                        grayLevelType = "underground_littorch"; //sky not visible, carrying lit torch
+                    else
+                        grayLevelType = "underground_notorch"; //sky not visible, not carrying a lit torch
+                }
+                else if (isNight) //outside, night
+                {
+                    if (currentWeather == Weather.CLEAR)
+                        grayLevelType = "nighttime_clear";
+                    else
+                        grayLevelType = "nighttime_clouded";
+                }
 
+                m_UI.UI_DrawLine(Color.DarkGray, RIGHTPANEL_X, 0, RIGHTPANEL_X, MESSAGES_Y);
+                DrawMap(m_Session.CurrentMap, mapTint, grayLevelType); //@@MP - added parameter for grayLevelType (Release 6-2)
+
+                // minimap
                 m_UI.UI_DrawLine(Color.DarkGray, RIGHTPANEL_X, MINIMAP_Y - 4, CANVAS_WIDTH, MINIMAP_Y - 4);
                 DrawMiniMap(m_Session.CurrentMap);
 
@@ -18933,13 +18956,13 @@ namespace djack.RogueSurvivor.Engine
                 switch(m_Session.CurrentMap.Lighting)
                 {
                     case Lighting.OUTSIDE:
-                        weatherOrLightingColor = WeatherColor(m_Session.World.Weather);
+                        weatherOrLightingColor = WeatherColor(currentWeather);
                         // alpha10 only show weather if can see it
                         /*if (m_Rules.CanActorSeeSky(m_Player)) //@@MP - handled a bit differently from alpha 10 (Release 6-1)
                         {*/
-                        weatherOrLightingString = DescribeWeather(m_Session.World.Weather);
+                        weatherOrLightingString = DescribeWeather(currentWeather);
                             // alpha10 desc weather fov effect
-                            int fovPenalty = m_Rules.WeatherFovPenalty(m_Player, m_Session.World.Weather);
+                            int fovPenalty = m_Rules.WeatherFovPenalty(m_Player, currentWeather);
                             if (fovPenalty != 0)
                                 weatherOrLightingString += " [fov -" + fovPenalty + "]";
                         /*}
@@ -18961,7 +18984,7 @@ namespace djack.RogueSurvivor.Engine
                     default:
                         throw new InvalidOperationException("unhandled lighting type");
                 }
-                if (m_Rules.CanActorSeeSky(m_Player)) //@@MP - handled a bit differently from alpha 10 (Release 6-1)
+                if (canActorSeeSky) //@@MP - handled a bit differently from alpha 10 (Release 6-1), switched to variable (Release 6-2)
                     m_UI.UI_DrawString(weatherOrLightingColor, weatherOrLightingString, X1, Y3);
                 else
                     m_UI.UI_DrawString(Color.Gray, "[can't see the sky]", X1, Y3);
@@ -19062,8 +19085,25 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-#region DRAWING ELEMENTS
-        public void DrawMap(Map map, Color tint)
+        #region DRAWING ELEMENTS
+        /// <summary>
+        /// Draws the image (tile or object) with the appropriate gray level according to the time of day and location
+        /// </summary>
+        /// <param name="grayLevelType">For day, night or underground</param>
+        private void DrawGrayLevelHandler(string imageID, int gx, int gy, string grayLevelType) //@@MP (Release 6-2)
+        {
+            switch (grayLevelType)
+            {
+                case "underground_notorch": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "underground_notorch"); break; //can't see sky and carrying no torch
+                case "underground_littorch": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "underground_littorch"); break; //can't see sky but carrying a lit torch
+                case "nighttime_clouded": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "nighttime_clouded"); break; //outside, night, clouded sky (cloudy or raining)
+                case "nighttime_clear": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "nighttime_clear"); break; //outside, night, clear sky
+                case "daytime": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "daytime"); break; //outside, day
+                default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
+            }
+        }
+
+        public void DrawMap(Map map, Color tint, string grayLevelType) //@@MP - added distinctions for different times and locations. makes the visited but not-in-FOV tiles darker accordingly (Release 6-2)
         {
             // trim to outer map bounds.
             int left = Math.Max(-1, m_MapViewRect.Left);
@@ -19081,7 +19121,6 @@ namespace djack.RogueSurvivor.Engine
                 case Weather.HEAVY_RAIN:
                     weatherImage = (m_Session.WorldTime.TurnCounter % 2 == 0 ? GameImages.WEATHER_HEAVY_RAIN1 : GameImages.WEATHER_HEAVY_RAIN2);
                     break;
-
                 default:
                     weatherImage = null;
                     break;
@@ -19102,20 +19141,6 @@ namespace djack.RogueSurvivor.Engine
             bool hasSmell = m_Player.Model.StartingSheet.BaseSmellRating > 0;
             int playerSmellTheshold = m_Rules.ActorSmellThreshold(m_Player);
 
-            //@@MP - added distinctions for different times and locations. makes the visited but not-in-FOV tiles darker accordingly (Release 6-2)
-            string grayLevel = "default";
-            /*if (m_Rules.CanActorSeeSky(m_Player))
-            {
-                if (m_Session.WorldTime.IsNight)
-                        //draw darker graylevel
-                        else //it's daytime
-                        //draw lightest graylevel
-                }
-            else //we're underground
-            {
-                //draw darkest graylevel
-            }*/
-
             for (int x = left; x < right; x++)
             {
                 position.X = x;
@@ -19129,7 +19154,7 @@ namespace djack.RogueSurvivor.Engine
 
                     // 1. Tile
                     if (map.IsInBounds(x, y))
-                        DrawTile(tile, toScreen, tint, grayLevel); //@@MP - added parameter for GrayLevel (Release 6-1)
+                        DrawTile(tile, toScreen, tint, grayLevelType); //@@MP - added parameter for grayLevelType (Release 6-1)
                     else if (map.IsMapBoundary(x, y))
                     {
                         if(map.GetExitAt(position) != null)
@@ -19153,7 +19178,7 @@ namespace djack.RogueSurvivor.Engine
                     MapObject mapObj = map.GetMapObjectAt(x, y);
                     if (mapObj != null)
                     {
-                        DrawMapObject(mapObj, toScreen, tint);
+                        DrawMapObject(mapObj, toScreen, tint, grayLevelType); //@@MP - added parameter for grayLevelType (Release 6-2)
                         drawWater = true;
                     }
 
@@ -19227,7 +19252,7 @@ namespace djack.RogueSurvivor.Engine
                     if (tile != null && tile.HasDecorations)
                         drawWater = true;
                     if (drawWater && tile.Model.IsWater)
-                        DrawTileWaterCover(tile, toScreen, tint);
+                        DrawTileWaterCover(tile, toScreen, tint, grayLevelType); //@@MP - added parameter for grayLevelType (Release 6-2)
 
 
                     // 7. Weather (if visible and not inside).
@@ -19269,7 +19294,7 @@ namespace djack.RogueSurvivor.Engine
             return null;
         }
 
-        public void DrawTile(Tile tile, Point screen, Color tint, string grayLevel) //@@MP - added grayLevel for environment-specific 'fog of war' tuning (Release 6-2)
+        public void DrawTile(Tile tile, Point screen, Color tint, string grayLevelType) //@@MP - added grayLevel for environment-specific 'fog of war' tuning (Release 6-2)
         {
             if (tile.IsInView)  // visible
             {
@@ -19288,33 +19313,26 @@ namespace djack.RogueSurvivor.Engine
             }
             else if (tile.IsVisited && !IsPlayerSleeping()) // memorized
             {
+                //@@MP - added distinctions for different times and locations (grayLevelType). makes the visited but not-in-FOV tiles darker accordingly (Release 6-2)
+
                 // tile.
-                //@@MP - added distinctions for different times and locations. makes the visited but not-in-FOV tiles darker accordingly (Release 6-2)
-                switch (grayLevel)
-                {
-                    case "underground": m_UI.UI_DrawGrayLevelImage(tile.Model.ImageID, screen.X, screen.Y); break;
-                    case "outside_night": m_UI.UI_DrawGrayLevelImage(tile.Model.ImageID, screen.X, screen.Y); break;
-                    case "outside_day": m_UI.UI_DrawGrayLevelImage(tile.Model.ImageID, screen.X, screen.Y); break;
-                    default: m_UI.UI_DrawGrayLevelImage(tile.Model.ImageID, screen.X, screen.Y); break; //throw new InvalidOperationException("invalid grayLevel");
-                }
+                DrawGrayLevelHandler(tile.Model.ImageID, screen.X, screen.Y, grayLevelType);
 
                 // animation layer.
                 string movingWater = MovingWaterImage(tile.Model, m_Session.WorldTime.TurnCounter);
                 if (movingWater != null)
-                {
-                    m_UI.UI_DrawGrayLevelImage(movingWater, screen.X, screen.Y);
-                }
+                    DrawGrayLevelHandler(movingWater, screen.X, screen.Y, grayLevelType);
 
                 // decorations.
                 if (tile.HasDecorations)
                     foreach (string deco in tile.Decorations)
                     {
-                        m_UI.UI_DrawGrayLevelImage(deco, screen.X, screen.Y);
+                        DrawGrayLevelHandler(deco, screen.X, screen.Y, grayLevelType);
                     }
             }
         }
 
-        public void DrawTileWaterCover(Tile tile, Point screen, Color tint)
+        public void DrawTileWaterCover(Tile tile, Point screen, Color tint, string grayLevelType) //@@MP - added parameter to allow graylevels for different times of day/location (Release 6-2)
         {
             if (tile.IsInView)  // visible
             {
@@ -19324,7 +19342,7 @@ namespace djack.RogueSurvivor.Engine
             else if (tile.IsVisited && !IsPlayerSleeping()) // memorized
             {
                 // tile.
-                m_UI.UI_DrawGrayLevelImage(tile.Model.WaterCoverImageID, screen.X, screen.Y);
+                DrawGrayLevelHandler(tile.Model.WaterCoverImageID, screen.X, screen.Y, grayLevelType);
             }
         }
 
@@ -19338,7 +19356,7 @@ namespace djack.RogueSurvivor.Engine
             m_UI.UI_DrawRect(color, new Rectangle(MapToScreen(mapPosition), new Size(TILE_SIZE, TILE_SIZE)));
         }
 
-        public void DrawMapObject(MapObject mapObj, Point screen, Color tint)
+        public void DrawMapObject(MapObject mapObj, Point screen, Color tint, string grayLevelType) //@@MP - added parameter to allow graylevels for different times of day/location (Release 6-2)
         {
             // pushables objects in water floating animation.
             if (mapObj.IsMovable && mapObj.Location.Map.GetTileAt(mapObj.Location.Position.X, mapObj.Location.Position.Y).Model.IsWater)
@@ -19363,7 +19381,7 @@ namespace djack.RogueSurvivor.Engine
             }
             else if (IsKnownToPlayer(mapObj) && !IsPlayerSleeping())
             {
-                DrawMapObject(mapObj, screen, mapObj.HiddenImageID, (imageID, gx, gy) => m_UI.UI_DrawGrayLevelImage(imageID, gx, gy));
+                DrawMapObject(mapObj, screen, mapObj.HiddenImageID, (imageID, gx, gy) => m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, grayLevelType)); //@@MP - added grayLevelType (Release 6-2)
             }
         }
 

@@ -10,9 +10,11 @@ namespace djack.RogueSurvivor.Gameplay
     {
         #region Constants
         //@@MP - tiles visited but not within current FOV are now darker (Release 6-2)
-        const float DAYTIME_GRAYLEVEL_DIM_FACTOR = 0.55f; //@@MP this was the one and only prior to R6-2
-        const float NIGHTTIME_GRAYLEVEL_DIM_FACTOR = 0.35f;
-        const float UNDERGROUND_GRAYLEVEL_DIM_FACTOR = 0.15f;
+        const float GRAYLEVEL_DIM_FACTOR_DAYTIME = 0.40f; //@@MP this was the one and only prior to R6-2
+        const float GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLEAR = 0.20f;
+        const float GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLOUDED = 0.15f;
+        const float GRAYLEVEL_DIM_FACTOR_UNDERGROUND_LITTORCH = 0.20f;
+        const float GRAYLEVEL_DIM_FACTOR_UNDERGROUND_NOTORCH = 0.10f;
         #endregion
 
         #region Images IDs
@@ -611,7 +613,11 @@ namespace djack.RogueSurvivor.Gameplay
         #region Static fields
         const string FOLDER = @"Resources\Images\";
         static readonly Dictionary<string, Image> s_Images = new Dictionary<string, Image>();
-        static readonly Dictionary<string, Image> s_GrayLevelImages = new Dictionary<string, Image>();
+        static readonly Dictionary<string, Image> s_GrayLevelImages_Daytime = new Dictionary<string, Image>(); //@@MP (Release 6-2)
+        static readonly Dictionary<string, Image> s_GrayLevelImages_NighttimeClear = new Dictionary<string, Image>(); //@@MP (Release 6-2)
+        static readonly Dictionary<string, Image> s_GrayLevelImages_NighttimeClouded = new Dictionary<string, Image>(); //@@MP (Release 6-2)
+        static readonly Dictionary<string, Image> s_GrayLevelImages_UndergroundNoTorch = new Dictionary<string, Image>(); //@@MP (Release 6-2)
+        static readonly Dictionary<string, Image> s_GrayLevelImages_UndergroundLitTorch = new Dictionary<string, Image>(); //@@MP (Release 6-2)
         #endregion
 
         #region Loading resources
@@ -1226,7 +1232,12 @@ namespace djack.RogueSurvivor.Gameplay
                 imgFixed = new Bitmap(img);
 
                 s_Images.Add(id, imgFixed);
-                s_GrayLevelImages.Add(id, MakeGrayLevel(imgFixed));
+                //s_GrayLevelImages.Add(id, MakeGrayLevel(imgFixed)); //@@MP this was the one and only prior to R6-2 (Release 6-2)
+                s_GrayLevelImages_Daytime.Add(id, MakeGrayLevel(imgFixed, "daytime"));
+                s_GrayLevelImages_NighttimeClear.Add(id, MakeGrayLevel(imgFixed, "nighttime_clear"));
+                s_GrayLevelImages_NighttimeClouded.Add(id, MakeGrayLevel(imgFixed, "nighttime_clouded"));
+                s_GrayLevelImages_UndergroundNoTorch.Add(id, MakeGrayLevel(imgFixed, "underground_notorch"));
+                s_GrayLevelImages_UndergroundLitTorch.Add(id, MakeGrayLevel(imgFixed, "underground_littorch"));
             }
             catch (Exception)
             {
@@ -1242,7 +1253,7 @@ namespace djack.RogueSurvivor.Gameplay
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        static Image MakeGrayLevel(Bitmap img)
+        static Image MakeGrayLevel(Bitmap img, string grayLevelType) //@@MP - added parameter to allow graylevels for different times of day/location (Release 6-2)
         {
             Bitmap grayed = new Bitmap(img);
 
@@ -1251,7 +1262,16 @@ namespace djack.RogueSurvivor.Gameplay
                 {
                     Color pixelColor = img.GetPixel(x, y);
                     float brightness = pixelColor.GetBrightness();
-                    int rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR * brightness);
+                    int rgb;
+                    switch (grayLevelType)
+                    {
+                        case "daytime": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_DAYTIME * brightness); break;
+                        case "nighttime_clear": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLEAR * brightness); break;
+                        case "nighttime_clouded": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLOUDED * brightness); break;
+                        case "underground_notorch": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_UNDERGROUND_NOTORCH * brightness); break;
+                        case "underground_littorch": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_UNDERGROUND_LITTORCH * brightness); break;
+                        default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
+                    }
 
                     grayed.SetPixel(x, y, Color.FromArgb(pixelColor.A, rgb, rgb, rgb));
                 }
@@ -1277,13 +1297,38 @@ namespace djack.RogueSurvivor.Gameplay
                 return s_Images[UNDEF];
         }
 
-        public static Image GetGrayLevel(string imageID)
+        public static Image GetGrayLevel(string imageID, string grayLevelType) //@@MP - added parameter to allow graylevels for different times of day/location (Release 6-2)
         {
             Image img;
-            if (s_GrayLevelImages.TryGetValue(imageID, out img))
-                return img;
-            else
-                return s_GrayLevelImages[UNDEF];
+            switch (grayLevelType) //@@MP - returns the image with the graylevel suitable for the player time of day and location (Release 6-2)
+            {
+                case "daytime":
+                    if (s_GrayLevelImages_Daytime.TryGetValue(imageID, out img))
+                        return img;
+                    else
+                        return s_GrayLevelImages_Daytime[UNDEF];
+                case "nighttime_clear":
+                    if (s_GrayLevelImages_NighttimeClear.TryGetValue(imageID, out img))
+                        return img;
+                    else
+                        return s_GrayLevelImages_NighttimeClear[UNDEF];
+                case "nighttime_clouded":
+                    if (s_GrayLevelImages_NighttimeClouded.TryGetValue(imageID, out img))
+                        return img;
+                    else
+                        return s_GrayLevelImages_NighttimeClouded[UNDEF];
+                case "underground_notorch":
+                    if (s_GrayLevelImages_UndergroundNoTorch.TryGetValue(imageID, out img))
+                        return img;
+                    else
+                        return s_GrayLevelImages_UndergroundNoTorch[UNDEF];
+                case "underground_littorch":
+                    if (s_GrayLevelImages_UndergroundLitTorch.TryGetValue(imageID, out img))
+                        return img;
+                    else
+                        return s_GrayLevelImages_UndergroundLitTorch[UNDEF];
+                default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
+            }
         }
         #endregion
     }
