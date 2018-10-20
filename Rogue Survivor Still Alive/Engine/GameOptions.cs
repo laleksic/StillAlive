@@ -822,7 +822,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.UI_AUTOSAVE: //@@MP
                     return "Automatically saves your game every 12 in-game hours, equivalent to every 360 turns.";
                 default:
-                    throw new ArgumentOutOfRangeException("opyion","unhandled option");
+                    throw new ArgumentOutOfRangeException("option","unhandled option");
             }
         }
 

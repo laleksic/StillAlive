@@ -1092,7 +1092,7 @@ namespace djack.RogueSurvivor.Engine
             if (suppressor == null)
                 throw new ArgumentNullException("suppressor","null suppressor");
             if (sprayOn == null)
-                throw new ArgumentNullException("sprayon","null target");
+                throw new ArgumentNullException("sprayOn","null target");
 
             ////////////////////////////////////////////////////////
             // Cant if any is true:

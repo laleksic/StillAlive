@@ -2397,7 +2397,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             ///////////////////////////////
             // 2. Entry door with shop ids
-            //    Add lectern and hangings.
+            //    Add driveway
             ///////////////////////////////
             #region
             int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
@@ -2465,6 +2465,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // 3. Add workbenches and cars
             ///////////
             #region
+            bool placedGenerator = false; //@@MP - we only want to place one generator (Release 6-2)
             MapObjectFill(map, b.InsideRect,
                 (pt) =>
                 {
@@ -2472,7 +2473,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         return null;
                     else if (m_DiceRoller.RollChance(20))
                         map.DropItemAt(MakeShopConstructionItem(), pt);
-                    return MakeObjWorkbench(GameImages.OBJ_WORKBENCH); //@@MP (Release 5-3)
+
+                    if (!placedGenerator)
+                    {
+                        placedGenerator = true;
+                        return MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON); //@@MP (Release 6-2)
+                    }
+                    else
+                        return MakeObjWorkbench(GameImages.OBJ_WORKBENCH); //@@MP (Release 5-3)
                 });
 
             MapObjectFill(map, b.InsideRect,
@@ -2607,11 +2615,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             ///////////
             #region
             //cupboards
+            bool placedGenerator = false; //@@MP - we only want to place one generator (Release 6-2)
             MapObjectFill(map, b.InsideRect,
                 (pt) =>
                 {
                     if (CountAdjWalls(map, pt.X, pt.Y) < 3)
                         return null;
+                    else if (!placedGenerator) //@@MP (Release 6-2)
+                    {
+                        placedGenerator = true;
+                        return MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON);
+                    }
                     else if (m_DiceRoller.RollChance(50))
                     {
                         map.DropItemAt(MakeShopPharmacyItem(), pt);
@@ -4039,28 +4053,18 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         return MakeObjTable(GameImages.OBJ_TABLE);
                     });
             }
-            // a bed and a fridge with food if lucky.
-            if (m_DiceRoller.RollChance(33))
-            {
-                // bed.
-                MapObjectPlaceInGoodPosition(map, b.InsideRect,
-                    (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 3 && CountAdjDoors(map, pt.X, pt.Y) == 0,
-                    m_DiceRoller,
-                    (pt) => MakeObjBed(GameImages.OBJ_BED));
+            // a generator with torch if lucky.
+            MapObjectPlaceInGoodPosition(map, b.InsideRect,
+                (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 3 && CountAdjDoors(map, pt.X, pt.Y) == 0,
+                m_DiceRoller,
+                (pt) =>
+                {
+                    // add food.
+                    map.DropItemAt(MakeItemBigFlashlight(), pt);
 
-                // fridge + food.
-                MapObjectPlaceInGoodPosition(map, b.InsideRect,
-                    (pt) => CountAdjWalls(map, pt.X, pt.Y) >= 3 && CountAdjDoors(map, pt.X, pt.Y) == 0,
-                    m_DiceRoller,
-                    (pt) =>
-                    {
-                        // add food.
-                        map.DropItemAt(MakeItemCannedFood(), pt);
-
-                        // add fridge.
-                        return MakeObjFridge(GameImages.OBJ_FRIDGE);
-                    });
-            }
+                    // add fridge.
+                    return MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON); //@@MP (Release 6-2)
+                });
 
             ////////////////////////////////////
             // Add the poor maintenance guy/gal.

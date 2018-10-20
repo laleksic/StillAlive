@@ -9,6 +9,7 @@ Features:
 --Basements and other areas without sky visible are very dark without a torch.
 --Night obscures it somewhat, and day time leaves it reasonably visible
 -Equipping/unequipping immediately updates FOV.
+-Added generators to some building types.
 -In the absolute dark, actors cannot:
 --read books and magazines 
 --build and repair fortifications
