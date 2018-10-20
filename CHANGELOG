@@ -1,4 +1,4 @@
-STILL ALIVE 2.0.6.5 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
+STILL ALIVE 2.0.6.6 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
 ---------------------
 
 Features:
@@ -24,6 +24,15 @@ Fixes:
 -Dropping items on a spot that already has a full 'inventory' moves them to an adjacent tile instead of deleting an item
 	(credit to DDRjake for spotting this bug)
 -Again no longer hoard alcohol (forgot to merge this with Alpha 10 changes)
+
+
+**********ALPHA 10 CHANGES, MERGED INTO STILL ALIVE:
+
+FIXED BUGS
+(3) (Stability) AI detected to attempt illegal or looping actions will not crash or lock the game anymore.
+
+MISC
+- Book bore chance up to 10% (was 5%)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 

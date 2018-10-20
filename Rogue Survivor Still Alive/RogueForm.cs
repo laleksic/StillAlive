@@ -285,6 +285,21 @@ namespace djack.RogueSurvivor
                 m_Game.DEV_TogglePlayerInvincibility();
                 UI_Repaint();
             }
+
+            /*// F12 - DEV - Max trust for all player followers
+            if (e.KeyCode == Keys.F12)
+            {
+                m_Game.DEV_MaxTrust();
+                UI_Repaint();
+            }
+
+            // alpha10.1
+            // INSERT - DEV - Toggle bot mode
+            if (e.KeyCode == Keys.Insert)
+            {
+                m_Game.BotToggleControl();
+                UI_Repaint();
+            }*/
 #endif
         }
 

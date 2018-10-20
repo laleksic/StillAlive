@@ -5136,7 +5136,6 @@ namespace djack.RogueSurvivor.Engine
             Actor actor = m_Rules.GetNextActorToAct(map); //@@MP - unused parameter (Release 5-7)
 
             // alpha10 ai loop bug detection
-#if DEBUG
             if (actor != null && !actor.IsPlayer)
             {
                 if (actor == m_DEBUG_prevAiActor)
@@ -5146,11 +5145,13 @@ namespace djack.RogueSurvivor.Engine
                         // TO DEVS: you might want to add a debug breakpoint here ->
                         Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: AI actor " + actor.Name + " is probably looping!!");
 #if DEBUG
-                        // in debug keep going to let us debug the ai
+                        // in release mode throw an exception as infinite loop is a fatal bug. comment out to keep going to let us debug the ai
+                        /*Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);*/
+                        DoWait(actor);
 #else
-                        // in release throw an exception as infinite loop is a fatal bug
-                        Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
-                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);
+                        // alpha10.1 in release, just spend a turn. it's better than crashing the game!
+                        DoWait(actor);
 #endif
                     }
                 }
@@ -5160,7 +5161,6 @@ namespace djack.RogueSurvivor.Engine
                     m_DEBUG_prevAiActor = actor;
                 }
             }
-#endif
 #endregion
 
             // 2. If none move to next turn and return.
@@ -24979,9 +24979,9 @@ namespace djack.RogueSurvivor.Engine
             return location.Map == Session.UniqueMaps.CHARUndergroundFacility.TheMap ||
                 IsInCHAROffice(location);
         }
-#endregion
+        #endregion
 
-#region -Dev Stuff
+        #region -Dev Stuff
 #if DEBUG
         public void DEV_ToggleShowActorsStats() //@@MP - can't be made static
         {
@@ -25022,13 +25022,12 @@ namespace djack.RogueSurvivor.Engine
 
         public void DEV_TogglePlayerInvincibility() // alpha10
         {
-#if DEBUG
             if (m_Session == null || m_Player == null)
                 return;
 
             m_Player.IsInvincible = !m_Player.IsInvincible;
             AddMessage(new Message("DEAR DEV, YOU ARE NOW " + (m_Player.IsInvincible ? "INVINCIBLE" : "NOT INVINCIBLE"), m_Session.WorldTime.TurnCounter, Color.LightGreen));
-#endif
+
         }
 
         void AddDevMiscStuff()
@@ -25041,6 +25040,7 @@ namespace djack.RogueSurvivor.Engine
             // join cops.
             //m_Player.Faction = GameFactions.ThePolice;
         }
+#endif
 
         #region Debug AI Looping
         // alpha10
@@ -25050,7 +25050,6 @@ namespace djack.RogueSurvivor.Engine
         int m_DEBUG_sameAiActorCount;
         const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 10;
         #endregion
-#endif
         #endregion
         #endregion
     }
