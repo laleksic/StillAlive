@@ -2874,9 +2874,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 (dir) =>
                 {
                     Location next = m_Actor.Location + dir;
+#if DEBUG // alpha10.1 bot mode fix
+                    if (!next.Map.IsInBounds(next.Position))
+                        return false;
+#endif
                     if (exploration.HasExplored(next))
                         return false;
-                    return IsValidMoveTowardGoalAction(game.Rules.IsBumpableFor(m_Actor, game, next));
+                    // alpha10.1 dont break stuff to explore
+                    ActorAction bumpAction = game.Rules.IsBumpableFor(m_Actor, game, next);
+                    if (bumpAction != null && (bumpAction is ActionBreak || bumpAction is ActionBashDoor))
+                        return false;
+
+                    return IsValidMoveTowardGoalAction(bumpAction);
                 },
                 (dir) =>
                 {

@@ -1,4 +1,4 @@
-STILL ALIVE 2.0.6.6 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
+STILL ALIVE 2.0.7.6 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
 ---------------------
 
 Features:
@@ -33,6 +33,17 @@ FIXED BUGS
 
 MISC
 - Book bore chance up to 10% (was 5%)
+
+FOR DEVS
+- New experimental Bot Mode in Debug build only: AI takes control of player.
+- Press INSERT to toggle ai taking control of the player.
+- Will work for any ActorModel that has a default controller defined. As of alpha 10.1 that means all actors.
+- The character controlled by the bot is still considered as the player by most of the game rules, the other AIs etc...
+- Remember AIs do not leave districts so the bot won't either.
+- The Bot will handle everything a player has to do : answer trade offers, choose skills upgrades etc...
+- When the Bot is exploring, keep in mind it make no use of the player fov memory of the maps, so it is suboptimal when
+exploring for the player. Also the ais make no use of the messages the player is receiving like "you hear fighting..." etc...
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 

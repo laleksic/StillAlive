@@ -665,6 +665,7 @@ namespace djack.RogueSurvivor.Gameplay
                         CanTalk = true,
                         CanUseMapObjects = true,
                         CanBreakObjects = true,
+                        CanBashDoors = true, // alpha10.1 necessary to avoid getting stuck in some rare cases
                         CanJump = true,
                         CanTire = true,
                         CanRun = true,
@@ -679,8 +680,8 @@ namespace djack.RogueSurvivor.Gameplay
                         new Attack(AttackKind.PHYSICAL, VERB_PUNCH, DATA_MALE_CIVILIAN.ATK, DATA_MALE_CIVILIAN.DMG),
                         new Defence(DATA_MALE_CIVILIAN.DEF, DATA_MALE_CIVILIAN.PRO_HIT, DATA_MALE_CIVILIAN.PRO_SHOT),
                         DATA_MALE_CIVILIAN.FOV, DATA_MALE_CIVILIAN.AUDIO, NO_SMELL, HUMAN_INVENTORY),
-                    null)
-                    {
+                    typeof(CivilianAI)) // alpha10.1)
+            {
                         FlavorDescription = DATA_MALE_CIVILIAN.FLAVOR
                     };
 
@@ -697,6 +698,7 @@ namespace djack.RogueSurvivor.Gameplay
                         CanTalk = true,
                         CanUseMapObjects = true,
                         CanBreakObjects = true,
+                        CanBashDoors = true, // alpha10.1 necessary to avoid getting stuck in some rare cases
                         CanJump = true,
                         CanTire = true,
                         CanRun = true,
@@ -711,7 +713,7 @@ namespace djack.RogueSurvivor.Gameplay
                         new Attack(AttackKind.PHYSICAL, VERB_PUNCH, DATA_FEMALE_CIVILIAN.ATK, DATA_FEMALE_CIVILIAN.DMG),
                         new Defence(DATA_FEMALE_CIVILIAN.DEF, DATA_FEMALE_CIVILIAN.PRO_HIT, DATA_FEMALE_CIVILIAN.PRO_SHOT),
                         DATA_FEMALE_CIVILIAN.FOV, DATA_FEMALE_CIVILIAN.AUDIO, NO_SMELL, HUMAN_INVENTORY),
-                    null)
+                    typeof(CivilianAI))  // alpha10.1
             {
                 FlavorDescription = DATA_FEMALE_CIVILIAN.FLAVOR
             };
@@ -875,7 +877,7 @@ namespace djack.RogueSurvivor.Gameplay
                         new Attack(AttackKind.PHYSICAL, VERB_PUNCH, DATA_POLICEMAN.ATK, DATA_POLICEMAN.DMG),
                         new Defence(DATA_POLICEMAN.DEF, DATA_POLICEMAN.PRO_HIT, DATA_POLICEMAN.PRO_SHOT),
                         DATA_POLICEMAN.FOV, DATA_POLICEMAN.AUDIO, NO_SMELL, HUMAN_INVENTORY),
-                    null)
+                    typeof(CivilianAI)) // alpha10.1
             {
                 FlavorDescription = DATA_POLICEMAN.FLAVOR
             };

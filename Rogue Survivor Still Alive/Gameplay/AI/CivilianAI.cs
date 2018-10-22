@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing;   // Point
 
 using djack.RogueSurvivor.Data;
@@ -8,7 +7,6 @@ using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Engine.Actions;
 using djack.RogueSurvivor.Engine.AI;
 using djack.RogueSurvivor.Engine.Items;
-using djack.RogueSurvivor.Engine.MapObjects;
 using djack.RogueSurvivor.Gameplay.AI.Sensors;
 using djack.RogueSurvivor.Gameplay.AI.Tools; //alpha 10
 
@@ -163,6 +161,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
             List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
+
+            // DEBUG BOT
+#if DEBUG
+            bool botBreakpoint = false;
+            bool verboseBotExploreWander = false;
+            if (m_Actor.IsBotPlayer)
+            {
+                botBreakpoint = false; // true;
+                verboseBotExploreWander = false; // true;
+            }
+#endif
+            // END DEBUG BOT
 
             // hold the action that we determine to be applicable
             ActorAction determinedAction = null; //@@MP - created to reduce local variables, to keep all within this method enregistered (Release 5-7), moved (Release 6-1)
@@ -984,9 +994,23 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 30 explore
             #region
+            // DEBUG BOT
+#if DEBUG
+            if (botBreakpoint)
+                Console.Out.WriteLine("test bot exploration breakpoint");
+#endif
+            // END DEBUG BOT
+
             determinedAction = BehaviorExplore(game, m_Exploration);
             if (determinedAction != null)
             {
+                // VERBOSE BOT
+#if DEBUG
+                if (verboseBotExploreWander)
+                    game.AddMessage(new Message(">> Bot is Exploring", m_Actor.Location.Map.LocalTime.TurnCounter));
+#endif
+                // END VERBOSE BOT
+
                 m_Actor.Activity = Activity.IDLE;
                 return determinedAction;
             }
@@ -994,6 +1018,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 31 wander.
             #region
+            // VERBOSE BOT
+#if DEBUG
+            if (verboseBotExploreWander)
+                game.AddMessage(new Message(">> Bot is Wandering", m_Actor.Location.Map.LocalTime.TurnCounter));
+#endif
+            // END VERBOSE BOT
             m_Actor.Activity = Activity.IDLE;
             return BehaviorWander(game);
             #endregion

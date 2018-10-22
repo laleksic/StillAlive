@@ -44,6 +44,7 @@ namespace djack.RogueSurvivor.Data
         /*bool m_IsProperName;
         bool m_IsPluralName;*/
         ActorController m_Controller;
+        bool m_isBotPlayer;  // alpha10.1
         ActorSheet m_Sheet;
         int m_SpawnTime;
         #endregion
@@ -167,11 +168,23 @@ namespace djack.RogueSurvivor.Data
         }
 
         /// <summary>
-        /// Gets if this actor is controlled by the player.
+        /// Gets if this actor is controlled by the player or bot.
         /// </summary>
         public bool IsPlayer
         {
             get { return m_Controller != null && m_Controller is PlayerController; }
+        }
+
+        /// <summary>
+        /// Gets or set if this actor is declared as controlled by a bot.
+        /// The controller is STILL PlayerController and IsPlayer will still return true.
+        /// We need this because in some rare parts of the code outside of RogueGame we need to know if the player is a bot or not.
+        /// See RogueGame.
+        /// </summary>
+        public bool IsBotPlayer // alpha10.1 bot
+        {
+            get { return m_isBotPlayer; }
+            set { m_isBotPlayer = value; }
         }
 
         public int SpawnTime
