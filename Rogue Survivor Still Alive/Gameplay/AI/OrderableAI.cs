@@ -354,12 +354,25 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.Inventory.IsEmpty)
                 return null;
 
+            // alpha10.1 bugfix followers drop all was looping. use drop item behaviour on the first item it can.
+            for (int i = 0; i < m_Actor.Inventory.CountItems; i++)
+            {
+                ActorAction dropAction = BehaviorDropItem(game, m_Actor.Inventory[i]);
+                if (dropAction != null)
+                    return dropAction;
+            }
+
+            // we still have at least one item but cannot drop it for some reason, consider the order done.
+            return null;
+
+            /* bugged code, did mark item to be dropped as taboo (causing loop bug) and could illegaly drop an item
             // drop next item.
             Item dropIt = m_Actor.Inventory[0];
             if (dropIt.IsEquipped)
                 return new ActionUnequipItem(m_Actor, game, dropIt);
             else
                 return new ActionDropItem(m_Actor, game, dropIt);
+            */
         }
         #endregion
 

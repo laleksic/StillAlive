@@ -248,12 +248,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 15 use stench killer.
             // 16 close door behind me.
             // 17 use entertainment
-            // 18 follow leader.
-            // 19 take lead (if leadership)
-            // 20 if hungry, tear down barricades & push objects.
-            // 21 go revive corpse.
-            // 22 use exit.
-            // 23 build trap or fortification.
+            // 18 build trap or fortification.
+            // 19 follow leader.
+            // 20 take lead (if leadership)
+            // 21 if hungry, tear down barricades & push objects.
+            // 22 go revive corpse.
+            // 23 use exit.
             // 24 tell friend about latest raid.
             // 25 tell friend about latest friendly soldier.
             // 26 tell friend about latest enemy.
@@ -624,8 +624,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             if (other.Activity == Activity.CHASING || other.Activity == Activity.FIGHTING || other.Activity == Activity.FLEEING || other.Activity == Activity.FLEEING_FROM_EXPLOSIVE)
                                 return true;
                             // dont bother if no interesting items.
-                            if (!HasAnyInterestingItem(game, other.Inventory)) return true;
-                            if (!((other.Controller as BaseAI).HasAnyInterestingItem(game, m_Actor.Inventory))) return true;
+                            if (!HasAnyInterestingItem(game, other.Inventory, ItemSource.ANOTHER_ACTOR)) return true;
+                            if (!((other.Controller as BaseAI).HasAnyInterestingItem(game, m_Actor.Inventory, ItemSource.ANOTHER_ACTOR))) return true;
                             // alpha10 reject if unreachable by baseai simple behaviours
                             if (!CanReachSimple(game, other.Location.Position, Tools.RouteFinder.SpecialActions.DOORS | Tools.RouteFinder.SpecialActions.JUMP))
                                 return true;
@@ -754,7 +754,41 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 18 follow leader
+            // 18 build trap or fortification.
+            // alpha10.1 moved trap/fortification rule before following leader rule so they will do it much more often
+            #region
+            if (game.Rules.RollChance(BUILD_TRAP_CHANCE))
+            {
+                ActorAction trapAction = BehaviorBuildTrap(game);
+                if (trapAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return trapAction;
+                }
+            }
+            // large fortification.
+            if (game.Rules.RollChance(BUILD_LARGE_FORT_CHANCE))
+            {
+                ActorAction buildAction = BehaviorBuildLargeFortification(game, START_FORT_LINE_CHANCE);
+                if (buildAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return buildAction;
+                }
+            }
+            // small fortification.
+            if (game.Rules.RollChance(BUILD_SMALL_FORT_CHANCE))
+            {
+                ActorAction buildAction = BehaviorBuildSmallFortification(game);
+                if (buildAction != null)
+                {
+                    m_Actor.Activity = Activity.IDLE;
+                    return buildAction;
+                }
+            }
+            #endregion
+
+            // 19 follow leader
             #region
             if (checkOurLeader)
             {
@@ -771,7 +805,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 19 take lead (if leadership)
+            // 20 take lead (if leadership)
             #region
             bool hasLeadership = m_Actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LEADERSHIP) >= 1;
             if (hasLeadership)
@@ -798,7 +832,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 20 if hungry, tear down barricades & push objects.
+            // 21 if hungry, tear down barricades & push objects.
             #region
             if (game.Rules.IsActorHungry(m_Actor))
             {
@@ -814,21 +848,25 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
                 if (game.Rules.RollChance(HUNGRY_PUSH_OBJECTS_CHANCE))
                 {
-                    determinedAction = BehaviorPushNonWalkableObject(game);
-                    if (determinedAction != null)
+                    // alpha10.1 do that only inside where food is more likely to be hidden, pushing cars outside is stupid -_-
+                    if (m_Actor.Location.Map.GetTileAt(m_Actor.Location.Position).IsInside)
                     {
-                        // emote.
-                        game.DoEmote(m_Actor, "Where's all the damn food?!", true);
+                        determinedAction = BehaviorPushNonWalkableObject(game);
+                        if (determinedAction != null)
+                        {
+                            // emote.
+                            game.DoEmote(m_Actor, "Where's all the damn food?!", true);
 
-                        // go!
-                        m_Actor.Activity = Activity.IDLE;
-                        return determinedAction;
+                            // go!
+                            m_Actor.Activity = Activity.IDLE;
+                            return determinedAction;
+                        }
                     }
                 }
             }
             #endregion
 
-            // 21 go revive corpse.
+            // 22 go revive corpse.
             #region
             determinedAction = BehaviorGoReviveCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
             if (determinedAction != null)
@@ -838,7 +876,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 22 use exit.
+            // 23 use exit.
             #region
             if (game.Rules.RollChance(USE_EXIT_CHANCE))
             {
@@ -851,7 +889,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 23 build trap or fortification.
+            // 24 build trap or fortification.
             #region
             if (game.Rules.RollChance(BUILD_TRAP_CHANCE))
             {
@@ -884,7 +922,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 24 tell friend about latest raid.
+            // 25 tell friend about latest raid.
             #region
             // tell?
             if (m_LastRaidHeard != null && game.Rules.RollChance(TELL_FRIEND_ABOUT_RAID_CHANCE))
@@ -898,7 +936,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 25 tell friend about latest soldier.
+            // 26 tell friend about latest soldier.
             #region
             // update percept.
             Percept seeingSoldier = FilterFirst(mapPercepts,  //@@MP - unused parameter (Release 5-7)
@@ -923,7 +961,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 26 tell friend about latest enemy.
+            // 27 tell friend about latest enemy.
             #region
             if (game.Rules.RollChance(TELL_FRIEND_ABOUT_ENEMY_CHANCE) && m_LastEnemySaw != null)
             {
@@ -936,7 +974,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 27 tell friend about latest items.
+            // 28 tell friend about latest items.
             #region
             if (game.Rules.RollChance(TELL_FRIEND_ABOUT_ITEMS_CHANCE) && m_LastItemsSaw != null)
             {
@@ -949,7 +987,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 28 (law enforcer) watch for murderers.
+            // 29 (law enforcer) watch for murderers.
             #region
             if (m_Actor.Model.Abilities.IsLawEnforcer && mapPercepts != null && game.Rules.RollChance(LAW_ENFORCE_CHANCE))
             {
@@ -963,7 +1001,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 29 (leader) don't leave followers behind.
+            // 30 (leader) don't leave followers behind.
             #region
             if (m_Actor.CountFollowers > 0)
             {
@@ -992,7 +1030,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 30 explore
+            // 31 explore
             #region
             // DEBUG BOT
 #if DEBUG

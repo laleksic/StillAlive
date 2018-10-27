@@ -510,14 +510,14 @@ namespace djack.RogueSurvivor.Engine
             //////////////////
             // Dynamic factors:
             // !reversed for undeads!
-            // - Density            : f(citysize, mapsize, civs+undeads), +/- 99%
+            // - Density            : f(mapsize, civs+undeads), +/- 99%   // alpha10.1 removed citysize from difficulty formula
             // - Undeads            : f(undeads/civs, day0, invasion%), +/- 50%
             // - Civilians          : f(zombification%, canstarve&starvedzomb%), +/- 50%
             ////////////////////
             #region
-            // - Density         : f(citysize, mapsize, civs+undeads), +/- 25%
-            float kDefaultDensity = (float)(Math.Sqrt(GameOptions.DEFAULT_MAX_CIVILIANS + GameOptions.DEFAULT_MAX_UNDEADS)) / (float)(GameOptions.DEFAULT_CITY_SIZE * GameOptions.DEFAULT_DISTRICT_SIZE * GameOptions.DEFAULT_DISTRICT_SIZE);
-            float kDensity = (float)(Math.Sqrt(options.MaxCivilians + options.MaxUndeads)) / (float)(options.CitySize * options.DistrictSize * options.DistrictSize);
+            // - Density            : f(mapsize, civs+undeads), +/- 99%   // alpha10.1 removed citysize from difficulty formula
+            float kDefaultDensity = (float)(Math.Sqrt(GameOptions.DEFAULT_MAX_CIVILIANS + GameOptions.DEFAULT_MAX_UNDEADS)) / (float)(GameOptions.DEFAULT_DISTRICT_SIZE * GameOptions.DEFAULT_DISTRICT_SIZE);
+            float kDensity = (float)(Math.Sqrt(options.MaxCivilians + options.MaxUndeads)) / (float)(options.DistrictSize * options.DistrictSize);
             float rDensity = (kDensity - kDefaultDensity) / kDefaultDensity;
             if (side == DifficultySide.FOR_SURVIVOR)
                 rating += 0.99f * rDensity;

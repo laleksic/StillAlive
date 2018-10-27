@@ -547,7 +547,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 },
                 (dir) =>
                 {
-                    int score = game.Rules.Roll(0, 666); 
+                    int score = game.Rules.Roll(0, 666);
+
+                    Location next = m_Actor.Location + dir; //@@MP - discourage backtracking. based on alpha10.1 (Release 6-2)
+                    if (next == m_prevLocation)
+                        score -= 500;
+
                     if (m_Actor.Model.Abilities.IsIntelligent)
                     {
                         if (map.IsAnyUnsafeDamagingTrapThere(game, m_Actor.Location.Map, (m_Actor.Location + dir).Position, m_Actor)) //@@MP - added m_Actor parameter (Release 6-1)
@@ -557,6 +562,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             score -= 500; //don't wander into water for no good reason
                         else if (map.IsAnyTileFireThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position)) //@@MP - avoid fires on walkable tiles (Release 4)
                             score -= 2000;
+
+                        // alpha10.1 prefer wandering to doorwindows and exits. 
+                        // helps civs ai getting stuck in semi-infinite loop when running out of new exploration to do.
+                        DoorWindow doorWindow = next.Map.GetMapObjectAt(next.Position) as DoorWindow;
+                        if (doorWindow != null)
+                            score += 100;
+                        if (next.Map.GetExitAt(next.Position) != null)
+                            score += 50;
+
+                        // alpha10.1 prefer inside when almost sleepy
+                        if (game.Rules.IsAlmostSleepy(m_Actor) && next.Map.GetTileAt(next.Position).IsInside)
+                            score += 100;
                     }
                     return score;
                 },
@@ -1433,7 +1450,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (!game.Rules.CanActorGetItem(m_Actor, it))
                     continue;
                 // if not interesting, ignore.
-                if (!IsInterestingItemToOwn(game, it, false))
+                if (!IsInterestingItemToOwn(game, it, ItemSource.GROUND_STACK))
                     continue;
                 //@@MP - don't grab dynamite. they're so rare we want them for the player (Release 4)
                 //ai can't use them anyway because dynamite must be deployed within the blast radius, which goes against BehaviorThrowGrenade()
@@ -1478,7 +1495,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return true;
                     if (IsTileTaboo(p.Location.Position))
                         return true;
-                    if (!HasAnyInterestingItem(game, p.Percepted as Inventory))
+                    if (!HasAnyInterestingItem(game, p.Percepted as Inventory, ItemSource.GROUND_STACK))
                         return true;
                     // alpha10 check reachability
                     RouteFinder.SpecialActions a = allowedActions;
@@ -2263,7 +2280,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #endregion
 
         #region Charging enemy
-        protected ActorAction BehaviorChargeEnemy(RogueGame game, Percept target, bool canCheckBreak, bool canCheckPush)// alpha added break and push
+        protected ActorAction BehaviorChargeEnemy(RogueGame game, Percept target, bool canCheckBreak, bool canCheckPush)// alpha10 added break and push
         {
             // try melee attack first.
             ActorAction attack = BehaviorMeleeAttack(game, target);
@@ -2330,6 +2347,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
         protected ActorAction BehaviorDontLeaveFollowersBehind(RogueGame game, int distance, out Actor target)
         {
             target = null;
+
+            // alpha10.1 dont always check for lagging followers, prevent leader from getting stuck waiting too much.
+            // side effect is more occurence of followers lagging behind.
+            if (game.Rules.RollChance(25))
+                return null;
 
             // Scan the group:
             // - Find farthest member of the group.
@@ -2914,23 +2936,29 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
 
                     // Heuristic scoring:
+                    // 0st Punish backtracking // alpha10.1
                     // 1st Prefer unexplored zones.
                     // 2nd Prefer unexplored locs.
                     // 3rd Prefer doors and barricades (doors/windows, pushables)
                     // 4th If intelligent, punish stepping on unsafe traps and fires. // alpha10, was "Punish stepping on activated traps."
-                    // 5th Prefer inside during the night vs outside during the day.
+                    // 5th Prefer inside during the night vs outside during the day, and inside if sleepy // alpha10.1
                     // 6th Prefer continue in same direction.
                     // 7th Small randomness.
+                    const int BACKTRACKING = -10000;  // alpha10.1
                     const int EXPLORE_ZONES = 1000;
                     const int EXPLORE_LOCS = 500;
                     const int EXPLORE_BARRICADES = 100;
                     const int AVOID_TRAPS = -1500; // alpha10 greatly increase penalty and x by potential damage, was -50
                     const int EXPLORE_INOUT = 50;
+                    const int EXPLORE_IN_ALMOST_SLEEPY = 100; // alpha10.1
                     const int EXPLORE_DIRECTION = 25;
                     const int EXPLORE_RANDOM = 10;
                     const int AVOID_FIRES = -2000; //@@MP - added (Release 4)
 
                     int score = 0;
+                    // 0st Punish backtracking // alpha10.1
+                    if (next.Map == m_prevLocation.Map && pos == m_prevLocation.Position)
+                        score += BACKTRACKING;
                     // 1st Prefer unexplored zones.
                     if (!exploration.HasExplored(map.GetZonesAt(pos.X, pos.Y)))
                         score += EXPLORE_ZONES;
@@ -2950,10 +2978,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         if (tileFire) //@@MP - livings and smart undead know that jumping into fire is really stupid (Release 4), moved from #8 (Release 6-1)
                             score += AVOID_FIRES;
                     }
-                    // 5th Prefer inside during the night vs outside during the day.
-                    bool isInside = map.GetTileAt(pos.X, pos.Y).IsInside;
-                    if (isInside) //inside
-                        if (map.LocalTime.IsNight) score += EXPLORE_INOUT; //night
+                    // 5th Prefer inside during the night vs outside during the day, and inside if sleepy // alpha10.1
+                    if (map.GetTileAt(pos.X, pos.Y).IsInside) //inside
+                    {
+                        if (game.Rules.IsAlmostSleepy(m_Actor)) //alpha 10.1
+                            score += EXPLORE_IN_ALMOST_SLEEPY;
+                        if (map.LocalTime.IsNight)
+                            score += EXPLORE_INOUT; //night
+                    }
                     else //outside
                         if (!map.LocalTime.IsNight) score += EXPLORE_INOUT; //daytime
                     // 6th Prefer continue in same direction.
@@ -3369,7 +3401,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             Inventory myInv = m_Actor.Inventory;
 
             // 1. get rid of not interesting item.
-            Item notInteresting = myInv.GetFirstMatching((it) => !IsInterestingItemToOwn(game, it, true));
+            Item notInteresting = myInv.GetFirstMatching((it) => !IsInterestingItemToOwn(game, it, ItemSource.OWNED));
             if (notInteresting != null)
                 return BehaviorDropItem(game, notInteresting);
 
@@ -4012,6 +4044,22 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return bestFood;
         }
 
+        public enum ItemSource // alpha10.1 added item/inventory source
+        {
+            /// <summary>
+            /// Item is in a ground stack (could be a container, which is the same thing)
+            /// </summary>
+            GROUND_STACK,
+            /// <summary>
+            /// Item is in the actor own inventory.
+            /// </summary>
+            OWNED,
+            /// <summary>
+            /// Item is in another actor inventory.
+            /// </summary>
+            ANOTHER_ACTOR
+        }
+
         /// <summary>
         /// Check if item is ok to have in inventory. 
         /// Uses cases:
@@ -4019,14 +4067,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// - steal: gangs check to agress an npc to steal his item or not.
         /// - gift: how cool is it to be gifted this item by another actor.
         /// - drop: when dropping the item to make room for a food item.
-        /// DO NOT USE FOR TRADING use RateItem() and RateTrade() instead.
+        /// DO NOT USE FOR TRADING use RateItem() and RateTradeOffer() instead.
         /// </summary>
         /// <param name="game"></param>
         /// <param name="it"></param>
-        /// <param name="owned">if already owned, eg when considering dropping an item</param>
+        /// <param name="itemSrc">where does the item comes from?</param> //alpha10.1 changed
         /// <see cref="RateItem(RogueGame, Item, bool)"/>
         /// <see cref="RateTradeOffer(RogueGame, Actor, Item, Item)"/>
-        public bool IsInterestingItemToOwn(RogueGame game, Item it, bool owned)
+        public bool IsInterestingItemToOwn(RogueGame game, Item it, ItemSource itemSrc)
         {
             // alpha10 base idea is any non-junk non-taboo item is interesting.
             // using itemrating is consistent with new trade logic.
@@ -4039,9 +4087,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return false;
 
             // consistent with BehaviorMakeRoomForFood (was already in alpha9)
-            if (!owned && m_Actor.Inventory.CountItems >= m_Actor.Inventory.MaxCapacity - 1)
+            if (itemSrc != ItemSource.OWNED && m_Actor.Inventory.CountItems >= m_Actor.Inventory.MaxCapacity - 1)
             {
                 if (!(it is ItemFood) && (CountItemQuantityOfType(typeof(ItemFood)) == 0))
+                    return false;
+            }
+
+            // alpha10.1 not interested in picking up safe traps from the ground : dont undo your or your friends traps!
+            if (itemSrc == ItemSource.GROUND_STACK && it is ItemTrap)
+            {
+                ItemTrap itTrap = it as ItemTrap;
+                if (game.Rules.IsSafeFromTrap(itTrap, m_Actor))
                     return false;
             }
 
@@ -4215,26 +4271,26 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return false;
         }
 
-        public bool HasAnyInterestingItem(RogueGame game, Inventory inv)
+        public bool HasAnyInterestingItem(RogueGame game, Inventory inv, ItemSource inventorySrc)
         {
             if (inv == null)
                 return false;
 
             bool owned = (inv == m_Actor.Inventory); //alpha 10
             foreach (Item it in inv.Items)
-                if (IsInterestingItemToOwn(game, it, owned))
+                if (IsInterestingItemToOwn(game, it, inventorySrc))
                     return true;
             return false;
         }
 
-        protected Item FirstInterestingItem(RogueGame game, Inventory inv)
+        protected Item FirstInterestingItem(RogueGame game, Inventory inv, ItemSource inventorySrc)
         {
             if (inv == null)
                 return null;
 
             bool owned = (inv == m_Actor.Inventory); //alpha 10
             foreach (Item it in inv.Items)
-                if (IsInterestingItemToOwn(game, it, owned))
+                if (IsInterestingItemToOwn(game, it, inventorySrc))
                     return it;
             return null;
         }
@@ -5482,7 +5538,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         { //@@MP - re-ordered from most to least likely, for best performance (Release 5-7)
             return a != null && 
                 (a is ActionMoveStep ||
-                (a is ActionGetFromContainer && IsInterestingItemToOwn(game, (a as ActionGetFromContainer).Item, false)) ||
+                (a is ActionGetFromContainer && IsInterestingItemToOwn(game, (a as ActionGetFromContainer).Item, ItemSource.GROUND_STACK)) ||
                 a is ActionOpenDoor ||
                 a is ActionBashDoor ||
                 a is ActionSwitchPlace ||

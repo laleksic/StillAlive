@@ -1109,7 +1109,7 @@ namespace djack.RogueSurvivor.Engine
             m_MessageManager.Draw(m_UI, m_Session.LastTurnPlayerActed, MESSAGES_X, MESSAGES_Y);
         }
 
-        void AddMessagePressEnter()
+        void AddMessagePressEnter() // alpha10.1 caller should handle Bot Mode: check for IsBotPlayer and dont call this
         {
             AddMessage(new Message("<press ENTER>", m_Session.WorldTime.TurnCounter, Color.Yellow));
             RedrawPlayScreen();
@@ -1521,7 +1521,7 @@ namespace djack.RogueSurvivor.Engine
                 if (id == GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION ||
                     id == GameOptions.IDs.GAME_SKELETONS_UPGRADE ||
                     id == GameOptions.IDs.GAME_SHAMBLERS_UPGRADE) //id == GameOptions.IDs.GAME_RATS_UPGRADE || //@@MP - release 5 removed rats upgrades
-                    menuEntries[i] += " !V";
+                    menuEntries[i] += " -V";
                 else if (id == GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE ||
                     id == GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE)
                     menuEntries[i] += " =S";*/
@@ -4079,7 +4079,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Big Bear", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_BIG_BEAR);
 
@@ -4129,7 +4129,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.FemaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Famu Fataru", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_FAMU_FATARU);
 
@@ -4178,7 +4178,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Santaman", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_SANTAMAN);
 
@@ -4227,7 +4227,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Roguedjack", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_ROGUEDJACK);
 
@@ -4276,7 +4276,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Duckman", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_DUCKMAN);
 
@@ -4327,7 +4327,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Hans von Hanz", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_HANS_VON_HANZ);
 
@@ -16260,7 +16260,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 // interesting item?
                 BaseAI ai = target.Controller as BaseAI;
-                bool isInterestingItem = (ai != null && ai.IsInterestingItemToOwn(this, gift, false)); //alpha 10, was IsInterestingItem()
+                bool isInterestingItem = (ai != null && ai.IsInterestingItemToOwn(this, gift, BaseAI.ItemSource.ANOTHER_ACTOR)); //alpha 10, was IsInterestingItem()
 
                 // emote.
                 if (isInterestingItem)
@@ -22727,7 +22727,8 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You have found a cellphone.",
                             "Cellphones are useful to keep in contact with your follower(s).",
-                            "You and your follower(s) must have a cellphone equipped."
+                            "You and your follower(s) must have a cellphone equipped.",
+                            "You can recharge cellphones at power generators."
                         };
                     break;
 
@@ -22796,7 +22797,8 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You have found a lighting item, such as a flashlight.",
                             "Equip the item to increase your view distance (FoV).",
-                            "Standing next to someone with a light on has the same effect."
+                            "Standing next to someone with a light on has the same effect.",
+                            "You can recharge flashlights at power generators."
                         };
                     break;
 
@@ -22835,7 +22837,7 @@ namespace djack.RogueSurvivor.Engine
                 case AdvisorHint.ITEM_GRAB_CONTAINER:
                     title = "TAKING AN ITEM FROM A CONTAINER";
                     body = new string[] {
-                            "You are next to a container, such as a warbrobe or a shelf.",
+                            "You are next to a container, such as a wardrobe or a shelf.",
                             "You can TAKE the item there by MOVING into the object."
                         };
                     break;

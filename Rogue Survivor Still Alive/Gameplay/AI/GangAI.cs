@@ -438,7 +438,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             // unnoticed.
                             return false;
                         }
-                        return HasAnyInterestingItem(game, a.Inventory);
+                        return HasAnyInterestingItem(game, a.Inventory, ItemSource.ANOTHER_ACTOR);
                     });
 
                 if (mayStealFrom != null)
@@ -457,7 +457,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         // get data.
                         Percept nearest = FilterNearest(game, mayStealFrom);
                         Actor victim = nearest.Percepted as Actor;
-                        Item wantIt = FirstInterestingItem(game, victim.Inventory);
+                        Item wantIt = FirstInterestingItem(game, victim.Inventory, ItemSource.ANOTHER_ACTOR);
 
                         // make an enemy of him.
                         game.DoMakeAggression(m_Actor, victim);

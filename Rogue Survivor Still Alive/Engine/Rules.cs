@@ -1429,10 +1429,8 @@ namespace djack.RogueSurvivor.Engine
                         return null;
                 }
 
-                // AI: switching place
-                if(!actor.IsPlayer && 
-                    !targetActor.IsPlayer 
-                    && CanActorSwitchPlaceWith(actor, targetActor, out reason))
+                // AI: switching place // alpha10.1 handle bot like it was an AI
+                if ((!actor.IsPlayer || actor.IsBotPlayer) && !targetActor.IsPlayer && CanActorSwitchPlaceWith(actor, targetActor, out reason))
                     return new ActionSwitchPlace(actor, game, targetActor);
 
                 // chatting?
@@ -1573,9 +1571,9 @@ namespace djack.RogueSurvivor.Engine
 
             /////////////////////////////////
             // Only if :
-            // 1. Player
+            // 1. Player and not bot // alpha10.1
             /////////////////////////////////
-            if(!actor.IsPlayer)
+            if (!actor.IsPlayer || actor.IsBotPlayer)
             {
                 reason = "can't leave maps";
                 return false;
@@ -1613,7 +1611,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // 2. AI: can't use AI exits.
-            if (!actor.IsPlayer && !actor.Model.Abilities.AI_CanUseAIExits)
+            if ((!actor.IsPlayer || actor.IsBotPlayer) && !actor.Model.Abilities.AI_CanUseAIExits)// alpha10.1 handle bots
             {
                 reason = "this AI can't use exits";
                 return false;
@@ -4372,7 +4370,8 @@ namespace djack.RogueSurvivor.Engine
         public int GetTrapTriggerChance(ItemTrap trap, Actor a) // alpha10 //@@MP can't be static
         {
             // owners never trigger their own trap
-            if (trap.Owner == a)
+            // alpha10.1 bugfix - correctly has 0 chance to trigger safe traps (eg: followers traps etc...)
+            if (IsSafeFromTrap(trap, a))
                 return 0;
 
             int baseChance;

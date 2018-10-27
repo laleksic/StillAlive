@@ -189,8 +189,7 @@ A leader will share personal enemies with his followers, and vice-versa, but fol
 
 
 > MURDER & LAW
-In the game a "murder" is killing a living that is not in an enemy faction, even if they are personal enemies.
-For instance, a civilian killing another civilian. Killing in self-defence is still a considered a murder.
+In the game a "murder" is killing a living that is not in an enemy faction.
 Gangs and the like are not considered murderers since they are already enemies with the law abiding citizens.
 Citizens might try to murder people for food if they desperatly need it.
 One can avoid confrontation by giving in to their demands; drop food and let them take it or directly give them food.
@@ -199,7 +198,6 @@ As soon as they can get food they will stop being aggressive. But once fighting 
 Cops are law enforcers and are on the look out for murderers. Cops have a licence to kill murderers.
 Cops might recognize a murderer when they see him and will always spot a murder being committed if they see it.
 Murderers who move closer to cops and who have committed more murders are more likely to be recognized.
-Since killing in self-defence is a murder, it can happen that cops commit murders.
 Times are tough, and sometimes you will have no choice but to commit murder to save your own life or defend your possessions.
 
 
