@@ -440,7 +440,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjTree(string treeImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("tree", treeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 20)
+            return new MapObject("tree", treeImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 20) //@@MP - made unbreakable (Release 6-2)
             {
                 GivesWood = true
             };
@@ -589,7 +589,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjFridge(string fridgeImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("fridge", fridgeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 6)
+            return new MapObject("fridge", fridgeImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 6) //@@MP - made unbreakable (Release 6-2)
             {
                 IsContainer = true,
                 IsMovable = true,
@@ -613,7 +613,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjBarrels(string barrelsImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("barrels", barrelsImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            return new MapObject("barrels", barrelsImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2) //@@MP - made unbreakable (Release 6-2)
             {
                 IsPlural = true,
                 IsMaterialTransparent = true,

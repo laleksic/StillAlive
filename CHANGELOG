@@ -1,4 +1,4 @@
-STILL ALIVE 2.1.7.6 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
+STILL ALIVE 2.1.7.8 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
 ---------------------
 
 Features:
@@ -24,6 +24,8 @@ Fixes:
 -Dropping items on a spot that already has a full 'inventory' moves them to an adjacent tile instead of deleting an item
 	(credit to DDRjake for spotting this bug)
 -Again AI no longer hoard alcohol (forgot to merge this with Alpha 10 changes)
+-Made some objects unbreakable where it made sense.
+-Stopped players from auto-breaking objects on bump.
 
 
 **********ALPHA 10 CHANGES, MERGED INTO STILL ALIVE:
@@ -53,6 +55,7 @@ MISC
 - Book bore chance up to 10% (was 5%)
 - City Size option has now no effect on difficulty. There are both advantages and disadvantages for large cities so in the end it evens up.
 - Added a bunch of new names and surnames for NPCs.
+- Revised car and tree image models.
 
 FOR DEVS
 - New experimental Bot Mode in Debug build only: AI takes control of player.

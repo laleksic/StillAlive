@@ -298,6 +298,13 @@ namespace djack.RogueSurvivor
                 m_Game.BotToggleControl();
                 UI_Repaint();
             }
+
+            // HOME
+            if (e.KeyCode == Keys.Home) //@@MP - make it rain (Release 6-2)
+            {
+                m_Game.Session.World.Weather = Weather.HEAVY_RAIN;
+                UI_Repaint();
+            }
 #endif
         }
 

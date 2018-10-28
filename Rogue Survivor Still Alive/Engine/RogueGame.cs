@@ -17090,7 +17090,7 @@ namespace djack.RogueSurvivor.Engine
         public void DoBreak(Actor actor, MapObject mapObj)
         {
             Attack bashAttack = m_Rules.ActorMeleeAttack(actor, actor.CurrentMeleeAttack, null, mapObj);
-
+            
             #region Attacking a barricaded door.
             DoorWindow door = mapObj as DoorWindow;
             if (door != null && door.IsBarricaded)
@@ -17129,7 +17129,6 @@ namespace djack.RogueSurvivor.Engine
                 return;
             }
 #endregion
-
 #region Attacking an un-barricaded door or a normal object
             else
             {
@@ -17155,14 +17154,14 @@ namespace djack.RogueSurvivor.Engine
 
                 // Message.
                 bool isActorVisible = IsVisibleToPlayer(actor);
-                bool isDoorVisible = IsVisibleToPlayer(mapObj);
+                bool isObjectVisible = IsVisibleToPlayer(mapObj); //@@MP - renamed from Door to Object to better represent whatever it could be (Release 6-2)
                 bool isPlayer = actor.IsPlayer;
 
-                if (isActorVisible || isDoorVisible)
+                if (isActorVisible || isObjectVisible)
                 {
                     if (isActorVisible)
                         AddOverlay(new OverlayRect(Color.Yellow, new Rectangle(MapToScreen(actor.Location.Position), new Size(TILE_SIZE, TILE_SIZE))));
-                    if (isDoorVisible)
+                    if (isObjectVisible)
                         AddOverlay(new OverlayRect(Color.Red, new Rectangle(MapToScreen(mapObj.Location.Position), new Size(TILE_SIZE, TILE_SIZE))));
 
                     if (isBroken)
@@ -17170,7 +17169,7 @@ namespace djack.RogueSurvivor.Engine
                         AddMessage(MakeMessage(actor, Conjugate(actor, VERB_BREAK), mapObj));
                         if (isActorVisible)
                             AddOverlay(new OverlayImage(MapToScreen(actor.Location.Position), GameImages.ICON_MELEE_ATTACK));
-                        if (isDoorVisible)
+                        if (isObjectVisible)
                             AddOverlay(new OverlayImage(MapToScreen(mapObj.Location.Position), GameImages.ICON_KILLED));
                         RedrawPlayScreen();
                         AnimDelay(DELAY_LONG);
@@ -17178,7 +17177,7 @@ namespace djack.RogueSurvivor.Engine
                     else
                     {
                         PlayBashOrBreakSFX(mapObj, isBroken); //@@MP - play the appropriate sfx (Release 3), moved/copied from the very start of the method (Release 5-3), refactored (Release 5-4)
-                        if (isDoorVisible)
+                        if (isObjectVisible)
                         {
                             AddOverlay(new OverlayImage(MapToScreen(mapObj.Location.Position), GameImages.ICON_MELEE_DAMAGE));
                             AddOverlay(new OverlayText(MapToScreen(mapObj.Location.Position).Add(DAMAGE_DX, DAMAGE_DY), Color.White, bashAttack.DamageValue.ToString(), Color.Black)); // alpha10
