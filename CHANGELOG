@@ -23,9 +23,10 @@ Fixes:
 -Trackers and torchlights are no longer deleted when an actor discards them.
 -Dropping items on a spot that already has a full 'inventory' moves them to an adjacent tile instead of deleting an item
 	(credit to DDRjake for spotting this bug)
--Again AI no longer hoard alcohol (forgot to merge this with Alpha 10 changes)
+-Again AI no longer hoard alcohol (forgot to merge this with Alpha 10 changes).
 -Made some objects unbreakable where it made sense.
 -Stopped players from auto-breaking objects on bump.
+-Left hand equipment now appears over right (eg flashlights over longer firearms).
 
 
 **********ALPHA 10 CHANGES, MERGED INTO STILL ALIVE:

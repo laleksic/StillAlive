@@ -6477,7 +6477,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             map.PlaceMapObjectAt(MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON), new Point(map.Width - 2, 2)); //@@MP - moved generator 1 south (Release 6-1)
 
             // 3. Populate.
-            // - prisonners in each cell.
+            // - prisoners in each cell.
             //   keep the last cell for the special prisonner.
             for (int i = 0; i < cells.Count - 1; i++)
             {
@@ -6496,16 +6496,16 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 // drop him.
                 map.PlaceActorAt(prisonner, new Point(cell.Left + 1, cell.Top + 1));
             }
-            // - Special prisonner in the last cell.
+            // - Special prisoner in the last cell.
             Rectangle lastCell = cells[cells.Count - 1];
-            Actor specialPrisonner = CreateNewCivilian(0, 0, 1);
-            specialPrisonner.Name = "The Prisoner Who Should Not Be";
-            for (int i = 0; i < specialPrisonner.Inventory.MaxCapacity; i++)
-                specialPrisonner.Inventory.AddAll(MakeItemArmyRation());
-            map.PlaceActorAt(specialPrisonner, new Point(lastCell.Left + 1, lastCell.Top + 1));
+            Actor specialPrisoner = CreateNewCivilian(0, 0, 1);
+            specialPrisoner.Name = "The Prisoner Who Should Not Be";
+            for (int i = 0; i < specialPrisoner.Inventory.MaxCapacity; i++)
+                specialPrisoner.Inventory.AddAll(MakeItemArmyRation());
+            map.PlaceActorAt(specialPrisoner, new Point(lastCell.Left + 1, lastCell.Top + 1));
             m_Game.Session.UniqueActors.PoliceStationPrisonner = new UniqueActor()
             {
-                TheActor = specialPrisonner,
+                TheActor = specialPrisoner,
                 IsSpawned = true
             };
 
@@ -7027,8 +7027,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             GiveRandomSkillsToActor(m_DiceRoller, nurse, 1);
             GiveStartingSkillToActor(nurse, Skills.IDs.MEDIC);
 
-            // items : bandages.
+            // give items
             nurse.Inventory.AddAll(MakeItemBandages());
+            //@@MP (Release 6-2)
+            nurse.Inventory.AddAll(MakeItemBandages());
+            nurse.Inventory.AddAll(MakeItemFlashlight());
 
             // done.
             return nurse;
@@ -7053,9 +7056,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             GiveStartingSkillToActor(doctor, Skills.IDs.MEDIC);
             GiveStartingSkillToActor(doctor, Skills.IDs.LEADERSHIP);
 
-            // items : medikit + bandages.
+            // give items
             doctor.Inventory.AddAll(MakeItemMedikit());
-            doctor.Inventory.AddAll(MakeItemBandages());
+            //@@MP (Release 6-2)
+            doctor.Inventory.AddAll(MakeItemMedikit());
+            doctor.Inventory.AddAll(MakeItemFlashlight());
 
             // done.
             return doctor;

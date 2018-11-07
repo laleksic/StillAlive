@@ -3598,6 +3598,7 @@ namespace djack.RogueSurvivor.Engine
             // generate world.
             GenerateWorld(true, s_Options.CitySize, suppliedName); //@@MP - added parameter for user to supply a name (Release 5-7)
             CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
+            DoHospitalPowerOn(); //@@MP (Release 6-2)
 
             // scoring : hello there.
             m_Session.Scoring.AddVisit(m_Player.Location.Map); //@@MP - unused parameter (Release 5-7)
@@ -19514,8 +19515,8 @@ namespace djack.RogueSurvivor.Engine
             DrawActorDecoration(actor, gx, gy, DollPart.HEAD, tint);
 
             // hands equipment
-            DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.LEFT_HAND, tint);
             DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.RIGHT_HAND, tint);
+            DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.LEFT_HAND, tint); //@@MP (Release 6-2) swapped to 2nd so torches appear over guns
 
             gx -= ACTOR_OFFSET;
             gy -= ACTOR_OFFSET;

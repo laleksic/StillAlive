@@ -3431,7 +3431,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (ent != null)
                 return BehaviorDropItem(game, ent);
 
-            // 6. get rid of medecine.
+            // 6. get rid of medicine.
             Item med = myInv.GetFirstMatching((it) => it is ItemMedicine);
             if (med != null)
                 return BehaviorDropItem(game, med);
@@ -4415,7 +4415,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 ItemLight itLight = it as ItemLight;
 
-                // light is junk if already has 6 hours of batteries worth.
+                // light is junk if actor already has 6+ hours of batteries worth.
                 int totalLightsBatteries = 0;
                 m_Actor.Inventory.ForEach((i) =>
                 {
