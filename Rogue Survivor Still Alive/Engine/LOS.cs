@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 
 using djack.RogueSurvivor.Data;
@@ -314,15 +312,26 @@ namespace djack.RogueSurvivor.Engine
                     to.Y = y;
 
                     // Distance check.
-                    if (rules.LOSDistance(from, to) > maxRange)
-                        continue;
+                    Point pos = new Point(to.X, to.Y);
+                    bool isAdjacent = rules.IsAdjacent(actor.Location.Position, pos);
+                    if (!isAdjacent) //@@MP - the circle below cuts out the 'corners'. if maxRange = 0 then the actor can't even see adjacent diagonals (only directly N,S,E,W)
+                    {
+                        if (rules.LOSDistance(from, to) > maxRange) //@@MP - aims to keep the view range circular: exclude everything outside the circle's range
+                            continue;
+                    }
 
                     // If we already know tile is visible, pass.
                     if (visibleSet.Contains(to))
                         continue;
 
+                    if (isAdjacent && maxRange > 0)
+                    {
+                        visibleSet.Add(to); // all immediately adjacent tiles automatically visible when FOV > 0, even if they don't fit in the circle determined above
+                        continue;
+                    }
+
                     // Trace line.
-                    if(!FOVSub(fromLocation, to, maxRange, ref visibleSet))
+                    if (!FOVSub(fromLocation, to, maxRange, ref visibleSet))
                     {                        
                         // if its a wall (in FoV terms), remember.
                         bool isFovWall = false;

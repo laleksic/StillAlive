@@ -437,6 +437,33 @@ namespace djack.RogueSurvivor.Data
 
             return new Point(x, y);
         }
+
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mobj">can be null (will return 0)</param>
+        /// <returns>0 for null objs, total hitpoints for breakable objects, a silly large amount for unbreakable objs</returns>
+        protected int GetObjectHitPoints(MapObject mobj) // alpha10.1
+        {
+            if (mobj == null)
+                return 0;
+
+            if (!mobj.IsBreakable)
+                return 100000;
+
+            int hp = mobj.HitPoints;
+
+            // add barricade hps
+            DoorWindow dw = mobj as DoorWindow;
+            if (dw != null)
+            {
+                if (dw.IsBarricaded)
+                    hp += dw.BarricadePoints;
+            }
+
+            return hp;
+        }
         #endregion
 
         #region Exits

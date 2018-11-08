@@ -1,4 +1,4 @@
-STILL ALIVE 2.0.6.5 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
+STILL ALIVE 2.1.7.8 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
 ---------------------
 
 Features:
@@ -23,7 +23,51 @@ Fixes:
 -Trackers and torchlights are no longer deleted when an actor discards them.
 -Dropping items on a spot that already has a full 'inventory' moves them to an adjacent tile instead of deleting an item
 	(credit to DDRjake for spotting this bug)
--Again no longer hoard alcohol (forgot to merge this with Alpha 10 changes)
+-Again AI no longer hoard alcohol (forgot to merge this with Alpha 10 changes).
+-Made some objects unbreakable where it made sense.
+-Stopped players from auto-breaking objects on bump.
+-Left hand equipment now appears over right (eg flashlights over longer firearms).
+
+
+**********ALPHA 10 CHANGES, MERGED INTO STILL ALIVE:
+
+FIXED BUGS
+(1) (Stability) Ordering followers to drop all items could crash the game.
+(2) (Rules) Group members could trigger each other trap (eg: your follower triggering your trap).
+(3) (Stability) AI detected to attempt illegal or looping actions will not crash or lock the game anymore.
+
+SURFACE MAPGEN
+- New layout variant for houses : apartments, aka "cramped places of death".
+
+PRISON MAPGEN
+- Cells doors are now unbreakable, because NPCs will now actually try to break free when trapped!
+
+HOSPITAL MAPGEN
+- Increased max number of nurses starting trapped in hospital storage rooms.
+
+AI
+- Civilian followers are now much more likely to lay traps and build fortifications.
+- NPCs leaders are a bit less likely to get stuck waiting for followers forever.
+- NPCs will not pick up traps layed by themselves or their group.
+- Hungry civs searching for food will angrily push objects around only when inside. Pushing cars outside is not productive
+- Penalise AI backtracking when wandering. Encourage using doors and exits, and inside when sleepy
+
+MISC
+- Book bore chance up to 10% (was 5%)
+- City Size option has now no effect on difficulty. There are both advantages and disadvantages for large cities so in the end it evens up.
+- Added a bunch of new names and surnames for NPCs.
+- Revised car and tree image models.
+
+FOR DEVS
+- New experimental Bot Mode in Debug build only: AI takes control of player.
+- Press INSERT to toggle ai taking control of the player.
+- Will work for any ActorModel that has a default controller defined. As of alpha 10.1 that means all actors.
+- The character controlled by the bot is still considered as the player by most of the game rules, the other AIs etc...
+- Remember AIs do not leave districts so the bot won't either.
+- The Bot will handle everything a player has to do : answer trade offers, choose skills upgrades etc...
+- When the Bot is exploring, keep in mind it make no use of the player fov memory of the maps, so it is suboptimal when
+exploring for the player. Also the ais make no use of the messages the player is receiving like "you hear fighting..." etc...
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -1109,7 +1109,7 @@ namespace djack.RogueSurvivor.Engine
             m_MessageManager.Draw(m_UI, m_Session.LastTurnPlayerActed, MESSAGES_X, MESSAGES_Y);
         }
 
-        void AddMessagePressEnter()
+        void AddMessagePressEnter() // alpha10.1 caller should handle Bot Mode: check for IsBotPlayer and dont call this
         {
             AddMessage(new Message("<press ENTER>", m_Session.WorldTime.TurnCounter, Color.Yellow));
             RedrawPlayScreen();
@@ -1521,7 +1521,7 @@ namespace djack.RogueSurvivor.Engine
                 if (id == GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION ||
                     id == GameOptions.IDs.GAME_SKELETONS_UPGRADE ||
                     id == GameOptions.IDs.GAME_SHAMBLERS_UPGRADE) //id == GameOptions.IDs.GAME_RATS_UPGRADE || //@@MP - release 5 removed rats upgrades
-                    menuEntries[i] += " !V";
+                    menuEntries[i] += " -V";
                 else if (id == GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE ||
                     id == GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE)
                     menuEntries[i] += " =S";*/
@@ -2201,6 +2201,7 @@ namespace djack.RogueSurvivor.Engine
         #region -SAVE GAMES
         void DoSaveGame(string saveName, bool autosave) //@@MP - added parameter for autosaves (Release 6-1)
         {
+            StopSimThread(false);  // alpha10.1
             ClearMessages();
             if (autosave)
                 AddMessage(new Message("AUTO-SAVING GAME, PLEASE WAIT...", m_Session.WorldTime.TurnCounter, Color.Yellow));
@@ -2215,10 +2216,12 @@ namespace djack.RogueSurvivor.Engine
             AddMessage(new Message("SAVING DONE.", m_Session.WorldTime.TurnCounter, Color.Yellow));
             RedrawPlayScreen();
             m_UI.UI_Repaint();
+            StartSimThread();  // alpha10.1
         }
 
         void DoLoadGame(string saveName)
         {
+            StopSimThread(false); // alpha10.1
             ClearMessages();
             AddMessage(new Message("LOADING GAME, PLEASE WAIT...", m_Session.WorldTime.TurnCounter, Color.Yellow));
             RedrawPlayScreen();
@@ -2228,6 +2231,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 AddMessage(new Message("LOADING FAILED, NO GAME SAVED OR VERSION NOT COMPATIBLE.", m_Session.WorldTime.TurnCounter, Color.Red));
             }
+            StartSimThread();  // alpha10.1
         }
 
         void DeleteSavedGame(string saveName)
@@ -3594,6 +3598,7 @@ namespace djack.RogueSurvivor.Engine
             // generate world.
             GenerateWorld(true, s_Options.CitySize, suppliedName); //@@MP - added parameter for user to supply a name (Release 5-7)
             CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
+            DoHospitalPowerOn(); //@@MP (Release 6-2)
 
             // scoring : hello there.
             m_Session.Scoring.AddVisit(m_Player.Location.Map); //@@MP - unused parameter (Release 5-7)
@@ -3651,6 +3656,12 @@ namespace djack.RogueSurvivor.Engine
             ClearMessages();
             ClearMessagesHistory();
             RedrawPlayScreen();*/
+
+            // alpha10.1 reset/cleanup bot from previous session
+#if DEBUG
+            if (m_isBotMode)
+                BotReleaseControl();
+#endif
 
             // start simulation thread.
             StopSimThread(false);  // alpha10 stop-start
@@ -4069,7 +4080,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Big Bear", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_BIG_BEAR);
 
@@ -4119,7 +4130,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.FemaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Famu Fataru", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_FAMU_FATARU);
 
@@ -4168,7 +4179,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Santaman", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_SANTAMAN);
 
@@ -4217,7 +4228,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Roguedjack", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_ROGUEDJACK);
 
@@ -4266,7 +4277,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Duckman", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_DUCKMAN);
 
@@ -4317,7 +4328,7 @@ namespace djack.RogueSurvivor.Engine
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Hans von Hanz", false, 0);
             actor.IsUnique = true;
-            actor.Controller = new CivilianAI();
+            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
 
             actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_HANS_VON_HANZ);
 
@@ -5136,7 +5147,6 @@ namespace djack.RogueSurvivor.Engine
             Actor actor = m_Rules.GetNextActorToAct(map); //@@MP - unused parameter (Release 5-7)
 
             // alpha10 ai loop bug detection
-#if DEBUG
             if (actor != null && !actor.IsPlayer)
             {
                 if (actor == m_DEBUG_prevAiActor)
@@ -5146,11 +5156,13 @@ namespace djack.RogueSurvivor.Engine
                         // TO DEVS: you might want to add a debug breakpoint here ->
                         Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: AI actor " + actor.Name + " is probably looping!!");
 #if DEBUG
-                        // in debug keep going to let us debug the ai
+                        // in release mode throw an exception as infinite loop is a fatal bug. comment out to keep going to let us debug the ai
+                        /*Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);*/
+                        DoWait(actor);
 #else
-                        // in release throw an exception as infinite loop is a fatal bug
-                        Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
-                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);
+                        // alpha10.1 in release, just spend a turn. it's better than crashing the game!
+                        DoWait(actor);
 #endif
                     }
                 }
@@ -5160,7 +5172,6 @@ namespace djack.RogueSurvivor.Engine
                     m_DEBUG_prevAiActor = actor;
                 }
             }
-#endif
 #endregion
 
             // 2. If none move to next turn and return.
@@ -5326,7 +5337,8 @@ namespace djack.RogueSurvivor.Engine
                                 if (m_Rules.Roll(0, 1000) < m_Rules.InfectionEffectTriggerChance1000(infectionP))
                                 {
                                     bool isVisible = IsVisibleToPlayer(a);
-                                    bool isPlayer = (a == m_Player);
+                                    bool isPlayer = a.IsPlayer;  // alpha10.1 consistency fix
+                                    bool isBot = a.IsBotPlayer;  // alpha10.1 handle bot
 
                                     // if sleeping, wake up.
                                     if (a.IsSleeping)
@@ -5346,7 +5358,7 @@ namespace djack.RogueSurvivor.Engine
                                         {
                                             if (isPlayer) ClearMessages();
                                             AddMessage(MakeMessage(a, String.Format("{0} blood.", Conjugate(a, VERB_VOMIT)), Color.Purple));
-                                            if (isPlayer)
+                                            if (isPlayer && !isBot)
                                             {
                                                 AddMessagePressEnter();
                                                 ClearMessages();
@@ -5362,7 +5374,7 @@ namespace djack.RogueSurvivor.Engine
                                         {
                                             if (isPlayer) ClearMessages();
                                             AddMessage(MakeMessage(a, String.Format("{0}.", Conjugate(a, VERB_VOMIT)), Color.Purple));
-                                            if (isPlayer)
+                                            if (isPlayer && !isBot)
                                             {
                                                 AddMessagePressEnter();
                                                 ClearMessages();
@@ -5378,7 +5390,7 @@ namespace djack.RogueSurvivor.Engine
                                         {
                                             if (isPlayer) ClearMessages();
                                             AddMessage(MakeMessage(a, String.Format("{0} sick and tired.", Conjugate(a, VERB_FEEL)), Color.Purple));
-                                            if (isPlayer)
+                                            if (isPlayer && !isBot)
                                             {
                                                 AddMessagePressEnter();
                                                 ClearMessages();
@@ -5392,7 +5404,7 @@ namespace djack.RogueSurvivor.Engine
                                         {
                                             if (isPlayer) ClearMessages();
                                             AddMessage(MakeMessage(a, String.Format("{0} sick and weak.", Conjugate(a, VERB_FEEL)), Color.Purple));
-                                            if (isPlayer)
+                                            if (isPlayer && !isBot)
                                             {
                                                 AddMessagePressEnter();
                                                 ClearMessages();
@@ -6483,6 +6495,11 @@ namespace djack.RogueSurvivor.Engine
 
             // music.
             m_MusicManager.StopAll();
+
+            // alpha10.1 bot release control
+#if DEBUG
+            BotReleaseControl();
+#endif
         }
 
         static string TimeSpanToString(TimeSpan rt) //@@MP - made static (Release 5-7)
@@ -7529,11 +7546,20 @@ namespace djack.RogueSurvivor.Engine
                 ClearMessages();
                 AddMessage(new Message("You will hunt another day!", m_Session.WorldTime.TurnCounter, Color.Green));
                 UpdatePlayerFOV(m_Player);
-                AddMessagePressEnter();
+                if (!m_Player.IsBotPlayer) //alpha 10.1
+                    AddMessagePressEnter();
 
                 // Upgrade time!
-                HandlePlayerDecideUpgrade(m_Player);
-                HandlePlayerFollowersUpgrade();
+                // alpha10.1 handle bot skill upgrade, bot followers will upgrade as npcs
+                if (m_Player.IsBotPlayer)
+                {
+                    HandleNPCSkillUpgrade(m_Player);
+                }
+                else
+                {
+                    HandlePlayerDecideUpgrade(m_Player);
+                    HandlePlayerFollowersUpgrade();
+                }
 
                 // Resume play.
                 ClearMessages();
@@ -7567,11 +7593,20 @@ namespace djack.RogueSurvivor.Engine
                 ClearMessages();
                 AddMessage(new Message("You survived another night!", m_Session.WorldTime.TurnCounter, Color.Green));
                 UpdatePlayerFOV(m_Player);
-                AddMessagePressEnter();
+                if (!m_Player.IsBotPlayer)
+                    AddMessagePressEnter();
 
                 // Upgrade time!
-                HandlePlayerDecideUpgrade(m_Player);
-                HandlePlayerFollowersUpgrade();
+                // alpha10.1 handle bot skill upgrade, bot followers will upgrade as npcs
+                if (m_Player.IsBotPlayer)
+                {
+                    HandleNPCSkillUpgrade(m_Player);
+                }
+                else
+                {
+                    HandlePlayerDecideUpgrade(m_Player);
+                    HandlePlayerFollowersUpgrade();
+                }
 
                 // Resume play.
                 ClearMessages();
@@ -7853,13 +7888,18 @@ namespace djack.RogueSurvivor.Engine
                     continue;
 
                 // do it!
-                List<Skills.IDs> upgradeFrom = RollSkillsToUpgrade(a, 3 * 100);
-                Skills.IDs? chosenSkill = NPCPickSkillToUpgrade(a, upgradeFrom);
-                if (chosenSkill == null)
-                    continue;
-                // upgrade it!
-                SkillUpgrade(a, chosenSkill.Value);
+                HandleNPCSkillUpgrade(a);  // alpha10.1
             }
+        }
+
+        void HandleNPCSkillUpgrade(Actor a) // alpha10.1 factorized to handle bot skill upgrade
+        {
+            List<Skills.IDs> upgradeFrom = RollSkillsToUpgrade(a, 3 * 100);
+            Skills.IDs? chosenSkill = NPCPickSkillToUpgrade(a, upgradeFrom);
+            if (chosenSkill == null)
+                return;
+            // upgrade it!
+            SkillUpgrade(a, chosenSkill.Value);
         }
 
         void HandleUndeadNPCsUpgrade(Map map)
@@ -8338,7 +8378,36 @@ namespace djack.RogueSurvivor.Engine
 
                 // 1. Redraw
                 m_UI.UI_SetCursor(null);
-                // hint available? // the alpha 10 method
+
+                //// alpha10.1 bot mode?
+#if DEBUG
+                lock (m_botLock)
+                {
+                    if (m_isBotMode)
+                    {
+                        try { Thread.Sleep(BOT_DELAY); } catch { }  // AnimDelay() does not work here because it just pause the ui
+                        RedrawPlayScreen();
+                        if (m_botControl != null) // for some reason even with the lock this can become null here. wth?? is thread.sleep the culprit??
+                        {
+                            ActorAction botAction = m_botControl.GetAction(this);
+                            if (botAction == null || !botAction.IsLegal())
+                            {
+                                AddMessage(MakeErrorMessage("Bot issued " + (botAction == null ? "NULL" : "illegal " + botAction.ToString()) + " action"));
+                                botAction = new ActionWait(player, this);
+                            }
+                            botAction.Perform();
+                            // copy-paste is bad
+                            UpdatePlayerFOV(player);
+                            ComputeViewRect(player.Location.Position);
+                            m_Session.LastTurnPlayerActed = m_Session.WorldTime.TurnCounter;
+                            RedrawPlayScreen();
+                        }
+                        return;
+                    }
+                }
+#endif
+
+                //// hint available? // the alpha 10 method
                 if (m_Player != null && !m_Player.IsDead && !m_Player.Model.Abilities.IsUndead)
                 {
                     // alpha10 fix properly handle hint overlay
@@ -8381,7 +8450,7 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
 
                 // 2. Get input.
-                // Peek keyboard & mouse until we got an event.
+                //// Peek keyboard & mouse until we got an event.
                 m_UI.UI_PeekKey();  // consume keys to avoid repeats.
                 bool inputLoop = true;
                 bool hasKey = false;
@@ -8469,13 +8538,9 @@ namespace djack.RogueSurvivor.Engine
                                 HandleMessageLog();
                                 break;
 
-                            case PlayerCommand.LOAD_GAME:
-                                // stop sim thread.
-                                StopSimThread(false);
+                            case PlayerCommand.LOAD_GAME: // alpha10.1 moved sim thread responsability out to DoLoadGame
                                 // load.
                                 DoLoadGame(GetUserSave());
-                                // restart sim.
-                                StartSimThread();  // alpha10  ; prev was RestartSimThread()
                                 // refresh player local variable!!
                                 player = m_Player;
                                 // stop looping.
@@ -8483,10 +8548,9 @@ namespace djack.RogueSurvivor.Engine
                                 // stop the update loop!
                                 m_HasLoadedGame = true;
                                 break;
-                            case PlayerCommand.SAVE_GAME:
-                                StopSimThread(false);
+
+                            case PlayerCommand.SAVE_GAME: // alpha10.1 moved sim thread responsability out to DoSaveGame
                                 DoSaveGame(GetUserSave(), false);
-                                StartSimThread();  // alpha10  ; prev was RestartSimThread()
                                 break;
 
                             case PlayerCommand.SCREENSHOT:
@@ -8950,8 +9014,16 @@ namespace djack.RogueSurvivor.Engine
                 {
                     // AI attempted illegal action.                    
                     SpendActorActionPoints(aiActor, Rules.BASE_ACTION_COST);
+
+                    // alpha10.1 
+                    // in debug build, throw exception.
+#if DEBUG
                     throw new InvalidOperationException(String.Format("AI attempted illegal action {0}; actorAI: {1}; fail reason : {2}.",
                         desiredAction.GetType().ToString(), aiActor.Controller.GetType().ToString(), desiredAction.FailReason));
+#else
+                    // in release build just complain and do a wait action instead.
+                    DoWait(aiActor);
+#endif
                 }
             }
             else
@@ -10016,6 +10088,8 @@ namespace djack.RogueSurvivor.Engine
             // if trade done, spend player ap.
             if (actionDone)
                 SpendActorActionPoints(player, Rules.BASE_ACTION_COST);
+
+            ClearOverlays(); // alpha10.1
 
             return actionDone;
         }
@@ -14046,7 +14120,7 @@ namespace djack.RogueSurvivor.Engine
 
             // if player is leaving and changing district, prepare district.
             bool playerChangedDistrict = false;  // alpha10
-            if (isPlayer && exit.ToMap.District != fromMap.District)
+            if (isPlayer && !actor.IsBotPlayer && exit.ToMap.District != fromMap.District)// alpha10.1 disallow bots from leaving districts
             {
                 playerChangedDistrict = true;  // alpha10
                 BeforePlayerEnterDistrict(exit.ToMap.District);
@@ -14371,7 +14445,8 @@ namespace djack.RogueSurvivor.Engine
                         AddMessage(new Message("You get a message from your police radio.", turn, Color.White));
                         AddMessage(new Message(String.Format("{0} is armed and dangerous. Shoot on sight!", aggressor.TheName), turn, Color.White));
                         AddMessage(new Message(String.Format("Current location : {0}@{1},{2}", aggressor.Location.Map.Name, aggressor.Location.Position.X, aggressor.Location.Position.Y), turn, Color.White));
-                        AddMessagePressEnter();
+                        if (!a.IsBotPlayer) //alpha 10.1
+                            AddMessagePressEnter();
                     }
                 });
         }
@@ -14394,7 +14469,8 @@ namespace djack.RogueSurvivor.Engine
                         AddMessage(new Message("You get a message from your army radio.", turn, Color.White));
                         AddMessage(new Message(String.Format("{0} is armed and dangerous. Shoot on sight!", aggressor.Name), turn, Color.White));
                         AddMessage(new Message(String.Format("Current location : {0}@{1},{2}", aggressor.Location.Map.Name, aggressor.Location.Position.X, aggressor.Location.Position.Y), turn, Color.White));
-                        AddMessagePressEnter();
+                        if (!a.IsBotPlayer) //alpha 10.1
+                            AddMessagePressEnter();
                     }
                 });
         }
@@ -14488,14 +14564,13 @@ namespace djack.RogueSurvivor.Engine
 
             // if defender is long waiting player, force stop.
             if (m_IsPlayerLongWait && defender.IsPlayer)
-            {
                 m_IsPlayerLongWaitForcedStop = true;
-            }
 
             // show
             bool isDefVisible = IsVisibleToPlayer(defender);
             bool isAttVisible = IsVisibleToPlayer(attacker);
             bool isPlayer = attacker.IsPlayer || defender.IsPlayer;
+            bool isBot = attacker.IsBotPlayer || defender.IsBotPlayer;  // alpha10.1 handle bot
 
             //if (!isDefVisible && !isAttVisible && !isPlayer && m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP (Release 2)
             if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS))//(isDefVisible || isAttVisible) //@MP (Release 5-4)
@@ -14533,7 +14608,7 @@ namespace djack.RogueSurvivor.Engine
                                 ClearMessages();
                             AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_DISARM), defender));
                             AddMessage(new Message(string.Format("{0} is sent flying!", disarmIt.TheName), attacker.Location.Map.LocalTime.TurnCounter));
-                            if (isPlayer)
+                            if (isPlayer && !isBot)
                                 AddMessagePressEnter();
                             else
                             {
@@ -15790,6 +15865,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // if speaker is the player, make the npc the speaker so the npc is the one offering an item.
+            // alpha10.1 but not for bot
             if (speaker.IsPlayer)
             {
                 // swap speaker and target so npc is always speaker in fast trade
@@ -15901,9 +15977,10 @@ namespace djack.RogueSurvivor.Engine
             // propose.
             // if player, ask.
             // if target is ai, check for it.
+            // alpha10.1 handle bot player
             bool acceptTrade;
             if (isVisible) AddMessage(MakeMessage(speaker, string.Format("{0} {1} for {2}.", Conjugate(speaker, VERB_OFFER), offered.AName, asked.AName)));
-            if (target.IsPlayer)  // speaker always ai
+            if (target.IsPlayer && !target.IsBotPlayer)  // speaker always ai unless bot
             {
                 // ask player.
                 AddOverlay(new OverlayPopup(TRADE_MODE_TEXT, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, Point.Empty));
@@ -15914,8 +15991,15 @@ namespace djack.RogueSurvivor.Engine
             }
             else
             {
-                // ask target ai.
-                TradeRating r = targetAI.RateTradeOffer(this, speaker, offered, asked);
+                // ask target ai/bot
+                BaseAI ai;
+#if DEBUG
+                ai = target.IsPlayer && target.IsBotPlayer ? m_botControl : targetAI;
+#else
+                ai = targetAI;
+#endif
+
+                TradeRating r = ai.RateTradeOffer(this, speaker, offered, asked);
                 if (r == TradeRating.ACCEPT)
                     acceptTrade = true;
                 else if (r == TradeRating.REFUSE)
@@ -15927,8 +16011,8 @@ namespace djack.RogueSurvivor.Engine
                     // note that a duo of charismatic npcs could in theory trade back and forth ha!
                     if (m_Rules.RollChance(m_Rules.ActorCharismaticTradeChance(speaker)))
                     {
-                        acceptTrade = true;
                         if (isVisible) DoEmote(target, "Okay you convinced me.");
+                        acceptTrade = true;
                     }
                     else
                         acceptTrade = false;
@@ -16002,8 +16086,9 @@ namespace djack.RogueSurvivor.Engine
             if (IsVisibleToPlayer(speaker) || (IsVisibleToPlayer(target) && !(m_Player.IsSleeping && target == m_Player)))
             {
                 bool isPlayer = target.IsPlayer;
+                bool isBot = target.IsBotPlayer; // alpha10.1 handle bot
                 bool isImportant = (flags & Sayflags.IS_IMPORTANT) != 0;
-                if (isPlayer && isImportant)
+                if (isPlayer && isImportant && !isBot)
                     ClearMessages();
                 AddMessage(MakeMessage(speaker, String.Format("to {0} : ", target.TheName), sayColor));
                 AddMessage(MakeMessage(speaker, String.Format("\"{0}\"", text), sayColor));
@@ -16035,7 +16120,7 @@ namespace djack.RogueSurvivor.Engine
             if (IsVisibleToPlayer(speaker) || AreLinkedByPhone(speaker, m_Player))
             {
                 // if player follower, alert!
-                if (speaker.Leader == m_Player)
+                if (speaker.Leader == m_Player && !m_Player.IsBotPlayer)  // alpha10.1 handle bot
                 {
                     ClearMessages();
                     AddOverlay(new OverlayRect(Color.Yellow, new Rectangle(MapToScreen(speaker.Location.Position), new Size(TILE_SIZE, TILE_SIZE))));
@@ -16176,7 +16261,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 // interesting item?
                 BaseAI ai = target.Controller as BaseAI;
-                bool isInterestingItem = (ai != null && ai.IsInterestingItemToOwn(this, gift, false)); //alpha 10, was IsInterestingItem()
+                bool isInterestingItem = (ai != null && ai.IsInterestingItemToOwn(this, gift, BaseAI.ItemSource.ANOTHER_ACTOR)); //alpha 10, was IsInterestingItem()
 
                 // emote.
                 if (isInterestingItem)
@@ -17006,7 +17091,7 @@ namespace djack.RogueSurvivor.Engine
         public void DoBreak(Actor actor, MapObject mapObj)
         {
             Attack bashAttack = m_Rules.ActorMeleeAttack(actor, actor.CurrentMeleeAttack, null, mapObj);
-
+            
             #region Attacking a barricaded door.
             DoorWindow door = mapObj as DoorWindow;
             if (door != null && door.IsBarricaded)
@@ -17045,7 +17130,6 @@ namespace djack.RogueSurvivor.Engine
                 return;
             }
 #endregion
-
 #region Attacking an un-barricaded door or a normal object
             else
             {
@@ -17071,14 +17155,14 @@ namespace djack.RogueSurvivor.Engine
 
                 // Message.
                 bool isActorVisible = IsVisibleToPlayer(actor);
-                bool isDoorVisible = IsVisibleToPlayer(mapObj);
+                bool isObjectVisible = IsVisibleToPlayer(mapObj); //@@MP - renamed from Door to Object to better represent whatever it could be (Release 6-2)
                 bool isPlayer = actor.IsPlayer;
 
-                if (isActorVisible || isDoorVisible)
+                if (isActorVisible || isObjectVisible)
                 {
                     if (isActorVisible)
                         AddOverlay(new OverlayRect(Color.Yellow, new Rectangle(MapToScreen(actor.Location.Position), new Size(TILE_SIZE, TILE_SIZE))));
-                    if (isDoorVisible)
+                    if (isObjectVisible)
                         AddOverlay(new OverlayRect(Color.Red, new Rectangle(MapToScreen(mapObj.Location.Position), new Size(TILE_SIZE, TILE_SIZE))));
 
                     if (isBroken)
@@ -17086,7 +17170,7 @@ namespace djack.RogueSurvivor.Engine
                         AddMessage(MakeMessage(actor, Conjugate(actor, VERB_BREAK), mapObj));
                         if (isActorVisible)
                             AddOverlay(new OverlayImage(MapToScreen(actor.Location.Position), GameImages.ICON_MELEE_ATTACK));
-                        if (isDoorVisible)
+                        if (isObjectVisible)
                             AddOverlay(new OverlayImage(MapToScreen(mapObj.Location.Position), GameImages.ICON_KILLED));
                         RedrawPlayScreen();
                         AnimDelay(DELAY_LONG);
@@ -17094,7 +17178,7 @@ namespace djack.RogueSurvivor.Engine
                     else
                     {
                         PlayBashOrBreakSFX(mapObj, isBroken); //@@MP - play the appropriate sfx (Release 3), moved/copied from the very start of the method (Release 5-3), refactored (Release 5-4)
-                        if (isDoorVisible)
+                        if (isObjectVisible)
                         {
                             AddOverlay(new OverlayImage(MapToScreen(mapObj.Location.Position), GameImages.ICON_MELEE_DAMAGE));
                             AddOverlay(new OverlayText(MapToScreen(mapObj.Location.Position).Add(DAMAGE_DX, DAMAGE_DY), Color.White, bashAttack.DamageValue.ToString(), Color.Black)); // alpha10
@@ -17853,9 +17937,9 @@ namespace djack.RogueSurvivor.Engine
                     SpendActorSanity(deadGuy.Leader, Rules.SANITY_HIT_BOND_DEATH);
                     if (IsVisibleToPlayer(deadGuy.Leader))
                     {
-                        if (deadGuy.Leader.IsPlayer) ClearMessages();
+                        if (deadGuy.Leader.IsPlayer && !deadGuy.Leader.IsBotPlayer) ClearMessages();
                         AddMessage(MakeMessage(deadGuy.Leader, String.Format("{0} deeply disturbed by {1} sudden death!", Conjugate(deadGuy.Leader, VERB_BE), deadGuy.Name)));
-                        if (deadGuy.Leader.IsPlayer) AddMessagePressEnter();
+                        if (deadGuy.Leader.IsPlayer && !deadGuy.Leader.IsBotPlayer) AddMessagePressEnter();
                     }
                 }
             }
@@ -17868,9 +17952,9 @@ namespace djack.RogueSurvivor.Engine
                         SpendActorSanity(fo, Rules.SANITY_HIT_BOND_DEATH);
                         if (IsVisibleToPlayer(fo))
                         {
-                            if (fo.IsPlayer) ClearMessages();
+                            if (fo.IsPlayer && !fo.IsBotPlayer) ClearMessages();
                             AddMessage(MakeMessage(fo, String.Format("{0} deeply disturbed by {1} sudden death!", Conjugate(fo, VERB_BE), deadGuy.Name)));
-                            if (fo.IsPlayer) AddMessagePressEnter();
+                            if (fo.IsPlayer && !fo.IsBotPlayer) AddMessagePressEnter();
                         }
                     }
                 }
@@ -18168,7 +18252,8 @@ namespace djack.RogueSurvivor.Engine
 
             ClearMessages();
             AddMessage(new Message("(your insanity takes over)", m_Player.Location.Map.LocalTime.TurnCounter, Color.Orange));
-            AddMessagePressEnter();
+            if (!m_Player.IsBotPlayer) //alpha 10.1 check
+                AddMessagePressEnter();
 
             insaneAction.Perform();
 
@@ -19430,8 +19515,8 @@ namespace djack.RogueSurvivor.Engine
             DrawActorDecoration(actor, gx, gy, DollPart.HEAD, tint);
 
             // hands equipment
-            DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.LEFT_HAND, tint);
             DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.RIGHT_HAND, tint);
+            DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.LEFT_HAND, tint); //@@MP (Release 6-2) swapped to 2nd so torches appear over guns
 
             gx -= ACTOR_OFFSET;
             gy -= ACTOR_OFFSET;
@@ -21180,8 +21265,11 @@ namespace djack.RogueSurvivor.Engine
                     highlightOverlay = new OverlayRect(Color.Pink, new Rectangle(MapToScreen(unique.TheActor.Location.Position), new Size(TILE_SIZE, TILE_SIZE)));
                     AddOverlay(highlightOverlay);
                 }
-                AddMessagePressEnter();
-                ClearMessages();
+                if (!m_Player.IsBotPlayer) //alpha 10.1
+                {
+                    AddMessagePressEnter();
+                    ClearMessages();
+                }
                 if (highlightOverlay != null)
                     RemoveOverlay(highlightOverlay);
             }
@@ -21253,8 +21341,11 @@ namespace djack.RogueSurvivor.Engine
                 ClearMessages();
                 AddMessage(new Message("A National Guard squad has arrived!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
                 AddMessage(MakePlayerCentricMessage("Soldiers seem to come from", squadLeader.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
+                if (!m_Player.IsBotPlayer) //alpha 10.1 check
+                {
+                    AddMessagePressEnter();
+                    ClearMessages();
+                }
             }
 
             // scoring event.
@@ -21342,8 +21433,11 @@ namespace djack.RogueSurvivor.Engine
                 ClearMessages();
                 AddMessage(new Message("An Army chopper has dropped supplies!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
                 AddMessage(MakePlayerCentricMessage("The drop point seems to be", dropPoint));
-                AddMessagePressEnter();
-                ClearMessages();
+                if (!m_Player.IsBotPlayer) //alpha 10.1 check
+                {
+                    AddMessagePressEnter();
+                    ClearMessages();
+                }
             }
 
             // scoring event.
@@ -21482,8 +21576,11 @@ namespace djack.RogueSurvivor.Engine
                 ClearMessages();
                 AddMessage(new Message("You hear the sound of roaring engines!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
                 AddMessage(MakePlayerCentricMessage("Motorbikes seem to come from", raidLeader.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
+                if (!m_Player.IsBotPlayer) //alpha 10.1 check
+                {
+                    AddMessagePressEnter();
+                    ClearMessages();
+                }
             }
 
             // scoring event.
@@ -21561,8 +21658,11 @@ namespace djack.RogueSurvivor.Engine
                 ClearMessages();
                 AddMessage(new Message("You hear obnoxious loud music!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
                 AddMessage(MakePlayerCentricMessage("Cars seem to come from", raidLeader.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
+                if (!m_Player.IsBotPlayer) //alpha 10.1 check
+                {
+                    AddMessagePressEnter();
+                    ClearMessages();
+                }
             }
 
             // scoring event.
@@ -21628,8 +21728,11 @@ namespace djack.RogueSurvivor.Engine
                 ClearMessages();
                 AddMessage(new Message("A plane passes quickly over the city!", m_Session.WorldTime.TurnCounter, Color.LightGreen));
                 AddMessage(MakePlayerCentricMessage("Parachutists have dropped", raidLeader.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
+                if (!m_Player.IsBotPlayer) //alpha 10.1 check
+                {
+                    AddMessagePressEnter();
+                    ClearMessages();
+                }
             }
 
             // scoring event.
@@ -21689,8 +21792,11 @@ namespace djack.RogueSurvivor.Engine
                 ClearMessages();
                 AddMessage(new Message("You hear shooting and honking in the distance.", m_Session.WorldTime.TurnCounter, Color.LightGreen));
                 AddMessage(MakePlayerCentricMessage("A van has stopped", bandScout.Location.Position));
-                AddMessagePressEnter();
-                ClearMessages();
+                if (!m_Player.IsBotPlayer) //alpha 10.1 check
+                {
+                    AddMessagePressEnter();
+                    ClearMessages();
+                }
             }
 
             // scoring event.
@@ -22621,7 +22727,8 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You have found a cellphone.",
                             "Cellphones are useful to keep in contact with your follower(s).",
-                            "You and your follower(s) must have a cellphone equipped."
+                            "You and your follower(s) must have a cellphone equipped.",
+                            "You can recharge cellphones at power generators."
                         };
                     break;
 
@@ -22690,7 +22797,8 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You have found a lighting item, such as a flashlight.",
                             "Equip the item to increase your view distance (FoV).",
-                            "Standing next to someone with a light on has the same effect."
+                            "Standing next to someone with a light on has the same effect.",
+                            "You can recharge flashlights at power generators."
                         };
                     break;
 
@@ -22729,7 +22837,7 @@ namespace djack.RogueSurvivor.Engine
                 case AdvisorHint.ITEM_GRAB_CONTAINER:
                     title = "TAKING AN ITEM FROM A CONTAINER";
                     body = new string[] {
-                            "You are next to a container, such as a warbrobe or a shelf.",
+                            "You are next to a container, such as a wardrobe or a shelf.",
                             "You can TAKE the item there by MOVING into the object."
                         };
                     break;
@@ -23155,7 +23263,8 @@ namespace djack.RogueSurvivor.Engine
             Point pos = new Point(0, 0);
             AddOverlay(new OverlayPopup(lines.ToArray(), Color.Gold, Color.Gold, Color.DimGray, pos));
             ClearMessages();
-            AddMessagePressEnter();
+            if (!m_Player.IsBotPlayer) //alpha 10.1
+                AddMessagePressEnter();
             ClearOverlays();
         }
 
@@ -23172,7 +23281,8 @@ namespace djack.RogueSurvivor.Engine
 
             // message & wait enter.
             ClearMessages();
-            AddMessagePressEnter();
+            if (!m_Player.IsBotPlayer) //alpha10.1
+                AddMessagePressEnter();
             ClearOverlays();  // alpha10 fix
             m_MusicManager.StopAll();
         }
@@ -23288,7 +23398,8 @@ namespace djack.RogueSurvivor.Engine
                             m_MusicManager.Play(GameMusics.FIGHT, AudioPriority.PRIORITY_EVENT);
                             ClearMessages();
                             AddMessage(new Message("What the hell is that thing!?", m_Session.WorldTime.TurnCounter, Color.Yellow));
-                            AddMessagePressEnter();
+                            if (!m_Player.IsBotPlayer) //alpha 10.1
+                                AddMessagePressEnter();
                         }
                     }
                 }
@@ -23428,7 +23539,8 @@ namespace djack.RogueSurvivor.Engine
                             {
                                 ClearMessages();
                                 AddMessage(new Message("Who they hell are you!?", m_Session.WorldTime.TurnCounter, Color.Yellow));
-                                AddMessagePressEnter();
+                                if (!m_Player.IsBotPlayer) //alpha 10.1
+                                    AddMessagePressEnter();
                             }
                         }
                     }
@@ -24979,9 +25091,79 @@ namespace djack.RogueSurvivor.Engine
             return location.Map == Session.UniqueMaps.CHARUndergroundFacility.TheMap ||
                 IsInCHAROffice(location);
         }
-#endregion
+        #endregion
 
-#region -Dev Stuff
+        #region -Experimental Bot Mode
+        // alpha10.1 Bot Mode - DEBUG build only
+#if DEBUG
+        bool m_isBotMode = false;
+        BaseAI m_botControl = null;
+        const int BOT_DELAY = DELAY_SHORT;
+        readonly Object m_botLock = new Object(); // necessary because dev keys presses from RogueForm can happen at any time
+
+        public void BotToggleControl()
+        {
+            lock (m_botLock)
+            {
+                if (m_isBotMode)
+                    BotReleaseControl();
+                else
+                    BotTakeControl();
+            }
+        }
+
+        void BotTakeControl()
+        {
+            // bot restrictions check
+            if (m_Player == null || m_Player.IsDead)
+            {
+                AddMessage(MakeErrorMessage("Bot cannot take control of null/dead player"));
+                return;
+            }
+
+            if (m_botControl != null)
+                m_botControl.LeaveControl();
+
+            try
+            {
+                Type aiClass = m_Player.Model.DefaultController;
+                if (aiClass == null)
+                    throw new Exception("actor model has null defaultcontroller");
+                ActorController aiController = aiClass.GetConstructor(Type.EmptyTypes).Invoke(null) as ActorController;
+                if (!(aiController is BaseAI))
+                    throw new Exception("actor model defaultcontroller is not BaseAI");
+
+                m_botControl = aiController as BaseAI;
+                m_botControl.TakeControl(m_Player);
+                m_Player.IsBotPlayer = true;
+                m_isBotMode = true;
+                AddMessage(MakeMessage(m_Player, "is now bot controlled by " + m_botControl.GetType() + ".", Color.LightGreen));
+            }
+            catch (Exception e)
+            {
+                ClearMessages();
+                AddMessage(MakeErrorMessage("error while creating bot ai:"));
+                AddMessage(MakeErrorMessage(e.Message));
+                AddMessagePressEnter();
+            }
+        }
+
+        void BotReleaseControl()
+        {
+            if (m_botControl == null)
+                return;
+            if (m_Player != null)
+                m_Player.IsBotPlayer = false;
+            m_botControl.LeaveControl();
+            m_botControl = null;
+            m_isBotMode = false;
+            if (m_Player != null)
+                AddMessage(MakeMessage(m_Player, "is now human controlled.", Color.LightGreen));
+        }
+#endif
+        #endregion
+
+        #region -Dev Stuff
 #if DEBUG
         public void DEV_ToggleShowActorsStats() //@@MP - can't be made static
         {
@@ -25022,13 +25204,12 @@ namespace djack.RogueSurvivor.Engine
 
         public void DEV_TogglePlayerInvincibility() // alpha10
         {
-#if DEBUG
             if (m_Session == null || m_Player == null)
                 return;
 
             m_Player.IsInvincible = !m_Player.IsInvincible;
             AddMessage(new Message("DEAR DEV, YOU ARE NOW " + (m_Player.IsInvincible ? "INVINCIBLE" : "NOT INVINCIBLE"), m_Session.WorldTime.TurnCounter, Color.LightGreen));
-#endif
+
         }
 
         void AddDevMiscStuff()
@@ -25042,6 +25223,19 @@ namespace djack.RogueSurvivor.Engine
             //m_Player.Faction = GameFactions.ThePolice;
         }
 
+        public void DEV_MaxTrust() // alpha10.1
+        {
+            if (m_Session == null || m_Player == null)
+                return;
+            if (m_Player.Followers == null)  // alpha10.1 fix
+                return;
+
+            foreach (Actor f in m_Player.Followers)
+                f.TrustInLeader = Rules.TRUST_MAX;
+            AddMessage(new Message("DEAR DEV, FOLLOWERS TRUST MAXED.", m_Session.WorldTime.TurnCounter, Color.LightGreen));
+        }
+#endif
+
         #region Debug AI Looping
         // alpha10
         // Looping ai detection code: 
@@ -25050,7 +25244,6 @@ namespace djack.RogueSurvivor.Engine
         int m_DEBUG_sameAiActorCount;
         const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 10;
         #endregion
-#endif
         #endregion
         #endregion
     }

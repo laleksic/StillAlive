@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
-
+using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Gameplay;
 
@@ -242,7 +242,6 @@ namespace djack.RogueSurvivor
             }
 
             // F10 - DEV STATS - Show pop graph.
-#if DEBUG_STATS
             if (e.KeyCode == Keys.F10)
             {
                 District d = m_Game.Player.Location.Map.District;
@@ -277,12 +276,33 @@ namespace djack.RogueSurvivor
                 UI_Repaint();
                 UI_WaitKey();
             }
-#endif
 
             // F11 - DEV - Toggle player invincibility
             if (e.KeyCode == Keys.F11)
             {
                 m_Game.DEV_TogglePlayerInvincibility();
+                UI_Repaint();
+            }
+
+            // F12 - DEV - Max trust for all player followers
+            if (e.KeyCode == Keys.F12)
+            {
+                m_Game.DEV_MaxTrust();
+                UI_Repaint();
+            }
+
+            // alpha10.1
+            // INSERT - DEV - Toggle bot mode
+            if (e.KeyCode == Keys.Insert)
+            {
+                m_Game.BotToggleControl();
+                UI_Repaint();
+            }
+
+            // HOME
+            if (e.KeyCode == Keys.Home) //@@MP - make it rain (Release 6-2)
+            {
+                m_Game.Session.World.Weather = Weather.HEAVY_RAIN;
                 UI_Repaint();
             }
 #endif

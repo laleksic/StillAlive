@@ -13,7 +13,6 @@ namespace djack.RogueSurvivor.Data
         MIDNIGHT,
         // 1h - 2h- 3h- 4h- 5h
         DEEP_NIGHT,
-
         // 6h
         SUNRISE,
         // 7h - 8h- 9h-10h-11h
@@ -134,8 +133,8 @@ namespace djack.RogueSurvivor.Data
                 case 1:
                 case 2: 
                 case 3:
-                case 4:
-                case 5: m_Phase = DayPhase.DEEP_NIGHT; m_IsNight = true; break;
+                case 4: m_Phase = DayPhase.DEEP_NIGHT; m_IsNight = true; break;
+                case 5: m_Phase = DayPhase.EVENING; m_IsNight = true; break; //@@MP was deep night. smoothes the transition to brighter light of sunrise
                 case 6: 
                 case 7: m_Phase = DayPhase.SUNRISE; m_IsNight = false; break;
                 case 8: 
@@ -148,7 +147,7 @@ namespace djack.RogueSurvivor.Data
                 case 15: 
                 case 16: m_Phase = DayPhase.AFTERNOON; m_IsNight = false; break;
                 case 17: 
-                case 18: m_Phase = DayPhase.SUNSET; m_IsNight = false; break; //@@MP - was night (Release 6-2)
+                case 18: m_Phase = DayPhase.SUNSET; m_IsNight = false; break; //@@MP - was night
                 case 19: 
                 case 20: m_Phase = DayPhase.EVENING; m_IsNight = true; break;
                 case 21: 

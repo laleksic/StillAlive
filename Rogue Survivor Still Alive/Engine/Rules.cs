@@ -90,7 +90,9 @@ namespace djack.RogueSurvivor.Engine
         public const int FOV_PENALTY_SUNRISE = 4;
         public const int FOV_PENALTY_RAIN = 1;
         public const int FOV_PENALTY_HEAVY_RAIN = 2;
-        public const int FOV_STAND_ON_BONUS = 2;//@@MP made constant (Release 6-2)
+        //@@MP made constant (Release 6-2)
+        public const int FOV_STAND_ON_BONUS = 2;
+        public const int FOV_INSIDE_TORCH_BONUS = 2;
 
         public const int NIGHT_STA_PENALTY = 2;
         #endregion
@@ -1429,10 +1431,8 @@ namespace djack.RogueSurvivor.Engine
                         return null;
                 }
 
-                // AI: switching place
-                if(!actor.IsPlayer && 
-                    !targetActor.IsPlayer 
-                    && CanActorSwitchPlaceWith(actor, targetActor, out reason))
+                // AI: switching place // alpha10.1 handle bot like it was an AI
+                if ((!actor.IsPlayer || actor.IsBotPlayer) && !targetActor.IsPlayer && CanActorSwitchPlaceWith(actor, targetActor, out reason))
                     return new ActionSwitchPlace(actor, game, targetActor);
 
                 // chatting?
@@ -1481,7 +1481,7 @@ namespace djack.RogueSurvivor.Engine
                     return new ActionGetFromContainer(actor, game, to);
 
                 // 3.3 Break? Only allow bashing actors to do that (don't want Civilians to bash stuff on their way)
-                if (actor.Model.Abilities.CanBashDoors && IsBreakableFor(actor, mapObj, out reason))
+                if (!actor.IsPlayer && actor.Model.Abilities.CanBashDoors && IsBreakableFor(actor, mapObj, out reason)) //@@MP - stopped players from auto-breaking on bump (Release 6-2)
                     return new ActionBreak(actor, game, mapObj);
 
                 // 3.4 Power Generator?
@@ -1573,9 +1573,9 @@ namespace djack.RogueSurvivor.Engine
 
             /////////////////////////////////
             // Only if :
-            // 1. Player
+            // 1. Player and not bot // alpha10.1
             /////////////////////////////////
-            if(!actor.IsPlayer)
+            if (!actor.IsPlayer || actor.IsBotPlayer)
             {
                 reason = "can't leave maps";
                 return false;
@@ -1613,7 +1613,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // 2. AI: can't use AI exits.
-            if (!actor.IsPlayer && !actor.Model.Abilities.AI_CanUseAIExits)
+            if ((!actor.IsPlayer || actor.IsBotPlayer) && !actor.Model.Abilities.AI_CanUseAIExits)// alpha10.1 handle bots
             {
                 reason = "this AI can't use exits";
                 return false;
@@ -1989,7 +1989,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Door is not breakable.
             if (door.BreakState != MapObject.Break.BREAKABLE && !door.IsBarricaded)
             {
-                reason = "can't break this object";
+                reason = "can't break this door";
                 return false;
             }
 
@@ -3645,8 +3645,7 @@ namespace djack.RogueSurvivor.Engine
             return SKILL_NECROLOGY_UNDEAD_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.NECROLOGY);
         }
 
-        // alpha10 added mapobject param
-        public Attack ActorMeleeAttack(Actor actor, Attack baseAttack, Actor target, MapObject objToBreak = null)
+        public Attack ActorMeleeAttack(Actor actor, Attack baseAttack, Actor target, MapObject objToBreak = null) // alpha10 added mapobject param
         {
             float hit = baseAttack.HitValue;
             float dmg = baseAttack.DamageValue;
@@ -3916,8 +3915,8 @@ namespace djack.RogueSurvivor.Engine
             {
                 int lightBonus = 0;
 
-                lightBonus = GetLightBonusEquipped(actor);
-                if (lightBonus == 0)
+                lightBonus = GetLightBonusEquipped(actor); //does the actor have a torch on?
+                if (lightBonus == 0) //otherwise, does anyone else around him?
                 {
                     Map map = actor.Location.Map;
                     if (map.HasAnyAdjacentInMap(actor.Location.Position,
@@ -3930,13 +3929,24 @@ namespace djack.RogueSurvivor.Engine
                         }))
                         lightBonus = 1;
                 }
+                if (lightBonus > 0 && actor.Location.Map.GetTileAt(actor.Location.Position.X,actor.Location.Position.Y).IsInside) //@@MP - give torches more effect underground (Release 6-2)
+                    lightBonus += FOV_INSIDE_TORCH_BONUS;
+
                 FOV += lightBonus;
             }
 
-            // standing on some map objects.
+            // standing on some map objects, or 
             MapObject mobj = actor.Location.Map.GetMapObjectAt(actor.Location.Position);
             if (mobj != null && mobj.StandOnFovBonus)
                 FOV += FOV_STAND_ON_BONUS; //@@MP - now using a const (Release 6-2)
+
+            // outside at night minimum FOV = 1, and that's a tad too little. this is a lazy workaround //@@MP (Release 6-2)
+            if (light == Lighting.OUTSIDE && time.IsNight)
+            {
+                if (FOV < 2)
+                    FOV = FOV;
+                    //FOV += 1;
+            }
 
             // done.
             FOV = Math.Max(MINIMAL_FOV, FOV);
@@ -4372,7 +4382,8 @@ namespace djack.RogueSurvivor.Engine
         public int GetTrapTriggerChance(ItemTrap trap, Actor a) // alpha10 //@@MP can't be static
         {
             // owners never trigger their own trap
-            if (trap.Owner == a)
+            // alpha10.1 bugfix - correctly has 0 chance to trigger safe traps (eg: followers traps etc...)
+            if (IsSafeFromTrap(trap, a))
                 return 0;
 
             int baseChance;

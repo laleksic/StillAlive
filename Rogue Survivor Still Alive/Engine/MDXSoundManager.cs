@@ -157,7 +157,7 @@ namespace djack.RogueSurvivor.Engine
             if (m_Musics.TryGetValue(musicname, out music))
             {
                 Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping music {0}.", musicname));
-                music.Ending += new EventHandler(MusicEnding);
+                music.Ending += new EventHandler(OnLoopingMusicEnding);
                 Play(music);
                 this.Track = musicname;
                 this.Priority = priority;
@@ -177,7 +177,7 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        void MusicEnding(object sender, EventArgs e)
+        void OnLoopingMusicEnding(object sender, EventArgs e)
         {
             Audio music = (Audio)sender;
             Play(music);
@@ -241,7 +241,7 @@ namespace djack.RogueSurvivor.Engine
 
         void Stop(Audio audio)
         {
-            audio.Ending -= MusicEnding;
+            audio.Ending -= OnLoopingMusicEnding;
             //audio.Pause(); //@@MP (Release 2)
             m_CurrentAudio = null; //alpha 10
             if (audio.Playing)
