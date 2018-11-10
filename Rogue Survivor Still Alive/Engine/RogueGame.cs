@@ -22395,7 +22395,7 @@ namespace djack.RogueSurvivor.Engine
                     });*/
                     return false;
 
-                case AdvisorHint.EXIT_STAIRS_LADDERS:  // using stairs, laders.
+                case AdvisorHint.EXIT_STAIRS_LADDERS:  // using stairs, ladders.
                     return map.GetExitAt(pos) != null;
 
                 case AdvisorHint.EXIT_LEAVING_DISTRICT: // leaving the district.

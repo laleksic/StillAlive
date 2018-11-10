@@ -230,7 +230,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // - FLAGS
             // "courageous" : has leader, see leader, he is fighting and actor not tired.
             // - RULES
-            // 0 run away from primed explosives (and fires //@@MP (Release 4)).
+            // 0.1 run away from primed explosives (and fires //@@MP (Release 4)).
+            // 0.2 if underground in total darkness, find nearest exit //@@MP (Release 6-2)
             // 1 throw grenades at enemies.
             // alpha10 OBSOLETE 2 equip weapon/armor
             // 3 fire at nearest (always if has leader, half of the time if not)  - check directives
@@ -300,7 +301,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_LastEnemySaw = enemies[game.Rules.Roll(0, enemies.Count)];
             #endregion
 
-            // 0 run away from primed explosives and fires //@@MP - fires added (Release 4).
+            // 0.1 run away from primed explosives and fires //@@MP - fires added (Release 4).
             #region
             determinedAction = BehaviorFleeFromFires(game, m_Actor.Location);
             if (determinedAction != null)
@@ -314,6 +315,34 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
                 return determinedAction;
+            }
+            #endregion
+
+            // 0.2 if underground in total darkness, find nearest exit //@@MP (Release 6-2)
+            #region
+            if (!game.Rules.CanActorSeeSky(m_Actor))
+            {
+                int fov = game.Rules.ActorFOV(m_Actor, m_Actor.Location.Map.LocalTime, game.Session.World.Weather);
+                if (fov <=0) //can't see anything, too dark
+                {
+                    //if already on exit, leave
+                    determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
+                    if (determinedAction == null)
+                    {
+                        //find the nearest exit
+                        determinedAction = BehaviorGoToNearestExit(game);
+                        if (determinedAction != null)
+                        {
+                            m_Actor.Activity = Activity.IDLE;
+                            return determinedAction;
+                        }
+                    }
+                    else
+                    {
+                        m_Actor.Activity = Activity.IDLE;
+                        return determinedAction;
+                    }
+                }
             }
             #endregion
 
