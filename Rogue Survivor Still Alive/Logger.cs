@@ -74,11 +74,14 @@ namespace djack.RogueSurvivor
                 Console.Out.WriteLine(s);
 
                 // write to log file.
-                using (StreamWriter stream = File.AppendText(LogFilePath()))
+                if (SetupConfig.WriteLogToFile) //@@MP - make logging optional (Release 6-2)
                 {
-                    stream.WriteLine(s);
-                    stream.Flush();
-                    //stream.Close();
+                    using (StreamWriter stream = File.AppendText(LogFilePath()))
+                    {
+                        stream.WriteLine(s);
+                        stream.Flush();
+                        //stream.Close();
+                    }
                 }
             }
         }
