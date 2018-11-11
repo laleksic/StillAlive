@@ -1,4 +1,4 @@
-STILL ALIVE 2.1.7.8 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
+STILL ALIVE 2.1.9.9 (aka Release 6-2, ??/??/2018) [Author: MP] ---WORK IN PROGRESS---
 ---------------------
 
 Features:
@@ -10,11 +10,13 @@ Features:
 --Night obscures it somewhat, and day time leaves it reasonably visible
 -Equipping/unequipping immediately updates FOV.
 -Added generators to some building types.
--In the absolute dark, actors cannot:
---read books and magazines 
---build and repair fortifications
---barricade doors
---use healing items
+-In the absolute dark:
+--Actors cannot:
+---read books and magazines 
+---build and repair fortifications
+---barricade doors
+---use healing items
+--AI without light sources will try to find their way to the nearest exit.
 
 Fixes:
 -Removed daylight cycle tint when can't see the sky (eg basements)
@@ -27,6 +29,9 @@ Fixes:
 -Made some objects unbreakable where it made sense.
 -Stopped players from auto-breaking objects on bump.
 -Left hand equipment now appears over right (eg flashlights over longer firearms).
+
+Development:
+-RSConfig allows user to decide if logs are written to file (disabled by default).
 
 
 **********ALPHA 10 CHANGES, MERGED INTO STILL ALIVE:

@@ -843,6 +843,61 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
         }
 
+        protected ActorAction BehaviorGoToNearestExit(RogueGame game) //@@MP (Release 6-2)
+        {
+            // find nearest exit
+            Point? exitPos = null;
+            float nearestDist = float.MaxValue;
+            if (m_Actor.IsBotPlayer)
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Location.Position.ToString());
+
+            //foreach (Exit exit in m_Actor.Location.Map.Exits) //@@MP - wft this doesn't work. it detects an exit at some abritray point, usually nowhere nearby
+            int xmin = m_Actor.Location.Position.X - 20;
+            int xmax = m_Actor.Location.Position.X + 20;
+            int ymin = m_Actor.Location.Position.Y - 20;
+            int ymax = m_Actor.Location.Position.Y + 20;
+
+            for (int x = xmin; x < xmax; x++)
+            {
+                for (int y = ymin; y < ymax; y++)
+                {
+                    if (m_Actor.Location.Map.IsInBounds(x,y))
+                    {
+                        //Exit exit = m_Actor.Location.Map.GetExitAt(x, y);
+                        Tile exit = m_Actor.Location.Map.GetTileAt(x, y);
+                        if (exit != null && (exit.HasDecoration(GameImages.DECO_STAIRS_UP) || exit.HasDecoration(GameImages.DECO_STAIRS_DOWN)))
+                        {
+                            //Point pt = exit.ToPosition;
+                            Point pt = new Point(x, y);
+
+                            if (m_Actor.IsBotPlayer)
+                                Logger.WriteLine(Logger.Stage.RUN_MAIN, pt.ToString());
+                            //Logger.WriteLine(Logger.Stage.RUN_MAIN, exit.ToPosition.ToString());
+
+                            float dist = game.Rules.StdDistance(m_Actor.Location.Position, pt);
+                            if (dist < nearestDist)
+                            {
+                                nearestDist = dist;
+                                exitPos = pt;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // if we have an exit, try to get there.
+            if (exitPos != null)
+            {
+                ActorAction moveThere = BehaviorStupidBumpToward(game, exitPos.Value, false, false);
+                if (moveThere != null)
+                {
+                    return moveThere;
+                }
+            }
+
+            return null; //no exit available
+        }
+
         protected ActorAction BehaviorGoToNearestVisibleWater(RogueGame game, HashSet<Point> FOV) //@@MP (Release 6-1)
         {
             Map map = m_Actor.Location.Map;
