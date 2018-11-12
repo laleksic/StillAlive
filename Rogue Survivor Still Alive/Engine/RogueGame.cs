@@ -18958,7 +18958,7 @@ namespace djack.RogueSurvivor.Engine
                 // map
                 //// determine tint to apply
                 Color mapTint = TINT_MIDNIGHT;
-                if (isNight && hasLitTorch) //@@MP - change tint during night if torch on (Release 6-2)
+                if (hasLitTorch && (!canActorSeeSky || isNight)) //@@MP - change tint during night if torch on (Release 6-2)
                     mapTint = TINT_SUNSET; //it's a good colour for a torch too
                 else if (canActorSeeSky) //@@MP - added check in case they're undergound (Release 6-1)
                     mapTint = TintForDayPhase(m_Session.WorldTime.Phase); //@@MP - restored (Release 5-7)
