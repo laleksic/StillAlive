@@ -898,6 +898,37 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return null; //no exit available
         }
 
+        /// <summary>
+        /// Move to a visible generator. Recharge a nominated light
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="FOV"></param>
+        /// <param name="nominatedLight">Optional. A light you want to recharge</param>
+        /// <returns></returns>
+        protected ActorAction BehaviorGoToVisibleGenerator(RogueGame game, HashSet<Point> FOV, ItemLight nominatedLight = null) //@@MP (Release 6-2)
+        {
+            Map map = m_Actor.Location.Map;
+            foreach (Point pt in FOV)
+            {
+                PowerGenerator generator = map.GetMapObjectAt(pt) as PowerGenerator;
+                if (generator != null)
+                {
+                    //the generator is right next to us
+                    if (nominatedLight != null && game.Rules.IsAdjacent(m_Actor.Location.Position, pt)) //nominatedLight != null && 
+                        return new ActionRechargeItemBattery(m_Actor, game, nominatedLight);
+
+                    //the generator is nearby, move there
+                    ActorAction moveThere = BehaviorIntelligentBumpToward(game, pt, false, false);
+                    if (moveThere != null)
+                    {
+                        return moveThere;
+                    }
+                }
+            }
+
+            return null; //no generator i can see
+        }
+
         protected ActorAction BehaviorGoToNearestVisibleWater(RogueGame game, HashSet<Point> FOV) //@@MP (Release 6-1)
         {
             Map map = m_Actor.Location.Map;
@@ -4376,7 +4407,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <see cref="RateItemExhange(RogueGame, Item, Item)"/>
         public ItemRating RateItem(RogueGame game, Item it, bool owned)  // alpha10 new item rating and trading logic
         {
-            //@@MP - re-ordered for for most to least likely (Release 6-1)
+            //@@MP - re-ordered for most to least likely (Release 6-1),(Release 6-2)
 
             // Items forbidden to AI.
             if (it.IsForbiddenToAI)
@@ -4396,6 +4427,33 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // not a specialist
                 if (m_Actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MARTIAL_ARTS) > 0)
                     return ItemRating.JUNK;
+            }
+
+            // Any meds if none. Other meds if need (or could) it.
+            if (it is ItemMedicine)
+            {
+                //@@MP - added alcohol-specific check (Release 4)(Release 6-2)
+                if (AlreadyHasEnoughAlcoholInInventory(it, 1)) //there's 6 unique models of alcohol, so if left to just the next check the AI would be able to go nuts and take way too much booze. this fixes that
+                    return ItemRating.JUNK;
+
+                ItemMedicine itMed = it as ItemMedicine;
+                if (CountItemsOfSameType(typeof(ItemMedicine), it) == 0)
+                    return ItemRating.NEED;
+
+                // be lenient and consider we need a med if the corresponding stat is about 75% or less.
+                // exception: always want to cure health and infection.
+                // this is will allow the player to trade meds for other items, which will increase the
+                // value of meds players mostly ignored previously (eg: sta healers).
+                if ((itMed.Healing > 0) && (m_Actor.HitPoints < game.Rules.ActorMaxHPs(m_Actor)))
+                    return ItemRating.NEED;
+                if ((itMed.StaminaBoost > 0) && (m_Actor.StaminaPoints < 0.75f * game.Rules.ActorMaxSTA(m_Actor)))
+                    return ItemRating.NEED;
+                if ((itMed.SleepBoost > 0) && (m_Actor.SleepPoints < 0.75f * game.Rules.ActorMaxSleep(m_Actor)))
+                    return ItemRating.NEED;
+                if ((itMed.SanityCure > 0) && (m_Actor.Sanity < 0.75f * game.Rules.ActorMaxSanity(m_Actor)))
+                    return ItemRating.NEED;
+                if ((itMed.InfectionCure > 0) && (m_Actor.Infection > 0)) // always want to cure infection
+                    return ItemRating.NEED;
             }
 
             // Barricade material if none.
@@ -4446,6 +4504,33 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return ItemRating.JUNK;
             }
 
+            // Light out of batteries or if has already enough
+            if (it is ItemLight)
+            {
+                ItemLight itLight = it as ItemLight;
+
+                // light is junk if actor already has 6+ hours of batteries worth.
+                int totalLightsBatteries = 0;
+                int totalLights = 0;
+                m_Actor.Inventory.ForEach((i) =>
+                {
+                    if (i == it)
+                        return;
+                    ItemLight l = i as ItemLight;
+                    if (l == null)
+                        return;
+                    totalLightsBatteries += l.Batteries;
+                    totalLights++;
+                });
+
+                if (totalLightsBatteries >= 6 * WorldTime.TURNS_PER_HOUR)
+                    return ItemRating.JUNK;
+                else if (itLight.Batteries <= 0)
+                    return ItemRating.JUNK;
+                else if (totalLights == 0) //@@MP - don't have a light. lights are now very important given the darkness revamp (Release 6-2)
+                    return ItemRating.NEED;
+            }
+
             // Spray Scent out of charges or if has already enough
             if (it is ItemSprayScent)
             {
@@ -4462,31 +4547,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return t != null && t.SprayQuantity > 0;
                 });
                 if (enough)
-                    return ItemRating.JUNK;
-            }
-
-            // Light out of batteries or if has already enough
-            if (it is ItemLight)
-            {
-                ItemLight itLight = it as ItemLight;
-
-                // light is junk if actor already has 6+ hours of batteries worth.
-                int totalLightsBatteries = 0;
-                m_Actor.Inventory.ForEach((i) =>
-                {
-                    if (i == it)
-                        return;
-                    ItemLight l = i as ItemLight;
-                    if (l == null)
-                        return;
-                    totalLightsBatteries += l.Batteries;
-                });
-
-                if (totalLightsBatteries >= 6 * WorldTime.TURNS_PER_HOUR)
-                    return ItemRating.JUNK;
-                else if (totalLightsBatteries == 0) //@@MP - don't have a light. lights are now very important given the darkness revamp (Release 6-2)
-                    return ItemRating.NEED;
-                else if (itLight.Batteries <= 0)
                     return ItemRating.JUNK;
             }
 
@@ -4548,33 +4608,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return ItemRating.NEED;
             }
 
-            // Any meds if none. Other meds if need (or could) it.
-            if (it is ItemMedicine)
-            {
-                //@@MP - added alcohol-specific check (Release 4)(Release 6-2)
-                if (AlreadyHasEnoughAlcoholInInventory(it, 1)) //there's 6 unique models of alcohol, so if left to just the next check the AI would be able to go nuts and take way too much booze. this fixes that
-                    return ItemRating.JUNK;
-
-                ItemMedicine itMed = it as ItemMedicine;
-                if (CountItemsOfSameType(typeof(ItemMedicine), it) == 0)
-                    return ItemRating.NEED;
-
-                // be lenient and consider we need a med if the corresponding stat is about 75% or less.
-                // exception: always want to cure health and infection.
-                // this is will allow the player to trade meds for other items, which will increase the
-                // value of meds players mostly ignored previously (eg: sta healers).
-                if ((itMed.Healing > 0) && (m_Actor.HitPoints < game.Rules.ActorMaxHPs(m_Actor)))
-                    return ItemRating.NEED;
-                if ((itMed.StaminaBoost > 0) && (m_Actor.StaminaPoints < 0.75f * game.Rules.ActorMaxSTA(m_Actor)))
-                    return ItemRating.NEED;
-                if ((itMed.SleepBoost > 0) && (m_Actor.SleepPoints < 0.75f * game.Rules.ActorMaxSleep(m_Actor)))
-                    return ItemRating.NEED;
-                if ((itMed.SanityCure > 0) && (m_Actor.Sanity < 0.75f * game.Rules.ActorMaxSanity(m_Actor)))
-                    return ItemRating.NEED;
-                if ((itMed.InfectionCure > 0) && (m_Actor.Infection > 0)) // always want to cure infection
-                    return ItemRating.NEED;
-            }
-
             // Tracker out of batteries or if has already enough
             if (it is ItemTracker)
             {
@@ -4607,13 +4640,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             //        return ItemRating.NEED;
             //}
 
-            // (Unprimed) Explosive if none.
-            if (it is ItemExplosive)
-            {
-                if (CountItemsOfSameType(typeof(ItemExplosive), it) == 0)
-                    return ItemRating.NEED;
-            }
-
             // Armor if none.
             if (it is ItemBodyArmor)
             {
@@ -4626,6 +4652,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // Spray paint (AI never use it).
             if (it is ItemSprayPaint)
                 return ItemRating.JUNK;
+
+            // (Unprimed) Explosive if none.
+            if (it is ItemExplosive)
+            {
+                if (CountItemsOfSameType(typeof(ItemExplosive), it) == 0)
+                    return ItemRating.NEED;
+            }
 
             // Primed explosives.
             if (it is ItemPrimedExplosive)

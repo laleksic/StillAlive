@@ -241,28 +241,29 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // alpha10 obsolete and redundant with rule 4! 7 charge enemy if courageous
             // 8 eat when hungry (also eat corpses)
             // 9 sleep when almost sleepy and safe.
-            // 10 drop light/tracker with no batteries
-            // alpha10 OBSOLETE 11 equip light/tracker/scent spray
-            // 12 make room for food items if needed.
-            // 13 get nearby item/trade (not if seeing enemy) - check directives.
-            // 14 if hungry and no food, charge at people for food (option, not follower or law enforcer)
-            // 15 use stench killer.
-            // 16 close door behind me.
-            // 17 use entertainment
-            // 18 build trap or fortification.
-            // 19 follow leader.
-            // 20 take lead (if leadership)
-            // 21 if hungry, tear down barricades & push objects.
-            // 22 go revive corpse.
-            // 23 use exit.
-            // 24 tell friend about latest raid.
-            // 25 tell friend about latest friendly soldier.
-            // 26 tell friend about latest enemy.
-            // 27 tell friend about latest items.
-            // 28 (law enforcer) watch for murderers.
-            // 29 (leader) don't leave followers behind.
-            // 30 explore.
-            // 31 wander.
+            // 10 recharge lights //@@MP - added (Release 6-2)
+            // 11 drop light/tracker with no batteries
+            // alpha10 OBSOLETE 12 equip light/tracker/scent spray
+            // 13 make room for food items if needed.
+            // 14 get nearby item/trade (not if seeing enemy) - check directives.
+            // 15 if hungry and no food, charge at people for food (option, not follower or law enforcer)
+            // 16 use stench killer.
+            // 17 close door behind me.
+            // 18 use entertainment
+            // 19 build trap or fortification.
+            // 20 follow leader.
+            // 21 take lead (if leadership)
+            // 22 if hungry, tear down barricades & push objects.
+            // 23 go revive corpse.
+            // 24 use exit.
+            // 25 tell friend about latest raid.
+            // 26 tell friend about latest friendly soldier.
+            // 27 tell friend about latest enemy.
+            // 28 tell friend about latest items.
+            // 29 (law enforcer) watch for murderers.
+            // 30 (leader) don't leave followers behind.
+            // 31 explore.
+            // 32 wander.
             //////////////////////////////////////////////////////////////////////
 
             // get data.
@@ -272,6 +273,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             //bool seeLeader = checkOurLeader && m_LOSSensor.FOV.Contains(m_Actor.Leader.Location.Position); //@@MP - unused (Release 6-1)
             bool isLeaderFighting = checkOurLeader && IsAdjacentToEnemy(game, m_Actor.Leader);
             //bool isCourageous = checkOurLeader && seeLeader && isLeaderFighting && !game.Rules.IsActorTired(m_Actor);  //@@MP - unused (Release 6-1)
+            //@@MP - these below are used in multiple steps, so make it reusable (Release 6-1)
+            HashSet<Point> FOV = m_LOSSensor.FOV;
+            Map map = m_Actor.Location.Map;
 
             //setup
             #region setup
@@ -285,13 +289,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             m_Exploration.Update(m_Actor.Location);
 
             // clear taboo tiles : periodically or when changing maps.
-            if (m_Actor.Location.Map.LocalTime.TurnCounter % WorldTime.TURNS_PER_HOUR == 0 || 
-                (PrevLocation != null && PrevLocation.Map != m_Actor.Location.Map))
+            if (map.LocalTime.TurnCounter % WorldTime.TURNS_PER_HOUR == 0 ||  //@@MP m_Actor.Location.Map (Release 6-2)
+                (PrevLocation != null && PrevLocation.Map != map)) //@@MP m_Actor.Location.Map (Release 6-2)
             {
                 ClearTabooTiles();
             }
             // clear trades.
-            if (m_Actor.Location.Map.LocalTime.TurnCounter % WorldTime.TURNS_PER_DAY == 0)
+            if (map.LocalTime.TurnCounter % WorldTime.TURNS_PER_DAY == 0) //@@MP m_Actor.Location.Map (Release 6-2)
             {
                 ClearTabooTrades();
             }
@@ -322,7 +326,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (!game.Rules.CanActorSeeSky(m_Actor))
             {
-                int fov = game.Rules.ActorFOV(m_Actor, m_Actor.Location.Map.LocalTime, game.Session.World.Weather);
+                int fov = game.Rules.ActorFOV(m_Actor, map.LocalTime, game.Session.World.Weather); //@@MP m_Actor.Location.Map (Release 6-2)
                 if (fov <=0) //can't see anything, too dark
                 {
                     //if already on exit, leave
@@ -365,7 +369,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             else if (hasEnemies) // otherwise, throw? //@@MP - (Release 5-7)
             {
-                determinedAction = BehaviorThrowGrenade(game, m_LOSSensor.FOV, enemies);
+                determinedAction = BehaviorThrowGrenade(game, FOV, enemies); //@@MP m_LOSSensor.FOV, enemies); (Release 6-2)
                 if (determinedAction != null)
                 {
                     return determinedAction;
@@ -433,11 +437,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             List<Percept> friends = FilterNonEnemies(game, mapPercepts);
             if (friends != null)
             {
-                Map map = m_Actor.Location.Map; //@@MP (Release 6-1)
-                HashSet<Point> FOV = m_LOSSensor.FOV;
+                //Map map = m_Actor.Location.Map; //@@MP - added (Release 6-1), removed (Release 6-2)
+                //HashSet<Point> FOV = m_LOSSensor.FOV; //@@MP (Release 6-2)
                 foreach (Point p in FOV)
                 {
-                    if (map.IsAnyTileFireThere(m_Actor.Location.Map, p))
+                    if (map.IsAnyTileFireThere(map, p))
                     {
                         // shout
                         determinedAction = BehaviorWarnFriendsOfFire(game, friends);
@@ -539,7 +543,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 WouldLikeToSleep(game, m_Actor) && IsInside(m_Actor) && game.Rules.CanActorSleep(m_Actor))
             {
                 // secure sleep.
-                determinedAction = BehaviorSecurePerimeter(game, m_LOSSensor.FOV);
+                determinedAction = BehaviorSecurePerimeter(game, FOV); //@@MP m_LOSSensor.FOV); (Release 6-2)
                 if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
@@ -547,7 +551,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
 
                 // sleep.
-                determinedAction = BehaviorSleep(game, m_LOSSensor.FOV);
+                determinedAction = BehaviorSleep(game, FOV); //@@MP m_LOSSensor.FOV); (Release 6-2)
                 if (determinedAction != null)
                 {
                     if (determinedAction is ActionSleep)
@@ -557,7 +561,37 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 10 drop useless light/tracker/spray
+            // 10 recharge lights //@@MP - added (Release 6-2)
+            #region
+            //ItemLight equippedLight = GetEquippedLight();
+            //if (equippedLight != null && (equippedLight.Batteries <= ((equippedLight.Model as ItemLightModel).MaxBatteries) / 1.5))
+            //ItemLight bestLight = HasItemOfType(typeof(ItemLight));
+            /*if (HasItemOfType(typeof(ItemLight)))
+            {*/
+            ItemLight nominatedLight = null;
+            foreach (Item it in m_Actor.Inventory.Items)
+            {
+                ItemLight light = it as ItemLight;
+                if (light != null && light.Batteries <= ((light.Model as ItemLightModel).MaxBatteries) / 1.5)
+                {
+                    nominatedLight = light;
+                    break; //just grab the one
+                }
+            }
+
+            //choose a random light to recharge. ideally the AI will recharge them all eventually
+            if (nominatedLight != null)
+            {
+                determinedAction = BehaviorGoToVisibleGenerator(game, FOV, nominatedLight);
+                if (determinedAction != null)
+                {
+                    return determinedAction;
+                }
+            }
+            //}
+            #endregion
+
+            // 11 drop useless light/tracker/spray
             #region
             determinedAction = BehaviorDropUselessItem(game);
             if (determinedAction != null)
@@ -567,7 +601,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 11 equip light/tracker/spray.  // alpha10 obsolete
+            // 12 equip light/tracker/spray.  // alpha10 obsolete
             #region
             //// tracker : if has leader or is a leader.
             //bool needCellPhone = m_Actor.HasLeader || m_Actor.CountFollowers > 0;
@@ -618,14 +652,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
             //}
             #endregion
 
-            // 12 make room for food items if needed.
+            // 13 make room for food items if needed.
             // &&
-            // 13 get nearby item/trade (not if seeing enemy)
+            // 14 get nearby item/trade (not if seeing enemy)
             // ignore not currently visible items & blocked items.
             #region
             if (!hasEnemies && this.Directives.CanTakeItems)
             {
-                Map map = m_Actor.Location.Map;
+                //Map map = m_Actor.Location.Map; //@@MP (Release 6-2)
 
                 #region Get items
                 // alpha10 new common behaviour code, also used by GangAI
@@ -698,7 +732,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 14 if hungry and no food, charge at people for food (option, not follower or law enforcer)
+            // 15 if hungry and no food, charge at people for food (option, not follower or law enforcer)
             #region
             if (RogueGame.Options.IsAggressiveHungryCiviliansOn && 
                 mapPercepts != null && !m_Actor.HasLeader && !m_Actor.Model.Abilities.IsLawEnforcer &&
@@ -738,7 +772,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 15 use stench killer.
+            // 16 use stench killer.
             #region
             if (game.Rules.RollChance(USE_STENCH_KILLER_CHANCE))
             {
@@ -751,7 +785,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 16 close door behind me.
+            // 17 close door behind me.
             #region
             determinedAction = BehaviorCloseDoorBehindMe(game, PrevLocation);
             if (determinedAction != null)
@@ -761,7 +795,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 17 use entertainment
+            // 18 use entertainment
             #region
             if (m_Actor.Model.Abilities.HasSanity)
             {
@@ -783,9 +817,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 18 build trap or fortification.
+            // 19 build trap or fortification.
             // alpha10.1 moved trap/fortification rule before following leader rule so they will do it much more often
             #region
+            //build trap
             if (game.Rules.RollChance(BUILD_TRAP_CHANCE))
             {
                 ActorAction trapAction = BehaviorBuildTrap(game);
@@ -817,12 +852,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 19 follow leader
+            // 20 follow leader
             #region
             if (checkOurLeader)
             {
                 Point lastKnownLeaderPosition = m_Actor.Leader.Location.Position;
-                bool isLeaderVisible = m_LOSSensor.FOV.Contains(m_Actor.Leader.Location.Position);
+                bool isLeaderVisible = FOV.Contains(m_Actor.Leader.Location.Position); //@@MP m_LOSSensor.FOV (Release 6-2)
                 int maxDist = m_Actor.Leader.IsPlayer ? FOLLOW_PLAYERLEADER_MAXDIST : FOLLOW_NPCLEADER_MAXDIST;
                 determinedAction = BehaviorFollowActor(game, m_Actor.Leader, lastKnownLeaderPosition, isLeaderVisible, maxDist);
                 if (determinedAction != null)
@@ -834,7 +869,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 20 take lead (if leadership)
+            // 21 take lead (if leadership)
             #region
             bool hasLeadership = m_Actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LEADERSHIP) >= 1;
             if (hasLeadership)
@@ -861,7 +896,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 21 if hungry, tear down barricades & push objects.
+            // 22 if hungry, tear down barricades & push objects.
             #region
             if (game.Rules.IsActorHungry(m_Actor))
             {
@@ -878,7 +913,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (game.Rules.RollChance(HUNGRY_PUSH_OBJECTS_CHANCE))
                 {
                     // alpha10.1 do that only inside where food is more likely to be hidden, pushing cars outside is stupid -_-
-                    if (m_Actor.Location.Map.GetTileAt(m_Actor.Location.Position).IsInside)
+                    if (map.GetTileAt(m_Actor.Location.Position).IsInside) //@@MP m_Actor.Location.Map (Release 6-2)
                     {
                         determinedAction = BehaviorPushNonWalkableObject(game);
                         if (determinedAction != null)
@@ -895,7 +930,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 22 go revive corpse.
+            // 23 go revive corpse.
             #region
             determinedAction = BehaviorGoReviveCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
             if (determinedAction != null)
@@ -905,44 +940,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 23 use exit.
+            // 24 use exit.
             #region
             if (game.Rules.RollChance(USE_EXIT_CHANCE))
             {
                 determinedAction = BehaviorUseExit(game, UseExitFlags.DONT_BACKTRACK);
-                if (determinedAction != null)
-                {
-                    m_Actor.Activity = Activity.IDLE;
-                    return determinedAction;
-                }
-            }
-            #endregion
-
-            // 24 build trap or fortification.
-            #region
-            if (game.Rules.RollChance(BUILD_TRAP_CHANCE))
-            {
-                determinedAction = BehaviorBuildTrap(game);
-                if (determinedAction != null)
-                {
-                    m_Actor.Activity = Activity.IDLE;
-                    return determinedAction;
-                }
-            }
-            // large fortification.
-            if (game.Rules.RollChance(BUILD_LARGE_FORT_CHANCE))
-            {
-                determinedAction = BehaviorBuildLargeFortification(game, START_FORT_LINE_CHANCE);
-                if (determinedAction != null)
-                {
-                    m_Actor.Activity = Activity.IDLE;
-                    return determinedAction;
-                }
-            }
-            // small fortification.
-            if (game.Rules.RollChance(BUILD_SMALL_FORT_CHANCE))
-            {
-                determinedAction = BehaviorBuildSmallFortification(game);
                 if (determinedAction != null)
                 {
                     m_Actor.Activity = Activity.IDLE;
@@ -1045,7 +1047,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             game.DoEmote(m_Actor, String.Format("patiently waits for {0} to wake up.", target.Name));
                         else
                         {
-                            if (m_LOSSensor.FOV.Contains(target.Location.Position))
+                            if (FOV.Contains(target.Location.Position)) //@MP m_LOSSensor.FOV (Release 6-2)
                                 game.DoEmote(m_Actor, String.Format("Come on {0}! Hurry up!", target.Name));
                             else
                                 game.DoEmote(m_Actor, String.Format("Where the hell is {0}?", target.Name));
@@ -1074,7 +1076,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // VERBOSE BOT
 #if DEBUG
                 if (verboseBotExploreWander)
-                    game.AddMessage(new Message(">> Bot is Exploring", m_Actor.Location.Map.LocalTime.TurnCounter));
+                    game.AddMessage(new Message(">> Bot is Exploring", map.LocalTime.TurnCounter)); //@@MP m_Actor.Location.Map (Release 6-2)
 #endif
                 // END VERBOSE BOT
 
@@ -1083,12 +1085,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 31 wander.
+            // 32 wander.
             #region
             // VERBOSE BOT
 #if DEBUG
             if (verboseBotExploreWander)
-                game.AddMessage(new Message(">> Bot is Wandering", m_Actor.Location.Map.LocalTime.TurnCounter));
+                game.AddMessage(new Message(">> Bot is Wandering", map.LocalTime.TurnCounter)); //@@MP m_Actor.Location.Map (Release 6-2)
 #endif
             // END VERBOSE BOT
             m_Actor.Activity = Activity.IDLE;

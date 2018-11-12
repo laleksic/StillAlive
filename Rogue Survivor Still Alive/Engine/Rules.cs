@@ -978,7 +978,7 @@ namespace djack.RogueSurvivor.Engine
         public bool CanActorRechargeItemBattery(Actor actor, Item it, out string reason)
         {
             if (actor == null)
-                throw new ArgumentNullException("actor", "null ctor");
+                throw new ArgumentNullException("actor", "null actor");
             if (it == null)
                 throw new ArgumentNullException("it","item");
 
@@ -996,12 +996,12 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // 2. Item not equipped.            
+            /*// 2. Item not equipped.            
             if (!it.IsEquipped || !actor.Inventory.Contains(it))
             {
                 reason = "item not equipped";
                 return false;
-            }
+            }*/
 
             // 3. Not a battery powered item.
             if (!IsItemBatteryPowered(it))
@@ -3937,7 +3937,7 @@ namespace djack.RogueSurvivor.Engine
 
             // standing on some map objects, or 
             MapObject mobj = actor.Location.Map.GetMapObjectAt(actor.Location.Position);
-            if (mobj != null && mobj.StandOnFovBonus)
+            if (mobj != null && FOV >0 && mobj.StandOnFovBonus) //@@MP - added check to ensure bonus doesn't apply when FOV=0 ie darkness (Release 6-2)
                 FOV += FOV_STAND_ON_BONUS; //@@MP - now using a const (Release 6-2)
 
             // outside at night minimum FOV = 1, and that's a tad too little. this is a lazy workaround //@@MP (Release 6-2)
