@@ -439,6 +439,11 @@ namespace djack.RogueSurvivor.Engine
             return CountForEachAdjacent(map, x, y, (pt) => map.GetMapObjectAt(pt.X, pt.Y) as DoorWindow != null);
         }
 
+        public int CountAdjMapObjects(Map map, int x, int y) // alpha10.1
+        {
+            return CountForEachAdjacent(map, x, y, (pt) => map.GetMapObjectAt(pt.X, pt.Y) != null);
+        }
+
         /// <summary>
         /// Is there a door directly alongside, below or above? Diagonals are ignored
         /// </summary>

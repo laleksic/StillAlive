@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -285,6 +286,11 @@ namespace djack.RogueSurvivor.Engine
         /// Plant seeds using a shovel or pickaxe.
         /// </summary>
         PLANT_SEEDS, //@@MP (Release 5-5)
+
+        /// <summary>
+        /// FOV is down to zero, so the player needs some sort of light source
+        /// </summary>
+        ABSOLUTE_DARKNESS, //@@MP (Release 6-2)
 
         // alpha10 new hints from here down
         /// <summary>
@@ -862,7 +868,7 @@ namespace djack.RogueSurvivor.Engine
         }
         #endregion
 
-#if DEBUG_STATS
+#if DEBUG
         [Serializable]
         public class DistrictStat
         {

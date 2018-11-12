@@ -34,10 +34,10 @@ namespace djack.RogueSurvivor
                 // Debug mode : don't catch exceptions, I want to debug them (optionally catch them)
                 // Release mode : catch exceptions cleanly and report.
 #if DEBUG
-                try
-                {
+                /*try
+                {*/
                     Application.Run(form);
-                }
+                /*}
                 catch (Exception e)
                 {
                     using (Bugreport report = new Bugreport(e))
@@ -45,7 +45,7 @@ namespace djack.RogueSurvivor
                         report.ShowDialog();
                     }
                     Application.Exit();
-                }
+                }*/
 #else
                 try
                 {

@@ -226,5 +226,9 @@ namespace djack.RogueSurvivor.Gameplay
         //@@MP - relocated from music to sfx (Release 6-1)
         public const string REINCARNATE = "reincarnate";
         public const string REINCARNATE_FILE = PATH + "RS - Reincarnate";
+
+        //@@MP (Release 6-2)
+        public const string NIGHTVISION = "night vision";
+        public const string NIGHTVISION_FILE = PATH + "night-vision";
     }
 }

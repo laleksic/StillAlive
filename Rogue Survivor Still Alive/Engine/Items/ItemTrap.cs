@@ -10,7 +10,7 @@ namespace djack.RogueSurvivor.Engine.Items
         #region Fields
         bool m_IsActivated;
         bool m_IsTriggered;
-        Actor m_Owner; // alpha10
+        Actor m_Owner; // alpha10.1
         #endregion
 
         #region Properties

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace djack.RogueSurvivor.Data
 {
@@ -16,7 +13,6 @@ namespace djack.RogueSurvivor.Data
         MIDNIGHT,
         // 1h - 2h- 3h- 4h- 5h
         DEEP_NIGHT,
-
         // 6h
         SUNRISE,
         // 7h - 8h- 9h-10h-11h
@@ -102,7 +98,7 @@ namespace djack.RogueSurvivor.Data
 
         #region Init
         public WorldTime()
-            : this(0)
+            : this(0) //turn number
         {
         }
         public WorldTime(WorldTime src)
@@ -131,32 +127,32 @@ namespace djack.RogueSurvivor.Data
             m_Hour = counter / TURNS_PER_HOUR;
             counter -= m_Hour * TURNS_PER_HOUR;
 
-            switch (m_Hour)
+            switch (m_Hour) //@@MP - re-ordered to be more realistic, and separate the tints (Release 6-2)
             {
                 case 0: m_Phase = DayPhase.MIDNIGHT; m_IsNight = true; break;
                 case 1:
-                case 2:
+                case 2: 
                 case 3:
-                case 4:
-                case 5: m_Phase = DayPhase.DEEP_NIGHT; m_IsNight = true; break;
-                case 6: m_Phase = DayPhase.SUNRISE; m_IsNight = false; break;
-                case 7:
-                case 8:
-                case 9:
-                case 10:
-                case 11: m_Phase = DayPhase.MORNING; m_IsNight = false; break;
+                case 4: m_Phase = DayPhase.DEEP_NIGHT; m_IsNight = true; break;
+                case 5: m_Phase = DayPhase.EVENING; m_IsNight = true; break; //@@MP was deep night. smoothes the transition to brighter light of sunrise
+                case 6: 
+                case 7: m_Phase = DayPhase.SUNRISE; m_IsNight = false; break;
+                case 8: 
+                case 9: 
+                case 10: m_Phase = DayPhase.MORNING; m_IsNight = false; break;
+                case 11: 
                 case 12: m_Phase = DayPhase.MIDDAY; m_IsNight = false; break;
                 case 13:
                 case 14:
-                case 15:
-                case 16:
-                case 17: m_Phase = DayPhase.AFTERNOON; m_IsNight = false; break;
-                case 18: m_Phase = DayPhase.SUNSET; m_IsNight = true; break;
-                case 19:
-                case 20:
-                case 21:
-                case 22:
-                case 23: m_Phase = DayPhase.EVENING; m_IsNight = true; break;
+                case 15: 
+                case 16: m_Phase = DayPhase.AFTERNOON; m_IsNight = false; break;
+                case 17: 
+                case 18: m_Phase = DayPhase.SUNSET; m_IsNight = false; break; //@@MP - was night
+                case 19: 
+                case 20: m_Phase = DayPhase.EVENING; m_IsNight = true; break;
+                case 21: 
+                case 22: 
+                case 23: m_Phase = DayPhase.DEEP_NIGHT; m_IsNight = true; break;
                 default:
                     throw new InvalidOperationException("unhandled hour");
 

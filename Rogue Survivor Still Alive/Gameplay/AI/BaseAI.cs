@@ -547,7 +547,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 },
                 (dir) =>
                 {
-                    int score = game.Rules.Roll(0, 666); 
+                    int score = game.Rules.Roll(0, 666);
+
+                    Location next = m_Actor.Location + dir; //@@MP - discourage backtracking. based on alpha10.1 (Release 6-2)
+                    if (next == m_prevLocation)
+                        score -= 500;
+
                     if (m_Actor.Model.Abilities.IsIntelligent)
                     {
                         if (map.IsAnyUnsafeDamagingTrapThere(game, m_Actor.Location.Map, (m_Actor.Location + dir).Position, m_Actor)) //@@MP - added m_Actor parameter (Release 6-1)
@@ -557,6 +562,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             score -= 500; //don't wander into water for no good reason
                         else if (map.IsAnyTileFireThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position)) //@@MP - avoid fires on walkable tiles (Release 4)
                             score -= 2000;
+
+                        // alpha10.1 prefer wandering to doorwindows and exits. 
+                        // helps civs ai getting stuck in semi-infinite loop when running out of new exploration to do.
+                        DoorWindow doorWindow = next.Map.GetMapObjectAt(next.Position) as DoorWindow;
+                        if (doorWindow != null)
+                            score += 100;
+                        if (next.Map.GetExitAt(next.Position) != null)
+                            score += 50;
+
+                        // alpha10.1 prefer inside when almost sleepy
+                        if (game.Rules.IsAlmostSleepy(m_Actor) && next.Map.GetTileAt(next.Position).IsInside)
+                            score += 100;
                     }
                     return score;
                 },
@@ -824,6 +841,92 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return new ActionBump(m_Actor, game, bestAwayDir.Choice);
             else
                 return null;
+        }
+
+        protected ActorAction BehaviorGoToNearestExit(RogueGame game) //@@MP (Release 6-2)
+        {
+            // find nearest exit
+            Point? exitPos = null;
+            float nearestDist = float.MaxValue;
+            if (m_Actor.IsBotPlayer)
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Location.Position.ToString());
+
+            //foreach (Exit exit in m_Actor.Location.Map.Exits) //@@MP - wft this doesn't work. it detects an exit at some abritray point, usually nowhere nearby
+            int xmin = m_Actor.Location.Position.X - 20;
+            int xmax = m_Actor.Location.Position.X + 20;
+            int ymin = m_Actor.Location.Position.Y - 20;
+            int ymax = m_Actor.Location.Position.Y + 20;
+
+            for (int x = xmin; x < xmax; x++)
+            {
+                for (int y = ymin; y < ymax; y++)
+                {
+                    if (m_Actor.Location.Map.IsInBounds(x,y))
+                    {
+                        //Exit exit = m_Actor.Location.Map.GetExitAt(x, y);
+                        Tile exit = m_Actor.Location.Map.GetTileAt(x, y);
+                        if (exit != null && (exit.HasDecoration(GameImages.DECO_STAIRS_UP) || exit.HasDecoration(GameImages.DECO_STAIRS_DOWN)))
+                        {
+                            //Point pt = exit.ToPosition;
+                            Point pt = new Point(x, y);
+
+                            if (m_Actor.IsBotPlayer)
+                                Logger.WriteLine(Logger.Stage.RUN_MAIN, pt.ToString());
+                            //Logger.WriteLine(Logger.Stage.RUN_MAIN, exit.ToPosition.ToString());
+
+                            float dist = game.Rules.StdDistance(m_Actor.Location.Position, pt);
+                            if (dist < nearestDist)
+                            {
+                                nearestDist = dist;
+                                exitPos = pt;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // if we have an exit, try to get there.
+            if (exitPos != null)
+            {
+                ActorAction moveThere = BehaviorStupidBumpToward(game, exitPos.Value, false, false);
+                if (moveThere != null)
+                {
+                    return moveThere;
+                }
+            }
+
+            return null; //no exit available
+        }
+
+        /// <summary>
+        /// Move to a visible generator. Recharge a nominated light
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="FOV"></param>
+        /// <param name="nominatedLight">Optional. A light you want to recharge</param>
+        /// <returns></returns>
+        protected ActorAction BehaviorGoToVisibleGenerator(RogueGame game, HashSet<Point> FOV, ItemLight nominatedLight = null) //@@MP (Release 6-2)
+        {
+            Map map = m_Actor.Location.Map;
+            foreach (Point pt in FOV)
+            {
+                PowerGenerator generator = map.GetMapObjectAt(pt) as PowerGenerator;
+                if (generator != null)
+                {
+                    //the generator is right next to us
+                    if (nominatedLight != null && game.Rules.IsAdjacent(m_Actor.Location.Position, pt)) //nominatedLight != null && 
+                        return new ActionRechargeItemBattery(m_Actor, game, nominatedLight);
+
+                    //the generator is nearby, move there
+                    ActorAction moveThere = BehaviorIntelligentBumpToward(game, pt, false, false);
+                    if (moveThere != null)
+                    {
+                        return moveThere;
+                    }
+                }
+            }
+
+            return null; //no generator i can see
         }
 
         protected ActorAction BehaviorGoToNearestVisibleWater(RogueGame game, HashSet<Point> FOV) //@@MP (Release 6-1)
@@ -1349,13 +1452,27 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // left-hand items
             if (canUseLeftHand)
             {
-                // ordered by priority: cellphone -> lights -> spray
-                ItemTracker eqCellphone = GetEquippedCellPhone();
-                ItemLight eqLight = GetEquippedLight();
-                ItemSprayScent eqStenchKiller = GetEquippedStenchKiller();
+                // ordered by priority: lights -> cellphone -> spray
 
-                // cellphone 
-                if (allowCellPhones && WantsCellPhoneEquipped())
+                ItemLight eqLight = GetEquippedLight();
+
+                // lights, if no cellphone equipped
+                if (NeedsLight())
+                {
+                    action = BehaviorEquipBestLight(game);
+                    if (action != null)
+                        return action;
+                }
+                else
+                {
+                    // doesnt need light, unequip if equipped.
+                    if (eqLight != null)
+                        return new ActionUnequipItem(m_Actor, game, eqLight);
+                }
+
+                // cellphone //@@MP - lights are now more important than cellphones now that darkness is revamped (Release 6-1)
+                ItemTracker eqCellphone = GetEquippedCellPhone();
+                if (eqLight == null && allowCellPhones && WantsCellPhoneEquipped())
                 {
                     action = BehaviorEquipBestCellPhone(game);
                     if (action != null)
@@ -1365,23 +1482,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     if (eqCellphone != null)
                         return new ActionUnequipItem(m_Actor, game, eqCellphone);
-                }
-
-                // lights, if no cellphone equipped
-                if (eqCellphone == null)
-                {
-                    if (NeedsLight())
-                    {
-                        action = BehaviorEquipBestLight(game);
-                        if (action != null)
-                            return action;
-                    }
-                    else
-                    {
-                        // doesnt need light, unequip if equipped.
-                        if (eqLight != null)
-                            return new ActionUnequipItem(m_Actor, game, eqLight);
-                    }
                 }
 
                 // spray scent, if no cellphone or light equipped
@@ -1395,6 +1495,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                     else
                     {
+                        ItemSprayScent eqStenchKiller = GetEquippedStenchKiller();
                         if (eqStenchKiller != null)
                             return new ActionUnequipItem(m_Actor, game, eqStenchKiller);
                     }
@@ -1435,7 +1536,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (!game.Rules.CanActorGetItem(m_Actor, it))
                     continue;
                 // if not interesting, ignore.
-                if (!IsInterestingItemToOwn(game, it, false))
+                if (!IsInterestingItemToOwn(game, it, ItemSource.GROUND_STACK))
                     continue;
                 //@@MP - don't grab dynamite. they're so rare we want them for the player (Release 4)
                 //ai can't use them anyway because dynamite must be deployed within the blast radius, which goes against BehaviorThrowGrenade()
@@ -1480,7 +1581,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return true;
                     if (IsTileTaboo(p.Location.Position))
                         return true;
-                    if (!HasAnyInterestingItem(game, p.Percepted as Inventory))
+                    if (!HasAnyInterestingItem(game, p.Percepted as Inventory, ItemSource.GROUND_STACK))
                         return true;
                     // alpha10 check reachability
                     RouteFinder.SpecialActions a = allowedActions;
@@ -1570,10 +1671,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 bool dropIt = false;
 
-                if (it is ItemLight)
-                    dropIt = (it as ItemLight).Batteries <= 0;
-                else if (it is ItemTracker)
+                if (it is ItemTracker)
                     dropIt = (it as ItemTracker).Batteries <= 0;
+                /*else if (it is ItemLight)
+                    dropIt = (it as ItemLight).Batteries <= 0;*/ //@@MP - lights are very important now that darkness is implemented (Release 6-2)
                 else if (it is ItemSprayPaint)
                     dropIt = (it as ItemSprayPaint).PaintQuantity <= 0;
                 else if (it is ItemSprayScent)
@@ -1876,11 +1977,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             Point adj = m_Actor.Location.Position + choice.Choice;
 
             // if can't build there, fail.
-            if (!game.Rules.CanActorBuildFortification(m_Actor, adj, false))
+            if (!game.Rules.CanActorBuildFortification(m_Actor, adj, false, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                 return null;
 
             // ok!
-            return new ActionBuildFortification(m_Actor, game, adj, false);
+            return new ActionBuildFortification(m_Actor, game, adj, false, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
         }
 
         /// <summary>
@@ -1955,11 +2056,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             Point adj = m_Actor.Location.Position + choice.Choice;
 
             // if can't build there, fail.
-            if (!game.Rules.CanActorBuildFortification(m_Actor, adj, true))
+            if (!game.Rules.CanActorBuildFortification(m_Actor, adj, true, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                 return null;
 
             // ok!
-            return new ActionBuildFortification(m_Actor, game, adj, true);
+            return new ActionBuildFortification(m_Actor, game, adj, true, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
         }
 
         #endregion
@@ -2265,7 +2366,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #endregion
 
         #region Charging enemy
-        protected ActorAction BehaviorChargeEnemy(RogueGame game, Percept target, bool canCheckBreak, bool canCheckPush)// alpha added break and push
+        protected ActorAction BehaviorChargeEnemy(RogueGame game, Percept target, bool canCheckBreak, bool canCheckPush)// alpha10 added break and push
         {
             // try melee attack first.
             ActorAction attack = BehaviorMeleeAttack(game, target);
@@ -2332,6 +2433,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
         protected ActorAction BehaviorDontLeaveFollowersBehind(RogueGame game, int distance, out Actor target)
         {
             target = null;
+
+            // alpha10.1 dont always check for lagging followers, prevent leader from getting stuck waiting too much.
+            // side effect is more occurence of followers lagging behind.
+            if (game.Rules.RollChance(25))
+                return null;
 
             // Scan the group:
             // - Find farthest member of the group.
@@ -2602,7 +2708,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                                 return false;
                             if (!IsBetween(game, m_Actor.Location.Position, pos, enemy.Location.Position))
                                 return false;
-                            if (!game.Rules.CanActorBarricadeDoor(m_Actor, door))
+                            if (!game.Rules.CanActorBarricadeDoor(m_Actor, door, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                                 return false;
                             return true;
                         },
@@ -2613,7 +2719,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         (a, b) => a > b);
                     if (barricadeDoorBetweenDirection != null)
                     {
-                        return new ActionBarricadeDoor(m_Actor, game, m_Actor.Location.Map.GetMapObjectAt(m_Actor.Location.Position + barricadeDoorBetweenDirection.Choice) as DoorWindow);
+                        return new ActionBarricadeDoor(m_Actor, game, m_Actor.Location.Map.GetMapObjectAt(m_Actor.Location.Position + barricadeDoorBetweenDirection.Choice) as DoorWindow, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
                     }
                 }
                 #endregion
@@ -2876,9 +2982,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 (dir) =>
                 {
                     Location next = m_Actor.Location + dir;
+#if DEBUG // alpha10.1 bot mode fix
+                    if (!next.Map.IsInBounds(next.Position))
+                        return false;
+#endif
                     if (exploration.HasExplored(next))
                         return false;
-                    return IsValidMoveTowardGoalAction(game.Rules.IsBumpableFor(m_Actor, game, next));
+                    // alpha10.1 dont break stuff to explore
+                    ActorAction bumpAction = game.Rules.IsBumpableFor(m_Actor, game, next);
+                    if (bumpAction != null && (bumpAction is ActionBreak || bumpAction is ActionBashDoor))
+                        return false;
+
+                    return IsValidMoveTowardGoalAction(bumpAction);
                 },
                 (dir) =>
                 {
@@ -2907,23 +3022,29 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
 
                     // Heuristic scoring:
+                    // 0st Punish backtracking // alpha10.1
                     // 1st Prefer unexplored zones.
                     // 2nd Prefer unexplored locs.
                     // 3rd Prefer doors and barricades (doors/windows, pushables)
                     // 4th If intelligent, punish stepping on unsafe traps and fires. // alpha10, was "Punish stepping on activated traps."
-                    // 5th Prefer inside during the night vs outside during the day.
+                    // 5th Prefer inside during the night vs outside during the day, and inside if sleepy // alpha10.1
                     // 6th Prefer continue in same direction.
                     // 7th Small randomness.
+                    const int BACKTRACKING = -10000;  // alpha10.1
                     const int EXPLORE_ZONES = 1000;
                     const int EXPLORE_LOCS = 500;
                     const int EXPLORE_BARRICADES = 100;
                     const int AVOID_TRAPS = -1500; // alpha10 greatly increase penalty and x by potential damage, was -50
                     const int EXPLORE_INOUT = 50;
+                    const int EXPLORE_IN_ALMOST_SLEEPY = 100; // alpha10.1
                     const int EXPLORE_DIRECTION = 25;
                     const int EXPLORE_RANDOM = 10;
                     const int AVOID_FIRES = -2000; //@@MP - added (Release 4)
 
                     int score = 0;
+                    // 0st Punish backtracking // alpha10.1
+                    if (next.Map == m_prevLocation.Map && pos == m_prevLocation.Position)
+                        score += BACKTRACKING;
                     // 1st Prefer unexplored zones.
                     if (!exploration.HasExplored(map.GetZonesAt(pos.X, pos.Y)))
                         score += EXPLORE_ZONES;
@@ -2943,10 +3064,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         if (tileFire) //@@MP - livings and smart undead know that jumping into fire is really stupid (Release 4), moved from #8 (Release 6-1)
                             score += AVOID_FIRES;
                     }
-                    // 5th Prefer inside during the night vs outside during the day.
-                    bool isInside = map.GetTileAt(pos.X, pos.Y).IsInside;
-                    if (isInside) //inside
-                        if (map.LocalTime.IsNight) score += EXPLORE_INOUT; //night
+                    // 5th Prefer inside during the night vs outside during the day, and inside if sleepy // alpha10.1
+                    if (map.GetTileAt(pos.X, pos.Y).IsInside) //inside
+                    {
+                        if (game.Rules.IsAlmostSleepy(m_Actor)) //alpha 10.1
+                            score += EXPLORE_IN_ALMOST_SLEEPY;
+                        if (map.LocalTime.IsNight)
+                            score += EXPLORE_INOUT; //night
+                    }
                     else //outside
                         if (!map.LocalTime.IsNight) score += EXPLORE_INOUT; //daytime
                     // 6th Prefer continue in same direction.
@@ -3009,10 +3134,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
 
                 // 2. Barricade unbarricaded windows.
-                if (door.IsWindow && !door.IsBarricaded && game.Rules.CanActorBarricadeDoor(m_Actor,door))
+                if (door.IsWindow && !door.IsBarricaded && game.Rules.CanActorBarricadeDoor(m_Actor,door, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                 {
                     if (game.Rules.IsAdjacent(door.Location.Position, m_Actor.Location.Position))
-                        return new ActionBarricadeDoor(m_Actor, game, door);
+                        return new ActionBarricadeDoor(m_Actor, game, door, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
                     else
                         return BehaviorIntelligentBumpToward(game, door.Location.Position, false, false);                    
                 }
@@ -3357,12 +3482,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 3. get rid of light & sprays.
             // 4. get rid of ammo.
             // 5. get rid of entertainment  // alpha10
-            // 6. get rid of medecine.
+            // 6. get rid of medicine.
             // 7. last resort, get rid of random item.
             Inventory myInv = m_Actor.Inventory;
 
             // 1. get rid of not interesting item.
-            Item notInteresting = myInv.GetFirstMatching((it) => !IsInterestingItemToOwn(game, it, true));
+            Item notInteresting = myInv.GetFirstMatching((it) => !IsInterestingItemToOwn(game, it, ItemSource.OWNED));
             if (notInteresting != null)
                 return BehaviorDropItem(game, notInteresting);
 
@@ -3372,9 +3497,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return BehaviorDropItem(game, material);
 
             // 3. get rid of light & sprays.
-            Item light = myInv.GetFirstMatching((it) => it is ItemLight);
+            /*Item light = myInv.GetFirstMatching((it) => it is ItemLight); //@@MP - lights are necessary with the darkness revamp (Release 6-2)
             if (light != null)
-                return BehaviorDropItem(game, light);
+                return BehaviorDropItem(game, light);*/
             Item spray = myInv.GetFirstMatching((it) => it is ItemSprayPaint);
             if (spray != null)
                 return BehaviorDropItem(game, spray);
@@ -3392,7 +3517,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (ent != null)
                 return BehaviorDropItem(game, ent);
 
-            // 6. get rid of medecine.
+            // 6. get rid of medicine.
             Item med = myInv.GetFirstMatching((it) => it is ItemMedicine);
             if (med != null)
                 return BehaviorDropItem(game, med);
@@ -4005,6 +4130,22 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return bestFood;
         }
 
+        public enum ItemSource // alpha10.1 added item/inventory source
+        {
+            /// <summary>
+            /// Item is in a ground stack (could be a container, which is the same thing)
+            /// </summary>
+            GROUND_STACK,
+            /// <summary>
+            /// Item is in the actor own inventory.
+            /// </summary>
+            OWNED,
+            /// <summary>
+            /// Item is in another actor inventory.
+            /// </summary>
+            ANOTHER_ACTOR
+        }
+
         /// <summary>
         /// Check if item is ok to have in inventory. 
         /// Uses cases:
@@ -4012,14 +4153,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// - steal: gangs check to agress an npc to steal his item or not.
         /// - gift: how cool is it to be gifted this item by another actor.
         /// - drop: when dropping the item to make room for a food item.
-        /// DO NOT USE FOR TRADING use RateItem() and RateTrade() instead.
+        /// DO NOT USE FOR TRADING use RateItem() and RateTradeOffer() instead.
         /// </summary>
         /// <param name="game"></param>
         /// <param name="it"></param>
-        /// <param name="owned">if already owned, eg when considering dropping an item</param>
+        /// <param name="itemSrc">where does the item comes from?</param> //alpha10.1 changed
         /// <see cref="RateItem(RogueGame, Item, bool)"/>
         /// <see cref="RateTradeOffer(RogueGame, Actor, Item, Item)"/>
-        public bool IsInterestingItemToOwn(RogueGame game, Item it, bool owned)
+        public bool IsInterestingItemToOwn(RogueGame game, Item it, ItemSource itemSrc)
         {
             // alpha10 base idea is any non-junk non-taboo item is interesting.
             // using itemrating is consistent with new trade logic.
@@ -4032,9 +4173,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return false;
 
             // consistent with BehaviorMakeRoomForFood (was already in alpha9)
-            if (!owned && m_Actor.Inventory.CountItems >= m_Actor.Inventory.MaxCapacity - 1)
+            if (itemSrc != ItemSource.OWNED && m_Actor.Inventory.CountItems >= m_Actor.Inventory.MaxCapacity - 1)
             {
                 if (!(it is ItemFood) && (CountItemQuantityOfType(typeof(ItemFood)) == 0))
+                    return false;
+            }
+
+            // alpha10.1 not interested in picking up safe traps from the ground : dont undo your or your friends traps!
+            if (itemSrc == ItemSource.GROUND_STACK && it is ItemTrap)
+            {
+                ItemTrap itTrap = it as ItemTrap;
+                if (game.Rules.IsSafeFromTrap(itTrap, m_Actor))
                     return false;
             }
 
@@ -4189,7 +4338,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 if (it.Model.ID == (int)alcohollist[i])*/
             
-            if (alcoholList.Exists(x => x == it.Model.ID))
+            if (alcoholList.Exists(x => x == it.Model.ID)) //it's an alcohol
             {
                 foreach (Item invitem in m_Actor.Inventory.Items)
                 {
@@ -4208,26 +4357,26 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return false;
         }
 
-        public bool HasAnyInterestingItem(RogueGame game, Inventory inv)
+        public bool HasAnyInterestingItem(RogueGame game, Inventory inv, ItemSource inventorySrc)
         {
             if (inv == null)
                 return false;
 
             bool owned = (inv == m_Actor.Inventory); //alpha 10
             foreach (Item it in inv.Items)
-                if (IsInterestingItemToOwn(game, it, owned))
+                if (IsInterestingItemToOwn(game, it, inventorySrc))
                     return true;
             return false;
         }
 
-        protected Item FirstInterestingItem(RogueGame game, Inventory inv)
+        protected Item FirstInterestingItem(RogueGame game, Inventory inv, ItemSource inventorySrc)
         {
             if (inv == null)
                 return null;
 
             bool owned = (inv == m_Actor.Inventory); //alpha 10
             foreach (Item it in inv.Items)
-                if (IsInterestingItemToOwn(game, it, owned))
+                if (IsInterestingItemToOwn(game, it, inventorySrc))
                     return it;
             return null;
         }
@@ -4258,7 +4407,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <see cref="RateItemExhange(RogueGame, Item, Item)"/>
         public ItemRating RateItem(RogueGame game, Item it, bool owned)  // alpha10 new item rating and trading logic
         {
-            //@@MP - re-ordered for for most to least likely (Release 6-1)
+            //@@MP - re-ordered for most to least likely (Release 6-1),(Release 6-2)
 
             // Items forbidden to AI.
             if (it.IsForbiddenToAI)
@@ -4278,6 +4427,33 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // not a specialist
                 if (m_Actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MARTIAL_ARTS) > 0)
                     return ItemRating.JUNK;
+            }
+
+            // Any meds if none. Other meds if need (or could) it.
+            if (it is ItemMedicine)
+            {
+                //@@MP - added alcohol-specific check (Release 4)(Release 6-2)
+                if (AlreadyHasEnoughAlcoholInInventory(it, 1)) //there's 6 unique models of alcohol, so if left to just the next check the AI would be able to go nuts and take way too much booze. this fixes that
+                    return ItemRating.JUNK;
+
+                ItemMedicine itMed = it as ItemMedicine;
+                if (CountItemsOfSameType(typeof(ItemMedicine), it) == 0)
+                    return ItemRating.NEED;
+
+                // be lenient and consider we need a med if the corresponding stat is about 75% or less.
+                // exception: always want to cure health and infection.
+                // this is will allow the player to trade meds for other items, which will increase the
+                // value of meds players mostly ignored previously (eg: sta healers).
+                if ((itMed.Healing > 0) && (m_Actor.HitPoints < game.Rules.ActorMaxHPs(m_Actor)))
+                    return ItemRating.NEED;
+                if ((itMed.StaminaBoost > 0) && (m_Actor.StaminaPoints < 0.75f * game.Rules.ActorMaxSTA(m_Actor)))
+                    return ItemRating.NEED;
+                if ((itMed.SleepBoost > 0) && (m_Actor.SleepPoints < 0.75f * game.Rules.ActorMaxSleep(m_Actor)))
+                    return ItemRating.NEED;
+                if ((itMed.SanityCure > 0) && (m_Actor.Sanity < 0.75f * game.Rules.ActorMaxSanity(m_Actor)))
+                    return ItemRating.NEED;
+                if ((itMed.InfectionCure > 0) && (m_Actor.Infection > 0)) // always want to cure infection
+                    return ItemRating.NEED;
             }
 
             // Barricade material if none.
@@ -4328,6 +4504,33 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return ItemRating.JUNK;
             }
 
+            // Light out of batteries or if has already enough
+            if (it is ItemLight)
+            {
+                ItemLight itLight = it as ItemLight;
+
+                // light is junk if actor already has 6+ hours of batteries worth.
+                int totalLightsBatteries = 0;
+                int totalLights = 0;
+                m_Actor.Inventory.ForEach((i) =>
+                {
+                    if (i == it)
+                        return;
+                    ItemLight l = i as ItemLight;
+                    if (l == null)
+                        return;
+                    totalLightsBatteries += l.Batteries;
+                    totalLights++;
+                });
+
+                if (totalLightsBatteries >= 6 * WorldTime.TURNS_PER_HOUR)
+                    return ItemRating.JUNK;
+                else if (itLight.Batteries <= 0)
+                    return ItemRating.JUNK;
+                else if (totalLights == 0) //@@MP - don't have a light. lights are now very important given the darkness revamp (Release 6-2)
+                    return ItemRating.NEED;
+            }
+
             // Spray Scent out of charges or if has already enough
             if (it is ItemSprayScent)
             {
@@ -4344,30 +4547,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return t != null && t.SprayQuantity > 0;
                 });
                 if (enough)
-                    return ItemRating.JUNK;
-            }
-
-            // Light out of batteries or if has already enough
-            if (it is ItemLight)
-            {
-                ItemLight itLight = it as ItemLight;
-
-                if (itLight.Batteries <= 0)
-                    return ItemRating.JUNK;
-
-                // light is junk if already has 6 hours of batteries worth.
-                int totalLightsBatteries = 0;
-                m_Actor.Inventory.ForEach((i) =>
-                {
-                    if (i == it)
-                        return;
-                    ItemLight l = i as ItemLight;
-                    if (l == null)
-                        return;
-                    totalLightsBatteries += l.Batteries;
-                });
-
-                if (totalLightsBatteries >= 6 * WorldTime.TURNS_PER_HOUR)
                     return ItemRating.JUNK;
             }
 
@@ -4429,29 +4608,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return ItemRating.NEED;
             }
 
-            // Any meds if none. Other meds if need (or could) it.
-            if (it is ItemMedicine)
-            {
-                ItemMedicine itMed = it as ItemMedicine;
-                if (CountItemsOfSameType(typeof(ItemMedicine), it) == 0)
-                    return ItemRating.NEED;
-
-                // be lenient and consider we need a med if the corresponding stat is about 75% or less.
-                // exception: always want to cure health and infection.
-                // this is will allow the player to trade meds for other items, which will increase the
-                // value of meds players mostly ignored previously (eg: sta healers).
-                if ((itMed.Healing > 0) && (m_Actor.HitPoints < game.Rules.ActorMaxHPs(m_Actor)))
-                    return ItemRating.NEED;
-                if ((itMed.StaminaBoost > 0) && (m_Actor.StaminaPoints < 0.75f * game.Rules.ActorMaxSTA(m_Actor)))
-                    return ItemRating.NEED;
-                if ((itMed.SleepBoost > 0) && (m_Actor.SleepPoints < 0.75f * game.Rules.ActorMaxSleep(m_Actor)))
-                    return ItemRating.NEED;
-                if ((itMed.SanityCure > 0) && (m_Actor.Sanity < 0.75f * game.Rules.ActorMaxSanity(m_Actor)))
-                    return ItemRating.NEED;
-                if ((itMed.InfectionCure > 0) && (m_Actor.Infection > 0)) // always want to cure infection
-                    return ItemRating.NEED;
-            }
-
             // Tracker out of batteries or if has already enough
             if (it is ItemTracker)
             {
@@ -4484,13 +4640,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             //        return ItemRating.NEED;
             //}
 
-            // (Unprimed) Explosive if none.
-            if (it is ItemExplosive)
-            {
-                if (CountItemsOfSameType(typeof(ItemExplosive), it) == 0)
-                    return ItemRating.NEED;
-            }
-
             // Armor if none.
             if (it is ItemBodyArmor)
             {
@@ -4503,6 +4652,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // Spray paint (AI never use it).
             if (it is ItemSprayPaint)
                 return ItemRating.JUNK;
+
+            // (Unprimed) Explosive if none.
+            if (it is ItemExplosive)
+            {
+                if (CountItemsOfSameType(typeof(ItemExplosive), it) == 0)
+                    return ItemRating.NEED;
+            }
 
             // Primed explosives.
             if (it is ItemPrimedExplosive)
@@ -5470,7 +5626,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         { //@@MP - re-ordered from most to least likely, for best performance (Release 5-7)
             return a != null && 
                 (a is ActionMoveStep ||
-                (a is ActionGetFromContainer && IsInterestingItemToOwn(game, (a as ActionGetFromContainer).Item, false)) ||
+                (a is ActionGetFromContainer && IsInterestingItemToOwn(game, (a as ActionGetFromContainer).Item, ItemSource.GROUND_STACK)) ||
                 a is ActionOpenDoor ||
                 a is ActionBashDoor ||
                 a is ActionSwitchPlace ||

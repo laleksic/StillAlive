@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace djack.RogueSurvivor
 {
@@ -40,6 +37,7 @@ namespace djack.RogueSurvivor
         public static eVideo Video { get; set; }
         public static eSound Sound { get; set; }
         public static eWindow Window { get; set; } //@@MP (Release 5-5)
+        public static bool WriteLogToFile { get; set; } //@@MP (Release 6-2)
 
         public static string DirPath
         {
@@ -66,6 +64,7 @@ namespace djack.RogueSurvivor
                 sw.WriteLine(SetupConfig.Video.ToString());
                 sw.WriteLine(SetupConfig.Sound.ToString());
                 sw.WriteLine(SetupConfig.Window.ToString()); //@@MP (Release 5-5)
+                sw.WriteLine(SetupConfig.WriteLogToFile.ToString()); //@@MP (Release 6-2)
             }
         }
 
@@ -78,6 +77,7 @@ namespace djack.RogueSurvivor
                     SetupConfig.Video = toVideo(sr.ReadLine());
                     SetupConfig.Sound = toSound(sr.ReadLine());
                     SetupConfig.Window = toWindow(sr.ReadLine());//@@MP (Release 5-5)
+                    SetupConfig.WriteLogToFile = toLogToFile(sr.ReadLine()); //@@MP (Release 6-2)
                 }
             }
             else //@@MP - defaults for first run
@@ -88,16 +88,17 @@ namespace djack.RogueSurvivor
                 SetupConfig.Video = eVideo.VIDEO_MANAGED_DIRECTX;
                 SetupConfig.Sound = eSound.SOUND_SFML; //@@MP - changed default to SFML (Release 5-3)
                 SetupConfig.Window = eWindow.WINDOW_FULLSCREEN; //@@MP (Release 5-5)
+                SetupConfig.WriteLogToFile = false; //@@MP (Release 6-2)
 
                 Save();
             }
         }
 
-        public static eVideo toVideo(string s)
+        public static eVideo toVideo(string v)
         {
-            if (s == eVideo.VIDEO_MANAGED_DIRECTX.ToString())
+            if (v == eVideo.VIDEO_MANAGED_DIRECTX.ToString())
                 return eVideo.VIDEO_MANAGED_DIRECTX;
-            if (s == eVideo.VIDEO_GDI_PLUS.ToString())
+            if (v == eVideo.VIDEO_GDI_PLUS.ToString())
                 return eVideo.VIDEO_GDI_PLUS;
             return eVideo.VIDEO_INVALID;
         }
@@ -120,6 +121,14 @@ namespace djack.RogueSurvivor
             if (w == eWindow.WINDOW_WINDOWED.ToString())
                 return eWindow.WINDOW_WINDOWED;
             return eWindow.WINDOW_INVALID;
+        }
+
+        public static bool toLogToFile(string l) //@@MP (Release 6-2)
+        {
+            if (l == "True")
+                return true;
+            else
+                return false;
         }
     }
 }
