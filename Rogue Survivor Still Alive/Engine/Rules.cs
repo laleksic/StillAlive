@@ -3978,8 +3978,20 @@ namespace djack.RogueSurvivor.Engine
 
         int GetLightBonusEquipped(Actor actor)
         {
-            ItemLight light = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
-            return light == null || light.Batteries <= 0 ? 0 : light.FovBonus;
+            /*ItemLight light = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
+            return light == null || light.Batteries <= 0 ? 0 : light.FovBonus;*/
+
+            //@@MP (Release 6-3)
+            ItemLight light;
+            light = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
+            if (light == null)
+            {
+                light = actor.GetEquippedItem(DollPart.HEAD) as ItemLight;
+                if (light == null)
+                    return 0;
+            }
+
+            return light.Batteries <= 0 ? 0 : light.FovBonus;
         }
 
         public int ActorLoudNoiseWakeupChance(Actor actor, int noiseDistance)

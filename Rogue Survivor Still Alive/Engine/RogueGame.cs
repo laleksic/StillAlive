@@ -342,6 +342,7 @@ namespace djack.RogueSurvivor.Engine
         readonly Color TINT_MIDNIGHT = Color.FromArgb(165, 165, 165);//195, 195, 195);
         readonly Color TINT_NIGHT = Color.FromArgb(165, 165, 165);//205, 205, 205);
         readonly Color TINT_SUNRISE = Color.FromArgb(240,215,215);//225, 225, 225);
+        readonly Color TINT_NIGHT_VISION = Color.FromArgb(25, 120, 30); //@@MP (Release 6-3)
         #endregion
 
         #region Hearing chances - avoid spamming messages.
@@ -2592,13 +2593,6 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region -Data files
-        void LoadData()
-        {
-            LoadDataSkills();
-            LoadDataItems();
-            LoadDataActors();
-        }
-
         void LoadDataActors()
         {
             m_GameActors.LoadFromCSV(m_UI, @"Resources\Data\Actors.csv");
@@ -3599,7 +3593,9 @@ namespace djack.RogueSurvivor.Engine
             GenerateWorld(true, s_Options.CitySize, suppliedName); //@@MP - added parameter for user to supply a name (Release 5-7)
             CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
             DoHospitalPowerOn(); //@@MP (Release 6-2)
-
+            Item nightVision = new ItemLight(GameItems.NIGHT_VISION_MALE);
+            m_Player.Inventory.AddAll(nightVision);
+            
             // scoring : hello there.
             m_Session.Scoring.AddVisit(m_Player.Location.Map); //@@MP - unused parameter (Release 5-7)
             m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format(isUndead ? "Rose in {0}." : "Woke up in {0}.", m_Player.Location.Map.Name));
@@ -4739,8 +4735,10 @@ namespace djack.RogueSurvivor.Engine
             // first run inits.
             InitDirectories();
 
-            // load data.
-            LoadData();
+            // load data files.
+            LoadDataSkills();
+            LoadDataItems();
+            LoadDataActors();
 
             // load options.
             LoadOptions();
@@ -4898,7 +4896,7 @@ namespace djack.RogueSurvivor.Engine
             //@@MP - relocated from music to sfx (Release 6-1)
             m_SFXManager.Load(GameSounds.REINCARNATE, GameSounds.REINCARNATE_FILE);
             //@@MP (Release 6-2)
-            m_SFXManager.Load(GameSounds.NIGHTVISION, GameSounds.NIGHTVISION_FILE);
+            m_SFXManager.Load(GameSounds.NIGHT_VISION, GameSounds.NIGHT_VISION_FILE);
 
             //AMBIENT SOUND
             m_AmbientSFXManager.Load(GameAmbients.RAIN_OUTSIDE, GameAmbients.RAIN_OUTSIDE_FILE); //@MP (Release 5-3), separated to own instance (Release 6-1)
@@ -16220,11 +16218,27 @@ namespace djack.RogueSurvivor.Engine
             else if (IsItemLiquorForMolotov(it) && !actor.IsPlayer && m_Rules.RollChance(10) && !actor.Model.Abilities.IsUndead) //@MP - chance for livings to make molotovs (Release 5-1), moved up into ElseIf and shuffled order to improve performance (Release 5-3)
             {
                 int liquorQuantity = it.Quantity;
-                map.RemoveItemAt(it, position);//remove the liquor and replace with molotovs
+                map.RemoveItemAt(it, position); //remove the liquor and replace with molotovs
                 for (int i = 0; i != liquorQuantity; i++)
                 {
                     Item molotov = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
                     map.DropItemAt(molotov, position);
+                }
+            }
+            else if (it as ItemLight != null) //@@MP (Release 6-3)
+            {
+                //@@MP - if a man has the female size night vision goggles, switch them (and vice versa)
+                if ((it.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_MALE) && !actor.Model.DollBody.IsMale)
+                {
+                    DiscardItem(actor, it);
+                    Item nightVision = new ItemLight(GameItems.NIGHT_VISION_FEMALE);
+                    actor.Inventory.AddAll(nightVision);
+                }
+                else if ((it.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_FEMALE) && actor.Model.DollBody.IsMale)
+                {
+                    DiscardItem(actor, it);
+                    Item nightVision = new ItemLight(GameItems.NIGHT_VISION_MALE);
+                    actor.Inventory.AddAll(nightVision);
                 }
             }
 
@@ -16378,7 +16392,11 @@ namespace djack.RogueSurvivor.Engine
                 --ltIt.Batteries;
                 if (actor.IsPlayer) //@@MP (Release 2)
                 {
-                    m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER, AudioPriority.PRIORITY_BGM);
+                    if (it.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_MALE || it.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_FEMALE) //@@MP (Release 6-3)
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.NIGHT_VISION, AudioPriority.PRIORITY_BGM);
+                    else //@@MP (Release 2)
+                        m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER, AudioPriority.PRIORITY_BGM);
+
                     UpdatePlayerFOV(m_Player); //@@MP - update FOV now, don't wait until the next turn (Release 6-2)
                 }
                     
@@ -18958,7 +18976,10 @@ namespace djack.RogueSurvivor.Engine
                 // map
                 //// determine tint to apply
                 Color mapTint = TINT_MIDNIGHT;
-                if (hasLitTorch && (!canActorSeeSky || isNight)) //@@MP - change tint during night if torch on (Release 6-2)
+                ItemLight nightVision = m_Player.GetEquippedItem(DollPart.HEAD) as ItemLight; //@@MP (Release 6-3)
+                if (nightVision != null) //@@MP - night vision are the only ItemLights on the head dollpart
+                    mapTint = TINT_NIGHT_VISION;
+                else if (hasLitTorch && (!canActorSeeSky || isNight)) //@@MP - change tint during night if torch on (Release 6-2)
                     mapTint = TINT_SUNSET; //it's a good colour for a torch too
                 else if (canActorSeeSky) //@@MP - added check in case they're undergound (Release 6-1)
                     mapTint = TintForDayPhase(m_Session.WorldTime.Phase); //@@MP - restored (Release 5-7)
@@ -19177,15 +19198,20 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="grayLevelType">For day, night or underground</param>
         private void DrawGrayLevelHandler(string imageID, int gx, int gy, string grayLevelType) //@@MP (Release 6-2)
         {
-            switch (grayLevelType)
+            //simplified method
+            m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, grayLevelType);
+
+            /*switch (grayLevelType)
             {
                 case "underground_notorch": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "underground_notorch"); break; //can't see sky and carrying no torch
                 case "underground_littorch": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "underground_littorch"); break; //can't see sky but carrying a lit torch
                 case "nighttime_clouded": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "nighttime_clouded"); break; //outside, night, clouded sky (cloudy or raining)
                 case "nighttime_clear": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "nighttime_clear"); break; //outside, night, clear sky
                 case "daytime": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "daytime"); break; //outside, day
+                case "night_vision_nighttime": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "night_vision_nighttime"); break;
+                case "night_vision_daytime": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "night_vision_daytime"); break;
                 default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
-            }
+            }*/
         }
 
         public void DrawMap(Map map, Color tint, string grayLevelType) //@@MP - added distinctions for different times and locations. makes the visited but not-in-FOV tiles darker accordingly (Release 6-2)
