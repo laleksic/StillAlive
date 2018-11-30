@@ -5226,7 +5226,7 @@ namespace djack.RogueSurvivor.Engine
             //           3.3.2 Regen AP & STA. Stop tired actors from running.
             //           3.3.3 Exhausted collapses
             //           3.3.4 Sanity and trust.
-            //           3.3.5 Check batteries : lights, trackers.
+            //           3.3.5 Check batteries : lights, trackers, NVGs.
             // 4. Check explosives.
             //      4.1 Update fuses.
             //      4.2 Explode.
@@ -5808,51 +5808,78 @@ namespace djack.RogueSurvivor.Engine
                                             Conjugate(actor.Leader, VERB_FEEL), actor.Name, HimOrHer(actor.Leader))));
                         }
                     }
-#endregion
-#endregion
+                    #endregion
+                    #endregion
 
-                    // 3.3.5 Check batteries : lights, trackers.
-#region
+                    // 3.3.5 Check batteries : lights, trackers, NVGs.
+                    #region
+                    //night vision goggles //@@MP (Release 6-3)
+                    Item eyesItem = actor.GetEquippedItem(DollPart.EYES);
+                    if (eyesItem == null)
+                    {
+                        //do nothing, we still need to check for lights and trackers
+                    }
+                    else
+                    {
+                        ItemLight NVGs = eyesItem as ItemLight;
+                        if (NVGs != null)
+                        {
+                            if (NVGs.Batteries > 0)
+                            {
+                                --NVGs.Batteries;
+                                if (NVGs.Batteries <= 0)
+                                {
+                                    if (actor.IsPlayer)
+                                    {
+                                        AddMessage(MakeMessage(actor, String.Format(": {0} ran out of battery.", NVGs.TheName)));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     Item leftItem = actor.GetEquippedItem(DollPart.LEFT_HAND);
                     if (leftItem == null)
                         continue;
-
-                    // light?
-                    ItemLight light = leftItem as ItemLight;
-                    if (light != null)
+                    else
                     {
-                        if (light.Batteries > 0)
+                        // light?
+                        ItemLight light = leftItem as ItemLight;
+                        if (light != null)
                         {
-                            --light.Batteries;
-                            if (light.Batteries <= 0)
+                            if (light.Batteries > 0)
                             {
-                                if (IsVisibleToPlayer(actor))
+                                --light.Batteries;
+                                if (light.Batteries <= 0)
                                 {
-                                    AddMessage(MakeMessage(actor, String.Format(": {0} light goes off.", light.TheName)));
+                                    if (IsVisibleToPlayer(actor))
+                                    {
+                                        AddMessage(MakeMessage(actor, String.Format(": {0} light goes off.", light.TheName)));
+                                    }
                                 }
                             }
+                            continue;
                         }
-                        continue;
-                    }
 
-                    // tracker?
-                    ItemTracker tracker = leftItem as ItemTracker;
-                    if (tracker != null)
-                    {
-                        if (tracker.Batteries > 0)
+                        // tracker?
+                        ItemTracker tracker = leftItem as ItemTracker;
+                        if (tracker != null)
                         {
-                            --tracker.Batteries;
-                            if (tracker.Batteries <= 0)
+                            if (tracker.Batteries > 0)
                             {
-                                if (IsVisibleToPlayer(actor))
+                                --tracker.Batteries;
+                                if (tracker.Batteries <= 0)
                                 {
-                                    AddMessage(MakeMessage(actor, String.Format(": {0} goes off.", tracker.TheName)));
+                                    if (IsVisibleToPlayer(actor))
+                                    {
+                                        AddMessage(MakeMessage(actor, String.Format(": {0} goes off.", tracker.TheName)));
+                                    }
                                 }
                             }
+                            continue;
                         }
-                        continue;
                     }
-#endregion
+                    #endregion
                 }
 #endregion
 #endregion
@@ -18976,8 +19003,8 @@ namespace djack.RogueSurvivor.Engine
                 // map
                 //// determine tint to apply
                 Color mapTint = TINT_MIDNIGHT;
-                ItemLight nightVision = m_Player.GetEquippedItem(DollPart.HEAD) as ItemLight; //@@MP (Release 6-3)
-                if (nightVision != null) //@@MP - night vision are the only ItemLights on the head dollpart
+                ItemLight nightVision = m_Player.GetEquippedItem(DollPart.EYES) as ItemLight; //@@MP (Release 6-3)
+                if (nightVision != null && nightVision.Batteries > 0) //@@MP - night vision are the only ItemLights on the head dollpart
                     mapTint = TINT_NIGHT_VISION;
                 else if (hasLitTorch && (!canActorSeeSky || isNight)) //@@MP - change tint during night if torch on (Release 6-2)
                     mapTint = TINT_SUNSET; //it's a good colour for a torch too
@@ -18998,6 +19025,11 @@ namespace djack.RogueSurvivor.Engine
                         grayLevelType = "nighttime_clear";
                     else
                         grayLevelType = "nighttime_clouded";
+                }
+                else if (nightVision != null) //@@MP (Release 6-3)
+                {
+                    grayLevelType = "nightvision_overbright"; //wearing active night vision in bright light
+                    mapTint = TINT_DAY;
                 }
 
                 m_UI.UI_DrawLine(Color.DarkGray, RIGHTPANEL_X, 0, RIGHTPANEL_X, MESSAGES_Y);
@@ -19198,20 +19230,7 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="grayLevelType">For day, night or underground</param>
         private void DrawGrayLevelHandler(string imageID, int gx, int gy, string grayLevelType) //@@MP (Release 6-2)
         {
-            //simplified method
-            m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, grayLevelType);
-
-            /*switch (grayLevelType)
-            {
-                case "underground_notorch": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "underground_notorch"); break; //can't see sky and carrying no torch
-                case "underground_littorch": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "underground_littorch"); break; //can't see sky but carrying a lit torch
-                case "nighttime_clouded": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "nighttime_clouded"); break; //outside, night, clouded sky (cloudy or raining)
-                case "nighttime_clear": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "nighttime_clear"); break; //outside, night, clear sky
-                case "daytime": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "daytime"); break; //outside, day
-                case "night_vision_nighttime": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "night_vision_nighttime"); break;
-                case "night_vision_daytime": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "night_vision_daytime"); break;
-                default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
-            }*/
+            m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, grayLevelType); //@@MP - simplified method (Release 6-3)
         }
 
         public void DrawMap(Map map, Color tint, string grayLevelType) //@@MP - added distinctions for different times and locations. makes the visited but not-in-FOV tiles darker accordingly (Release 6-2)
@@ -19411,6 +19430,8 @@ namespace djack.RogueSurvivor.Engine
             {
                 // tile.
                 m_UI.UI_DrawImage(tile.Model.ImageID, screen.X, screen.Y, tint);
+                /*//add overbright effect when using NVGs in the daytime
+                m_UI.UI_DrawTransparentImage(0.90f, GameImages.EFFECT_NVG_OVERBRIGHT, screen.X, screen.Y); //@@MP (Release 6-3)*/
 
                 // animation layer.
                 string movingWater = MovingWaterImage(tile.Model, m_Session.WorldTime.TurnCounter);
@@ -19543,6 +19564,7 @@ namespace djack.RogueSurvivor.Engine
             // hands equipment
             DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.RIGHT_HAND, tint);
             DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.LEFT_HAND, tint); //@@MP (Release 6-2) swapped to 2nd so torches appear over guns
+            DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.EYES, tint); //@@MP - for night vision goggles (Release 6-3)
 
             gx -= ACTOR_OFFSET;
             gy -= ACTOR_OFFSET;

@@ -15,8 +15,7 @@ namespace djack.RogueSurvivor.Gameplay
         const float GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLOUDED = 0.15f;
         const float GRAYLEVEL_DIM_FACTOR_UNDERGROUND_LITTORCH = 0.20f;
         const float GRAYLEVEL_DIM_FACTOR_UNDERGROUND_NOTORCH = 0.10f;
-        //@@MP - for night vision goggles (Release 6-3)
-        const float GRAYLEVEL_DIM_FACTOR_NIGHTVISON_OVERBRIGHT = 0.80f;
+        const float GRAYLEVEL_DIM_FACTOR_NIGHTVISON_OVERBRIGHT = 0.99f; //@@MP - for night vision goggles (Release 6-3)
         #endregion
 
         #region Images IDs
@@ -569,6 +568,7 @@ namespace djack.RogueSurvivor.Gameplay
         #region Effects
         public const string EFFECT_BARRICADED = @"Effects\barricaded";
         public const string EFFECT_ONFIRE = @"Effects\onFire";
+        public const string EFFECT_NVG_OVERBRIGHT = @"Effects\night_vision_overbright"; //@@MP (Release 6-3)
         #endregion
 
         #region Misc
@@ -618,7 +618,7 @@ namespace djack.RogueSurvivor.Gameplay
         static readonly Dictionary<string, Image> s_GrayLevelImages_NighttimeClouded = new Dictionary<string, Image>(); //@@MP (Release 6-2)
         static readonly Dictionary<string, Image> s_GrayLevelImages_UndergroundNoTorch = new Dictionary<string, Image>(); //@@MP (Release 6-2)
         static readonly Dictionary<string, Image> s_GrayLevelImages_UndergroundLitTorch = new Dictionary<string, Image>(); //@@MP (Release 6-2)
-        static readonly Dictionary<string, Image> s_GrayLevelImages_NightVisionDaytime = new Dictionary<string, Image>(); //@@MP (Release 6-3)
+        static readonly Dictionary<string, Image> s_GrayLevelImages_NightVisionOverbright = new Dictionary<string, Image>(); //@@MP (Release 6-3)
         #endregion
 
         #region Loading resources
@@ -1182,6 +1182,7 @@ namespace djack.RogueSurvivor.Gameplay
 
             Load(EFFECT_BARRICADED);
             Load(EFFECT_ONFIRE);
+            Load(EFFECT_NVG_OVERBRIGHT); //@@MP (Release 6-3)
             #endregion
 
             #region Misc
@@ -1241,6 +1242,7 @@ namespace djack.RogueSurvivor.Gameplay
                 s_GrayLevelImages_NighttimeClouded.Add(id, MakeGrayLevel(imgFixed, "nighttime_clouded"));
                 s_GrayLevelImages_UndergroundNoTorch.Add(id, MakeGrayLevel(imgFixed, "underground_notorch"));
                 s_GrayLevelImages_UndergroundLitTorch.Add(id, MakeGrayLevel(imgFixed, "underground_littorch"));
+                s_GrayLevelImages_NightVisionOverbright.Add(id, MakeGrayLevel(imgFixed, "nightvision_overbright"));
             }
             catch (Exception)
             {
@@ -1273,6 +1275,7 @@ namespace djack.RogueSurvivor.Gameplay
                         case "nighttime_clouded": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLOUDED * brightness); break;
                         case "underground_notorch": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_UNDERGROUND_NOTORCH * brightness); break;
                         case "underground_littorch": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_UNDERGROUND_LITTORCH * brightness); break;
+                        case "nightvision_overbright": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_NIGHTVISON_OVERBRIGHT * brightness); break; //@@MP (Release 6-3)
                         default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
                     }
 
@@ -1330,16 +1333,16 @@ namespace djack.RogueSurvivor.Gameplay
                         return img;
                     else
                         return s_GrayLevelImages_UndergroundLitTorch[UNDEF];
-                case "night_vision_nighttime": //@@MP (Release 6-3)
+                case "nightvision_nighttime": //@@MP (Release 6-3)
                     if (s_GrayLevelImages_Daytime.TryGetValue(imageID, out img))
                         return img;
                     else
                         return s_GrayLevelImages_Daytime[UNDEF];
-                case "night_vision_daytime": //@@MP (Release 6-3)
-                    if (s_GrayLevelImages_NightVisionDaytime.TryGetValue(imageID, out img))
+                case "nightvision_overbright": //@@MP (Release 6-3)
+                    if (s_GrayLevelImages_NightVisionOverbright.TryGetValue(imageID, out img))
                         return img;
                     else
-                        return s_GrayLevelImages_NightVisionDaytime[UNDEF];
+                        return s_GrayLevelImages_NightVisionOverbright[UNDEF];
                 default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
             }
         }

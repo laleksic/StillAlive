@@ -1497,6 +1497,9 @@ namespace djack.RogueSurvivor.Engine
                         Item rightItem = actor.GetEquippedItem(DollPart.RIGHT_HAND);
                         if (rightItem != null && CanActorRechargeItemBattery(actor, rightItem, out reason))
                             return new ActionRechargeItemBattery(actor, game, rightItem);
+                        Item eyesItem = actor.GetEquippedItem(DollPart.EYES); //@@MP (Release 6-3)
+                        if (eyesItem != null && CanActorRechargeItemBattery(actor, eyesItem, out reason))
+                            return new ActionRechargeItemBattery(actor, game, eyesItem);
                     }
 
                     // Switch?
@@ -3986,7 +3989,7 @@ namespace djack.RogueSurvivor.Engine
             light = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
             if (light == null)
             {
-                light = actor.GetEquippedItem(DollPart.HEAD) as ItemLight;
+                light = actor.GetEquippedItem(DollPart.EYES) as ItemLight;
                 if (light == null)
                     return 0;
             }

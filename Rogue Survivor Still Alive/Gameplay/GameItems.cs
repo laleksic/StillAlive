@@ -1631,14 +1631,14 @@ namespace djack.RogueSurvivor.Gameplay
             ltData = DATA_LIGHT_NIGHT_VISION_FEMALE;
             this[IDs.LIGHT_NIGHT_VISION_FEMALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_FEMALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_FEMALE)
             {
-                EquipmentPart = DollPart.HEAD,
+                EquipmentPart = DollPart.EYES,
                 FlavorDescription = ltData.FLAVOR
             };
 
             ltData = DATA_LIGHT_NIGHT_VISION_MALE;
             this[IDs.LIGHT_NIGHT_VISION_MALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_MALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_MALE)
             {
-                EquipmentPart = DollPart.HEAD,
+                EquipmentPart = DollPart.EYES,
                 FlavorDescription = ltData.FLAVOR
             };
             #endregion
