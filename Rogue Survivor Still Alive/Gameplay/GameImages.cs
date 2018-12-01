@@ -199,10 +199,12 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_BANK_SIGN = @"Tiles\Decoration\bank_sign";
         public const string DECO_CLINIC_SIGN = @"Tiles\Decoration\clinic_sign";
 
-        //@@MP (Release 2)
-        public const string DECO_SCORCH_MARK_CENTER = @"Tiles\Decoration\scorched_center";
-        public const string DECO_SCORCH_MARK_INNER = @"Tiles\Decoration\scorched_inner";
-        public const string DECO_SCORCH_MARK_OUTER = @"Tiles\Decoration\scorched_outer";
+        //@@MP (Release 2)(Release 6-3)
+        public const string DECO_SCORCH_MARK_CENTER_FLOOR = @"Tiles\Decoration\scorched_center_floor"; //will never be on a wall tile, so this is also flat for the floor
+        public const string DECO_SCORCH_MARK_INNER_FLOOR = @"Tiles\Decoration\scorched_inner_floor"; //flat to give the appearance of being on a horizontal
+        public const string DECO_SCORCH_MARK_OUTER_FLOOR = @"Tiles\Decoration\scorched_outer_floor";
+        public const string DECO_SCORCH_MARK_INNER_WALL = @"Tiles\Decoration\scorched_inner_wall"; //slightly tilted to give the appearance of being on a vertical
+        public const string DECO_SCORCH_MARK_OUTER_WALL = @"Tiles\Decoration\scorched_outer_wall";
 
         //@@MP (Release 3)
         public const string DECO_WALL_BRICK_DAMAGED = @"Tiles\Decoration\wall_brick_damaged";
@@ -806,10 +808,12 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_BANK_SIGN);
             Load(DECO_CLINIC_SIGN);
 
-            //@@MP (Release 2)
-            Load(DECO_SCORCH_MARK_CENTER);
-            Load(DECO_SCORCH_MARK_INNER);
-            Load(DECO_SCORCH_MARK_OUTER);
+            //@@MP (Release 2)(Release 6-3)
+            Load(DECO_SCORCH_MARK_CENTER_FLOOR);
+            Load(DECO_SCORCH_MARK_INNER_FLOOR);
+            Load(DECO_SCORCH_MARK_OUTER_FLOOR);
+            Load(DECO_SCORCH_MARK_INNER_WALL);
+            Load(DECO_SCORCH_MARK_OUTER_WALL);
 
             //@@MP (Release 3)
             Load(DECO_WALL_BRICK_DAMAGED);

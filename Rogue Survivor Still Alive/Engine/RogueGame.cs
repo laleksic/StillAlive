@@ -3593,9 +3593,9 @@ namespace djack.RogueSurvivor.Engine
             GenerateWorld(true, s_Options.CitySize, suppliedName); //@@MP - added parameter for user to supply a name (Release 5-7)
             CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
             DoHospitalPowerOn(); //@@MP (Release 6-2)
-            Item nightVision = new ItemLight(GameItems.NIGHT_VISION_MALE);
-            m_Player.Inventory.AddAll(nightVision);
-            
+            /*Item temp = new ItemMedicine(GameItems.ALCOHOL_LIQUOR_CLEAR);
+            m_Player.Inventory.AddAll(temp);*/
+
             // scoring : hello there.
             m_Session.Scoring.AddVisit(m_Player.Location.Map); //@@MP - unused parameter (Release 5-7)
             m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format(isUndead ? "Rose in {0}." : "Woke up in {0}.", m_Player.Location.Map.Name));
@@ -18659,26 +18659,38 @@ namespace djack.RogueSurvivor.Engine
 #endregion
 
 #region -Applying/Unapplying effects: ApplyXXX/UnapplyXXX
-        static void ScorchBurntTile(Map map, int x, int y, int damage) //@@MP - add a burn mark sprite to the ground (Release 2), cater for the new explosives with damage ranges (Release 4), made static (Release 5-7)
+        void ScorchBurntTile(Map map, int x, int y, int damage) //@@MP - add a burn mark sprite to the ground (Release 2), cater for the new explosives with damage ranges (Release 4)
         {
             if (map.GetExitAt(x, y) != null) //skip if it's stairs
                 return;
 
             if (damage > 0 && !map.TileAlreadyHasScorchDecoration(x, y)) //@@MP - so that we don't try to add a new scorch over an existing scorch (Release 5-2)
             {
+                Tile tile = map.GetTileAt(x, y); //@@MP (Release 6-3)
+
                 if (damage <= 40) //@@MP FIXME - a lazy way of doing it. should go back and calculate based on radius from the center of the blast...
-                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_OUTER);
+                {
+                    if (m_GameTiles.IsWallModel(tile.Model)) //@@MP - now a scorch for walls and floor each (Release 6-3)
+                        map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_OUTER_WALL);
+                    else
+                        map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_OUTER_FLOOR);
+                }
                 else if (damage > 40 && damage <= 120)
-                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER);
-                else if (damage > 120)
-                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_CENTER);
+                {
+                    if (GameTiles.IsWallModel(tile.Model)) //@@MP - now a scorch for walls and floor each (Release 6-3)
+                        map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER_WALL);
+                    else
+                        map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER_FLOOR);
+                }
+                else if (damage > 120) //@@MP - now a scorch for walls and floor each (Release 6-3)
+                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_CENTER_FLOOR);
             }
         }
 
         /// <summary>
         /// Different to mapobj.IsOnFire as it can be used for just empty tiles
         /// </summary>
-        static void SetTileOnFire(Map map, int x, int y) //@@MP - new method (Release 4), made static (Release 5-7)
+        void SetTileOnFire(Map map, int x, int y) //@@MP - new method (Release 4)
         {
             Point pt = new Point(x, y);
             if (map.IsAnyTileFireThere(map, pt) || map.IsAnyTileWaterThere(map, pt)) //@@MP - added check for water tiles (Release 6-1)

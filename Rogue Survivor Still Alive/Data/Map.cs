@@ -378,10 +378,12 @@ namespace djack.RogueSurvivor.Data
             }
         }
 
-        public bool TileAlreadyHasScorchDecoration(int x, int y) //@@MP - check whether there's already a scorch mark here (Release 5-2)
+        public bool TileAlreadyHasScorchDecoration(int x, int y) //@@MP - check whether there's already a scorch mark here (Release 5-2) updated (Release 6-3)
         {
             Tile tile = GetTileAt(x, y);
-            if (tile.HasDecoration(GameImages.DECO_SCORCH_MARK_OUTER) || tile.HasDecoration(GameImages.DECO_SCORCH_MARK_INNER) || tile.HasDecoration(GameImages.DECO_SCORCH_MARK_CENTER))
+            if (tile.HasDecoration(GameImages.DECO_SCORCH_MARK_OUTER_WALL) || tile.HasDecoration(GameImages.DECO_SCORCH_MARK_INNER_WALL) ||
+                tile.HasDecoration(GameImages.DECO_SCORCH_MARK_OUTER_FLOOR) || tile.HasDecoration(GameImages.DECO_SCORCH_MARK_INNER_FLOOR) ||
+                tile.HasDecoration(GameImages.DECO_SCORCH_MARK_CENTER_FLOOR))
                 return true;
             else
                 return false;

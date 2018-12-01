@@ -131,6 +131,7 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.UNDEF] = TileModel.UNDEF;
 
             #region Floors
+            //@MP if you add another also add it to IsFloorModel()
             this[IDs.FLOOR_ASPHALT] = new TileModel(GameImages.TILE_FLOOR_ASPHALT, Color.Gray, true, true);
             this[IDs.FLOOR_CONCRETE] = new TileModel(GameImages.TILE_FLOOR_CONCRETE, Color.LightGray, true, true);
             this[IDs.FLOOR_GRASS] = new TileModel(GameImages.TILE_FLOOR_GRASS, Color.Green, true, true);
@@ -159,6 +160,7 @@ namespace djack.RogueSurvivor.Gameplay
             #endregion
 
             #region Walls
+            //@MP if you add another also add it to IsWallModel()
             this[IDs.WALL_BRICK] = new TileModel(GameImages.TILE_WALL_BRICK, Color.DimGray, false, false);
             this[IDs.WALL_CHAR_OFFICE] = new TileModel(GameImages.TILE_WALL_CHAR_OFFICE, DRK_RED, false, false);
             this[IDs.WALL_HOSPITAL] = new TileModel(GameImages.TILE_WALL_HOSPITAL, Color.White, false, false);
@@ -176,6 +178,20 @@ namespace djack.RogueSurvivor.Gameplay
         public bool IsRoadModel(TileModel model)
         {
             return model == this[IDs.ROAD_ASPHALT_EW] || model == this[IDs.ROAD_ASPHALT_NS];
+        }
+
+        public bool IsWallModel(TileModel model) //@MP (Release 6-3)
+        {
+            return model == this[IDs.WALL_BRICK] || model == this[IDs.WALL_CHAR_OFFICE] || model == this[IDs.WALL_HOSPITAL] || model == this[IDs.WALL_LIGHT_BROWN] ||
+                model == this[IDs.WALL_POLICE_STATION] || model == this[IDs.WALL_STONE] || model == this[IDs.WALL_SUBWAY];
+        }
+
+        public bool IsFloorModel(TileModel model) //@MP (Release 6-3)
+        {
+            return model == this[IDs.FLOOR_ASPHALT] || model == this[IDs.FLOOR_BLUE_CARPET] || model == this[IDs.FLOOR_CONCRETE] || model == this[IDs.FLOOR_DIRT] ||
+                model == this[IDs.FLOOR_GRASS] || model == this[IDs.FLOOR_OFFICE] || model == this[IDs.FLOOR_PLANKS] || model == this[IDs.FLOOR_PLANTED] ||
+                model == this[IDs.FLOOR_RED_CARPET] || model == this[IDs.FLOOR_TILES] || model == this[IDs.FLOOR_WALKWAY] || model == this[IDs.RAIL_EW] ||
+                model == this[IDs.ROAD_ASPHALT_EW] || model == this[IDs.ROAD_ASPHALT_NS];
         }
         #endregion
     }
