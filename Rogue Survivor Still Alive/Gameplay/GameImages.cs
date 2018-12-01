@@ -465,10 +465,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_SLOT = @"Items\itemslot";
         public const string ITEM_EQUIPPED = @"Items\itemequipped";
 
-        //@MP (Release 6-2)
-        public const string ITEM_FEMALE_NIGHTVISION = @"Actors\Decoration\female_night-vision";
-        public const string ITEM_MALE_NIGHTVISION = @"Actors\Decoration\male_night-vision";
-
         public const string ITEM_AMMO_LIGHT_PISTOL = @"Items\item_ammo_light_pistol";
         public const string ITEM_AMMO_HEAVY_PISTOL = @"Items\item_ammo_heavy_pistol";
         public const string ITEM_AMMO_LIGHT_RIFLE = @"Items\item_ammo_light_rifle";
@@ -532,6 +528,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_MOLOTOV = @"Items\item_molotov"; //@@MP (Release 4)
         public const string ITEM_MOLOTOV_PRIMED = @"Items\item_molotov_primed"; //@@MP (Release 4)
         public const string ITEM_NAIL_GUN = @"Items\item_nail_gun"; //@@MP (Release 5-1)
+        public const string ITEM_NIGHT_VISION_FEMALE = @"Items\item_night_vision_female"; //@MP (Release 6-3)
+        public const string ITEM_NIGHT_VISION_MALE = @"Items\item_night_vision_male"; //@MP (Release 6-3)
         public const string ITEM_PICKAXE = @"Items\item_pickaxe"; //@@MP (Release 3)
         public const string ITEM_PILLS_ANTIVIRAL = @"Items\item_pills_antiviral";
         public const string ITEM_PILLS_BLUE = @"Items\item_pills_blue";
@@ -1140,6 +1138,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_MOLOTOV); //@@MP (Release 4)
             Load(ITEM_MOLOTOV_PRIMED); //@@MP (Release 4)
             Load(ITEM_NAIL_GUN); //@@MP (Release 5-1)
+            Load(ITEM_NIGHT_VISION_FEMALE); //@@MP (Release 6-3)
+            Load(ITEM_NIGHT_VISION_MALE); //@@MP (Release 6-3)
             Load(ITEM_PICKAXE); //@@MP (Release 3)
             Load(ITEM_PILLS_ANTIVIRAL);
             Load(ITEM_PILLS_BLUE);
@@ -1327,6 +1327,11 @@ namespace djack.RogueSurvivor.Gameplay
                         return img;
                     else
                         return s_GrayLevelImages_UndergroundLitTorch[UNDEF];
+                case "nightvision_nighttime": //@@MP (Release 6-3)
+                    if (s_GrayLevelImages_Daytime.TryGetValue(imageID, out img))
+                        return img;
+                    else
+                        return s_GrayLevelImages_Daytime[UNDEF];
                 default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
             }
         }

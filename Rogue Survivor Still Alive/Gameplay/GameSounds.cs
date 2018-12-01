@@ -228,7 +228,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string REINCARNATE_FILE = PATH + "RS - Reincarnate";
 
         //@@MP (Release 6-2)
-        public const string NIGHTVISION = "night vision";
-        public const string NIGHTVISION_FILE = PATH + "night-vision";
+        public const string NIGHT_VISION = "night vision";
+        public const string NIGHT_VISION_FILE = PATH + "night_vision";
     }
 }

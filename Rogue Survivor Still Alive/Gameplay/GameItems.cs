@@ -93,6 +93,9 @@ namespace djack.RogueSurvivor.Gameplay
 
             LIGHT_FLASHLIGHT,
             LIGHT_BIG_FLASHLIGHT,
+            //@@MP - one version per gender to suit the different inherent body pixel sizes (Release 6-3)
+            LIGHT_NIGHT_VISION_FEMALE,
+            LIGHT_NIGHT_VISION_MALE,
 
             AMMO_LIGHT_PISTOL,
             AMMO_HEAVY_PISTOL,
@@ -621,6 +624,11 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemLightModel FLASHLIGHT { get { return this[IDs.LIGHT_FLASHLIGHT] as ItemLightModel; } }
         LightData DATA_LIGHT_BIG_FLASHLIGHT;
         public ItemLightModel BIG_FLASHLIGHT { get { return this[IDs.LIGHT_BIG_FLASHLIGHT] as ItemLightModel; } }
+        //@@MP (Release 6-3)
+        LightData DATA_LIGHT_NIGHT_VISION_FEMALE;
+        public ItemLightModel NIGHT_VISION_FEMALE { get { return this[IDs.LIGHT_NIGHT_VISION_FEMALE] as ItemLightModel; } }
+        LightData DATA_LIGHT_NIGHT_VISION_MALE;
+        public ItemLightModel NIGHT_VISION_MALE { get { return this[IDs.LIGHT_NIGHT_VISION_MALE] as ItemLightModel; } }
         #endregion
 
         #region Scent Sprays
@@ -1620,6 +1628,19 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = ltData.FLAVOR
             };
 
+            ltData = DATA_LIGHT_NIGHT_VISION_FEMALE;
+            this[IDs.LIGHT_NIGHT_VISION_FEMALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_FEMALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_FEMALE)
+            {
+                EquipmentPart = DollPart.EYES,
+                FlavorDescription = ltData.FLAVOR
+            };
+
+            ltData = DATA_LIGHT_NIGHT_VISION_MALE;
+            this[IDs.LIGHT_NIGHT_VISION_MALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_MALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_MALE)
+            {
+                EquipmentPart = DollPart.EYES,
+                FlavorDescription = ltData.FLAVOR
+            };
             #endregion
 
             #region Scent sprays
@@ -2064,11 +2085,13 @@ namespace djack.RogueSurvivor.Gameplay
             LightData[] data;
 
             LoadDataFromCSV<LightData>(ui, path, "lights items", LightData.COUNT_FIELDS, LightData.FromCSVLine,
-                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT },
+                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT, IDs.LIGHT_NIGHT_VISION_FEMALE, IDs.LIGHT_NIGHT_VISION_MALE },
                 out data);
 
             DATA_LIGHT_FLASHLIGHT = data[0];
             DATA_LIGHT_BIG_FLASHLIGHT = data[1];
+            DATA_LIGHT_NIGHT_VISION_FEMALE = data[2]; //@@MP (Release 6-3)
+            DATA_LIGHT_NIGHT_VISION_MALE = data[3]; //@@MP (Release 6-3)
 
             return true;
         }
