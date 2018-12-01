@@ -10826,16 +10826,6 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        static bool IsItemLiquorForMolotov(Item item) //@@MP - checks if item is a liquor of a suitable type for a molotov (Release 4), made static (Release 5-7)
-        {
-            if (item == null)
-                return false;
-            else if ((item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER) || (item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR))
-                return true;
-            else
-                return false;
-        }
-
         bool HandlePlayerThrowGrenade(Actor player)
         {
             bool loop = true;
@@ -11408,8 +11398,7 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
-        // alpha10
-        bool HandlePlayerPull(Actor player)
+        bool HandlePlayerPull(Actor player) // alpha10
         {
             // fail immediatly for stupid cases.
             if (!m_Rules.HasActorPushAbility(player))
@@ -11510,8 +11499,7 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
-        // alpha10
-        bool HandlePlayerPullObject(Actor player, MapObject mapObj)
+        bool HandlePlayerPullObject(Actor player, MapObject mapObj) // alpha10
         {
             bool loop = true;
             bool actionDone = false;
@@ -11567,8 +11555,7 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
-        // alpha10
-        bool HandlePlayerPullActor(Actor player, Actor other)
+        bool HandlePlayerPullActor(Actor player, Actor other) // alpha10
         {
             bool loop = true;
             bool actionDone = false;
@@ -16342,6 +16329,12 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="it"></param>
         public void DoEquipItem(Actor actor, Item it, bool showMessage = false) //@@MP - showMessage based on alpha 10 (Release 6-1)
         {
+            if (!m_Session.WorldTime.IsNight && m_Rules.CanActorSeeSky(actor) && IsItemNightVision(it)) //@@MP (Release 6-3)
+            {
+                AddMessage(MakeErrorMessage("It's too bright to equip night vision goggles."));
+                return;
+            }
+
             // unequip previous item first.
             Item previousItem = actor.GetEquippedItem(it.Model.EquipmentPart);
             if(previousItem != null)
@@ -16419,7 +16412,7 @@ namespace djack.RogueSurvivor.Engine
                 --ltIt.Batteries;
                 if (actor.IsPlayer) //@@MP (Release 2)
                 {
-                    if (it.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_MALE || it.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_FEMALE) //@@MP (Release 6-3)
+                    if (IsItemNightVision(it)) //@@MP (Release 6-3)
                         m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.NIGHT_VISION, AudioPriority.PRIORITY_BGM);
                     else //@@MP (Release 2)
                         m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER, AudioPriority.PRIORITY_BGM);
@@ -19026,10 +19019,10 @@ namespace djack.RogueSurvivor.Engine
                     else
                         grayLevelType = "nighttime_clouded";
                 }
-                else if (nightVision != null) //@@MP (Release 6-3)
+                else if (nightVision != null) //@@MP - forcibly unequip NVG during daytime (Release 6-3)
                 {
-                    grayLevelType = "nightvision_overbright"; //wearing active night vision in bright light
-                    mapTint = TINT_DAY;
+                    DoUnequipItem(m_Player, nightVision);
+                    AddMessage(new Message(String.Format("It's light enough now, I don't need the night vision goggles."), 0, Color.Yellow));
                 }
 
                 m_UI.UI_DrawLine(Color.DarkGray, RIGHTPANEL_X, 0, RIGHTPANEL_X, MESSAGES_Y);
@@ -19430,8 +19423,6 @@ namespace djack.RogueSurvivor.Engine
             {
                 // tile.
                 m_UI.UI_DrawImage(tile.Model.ImageID, screen.X, screen.Y, tint);
-                /*//add overbright effect when using NVGs in the daytime
-                m_UI.UI_DrawTransparentImage(0.90f, GameImages.EFFECT_NVG_OVERBRIGHT, screen.X, screen.Y); //@@MP (Release 6-3)*/
 
                 // animation layer.
                 string movingWater = MovingWaterImage(tile.Model, m_Session.WorldTime.TurnCounter);
@@ -25294,5 +25285,27 @@ namespace djack.RogueSurvivor.Engine
         #endregion
         #endregion
         #endregion
+
+#region TO BE REFACTORED
+        static bool IsItemLiquorForMolotov(Item item) //@@MP - checks if item is a liquor of a suitable type for a molotov (Release 4), made static (Release 5-7)
+        {
+            if (item == null)
+                return false;
+            else if ((item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER) || (item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR))
+                return true;
+            else
+                return false;
+        }
+
+        static bool IsItemNightVision(Item item) //@@MP (Release 6-3)
+        {
+            if (item.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_FEMALE)
+                return true;
+            else if (item.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_MALE)
+                return true;
+            else
+                return false;
+        }
+#endregion
     }
 }
