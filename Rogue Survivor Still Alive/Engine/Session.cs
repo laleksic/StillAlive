@@ -355,6 +355,7 @@ namespace djack.RogueSurvivor.Engine
     {
         public UniqueItem TheSubwayWorkerBadge { get; set; }
         public UniqueItem TheCHARdocument { get; set; } //@@MP (Release 3)
+        public UniqueItem TheArmyOfficePass { get; set; } //@@MP (Release 6-3)
     }
 
     [Serializable]
@@ -374,6 +375,7 @@ namespace djack.RogueSurvivor.Engine
         public UniqueMap Hospital_Patients { get; set; }
         public UniqueMap Hospital_Storage { get; set; }
         public UniqueMap Hospital_Power { get; set; }
+        public UniqueMap ArmyBase { get; set; } //@@MP (Release 6-3)
     }
 
     /// <summary>
@@ -500,12 +502,28 @@ namespace djack.RogueSurvivor.Engine
             get;
             set;
         }
-        
         /*public int Player_TurnCharismaRoll //@@MP - I prefer to do it differently (Release 6-1)
         {
             get;
             set;
         }*/
+
+        //@@MP (Release 6-3)
+        public bool PlayerKnows_ArmyBaseLocation
+        {
+            get;
+            set;
+        }
+        public bool ArmyBaseUnderground_Activated
+        {
+            get;
+            set;
+        }
+        public bool PlayerKnows_HelicopterArrivalDetails
+        {
+            get;
+            set;
+        }
         #endregion
 
         #endregion
@@ -545,6 +563,10 @@ namespace djack.RogueSurvivor.Engine
             this.UniqueActors = new UniqueActors();
             this.UniqueItems = new UniqueItems();
             this.UniqueMaps = new UniqueMaps();
+            //@@MP (Release 6-3)
+            this.ArmyBaseUnderground_Activated = false;
+            this.PlayerKnows_ArmyBaseLocation = false;
+            this.PlayerKnows_HelicopterArrivalDetails = false;
             // alpha10
             this.Player_CurrentFireMode = FireMode.DEFAULT;
             //this.Player_TurnCharismaRoll = 0; //@@MP (Release 6-1)

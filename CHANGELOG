@@ -1,9 +1,16 @@
-STILL ALIVE 2.1.11.1 (aka Release 6-3, ??/??/2018) [Author: MP] *** WORK IN PROGRESS ***
+STILL ALIVE 2.2.2.2 (aka Release 6-3, ??/??/2018) [Author: MP] *** WORK IN PROGRESS ***
 ---------------------
 
 Features:
 -Added night vision goggles.
 -Scorch marks adjusted for walls vs floors.
+-All construction stores now have dynamite behind the counter (temporary change).
+-Added army facility.
+-Removed option to set the maximum available reincarnations. Locked to 7.
+
+Fixes
+-Bumping against locked doors now gives the correct warning to the player.
+-Bank tellers now have the correct sprite.
 
 
 STILL ALIVE 2.1.10.9 (aka Release 6-2, 12/11/2018) [Author: MP]

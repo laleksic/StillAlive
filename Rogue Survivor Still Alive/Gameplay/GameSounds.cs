@@ -230,5 +230,11 @@ namespace djack.RogueSurvivor.Gameplay
         //@@MP (Release 6-2)
         public const string NIGHT_VISION = "night vision";
         public const string NIGHT_VISION_FILE = PATH + "night_vision";
+
+        //@@MP (Release 6-3)
+        public const string ACCESS_DENIED = "access denied";
+        public const string ACCESS_DENIED_FILE = PATH + "access_denied";
+        public const string ACCESS_GRANTED = "access granted";
+        public const string ACCESS_GRANTED_FILE = PATH + "access_granted";
     }
 }

@@ -237,6 +237,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             OFFICE
         }
 
+        protected enum ArmyBuildingType : byte //@@MP (Release 6-3)
+        {
+            NONE,
+            OFFICE
+        }
+
         protected enum HouseOutsideRoomType : byte // alpha10
         {
             _FIRST,
@@ -375,6 +381,35 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 MakeHospital(map, blocks, out hospitalBlock);
                 emptyBlocks.Remove(hospitalBlock);
             }
+            // Army Base //@@MP (Release 6-3)
+            completedBlocks.Clear();
+            int armyOfficesCount = 0;
+            foreach (Block b in emptyBlocks)
+            {
+                if (armyOfficesCount > 0)
+                    break; //we've already generated one, that's all we want
+                else if (m_Params.District.Kind == DistrictKind.GREEN || m_Params.District.Kind == DistrictKind.GENERAL)
+                {
+                    int rolled = m_DiceRoller.Roll(0, 99);
+                    if (rolled < 60 || armyOfficesCount == 0) //60%
+                    {
+                        ArmyBuildingType btype = MakeArmyOffice(map, b);
+                        if (btype != ArmyBuildingType.NONE)
+                        {
+                            if (btype == ArmyBuildingType.OFFICE) //it will be because we don't have any others
+                            {
+                                ++armyOfficesCount;
+                                PopulateArmyOfficeBuilding(map, b);
+                            }
+                            completedBlocks.Add(b);
+                            continue;
+                        }
+                    }
+                }
+            }
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "Army offices generated: " + armyOfficesCount.ToString());
+            foreach (Block b in completedBlocks)
+                emptyBlocks.Remove(b);
             #endregion
 
             // shops.
@@ -387,7 +422,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             foreach (Block b in completedBlocks)
                 emptyBlocks.Remove(b);
 
-            // CHAR buildings..
+            // Business District buildings..
             completedBlocks.Clear();
             int charOfficesCount = 0;
             bool hasLibrary = false; //@@MP - (Release 5-3)
@@ -415,6 +450,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                             NoCHARBuildingMade = true; //@@MP - tracks if an Agency or no building at all was created, as we then have a block to fill with something else
                     }
 
+                    // non-CHAR buildings
                     if (rolled >= 60 || NoCHARBuildingMade == true) //@@MP (Release 4)
                     {
                         //@@MP - the first 2 need specific sizes, the other 3 are good for whatever
@@ -1615,7 +1651,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 if (map.IsWalkable(cornerpt.X, cornerpt.Y)) // make sure we haven't somehow got a wall or other inaccessible spot
                 {
                     map.PlaceMapObjectAt(MakeObjCashRegister(GameImages.OBJ_CASH_REGISTER), cornerpt);
-                    if ((shopType == ShopType.CONSTRUCTION) && m_DiceRoller.RollChance(50)) //@@MP - roll to add dynamite if it's a Construction store (Release 4)
+                    if (shopType == ShopType.CONSTRUCTION) //@@MP - add dynamite if it's a Construction store (Release 4), removed roll (Release 6-3)
                         map.DropItemAt(MakeItemDynamite(), cornerpt);
                 }
             }
@@ -2832,7 +2868,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             ///////////////////////////////
             // 2. Entry door with shop ids
-            //    Add lectern and hangings.
             ///////////////////////////////
             #region
             int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
@@ -2878,7 +2913,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         Point counterpt = new Point(b.InsideRect.Right - 5, y);
                         //place the counters, with a openable door opposite the main entrance
                         if (map.IsWalkable(counterpt) && counterpt.Y != midY)
-                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
+                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_BANK_TELLER), counterpt);
                         else if (counterpt.Y == midY)
                             PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, MakeObjWoodenDoor());
                     }
@@ -2912,7 +2947,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         Point counterpt = new Point(b.InsideRect.Left + 4, y);
                         //place the counters, with a openable door opposite the main entrance
                         if (map.IsWalkable(counterpt) && counterpt.Y != midY)
-                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
+                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_BANK_TELLER), counterpt);
                         else if (counterpt.Y == midY)
                             PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, MakeObjWoodenDoor());
                     }
@@ -2946,7 +2981,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         Point counterpt = new Point(x, b.InsideRect.Bottom - 5);
                         //place the counters, with a openable door opposite the main entrance
                         if (map.IsWalkable(counterpt) && counterpt.X != midX)
-                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
+                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_BANK_TELLER), counterpt);
                         else if (counterpt.X == midX)
                             PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, MakeObjWoodenDoor());
                     }
@@ -2980,7 +3015,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         Point counterpt = new Point(x, b.InsideRect.Top + 4);
                         //place the counters, with a openable door opposite the main entrance
                         if (map.IsWalkable(counterpt) && counterpt.X != midX)
-                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_KITCHEN_COUNTER), counterpt); //#######################################
+                            map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_BANK_TELLER), counterpt);
                         else if (counterpt.X == midX)
                             PlaceDoor(map, counterpt.X, counterpt.Y, m_Game.GameTiles.FLOOR_BLUE_CARPET, MakeObjWoodenDoor());
                     }
@@ -3511,6 +3546,311 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return true;
         }
 
+        protected virtual ArmyBuildingType MakeArmyOffice(Map map, Block b) //@@MP (Release 6-3)
+        {
+            // Need at least 8*8
+            if (b.InsideRect.Width < 8 || b.InsideRect.Height < 8)
+                return ArmyBuildingType.NONE; //too small for an army office
+
+            // we have enough room
+            /////////////////////////////
+            // 1. Walkway, floor & walls
+            /////////////////////////////
+            TileRectangle(map, m_Game.GameTiles.FLOOR_WALKWAY, b.Rectangle);
+            TileRectangle(map, m_Game.GameTiles.WALL_ARMY_BASE, b.BuildingRect);
+            TileFill(map, m_Game.GameTiles.FLOOR_ARMY, b.InsideRect, (tile, prevmodel, x, y) => tile.IsInside = true);
+
+            //////////////////////////
+            // 2. Decide orientation.
+            //////////////////////////          
+            bool horizontalCorridor = (b.InsideRect.Width >= b.InsideRect.Height);
+
+            /////////////////
+            // 3. Entry door 
+            /////////////////
+            #region
+            int midX = b.Rectangle.Left + b.Rectangle.Width / 2;
+            int midY = b.Rectangle.Top + b.Rectangle.Height / 2;
+            Direction doorSide;
+
+            // make doors on one side.
+            #region
+            if (horizontalCorridor)
+            {
+                bool west = m_DiceRoller.RollChance(50);
+                if (west)
+                {
+                    doorSide = Direction.W;
+                    // west
+                    map.SetTileModelAt(b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                    map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Left, midY));
+                    if (b.InsideRect.Height >= 8) //more space, so add another door
+                    {
+                        map.SetTileModelAt(b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                        map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Left, midY - 1));
+                        if (b.InsideRect.Height >= 12) //even more space, so add another door
+                        {
+                            map.SetTileModelAt(b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Left, midY + 1));
+                        }
+                    }
+                }
+                else
+                {
+                    doorSide = Direction.E;
+                    // east
+                    map.SetTileModelAt(b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                    map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Right - 1, midY));
+                    if (b.InsideRect.Height >= 8)
+                    {
+                        map.SetTileModelAt(b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                        map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Right - 1, midY - 1));
+                        if (b.InsideRect.Height >= 12)
+                        {
+                            map.SetTileModelAt(b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Right - 1, midY + 1));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                bool north = m_DiceRoller.RollChance(50);
+                if (north)
+                {
+                    doorSide = Direction.N;
+                    // north
+                    map.SetTileModelAt(midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                    map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX, b.BuildingRect.Top));
+                    if (b.InsideRect.Width >= 8)
+                    {
+                        map.SetTileModelAt(midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                        map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX - 1, b.BuildingRect.Top));
+                        if (b.InsideRect.Width >= 12)
+                        {
+                            map.SetTileModelAt(midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX + 1, b.BuildingRect.Top));
+                        }
+                    }
+                }
+                else
+                {
+                    doorSide = Direction.S;
+                    // south
+                    map.SetTileModelAt(midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                    map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX, b.BuildingRect.Bottom - 1));
+                    if (b.InsideRect.Width >= 8)
+                    {
+                        map.SetTileModelAt(midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                        map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX - 1, b.BuildingRect.Bottom - 1));
+                        if (b.InsideRect.Width >= 12)
+                        {
+                            map.SetTileModelAt(midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
+                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX + 1, b.BuildingRect.Bottom - 1));
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            // add office image next to doors.
+            string officeImage = GameImages.DECO_ARMY_POSTER1;
+            DecorateOutsideWalls(map, b.BuildingRect, (x, y) => map.GetMapObjectAt(x, y) == null && CountAdjDoors(map, x, y) >= 1 ? officeImage : null);
+            #endregion
+
+            ///////////////////////
+            // 4. Make entry hall.
+            ///////////////////////
+            #region
+            const int hallDepth = 3;
+            if (doorSide == Direction.N)
+            {
+                TileHLine(map, m_Game.GameTiles.WALL_ARMY_BASE, b.InsideRect.Left, b.InsideRect.Top + hallDepth, b.InsideRect.Width);
+            }
+            else if (doorSide == Direction.S)
+            {
+                TileHLine(map, m_Game.GameTiles.WALL_ARMY_BASE, b.InsideRect.Left, b.InsideRect.Bottom - 1 - hallDepth, b.InsideRect.Width);
+            }
+            else if (doorSide == Direction.E)
+            {
+                TileVLine(map, m_Game.GameTiles.WALL_ARMY_BASE, b.InsideRect.Right - 1 - hallDepth, b.InsideRect.Top, b.InsideRect.Height);
+            }
+            else if (doorSide == Direction.W)
+            {
+                TileVLine(map, m_Game.GameTiles.WALL_ARMY_BASE, b.InsideRect.Left + hallDepth, b.InsideRect.Top, b.InsideRect.Height);
+            }
+            else
+                throw new InvalidOperationException("unhandled door side");
+            #endregion
+
+            /////////////////////////////////////
+            // 5. Make central corridor & wings
+            /////////////////////////////////////
+            #region
+            Rectangle corridorRect;
+            Point corridorDoor;
+            if (doorSide == Direction.N)
+            {
+                corridorRect = new Rectangle(midX - 1, b.InsideRect.Top + hallDepth, 3, b.BuildingRect.Height - 1 - hallDepth);
+                corridorDoor = new Point(corridorRect.Left + 1, corridorRect.Top);
+            }
+            else if (doorSide == Direction.S)
+            {
+                corridorRect = new Rectangle(midX - 1, b.BuildingRect.Top, 3, b.BuildingRect.Height - 1 - hallDepth);
+                corridorDoor = new Point(corridorRect.Left + 1, corridorRect.Bottom - 1);
+            }
+            else if (doorSide == Direction.E)
+            {
+                corridorRect = new Rectangle(b.BuildingRect.Left, midY - 1, b.BuildingRect.Width - 1 - hallDepth, 3);
+                corridorDoor = new Point(corridorRect.Right - 1, corridorRect.Top + 1);
+            }
+            else if (doorSide == Direction.W)
+            {
+                corridorRect = new Rectangle(b.InsideRect.Left + hallDepth, midY - 1, b.BuildingRect.Width - 1 - hallDepth, 3);
+                corridorDoor = new Point(corridorRect.Left, corridorRect.Top + 1);
+            }
+            else
+                throw new InvalidOperationException("unhandled door side");
+
+            TileRectangle(map, m_Game.GameTiles.WALL_ARMY_BASE, corridorRect);
+            map.SetTileModelAt(corridorDoor.X, corridorDoor.Y, m_Game.GameTiles.FLOOR_ARMY); //need to remove any non-walkable tile
+            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(corridorDoor.X, corridorDoor.Y));
+            #endregion
+
+            /////////////////////////
+            // 6. Make office rooms.
+            /////////////////////////
+            #region
+            // make wings.
+            Rectangle wingOne;
+            Rectangle wingTwo;
+            if (horizontalCorridor)
+            {
+                // top side.
+                wingOne = new Rectangle(corridorRect.Left, b.BuildingRect.Top, corridorRect.Width, 1 + corridorRect.Top - b.BuildingRect.Top);
+                // bottom side.
+                wingTwo = new Rectangle(corridorRect.Left, corridorRect.Bottom - 1, corridorRect.Width, 1 + b.BuildingRect.Bottom - corridorRect.Bottom);
+            }
+            else
+            {
+                // left side
+                wingOne = new Rectangle(b.BuildingRect.Left, corridorRect.Top, 1 + corridorRect.Left - b.BuildingRect.Left, corridorRect.Height);
+                // right side
+                wingTwo = new Rectangle(corridorRect.Right - 1, corridorRect.Top, 1 + b.BuildingRect.Right - corridorRect.Right, corridorRect.Height);
+            }
+
+            // make rooms in each wing with doors leaving toward corridor.
+            const int officeRoomsSize = 4;
+
+            List<Rectangle> officesOne = new List<Rectangle>();
+            MakeRoomsPlan(map, ref officesOne, wingOne, officeRoomsSize, officeRoomsSize);
+
+            List<Rectangle> officesTwo = new List<Rectangle>();
+            MakeRoomsPlan(map, ref officesTwo, wingTwo, officeRoomsSize, officeRoomsSize);
+
+            List<Rectangle> allOffices = new List<Rectangle>(officesOne.Count + officesTwo.Count);
+            allOffices.AddRange(officesOne);
+            allOffices.AddRange(officesTwo);
+
+            foreach (Rectangle roomRect in officesOne)
+            {
+                TileRectangle(map, m_Game.GameTiles.WALL_ARMY_BASE, roomRect);
+                map.AddZone(MakeUniqueZone("Office room", roomRect));
+            }
+            foreach (Rectangle roomRect in officesTwo)
+            {
+                TileRectangle(map, m_Game.GameTiles.WALL_ARMY_BASE, roomRect);
+                map.AddZone(MakeUniqueZone("Office room", roomRect));
+            }
+
+            foreach (Rectangle roomRect in officesOne)
+            {
+                if (horizontalCorridor)
+                {
+                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Bottom - 1, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                }
+                else
+                {
+                    PlaceDoor(map, roomRect.Right - 1, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                }
+            }
+            foreach (Rectangle roomRect in officesTwo)
+            {
+                if (horizontalCorridor)
+                {
+                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Top, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                }
+                else
+                {
+                    PlaceDoor(map, roomRect.Left, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                }
+            }
+
+            // tables with chairs.
+            foreach (Rectangle roomRect in allOffices)
+            {
+                // table.
+                Point tablePos = new Point(roomRect.Left + roomRect.Width / 2, roomRect.Top + roomRect.Height / 2);
+                map.PlaceMapObjectAt(MakeObjTable(GameImages.OBJ_ARMY_TABLE), tablePos);
+
+                // try to put a computer and chair in the room
+                int nbChairs = 1;
+                Rectangle insideRoom = new Rectangle(roomRect.Left + 1, roomRect.Top + 1, roomRect.Width - 2, roomRect.Height - 2);
+                if (!insideRoom.IsEmpty)
+                {
+                    for (int i = 0; i < nbChairs; i++)
+                    {
+                        Rectangle adjTableRect = new Rectangle(tablePos.X - 1, tablePos.Y - 1, 3, 3);
+                        adjTableRect.Intersect(insideRoom);
+                        MapObjectPlaceInGoodPosition(map, adjTableRect,
+                            (pt) => pt != tablePos,
+                            m_DiceRoller,
+                            (pt) => MakeObjChair(GameImages.OBJ_HOSPITAL_CHAIR));
+
+                        //@@MP - match each chair with a computer (Release 3)
+                        MapObjectPlaceInGoodPosition(map, adjTableRect,
+                            (pt) => pt != tablePos && !IsADoorNSEW(map, pt.X, pt.Y),
+                            m_DiceRoller,
+                            (pt) => MakeObjCHARdesktop(GameImages.OBJ_ARMY_COMPUTER_STATION));
+                    }
+                }
+            }
+            #endregion
+
+            ////////////////
+            // 7. Add items.
+            ////////////////
+            #region
+            // drop goodies in rooms.
+            foreach (Rectangle roomRect in allOffices)
+            {
+                ItemsDrop(map, roomRect,
+                    (pt) =>
+                    {
+                        Tile tile = map.GetTileAt(pt.X, pt.Y);
+                        if (tile.Model != m_Game.GameTiles.FLOOR_OFFICE)
+                            return false;
+                        MapObject mapObj = map.GetMapObjectAt(pt);
+                        if (mapObj != null)
+                            return false;
+                        return true;
+                    },
+                    (pt) => MakeRandomCHAROfficeItem());
+            }
+            #endregion
+
+            ///////////
+            // 8. Zone
+            ///////////
+            Zone zone = MakeUniqueZone("Army Office", b.BuildingRect);
+            zone.SetGameAttribute<bool>(ZoneAttributes.IS_ARMY_OFFICE, true);
+            map.AddZone(zone);
+            MakeWalkwayZones(map, b);
+
+            // done
+            return ArmyBuildingType.OFFICE;
+        }
+
         protected virtual bool MakeParkBuilding(Map map, Block b, bool isgraveyard) //@@MP - added graveyard argument (Release 4)
         {
             ////////////////////////
@@ -3527,16 +3867,21 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             MapObjectFill(map, b.BuildingRect,
                 (pt) =>
                 {
-                    bool placeFence = (pt.X == b.BuildingRect.Left || pt.X == b.BuildingRect.Right - 1 || pt.Y == b.BuildingRect.Top || pt.Y == b.BuildingRect.Bottom - 1);
-                    if (placeFence)
-                    {
-                        if (!isgraveyard) //@@MP (Release 4)
-                            return MakeObjFence(GameImages.OBJ_FENCE); //@@MP - standard chain wire fence
+                    /*if (map.IsWalkable(pt)) //@@MP - added walkable check (Release 6-3)
+                    {*/
+                        bool placeFence = (pt.X == b.BuildingRect.Left || pt.X == b.BuildingRect.Right - 1 || pt.Y == b.BuildingRect.Top || pt.Y == b.BuildingRect.Bottom - 1);
+                        if (placeFence)
+                        {
+                            if (!isgraveyard) //@@MP (Release 4)
+                                return MakeObjFence(GameImages.OBJ_FENCE); //@@MP - standard chain wire fence
+                            else
+                                return MakeObjIronFence(GameImages.OBJ_GRAVEYARD_FENCE); //@@MP - corrected to an iron fence (Release 5-4)
+                        }
                         else
-                            return MakeObjIronFence(GameImages.OBJ_GRAVEYARD_FENCE); //@@MP - corrected to an iron fence (Release 5-4)
-                    }
+                            return null;
+                    /*}
                     else
-                        return null;
+                        return null;*/
                 });
 
             ///////////////////////////////
@@ -5403,13 +5748,22 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #region Populating buildings
         protected virtual void PopulateCHAROfficeBuilding(Map map, Block b)
         {
-            //////////
             // Guards
-            //////////
             for (int i = 0; i < MAX_CHAR_GUARDS_PER_OFFICE; i++)
             {
                 Actor newGuard = CreateNewCHARGuard(0);
                 ActorPlace(m_DiceRoller, 100, map, newGuard, b.InsideRect.Left, b.InsideRect.Top, b.InsideRect.Width, b.InsideRect.Height);
+            }
+
+        }
+
+        protected virtual void PopulateArmyOfficeBuilding(Map map, Block b) //@@MP (Release 6-3)
+        {
+            // undead
+            for (int i = 0; i < 8; i++)
+            {
+                Actor newUndead = MakeZombified(null, CreateNewArmyNationalGuard(0, "Private"),0);
+                ActorPlace(m_DiceRoller, 100, map, newUndead, b.InsideRect.Left, b.InsideRect.Top, b.InsideRect.Width, b.InsideRect.Height);
             }
 
         }
@@ -7172,6 +7526,563 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
         }
 
+        #endregion
+
+        #region Army Base
+        //@@MP (Release 6-3)
+        public Map GenerateUniqueMap_ArmyBase(Map surfaceMap, Zone officeZone, out Point baseEntryPos)
+        {
+            /////////////////////////
+            // 1. Create basic secret map.
+            // 2. Link to office.
+            // 3. Create rooms.
+            // 4. Furniture & Items.
+            // 5. Posters & Blood.
+            // 6. Populate.
+            // 7. Add uniques.
+            // 8. Music.  // alpha10
+            /////////////////////////
+
+            // 1. Create basic secret map.
+            #region
+            // huge map.
+            Map underground = new Map((surfaceMap.Seed << 3) ^ surfaceMap.Seed, "Army Base", RogueGame.MAP_MAX_WIDTH, RogueGame.MAP_MAX_HEIGHT)
+            {
+                Lighting = Lighting.DARKNESS,
+                IsSecret = true
+            };
+            // fill & enclose.
+            TileFill(underground, m_Game.GameTiles.FLOOR_ARMY, (tile, model, x, y) => tile.IsInside = true);
+            TileRectangle(underground, m_Game.GameTiles.WALL_ARMY_BASE, new Rectangle(0, 0, underground.Width, underground.Height));
+            #endregion
+
+            // 2. Link to above ground office.
+            #region
+            // find surface point in office:
+            // - in a random office room.
+            // - set exit somewhere walkable inside.
+            // - iron door, barricade the door.
+            Zone roomZone = null;
+            Point surfaceExit = new Point();
+            while (true)    // loop until found.
+            {
+                // find a random room.
+                do
+                {
+                    int x = m_DiceRoller.Roll(officeZone.Bounds.Left, officeZone.Bounds.Right);
+                    int y = m_DiceRoller.Roll(officeZone.Bounds.Top, officeZone.Bounds.Bottom);
+                    List<Zone> zonesHere = surfaceMap.GetZonesAt(x, y);
+                    if (zonesHere == null || zonesHere.Count == 0)
+                        continue;
+                    foreach (Zone z in zonesHere)
+                        if (z.Name.Contains("room"))
+                        {
+                            roomZone = z;
+                            break;
+                        }
+                }
+                while (roomZone == null);
+
+                // find somewhere walkable inside.
+                bool foundSurfaceExit = false;
+                int attempts = 0;
+                do
+                {
+                    surfaceExit.X = m_DiceRoller.Roll(roomZone.Bounds.Left, roomZone.Bounds.Right);
+                    surfaceExit.Y = m_DiceRoller.Roll(roomZone.Bounds.Top, roomZone.Bounds.Bottom);
+                    foundSurfaceExit = surfaceMap.IsWalkable(surfaceExit.X, surfaceExit.Y);
+                    ++attempts;
+                }
+                while (attempts < 100 && !foundSurfaceExit);
+
+                // failed?
+                if (foundSurfaceExit == false)
+                    continue;
+
+                // found everything, good!
+                break;
+            }
+
+            // remember position // alpha10
+            baseEntryPos = surfaceExit;
+
+            // barricade the rooms door.
+            DoForEachTile(roomZone.Bounds, //@@MP - unused parameter (Release 5-7)
+                (pt) =>
+                {
+                    DoorWindow door = surfaceMap.GetMapObjectAt(pt) as DoorWindow;
+                    if (door == null)
+                        return;
+                    surfaceMap.RemoveMapObjectAt(pt.X, pt.Y);
+                    door = MakeObjIronDoor();
+                    door.BarricadePoints = Rules.BARRICADING_MAX;
+                    surfaceMap.PlaceMapObjectAt(door, pt);
+                });
+
+            // stairs.
+            // underground : in the middle of the map.
+            Point undergroundStairs = new Point(underground.Width / 2, underground.Height / 2);
+            underground.SetExitAt(undergroundStairs, new Exit(surfaceMap, surfaceExit));
+            underground.GetTileAt(undergroundStairs.X, undergroundStairs.Y).AddDecoration(GameImages.DECO_STAIRS_UP);
+            surfaceMap.SetExitAt(surfaceExit, new Exit(underground, undergroundStairs));
+            surfaceMap.GetTileAt(surfaceExit.X, surfaceExit.Y).AddDecoration(GameImages.DECO_STAIRS_DOWN);
+            // floor logo.
+            ForEachAdjacent(underground, undergroundStairs.X, undergroundStairs.Y, (pt) => underground.GetTileAt(pt).AddDecoration(GameImages.DECO_ARMY_FLOOR_LOGO));
+            #endregion
+
+            // 3. Create floorplan & rooms.
+            #region
+            // make 4 quarters, splitted by a crossed corridor.
+            const int corridorHalfWidth = 1;
+            Rectangle qTopLeft = Rectangle.FromLTRB(0, 0, underground.Width / 2 - corridorHalfWidth, underground.Height / 2 - corridorHalfWidth);
+            Rectangle qTopRight = Rectangle.FromLTRB(underground.Width / 2 + 1 + corridorHalfWidth, 0, underground.Width, qTopLeft.Bottom);
+            Rectangle qBotLeft = Rectangle.FromLTRB(0, underground.Height / 2 + 1 + corridorHalfWidth, qTopLeft.Right, underground.Height);
+            Rectangle qBotRight = Rectangle.FromLTRB(qTopRight.Left, qBotLeft.Top, underground.Width, underground.Height);
+
+            // split all the map in rooms.
+            const int minRoomSize = 6;
+            List<Rectangle> roomsList = new List<Rectangle>();
+            MakeRoomsPlan(underground, ref roomsList, qBotLeft, minRoomSize, minRoomSize);
+            MakeRoomsPlan(underground, ref roomsList, qBotRight, minRoomSize, minRoomSize);
+            MakeRoomsPlan(underground, ref roomsList, qTopLeft, minRoomSize, minRoomSize);
+            MakeRoomsPlan(underground, ref roomsList, qTopRight, minRoomSize, minRoomSize);
+
+            // make the rooms walls.
+            foreach (Rectangle roomRect in roomsList)
+            {
+                TileRectangle(underground, m_Game.GameTiles.WALL_ARMY_BASE, roomRect);
+            }
+
+            // add room doors.
+            // quarters have door side preferences to lead toward the central corridors.
+            foreach (Rectangle roomRect in roomsList)
+            {
+                Point westEastDoorPos = roomRect.Left < underground.Width / 2 ?
+                    new Point(roomRect.Right - 1, roomRect.Top + roomRect.Height / 2) :
+                    new Point(roomRect.Left, roomRect.Top + roomRect.Height / 2);
+                if (underground.GetMapObjectAt(westEastDoorPos) == null)
+                {
+                    DoorWindow door = MakeObjIronDoor();
+                    PlaceDoorIfAccessibleAndNotAdjacent(underground, westEastDoorPos.X, westEastDoorPos.Y, m_Game.GameTiles.FLOOR_ARMY, 6, door);
+                }
+
+                Point northSouthDoorPos = roomRect.Top < underground.Height / 2 ?
+                    new Point(roomRect.Left + roomRect.Width / 2, roomRect.Bottom - 1) :
+                    new Point(roomRect.Left + roomRect.Width / 2, roomRect.Top);
+                if (underground.GetMapObjectAt(northSouthDoorPos) == null)
+                {
+                    DoorWindow door = MakeObjIronDoor();
+                    PlaceDoorIfAccessibleAndNotAdjacent(underground, northSouthDoorPos.X, northSouthDoorPos.Y, m_Game.GameTiles.FLOOR_ARMY, 6, door);
+                }
+            }
+
+            // add iron doors closing each corridor.
+            for (int x = qTopLeft.Right; x < qBotRight.Left; x++)
+            {
+                PlaceDoor(underground, x, qTopLeft.Bottom - 1, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                PlaceDoor(underground, x, qBotLeft.Top, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+            }
+            for (int y = qTopLeft.Bottom; y < qBotLeft.Top; y++)
+            {
+                PlaceDoor(underground, qTopLeft.Right - 1, y, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                PlaceDoor(underground, qTopRight.Left, y, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+            }
+            #endregion
+
+            // 4. Rooms, furniture & items.
+            #region
+            // furniture + items in rooms.
+            // room roles with zones:
+            // - corners room : Power Room.
+            // - top left quarter : armory.
+            // - top right quarter : storage.
+            // - bottom left quarter : living.
+            // - bottom right quarter : pharmacy.
+            foreach (Rectangle roomRect in roomsList)
+            {
+                Rectangle insideRoomRect = new Rectangle(roomRect.Left + 1, roomRect.Top + 1, roomRect.Width - 2, roomRect.Height - 2);
+                string roomName = "<noname>";
+
+                // special room?
+                // one power room in each corner.
+                bool isPowerRoom = (roomRect.Left == 0 && roomRect.Top == 0) ||
+                    (roomRect.Left == 0 && roomRect.Bottom == underground.Height) ||
+                    (roomRect.Right == underground.Width && roomRect.Top == 0) ||
+                    (roomRect.Right == underground.Width && roomRect.Bottom == underground.Height);
+                if (isPowerRoom)
+                {
+                    roomName = "Power Room";
+                    MakeArmyPowerRoom(underground, roomRect, insideRoomRect);
+                }
+                else
+                {
+                    // common room.
+                    int roomRole = (roomRect.Left < underground.Width / 2 && roomRect.Top < underground.Height / 2) ? 0 :
+                        (roomRect.Left >= underground.Width / 2 && roomRect.Top < underground.Height / 2) ? 1 :
+                        (roomRect.Left < underground.Width / 2 && roomRect.Top >= underground.Height / 2) ? 2 :
+                        3;
+                    switch (roomRole)
+                    {
+                        case 0: // armory room.
+                            {
+                                roomName = "Armory";
+                                MakeArmyArmoryRoom(underground, insideRoomRect);
+                                break;
+                            }
+                        case 1: // command room
+                            {
+                                roomName = "Command";
+                                MakeArmyCommandRoom(underground, insideRoomRect);
+                                break;
+                            }
+                        case 2: // living room.
+                            {
+                                roomName = "Living";
+                                MakeArmyRecRoom(underground, insideRoomRect);
+                                break;
+                            }
+                        case 3: // pharmacy or storage room.
+                            {
+                                if (m_DiceRoller.RollChance(50))
+                                {
+                                    roomName = "Storage";
+                                    MakeArmyStorageRoom(underground, insideRoomRect);
+                                    break;
+                                }
+                                else
+                                {
+                                    roomName = "Pharmacy";
+                                    MakeArmyPharmacyRoom(underground, insideRoomRect);
+                                    break;
+                                }
+                            }
+                        default:
+                            throw new InvalidOperationException("unhandled role");
+                    }
+                }
+
+                underground.AddZone(MakeUniqueZone(roomName, insideRoomRect));
+            }
+            #endregion
+
+            // 5. Posters & Blood.
+            #region
+            // army posters & blood almost everywhere.
+            for (int x = 0; x < underground.Width; x++)
+                for (int y = 0; y < underground.Height; y++)
+                {
+                    // poster on wall?
+                    if (m_DiceRoller.RollChance(25))
+                    {
+                        Tile tile = underground.GetTileAt(x, y);
+                        if (tile.Model.IsWalkable)
+                            continue;
+                        tile.AddDecoration(ARMY_POSTERS[m_DiceRoller.Roll(0, ARMY_POSTERS.Length)]);
+                    }
+
+                    // large blood?
+                    if (m_DiceRoller.RollChance(10)) //@@MP - was 20 (Release 3)
+                    {
+                        Tile tile = underground.GetTileAt(x, y);
+                        if (tile.Model.IsWalkable)
+                            tile.AddDecoration(GameImages.DECO_BLOODIED_FLOOR);
+                        else
+                            tile.AddDecoration(GameImages.DECO_BLOODIED_WALL);
+                    }
+                    else if (m_DiceRoller.RollChance(20)) // small blood? //@@MP (Release 3)
+                    {
+                        Tile tile = underground.GetTileAt(x, y);
+                        if (tile.Model.IsWalkable)
+                            tile.AddDecoration(GameImages.DECO_BLOODIED_FLOOR_SMALL);
+                        else
+                            tile.AddDecoration(GameImages.DECO_BLOODIED_WALL_SMALL);
+                    }
+                }
+            #endregion
+
+            // 6. Populate.
+            // don't block exits!
+            #region
+            // leveled up undeads!
+            int nbZombies = underground.Width;  // 100 for 100.
+            for (int i = 0; i < nbZombies; i++)
+            {
+                Actor undead = CreateNewUndead(0);
+                for (; ; )
+                {
+                    GameActors.IDs upID = m_Game.NextUndeadEvolution((GameActors.IDs)undead.Model.ID);
+                    if (upID == (GameActors.IDs)undead.Model.ID)
+                        break;
+                    undead.Model = m_Game.GameActors[upID];
+                }
+                ActorPlace(m_DiceRoller, underground.Width * underground.Height, underground, undead, (pt) => underground.GetExitAt(pt) == null);
+            }
+
+            /*// CHAR Guards.
+            int nbGuards = underground.Width / 10; // 10 for 100.
+            for (int i = 0; i < nbGuards; i++)
+            {
+                Actor guard = CreateNewCHARGuard(0);
+                ActorPlace(m_DiceRoller, underground.Width * underground.Height, underground, guard, (pt) => underground.GetExitAt(pt) == null);
+            }*/
+            #endregion
+
+            // 7. Add uniques.
+            // TODO... //@@MP - looks like RoguedJack had some plans for a boss or special items
+            #region
+            #endregion
+
+            // 8. Music.   // alpha10
+            underground.BgMusic = GameMusics.CHAR_UNDERGROUND_FACILITY;
+
+            // done.
+            return underground;
+        }
+
+        static string[] ARMY_POSTERS = { GameImages.DECO_ARMY_POSTER1, GameImages.DECO_ARMY_POSTER2, GameImages.DECO_ARMY_POSTER3 };
+
+        void MakeArmyArmoryRoom(Map map, Rectangle roomRect)
+        {
+            // Shelves with weapons/ammo along walls.
+            MapObjectFill(map, roomRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) < 3)
+                        return null;
+                    // dont block exits!
+                    if (map.GetExitAt(pt) != null)
+                        return null;
+
+                    // table + tracker/armor/weapon.
+                    Item it;
+                    int randomItem = m_DiceRoller.Roll(0, 18);
+                    switch (randomItem)
+                    {
+                        case 0: it = MakeItemArmyRifle(); break;
+                        case 1:
+                        case 2:
+                        case 3: it = MakeItemHeavyRifleAmmo(); break;
+                        case 4: it = MakeItemArmyPistol(); break;
+                        case 5:
+                        case 6:
+                        case 7: it = MakeItemHeavyPistolAmmo(); break;
+                        case 8: it = MakeItemShotgun(); break;
+                        case 9:
+                        case 10:
+                        case 11: it = MakeItemShotgunAmmo(); break;
+                        case 12: it = MakeItemGrenade(); break;
+                        case 13:
+                        case 14: it = MakeItemArmyBodyArmor(); break;
+                        case 15: it = MakeItemPrecisionRifle(); break;
+                        case 16: it = MakeItemBlackOpsGPS(); break;
+                        case 17: it = MakeItemNightVisionGoggles(); break;
+                        default:
+                            throw new InvalidOperationException("unhandled roll");
+                    }
+
+                    map.DropItemAt(it, pt);
+
+                    MapObject shelf = MakeObjShelf(GameImages.OBJ_SHOP_SHELF);
+                    return shelf;
+                });
+        }
+
+        void MakeArmyStorageRoom(Map map, Rectangle roomRect)
+        {
+            // Replace floor with concrete.
+            TileFill(map, m_Game.GameTiles.FLOOR_CONCRETE, roomRect);
+
+            // Objects.
+            // Barrels & Junk in the middle of the room.
+            MapObjectFill(map, roomRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) > 0)
+                        return null;
+                    // dont block exits!
+                    if (map.GetExitAt(pt) != null)
+                        return null;
+
+                    // barrels/junk?
+                    if (m_DiceRoller.RollChance(50))
+                        return m_DiceRoller.RollChance(50) ? MakeObjJunk(GameImages.OBJ_JUNK) : MakeObjBarrels(GameImages.OBJ_BARRELS);
+                    else
+                        return null;
+                });
+
+            // Items.
+            for (int x = roomRect.Left; x < roomRect.Right; x++)
+                for (int y = roomRect.Top; y < roomRect.Bottom; y++)
+                {
+                    if (CountAdjWalls(map, x, y) > 0)
+                        continue;
+                    if (map.GetMapObjectAt(x, y) != null)
+                        continue;
+
+                    map.DropItemAt(MakeItemArmyRation(), x, y);
+                }
+        }
+
+        void MakeArmyCommandRoom(Map map, Rectangle roomRect)
+        {
+            // Replace floor with tiles with painted logo.
+            TileFill(map, m_Game.GameTiles.FLOOR_TILES, roomRect, (tile, model, x, y) => tile.AddDecoration(GameImages.DECO_ARMY_FLOOR_LOGO));
+
+            // Objects.
+            // radios along walls.
+            MapObjectFill(map, roomRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) < 3)
+                        return null;
+                    // dont block exits!
+                    if (map.GetExitAt(pt) != null)
+                        return null;
+
+                    // bed/fridge?
+                    if (m_DiceRoller.RollChance(75))
+                    {
+                        if (m_DiceRoller.RollChance(25))
+                            return MakeObjArmyComputerStation(GameImages.OBJ_ARMY_COMPUTER_STATION);
+                        else
+                            return MakeObjArmyRadioCupboard(GameImages.OBJ_ARMY_RADIO_CUPBOARD);
+                    }
+                    else
+                        return null;
+                });
+            // desktops and tables in the middle of the room
+            MapObjectFill(map, roomRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) > 0)
+                        return null;
+                    // dont block exits!
+                    if (map.GetExitAt(pt) != null)
+                        return null;
+
+                    // tables/chairs.
+                    if (m_DiceRoller.RollChance(50))
+                    {
+                        if (m_DiceRoller.RollChance(75))
+                            return MakeObjArmyComputerStation(GameImages.OBJ_ARMY_COMPUTER_STATION);
+                        else
+                            return MakeObjCHARdesktop(GameImages.OBJ_ARMY_RADIO_CUPBOARD);
+                    }
+                    return null;
+                });
+        }
+
+        void MakeArmyRecRoom(Map map, Rectangle roomRect)
+        {
+            // Replace floor with wood with painted logo.
+            TileFill(map, m_Game.GameTiles.FLOOR_OFFICE, roomRect);//, (tile, model, x, y) => tile.AddDecoration(GameImages.DECO_CHAR_FLOOR_LOGO));
+
+            // Objects.
+            // Beds/Footlockers along walls.
+            MapObjectFill(map, roomRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) < 3)
+                        return null;
+                    // dont block exits!
+                    if (map.GetExitAt(pt) != null)
+                        return null;
+
+                    // bed/fridge?
+                    if (m_DiceRoller.RollChance(50))
+                    {
+                        if (m_DiceRoller.RollChance(50))
+                            return MakeObjBed(GameImages.OBJ_ARMY_BUNK_BED);
+                        else
+                            return MakeObjArmyFootlocker(GameImages.OBJ_ARMY_FOOTLOCKER);
+                    }
+                    else
+                        return null;
+                });
+            // Tables(with canned food) & Chairs in the middle.
+            MapObjectFill(map, roomRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) > 0)
+                        return null;
+                    // dont block exits!
+                    if (map.GetExitAt(pt) != null)
+                        return null;
+
+                    // tables/chairs.
+                    if (m_DiceRoller.RollChance(30))
+                    {
+                        if (m_DiceRoller.RollChance(30))
+                        {
+                            map.DropItemAt(MakeItemCannedFood(), pt);
+                            return MakeObjTable(GameImages.OBJ_ARMY_TABLE);
+                        }
+                        else
+                            return MakeObjChair(GameImages.OBJ_HOSPITAL_CHAIR);
+                    }
+                    else
+                        return null;
+                });
+        }
+
+        void MakeArmyPharmacyRoom(Map map, Rectangle roomRect)
+        {
+            // Shelves with medicine along walls.
+            MapObjectFill(map, roomRect,
+                (pt) =>
+                {
+                    if (CountAdjWalls(map, pt.X, pt.Y) < 3)
+                        return null;
+                    // dont block exits!
+                    if (map.GetExitAt(pt) != null)
+                        return null;
+
+                    // table + meds.
+                    Item it = MakeHospitalItem();
+                    map.DropItemAt(it, pt);
+
+                    MapObject shelf = MakeObjShelf(GameImages.OBJ_SHOP_SHELF);
+                    return shelf;
+                });
+        }
+
+        void MakeArmyPowerRoom(Map map, Rectangle wallsRect, Rectangle roomRect)
+        {
+            // Replace floor with concrete.
+            TileFill(map, m_Game.GameTiles.FLOOR_CONCRETE, roomRect);
+
+            // add deco power sign next to doors.
+            DoForEachTile(wallsRect, //@@MP - unused parameter (Release 5-7)
+                (pt) =>
+                {
+                    if (!(map.GetMapObjectAt(pt) is DoorWindow))
+                        return;
+                    DoForEachAdjacentInMap(map, pt, (
+                        ptAdj) =>
+                    {
+                        Tile tile = map.GetTileAt(ptAdj);
+                        if (tile.Model.IsWalkable)
+                            return;
+                        tile.RemoveAllDecorations();
+                        tile.AddDecoration(GameImages.DECO_POWER_SIGN_BIG);
+                    });
+                });
+
+            // add power generators along walls.
+            DoForEachTile(roomRect, //@@MP - unused parameter (Release 5-7)
+                (pt) =>
+                {
+                    if (!map.GetTileAt(pt).Model.IsWalkable)
+                        return;
+                    if (map.GetExitAt(pt) != null)
+                        return;
+                    if (CountAdjWalls(map, pt.X, pt.Y) < 3)
+                        return;
+
+                    PowerGenerator powGen = MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON);
+                    map.PlaceMapObjectAt(powGen, pt);
+                });
+        }
         #endregion
         #endregion
 

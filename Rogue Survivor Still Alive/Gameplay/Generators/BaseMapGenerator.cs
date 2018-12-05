@@ -336,7 +336,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected static DoorWindow MakeObjIronDoor() //@@MP - made static (Release 5-7)
+        public DoorWindow MakeObjIronDoor() //@@MP - made public (Release 6-3)
         {
             return new DoorWindow("iron door", GameImages.OBJ_IRON_DOOR_CLOSED, GameImages.OBJ_IRON_DOOR_OPEN, GameImages.OBJ_IRON_DOOR_BROKEN, 8 * DoorWindow.BASE_HITPOINTS)
             {
@@ -480,7 +480,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjShelf(string shelfImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("shelf", shelfImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            return new MapObject("shelf", shelfImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
             {
                 IsContainer = true,
                 GivesWood = true,
@@ -491,7 +491,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjBench(string benchImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("bench", benchImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            return new MapObject("bench", benchImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
@@ -514,7 +514,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjBed(string bedImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("bed", bedImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            return new MapObject("bed", bedImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
                 IsMaterialTransparent = true,
                 IsCouch = true,
@@ -528,7 +528,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjWardrobe(string wardrobeImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("wardrobe", wardrobeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            return new MapObject("wardrobe", wardrobeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
                 IsMaterialTransparent = false,
                 IsContainer = true,
@@ -540,7 +540,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjDrawer(string drawerImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("drawer", drawerImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            return new MapObject("drawer", drawerImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
@@ -553,7 +553,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjTable(string tableImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("table", tableImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            return new MapObject("table", tableImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
@@ -565,7 +565,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjChair(string chairImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("chair", chairImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 3)
+            return new MapObject("chair", chairImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS / 3)
             {
                 IsMaterialTransparent = true,
                 GivesWood = true,
@@ -577,7 +577,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjNightTable(string nightTableImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("night table", nightTableImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS / 3)
+            return new MapObject("night table", nightTableImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS / 3)
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
@@ -646,7 +646,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjCHARdesktop(string CHARdesktopImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("CHAR desktop", CHARdesktopImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            return new MapObject("CHAR desktop", CHARdesktopImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
@@ -657,7 +657,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjHouseDrawers(string houseDrawersImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("drawers", houseDrawersImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            return new MapObject("drawers", houseDrawersImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
             {
                 IsContainer = true,
                 IsPlural = true,
@@ -669,7 +669,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjHouseShelves(string houseShelvesImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("shelves", houseShelvesImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            return new MapObject("shelves", houseShelvesImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
                 IsContainer = true,
                 IsPlural = true,
@@ -681,7 +681,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjPiano(string pianoImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("piano", pianoImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            return new MapObject("piano", pianoImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
                 //IsContainer = true, //@@MP (Release 5-3)
                 IsMaterialTransparent = true,
@@ -748,7 +748,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjBookshelves(string bookshelvesImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("bookshelves", bookshelvesImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            return new MapObject("bookshelves", bookshelvesImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
             {
                 IsContainer = true,
                 IsPlural = true,
@@ -760,7 +760,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjCouch(string couchImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("couch", couchImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
+            return new MapObject("couch", couchImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
@@ -772,7 +772,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjKitchenCounter(string kitchenCounterImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("counter", kitchenCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
+            return new MapObject("counter", kitchenCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
                 IsContainer = true,
                 //JumpLevel = 1, //@@MP (Release 5-3)
@@ -783,7 +783,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjBarCounter(string barCounterImageID) //@@MP (Release 5-3), made static (Release 5-7)
         {
-            return new MapObject("counter", barCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
+            return new MapObject("counter", barCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
                 JumpLevel = 1,
                 IsMaterialTransparent = true,
@@ -874,6 +874,41 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsWalkable = true,
                 IsMovable = true,
                 Weight = 1
+            };
+        }
+
+        protected static MapObject MakeObjArmyComputerStation(string armyDesktopImageID) //@@MP (Release 6-3)
+        {
+            return new MapObject("Army workstation", armyDesktopImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                GivesWood = true,
+                IsMovable = true,
+            };
+        }
+
+        protected static MapObject MakeObjArmyRadioCupboard(string armyRadioCupboardImageID) //@@MP (Release 6-3)
+        {
+            return new MapObject("Radio equipment", armyRadioCupboardImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
+            {
+                IsMaterialTransparent = false,
+                IsContainer = true,
+                GivesWood = true,
+                IsMovable = true,
+                Weight = 15
+            };
+        }
+
+        protected static MapObject MakeObjArmyFootlocker(string armyFootlockerImageID) //@@MP (Release 6-3)
+        {
+            return new MapObject("Footlocker", armyFootlockerImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                IsMaterialTransparent = true,
+                IsContainer = true,
+                IsMovable = true,
+                JumpLevel = 1,
+                Weight = 5
             };
         }
         #endregion
@@ -1362,6 +1397,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 IsForbiddenToAI = true
             };
+        }
+
+        public Item MakeItemNightVisionGoggles() //@@MP (Release 6-3)
+        {
+            return new ItemLight(m_Game.GameItems.NIGHT_VISION_FEMALE); //code under DoTakeItem() will switch to male type if required
         }
         #endregion
 

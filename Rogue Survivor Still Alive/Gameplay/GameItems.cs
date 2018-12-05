@@ -120,6 +120,8 @@ namespace djack.RogueSurvivor.Gameplay
             UNIQUE_SANTAMAN_SHOTGUN,
             UNIQUE_HANS_VON_HANZ_PISTOL,
             VEGETABLE_SEEDS, //@@MP (Release 5-3), (Release 5-5)
+            //@@MP (Release 6-3)
+            UNIQUE_ARMY_ACCESS_BADGE,
 
             //@@MP (Release 3)
             UNIQUE_CHAR_DOCUMENT1,
@@ -756,6 +758,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemModel UNIQUE_CHAR_DOCUMENT5 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT5]; } }
         public ItemModel UNIQUE_CHAR_DOCUMENT6 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT6]; } }
         public ItemModel VEGETABLE_SEEDS { get { return this[IDs.VEGETABLE_SEEDS]; } } //@MP (Release 5-5)
+        public ItemModel UNIQUE_ARMY_ACCESS_BADGE { get { return this[IDs.UNIQUE_ARMY_ACCESS_BADGE]; } } //@MP (Release 6-3)
         #endregion
 
         #endregion
@@ -1750,7 +1753,7 @@ namespace djack.RogueSurvivor.Gameplay
             };
             this[IDs.UNIQUE_CHAR_DOCUMENT6] = new ItemModel("CHAR document", "CHAR documents", GameImages.ITEM_CHAR_DOCUMENT)
             {
-                FlavorDescription = "Operation manual regarding restoring power to the facility."
+                FlavorDescription = "A memo regarding using generators to power to the facility in an emergency."
             };
 
             //@@MP (Release 5-3), (Release 5-5)
@@ -1759,6 +1762,14 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = @"""Cultivate the soil then plant these seeds. Return in the morning to harvest.""",
                 IsStackable = true,
                 StackingLimit = 9,
+            };
+
+            //@@MP (Release 6-3)
+            this[IDs.UNIQUE_ARMY_ACCESS_BADGE] = new ItemModel("Army office pass", "Army office pass", GameImages.ITEM_SUBWAY_BADGE)
+            {
+                DontAutoEquip = true,
+                EquipmentPart = DollPart.LEFT_HAND,
+                FlavorDescription = "Army office pass"
             };
             #endregion
 

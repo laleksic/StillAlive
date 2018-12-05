@@ -231,18 +231,22 @@ namespace djack.RogueSurvivor
                 m_Game.DEV_ToggleShowActorsStats();
                 UI_Repaint();
             }
-            // F10 - DEV DEBUG - Reveal CHAR underground
+            // F10 - DEV DEBUG - Reveal secret locations
             if (e.KeyCode == Keys.F10)
             {
                 m_Game.Session.PlayerKnows_CHARUndergroundFacilityLocation = true;
                 m_Game.Session.CHARUndergroundFacility_Activated = true;
                 m_Game.Session.UniqueMaps.CHARUndergroundFacility.TheMap.IsSecret = false;
+                //@@MP (Release 6-3)
+                m_Game.Session.PlayerKnows_ArmyBaseLocation = true;
+                m_Game.Session.ArmyBaseUnderground_Activated = true;
+                m_Game.Session.UniqueMaps.ArmyBase.TheMap.IsSecret = false;
 
                 //m_Game.FireEvent_ArmySupplies(m_Game.Player.Location.Map.District.EntryMap);
             }
 
             // F10 - DEV STATS - Show pop graph.
-            if (e.KeyCode == Keys.F10)
+            /*if (e.KeyCode == Keys.F10)
             {
                 District d = m_Game.Player.Location.Map.District;
 
@@ -275,7 +279,7 @@ namespace djack.RogueSurvivor
                 }
                 UI_Repaint();
                 UI_WaitKey();
-            }
+            }*/
 
             // F11 - DEV - Toggle player invincibility
             if (e.KeyCode == Keys.F11)

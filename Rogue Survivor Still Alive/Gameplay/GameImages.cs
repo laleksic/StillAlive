@@ -117,6 +117,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string TILE_WALL_SEWER = @"Tiles\wall_sewer";
         public const string TILE_WALL_STONE = @"Tiles\wall_stone";
         public const string TILE_WALL_LIGHT_BROWN = @"Tiles\wall_light_brown"; //@@MP (Release 4)
+        public const string TILE_WALL_ARMY_BASE = @"Tiles\wall_army_base"; //@@MP (Release 6-3)
 
         //@MP (Release 6-1)
         public const string TILE_FLOOR_POND_CENTER = @"Tiles\floor_pond_center";
@@ -166,6 +167,12 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_CHAR_POSTER2 = @"Tiles\Decoration\char_poster2";
         public const string DECO_CHAR_POSTER3 = @"Tiles\Decoration\char_poster3";
 
+        //@@MP (Release 6-3)
+        public const string DECO_ARMY_FLOOR_LOGO = @"Tiles\Decoration\army_floor_logo"; //@@MP (Release 6-3)
+        public const string DECO_ARMY_POSTER1 = @"Tiles\Decoration\army_poster1";
+        public const string DECO_ARMY_POSTER2 = @"Tiles\Decoration\army_poster2";
+        public const string DECO_ARMY_POSTER3 = @"Tiles\Decoration\army_poster3";
+
         //@@MP (Release 4)
         public const string DECO_CHURCH_HANGING1 = @"Tiles\Decoration\hanging_purple";
         public const string DECO_CHURCH_HANGING2 = @"Tiles\Decoration\hanging_red";
@@ -189,6 +196,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_POWER_SIGN_BIG = @"Tiles\Decoration\power_sign_big";
         public const string DECO_POLICE_STATION = @"Tiles\Decoration\police_station";
         public const string DECO_HOSPITAL = @"Tiles\Decoration\hospital";
+        
         //@@MP (Release 4)
         public const string DECO_CHURCH = @"Tiles\Decoration\church_sign";
         public const string DECO_LIBRARY = @"Tiles\Decoration\shop_library";
@@ -213,7 +221,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_WALL_SEWER_DAMAGED = @"Tiles\Decoration\wall_sewer_damaged";
         public const string DECO_WALL_STONE_DAMAGED = @"Tiles\Decoration\wall_stone_damaged";
         public const string DECO_WALL_LIGHT_BROWN_DAMAGED = @"Tiles\Decoration\wall_light_brown_damaged"; //@@MP (Release 4)
-
+        public const string DECO_WALL_ARMY_BASE_DAMAGED = @"Tiles\Decoration\wall_army_base_damaged"; //@@MP (Release 6-3)
         #endregion
 
         #region Map objects
@@ -321,8 +329,14 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_HOSPITAL_DOOR_CLOSED = @"MapObjects\hospital_door_closed";
         public const string OBJ_HOSPITAL_DOOR_BROKEN = @"MapObjects\hospital_door_broken";
 
-        //@@MP - based on alpha 10 (Release 6-1)
-        public const string OBJ_PICKET_FENCE = @"MapObjects\picket_fence";
+        public const string OBJ_PICKET_FENCE = @"MapObjects\picket_fence"; //@@MP - based on alpha 10 (Release 6-1)
+
+        //@@MP - (Release 6-3)
+        public const string OBJ_ARMY_RADIO_CUPBOARD = @"MapObjects\army_radio_cupboard";
+        public const string OBJ_ARMY_COMPUTER_STATION = @"MapObjects\army_computer_station";
+        public const string OBJ_ARMY_BUNK_BED = @"MapObjects\army_bunk_bed";
+        public const string OBJ_ARMY_FOOTLOCKER = @"MapObjects\army_footlocker";
+        public const string OBJ_ARMY_TABLE = @"MapObjects\army_table";
         #endregion
 
         #region Actors
@@ -492,6 +506,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_BIG_FLASHLIGHT_OUT = @"Items\item_big_flashlight_out";
         public const string ITEM_BOOK = @"Items\item_book";
         public const string ITEM_BLACKOPS_GPS = @"Items\item_blackops_gps";
+        public const string ITEM_C4 = @"Items\item_c4"; //@@MP (Release 6-3)
+        public const string ITEM_C4_PRIMED = @"Items\item_c4_primed"; //@@MP (Release 6-3)
         public const string ITEM_CANNED_FOOD = @"Items\item_canned_food";
         public const string ITEM_CELL_PHONE = @"Items\item_cellphone";
         public const string ITEM_CHAR_DOCUMENT = @"Items\item_CHAR_document"; //@@MP (Release 3)
@@ -733,6 +749,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(TILE_WALL_SEWER);
             Load(TILE_WALL_STONE);
             Load(TILE_WALL_LIGHT_BROWN); //@@MP (Release 4)
+            Load(TILE_WALL_ARMY_BASE); //@@MP (Release 6-3)
 
             #endregion
 
@@ -771,6 +788,12 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_CHAR_POSTER1);
             Load(DECO_CHAR_POSTER2);
             Load(DECO_CHAR_POSTER3);
+
+            //@@MP (Release 6-3)
+            Load(DECO_ARMY_FLOOR_LOGO);
+            Load(DECO_ARMY_POSTER1);
+            Load(DECO_ARMY_POSTER2);
+            Load(DECO_ARMY_POSTER3);
 
             //@@MP (Release 4)
             Load(DECO_CHURCH_HANGING1);
@@ -822,6 +845,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_WALL_SEWER_DAMAGED);
             Load(DECO_WALL_STONE_DAMAGED);
             Load(DECO_WALL_LIGHT_BROWN_DAMAGED); //@@MP (Release 4)
+            Load(DECO_WALL_ARMY_BASE_DAMAGED); //@@MP (Release 6-3)
             #endregion
 
             #region Map objects
@@ -930,8 +954,14 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_HOSPITAL_NIGHT_TABLE);
             Load(OBJ_HOSPITAL_WARDROBE);
 
-            //@@MP (Release 6-1)
-            Load(OBJ_PICKET_FENCE);
+            Load(OBJ_PICKET_FENCE); //@@MP alpha10 (Release 6-1)
+
+            //@@MP (Release 6-3)
+            Load(OBJ_ARMY_RADIO_CUPBOARD);
+            Load(OBJ_ARMY_COMPUTER_STATION);
+            Load(OBJ_ARMY_BUNK_BED);
+            Load(OBJ_ARMY_FOOTLOCKER);
+            Load(OBJ_ARMY_TABLE);
             #endregion
 
             #region Actors
@@ -1104,6 +1134,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_BIG_FLASHLIGHT_OUT);
             Load(ITEM_BLACKOPS_GPS);
             Load(ITEM_BOOK);
+            Load(ITEM_C4); //@@MP (Release 6-3)
+            Load(ITEM_C4_PRIMED); //@@MP (Release 6-3)
             Load(ITEM_CANNED_FOOD);
             Load(ITEM_CELL_PHONE);
             Load(ITEM_CHAR_DOCUMENT); //@@MP (Release 3)

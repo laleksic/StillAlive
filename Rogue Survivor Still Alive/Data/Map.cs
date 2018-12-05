@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using djack.RogueSurvivor.Engine.MapObjects; //@@MP - for IsClosestDoorInDirectionOpen (Release 5-1)
 using djack.RogueSurvivor.Gameplay; //@@MP - for TileAlreadyHasScorchDecoration (Release 5-2)
 using djack.RogueSurvivor.Engine.Items;
+using djack.RogueSurvivor.Engine;
 
 namespace djack.RogueSurvivor.Data
 {
@@ -1409,32 +1410,21 @@ namespace djack.RogueSurvivor.Data
         /// <summary>
         /// Determine if a destructible wall is at particular coordinates
         /// </summary>
-        public bool IsDestructibleWallAt(Location location) //@@MP (Release 3)
+        public bool IsDestructibleWallAt(RogueGame game, Location location) //@@MP (Release 3)
         {
             Map map = location.Map;
-            TileModel tilemodel = map.GetTileAt(location.Position.X, location.Position.Y).Model;
+            TileModel tileModel = map.GetTileAt(location.Position.X, location.Position.Y).Model;
 
             //check if adjacent to OutOfBounds
             if (!map.IsOnMapBorder(location.Position.X, location.Position.Y))
             {
-                /*if ((tilemodel == m_GameTiles.WALL_BRICK) | (tilemodel == m_GameTiles.WALL_CHAR_OFFICE) | (tilemodel == m_GameTiles.WALL_HOSPITAL) |
-                    (tilemodel == m_GameTiles.WALL_POLICE_STATION) | (tilemodel == m_GameTiles.WALL_SEWER) | (tilemodel == m_GameTiles.WALL_STONE) | (tilemodel == m_GameTiles.WALL_SUBWAY))*/
-                switch (tilemodel.ImageID)
-                {
-                    case @"Tiles\wall_brick":
-                    case @"Tiles\wall_char_office":
-                    case @"Tiles\wall_hospital":
-                    case @"Tiles\wall_sewer":
-                    case @"Tiles\wall_stone":
-                        return true;
-                    default:
-                        return false;
-                }
+                if (game.GameTiles.IsDestructibleWallModel(tileModel))
+                    return true;
+                else
+                    return false;
             }
             else
                 return false;
-            /*if (tile.HasDecoration(GameImages.TILE_WALL_BRICK) | tile.HasDecoration(GameImages.TILE_WALL_CHAR_OFFICE) | tile.HasDecoration(GameImages.TILE_WALL_SEWER) |
-                tile.HasDecoration(GameImages.TILE_WALL_HOSPITAL) | tile.HasDecoration(GameImages.TILE_WALL_STONE))*/
         }
 
         /// <summary>
