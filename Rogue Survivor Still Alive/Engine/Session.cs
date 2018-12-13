@@ -524,6 +524,16 @@ namespace djack.RogueSurvivor.Engine
             get;
             set;
         }
+        public System.Drawing.Point ArmyHelicopterRescue_Coordinates
+        {
+            get;
+            set;
+        }
+        public string ArmyHelicopterRescue_DistrictRef
+        {
+            get;
+            set;
+        }
         #endregion
 
         #endregion

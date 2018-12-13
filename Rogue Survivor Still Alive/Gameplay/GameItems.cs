@@ -68,6 +68,9 @@ namespace djack.RogueSurvivor.Gameplay
             EXPLOSIVE_MOLOTOV_PRIMED,
             EXPLOSIVE_DYNAMITE,
             EXPLOSIVE_DYNAMITE_PRIMED,
+            //@@MP (Release 6-3)
+            EXPLOSIVE_C4,
+            EXPLOSIVE_C4_PRIMED,
 
             BAR_WOODEN_PLANK,
 
@@ -458,6 +461,10 @@ namespace djack.RogueSurvivor.Gameplay
         ExplosiveData DATA_EXPLOSIVE_DYNAMITE;
         public ItemGrenadeModel DYNAMITE { get { return this[IDs.EXPLOSIVE_DYNAMITE] as ItemGrenadeModel; } }
         public ItemGrenadePrimedModel DYNAMITE_PRIMED { get { return this[IDs.EXPLOSIVE_DYNAMITE_PRIMED] as ItemGrenadePrimedModel; } }
+        //@@MP (Release 6-3)
+        ExplosiveData DATA_EXPLOSIVE_C4;
+        public ItemGrenadeModel C4 { get { return this[IDs.EXPLOSIVE_C4] as ItemGrenadeModel; } }
+        public ItemGrenadePrimedModel C4_PRIMED { get { return this[IDs.EXPLOSIVE_C4_PRIMED] as ItemGrenadePrimedModel; } }
         #endregion
 
         #region Barricades
@@ -1461,6 +1468,25 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 EquipmentPart = DollPart.RIGHT_HAND
             };
+
+            //@@MP - DYNAMITE (Release 6-3)
+            exData = DATA_EXPLOSIVE_C4;
+            exArray = new int[exData.RADIUS + 1];
+            for (int i = 0; i < exData.RADIUS + 1; i++)
+                exArray[i] = exData.DMG[i];
+            this[IDs.EXPLOSIVE_C4] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_C4,
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsStackable = true,
+                StackingLimit = exData.STACKLINGLIMIT,
+                FlavorDescription = exData.FLAVOR
+            };
+
+            this[IDs.EXPLOSIVE_C4_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_C4_PRIMED, this[IDs.EXPLOSIVE_C4] as ItemGrenadeModel)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND
+            };
             #endregion
 
             #region Barricade material
@@ -2003,13 +2029,14 @@ namespace djack.RogueSurvivor.Gameplay
             ExplosiveData[] data;
 
             LoadDataFromCSV<ExplosiveData>(ui, path, "explosives items", ExplosiveData.COUNT_FIELDS, ExplosiveData.FromCSVLine,
-                new IDs[] { IDs.EXPLOSIVE_GRENADE, IDs.EXPLOSIVE_MOLOTOV, IDs.EXPLOSIVE_DYNAMITE }, //@@MP (Release 4)
+                new IDs[] { IDs.EXPLOSIVE_GRENADE, IDs.EXPLOSIVE_MOLOTOV, IDs.EXPLOSIVE_DYNAMITE, IDs.EXPLOSIVE_C4 }, //@@MP (Release 4)
                 out data);
 
             DATA_EXPLOSIVE_GRENADE = data[0];
             //@@MP (Release 4)
             DATA_EXPLOSIVE_MOLOTOV = data[1];
             DATA_EXPLOSIVE_DYNAMITE = data[2];
+            DATA_EXPLOSIVE_C4 = data[3]; //@@MP (Release 6-3)
 
             return true;
         }

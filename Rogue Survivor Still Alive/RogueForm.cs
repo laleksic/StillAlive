@@ -230,6 +230,8 @@ namespace djack.RogueSurvivor
             {
                 m_Game.DEV_ToggleShowActorsStats();
                 UI_Repaint();
+
+                m_Game.DEV_KillAllActorsInMap(); //@@MP (Release 6-3)
             }
             // F10 - DEV DEBUG - Reveal secret locations
             if (e.KeyCode == Keys.F10)

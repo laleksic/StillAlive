@@ -319,6 +319,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// Blocks on surface map since during current generation.
         /// </summary>
         List<Block> m_SurfaceBlocks;
+        int armyOfficesCount = 0;
         #endregion
 
         #region Properties
@@ -383,33 +384,33 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
             // Army Base //@@MP (Release 6-3)
             completedBlocks.Clear();
-            int armyOfficesCount = 0;
-            foreach (Block b in emptyBlocks)
+            if (armyOfficesCount == 0) //unless we've already generated one in the world, as that's all we want
             {
-                if (armyOfficesCount > 0)
-                    break; //we've already generated one, that's all we want
-                else if (m_Params.District.Kind == DistrictKind.GREEN || m_Params.District.Kind == DistrictKind.GENERAL)
+                foreach (Block b in emptyBlocks)
                 {
-                    int rolled = m_DiceRoller.Roll(0, 99);
-                    if (rolled < 60 || armyOfficesCount == 0) //60%
+                    if (m_Params.District.Kind == DistrictKind.GREEN || m_Params.District.Kind == DistrictKind.GENERAL)
                     {
-                        ArmyBuildingType btype = MakeArmyOffice(map, b);
-                        if (btype != ArmyBuildingType.NONE)
+                        int rolled = m_DiceRoller.Roll(0, 99);
+                        if (rolled < 60 || armyOfficesCount == 0) //60%
                         {
-                            if (btype == ArmyBuildingType.OFFICE) //it will be because we don't have any others
+                            ArmyBuildingType btype = MakeArmyOffice(map, b);
+                            if (btype != ArmyBuildingType.NONE)
                             {
-                                ++armyOfficesCount;
-                                PopulateArmyOfficeBuilding(map, b);
+                                if (btype == ArmyBuildingType.OFFICE) //it will be because we don't have any others
+                                {
+                                    ++armyOfficesCount;
+                                    PopulateArmyOfficeBuilding(map, b);
+                                }
+                                completedBlocks.Add(b);
+                                continue;
                             }
-                            completedBlocks.Add(b);
-                            continue;
                         }
                     }
                 }
+                Logger.WriteLine(Logger.Stage.INIT_MAIN, "Army offices generated: " + armyOfficesCount.ToString());
+                foreach (Block b in completedBlocks)
+                    emptyBlocks.Remove(b);
             }
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "Army offices generated: " + armyOfficesCount.ToString());
-            foreach (Block b in completedBlocks)
-                emptyBlocks.Remove(b);
             #endregion
 
             // shops.
@@ -7828,7 +7829,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             #endregion
 
             // 7. Add uniques.
-            // TODO... //@@MP - looks like RoguedJack had some plans for a boss or special items
+            // looks like RoguedJack had some plans for a boss or special items for the CHAR underground that the army base is copied from
             #region
             #endregion
 
@@ -7855,7 +7856,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                     // table + tracker/armor/weapon.
                     Item it;
-                    int randomItem = m_DiceRoller.Roll(0, 18);
+                    int randomItem = m_DiceRoller.Roll(0, 19);
                     switch (randomItem)
                     {
                         case 0: it = MakeItemArmyRifle(); break;
@@ -7876,6 +7877,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         case 15: it = MakeItemPrecisionRifle(); break;
                         case 16: it = MakeItemBlackOpsGPS(); break;
                         case 17: it = MakeItemNightVisionGoggles(); break;
+                        case 18: it = MakeItemC4Explosive(); break;
                         default:
                             throw new InvalidOperationException("unhandled roll");
                     }
@@ -7926,7 +7928,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         void MakeArmyCommandRoom(Map map, Rectangle roomRect)
         {
             // Replace floor with tiles with painted logo.
-            TileFill(map, m_Game.GameTiles.FLOOR_TILES, roomRect, (tile, model, x, y) => tile.AddDecoration(GameImages.DECO_ARMY_FLOOR_LOGO));
+            TileFill(map, m_Game.GameTiles.FLOOR_ARMY, roomRect);//, (tile, model, x, y) => tile.AddDecoration(GameImages.DECO_ARMY_FLOOR_LOGO));
 
             // Objects.
             // radios along walls.
@@ -7939,8 +7941,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     if (map.GetExitAt(pt) != null)
                         return null;
 
-                    // bed/fridge?
-                    if (m_DiceRoller.RollChance(75))
+                    // computer/radio?
+                    if (m_DiceRoller.RollChance(66))
                     {
                         if (m_DiceRoller.RollChance(25))
                             return MakeObjArmyComputerStation(GameImages.OBJ_ARMY_COMPUTER_STATION);
@@ -7961,7 +7963,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         return null;
 
                     // tables/chairs.
-                    if (m_DiceRoller.RollChance(50))
+                    if (m_DiceRoller.RollChance(25))
                     {
                         if (m_DiceRoller.RollChance(75))
                             return MakeObjArmyComputerStation(GameImages.OBJ_ARMY_COMPUTER_STATION);
@@ -7975,7 +7977,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         void MakeArmyRecRoom(Map map, Rectangle roomRect)
         {
             // Replace floor with wood with painted logo.
-            TileFill(map, m_Game.GameTiles.FLOOR_OFFICE, roomRect);//, (tile, model, x, y) => tile.AddDecoration(GameImages.DECO_CHAR_FLOOR_LOGO));
+            TileFill(map, m_Game.GameTiles.FLOOR_ARMY, roomRect);//, (tile, model, x, y) => tile.AddDecoration(GameImages.DECO_CHAR_FLOOR_LOGO));
 
             // Objects.
             // Beds/Footlockers along walls.

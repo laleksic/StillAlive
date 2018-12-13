@@ -1399,9 +1399,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public Item MakeItemNightVisionGoggles() //@@MP (Release 6-3)
+        //@@MP (Release 6-3)
+        public Item MakeItemNightVisionGoggles()
         {
             return new ItemLight(m_Game.GameItems.NIGHT_VISION_FEMALE); //code under DoTakeItem() will switch to male type if required
+        }
+
+        public Item MakeItemC4Explosive()
+        {
+            return new ItemExplosive(m_Game.GameItems.C4,m_Game.GameItems.C4_PRIMED);
         }
         #endregion
 
