@@ -319,7 +319,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// Blocks on surface map since during current generation.
         /// </summary>
         List<Block> m_SurfaceBlocks;
-        int armyOfficesCount = 0;
         #endregion
 
         #region Properties
@@ -383,15 +382,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 emptyBlocks.Remove(hospitalBlock);
             }
             // Army Base //@@MP (Release 6-3)
-            completedBlocks.Clear();
+            int armyOfficesCount = 0;
             if (armyOfficesCount == 0) //unless we've already generated one in the world, as that's all we want
             {
                 foreach (Block b in emptyBlocks)
                 {
-                    if (m_Params.District.Kind == DistrictKind.GREEN || m_Params.District.Kind == DistrictKind.GENERAL)
+                    if (m_Params.District.Kind == DistrictKind.GREEN)// || m_Params.District.Kind == DistrictKind.GENERAL)
                     {
-                        int rolled = m_DiceRoller.Roll(0, 99);
-                        if (rolled < 60 || armyOfficesCount == 0) //60%
+                        if (armyOfficesCount == 0)
                         {
                             ArmyBuildingType btype = MakeArmyOffice(map, b);
                             if (btype != ArmyBuildingType.NONE)

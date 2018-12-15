@@ -4425,9 +4425,10 @@ namespace djack.RogueSurvivor.Engine
             Map map = m_Session.UniqueMaps.CHARUndergroundFacility.TheMap;
 
             // 2. Pick a random position near a lab vat
+            int blah = 0;
             foreach (MapObject mapObj in map.MapObjects)
             {
-                if (mapObj.AName == "CHAR vat")
+                if (mapObj.ImageID == GameImages.OBJ_CHAR_VAT)
                 {
                     Point next = mapObj.Location.Position;
                     foreach (Direction d in Direction.COMPASS)
@@ -4440,11 +4441,10 @@ namespace djack.RogueSurvivor.Engine
                             {
                                 // 3. Drop it.
                                 map.DropItemAt(it, next);
-                                Logger.WriteLine(Logger.Stage.INIT_MAIN, "Army pass location: " + next.ToString());
-                                // blood! deceased worker.
-                                map.GetTileAt(next).AddDecoration(GameImages.DECO_BLOODIED_FLOOR);
+                                SplatterBlood(map, next); // blood of a deceased army member.
 
                                 // done.
+                                Logger.WriteLine(Logger.Stage.INIT_MAIN, "Army pass location: " + next.ToString());
                                 return new UniqueItem() { TheItem = it, IsSpawned = true };
                             }
                         }
@@ -4454,8 +4454,8 @@ namespace djack.RogueSurvivor.Engine
             }
 
             //fall through if no spot was found. (if no spot was found, someting went very wrong)
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "Suittable army pass location not found");
-            return new UniqueItem() { TheItem = it, IsSpawned = false };
+            throw new InvalidOperationException("Suitable army pass location not found");
+            //return new UniqueItem() { TheItem = it, IsSpawned = false };
         }
 
         UniqueMap CreateUniqueMap_CHARUndegroundFacility(World world)
@@ -4530,7 +4530,7 @@ namespace djack.RogueSurvivor.Engine
             for (int x = 0; x < world.Size; x++)
                 for (int y = 0; y < world.Size; y++)
                 {
-                    if (world[x, y].Kind == DistrictKind.GREEN || world[x, y].Kind == DistrictKind.GENERAL)
+                    if (world[x, y].Kind == DistrictKind.GREEN)// || world[x, y].Kind == DistrictKind.GENERAL)
                     {
                         bool hasOffice = false;
                         foreach (Zone z in world[x, y].EntryMap.Zones)
@@ -4553,7 +4553,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Pick one green district at random.
             if (goodDistricts == null)
             {
-                throw new InvalidOperationException("world has no green districts with army offices");
+                throw new InvalidOperationException("world generation failure: no green districts with army offices");
             }
             District chosenDistrict = goodDistricts[m_Rules.Roll(0, goodDistricts.Count)];
 
@@ -4573,7 +4573,6 @@ namespace djack.RogueSurvivor.Engine
             map.Name = String.Format("Army Base @{0}-{1}", baseEntryPos.X, baseEntryPos.Y);
             chosenDistrict.AddUniqueMap(map);
             return new UniqueMap() { TheMap = map };
-
         }
         #endregion
 
