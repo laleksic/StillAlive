@@ -1,4 +1,4 @@
-STILL ALIVE 2.3.2.4 (aka Release 6-3, ??/??/2018) [Author: MP] *** WORK IN PROGRESS ***
+STILL ALIVE 2.3.3.4 (aka Release 6-3, ??/??/2018) [Author: MP] *** WORK IN PROGRESS ***
 ---------------------
 
 Features:
@@ -8,6 +8,7 @@ Features:
 -Removed option to set the maximum available reincarnations. Locked to 7.
 -Added C4 explosives.
 -Reduced the number of CHAR buildings. Room for more variety in later releases.
+-Added rescue helicopter landing spot.
 
 Fixes
 -Bumping against locked doors now gives the correct warning to the player.

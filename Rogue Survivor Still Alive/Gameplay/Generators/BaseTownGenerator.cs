@@ -405,7 +405,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         }
                     }
                 }
-                Logger.WriteLine(Logger.Stage.INIT_MAIN, "Army offices generated: " + armyOfficesCount.ToString());
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Army offices generated: " + armyOfficesCount.ToString());
                 foreach (Block b in completedBlocks)
                     emptyBlocks.Remove(b);
             }

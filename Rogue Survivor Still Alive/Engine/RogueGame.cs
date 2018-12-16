@@ -3677,7 +3677,7 @@ namespace djack.RogueSurvivor.Engine
             StartSimThread();
         }
 
-#region GENERATING WORLD
+        #region GENERATING WORLD
         private bool GenerateWorld(bool isVerbose, int size, string suppliedName) //@@MP - added parameter for user to supply a name (Release 5-7)
         {
             // say so.
@@ -3724,7 +3724,7 @@ namespace djack.RogueSurvivor.Engine
             // Create districts maps
             /////////////////////////
             // Surface, Sewers and Subways.
-#region
+            #region
             for (int x = 0; x < world.Size; x++)
             {
                 for (int y = 0; y < world.Size; y++)
@@ -3756,7 +3756,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             ///////////////
             // Unique Maps
@@ -3798,14 +3798,13 @@ namespace djack.RogueSurvivor.Engine
             /////////////////
             // Unique Items
             /////////////////
-            // "Subway Worker Badge" - somewhere on the subway tracks...
-            m_Session.UniqueItems.TheSubwayWorkerBadge = SpawnUniqueSubwayWorkerBadge(world);
-            m_Session.UniqueItems.TheArmyOfficePass = SpawnUniqueArmyOfficePass(world); //@@MP (Release 6-3)
+            m_Session.UniqueItems.TheSubwayWorkerBadge = SpawnUniqueSubwayWorkerBadge(world); // "Subway Worker Badge" - somewhere on the subway tracks...
+            m_Session.UniqueItems.TheArmyOfficePass = SpawnUniqueArmyOfficePass(world); //@@MP - access card for the army offices (Release 6-3)
 
             //////////////////
             // Link districts
             //////////////////
-#region
+            #region
             for (int x = 0; x < world.Size; x++)
             {
                 for (int y = 0; y < world.Size; y++)
@@ -3817,7 +3816,7 @@ namespace djack.RogueSurvivor.Engine
                         m_UI.UI_Repaint();
                     }
 
-#region Entry maps (surface)
+                    #region Entry maps (surface)
                     // add exits (from and to).
                     Map map = world[x, y].EntryMap;
 
@@ -3869,9 +3868,9 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
 
-#region Sewers
+                    #region Sewers
                     map = world[x, y].SewersMap;
                     if (y > 0)
                     {
@@ -3910,9 +3909,9 @@ namespace djack.RogueSurvivor.Engine
 
                         }
                     }
-#endregion
+                    #endregion
 
-#region Subways
+                    #region Subways
                     map = world[x, y].SubwayMap;
                     if (map != null)
                     {
@@ -3942,20 +3941,140 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
                 }
             }
-#endregion
+            #endregion
 
             //////////////////////////////////////////
             // Easter egg: "roguedjack was here" tag.
             //////////////////////////////////////////
-#region
+            #region
             Map easterEggTagMap = world[0, 0].SewersMap;
             easterEggTagMap.RemoveMapObjectAt(1, 1);
             easterEggTagMap.GetTileAt(1, 1).RemoveAllDecorations();
             easterEggTagMap.GetTileAt(1, 1).AddDecoration(GameImages.DECO_ROGUEDJACK_TAG);
-#endregion
+            #endregion
+
+            //////////////////////////////////////////
+            // Pick location for helicopter rescue //@@MP (Release 6-3)
+            //////////////////////////////////////////
+            #region
+            if (isVerbose)
+            {
+                m_UI.UI_Clear(Color.Black);
+                m_UI.UI_DrawStringBold(Color.White, "Picking helicopter location...", 0, 0);
+                m_UI.UI_Repaint();
+            }
+            // 1. Find all green districts
+            // 2. Pick one green district at random.
+            // 3. Find a clear spot for helicopter landing (4x2 tiles).
+
+            // 1. Find all green districts with offices.
+            List<District> goodDistricts = null;
+            for (int x = 0; x < world.Size; x++)
+                for (int y = 0; y < world.Size; y++)
+                {
+                    if (world[x, y].Kind == DistrictKind.GREEN)
+                    {
+                        bool hasPark = false;
+                        foreach (Zone z in world[x, y].EntryMap.Zones)
+                        {
+                            if (z.Name.Contains("Park"))
+                            {
+                                hasPark = true;
+                                break;
+                            }
+                        }
+                        if (hasPark)
+                        {
+                            if (goodDistricts == null)
+                                goodDistricts = new List<District>();
+                            goodDistricts.Add(world[x, y]);
+                        }
+                    }
+                }
+
+            // 2. Pick one green district at random.
+            if (goodDistricts == null)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "world generation failure: no green district spot for helicopter landing");
+                return false;
+                //throw new InvalidOperationException("world generation failure: no green district spot for helicopter landing");
+            }
+            //District chosenDistrict = goodDistricts[m_Rules.Roll(0, goodDistricts.Count)];
+
+            // 3. Find a spot with a 4x2 rectangle of object-free grass tiles.
+            bool foundSpot = false;
+            District chosenDistrict = null;
+            Random r = new Random();
+            foreach (int i in Enumerable.Range(0, goodDistricts.Count).OrderBy(x => r.Next()))
+            {
+                /*Map heliRescueMap = chosenDistrict.EntryMap;
+                foreach (Zone z in chosenDistrict.EntryMap.Zones)*/
+                foreach (Zone z in goodDistricts[i].EntryMap.Zones)
+                {
+                    if (z.Name.Contains("Park"))
+                    {
+                        Map heliRescueMap = goodDistricts[i].EntryMap;
+
+                        //check if there's clear space for a chopper to land
+                        for (int x = z.Bounds.Left; x < z.Bounds.Right; x++)
+                        {
+                            for (int y = z.Bounds.Top; y < z.Bounds.Bottom; y++)
+                            {
+                                if ((heliRescueMap.GetTileAt(x, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x, y) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 1, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 1, y) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 2, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 2, y) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 3, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 3, y) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x, y + 1) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 1, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 1, y + 1) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 2, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 2, y + 1) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 3, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 3, y + 1) != null))
+                                    continue;
+
+                                //if we've made it this far, we have found a suitable 4*2 rectangle of tiles where the chopper can 'land'
+                                foundSpot = true;
+                                m_Session.ArmyHelicopterRescue_DistrictRef = World.CoordToString(goodDistricts[i].WorldPosition.X, goodDistricts[i].WorldPosition.Y);
+                                m_Session.ArmyHelicopterRescue_Coordinates = new Point(x, y);
+                                chosenDistrict = goodDistricts[i];
+                                break;
+                            }
+                            if (foundSpot == true)
+                                break;
+                        }
+                    }
+                    if (foundSpot == true)
+                        break;
+                }
+                if (foundSpot == true)
+                    break;
+            }
+            if (foundSpot == true)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Found suitable district for helicopter landing: " + (World.CoordToString(chosenDistrict.WorldPosition.X, chosenDistrict.WorldPosition.Y)));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Found suitable coords for helicopter landing: {" + m_Session.ArmyHelicopterRescue_Coordinates.X + "}-{" + m_Session.ArmyHelicopterRescue_Coordinates.Y + "}");
+            }
+            else
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Could not find suitable location for helicopter landing");
+                return false;
+            }
+            #endregion
 
             //////////////////////////////
             // Spawn player on center map
@@ -4452,7 +4571,7 @@ namespace djack.RogueSurvivor.Engine
                                 SplatterBlood(map, next); // blood of a deceased army member.
 
                                 // done.
-                                Logger.WriteLine(Logger.Stage.INIT_MAIN, "Army pass location: " + next.ToString());
+                                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Army pass location: " + next.ToString());
                                 return new UniqueItem() { TheItem = it, IsSpawned = true };
                             }
                         }
@@ -4502,6 +4621,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Pick one business district at random.
             if (goodDistricts == null)
             {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "world has no business districts with offices"); //@@MP (Release 6-3)
                 return null; //@@MP (Release 6-3)
                 //throw new InvalidOperationException("world has no business districts with offices");
             }
@@ -4529,7 +4649,7 @@ namespace djack.RogueSurvivor.Engine
         UniqueMap CreateUniqueMap_ArmyUndegroundBase(World world) //@@MP (Release 6-3)
         {
             ////////////////////////////////////////////////
-            // 1. Find all green districts with army offices (should only be one).
+            // 1. Find all green districts with army offices.
             // 2. Pick one green district at random.
             // 3. Generate underground map there.
             ////////////////////////////////////////////////
@@ -4562,6 +4682,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Pick one green district at random.
             if (goodDistricts == null)
             {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "world generation failure: no green districts with army offices");
                 return null;
                 //throw new InvalidOperationException("world generation failure: no green districts with army offices");
             }
@@ -13671,7 +13792,7 @@ namespace djack.RogueSurvivor.Engine
                         // Helicopter rescue location
                         if (m_Session.PlayerKnows_HelicopterArrivalDetails && map == m_Session.UniqueMaps.ArmyBase.TheMap.District.EntryMap)
                         {
-                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format("at {0} : {1}.", m_Session.ArmyHelicopterRescue_Coordinates.ToString(), "Helicopter rescue spot", m_Session.ArmyHelicopterRescue_DistrictRef), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format("at {0} : {1}{2}.", m_Session.ArmyHelicopterRescue_DistrictRef, "Helicopter rescue spot @", (m_Session.ArmyHelicopterRescue_Coordinates.X + "-" + m_Session.ArmyHelicopterRescue_Coordinates.Y)), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -21167,7 +21288,7 @@ namespace djack.RogueSurvivor.Engine
                                         "\"  This is Murdoch air force base.",
                                         "  We have a command post established for survivors.",
                                         //String.Format("  We will send an evac helicopter to you on day {0}.", m_Session.ArmyHelicopterRescue_Day.ToString()),
-                                        //String.Format("  It will land at coordinates {0}:{1}.", m_Session.ArmyHelicopterRescue_DistrictRef, m_Session.ArmyHelicopterRescue_Coordinates),
+                                        String.Format("  It will land at coordinates {0}:{1}.", m_Session.ArmyHelicopterRescue_DistrictRef, (m_Session.ArmyHelicopterRescue_Coordinates.X + "-" + m_Session.ArmyHelicopterRescue_Coordinates.Y)),
                                         "  It will arrive at sunrise, and make it's last trip by sunset.",
                                         "  Make sure you have your staff and civilians ready to go. \"",
                                         };

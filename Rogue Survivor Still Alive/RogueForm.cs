@@ -243,6 +243,7 @@ namespace djack.RogueSurvivor
                 m_Game.Session.PlayerKnows_ArmyBaseLocation = true;
                 m_Game.Session.ArmyBaseUnderground_Activated = true;
                 m_Game.Session.UniqueMaps.ArmyBase.TheMap.IsSecret = false;
+                m_Game.Session.PlayerKnows_HelicopterArrivalDetails = true;
 
                 //m_Game.FireEvent_ArmySupplies(m_Game.Player.Location.Map.District.EntryMap);
             }

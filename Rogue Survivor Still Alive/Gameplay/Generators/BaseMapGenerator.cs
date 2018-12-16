@@ -877,7 +877,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected static MapObject MakeObjArmyComputerStation(string armyDesktopImageID) //@@MP (Release 6-3)
+        //@@MP (Release 6-3)
+        protected static MapObject MakeObjArmyComputerStation(string armyDesktopImageID)
         {
             return new MapObject("Army workstation", armyDesktopImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
             {
@@ -887,8 +888,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsMovable = true,
             };
         }
-
-        protected static MapObject MakeObjArmyRadioCupboard(string armyRadioCupboardImageID) //@@MP (Release 6-3)
+        protected static MapObject MakeObjArmyRadioCupboard(string armyRadioCupboardImageID)
         {
             return new MapObject("Radio equipment", armyRadioCupboardImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
@@ -899,8 +899,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 Weight = 15
             };
         }
-
-        protected static MapObject MakeObjArmyFootlocker(string armyFootlockerImageID) //@@MP (Release 6-3)
+        protected static MapObject MakeObjArmyFootlocker(string armyFootlockerImageID)
         {
             return new MapObject("Footlocker", armyFootlockerImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
@@ -911,6 +910,46 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 Weight = 5
             };
         }
+
+        #region Helicopter
+        //@@MP (Release 6-3)
+        //A 64x128 pixel image, dissected into 8 pieces and then arranged as:
+        //  1234
+        //  5678
+        protected static MapObject MakeObj1Helicopter(string vatImageID)
+        {
+            return new MapObject("Helicopter", vatImageID);
+        }
+        protected static MapObject MakeObj2Helicopter(string vatImageID)
+        {
+            return new MapObject("Helicopter", vatImageID);
+        }
+        protected static MapObject MakeObj3Helicopter(string vatImageID)
+        {
+            return new MapObject("Helicopter", vatImageID);
+        }
+        protected static MapObject MakeObj4Helicopter(string vatImageID)
+        {
+            return new MapObject("Helicopter", vatImageID);
+        }
+        protected static MapObject MakeObj5Helicopter(string vatImageID)
+        {
+            return new MapObject("Helicopter", vatImageID);
+        }
+        protected static MapObject MakeObj6Helicopter(string vatImageID)
+        {
+            return new MapObject("Helicopter", vatImageID);
+        }
+        protected static MapObject MakeObj7Helicopter(string vatImageID)
+        {
+            return new MapObject("Helicopter", vatImageID);
+        }
+        protected static MapObject MakeObj8Helicopter(string vatImageID)
+        {
+            return new MapObject("Helicopter", vatImageID);
+        }
+        #endregion
+
         #endregion
 
         #region Common tile decorations
