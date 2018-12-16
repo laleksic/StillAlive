@@ -534,6 +534,11 @@ namespace djack.RogueSurvivor.Engine
             get;
             set;
         }
+        public int ArmyHelicopterRescue_Day
+        {
+            get;
+            set;
+        }
         #endregion
 
         #endregion

@@ -21148,51 +21148,44 @@ namespace djack.RogueSurvivor.Engine
 
                                 ClearMessages();
                                 AddMessage(new Message("The base's lights turn on!", map.LocalTime.TurnCounter, Color.Green));
-                                m_Session.PlayerKnows_HelicopterArrivalDetails = true; //@@MP (Release 6-3)
                                 RedrawPlayScreen();
-
-                                /*
-                                // Scoring event.
-                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Learned the location of the army helicopter rescue."); //@@MP (Release 6-3)
 
                                 // helicopter evac details //@@MP (Release 6-3)
                                 if (m_Session.PlayerKnows_HelicopterArrivalDetails == false)
                                 {
+                                    // Scoring event.
+                                    m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Learned the location of the army helicopter rescue.");
                                     m_Session.PlayerKnows_HelicopterArrivalDetails = true;
 
                                     // The power comes on, and radios loop the message about helicopter rescue
                                     string[] text;
-                                    if (Player made it before arrival day)
+                                    if (1==1)//Player made it before sunset on arrival day)
                                     {
                                         text = new string[]
                                         {
-                                        "\" You hear the comms radios spring to life, repeating a message... \"",
-                                        String.Format("{0} is discretely calling you from {1} cell...", prisoner.Name, HisOrHer(prisoner)),
-                                        "  Look, I know what's happening! I worked down there; at the CHAR facility!",
-                                        "  They didn't want me to leave but I did! Like I'm stupid enough to stay down there huh?",
-                                        "  Stupid cops won't listen to me. I shouldn't be here!",
-                                        "  You look clever, let's make a deal. You just have to flick that lever to open my cell.",
-                                        "  The cops are too busy to care about a small fish like me!",
-                                        "  Then I'll tell you where the underground CHAR and army facilities are.",
-                                        "  I don't give a fuck about CHAR anymore, I'll just want to get the hell out of here!",
-                                        "  Do it PLEASE! I REALLY shoudn't be here! \"",
-                                        String.Format("Sounds like {0} wants you to turn on the generator to open the cells...", HeOrShe(prisoner))
+                                        "You hear the comms radios spring to life, repeating a message...",
+                                        "\"  This is Murdoch air force base.",
+                                        "  We have a command post established for survivors.",
+                                        //String.Format("  We will send an evac helicopter to you on day {0}.", m_Session.ArmyHelicopterRescue_Day.ToString()),
+                                        //String.Format("  It will land at coordinates {0}:{1}.", m_Session.ArmyHelicopterRescue_DistrictRef, m_Session.ArmyHelicopterRescue_Coordinates),
+                                        "  It will arrive at sunrise, and make it's last trip by sunset.",
+                                        "  Make sure you have your staff and civilians ready to go. \"",
                                         };
                                     }
                                     else
                                     {
                                         text = new string[]
                                         {
-                                        "\" You hear the radios spring to life, repeating a message... \"",
-                                        "  The helicopter we sent to you has not returned. We have to assume it's gone.",
+                                        "You hear the comms radios spring to life, repeating a message...",
+                                        "\"  The helicopter we sent to you has not returned. We have to assume it's gone.",
                                         "  I'm sorry, but we don't have any more helicopters.",
-                                        "  Rescue won't be possible. You're on your own."
-                                        "  Good luck. God bless.",
+                                        "  Rescue won't be possible. You're on your own.",
+                                        "  Good luck. God bless. \"",
                                         };
                                     }
 
                                     ShowSpecialDialogue(m_Player, text);
-                                }*/
+                                }
                             }
                         }
                     }
@@ -23761,9 +23754,9 @@ namespace djack.RogueSurvivor.Engine
                                 // Offer deal.
                                 string[] text = new string[]
                                 {
-                                "\" Psssst! Hey! You there! \"",
+                                "\"  Psssst! Hey! You there!  \"",
                                 String.Format("{0} is discretely calling you from {1} cell...", prisoner.Name, HisOrHer(prisoner)),
-                                "  Look, I know what's happening! I worked down there; at the CHAR facility!",
+                                "\"  Look, I know what's happening! I worked down there; at the CHAR facility!",
                                 "  They didn't want me to leave but I did! Like I'm stupid enough to stay down there huh?",
                                 "  Stupid cops won't listen to me. I shouldn't be here!",
                                 "  You look clever, let's make a deal. You just have to flick that lever to open my cell.",
@@ -23798,12 +23791,13 @@ namespace djack.RogueSurvivor.Engine
 
                                 // Thank you and give info.
                                 string[] text = new string[] {
-                                    "\" Thank you for releasing me! Thank you so much!",
+                                    "\"  Thank you for releasing me! Thank you so much!",
                                     "  I'll tell you the where the secret locations are.",
                                     String.Format("  The CHAR Underground Facility is in district {0}.", World.CoordToString(m_Session.UniqueMaps.CHARUndergroundFacility.TheMap.District.WorldPosition.X,  m_Session.UniqueMaps.CHARUndergroundFacility.TheMap.District.WorldPosition.Y)),
                                     String.Format("  The underground Army base is in district {0}.", World.CoordToString(m_Session.UniqueMaps.ArmyBase.TheMap.District.WorldPosition.X,  m_Session.UniqueMaps.ArmyBase.TheMap.District.WorldPosition.Y)), //@@MP (Release 6-3)
                                     "  The CHAR Office has evidence on what's going on. They have a lot of equipment too.",
                                     "  The army base is probably your best chance of rescue, if they're still alive...", //@@MP (Release 6-3)
+                                    "  CHAR had captured a soldier. He probably had an access card to the army base.", //@@MP (Release 6-3)
                                     "  Now I must hurry! Thanks a lot for saving me!",
                                     "  I don't want them to- UGGH...",
                                     "  What's happening? NO!",
@@ -23820,7 +23814,7 @@ namespace djack.RogueSurvivor.Engine
 
                                 // Scoring event.
                                 m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Learned the location of the CHAR Underground Facility.");
-                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Learned the location of the Army base."); //@@MP (Release 6-3)
+                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Learned the location of the underground Army base."); //@@MP (Release 6-3)
 
                                 // transformation.
                                 // - zombify.
