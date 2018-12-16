@@ -432,7 +432,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     bool NoCHARBuildingMade = false;
                     int rolled = m_DiceRoller.Roll(0, 99);
-                    if (rolled < 60 || charOfficesCount == 0) //60%
+                    if (rolled < 33 || charOfficesCount == 0) //@@MP - reduced the number of CHAR buildings (Release 6-3)
                     {
                         CHARBuildingType btype = MakeCHARBuilding(map, b);
                         if (btype != CHARBuildingType.NONE)
@@ -450,7 +450,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     }
 
                     // non-CHAR buildings
-                    if (rolled >= 60 || NoCHARBuildingMade == true) //@@MP (Release 4)
+                    if (rolled >= 33 || NoCHARBuildingMade == true) //@@MP (Release 4)
                     {
                         //@@MP - the first 2 need specific sizes, the other 3 are good for whatever
                         if ((b.InsideRect.Width <= 7 && b.InsideRect.Height < 10) || (b.InsideRect.Width < 10 && b.InsideRect.Height <= 7))

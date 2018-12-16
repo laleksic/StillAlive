@@ -3587,7 +3587,12 @@ namespace djack.RogueSurvivor.Engine
             m_MusicManager.StopAll();
 
             // generate world.
-            GenerateWorld(true, s_Options.CitySize, suppliedName); //@@MP - added parameter for user to supply a name (Release 5-7)
+            bool worldMade = false;
+            do
+            {
+                worldMade = GenerateWorld(true, s_Options.CitySize, suppliedName); //@@MP - added parameter for user to supply a name (Release 5-7)
+            }
+            while (worldMade == false);
             CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
             DoHospitalPowerOn(); //@@MP (Release 6-2)
             Item temp = new ItemGrenade(GameItems.C4, GameItems.C4_PRIMED);
@@ -3673,7 +3678,7 @@ namespace djack.RogueSurvivor.Engine
         }
 
 #region GENERATING WORLD
-        void GenerateWorld(bool isVerbose, int size, string suppliedName) //@@MP - added parameter for user to supply a name (Release 5-7)
+        private bool GenerateWorld(bool isVerbose, int size, string suppliedName) //@@MP - added parameter for user to supply a name (Release 5-7)
         {
             // say so.
             if (isVerbose)
@@ -3762,8 +3767,10 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_DrawStringBold(Color.White, "Generating unique maps...", 0, 0);
                 m_UI.UI_Repaint();
             }
-            m_Session.UniqueMaps.CHARUndergroundFacility = CreateUniqueMap_CHARUndegroundFacility(world);
             m_Session.UniqueMaps.ArmyBase = CreateUniqueMap_ArmyUndegroundBase(world); //@MP (Release 6-3)
+            if (m_Session.UniqueMaps.ArmyBase == null) return false; //@@MP - the army base couln't be generated for some reason
+            m_Session.UniqueMaps.CHARUndergroundFacility = CreateUniqueMap_CHARUndegroundFacility(world);
+            if (m_Session.UniqueMaps.CHARUndergroundFacility == null) return false; //@@MP - the char base couln't be generated for some reason (Release 6-3)
 
             /////////////////
             // Unique Actors
@@ -4016,6 +4023,7 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_DrawStringBold(Color.White, "Generating game world... done!", 0, 0);
                 m_UI.UI_Repaint();
             }
+            return true;
         }
 
         static bool CheckIfExitIsGood(Map toMap, Point to) //Map fromMap, Point from, ) //@@MP - made static, unused parameter (Release 5-7)
@@ -4494,7 +4502,8 @@ namespace djack.RogueSurvivor.Engine
             // 2. Pick one business district at random.
             if (goodDistricts == null)
             {
-                throw new InvalidOperationException("world has no business districts with offices");
+                return null; //@@MP (Release 6-3)
+                //throw new InvalidOperationException("world has no business districts with offices");
             }
             District chosenDistrict = goodDistricts[m_Rules.Roll(0, goodDistricts.Count)];
 
@@ -4553,7 +4562,8 @@ namespace djack.RogueSurvivor.Engine
             // 2. Pick one green district at random.
             if (goodDistricts == null)
             {
-                throw new InvalidOperationException("world generation failure: no green districts with army offices");
+                return null;
+                //throw new InvalidOperationException("world generation failure: no green districts with army offices");
             }
             District chosenDistrict = goodDistricts[m_Rules.Roll(0, goodDistricts.Count)];
 
