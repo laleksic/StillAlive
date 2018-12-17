@@ -1,4 +1,4 @@
-STILL ALIVE 2.3.3.4 (aka Release 6-3, ??/??/2018) [Author: MP] *** WORK IN PROGRESS ***
+STILL ALIVE 2.3.4.4 (aka Release 6-3, ??/??/2018) [Author: MP] *** WORK IN PROGRESS ***
 ---------------------
 
 Features:
@@ -9,6 +9,7 @@ Features:
 -Added C4 explosives.
 -Reduced the number of CHAR buildings. Room for more variety in later releases.
 -Added rescue helicopter landing spot.
+-Added ability to pick helicopter rescue day during new game start.
 
 Fixes
 -Bumping against locked doors now gives the correct warning to the player.

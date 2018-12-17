@@ -2690,6 +2690,17 @@ namespace djack.RogueSurvivor.Engine
                     return false;
             }
 
+            /////////////////////////////
+            // Choose helicopter arrival day  //@@MP (Release 6-3)
+            /////////////////////////////
+            int chosenDay = 28;
+            if (!HandleNewGameHeliDay(out chosenDay))
+                return false;
+            else
+            {
+                m_Session.ArmyHelicopterRescue_Day = chosenDay;
+            }
+
             // done
             return true;
         }
@@ -3577,6 +3588,160 @@ namespace djack.RogueSurvivor.Engine
             while (loop);
 
             // done.
+            return choiceDone;
+        }
+
+        bool HandleNewGameHeliDay(out int chosenDay) //@@MP (Release 6-3)
+        {
+            bool loop = true;
+            bool choiceDone = false;
+            string enteredNumerals = "";
+            int maxDays = 99;
+            int maxCharactersAllowed = 2;
+
+            do
+            {
+                //display
+                m_UI.UI_Clear(Color.Black);
+                int gx, gy;
+                gx = gy = 0;
+                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] Choose Helicopter Arrival Day #", Session.DescGameMode(m_Session.GameMode)), gx, gy);
+                gy += 2 * BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, String.Format("--->  {0}     [Max:{1}, Default:28]", enteredNumerals, maxDays.ToString()), gx, gy);
+                gy += 2 * BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, String.Format("The army have established a safe zone and are evacuating towns all around the region."), gx, gy);
+                gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, String.Format("You must find a way to survive until helicopter rescue arrives on this day."), gx, gy);
+                gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, String.Format("You don't have to make it to the helicopter, but after that point you'll be on your own..."), gx, gy);
+                DrawFootnote(Color.White, "Type a day number, leave it blank for the default, or type 0 for a random day, ENTER to proceed, ESC to cancel");
+                m_UI.UI_Repaint();
+
+                // get menu action.
+                KeyEventArgs key = m_UI.UI_WaitKey();
+                switch (key.KeyCode)
+                {
+                    #region the character keys
+                    case Keys.NumPad0:
+                        enteredNumerals += "0";
+                        break;
+
+                    case Keys.D0:
+                        enteredNumerals += "0";
+                        break;
+
+                    case Keys.NumPad1:
+                        enteredNumerals += "1";
+                        break;
+
+                    case Keys.D1:
+                        enteredNumerals += "1";
+                        break;
+
+                    case Keys.NumPad2:
+                        enteredNumerals += "2";
+                        break;
+
+                    case Keys.D2:
+                        enteredNumerals += "2";
+                        break;
+
+                    case Keys.NumPad3:
+                        enteredNumerals += "3";
+                        break;
+
+                    case Keys.D3:
+                        enteredNumerals += "3";
+                        break;
+
+                    case Keys.NumPad4:
+                        enteredNumerals += "4";
+                        break;
+
+                    case Keys.D4:
+                        enteredNumerals += "4";
+                        break;
+
+                    case Keys.NumPad5:
+                        enteredNumerals += "5";
+                        break;
+
+                    case Keys.D5:
+                        enteredNumerals += "5";
+                        break;
+
+                    case Keys.NumPad6:
+                        enteredNumerals += "6";
+                        break;
+
+                    case Keys.D6:
+                        enteredNumerals += "6";
+                        break;
+
+                    case Keys.NumPad7:
+                        enteredNumerals += "7";
+                        break;
+
+                    case Keys.D7:
+                        enteredNumerals += "7";
+                        break;
+
+                    case Keys.NumPad8:
+                        enteredNumerals += "8";
+                        break;
+
+                    case Keys.D8:
+                        enteredNumerals += "8";
+                        break;
+
+                    case Keys.NumPad9:
+                        enteredNumerals += "9";
+                        break;
+
+                    case Keys.D9:
+                        enteredNumerals += "9";
+                        break;
+
+                    #endregion
+
+                    case Keys.Back: //backspace
+                        if (enteredNumerals.Length > 0)
+                            enteredNumerals = enteredNumerals.Remove(enteredNumerals.Length - 1);
+                        break;
+
+                    case Keys.Escape: //cancelled
+                        choiceDone = false;
+                        loop = false;
+                        break;
+
+                    case Keys.Enter: //name entered or gimme a random
+                        choiceDone = true;
+                        loop = false;
+                        break;
+                }
+
+                if (enteredNumerals.Length > maxCharactersAllowed) //trim it back to the character cap
+                    enteredNumerals = enteredNumerals.Remove(enteredNumerals.Length - 1);
+            }
+            while (loop);
+
+            // done.
+            if (enteredNumerals != "")
+                chosenDay = Convert.ToInt32(enteredNumerals);
+            else if (enteredNumerals == "0" || enteredNumerals == "00")
+            {
+                string difficulty = "TODO in Rel 6-5";
+                switch(difficulty)
+                {
+                    case "beginner": chosenDay = new Random().Next(07, 28); break;
+                    case "experienced": chosenDay = new Random().Next(14, 28); break;
+                    case "journeyman": chosenDay = new Random().Next(21, 50); break;
+                    case "master": chosenDay = new Random().Next(28, 50); break;
+                    default: chosenDay = new Random().Next(21, 28); break;
+                }
+            }
+            else
+                chosenDay = 28; //user didn't pick a day
             return choiceDone;
         }
 #endregion
@@ -13792,7 +13957,7 @@ namespace djack.RogueSurvivor.Engine
                         // Helicopter rescue location
                         if (m_Session.PlayerKnows_HelicopterArrivalDetails && map == m_Session.UniqueMaps.ArmyBase.TheMap.District.EntryMap)
                         {
-                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format("at {0} : {1}{2}.", m_Session.ArmyHelicopterRescue_DistrictRef, "Helicopter rescue spot @", (m_Session.ArmyHelicopterRescue_Coordinates.X + "-" + m_Session.ArmyHelicopterRescue_Coordinates.Y)), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format("at {0} : {1}{2} on day {3}.", m_Session.ArmyHelicopterRescue_DistrictRef, "Helicopter rescue spot @", (m_Session.ArmyHelicopterRescue_Coordinates.X + "-" + m_Session.ArmyHelicopterRescue_Coordinates.Y), m_Session.ArmyHelicopterRescue_Day.ToString()), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -21287,7 +21452,7 @@ namespace djack.RogueSurvivor.Engine
                                         "You hear the comms radios spring to life, repeating a message...",
                                         "\"  This is Murdoch air force base.",
                                         "  We have a command post established for survivors.",
-                                        //String.Format("  We will send an evac helicopter to you on day {0}.", m_Session.ArmyHelicopterRescue_Day.ToString()),
+                                        String.Format("  We will send an evac helicopter to you on day {0}.", m_Session.ArmyHelicopterRescue_Day.ToString()),
                                         String.Format("  It will land at coordinates {0}:{1}.", m_Session.ArmyHelicopterRescue_DistrictRef, (m_Session.ArmyHelicopterRescue_Coordinates.X + "-" + m_Session.ArmyHelicopterRescue_Coordinates.Y)),
                                         "  It will arrive at sunrise, and make it's last trip by sunset.",
                                         "  Make sure you have your staff and civilians ready to go. \"",
