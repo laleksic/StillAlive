@@ -3760,7 +3760,7 @@ namespace djack.RogueSurvivor.Engine
             while (worldMade == false);
             CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
             DoHospitalPowerOn(); //@@MP (Release 6-2)
-            Item temp = new ItemGrenade(GameItems.C4, GameItems.C4_PRIMED);
+            /*Item temp = new ItemGrenade(GameItems.C4, GameItems.C4_PRIMED);
             m_Player.Inventory.AddAll(temp);
             m_Player.Inventory.AddAll(temp);
             Item nvg = new ItemLight(GameItems.NIGHT_VISION_MALE);
@@ -3768,7 +3768,7 @@ namespace djack.RogueSurvivor.Engine
             Item gun = new ItemRangedWeapon(GameItems.ARMY_RIFLE);
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
-            m_Player.Inventory.AddAll(ammo);
+            m_Player.Inventory.AddAll(ammo);*/
 
             // scoring : hello there.
             m_Session.Scoring.AddVisit(m_Player.Location.Map); //@@MP - unused parameter (Release 5-7)
