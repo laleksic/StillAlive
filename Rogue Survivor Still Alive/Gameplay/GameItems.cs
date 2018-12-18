@@ -68,6 +68,9 @@ namespace djack.RogueSurvivor.Gameplay
             EXPLOSIVE_MOLOTOV_PRIMED,
             EXPLOSIVE_DYNAMITE,
             EXPLOSIVE_DYNAMITE_PRIMED,
+            //@@MP (Release 6-3)
+            EXPLOSIVE_C4,
+            EXPLOSIVE_C4_PRIMED,
 
             BAR_WOODEN_PLANK,
 
@@ -93,6 +96,9 @@ namespace djack.RogueSurvivor.Gameplay
 
             LIGHT_FLASHLIGHT,
             LIGHT_BIG_FLASHLIGHT,
+            //@@MP - one version per gender to suit the different inherent body pixel sizes (Release 6-3)
+            LIGHT_NIGHT_VISION_FEMALE,
+            LIGHT_NIGHT_VISION_MALE,
 
             AMMO_LIGHT_PISTOL,
             AMMO_HEAVY_PISTOL,
@@ -117,6 +123,8 @@ namespace djack.RogueSurvivor.Gameplay
             UNIQUE_SANTAMAN_SHOTGUN,
             UNIQUE_HANS_VON_HANZ_PISTOL,
             VEGETABLE_SEEDS, //@@MP (Release 5-3), (Release 5-5)
+            //@@MP (Release 6-3)
+            UNIQUE_ARMY_ACCESS_BADGE,
 
             //@@MP (Release 3)
             UNIQUE_CHAR_DOCUMENT1,
@@ -453,6 +461,10 @@ namespace djack.RogueSurvivor.Gameplay
         ExplosiveData DATA_EXPLOSIVE_DYNAMITE;
         public ItemGrenadeModel DYNAMITE { get { return this[IDs.EXPLOSIVE_DYNAMITE] as ItemGrenadeModel; } }
         public ItemGrenadePrimedModel DYNAMITE_PRIMED { get { return this[IDs.EXPLOSIVE_DYNAMITE_PRIMED] as ItemGrenadePrimedModel; } }
+        //@@MP (Release 6-3)
+        ExplosiveData DATA_EXPLOSIVE_C4;
+        public ItemGrenadeModel C4 { get { return this[IDs.EXPLOSIVE_C4] as ItemGrenadeModel; } }
+        public ItemGrenadePrimedModel C4_PRIMED { get { return this[IDs.EXPLOSIVE_C4_PRIMED] as ItemGrenadePrimedModel; } }
         #endregion
 
         #region Barricades
@@ -621,6 +633,11 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemLightModel FLASHLIGHT { get { return this[IDs.LIGHT_FLASHLIGHT] as ItemLightModel; } }
         LightData DATA_LIGHT_BIG_FLASHLIGHT;
         public ItemLightModel BIG_FLASHLIGHT { get { return this[IDs.LIGHT_BIG_FLASHLIGHT] as ItemLightModel; } }
+        //@@MP (Release 6-3)
+        LightData DATA_LIGHT_NIGHT_VISION_FEMALE;
+        public ItemLightModel NIGHT_VISION_FEMALE { get { return this[IDs.LIGHT_NIGHT_VISION_FEMALE] as ItemLightModel; } }
+        LightData DATA_LIGHT_NIGHT_VISION_MALE;
+        public ItemLightModel NIGHT_VISION_MALE { get { return this[IDs.LIGHT_NIGHT_VISION_MALE] as ItemLightModel; } }
         #endregion
 
         #region Scent Sprays
@@ -748,6 +765,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemModel UNIQUE_CHAR_DOCUMENT5 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT5]; } }
         public ItemModel UNIQUE_CHAR_DOCUMENT6 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT6]; } }
         public ItemModel VEGETABLE_SEEDS { get { return this[IDs.VEGETABLE_SEEDS]; } } //@MP (Release 5-5)
+        public ItemModel UNIQUE_ARMY_ACCESS_BADGE { get { return this[IDs.UNIQUE_ARMY_ACCESS_BADGE]; } } //@MP (Release 6-3)
         #endregion
 
         #endregion
@@ -1450,6 +1468,25 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 EquipmentPart = DollPart.RIGHT_HAND
             };
+
+            //@@MP - DYNAMITE (Release 6-3)
+            exData = DATA_EXPLOSIVE_C4;
+            exArray = new int[exData.RADIUS + 1];
+            for (int i = 0; i < exData.RADIUS + 1; i++)
+                exArray[i] = exData.DMG[i];
+            this[IDs.EXPLOSIVE_C4] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_C4,
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsStackable = true,
+                StackingLimit = exData.STACKLINGLIMIT,
+                FlavorDescription = exData.FLAVOR
+            };
+
+            this[IDs.EXPLOSIVE_C4_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_C4_PRIMED, this[IDs.EXPLOSIVE_C4] as ItemGrenadeModel)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND
+            };
             #endregion
 
             #region Barricade material
@@ -1620,6 +1657,19 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = ltData.FLAVOR
             };
 
+            ltData = DATA_LIGHT_NIGHT_VISION_FEMALE;
+            this[IDs.LIGHT_NIGHT_VISION_FEMALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_FEMALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_FEMALE)
+            {
+                EquipmentPart = DollPart.EYES,
+                FlavorDescription = ltData.FLAVOR
+            };
+
+            ltData = DATA_LIGHT_NIGHT_VISION_MALE;
+            this[IDs.LIGHT_NIGHT_VISION_MALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_MALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_MALE)
+            {
+                EquipmentPart = DollPart.EYES,
+                FlavorDescription = ltData.FLAVOR
+            };
             #endregion
 
             #region Scent sprays
@@ -1729,7 +1779,7 @@ namespace djack.RogueSurvivor.Gameplay
             };
             this[IDs.UNIQUE_CHAR_DOCUMENT6] = new ItemModel("CHAR document", "CHAR documents", GameImages.ITEM_CHAR_DOCUMENT)
             {
-                FlavorDescription = "Operation manual regarding restoring power to the facility."
+                FlavorDescription = "A memo regarding using generators to power to the facility in an emergency."
             };
 
             //@@MP (Release 5-3), (Release 5-5)
@@ -1738,6 +1788,14 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = @"""Cultivate the soil then plant these seeds. Return in the morning to harvest.""",
                 IsStackable = true,
                 StackingLimit = 9,
+            };
+
+            //@@MP (Release 6-3)
+            this[IDs.UNIQUE_ARMY_ACCESS_BADGE] = new ItemModel("Army office pass", "Army office pass", GameImages.ITEM_SUBWAY_BADGE)
+            {
+                DontAutoEquip = true,
+                EquipmentPart = DollPart.LEFT_HAND,
+                FlavorDescription = "Army office pass"
             };
             #endregion
 
@@ -1971,13 +2029,14 @@ namespace djack.RogueSurvivor.Gameplay
             ExplosiveData[] data;
 
             LoadDataFromCSV<ExplosiveData>(ui, path, "explosives items", ExplosiveData.COUNT_FIELDS, ExplosiveData.FromCSVLine,
-                new IDs[] { IDs.EXPLOSIVE_GRENADE, IDs.EXPLOSIVE_MOLOTOV, IDs.EXPLOSIVE_DYNAMITE }, //@@MP (Release 4)
+                new IDs[] { IDs.EXPLOSIVE_GRENADE, IDs.EXPLOSIVE_MOLOTOV, IDs.EXPLOSIVE_DYNAMITE, IDs.EXPLOSIVE_C4 }, //@@MP (Release 4)
                 out data);
 
             DATA_EXPLOSIVE_GRENADE = data[0];
             //@@MP (Release 4)
             DATA_EXPLOSIVE_MOLOTOV = data[1];
             DATA_EXPLOSIVE_DYNAMITE = data[2];
+            DATA_EXPLOSIVE_C4 = data[3]; //@@MP (Release 6-3)
 
             return true;
         }
@@ -2064,11 +2123,13 @@ namespace djack.RogueSurvivor.Gameplay
             LightData[] data;
 
             LoadDataFromCSV<LightData>(ui, path, "lights items", LightData.COUNT_FIELDS, LightData.FromCSVLine,
-                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT },
+                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT, IDs.LIGHT_NIGHT_VISION_FEMALE, IDs.LIGHT_NIGHT_VISION_MALE },
                 out data);
 
             DATA_LIGHT_FLASHLIGHT = data[0];
             DATA_LIGHT_BIG_FLASHLIGHT = data[1];
+            DATA_LIGHT_NIGHT_VISION_FEMALE = data[2]; //@@MP (Release 6-3)
+            DATA_LIGHT_NIGHT_VISION_MALE = data[3]; //@@MP (Release 6-3)
 
             return true;
         }

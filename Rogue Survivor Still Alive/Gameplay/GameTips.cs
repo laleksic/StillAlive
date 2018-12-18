@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace djack.RogueSurvivor.Gameplay
 {
@@ -10,14 +7,13 @@ namespace djack.RogueSurvivor.Gameplay
         public static string[] TIPS = 
         {
             // livings
-            "...livings tire faster at night?",
+            "...darkness is extra stressful, so livings tire faster at night?",
             "...some people will attack others for food?",
-            "...livings vision deteriorates when sleepy, under the rain or during the night?",
+            "...livings vision deteriorates when sleepy, in the rain or during the night?",
             "...seeing a living die in a fire is bad for one's sanity?",
             "...livings will usually wake others if a fire breaks out nearby?",
             // undeads
         	"...undeads can smell scents left by livings? Some sprays can cover your scent",
-            "...basic undeads are mindless and won't avoid traps and fires?",
             "...some undeads are smart and will avoid traps and fires?",
             "...seeing an undead kill a living is bad for one's sanity?",
             // doing stuff
@@ -31,20 +27,19 @@ namespace djack.RogueSurvivor.Gameplay
             "...you can try to revive people using the Medic skill?",
             "...reviving a living completely restores one's sanity?",
             // misc rules
-        	"...scents decay faster under the rain?",
+        	"...scents decay faster in the rain?",
         	"...firearms are more likely to jam in the rain?",
             "...wearing some outfits change the chances to get noticed by cops and gangs?",
-            "...trading with people and having friends are good for your sanity?",
+            "...trading and grouping with people are good for your sanity?",
             // followers
             "...you can use cellphones to keep contact with your followers?",
-            "...followers will help you push objects?",
+            "...followers can help you push objects?",
             "...followers can guard you while you sleep?",
             "...followers can guard your place while you are away?",
-            "...grouping with others is good for one's sanity?",
             // misc
             "...nowhere is truly safe? You'll be found sooner or later, so prepare...",
-            "...you might stumble on some unique characters? Keep your ear out...",
             "...you can plant vegie seeds with a shovel and a clear patch of ground?",
+            "...most walls and doors can be demolished with C4?"
         };
     }
 }

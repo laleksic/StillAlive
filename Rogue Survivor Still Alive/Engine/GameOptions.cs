@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -49,7 +46,6 @@ namespace djack.RogueSurvivor.Engine
             GAME_ZOMBIE_INVASION_DAILY_INCREASE,
             GAME_STARVED_ZOMBIFICATION_CHANCE,
             GAME_SANITY, //@@MP (Release 1)
-            GAME_MAX_REINCARNATIONS,
             //GAME_REINCARNATE_AS_RAT, //@@MP (Release 5-7)
             //GAME_REINCARNATE_TO_SEWERS, //@@MP (Release 5-7)
             //GAME_REINC_LIVING_RESTRICTED, //@@MP (Release 5-7)
@@ -674,7 +670,6 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_DISTRICT_SIZE:                    return "   (Map) District Map Size";
                 case IDs.GAME_MAX_CIVILIANS:                    return "(Living) Maximum Civilians Cap";
                 case IDs.GAME_MAX_DOGS:                         return "(Living) Maximum Dogs Cap";
-                case IDs.GAME_MAX_REINCARNATIONS:               return " (Reinc) Maximum Reincarnations Cap";
                 case IDs.GAME_MAX_UNDEADS:                      return "(Undead) Maximum Undeads Cap";
                 case IDs.GAME_NATGUARD_FACTOR:                  return " (Event) National Guard";
                 case IDs.GAME_NPC_CAN_STARVE_TO_DEATH:          return "(Living) NPCs can Starve to Death";
@@ -740,9 +735,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_MAX_CIVILIANS:
                     return "Maximum number of civilians on a map. More civilians makes the game easier for livings, but slows the game down.";
                 case IDs.GAME_MAX_DOGS:
-                    return "OPTION IS UNUSED YOU SHOULDNT BE READING THIS :)";
-                case IDs.GAME_MAX_REINCARNATIONS:
-                    return "Number of times you can reincarnate in a game after your character dies.\nSet it to 0 to disable reincarnation altogether.";
+                    return "OPTION IS UNUSED. YOU SHOULDNT BE READING THIS :)";
                 case IDs.GAME_MAX_UNDEADS:
                     return "Maximum number of undeads on a map. More undeads makes the game more challenging for livings, but slows the game down.";
                 case IDs.GAME_NATGUARD_FACTOR:
@@ -931,8 +924,6 @@ namespace djack.RogueSurvivor.Engine
                     return String.Format("{0:D3}*  (default {1:D3})", MaxCivilians, GameOptions.DEFAULT_MAX_CIVILIANS);
                 case IDs.GAME_MAX_DOGS:
                     return String.Format("{0:D3}*  (default {1:D3})", MaxDogs, GameOptions.DEFAULT_MAX_DOGS);
-                case IDs.GAME_MAX_REINCARNATIONS:
-                    return String.Format("{0:D3}   (default {1:D3})", MaxReincarnations, GameOptions.DEFAULT_MAX_REINCARNATIONS);
                 case IDs.GAME_MAX_UNDEADS:
                     return String.Format("{0:D3}*  (default {1:D3})", MaxUndeads, GameOptions.DEFAULT_MAX_UNDEADS);
                 case IDs.GAME_NATGUARD_FACTOR:

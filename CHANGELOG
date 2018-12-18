@@ -1,3 +1,32 @@
+STILL ALIVE 2.3.4.4 (aka Release 6-3, 18/12/2018) [Author: MP]
+---------------------
+
+Features:
+-Added night vision goggles.
+-All construction stores now have dynamite behind the counter (temporary change).
+-Added army facility.
+-Removed option to set the maximum available reincarnations. Locked to 7.
+-Added C4 explosives.
+-Reduced the number of CHAR buildings. Room for more variety in later releases.
+-Added rescue helicopter landing spot.
+-Added ability to pick helicopter rescue day during new game start.
+
+Fixes
+-Bumping against locked doors now gives the correct warning to the player.
+-Bank tellers now have the correct sprite.
+-Made primed explosives sprites more obvious.
+-Scorch marks adjusted for walls vs floors.
+-World generation will be retried if no suitable army base or CHAR underground candidate.
+
+Known issues:
+-Occasionally, popups (hints, trades) may not be displayed yet the player is still prompted for their interaction.
+-Changing districts performance with simulation enabled decays as the game goes on.
+-Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in later releases.
+-Music is louder than other sounds. They will be normalised in a future release.
+-Random crash/hang bug.
+-Occasionally, random turns take an extra second or two to process.
+
+
 STILL ALIVE 2.1.10.9 (aka Release 6-2, 12/11/2018) [Author: MP]
 ---------------------
 

@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
-
-using djack.RogueSurvivor.Data;
+﻿using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
-using djack.RogueSurvivor.Engine.MapObjects;
-using djack.RogueSurvivor.Gameplay;
-using djack.RogueSurvivor.Gameplay.AI;
-using djack.RogueSurvivor.UI;
+
 
 namespace djack.RogueSurvivor.Gameplay.Generators
 {

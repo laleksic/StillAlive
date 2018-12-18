@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
+﻿using System.Drawing;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
@@ -18,6 +14,7 @@ namespace djack.RogueSurvivor.Gameplay
 
             UNDEF = _FIRST,
 
+            FLOOR_ARMY, //@@MP (Release 6-3)
             FLOOR_ASPHALT,
             FLOOR_CONCRETE,
             FLOOR_GRASS,
@@ -54,6 +51,7 @@ namespace djack.RogueSurvivor.Gameplay
             WALL_STONE,
             WALL_SUBWAY,
             WALL_LIGHT_BROWN, //@@MP (Release 4)
+            WALL_ARMY_BASE, //@@MP (Release 6-3)
 
             _COUNT
         }
@@ -84,6 +82,7 @@ namespace djack.RogueSurvivor.Gameplay
             }
         }
 
+        public TileModel FLOOR_ARMY { get { return this[IDs.FLOOR_ARMY]; } } //@@MP (Release 6-3)
         public TileModel FLOOR_ASPHALT { get { return this[IDs.FLOOR_ASPHALT]; } }
         public TileModel FLOOR_CONCRETE { get { return this[IDs.FLOOR_CONCRETE]; } }
         public TileModel FLOOR_GRASS { get { return this[IDs.FLOOR_GRASS]; } }
@@ -120,6 +119,7 @@ namespace djack.RogueSurvivor.Gameplay
         public TileModel WALL_STONE { get { return this[IDs.WALL_STONE]; } }
         public TileModel WALL_SUBWAY { get { return this[IDs.WALL_SUBWAY]; } }
         public TileModel WALL_LIGHT_BROWN { get { return this[IDs.WALL_LIGHT_BROWN]; } } //@@MP (Release 4)
+        public TileModel WALL_ARMY_BASE { get { return this[IDs.WALL_ARMY_BASE]; } } //@@MP (Release 6-3)
         #endregion
 
         #region Init
@@ -131,6 +131,8 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.UNDEF] = TileModel.UNDEF;
 
             #region Floors
+            //@MP if you add another also add it to IsFloorModel()
+            this[IDs.FLOOR_ARMY] = new TileModel(GameImages.TILE_FLOOR_OFFICE, Color.Khaki, true, true); //@@MP - (Release 6-3)
             this[IDs.FLOOR_ASPHALT] = new TileModel(GameImages.TILE_FLOOR_ASPHALT, Color.Gray, true, true);
             this[IDs.FLOOR_CONCRETE] = new TileModel(GameImages.TILE_FLOOR_CONCRETE, Color.LightGray, true, true);
             this[IDs.FLOOR_GRASS] = new TileModel(GameImages.TILE_FLOOR_GRASS, Color.Green, true, true);
@@ -159,6 +161,7 @@ namespace djack.RogueSurvivor.Gameplay
             #endregion
 
             #region Walls
+            //@MP if you add another also add it to IsWallModel(), IsDestructibleWallModel() and RogueGame.ReplaceDestroyedWall()
             this[IDs.WALL_BRICK] = new TileModel(GameImages.TILE_WALL_BRICK, Color.DimGray, false, false);
             this[IDs.WALL_CHAR_OFFICE] = new TileModel(GameImages.TILE_WALL_CHAR_OFFICE, DRK_RED, false, false);
             this[IDs.WALL_HOSPITAL] = new TileModel(GameImages.TILE_WALL_HOSPITAL, Color.White, false, false);
@@ -167,6 +170,7 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.WALL_STONE] = new TileModel(GameImages.TILE_WALL_STONE, Color.DimGray, false, false);
             this[IDs.WALL_SUBWAY] = new TileModel(GameImages.TILE_WALL_STONE, Color.Blue, false, false);
             this[IDs.WALL_LIGHT_BROWN] = new TileModel(GameImages.TILE_WALL_LIGHT_BROWN, Color.BurlyWood, false, false); //@@MP (Release 4)
+            this[IDs.WALL_ARMY_BASE] = new TileModel(GameImages.TILE_WALL_ARMY_BASE, Color.OliveDrab, false, false); //@@MP (Release 6-3)
             #endregion
         }
 
@@ -176,6 +180,26 @@ namespace djack.RogueSurvivor.Gameplay
         public bool IsRoadModel(TileModel model)
         {
             return model == this[IDs.ROAD_ASPHALT_EW] || model == this[IDs.ROAD_ASPHALT_NS];
+        }
+
+        public bool IsWallModel(TileModel model) //@MP (Release 6-3)
+        {
+            return model == this[IDs.WALL_BRICK] || model == this[IDs.WALL_CHAR_OFFICE] || model == this[IDs.WALL_HOSPITAL] || model == this[IDs.WALL_LIGHT_BROWN] ||
+                model == this[IDs.WALL_POLICE_STATION] || model == this[IDs.WALL_STONE] || model == this[IDs.WALL_SUBWAY] || model == this[IDs.WALL_ARMY_BASE];
+        }
+
+        public bool IsFloorModel(TileModel model) //@MP (Release 6-3)
+        {
+            return model == this[IDs.FLOOR_ASPHALT] || model == this[IDs.FLOOR_BLUE_CARPET] || model == this[IDs.FLOOR_CONCRETE] || model == this[IDs.FLOOR_DIRT] ||
+                model == this[IDs.FLOOR_GRASS] || model == this[IDs.FLOOR_OFFICE] || model == this[IDs.FLOOR_PLANKS] || model == this[IDs.FLOOR_PLANTED] ||
+                model == this[IDs.FLOOR_RED_CARPET] || model == this[IDs.FLOOR_TILES] || model == this[IDs.FLOOR_WALKWAY] || model == this[IDs.RAIL_EW] ||
+                model == this[IDs.ROAD_ASPHALT_EW] || model == this[IDs.ROAD_ASPHALT_NS] || model == this[IDs.FLOOR_ARMY];
+        }
+
+        public bool IsDestructibleWallModel(TileModel model) //@MP (Release 6-3)
+        {
+            return model == this[IDs.WALL_BRICK] || model == this[IDs.WALL_CHAR_OFFICE] || model == this[IDs.WALL_HOSPITAL] || model == this[IDs.WALL_LIGHT_BROWN] ||
+                model == this[IDs.WALL_POLICE_STATION] || model == this[IDs.WALL_STONE] || model == this[IDs.WALL_SUBWAY] || model == this[IDs.WALL_ARMY_BASE];
         }
         #endregion
     }

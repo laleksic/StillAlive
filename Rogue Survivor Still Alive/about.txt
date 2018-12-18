@@ -99,6 +99,8 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Push wooden object : https://freesound.org/people/D%20W/sounds/146998/ by D W
 -Helicopter : https://freesound.org/people/UnderlinedDesigns/sounds/172667/ by UnderlinedDesigns
 -Night vision : https://freesound.org/people/Syna-Max/sounds/60345/ by Syna-Max
+-Access denied: https://freesound.org/people/hello_flowers/sounds/27425/ by hello_flowers
+-Access granted: https://freesound.org/people/thisusernameis/sounds/426889/ by thisusernameis
 
 
 IMAGE CREDITS
@@ -117,6 +119,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Tombstones : https://opengameart.org/content/roguelike-dungeonworld-tiles by Joe Williamson (Twitter= @JoeCreates)
 -Church wall hangings : https://opengameart.org/content/2d-castle-platformer-assets-2 by pudman
 -Bush : https://opengameart.org/content/bushes-2 by SpiderDave
+-Helicopter : https://opengameart.org/content/fall-to-the-earth by Gamelves.com
 
 
 MUSIC CREDITS

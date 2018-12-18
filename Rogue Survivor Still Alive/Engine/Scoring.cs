@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Gameplay;
@@ -27,6 +25,11 @@ namespace djack.RogueSurvivor.Engine
             CHAR_POWER_UNDERGROUND_FACILITY,
 
             KILLED_THE_SEWERS_THING,
+
+            //@@MP (Release 6-3)
+            ARMY_BROKE_INTO_OFFICE,
+            ARMY_FOUND_UNDERGROUND_BASE,
+            ARMY_POWER_UNDERGROUND_BASE,
 
             _COUNT,
         }
@@ -292,30 +295,56 @@ namespace djack.RogueSurvivor.Engine
             #region
             this.Achievements = new Achievement[(int)Achievement.IDs._COUNT];
 
-            #region CHAR related
+            #region CHAR-related
             InitAchievement(Achievement.IDs.CHAR_BROKE_INTO_OFFICE, 
                 new Achievement(Achievement.IDs.CHAR_BROKE_INTO_OFFICE,
                     "Broke into a CHAR Office",
-                    "Did not break into a XXX",
-                    new string[] { "Now try not to die too soon..." },
+                    "Did not break into a XXX office",
+                    new string[] { "There must be something to find here..." },
                     GameMusics.HEYTHERE,
                     1000));
 
             InitAchievement(Achievement.IDs.CHAR_FOUND_UNDERGROUND_FACILITY,
                 new Achievement(Achievement.IDs.CHAR_FOUND_UNDERGROUND_FACILITY,
                     "Found the CHAR Underground Facility",
-                    "Did not find the XXX",
-                    new string[] { "Now, where is the light switch?..." },
+                    "Did not find the XXX facility",
+                    new string[] { "Now, how do I get the power on...?" },
                     GameMusics.CHAR_UNDERGROUND_FACILITY,
                     2000));
 
             InitAchievement(Achievement.IDs.CHAR_POWER_UNDERGROUND_FACILITY,
                 new Achievement(Achievement.IDs.CHAR_POWER_UNDERGROUND_FACILITY,
-                    "Powered the CHAR Underground Facility",
-                    "Did not power on the XXX",
-                    new string[] { "**Personal message from the game developer : ",
-                                   "Sorry, the end game isn't implemented yet.",
-                                   "I'm aiming for mid-2018 :)"},
+                    "Powered up the CHAR Underground Facility",
+                    "Did not power on the XXX facility",
+                    new string[] { "You hear what sounds like a door unlocking ",
+                                    "somewhere nearby..." },
+                   GameMusics.CHAR_UNDERGROUND_FACILITY,
+                   3000));
+            #endregion
+
+            #region Army-related
+            //@@MP (Release 6-3)
+            InitAchievement(Achievement.IDs.ARMY_BROKE_INTO_OFFICE,
+                new Achievement(Achievement.IDs.ARMY_BROKE_INTO_OFFICE,
+                    "Broke into the Army Office",
+                    "Did not break into the XXX base",
+                    new string[] { "There must be more to it than this..." },
+                    GameMusics.HEYTHERE,
+                    1000));
+
+            InitAchievement(Achievement.IDs.ARMY_FOUND_UNDERGROUND_BASE,
+                new Achievement(Achievement.IDs.ARMY_FOUND_UNDERGROUND_BASE,
+                    "Found the Army underground base",
+                    "Did not find the XXX base",
+                    new string[] { "Now, how do I get the power on...?" },
+                    GameMusics.CHAR_UNDERGROUND_FACILITY,
+                    2000));
+
+            InitAchievement(Achievement.IDs.ARMY_POWER_UNDERGROUND_BASE,
+                new Achievement(Achievement.IDs.ARMY_POWER_UNDERGROUND_BASE,
+                    "Powered up the Army underground base",
+                    "Did not power on the XXX base",
+                    new string[] { "Helicopter evac is a go"},
                    GameMusics.CHAR_UNDERGROUND_FACILITY,
                    3000));
             #endregion

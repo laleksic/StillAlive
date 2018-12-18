@@ -342,6 +342,7 @@ namespace djack.RogueSurvivor.Engine
         readonly Color TINT_MIDNIGHT = Color.FromArgb(165, 165, 165);//195, 195, 195);
         readonly Color TINT_NIGHT = Color.FromArgb(165, 165, 165);//205, 205, 205);
         readonly Color TINT_SUNRISE = Color.FromArgb(240,215,215);//225, 225, 225);
+        readonly Color TINT_NIGHT_VISION = Color.FromArgb(25, 120, 30); //@@MP (Release 6-3)
         #endregion
 
         #region Hearing chances - avoid spamming messages.
@@ -1504,7 +1505,6 @@ namespace djack.RogueSurvivor.Engine
                    GameOptions.IDs.GAME_NATGUARD_FACTOR,
                    GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR,
                    // reinc
-                   GameOptions.IDs.GAME_MAX_REINCARNATIONS,
                    //GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED, //@@MP (Release 5-7)
                    //GameOptions.IDs.GAME_REINCARNATE_AS_RAT, //@@MP (Release 5-7)
                    //GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS //@@MP (Release 5-7)
@@ -1648,7 +1648,6 @@ namespace djack.RogueSurvivor.Engine
                                 if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._FIRST)
                                     s_Options.ZombifiedsUpgradeDays = (GameOptions.ZupDays)(s_Options.ZombifiedsUpgradeDays - 1);
                                 break;
-                            case GameOptions.IDs.GAME_MAX_REINCARNATIONS: --s_Options.MaxReincarnations; break;
                             //case GameOptions.IDs.GAME_REINCARNATE_AS_RAT: s_Options.CanReincarnateAsRat = !s_Options.CanReincarnateAsRat; break; //@@MP (Release 5-7)
                             //case GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS: s_Options.CanReincarnateToSewers = !s_Options.CanReincarnateToSewers; break; //@@MP (Release 5-7)
                             //case GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED: s_Options.IsLivingReincRestricted = !s_Options.IsLivingReincRestricted; break; //@@MP (Release 5-7)
@@ -1726,7 +1725,6 @@ namespace djack.RogueSurvivor.Engine
                                 if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._COUNT - 1)
                                     s_Options.ZombifiedsUpgradeDays = (GameOptions.ZupDays)(s_Options.ZombifiedsUpgradeDays + 1);
                                 break;
-                            case GameOptions.IDs.GAME_MAX_REINCARNATIONS: ++s_Options.MaxReincarnations; break;
                             //case GameOptions.IDs.GAME_REINCARNATE_AS_RAT: s_Options.CanReincarnateAsRat = !s_Options.CanReincarnateAsRat; break; //@@MP (Release 5-7)
                             //case GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS: s_Options.CanReincarnateToSewers = !s_Options.CanReincarnateToSewers; break; //@@MP (Release 5-7)
                             //case GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED: s_Options.IsLivingReincRestricted = !s_Options.IsLivingReincRestricted; break; //@@MP (Release 5-7)
@@ -2592,13 +2590,6 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region -Data files
-        void LoadData()
-        {
-            LoadDataSkills();
-            LoadDataItems();
-            LoadDataActors();
-        }
-
         void LoadDataActors()
         {
             m_GameActors.LoadFromCSV(m_UI, @"Resources\Data\Actors.csv");
@@ -2697,6 +2688,17 @@ namespace djack.RogueSurvivor.Engine
             {
                 if (!HandleNewCharacterName(out suppliedName))
                     return false;
+            }
+
+            /////////////////////////////
+            // Choose helicopter arrival day  //@@MP (Release 6-3)
+            /////////////////////////////
+            int chosenDay = 28;
+            if (!HandleNewGameHeliDay(out chosenDay))
+                return false;
+            else
+            {
+                m_Session.ArmyHelicopterRescue_Day = chosenDay;
             }
 
             // done
@@ -3588,6 +3590,160 @@ namespace djack.RogueSurvivor.Engine
             // done.
             return choiceDone;
         }
+
+        bool HandleNewGameHeliDay(out int chosenDay) //@@MP (Release 6-3)
+        {
+            bool loop = true;
+            bool choiceDone = false;
+            string enteredNumerals = "";
+            int maxDays = 99;
+            int maxCharactersAllowed = 2;
+
+            do
+            {
+                //display
+                m_UI.UI_Clear(Color.Black);
+                int gx, gy;
+                gx = gy = 0;
+                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] Choose Helicopter Arrival Day #", Session.DescGameMode(m_Session.GameMode)), gx, gy);
+                gy += 2 * BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, String.Format("--->  {0}     [Max:{1}, Default:28]", enteredNumerals, maxDays.ToString()), gx, gy);
+                gy += 2 * BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, String.Format("The army have established a safe zone and are evacuating towns all around the region."), gx, gy);
+                gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, String.Format("You must find a way to survive until helicopter rescue arrives on this day."), gx, gy);
+                gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, String.Format("You don't have to make it to the helicopter, but after that point you'll be on your own..."), gx, gy);
+                DrawFootnote(Color.White, "Type a day number, leave it blank for the default, or type 0 for a random day, ENTER to proceed, ESC to cancel");
+                m_UI.UI_Repaint();
+
+                // get menu action.
+                KeyEventArgs key = m_UI.UI_WaitKey();
+                switch (key.KeyCode)
+                {
+                    #region the character keys
+                    case Keys.NumPad0:
+                        enteredNumerals += "0";
+                        break;
+
+                    case Keys.D0:
+                        enteredNumerals += "0";
+                        break;
+
+                    case Keys.NumPad1:
+                        enteredNumerals += "1";
+                        break;
+
+                    case Keys.D1:
+                        enteredNumerals += "1";
+                        break;
+
+                    case Keys.NumPad2:
+                        enteredNumerals += "2";
+                        break;
+
+                    case Keys.D2:
+                        enteredNumerals += "2";
+                        break;
+
+                    case Keys.NumPad3:
+                        enteredNumerals += "3";
+                        break;
+
+                    case Keys.D3:
+                        enteredNumerals += "3";
+                        break;
+
+                    case Keys.NumPad4:
+                        enteredNumerals += "4";
+                        break;
+
+                    case Keys.D4:
+                        enteredNumerals += "4";
+                        break;
+
+                    case Keys.NumPad5:
+                        enteredNumerals += "5";
+                        break;
+
+                    case Keys.D5:
+                        enteredNumerals += "5";
+                        break;
+
+                    case Keys.NumPad6:
+                        enteredNumerals += "6";
+                        break;
+
+                    case Keys.D6:
+                        enteredNumerals += "6";
+                        break;
+
+                    case Keys.NumPad7:
+                        enteredNumerals += "7";
+                        break;
+
+                    case Keys.D7:
+                        enteredNumerals += "7";
+                        break;
+
+                    case Keys.NumPad8:
+                        enteredNumerals += "8";
+                        break;
+
+                    case Keys.D8:
+                        enteredNumerals += "8";
+                        break;
+
+                    case Keys.NumPad9:
+                        enteredNumerals += "9";
+                        break;
+
+                    case Keys.D9:
+                        enteredNumerals += "9";
+                        break;
+
+                    #endregion
+
+                    case Keys.Back: //backspace
+                        if (enteredNumerals.Length > 0)
+                            enteredNumerals = enteredNumerals.Remove(enteredNumerals.Length - 1);
+                        break;
+
+                    case Keys.Escape: //cancelled
+                        choiceDone = false;
+                        loop = false;
+                        break;
+
+                    case Keys.Enter: //name entered or gimme a random
+                        choiceDone = true;
+                        loop = false;
+                        break;
+                }
+
+                if (enteredNumerals.Length > maxCharactersAllowed) //trim it back to the character cap
+                    enteredNumerals = enteredNumerals.Remove(enteredNumerals.Length - 1);
+            }
+            while (loop);
+
+            // done.
+            if (enteredNumerals != "")
+                chosenDay = Convert.ToInt32(enteredNumerals);
+            else if (enteredNumerals == "0" || enteredNumerals == "00")
+            {
+                string difficulty = "TODO in Rel 6-5";
+                switch(difficulty)
+                {
+                    case "beginner": chosenDay = new Random().Next(07, 28); break;
+                    case "experienced": chosenDay = new Random().Next(14, 28); break;
+                    case "journeyman": chosenDay = new Random().Next(21, 50); break;
+                    case "master": chosenDay = new Random().Next(28, 50); break;
+                    default: chosenDay = new Random().Next(21, 28); break;
+                }
+            }
+            else
+                chosenDay = 28; //user didn't pick a day
+            return choiceDone;
+        }
 #endregion
 
         void StartNewGame(string suppliedName) //@@MP - added parameter for user to supply a name (Release 5-7)
@@ -3596,9 +3752,23 @@ namespace djack.RogueSurvivor.Engine
             m_MusicManager.StopAll();
 
             // generate world.
-            GenerateWorld(true, s_Options.CitySize, suppliedName); //@@MP - added parameter for user to supply a name (Release 5-7)
+            bool worldMade = false;
+            do
+            {
+                worldMade = GenerateWorld(true, s_Options.CitySize, suppliedName); //@@MP - added parameter for user to supply a name (Release 5-7)
+            }
+            while (worldMade == false);
             CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
             DoHospitalPowerOn(); //@@MP (Release 6-2)
+            /*Item temp = new ItemGrenade(GameItems.C4, GameItems.C4_PRIMED);
+            m_Player.Inventory.AddAll(temp);
+            m_Player.Inventory.AddAll(temp);
+            Item nvg = new ItemLight(GameItems.NIGHT_VISION_MALE);
+            m_Player.Inventory.AddAll(nvg);
+            Item gun = new ItemRangedWeapon(GameItems.ARMY_RIFLE);
+            m_Player.Inventory.AddAll(gun);
+            Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
+            m_Player.Inventory.AddAll(ammo);*/
 
             // scoring : hello there.
             m_Session.Scoring.AddVisit(m_Player.Location.Map); //@@MP - unused parameter (Release 5-7)
@@ -3611,12 +3781,13 @@ namespace djack.RogueSurvivor.Engine
             // welcome banner.
             ClearMessages();
             ClearMessagesHistory();
-            AddMessage(new Message("******************************************", 0, Color.LightGreen));
-            AddMessage(new Message("* Welcome to Rogue Survivor: Still Alive *", 0, Color.LightGreen));
-            AddMessage(new Message("******************************************", 0, Color.LightGreen));
+            AddMessage(new Message("*** Welcome to Rogue Survivor: Still Alive ***", 0, Color.LightGreen));
+            AddMessage(new Message("**********************************************", 0, Color.LightGreen));
             AddMessage(new Message(String.Format("Press {0} for help", s_KeyBindings.Get(PlayerCommand.HELP_MODE)), 0, Color.LightGreen));
             AddMessage(new Message(String.Format("Press {0} to redefine keys", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE)), 0, Color.LightGreen));
             AddMessage(new Message(String.Format("Press {0} for a legend of icons", s_KeyBindings.Get(PlayerCommand.ICONS_LEGEND)), 0, Color.LightGreen));
+            int iTip = m_Rules.Roll(0, GameTips.TIPS.Length);
+            AddMessage(new Message(String.Format( "Did you know that", GameTips.TIPS[iTip]), 0, Color.LightGreen)); //@@MP (Release 6-3)
             AddMessage(new Message("<press ENTER>", 0, Color.Yellow));
             //RefreshPlayer();
             RedrawPlayScreen();
@@ -3648,6 +3819,9 @@ namespace djack.RogueSurvivor.Engine
             ClearMessagesHistory();
             RefreshPlayer();
             AddMessage(new Message(String.Format(isUndead ? "{0} rises..." : "{0} hears commotion...", m_Player.Name), 0, Color.Red));
+            AddMessage(new Message(String.Format(isUndead ? "Hungry..." : "Oh my god! The world has gone to hell!", m_Player.Name), 0, Color.Red)); //@@MP (Release 6-3)
+            AddMessage(new Message(String.Format(isUndead ? "Must eat..." : "I need to find a way out of here!", m_Player.Name), 0, Color.Red)); //@@MP (Release 6-3)
+            AddMessage(new Message(String.Format(isUndead ? "Hungry..." : "Surely the army will send a rescue force...", m_Player.Name), 0, Color.Red)); //@@MP (Release 6-3)
             //AddMessage(new Message("<press ENTER>", 0, Color.Yellow));
             RedrawPlayScreen();
             //WaitEnter();
@@ -3668,8 +3842,8 @@ namespace djack.RogueSurvivor.Engine
             StartSimThread();
         }
 
-#region GENERATING WORLD
-        void GenerateWorld(bool isVerbose, int size, string suppliedName) //@@MP - added parameter for user to supply a name (Release 5-7)
+        #region GENERATING WORLD
+        private bool GenerateWorld(bool isVerbose, int size, string suppliedName) //@@MP - added parameter for user to supply a name (Release 5-7)
         {
             // say so.
             if (isVerbose)
@@ -3715,7 +3889,7 @@ namespace djack.RogueSurvivor.Engine
             // Create districts maps
             /////////////////////////
             // Surface, Sewers and Subways.
-#region
+            #region
             for (int x = 0; x < world.Size; x++)
             {
                 for (int y = 0; y < world.Size; y++)
@@ -3747,7 +3921,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
             ///////////////
             // Unique Maps
@@ -3758,7 +3932,10 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_DrawStringBold(Color.White, "Generating unique maps...", 0, 0);
                 m_UI.UI_Repaint();
             }
+            m_Session.UniqueMaps.ArmyBase = CreateUniqueMap_ArmyUndegroundBase(world); //@MP (Release 6-3)
+            if (m_Session.UniqueMaps.ArmyBase == null) return false; //@@MP - the army base couln't be generated for some reason
             m_Session.UniqueMaps.CHARUndergroundFacility = CreateUniqueMap_CHARUndegroundFacility(world);
+            if (m_Session.UniqueMaps.CHARUndergroundFacility == null) return false; //@@MP - the char base couln't be generated for some reason (Release 6-3)
 
             /////////////////
             // Unique Actors
@@ -3786,13 +3963,13 @@ namespace djack.RogueSurvivor.Engine
             /////////////////
             // Unique Items
             /////////////////
-            // "Subway Worker Badge" - somewhere on the subway tracks...
-            m_Session.UniqueItems.TheSubwayWorkerBadge = SpawnUniqueSubwayWorkerBadge(world);
+            m_Session.UniqueItems.TheSubwayWorkerBadge = SpawnUniqueSubwayWorkerBadge(world); // "Subway Worker Badge" - somewhere on the subway tracks...
+            m_Session.UniqueItems.TheArmyOfficePass = SpawnUniqueArmyOfficePass(world); //@@MP - access card for the army offices (Release 6-3)
 
             //////////////////
             // Link districts
             //////////////////
-#region
+            #region
             for (int x = 0; x < world.Size; x++)
             {
                 for (int y = 0; y < world.Size; y++)
@@ -3804,7 +3981,7 @@ namespace djack.RogueSurvivor.Engine
                         m_UI.UI_Repaint();
                     }
 
-#region Entry maps (surface)
+                    #region Entry maps (surface)
                     // add exits (from and to).
                     Map map = world[x, y].EntryMap;
 
@@ -3856,9 +4033,9 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
 
-#region Sewers
+                    #region Sewers
                     map = world[x, y].SewersMap;
                     if (y > 0)
                     {
@@ -3897,9 +4074,9 @@ namespace djack.RogueSurvivor.Engine
 
                         }
                     }
-#endregion
+                    #endregion
 
-#region Subways
+                    #region Subways
                     map = world[x, y].SubwayMap;
                     if (map != null)
                     {
@@ -3929,20 +4106,140 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
                 }
             }
-#endregion
+            #endregion
 
             //////////////////////////////////////////
             // Easter egg: "roguedjack was here" tag.
             //////////////////////////////////////////
-#region
+            #region
             Map easterEggTagMap = world[0, 0].SewersMap;
             easterEggTagMap.RemoveMapObjectAt(1, 1);
             easterEggTagMap.GetTileAt(1, 1).RemoveAllDecorations();
             easterEggTagMap.GetTileAt(1, 1).AddDecoration(GameImages.DECO_ROGUEDJACK_TAG);
-#endregion
+            #endregion
+
+            //////////////////////////////////////////
+            // Pick location for helicopter rescue //@@MP (Release 6-3)
+            //////////////////////////////////////////
+            #region
+            if (isVerbose)
+            {
+                m_UI.UI_Clear(Color.Black);
+                m_UI.UI_DrawStringBold(Color.White, "Picking helicopter location...", 0, 0);
+                m_UI.UI_Repaint();
+            }
+            // 1. Find all green districts
+            // 2. Pick one green district at random.
+            // 3. Find a clear spot for helicopter landing (4x2 tiles).
+
+            // 1. Find all green districts with offices.
+            List<District> goodDistricts = null;
+            for (int x = 0; x < world.Size; x++)
+                for (int y = 0; y < world.Size; y++)
+                {
+                    if (world[x, y].Kind == DistrictKind.GREEN)
+                    {
+                        bool hasPark = false;
+                        foreach (Zone z in world[x, y].EntryMap.Zones)
+                        {
+                            if (z.Name.Contains("Park"))
+                            {
+                                hasPark = true;
+                                break;
+                            }
+                        }
+                        if (hasPark)
+                        {
+                            if (goodDistricts == null)
+                                goodDistricts = new List<District>();
+                            goodDistricts.Add(world[x, y]);
+                        }
+                    }
+                }
+
+            // 2. Pick one green district at random.
+            if (goodDistricts == null)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "world generation failure: no green district spot for helicopter landing");
+                return false;
+                //throw new InvalidOperationException("world generation failure: no green district spot for helicopter landing");
+            }
+            //District chosenDistrict = goodDistricts[m_Rules.Roll(0, goodDistricts.Count)];
+
+            // 3. Find a spot with a 4x2 rectangle of object-free grass tiles.
+            bool foundSpot = false;
+            District chosenDistrict = null;
+            Random r = new Random();
+            foreach (int i in Enumerable.Range(0, goodDistricts.Count).OrderBy(x => r.Next()))
+            {
+                /*Map heliRescueMap = chosenDistrict.EntryMap;
+                foreach (Zone z in chosenDistrict.EntryMap.Zones)*/
+                foreach (Zone z in goodDistricts[i].EntryMap.Zones)
+                {
+                    if (z.Name.Contains("Park"))
+                    {
+                        Map heliRescueMap = goodDistricts[i].EntryMap;
+
+                        //check if there's clear space for a chopper to land
+                        for (int x = z.Bounds.Left; x < z.Bounds.Right; x++)
+                        {
+                            for (int y = z.Bounds.Top; y < z.Bounds.Bottom; y++)
+                            {
+                                if ((heliRescueMap.GetTileAt(x, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x, y) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 1, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 1, y) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 2, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 2, y) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 3, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 3, y) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x, y + 1) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 1, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 1, y + 1) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 2, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 2, y + 1) != null))
+                                    continue;
+
+                                if ((heliRescueMap.GetTileAt(x + 3, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 3, y + 1) != null))
+                                    continue;
+
+                                //if we've made it this far, we have found a suitable 4*2 rectangle of tiles where the chopper can 'land'
+                                foundSpot = true;
+                                m_Session.ArmyHelicopterRescue_DistrictRef = World.CoordToString(goodDistricts[i].WorldPosition.X, goodDistricts[i].WorldPosition.Y);
+                                m_Session.ArmyHelicopterRescue_Coordinates = new Point(x, y);
+                                chosenDistrict = goodDistricts[i];
+                                break;
+                            }
+                            if (foundSpot == true)
+                                break;
+                        }
+                    }
+                    if (foundSpot == true)
+                        break;
+                }
+                if (foundSpot == true)
+                    break;
+            }
+            if (foundSpot == true)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Found suitable district for helicopter landing: " + (World.CoordToString(chosenDistrict.WorldPosition.X, chosenDistrict.WorldPosition.Y)));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Found suitable coords for helicopter landing: {" + m_Session.ArmyHelicopterRescue_Coordinates.X + "}-{" + m_Session.ArmyHelicopterRescue_Coordinates.Y + "}");
+            }
+            else
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Could not find suitable location for helicopter landing");
+                return false;
+            }
+            #endregion
 
             //////////////////////////////
             // Spawn player on center map
@@ -4010,6 +4307,7 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_DrawStringBold(Color.White, "Generating game world... done!", 0, 0);
                 m_UI.UI_Repaint();
             }
+            return true;
         }
 
         static bool CheckIfExitIsGood(Map toMap, Point to) //Map fromMap, Point from, ) //@@MP - made static, unused parameter (Release 5-7)
@@ -4405,6 +4703,53 @@ namespace djack.RogueSurvivor.Engine
             return new UniqueItem() { TheItem = it, IsSpawned = true };
         }
 
+        UniqueItem SpawnUniqueArmyOfficePass(World world) //@@MP (Release 6-3)
+        {
+            ///////////////////////////////////
+            // 1. Select the CHAR underground
+            // 2. Pick a clear spot
+            // 3. Drop it.
+            ///////////////////////////////////
+
+            Item it = new Item(GameItems.UNIQUE_ARMY_ACCESS_BADGE) { IsUnique = true, IsForbiddenToAI = true };
+
+            // 1. Select the CHAR Underground
+            Map map = m_Session.UniqueMaps.CHARUndergroundFacility.TheMap;
+
+            // 2. Pick a random position near a lab vat
+            int blah = 0;
+            foreach (MapObject mapObj in map.MapObjects)
+            {
+                if (mapObj.ImageID == GameImages.OBJ_CHAR_VAT)
+                {
+                    Point next = mapObj.Location.Position;
+                    foreach (Direction d in Direction.COMPASS)
+                    {
+                        if (map.IsWalkable(next))
+                        {
+                            Inventory groundInv = map.GetItemsAt(next);
+                            MapObject adjacentObj = map.GetMapObjectAt(next);
+                            if (groundInv == null && adjacentObj == null) //looking for a spot clear of items and objects
+                            {
+                                // 3. Drop it.
+                                map.DropItemAt(it, next);
+                                SplatterBlood(map, next); // blood of a deceased army member.
+
+                                // done.
+                                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Army pass location: " + next.ToString());
+                                return new UniqueItem() { TheItem = it, IsSpawned = true };
+                            }
+                        }
+                        next = mapObj.Location.Position + d;
+                    }
+                }
+            }
+
+            //fall through if no spot was found. (if no spot was found, someting went very wrong)
+            throw new InvalidOperationException("Suitable army pass location not found");
+            //return new UniqueItem() { TheItem = it, IsSpawned = false };
+        }
+
         UniqueMap CreateUniqueMap_CHARUndegroundFacility(World world)
         {
             ////////////////////////////////////////////////
@@ -4441,7 +4786,9 @@ namespace djack.RogueSurvivor.Engine
             // 2. Pick one business district at random.
             if (goodDistricts == null)
             {
-                throw new InvalidOperationException("world has no business districts with offices");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "world has no business districts with offices"); //@@MP (Release 6-3)
+                return null; //@@MP (Release 6-3)
+                //throw new InvalidOperationException("world has no business districts with offices");
             }
             District chosenDistrict = goodDistricts[m_Rules.Roll(0, goodDistricts.Count)];
 
@@ -4463,9 +4810,69 @@ namespace djack.RogueSurvivor.Engine
             return new UniqueMap() { TheMap = map };
 
         }
-#endregion
 
-#region -District Maps
+        UniqueMap CreateUniqueMap_ArmyUndegroundBase(World world) //@@MP (Release 6-3)
+        {
+            ////////////////////////////////////////////////
+            // 1. Find all green districts with army offices.
+            // 2. Pick one green district at random.
+            // 3. Generate underground map there.
+            ////////////////////////////////////////////////
+
+            // 1. Find all green districts with offices.
+            List<District> goodDistricts = null;
+            for (int x = 0; x < world.Size; x++)
+                for (int y = 0; y < world.Size; y++)
+                {
+                    if (world[x, y].Kind == DistrictKind.GREEN)// || world[x, y].Kind == DistrictKind.GENERAL)
+                    {
+                        bool hasOffice = false;
+                        foreach (Zone z in world[x, y].EntryMap.Zones)
+                        {
+                            if (z.HasGameAttribute(ZoneAttributes.IS_ARMY_OFFICE))
+                            {
+                                hasOffice = true;
+                                break;
+                            }
+                        }
+                        if (hasOffice)
+                        {
+                            if (goodDistricts == null)
+                                goodDistricts = new List<District>();
+                            goodDistricts.Add(world[x, y]);
+                        }
+                    }
+                }
+
+            // 2. Pick one green district at random.
+            if (goodDistricts == null)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "world generation failure: no green districts with army offices");
+                return null;
+                //throw new InvalidOperationException("world generation failure: no green districts with army offices");
+            }
+            District chosenDistrict = goodDistricts[m_Rules.Roll(0, goodDistricts.Count)];
+
+            // 3. Generate underground map there.
+            List<Zone> offices = new List<Zone>();
+            foreach (Zone z in chosenDistrict.EntryMap.Zones)
+            {
+                if (z.HasGameAttribute(ZoneAttributes.IS_ARMY_OFFICE))
+                {
+                    offices.Add(z);
+                }
+            }
+            Zone chosenOffice = offices[m_Rules.Roll(0, offices.Count)];
+            Point baseEntryPos;  // alpha10
+            Map map = m_TownGenerator.GenerateUniqueMap_ArmyBase(chosenDistrict.EntryMap, chosenOffice, out baseEntryPos);
+            map.District = chosenDistrict;
+            map.Name = String.Format("Army Base @{0}-{1}", baseEntryPos.X, baseEntryPos.Y);
+            chosenDistrict.AddUniqueMap(map);
+            return new UniqueMap() { TheMap = map };
+        }
+        #endregion
+
+        #region -District Maps
         DistrictKind GenerateDistrictKind(int gridX, int gridY) //@@MP - unused parameter (Release 5-7)
         {
             // Decide district kind - some districts are harcoded:
@@ -4739,8 +5146,10 @@ namespace djack.RogueSurvivor.Engine
             // first run inits.
             InitDirectories();
 
-            // load data.
-            LoadData();
+            // load data files.
+            LoadDataSkills();
+            LoadDataItems();
+            LoadDataActors();
 
             // load options.
             LoadOptions();
@@ -4898,7 +5307,10 @@ namespace djack.RogueSurvivor.Engine
             //@@MP - relocated from music to sfx (Release 6-1)
             m_SFXManager.Load(GameSounds.REINCARNATE, GameSounds.REINCARNATE_FILE);
             //@@MP (Release 6-2)
-            m_SFXManager.Load(GameSounds.NIGHTVISION, GameSounds.NIGHTVISION_FILE);
+            m_SFXManager.Load(GameSounds.NIGHT_VISION, GameSounds.NIGHT_VISION_FILE);
+            //@@MP (Release 6-3)
+            m_SFXManager.Load(GameSounds.ACCESS_DENIED, GameSounds.ACCESS_DENIED_FILE);
+            m_SFXManager.Load(GameSounds.ACCESS_GRANTED, GameSounds.ACCESS_GRANTED_FILE);
 
             //AMBIENT SOUND
             m_AmbientSFXManager.Load(GameAmbients.RAIN_OUTSIDE, GameAmbients.RAIN_OUTSIDE_FILE); //@MP (Release 5-3), separated to own instance (Release 6-1)
@@ -5228,7 +5640,7 @@ namespace djack.RogueSurvivor.Engine
             //           3.3.2 Regen AP & STA. Stop tired actors from running.
             //           3.3.3 Exhausted collapses
             //           3.3.4 Sanity and trust.
-            //           3.3.5 Check batteries : lights, trackers.
+            //           3.3.5 Check batteries : lights, trackers, NVGs.
             // 4. Check explosives.
             //      4.1 Update fuses.
             //      4.2 Explode.
@@ -5810,51 +6222,78 @@ namespace djack.RogueSurvivor.Engine
                                             Conjugate(actor.Leader, VERB_FEEL), actor.Name, HimOrHer(actor.Leader))));
                         }
                     }
-#endregion
-#endregion
+                    #endregion
+                    #endregion
 
-                    // 3.3.5 Check batteries : lights, trackers.
-#region
+                    // 3.3.5 Check batteries : lights, trackers, NVGs.
+                    #region
+                    //night vision goggles //@@MP (Release 6-3)
+                    Item eyesItem = actor.GetEquippedItem(DollPart.EYES);
+                    if (eyesItem == null)
+                    {
+                        //do nothing, we still need to check for lights and trackers
+                    }
+                    else
+                    {
+                        ItemLight NVGs = eyesItem as ItemLight;
+                        if (NVGs != null)
+                        {
+                            if (NVGs.Batteries > 0)
+                            {
+                                --NVGs.Batteries;
+                                if (NVGs.Batteries <= 0)
+                                {
+                                    if (actor.IsPlayer)
+                                    {
+                                        AddMessage(MakeMessage(actor, String.Format(": {0} ran out of battery.", NVGs.TheName)));
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     Item leftItem = actor.GetEquippedItem(DollPart.LEFT_HAND);
                     if (leftItem == null)
                         continue;
-
-                    // light?
-                    ItemLight light = leftItem as ItemLight;
-                    if (light != null)
+                    else
                     {
-                        if (light.Batteries > 0)
+                        // light?
+                        ItemLight light = leftItem as ItemLight;
+                        if (light != null)
                         {
-                            --light.Batteries;
-                            if (light.Batteries <= 0)
+                            if (light.Batteries > 0)
                             {
-                                if (IsVisibleToPlayer(actor))
+                                --light.Batteries;
+                                if (light.Batteries <= 0)
                                 {
-                                    AddMessage(MakeMessage(actor, String.Format(": {0} light goes off.", light.TheName)));
+                                    if (IsVisibleToPlayer(actor))
+                                    {
+                                        AddMessage(MakeMessage(actor, String.Format(": {0} light goes off.", light.TheName)));
+                                    }
                                 }
                             }
+                            continue;
                         }
-                        continue;
-                    }
 
-                    // tracker?
-                    ItemTracker tracker = leftItem as ItemTracker;
-                    if (tracker != null)
-                    {
-                        if (tracker.Batteries > 0)
+                        // tracker?
+                        ItemTracker tracker = leftItem as ItemTracker;
+                        if (tracker != null)
                         {
-                            --tracker.Batteries;
-                            if (tracker.Batteries <= 0)
+                            if (tracker.Batteries > 0)
                             {
-                                if (IsVisibleToPlayer(actor))
+                                --tracker.Batteries;
+                                if (tracker.Batteries <= 0)
                                 {
-                                    AddMessage(MakeMessage(actor, String.Format(": {0} goes off.", tracker.TheName)));
+                                    if (IsVisibleToPlayer(actor))
+                                    {
+                                        AddMessage(MakeMessage(actor, String.Format(": {0} goes off.", tracker.TheName)));
+                                    }
                                 }
                             }
+                            continue;
                         }
-                        continue;
                     }
-#endregion
+                    #endregion
                 }
 #endregion
 #endregion
@@ -6774,9 +7213,7 @@ namespace djack.RogueSurvivor.Engine
             graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR), s_Options.SuppliesDropFactor)); //@@MP (Release 5-2)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.UI_COMBAT_ASSISTANT), s_Options.IsCombatAssistantOn ? "on" : "off")); //@@MP (Release 5-2)
             /*if (s_Options.IsLivingReincRestricted) //if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS) //@@MP (Release 5-2), disabled IsLivingReincRestricted (Release 5-7)
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED), s_Options.IsLivingReincRestricted ? "on" : "off"));
-            else*/
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_REINCARNATIONS), s_Options.MaxReincarnations));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED), s_Options.IsLivingReincRestricted ? "on" : "off"));*/
             graveyard.Append(" ");
 #endregion
 
@@ -7383,7 +7820,7 @@ namespace djack.RogueSurvivor.Engine
                 return false;
 
             // forbid some special maps.
-            if (a.Location.Map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap)
+            if (a.Location.Map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap || a.Location.Map == m_Session.UniqueMaps.ArmyBase.TheMap) //@@MP - added army base (Release 6-3)
                 return false;
 
             // forbid some special actors.
@@ -8289,7 +8726,7 @@ namespace djack.RogueSurvivor.Engine
                 map == m_Session.UniqueMaps.Hospital_Offices.TheMap || map == m_Session.UniqueMaps.Hospital_Patients.TheMap ||
                 map == m_Session.UniqueMaps.Hospital_Power.TheMap || map == m_Session.UniqueMaps.Hospital_Storage.TheMap ||
                 map == m_Session.UniqueMaps.PoliceStation_OfficesLevel.TheMap || map == m_Session.UniqueMaps.PoliceStation_JailsLevel.TheMap ||
-                map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap)
+                map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap || map == m_Session.UniqueMaps.ArmyBase.TheMap)
             { //in case they're already playing ie the rain stopped this turn
                 if (m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_OUTSIDE))
                     m_AmbientSFXManager.Stop(GameAmbients.RAIN_OUTSIDE);
@@ -10801,16 +11238,6 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        static bool IsItemLiquorForMolotov(Item item) //@@MP - checks if item is a liquor of a suitable type for a molotov (Release 4), made static (Release 5-7)
-        {
-            if (item == null)
-                return false;
-            else if ((item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER) || (item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR))
-                return true;
-            else
-                return false;
-        }
-
         bool HandlePlayerThrowGrenade(Actor player)
         {
             bool loop = true;
@@ -11383,8 +11810,7 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
-        // alpha10
-        bool HandlePlayerPull(Actor player)
+        bool HandlePlayerPull(Actor player) // alpha10
         {
             // fail immediatly for stupid cases.
             if (!m_Rules.HasActorPushAbility(player))
@@ -11485,8 +11911,7 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
-        // alpha10
-        bool HandlePlayerPullObject(Actor player, MapObject mapObj)
+        bool HandlePlayerPullObject(Actor player, MapObject mapObj) // alpha10
         {
             bool loop = true;
             bool actionDone = false;
@@ -11542,8 +11967,7 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
-        // alpha10
-        bool HandlePlayerPullActor(Actor player, Actor other)
+        bool HandlePlayerPullActor(Actor player, Actor other) // alpha10
         {
             bool loop = true;
             bool actionDone = false;
@@ -13518,6 +13942,29 @@ namespace djack.RogueSurvivor.Engine
                                 gx += 25 * BOLD_LINE_SPACING;
                             }
                         }
+                        //@@MP (Release 6-3)
+                        // - Army base?
+                        if (m_Session.PlayerKnows_ArmyBaseLocation && map == m_Session.UniqueMaps.ArmyBase.TheMap.District.EntryMap)
+                        {
+                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format("at {0} : {1}.", World.CoordToString(x, y), m_Session.UniqueMaps.ArmyBase.TheMap.Name), gx, gy);
+                            gy += BOLD_LINE_SPACING;
+                            if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
+                            {
+                                gy = buildingsY;
+                                gx += 25 * BOLD_LINE_SPACING;
+                            }
+                        }
+                        // Helicopter rescue location
+                        if (m_Session.PlayerKnows_HelicopterArrivalDetails && map == m_Session.UniqueMaps.ArmyBase.TheMap.District.EntryMap)
+                        {
+                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format("at {0} : {1}{2} on day {3}.", m_Session.ArmyHelicopterRescue_DistrictRef, "Helicopter rescue spot @", (m_Session.ArmyHelicopterRescue_Coordinates.X + "-" + m_Session.ArmyHelicopterRescue_Coordinates.Y), m_Session.ArmyHelicopterRescue_Day.ToString()), gx, gy);
+                            gy += BOLD_LINE_SPACING;
+                            if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
+                            {
+                                gy = buildingsY;
+                                gx += 25 * BOLD_LINE_SPACING;
+                            }
+                        }
                     }
 #endregion
 #endregion
@@ -15364,6 +15811,7 @@ namespace djack.RogueSurvivor.Engine
                         AnimDelay(DELAY_LONG); //@MP - make it look like the fire spreads, also pads out to match the sound more
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED:
+                    case (int)GameItems.IDs.EXPLOSIVE_C4_PRIMED: //@@MP (Release 6-3)
                         m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_VISIBLE, AudioPriority.PRIORITY_EVENT);
                         AnimDelay(DELAY_SHORT);
                         break;
@@ -15383,6 +15831,7 @@ namespace djack.RogueSurvivor.Engine
                         m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_AUDIBLE, AudioPriority.PRIORITY_BGM); //@@MP - it's close enough that it would still be audible
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED:
+                    case (int)GameItems.IDs.EXPLOSIVE_C4_PRIMED: //@@MP (Release 6-3)
                         m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_VISIBLE, AudioPriority.PRIORITY_EVENT);
                         break;
                     default: throw new ArgumentOutOfRangeException("itemModel","unhandled explosive type");
@@ -15391,7 +15840,7 @@ namespace djack.RogueSurvivor.Engine
             }
             else if (location.Map == m_Player.Location.Map)
             {
-                if (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED)
+                if ((itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED) || (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_C4_PRIMED)) //@@MP (Release 6-3))
                 {
                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_AUDIBLE, AudioPriority.PRIORITY_EVENT); //@@MP - it's close enough that it would still be super loud
                     AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You hear a huge explosion", location.Position));
@@ -15660,7 +16109,7 @@ namespace djack.RogueSurvivor.Engine
             if (blast.CanDestroyWalls)
             {
                 //@@MP (Release 3)
-                if (map.IsDestructibleWallAt(location))
+                if (map.IsDestructibleWallAt(this, location))
                 {
                     ReplaceDestroyedWall(location);
                     wallDestroyed = true;
@@ -15764,6 +16213,9 @@ namespace djack.RogueSurvivor.Engine
                     break;
                 case @"Tiles\wall_light_brown": //@@MP (Release 4)
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_LIGHT_BROWN_DAMAGED);
+                    break;
+                case @"Tiles\wall_army_base": //@@MP (Release 6-3)
+                    map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_ARMY_BASE_DAMAGED);
                     break;
                 default:
                     throw new NotSupportedException("unexpected ImageID for TileModel of given wall");
@@ -16220,11 +16672,27 @@ namespace djack.RogueSurvivor.Engine
             else if (IsItemLiquorForMolotov(it) && !actor.IsPlayer && m_Rules.RollChance(10) && !actor.Model.Abilities.IsUndead) //@MP - chance for livings to make molotovs (Release 5-1), moved up into ElseIf and shuffled order to improve performance (Release 5-3)
             {
                 int liquorQuantity = it.Quantity;
-                map.RemoveItemAt(it, position);//remove the liquor and replace with molotovs
+                map.RemoveItemAt(it, position); //remove the liquor and replace with molotovs
                 for (int i = 0; i != liquorQuantity; i++)
                 {
                     Item molotov = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
                     map.DropItemAt(molotov, position);
+                }
+            }
+            else if (it as ItemLight != null) //@@MP (Release 6-3)
+            {
+                //@@MP - if a man has the female size night vision goggles, switch them (and vice versa)
+                if ((it.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_MALE) && !actor.Model.DollBody.IsMale)
+                {
+                    DiscardItem(actor, it);
+                    Item nightVision = new ItemLight(GameItems.NIGHT_VISION_FEMALE);
+                    actor.Inventory.AddAll(nightVision);
+                }
+                else if ((it.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_FEMALE) && actor.Model.DollBody.IsMale)
+                {
+                    DiscardItem(actor, it);
+                    Item nightVision = new ItemLight(GameItems.NIGHT_VISION_MALE);
+                    actor.Inventory.AddAll(nightVision);
                 }
             }
 
@@ -16301,6 +16769,12 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="it"></param>
         public void DoEquipItem(Actor actor, Item it, bool showMessage = false) //@@MP - showMessage based on alpha 10 (Release 6-1)
         {
+            if (!m_Session.WorldTime.IsNight && m_Session.CurrentMap.Lighting == Lighting.LIT && IsItemNightVision(it)) //@@MP (Release 6-3)
+            {
+                AddMessage(MakeErrorMessage("It's too bright to equip night vision goggles."));
+                return;
+            }
+
             // unequip previous item first.
             Item previousItem = actor.GetEquippedItem(it.Model.EquipmentPart);
             if(previousItem != null)
@@ -16378,7 +16852,11 @@ namespace djack.RogueSurvivor.Engine
                 --ltIt.Batteries;
                 if (actor.IsPlayer) //@@MP (Release 2)
                 {
-                    m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER, AudioPriority.PRIORITY_BGM);
+                    if (IsItemNightVision(it)) //@@MP (Release 6-3)
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.NIGHT_VISION, AudioPriority.PRIORITY_BGM);
+                    else //@@MP (Release 2)
+                        m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER, AudioPriority.PRIORITY_BGM);
+
                     UpdatePlayerFOV(m_Player); //@@MP - update FOV now, don't wait until the next turn (Release 6-2)
                 }
                     
@@ -17673,30 +18151,44 @@ namespace djack.RogueSurvivor.Engine
                 return true;
             }
 
-            //@@MP - moved from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
-            MapObject mapObj = player.Location.Map.GetMapObjectAt(player.Location.Position + direction);
-            if (mapObj != null && mapObj.IsJumpable && player.StaminaPoints < Rules.STAMINA_MIN_FOR_ACTIVITY)
+            // special cases: unopenable ('locked') doors
+            MapObject lockedDoor = player.Location.Map.GetMapObjectAt(player.Location.Position + direction);
+            if (lockedDoor != null && lockedDoor.AName == "a locked door") //@@MP - moved this check from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
             {
-                AddMessage(MakeErrorMessage("Not enough stamina to climb on that"));
-                RedrawPlayScreen();
-                return false;
-            }
-            else if (mapObj != null && !mapObj.IsContainer) //@@MP - swapped the if and else ifs (Release 6-2)
-            {
-                AddMessage(MakeErrorMessage("Cannot climb on that"));
-                RedrawPlayScreen();
-                return false;
+                if (IsInArmyOffice(lockedDoor.Location)) //@@MP - added check for army office pass card (Release 6-3)
+                {
+                    if (player.Inventory.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.UNIQUE_ARMY_ACCESS_BADGE))
+                    {
+                        Map map = lockedDoor.Location.Map;
+                        Point pt = new Point(lockedDoor.Location.Position.X, lockedDoor.Location.Position.Y);
+                        //remove the current door
+                        map.RemoveMapObjectAt(pt.X, pt.Y);
+                        //replace it with the standard, unlocked iron door
+                        map.PlaceMapObjectAt(m_TownGenerator.MakeObjIronDoor(), pt);
+                        m_SFXManager.Play(GameSounds.ACCESS_GRANTED, AudioPriority.PRIORITY_EVENT);
+                        AddMessage(new Message("You've unlocked the door with the army access card.", m_Session.WorldTime.TurnCounter, Color.Yellow));
+                        return true;
+                    }
+                    else
+                    {
+                        m_SFXManager.Play(GameSounds.ACCESS_DENIED, AudioPriority.PRIORITY_EVENT);
+                        AddMessage(MakeErrorMessage("This door is locked. Looks like it needs an access card."));
+                        RedrawPlayScreen();
+                        return false;
+                    }
+                }
+                else
+                {
+                    m_SFXManager.Play(GameSounds.BASH_OTHER_OBJECTS_NEARBY, AudioPriority.PRIORITY_EVENT); //@@MP (Release 6-3)
+                    AddMessage(MakeErrorMessage("This door cannot be opened."));
+                    RedrawPlayScreen();
+                    return false;
+                }
             }
 
-            // special cases: unopenable ('locked') doors, tearing down barricades as living.
+            //tearing down barricades as living
             DoorWindow door = player.Location.Map.GetMapObjectAt(player.Location.Position + direction) as DoorWindow;
-            if (door != null && !door.IsBarricaded && door.AName == "a locked door" && !player.Model.Abilities.IsUndead) //@@MP - moved this check from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
-            {
-                AddMessage(MakeErrorMessage("This door cannot be opened."));
-                RedrawPlayScreen();
-                return false;
-            }
-            else if (door != null && door.IsBarricaded && !player.Model.Abilities.IsUndead)
+            if (door != null && door.IsBarricaded && !player.Model.Abilities.IsUndead) //barricaded doors
             {
                 if (!m_Rules.IsActorTired(player))
                 {
@@ -17722,6 +18214,21 @@ namespace djack.RogueSurvivor.Engine
                     RedrawPlayScreen();
                     return false;
                 }
+            }
+
+            //@@MP - moved from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3), moved below doors (Release 6-3)
+            MapObject mapObj = player.Location.Map.GetMapObjectAt(player.Location.Position + direction);
+            if (mapObj != null && mapObj.IsJumpable && player.StaminaPoints < Rules.STAMINA_MIN_FOR_ACTIVITY)
+            {
+                AddMessage(MakeErrorMessage("Not enough stamina to climb on that"));
+                RedrawPlayScreen();
+                return false;
+            }
+            else if (mapObj != null && !mapObj.IsContainer) //@@MP - swapped the if and else ifs (Release 6-2)
+            {
+                AddMessage(MakeErrorMessage("Cannot climb on that"));
+                RedrawPlayScreen();
+                return false;
             }
 
             AddMessage(MakeErrorMessage(String.Format("Cannot do that : {0}.", bump.FailReason)));
@@ -18621,26 +19128,38 @@ namespace djack.RogueSurvivor.Engine
 #endregion
 
 #region -Applying/Unapplying effects: ApplyXXX/UnapplyXXX
-        static void ScorchBurntTile(Map map, int x, int y, int damage) //@@MP - add a burn mark sprite to the ground (Release 2), cater for the new explosives with damage ranges (Release 4), made static (Release 5-7)
+        void ScorchBurntTile(Map map, int x, int y, int damage) //@@MP - add a burn mark sprite to the ground (Release 2), cater for the new explosives with damage ranges (Release 4)
         {
             if (map.GetExitAt(x, y) != null) //skip if it's stairs
                 return;
 
             if (damage > 0 && !map.TileAlreadyHasScorchDecoration(x, y)) //@@MP - so that we don't try to add a new scorch over an existing scorch (Release 5-2)
             {
+                Tile tile = map.GetTileAt(x, y); //@@MP (Release 6-3)
+
                 if (damage <= 40) //@@MP FIXME - a lazy way of doing it. should go back and calculate based on radius from the center of the blast...
-                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_OUTER);
+                {
+                    if (m_GameTiles.IsWallModel(tile.Model)) //@@MP - now a scorch for walls and floor each (Release 6-3)
+                        map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_OUTER_WALL);
+                    else
+                        map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_OUTER_FLOOR);
+                }
                 else if (damage > 40 && damage <= 120)
-                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER);
-                else if (damage > 120)
-                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_CENTER);
+                {
+                    if (GameTiles.IsWallModel(tile.Model)) //@@MP - now a scorch for walls and floor each (Release 6-3)
+                        map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER_WALL);
+                    else
+                        map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER_FLOOR);
+                }
+                else if (damage > 120) //@@MP - now a scorch for walls and floor each (Release 6-3)
+                    map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_CENTER_FLOOR);
             }
         }
 
         /// <summary>
         /// Different to mapobj.IsOnFire as it can be used for just empty tiles
         /// </summary>
-        static void SetTileOnFire(Map map, int x, int y) //@@MP - new method (Release 4), made static (Release 5-7)
+        void SetTileOnFire(Map map, int x, int y) //@@MP - new method (Release 4)
         {
             Point pt = new Point(x, y);
             if (map.IsAnyTileFireThere(map, pt) || map.IsAnyTileWaterThere(map, pt)) //@@MP - added check for water tiles (Release 6-1)
@@ -18958,25 +19477,33 @@ namespace djack.RogueSurvivor.Engine
                 // map
                 //// determine tint to apply
                 Color mapTint = TINT_MIDNIGHT;
-                if (hasLitTorch && (!canActorSeeSky || isNight)) //@@MP - change tint during night if torch on (Release 6-2)
+                ItemLight nightVision = m_Player.GetEquippedItem(DollPart.EYES) as ItemLight; //@@MP (Release 6-3)
+                if (nightVision != null && nightVision.Batteries > 0) //@@MP - night vision are the only ItemLights on the head dollpart
+                    mapTint = TINT_NIGHT_VISION;
+                else if (hasLitTorch && (!canActorSeeSky || isNight)) //@@MP - change tint during night if torch on (Release 6-2)
                     mapTint = TINT_SUNSET; //it's a good colour for a torch too
                 else if (canActorSeeSky) //@@MP - added check in case they're undergound (Release 6-1)
                     mapTint = TintForDayPhase(m_Session.WorldTime.Phase); //@@MP - restored (Release 5-7)
                 //// determine graylevel for tiles and objects visited but not visible //@@MP (Release 6-2)
                 string grayLevelType = "daytime"; //outside, day (default)
-                if (!canActorSeeSky)
+                if (!canActorSeeSky && m_Session.CurrentMap.Lighting != Lighting.LIT)  //@@MP - added lit check, as underground areas can be lit (Release 6-3)
                 {
                     if (hasLitTorch)
                         grayLevelType = "underground_littorch"; //sky not visible, carrying lit torch
                     else
                         grayLevelType = "underground_notorch"; //sky not visible, not carrying a lit torch
                 }
-                else if (isNight) //outside, night
+                else if (isNight && canActorSeeSky) //night, outside. //@@MP - added canseesky check, because it could be both night and player is underground (Release 6-3)
                 {
                     if (currentWeather == Weather.CLEAR)
                         grayLevelType = "nighttime_clear";
                     else
                         grayLevelType = "nighttime_clouded";
+                }
+                else if (nightVision != null) //@@MP - forcibly unequip NVG during Lighting.LIT (Release 6-3)
+                {
+                    DoUnequipItem(m_Player, nightVision);
+                    AddMessage(new Message(String.Format("It's light enough now, I don't need the night vision goggles."), 0, Color.Yellow));
                 }
 
                 m_UI.UI_DrawLine(Color.DarkGray, RIGHTPANEL_X, 0, RIGHTPANEL_X, MESSAGES_Y);
@@ -19177,15 +19704,7 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="grayLevelType">For day, night or underground</param>
         private void DrawGrayLevelHandler(string imageID, int gx, int gy, string grayLevelType) //@@MP (Release 6-2)
         {
-            switch (grayLevelType)
-            {
-                case "underground_notorch": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "underground_notorch"); break; //can't see sky and carrying no torch
-                case "underground_littorch": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "underground_littorch"); break; //can't see sky but carrying a lit torch
-                case "nighttime_clouded": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "nighttime_clouded"); break; //outside, night, clouded sky (cloudy or raining)
-                case "nighttime_clear": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "nighttime_clear"); break; //outside, night, clear sky
-                case "daytime": m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, "daytime"); break; //outside, day
-                default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
-            }
+            m_UI.UI_DrawGrayLevelImage(imageID, gx, gy, grayLevelType); //@@MP - simplified method (Release 6-3)
         }
 
         public void DrawMap(Map map, Color tint, string grayLevelType) //@@MP - added distinctions for different times and locations. makes the visited but not-in-FOV tiles darker accordingly (Release 6-2)
@@ -19517,6 +20036,7 @@ namespace djack.RogueSurvivor.Engine
             // hands equipment
             DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.RIGHT_HAND, tint);
             DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.LEFT_HAND, tint); //@@MP (Release 6-2) swapped to 2nd so torches appear over guns
+            DrawActorEquipment(actor, gx - ACTOR_OFFSET, gy - ACTOR_OFFSET, DollPart.EYES, tint); //@@MP - for night vision goggles (Release 6-3)
 
             gx -= ACTOR_OFFSET;
             gy -= ACTOR_OFFSET;
@@ -20686,6 +21206,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Subway
             // 3. Police Station Jails.
             // 4. Hospital Power.
+            // 5. Army base
             /////////////////////////////////////////////////////
 
             // 1. CHAR Underground Facility
@@ -20705,15 +21226,7 @@ namespace djack.RogueSurvivor.Engine
                         {
                             map.Lighting = Lighting.LIT;
 
-                            // message.
-                            if (m_Player.Location.Map == map)
-                            {
-                                ClearMessages();
-                                AddMessage(new Message("The Facility lights turn on!", map.LocalTime.TurnCounter, Color.Green));
-                                RedrawPlayScreen();
-                            }
-
-                            // achievement?
+                            // achievement? //@MP - moved within if so that only the player's presence triggers the achievement (Release 6-3)
                             if (!m_Session.Scoring.HasCompletedAchievement(Achievement.IDs.CHAR_POWER_UNDERGROUND_FACILITY))
                             {
                                 // completed!
@@ -20721,6 +21234,14 @@ namespace djack.RogueSurvivor.Engine
 
                                 // achievement!
                                 ShowNewAchievement(Achievement.IDs.CHAR_POWER_UNDERGROUND_FACILITY);
+                            }
+
+                            // message.
+                            if (m_Player.Location.Map == map)
+                            {
+                                ClearMessages();
+                                AddMessage(new Message("The Facility lights turn on!", map.LocalTime.TurnCounter, Color.Green));
+                                RedrawPlayScreen();
                             }
                         }
                     }
@@ -20880,7 +21401,98 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
+
+            // 5. Army base //@@MP (Release 6-3)
+            #region
+            if (map == m_Session.UniqueMaps.ArmyBase.TheMap)
+            {
+                lock (m_Session) // thread safe
+                {
+                    // check all power generators are on.
+                    bool allAreOn = m_Rules.ComputeMapPowerRatio(map) >= 1.0f;
+
+                    // change map lighting.
+                    if (allAreOn)
+                    {
+                        if (map.Lighting != Lighting.LIT)
+                        {
+                            map.Lighting = Lighting.LIT;
+
+                            // message.
+                            if (m_Player.Location.Map == map)
+                            {
+                                // achievement?
+                                if (!m_Session.Scoring.HasCompletedAchievement(Achievement.IDs.ARMY_POWER_UNDERGROUND_BASE))
+                                {
+                                    // completed!
+                                    m_Session.Scoring.SetCompletedAchievement(Achievement.IDs.ARMY_POWER_UNDERGROUND_BASE);
+
+                                    // achievement!
+                                    ShowNewAchievement(Achievement.IDs.ARMY_POWER_UNDERGROUND_BASE);
+                                }
+
+                                ClearMessages();
+                                AddMessage(new Message("The base's lights turn on!", map.LocalTime.TurnCounter, Color.Green));
+                                RedrawPlayScreen();
+
+                                // helicopter evac details //@@MP (Release 6-3)
+                                if (m_Session.PlayerKnows_HelicopterArrivalDetails == false)
+                                {
+                                    // Scoring event.
+                                    m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Learned the location of the army helicopter rescue.");
+                                    m_Session.PlayerKnows_HelicopterArrivalDetails = true;
+
+                                    // The power comes on, and radios loop the message about helicopter rescue
+                                    string[] text;
+                                    if (1==1)//Player made it before sunset on arrival day)
+                                    {
+                                        text = new string[]
+                                        {
+                                        "You hear the comms radios spring to life, repeating a message...",
+                                        "\"  This is Murdoch air force base.",
+                                        "  We have a command post established for survivors.",
+                                        String.Format("  We will send an evac helicopter to you on day {0}.", m_Session.ArmyHelicopterRescue_Day.ToString()),
+                                        String.Format("  It will land at coordinates {0}:{1}.", m_Session.ArmyHelicopterRescue_DistrictRef, (m_Session.ArmyHelicopterRescue_Coordinates.X + "-" + m_Session.ArmyHelicopterRescue_Coordinates.Y)),
+                                        "  It will arrive at sunrise, and make it's last trip by sunset.",
+                                        "  Make sure you have your staff and civilians ready to go. \"",
+                                        };
+                                    }
+                                    else
+                                    {
+                                        text = new string[]
+                                        {
+                                        "You hear the comms radios spring to life, repeating a message...",
+                                        "\"  The helicopter we sent to you has not returned. We have to assume it's gone.",
+                                        "  I'm sorry, but we don't have any more helicopters.",
+                                        "  Rescue won't be possible. You're on your own.",
+                                        "  Good luck. God bless. \"",
+                                        };
+                                    }
+
+                                    ShowSpecialDialogue(m_Player, text);
+                                }
+                            }
+                        }
+                    }
+                    else // part off
+                    {
+                        if (map.Lighting != Lighting.DARKNESS)
+                        {
+                            map.Lighting = Lighting.DARKNESS;
+
+                            // message.
+                            if (m_Player.Location.Map == map)
+                            {
+                                ClearMessages();
+                                AddMessage(new Message("The base's lights turn off.", map.LocalTime.TurnCounter, Color.Red));
+                                RedrawPlayScreen();
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
         }
 
         static void DoOpenSubwayGates(Map map) //@@MP - made static (Release 5-7)
@@ -23297,7 +23909,8 @@ namespace djack.RogueSurvivor.Engine
             // 3. Sighting The Sewers Thing : !thesewersthing
             // 4. Police Station script.
             // 5. Sighting Jason Myers : !jasonmyers
-            // 6. Sighting Duckman //@@MP - disabled as pointless (Release 2)
+            // 6. Breaking into the army office for the 1st time //@@MP (Release 6-3)
+            // 7. Visiting the army base for the first time //@@MP (Release 6-3)
             //
             // Generic 1st Time flags :
             // 1. Visiting a new map.
@@ -23329,10 +23942,9 @@ namespace djack.RogueSurvivor.Engine
 
             // 2. Visiting CHAR Underground facility for the 1st time.
 #region
-
             if (!m_Session.Scoring.HasCompletedAchievement(Achievement.IDs.CHAR_FOUND_UNDERGROUND_FACILITY))
             {
-                if (player.Location.Map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap)
+                if (player.Location.Map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap && player.Faction != GameFactions.TheCHARCorporation) //@@MP - added faction check (Release 6-3)
                 {
                     lock (m_Session) // thread safe
                     {
@@ -23428,18 +24040,17 @@ namespace djack.RogueSurvivor.Engine
                                 // Offer deal.
                                 string[] text = new string[]
                                 {
-                                "\" Psssst! Hey! You there! \"",
-                                String.Format("{0} is discretely calling you from {1} cell. You listen closely...", prisoner.Name, HisOrHer(prisoner)),
-                                "\" Listen. I shouldn't be here! Just drove a bit too fast.",
-                                "  Look, I know what's happening! I worked down there; at the CHAR facility!",
+                                "\"  Psssst! Hey! You there!  \"",
+                                String.Format("{0} is discretely calling you from {1} cell...", prisoner.Name, HisOrHer(prisoner)),
+                                "\"  Look, I know what's happening! I worked down there; at the CHAR facility!",
                                 "  They didn't want me to leave but I did! Like I'm stupid enough to stay down there huh?",
-                                "  Stupid cops won't listen to me. You look clever, let's make a deal...",
-                                "  You just have to push that button to open my cell.",
-                                "  The cops are too busy to care about small fish like me!",
-                                "  Then I'll tell you where the underground facility is and just get the hell out of here.",
-                                "  I don't give a fuck about CHAR anymore, you can do what you want with that!",
+                                "  Stupid cops won't listen to me. I shouldn't be here!",
+                                "  You look clever, let's make a deal. You just have to flick that lever to open my cell.",
+                                "  The cops are too busy to care about a small fish like me!",
+                                "  Then I'll tell you where the underground CHAR and army facilities are.",
+                                "  I don't give a fuck about CHAR anymore, I'll just want to get the hell out of here!",
                                 "  Do it PLEASE! I REALLY shoudn't be here! \"",
-                                String.Format("Sounds like {0} wants you to turn the generator on to open the cells...", HeOrShe(prisoner))
+                                String.Format("Sounds like {0} wants you to turn on the generator to open the cells...", HeOrShe(prisoner))
                                 };
                                 ShowSpecialDialogue(prisoner, text);
 
@@ -23466,14 +24077,17 @@ namespace djack.RogueSurvivor.Engine
 
                                 // Thank you and give info.
                                 string[] text = new string[] {
-                                    "\" Thank you! Thank you so much!",
-                                    "  As promised, I'll tell you the big secret!",
+                                    "\"  Thank you for releasing me! Thank you so much!",
+                                    "  I'll tell you the where the secret locations are.",
                                     String.Format("  The CHAR Underground Facility is in district {0}.", World.CoordToString(m_Session.UniqueMaps.CHARUndergroundFacility.TheMap.District.WorldPosition.X,  m_Session.UniqueMaps.CHARUndergroundFacility.TheMap.District.WorldPosition.Y)),
-                                    "  Look for a CHAR Office, a room with an iron door.",
+                                    String.Format("  The underground Army base is in district {0}.", World.CoordToString(m_Session.UniqueMaps.ArmyBase.TheMap.District.WorldPosition.X,  m_Session.UniqueMaps.ArmyBase.TheMap.District.WorldPosition.Y)), //@@MP (Release 6-3)
+                                    "  The CHAR Office has evidence on what's going on. They have a lot of equipment too.",
+                                    "  The army base is probably your best chance of rescue, if they're still alive...", //@@MP (Release 6-3)
+                                    "  CHAR had captured a soldier. He probably had an access card to the army base.", //@@MP (Release 6-3)
                                     "  Now I must hurry! Thanks a lot for saving me!",
-                                    "  I don't want them to... UGGH...",
+                                    "  I don't want them to- UGGH...",
                                     "  What's happening? NO!",
-                                    "  NO NOT ME! aAAAAAaaaa! NOT NOW! AAAGGGGGGGRRR \""
+                                    "  NO NOT ME! AAAGGGGGGGRRR! NOT NOW! AAAGGGGGGGRRR \""
                                 };
                                 ShowSpecialDialogue(prisoner, text);
 
@@ -23482,9 +24096,11 @@ namespace djack.RogueSurvivor.Engine
 
                                 // reveal location.
                                 m_Session.PlayerKnows_CHARUndergroundFacilityLocation = true;
+                                m_Session.PlayerKnows_ArmyBaseLocation = true; //@@MP (Release 6-3)
 
                                 // Scoring event.
                                 m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Learned the location of the CHAR Underground Facility.");
+                                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Learned the location of the underground Army base."); //@@MP (Release 6-3)
 
                                 // transformation.
                                 // - zombify.
@@ -23546,30 +24162,80 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
 
-            // 6. Sighting Duckman
-#region
-            /*if (player != m_Session.UniqueActors.Duckman.TheActor) //@@MP - disabled as pointless (Release 2)
+            // 6. Breaking into the army office for the 1st time //@@MP (Release 6-3)
+            #region
+            if (!player.Model.Abilities.IsUndead && player.Faction != GameFactions.TheCHARCorporation)
             {
-                if (!m_Session.UniqueActors.Duckman.TheActor.IsDead && IsVisibleToPlayer(m_Session.UniqueActors.Duckman.TheActor))
+                if (!m_Session.Scoring.HasCompletedAchievement(Achievement.IDs.ARMY_BROKE_INTO_OFFICE))
                 {
-                    // keep playing music.
-                    if (!m_MusicManager.IsPlaying(GameMusics.DUCKMAN_THEME_SONG))
+                    if (IsInArmyOffice(player.Location))
                     {
-                        m_MusicManager.Play(GameMusics.DUCKMAN_THEME_SONG);
+                        // completed.
+                        m_Session.Scoring.SetCompletedAchievement(Achievement.IDs.ARMY_BROKE_INTO_OFFICE);
+
+                        // achievement!
+                        ShowNewAchievement(Achievement.IDs.ARMY_BROKE_INTO_OFFICE);
                     }
                 }
-                else if (m_MusicManager.IsPlaying(GameMusics.DUCKMAN_THEME_SONG))
+            }
+            #endregion
+
+            // 7. Visiting the army base for the first time //@@MP (Release 6-3)
+            #region
+            if (!m_Session.Scoring.HasCompletedAchievement(Achievement.IDs.ARMY_FOUND_UNDERGROUND_BASE))
+            {
+                if (player.Location.Map == m_Session.UniqueMaps.ArmyBase.TheMap && player.Faction != GameFactions.TheCHARCorporation)
                 {
-                    m_MusicManager.Stop(GameMusics.DUCKMAN_THEME_SONG);
+                    lock (m_Session) // thread safe
+                    {
+                        // completed.
+                        m_Session.Scoring.SetCompletedAchievement(Achievement.IDs.ARMY_FOUND_UNDERGROUND_BASE);
+
+                        // achievement!
+                        ShowNewAchievement(Achievement.IDs.ARMY_FOUND_UNDERGROUND_BASE);
+
+                        // make sure the player knows about it now and it is activated.
+                        m_Session.PlayerKnows_ArmyBaseLocation = true;
+                        m_Session.ArmyBaseUnderground_Activated = true;
+                        m_Session.UniqueMaps.ArmyBase.TheMap.IsSecret = false;
+
+                        // open the exit to and from surface for AIs.
+                        Map surfaceMap = m_Session.UniqueMaps.ArmyBase.TheMap.District.EntryMap;
+                        Point? surfaceEntry = surfaceMap.FindFirstInMap(
+                            (pt) =>
+                            {
+                                Exit e = surfaceMap.GetExitAt(pt);
+                                if (e == null)
+                                    return false;
+                                return e.ToMap == m_Session.UniqueMaps.ArmyBase.TheMap;
+                            });
+                        if (surfaceEntry == null)
+                            throw new InvalidOperationException("could not find exit to army base in surface map");
+                        Exit toArmyBase = surfaceMap.GetExitAt(surfaceEntry.Value);
+                        toArmyBase.IsAnAIExit = true;
+
+                        Point? armyBaseExit = m_Session.UniqueMaps.ArmyBase.TheMap.FindFirstInMap(
+                            (pt) =>
+                            {
+                                Exit e = m_Session.UniqueMaps.ArmyBase.TheMap.GetExitAt(pt);
+                                if (e == null)
+                                    return false;
+                                return e.ToMap == surfaceMap;
+                            });
+                        if (armyBaseExit == null)
+                            throw new InvalidOperationException("could not find exit to surface in army base map");
+                        Exit fromArmyBase = m_Session.UniqueMaps.ArmyBase.TheMap.GetExitAt(armyBaseExit.Value);
+                        fromArmyBase.IsAnAIExit = true;
+                    }
                 }
-            }*/
-#endregion
+            }
+            #endregion
 
-#endregion
+            #endregion
 
-#region Item interactions
+            #region Item interactions
             // 1. Subway Worker Badge in Subway maps.
             //    conditions: In Subway, Must be Equipped, Next to closed gates.
             //    effects: Turn all generators on.
@@ -25091,6 +25757,19 @@ namespace djack.RogueSurvivor.Engine
             return location.Map == Session.UniqueMaps.CHARUndergroundFacility.TheMap ||
                 IsInCHAROffice(location);
         }
+
+        public static bool IsInArmyOffice(Location location)
+        {
+            List<Zone> zones = location.Map.GetZonesAt(location.Position.X, location.Position.Y);
+            if (zones == null)
+                return false;
+            foreach (Zone z in zones)
+            {
+                if (z.HasGameAttribute(ZoneAttributes.IS_ARMY_OFFICE))
+                    return true;
+            }
+            return false;
+        }
         #endregion
 
         #region -Experimental Bot Mode
@@ -25212,6 +25891,15 @@ namespace djack.RogueSurvivor.Engine
 
         }
 
+        public void DEV_KillAllActorsInMap() //@@MP (Release 6-3)
+        {
+            foreach (Actor actor in m_Player.Location.Map.Actors.ToList()) //tolist allows modifying the set within the loop
+            {
+                if (!actor.IsPlayer)
+                    KillActor(actor, actor, "testing", true);
+            }
+        }
+
         void AddDevMiscStuff()
         {
             // insane right of the bat.
@@ -25246,5 +25934,27 @@ namespace djack.RogueSurvivor.Engine
         #endregion
         #endregion
         #endregion
+
+#region TO BE REFACTORED
+        static bool IsItemLiquorForMolotov(Item item) //@@MP - checks if item is a liquor of a suitable type for a molotov (Release 4), made static (Release 5-7)
+        {
+            if (item == null)
+                return false;
+            else if ((item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER) || (item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR))
+                return true;
+            else
+                return false;
+        }
+
+        static bool IsItemNightVision(Item item) //@@MP (Release 6-3)
+        {
+            if (item.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_FEMALE)
+                return true;
+            else if (item.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_MALE)
+                return true;
+            else
+                return false;
+        }
+#endregion
     }
 }

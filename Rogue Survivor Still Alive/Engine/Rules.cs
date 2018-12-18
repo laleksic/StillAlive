@@ -1497,6 +1497,9 @@ namespace djack.RogueSurvivor.Engine
                         Item rightItem = actor.GetEquippedItem(DollPart.RIGHT_HAND);
                         if (rightItem != null && CanActorRechargeItemBattery(actor, rightItem, out reason))
                             return new ActionRechargeItemBattery(actor, game, rightItem);
+                        Item eyesItem = actor.GetEquippedItem(DollPart.EYES); //@@MP (Release 6-3)
+                        if (eyesItem != null && CanActorRechargeItemBattery(actor, eyesItem, out reason))
+                            return new ActionRechargeItemBattery(actor, game, eyesItem);
                     }
 
                     // Switch?
@@ -3978,8 +3981,20 @@ namespace djack.RogueSurvivor.Engine
 
         int GetLightBonusEquipped(Actor actor)
         {
-            ItemLight light = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
-            return light == null || light.Batteries <= 0 ? 0 : light.FovBonus;
+            /*ItemLight light = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
+            return light == null || light.Batteries <= 0 ? 0 : light.FovBonus;*/
+
+            //@@MP (Release 6-3)
+            ItemLight light;
+            light = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
+            if (light == null)
+            {
+                light = actor.GetEquippedItem(DollPart.EYES) as ItemLight;
+                if (light == null)
+                    return 0;
+            }
+
+            return light.Batteries <= 0 ? 0 : light.FovBonus;
         }
 
         public int ActorLoudNoiseWakeupChance(Actor actor, int noiseDistance)
