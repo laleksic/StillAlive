@@ -539,6 +539,12 @@ namespace djack.RogueSurvivor.Engine
             get;
             set;
         }
+
+        public Map ArmyHelicopterRescue_Map //@@MP (Release 6-4)
+        {
+            get;
+            set;
+        }
         #endregion
 
         #endregion

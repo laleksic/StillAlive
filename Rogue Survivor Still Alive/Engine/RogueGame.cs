@@ -4216,6 +4216,7 @@ namespace djack.RogueSurvivor.Engine
                                 foundSpot = true;
                                 m_Session.ArmyHelicopterRescue_DistrictRef = World.CoordToString(goodDistricts[i].WorldPosition.X, goodDistricts[i].WorldPosition.Y);
                                 m_Session.ArmyHelicopterRescue_Coordinates = new Point(x, y);
+                                m_Session.ArmyHelicopterRescue_Map = chosenDistrict.EntryMap; //@@MPP (Release 6-4)
                                 chosenDistrict = goodDistricts[i];
                                 break;
                             }
@@ -7966,6 +7967,14 @@ namespace djack.RogueSurvivor.Engine
 #region NEW DAY/NIGHT, SCORING, ADVANCEMENT, AND WEATHER
         void OnNewNight()
         {
+            //----- De-spawn helicopter if it's end of rescue day @@MP (Release 6-3)
+            if (m_Session.WorldTime.Day == m_Session.ArmyHelicopterRescue_Day)
+            {
+                //de-spawn heli from relevant map
+
+                //stop the ambient track
+            }
+
             UpdatePlayerFOV(m_Player);
 
             //----- Upgrade Player (undead only once every 2 nights)
@@ -8014,6 +8023,18 @@ namespace djack.RogueSurvivor.Engine
             /////////////////////////
             // Normal day processing
             /////////////////////////
+
+            //----- Spawn helicopter if it's rescue day @@MP (Release 6-3)
+            if (m_Session.WorldTime.Day == m_Session.ArmyHelicopterRescue_Day)
+            {
+                //spawn heli in relevant map
+                Map helicopterMap = m_Session.ArmyHelicopterRescue_Map;
+                SpawnArmyHelicopterOnMap(helicopterMap);
+
+                //when player enters a map, if heli is present play ambient track
+                    //it needs to adjust depending on the player distance from the heli
+                    //if its a survivor they should head towards the heli as a high priority
+            }
 
             //----- Upgrade Player (living only)
             if (!m_Player.Model.Abilities.IsUndead)
@@ -21888,7 +21909,7 @@ namespace djack.RogueSurvivor.Engine
         }
         #endregion
 
-        #region --National guard
+#region --National guard
         bool CheckForEvent_NationalGuard(Map map)
         {
             // if option zeroed, don't bother.
@@ -22428,10 +22449,115 @@ namespace djack.RogueSurvivor.Engine
                 oAI.OnRaid(raid, new Location(map, position), map.LocalTime.TurnCounter);
             }
         }
-#endregion
-#endregion
+        #endregion
 
-#region -SPAWNING NEW ACTORS
+        #region --Army rescue helicopter
+        //@@MP - methods supporting the end-goal helicopter rescue (Release 6-3)
+        private void SpawnArmyHelicopterOnMap(Map map)
+        {
+            //the heli is a 4x2 tile, so clear its designated space of actors and objects
+            Point heli1 = m_Session.ArmyHelicopterRescue_Coordinates;
+            Point heli2 = new Point(heli1.X + 1, heli1.Y);
+            Point heli3 = new Point(heli1.X + 2, heli1.Y);
+            Point heli4 = new Point(heli1.X + 3, heli1.Y);
+            Point heli5 = new Point(heli1.X, heli1.Y);
+            Point heli6 = new Point(heli1.X + 1, heli1.Y+1);
+            Point heli7 = new Point(heli1.X + 2, heli1.Y+1);
+            Point heli8 = new Point(heli1.X + 3, heli1.Y+1);
+
+            List<Point> heliPoints = new List<Point>() { heli1, heli2, heli3, heli4, heli5, heli6, heli7, heli8 };
+            foreach (Point heliPoint in heliPoints)
+            {
+                //remove objects in the way
+                if (map.GetMapObjectAt(heliPoint) != null) map.RemoveMapObjectAt(heliPoint.X, heliPoint.Y);
+
+                //remove items in the way
+                Inventory groundInventory = map.GetItemsAt(heliPoint);
+                foreach (Item it in groundInventory.Items)
+                    if (it != null) map.RemoveItemAt(it, heliPoint);
+
+                //move actors in the way
+                Actor actor = map.GetActorAt(heliPoint);
+                if (actor != null)
+                {
+                    //just get rid of AI actors
+                    if (!actor.IsPlayer)
+                        map.RemoveActor(actor);
+                    else
+                    {
+                        //find a suitable location to move the actor to
+                        Point winningSpot = FindNonHelicopterSpotToMovePlayer(map, heliPoint, heliPoints);
+                        //if we found absolutely no good spot, widen the search
+                        if (winningSpot == Point.Empty)
+                        {
+                            bool foundASpot = false;
+                            foreach (Direction d in Direction.COMPASS)
+                            {
+                                winningSpot = FindNonHelicopterSpotToMovePlayer(map, heliPoint + d, heliPoints);
+                                if (winningSpot != Point.Empty)
+                                {
+                                    foundASpot = true;
+                                    break;
+                                }
+                            }
+                            if (foundASpot == false)
+                                throw new InvalidOperationException("Could not find clear point to relocate player to (away from helicopter)");
+                        }
+
+                        //now move them
+                        map.RemoveActor(actor);
+                        map.PlaceActorAt(actor, winningSpot);
+                        OnActorEnterTile(actor);
+                    }
+                }
+            }
+        }
+
+        private Point FindNonHelicopterSpotToMovePlayer(Map map, Point source, List<Point> heliPoints)
+        {
+            Point winningPoint = Point.Empty;
+            int winningScore = 0;
+            foreach (Direction d in Direction.COMPASS)
+            {
+                Point pt = source + d;
+                int thisPtScore = 0;
+
+                //can't be out of bounds
+                if (!map.IsInBounds(pt)) continue;
+
+                //rule out any other points that are also heli spots
+                bool itsAnotherHeliPoint = false;
+                foreach (Point heliPt in heliPoints)
+                {
+                    if (pt == heliPt) itsAnotherHeliPoint = true;
+                }
+                if (itsAnotherHeliPoint) continue;
+
+                //check if there is already an actor there
+                if (map.GetActorAt(pt) != null) continue;
+
+                MapObject mapObj = map.GetMapObjectAt(pt);
+                if (mapObj == null)
+                    thisPtScore += 50;
+                else if (mapObj.IsJumpable)
+                    thisPtScore += 25;
+                else
+                    continue;
+
+                //if the spot is on fire it's possible but not ideal for humans, so score lower
+                if (map.IsAnyTileFireThere(map, pt))
+                    thisPtScore -= 30;
+                else
+                    thisPtScore += 100; //passed all the checks so it must be a good spot; score high
+
+                if (thisPtScore > winningScore) winningPoint = pt;
+            }
+            return winningPoint;
+        }
+        #endregion
+        #endregion
+        
+        #region -SPAWNING NEW ACTORS
         int DistanceToPlayer(Map map, int x, int y)
         {
             if (m_Player == null || m_Player.Location.Map != map)
