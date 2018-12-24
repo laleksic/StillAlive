@@ -7971,8 +7971,11 @@ namespace djack.RogueSurvivor.Engine
             if (m_Session.WorldTime.Day == m_Session.ArmyHelicopterRescue_Day)
             {
                 //de-spawn heli from relevant map
+                Map helicopterMap = m_Session.ArmyHelicopterRescue_Map;
+                DespawnArmyHelicopter(helicopterMap);
 
                 //stop the ambient track
+                ???????????
             }
 
             UpdatePlayerFOV(m_Player);
@@ -8032,6 +8035,7 @@ namespace djack.RogueSurvivor.Engine
                 SpawnArmyHelicopterOnMap(helicopterMap);
 
                 //when player enters a map, if heli is present play ambient track
+                ????????????????????
                     //it needs to adjust depending on the player distance from the heli
                     //if its a survivor they should head towards the heli as a high priority
             }
@@ -13314,7 +13318,7 @@ namespace djack.RogueSurvivor.Engine
 
             // if option set, simulate to catch current turn.
             // otherwise just jump int time.
-#region
+#region Simulation
             if (s_Options.IsSimON)
             {
                 int catchupTo = m_Session.WorldTime.TurnCounter;  // alpha10
@@ -14670,7 +14674,6 @@ namespace djack.RogueSurvivor.Engine
                 DoFollowersEnterMap(actor, fromMap, fromPos, exit.ToMap, exit.ToPosition);
             }
 
-            
             // handle after player changed district
             if (playerChangedDistrict) // alpha10
             {
@@ -22453,6 +22456,7 @@ namespace djack.RogueSurvivor.Engine
 
         #region --Army rescue helicopter
         //@@MP - methods supporting the end-goal helicopter rescue (Release 6-3)
+
         private void SpawnArmyHelicopterOnMap(Map map)
         {
             //the heli is a 4x2 tile, so clear its designated space of actors and objects
@@ -22554,9 +22558,29 @@ namespace djack.RogueSurvivor.Engine
             }
             return winningPoint;
         }
+
+        private void DespawnArmyHelicopter(Map map)
+        {
+            //the heli is a 4x2 tile, so we need to clear it in pieces
+            Point heli1 = m_Session.ArmyHelicopterRescue_Coordinates;
+            Point heli2 = new Point(heli1.X + 1, heli1.Y);
+            Point heli3 = new Point(heli1.X + 2, heli1.Y);
+            Point heli4 = new Point(heli1.X + 3, heli1.Y);
+            Point heli5 = new Point(heli1.X, heli1.Y);
+            Point heli6 = new Point(heli1.X + 1, heli1.Y + 1);
+            Point heli7 = new Point(heli1.X + 2, heli1.Y + 1);
+            Point heli8 = new Point(heli1.X + 3, heli1.Y + 1);
+
+            List<Point> heliPoints = new List<Point>() { heli1, heli2, heli3, heli4, heli5, heli6, heli7, heli8 };
+            foreach (Point heliPoint in heliPoints)
+            {
+                //remove objects in the way
+                if (map.GetMapObjectAt(heliPoint) != null) map.RemoveMapObjectAt(heliPoint.X, heliPoint.Y);
+            }
+        }
         #endregion
         #endregion
-        
+
         #region -SPAWNING NEW ACTORS
         int DistanceToPlayer(Map map, int x, int y)
         {
