@@ -912,39 +912,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         }
 
         #region Helicopter
-        //@@MP (Release 6-3)
+        //@@MP (Release 6-4)
         //A 64x128 pixel image, dissected into 8 pieces and then arranged as:
         //  1234
         //  5678
-        protected static MapObject MakeObj1Helicopter(string vatImageID)
-        {
-            return new MapObject("Helicopter", vatImageID);
-        }
-        protected static MapObject MakeObj2Helicopter(string vatImageID)
-        {
-            return new MapObject("Helicopter", vatImageID);
-        }
-        protected static MapObject MakeObj3Helicopter(string vatImageID)
-        {
-            return new MapObject("Helicopter", vatImageID);
-        }
-        protected static MapObject MakeObj4Helicopter(string vatImageID)
-        {
-            return new MapObject("Helicopter", vatImageID);
-        }
-        protected static MapObject MakeObj5Helicopter(string vatImageID)
-        {
-            return new MapObject("Helicopter", vatImageID);
-        }
-        protected static MapObject MakeObj6Helicopter(string vatImageID)
-        {
-            return new MapObject("Helicopter", vatImageID);
-        }
-        protected static MapObject MakeObj7Helicopter(string vatImageID)
-        {
-            return new MapObject("Helicopter", vatImageID);
-        }
-        protected static MapObject MakeObj8Helicopter(string vatImageID)
+        public MapObject MakeObjHelicopter(string vatImageID)
         {
             return new MapObject("Helicopter", vatImageID);
         }

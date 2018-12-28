@@ -5317,6 +5317,11 @@ namespace djack.RogueSurvivor.Engine
             m_AmbientSFXManager.Load(GameAmbients.RAIN_OUTSIDE, GameAmbients.RAIN_OUTSIDE_FILE); //@MP (Release 5-3), separated to own instance (Release 6-1)
             m_AmbientSFXManager.Load(GameAmbients.RAIN_INSIDE, GameAmbients.RAIN_INSIDE_FILE); //@MP (Release 5-3), separated to own instance (Release 6-1)
             m_AmbientSFXManager.Load(GameAmbients.HELICOPTER_FLYOVER, GameAmbients.HELICOPTER_FLYOVER_FILE); //@MP (Release 6-1)
+            //@@MP (Release 6-4)
+            m_AmbientSFXManager.Load(GameAmbients.STATIONARY_HELICOPTER_FARTHEST, GameAmbients.STATIONARY_HELICOPTER_FARTHEST_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.STATIONARY_HELICOPTER_FAR, GameAmbients.STATIONARY_HELICOPTER_FAR_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.STATIONARY_HELICOPTER_NEAR, GameAmbients.STATIONARY_HELICOPTER_NEAR_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.STATIONARY_HELICOPTER_PLAYER, GameAmbients.STATIONARY_HELICOPTER_PLAYER_FILE);
 
             m_UI.UI_Clear(Color.Black);
             m_UI.UI_DrawStringBold(Color.White, "Loading sfxs... done!", 0, 0);
@@ -7967,15 +7972,11 @@ namespace djack.RogueSurvivor.Engine
 #region NEW DAY/NIGHT, SCORING, ADVANCEMENT, AND WEATHER
         void OnNewNight()
         {
-            //----- De-spawn helicopter if it's end of rescue day @@MP (Release 6-3)
+            //----- De-spawn helicopter if it's end of rescue day @@MP (Release 6-4)
             if (m_Session.WorldTime.Day == m_Session.ArmyHelicopterRescue_Day)
             {
-                //de-spawn heli from relevant map
                 Map helicopterMap = m_Session.ArmyHelicopterRescue_Map;
                 DespawnArmyHelicopter(helicopterMap);
-
-                //stop the ambient track
-                ???????????
             }
 
             UpdatePlayerFOV(m_Player);
@@ -8027,17 +8028,11 @@ namespace djack.RogueSurvivor.Engine
             // Normal day processing
             /////////////////////////
 
-            //----- Spawn helicopter if it's rescue day @@MP (Release 6-3)
+            //----- Spawn helicopter if it's rescue day @@MP (Release 6-4)
             if (m_Session.WorldTime.Day == m_Session.ArmyHelicopterRescue_Day)
             {
-                //spawn heli in relevant map
                 Map helicopterMap = m_Session.ArmyHelicopterRescue_Map;
                 SpawnArmyHelicopterOnMap(helicopterMap);
-
-                //when player enters a map, if heli is present play ambient track
-                ????????????????????
-                    //it needs to adjust depending on the player distance from the heli
-                    //if its a survivor they should head towards the heli as a high priority
             }
 
             //----- Upgrade Player (living only)
@@ -8784,9 +8779,55 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
         }
-#endregion
 
-#region ACTOR ACTION HANDLERS
+        void CheckLandedHelicopterSFX(Map map) //@@MP (Release 6-4)
+        {
+            //if heli is present play the ambient track
+            //the heli is present on rescue day, but only during daylight hours
+            if ((m_Session.WorldTime.Day == m_Session.ArmyHelicopterRescue_Day) && (map == m_Session.ArmyHelicopterRescue_Map) && (!m_Session.WorldTime.IsNight))
+            {
+                //find roughly the middle of the helicopter (4x2 tiles) to use as the audio source point
+                Point heliPoint = new Point(m_Session.ArmyHelicopterRescue_Coordinates.X + 1, m_Session.ArmyHelicopterRescue_Coordinates.Y);
+
+                //play the appropriate ambient depending on the player distance from the heli
+                int dist = DistanceToPlayer(map, heliPoint);
+                if (dist <= Rules.QUIET_NOISE_RADIUS)
+                    m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.STATIONARY_HELICOPTER_PLAYER,AudioPriority.PRIORITY_EVENT);
+                else if ((dist > Rules.QUIET_NOISE_RADIUS) && (dist <= Rules.MODERATE_NOISE_RADIUS))
+                    m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.STATIONARY_HELICOPTER_NEAR, AudioPriority.PRIORITY_EVENT);
+                else if ((dist > Rules.MODERATE_NOISE_RADIUS) && (dist <= Rules.LOUD_NOISE_RADIUS))
+                    m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.STATIONARY_HELICOPTER_FAR, AudioPriority.PRIORITY_EVENT);
+                else if (dist <= Rules.BOOMING_NOISE_RADIUS)
+                    m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.STATIONARY_HELICOPTER_FARTHEST, AudioPriority.PRIORITY_EVENT);
+
+                //stop any other helicopter sounds that aren't applicable for the player's current position
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.STATIONARY_HELICOPTER_PLAYER) && (dist > Rules.QUIET_NOISE_RADIUS))
+                    m_AmbientSFXManager.Stop(GameAmbients.STATIONARY_HELICOPTER_PLAYER);
+
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.STATIONARY_HELICOPTER_NEAR) && (dist > Rules.MODERATE_NOISE_RADIUS))
+                    m_AmbientSFXManager.Stop(GameAmbients.STATIONARY_HELICOPTER_NEAR);
+
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.STATIONARY_HELICOPTER_FAR) && (dist > Rules.LOUD_NOISE_RADIUS))
+                    m_AmbientSFXManager.Stop(GameAmbients.STATIONARY_HELICOPTER_FAR);
+
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.STATIONARY_HELICOPTER_FARTHEST) && (dist > Rules.BOOMING_NOISE_RADIUS))
+                    m_AmbientSFXManager.Stop(GameAmbients.STATIONARY_HELICOPTER_FARTHEST);
+            }
+            else //stop any that might be playing whilst the heli isn't there or we aren't in that district/map
+            {
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.STATIONARY_HELICOPTER_FARTHEST))
+                    m_AmbientSFXManager.Stop(GameAmbients.STATIONARY_HELICOPTER_FARTHEST);
+                else if (m_AmbientSFXManager.IsPlaying(GameAmbients.STATIONARY_HELICOPTER_FAR))
+                    m_AmbientSFXManager.Stop(GameAmbients.STATIONARY_HELICOPTER_FAR);
+                else if (m_AmbientSFXManager.IsPlaying(GameAmbients.STATIONARY_HELICOPTER_NEAR))
+                    m_AmbientSFXManager.Stop(GameAmbients.STATIONARY_HELICOPTER_NEAR);
+                else if (m_AmbientSFXManager.IsPlaying(GameAmbients.STATIONARY_HELICOPTER_PLAYER))
+                    m_AmbientSFXManager.Stop(GameAmbients.STATIONARY_HELICOPTER_PLAYER);
+            }
+        }
+        #endregion
+
+        #region ACTOR ACTION HANDLERS
         void HandlePlayerActor(Actor player)
         {
             // Upkeep.
@@ -14182,8 +14223,12 @@ namespace djack.RogueSurvivor.Engine
             Map map = actor.Location.Map;
             Point pos = actor.Location.Position;
 
+            //@@MP check ambient sound effects
             if (actor.IsPlayer) //@@MP - added check (Release 6-1)
-                CheckRainSFX(m_Player.Location.Map); //@MP (Release 5-3)
+            {
+                CheckRainSFX(map); //@MP (Release 5-3)
+                CheckLandedHelicopterSFX(map); //@@MP (Release 6-4)
+            }
 
             if (map.GetTileAt(pos).Model.IsWater) //@@MP - added check (Release 6-1)
             {
@@ -17795,7 +17840,7 @@ namespace djack.RogueSurvivor.Engine
         }
         #endregion
 
-        #region -Pushing, Pulling & Shoving
+#region -Pushing, Pulling & Shoving
         void DoPushPullFollowersHelp(Actor actor, MapObject mapObj, bool isPulling, ref int staCost) //alpha 10
         {
             bool isVisibleMobj = IsVisibleToPlayer(mapObj);
@@ -18052,7 +18097,7 @@ namespace djack.RogueSurvivor.Engine
         }
         #endregion
 
-        #region -Sleeping & Waking up
+#region -Sleeping & Waking up
         public void DoStartSleeping(Actor actor)
         {
             // spend AP.
@@ -21469,7 +21514,13 @@ namespace djack.RogueSurvivor.Engine
 
                                     // The power comes on, and radios loop the message about helicopter rescue
                                     string[] text;
-                                    if (1==1)//Player made it before sunset on arrival day)
+                                    bool missedRescue = false;
+                                    if ((m_Session.WorldTime.Day == m_Session.ArmyHelicopterRescue_Day) && (m_Session.WorldTime.Hour > 16)) //Player didn't make it before sunset on arrival day
+                                        missedRescue = true;
+                                    else if (m_Session.WorldTime.Day > m_Session.ArmyHelicopterRescue_Day)
+                                        missedRescue = true;
+
+                                    if (missedRescue == false)
                                     {
                                         text = new string[]
                                         {
@@ -22455,7 +22506,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region --Army rescue helicopter
-        //@@MP - methods supporting the end-goal helicopter rescue (Release 6-3)
+        //@@MP - methods supporting the end-goal helicopter rescue (Release 6-4)
 
         private void SpawnArmyHelicopterOnMap(Map map)
         {
@@ -22515,6 +22566,16 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
+
+            //now place the helicopter down
+            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER1), heli1);
+            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER2), heli2);
+            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER3), heli3);
+            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER4), heli4);
+            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER5), heli5);
+            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER6), heli6);
+            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER7), heli7);
+            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER8), heli8);
         }
 
         private Point FindNonHelicopterSpotToMovePlayer(Map map, Point source, List<Point> heliPoints)

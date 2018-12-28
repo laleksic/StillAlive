@@ -274,6 +274,16 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_CAR3 = @"MapObjects\car3";
         public const string OBJ_CAR4 = @"MapObjects\car4";
 
+        //@@MP (Release 6-4)
+        public const string OBJ_HELICOPTER1 = @"MapObjects\helicopter1";
+        public const string OBJ_HELICOPTER2 = @"MapObjects\helicopter2";
+        public const string OBJ_HELICOPTER3 = @"MapObjects\helicopter3";
+        public const string OBJ_HELICOPTER4 = @"MapObjects\helicopter4";
+        public const string OBJ_HELICOPTER5 = @"MapObjects\helicopter5";
+        public const string OBJ_HELICOPTER6 = @"MapObjects\helicopter6";
+        public const string OBJ_HELICOPTER7 = @"MapObjects\helicopter7";
+        public const string OBJ_HELICOPTER8 = @"MapObjects\helicopter8";
+
         public const string OBJ_SHOP_SHELF = @"MapObjects\shop_shelf";
         public const string OBJ_BED = @"MapObjects\bed";
         public const string OBJ_WARDROBE = @"MapObjects\wardrobe";
@@ -899,6 +909,16 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_CAR3);
             Load(OBJ_CAR4);
 
+            //@@MP (Release 6-4)
+            Load(OBJ_HELICOPTER1);
+            Load(OBJ_HELICOPTER2);
+            Load(OBJ_HELICOPTER3);
+            Load(OBJ_HELICOPTER4);
+            Load(OBJ_HELICOPTER5);
+            Load(OBJ_HELICOPTER6);
+            Load(OBJ_HELICOPTER7);
+            Load(OBJ_HELICOPTER8);
+
             Load(OBJ_SHOP_SHELF);
             Load(OBJ_BED);
             Load(OBJ_WARDROBE);
@@ -956,7 +976,7 @@ namespace djack.RogueSurvivor.Gameplay
 
             Load(OBJ_PICKET_FENCE); //@@MP alpha10 (Release 6-1)
 
-            //@@MP (Release 6-3)
+            //@@MP (Release 6-4)
             Load(OBJ_ARMY_RADIO_CUPBOARD);
             Load(OBJ_ARMY_COMPUTER_STATION);
             Load(OBJ_ARMY_BUNK_BED);

@@ -1,3 +1,11 @@
+STILL ALIVE 2.4.0.0 (aka Release 6-4, ??/??/2019) [Author: MP]
+---------------------
+
+Features:
+-Added end game objective, including sound effects.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.3.4.4 (aka Release 6-3, 18/12/2018) [Author: MP]
 ---------------------
 
@@ -26,6 +34,7 @@ Known issues:
 -Random crash/hang bug.
 -Occasionally, random turns take an extra second or two to process.
 
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 STILL ALIVE 2.1.10.9 (aka Release 6-2, 12/11/2018) [Author: MP]
 ---------------------
