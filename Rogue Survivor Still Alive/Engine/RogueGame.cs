@@ -15865,7 +15865,7 @@ namespace djack.RogueSurvivor.Engine
 
             // blast icon vs audio.
             bool isVisible = IsVisibleToPlayer(location);
-            if (isVisible || IsAudibleToPlayer(location, Rules.MODERATE_NOISE_RADIUS)) //@@MP - changed from isVisible to also IsAudible with a range (Release 5-4)
+            if (isVisible || IsAudibleToPlayer(location, Rules.LOUD_NOISE_RADIUS)) //@@MP - changed from isVisible to also IsAudible with a range (Release 5-4), was LOUD radius (Release 6-4)
             {
                 ShowBlastImage(MapToScreen(location.Position), blastAttack, blastAttack.Damage[0]);
                 RedrawPlayScreen();
@@ -15876,7 +15876,10 @@ namespace djack.RogueSurvivor.Engine
                         AnimDelay(DELAY_SHORT); //@@MP - the longer the delay the slower the explosion appers on screen
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED:
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_VISIBLE, AudioPriority.PRIORITY_EVENT);
+                        if (isVisible)
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_VISIBLE, AudioPriority.PRIORITY_EVENT);
+                        else
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_AUDIBLE, AudioPriority.PRIORITY_BGM); //@@MP - it's close enough that it would still be audible
                         AnimDelay(DELAY_LONG); //@MP - make it look like the fire spreads, also pads out to match the sound more
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED:
@@ -15889,15 +15892,12 @@ namespace djack.RogueSurvivor.Engine
                 AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You see an explosion", location.Position)); //@@MP - made applicable whether sfx enabled or not (Release 5-4)
                 RedrawPlayScreen();
             }
-            else if (IsAudibleToPlayer(location, Rules.LOUD_NOISE_RADIUS)) //(m_Rules.RollChance(PLAYER_HEAR_EXPLOSION_CHANCE)) //@@MP - explosions are rare, so no need to worry about message/sfx spam (Release 2), suppiled IsAudible with a range (Release 5-4)
+            else if (IsAudibleToPlayer(location, Rules.BOOMING_NOISE_RADIUS)) //(m_Rules.RollChance(PLAYER_HEAR_EXPLOSION_CHANCE)) //@@MP - explosions are rare, so no need to worry about message/sfx spam (Release 2), suppiled IsAudible with a range (Release 5-4), was LOUD radius (Release 6-4)
             {
                 switch (itemModel.ID) //@@MP - play the appropriate sfx for the explosive type (Release 4)
                 {
                     case (int)GameItems.IDs.EXPLOSIVE_GRENADE_PRIMED:
                         m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GRENADE_AUDIBLE, AudioPriority.PRIORITY_BGM);
-                        break;
-                    case (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED:
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_AUDIBLE, AudioPriority.PRIORITY_BGM); //@@MP - it's close enough that it would still be audible
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED:
                     case (int)GameItems.IDs.EXPLOSIVE_C4_PRIMED: //@@MP (Release 6-3)

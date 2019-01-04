@@ -911,17 +911,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        #region Helicopter
-        //@@MP (Release 6-4)
-        //A 64x128 pixel image, dissected into 8 pieces and then arranged as:
-        //  1234
-        //  5678
-        public MapObject MakeObjHelicopter(string vatImageID)
+        public MapObject MakeObjHelicopter(string vatImageID) //@@MP (Release 6-4)
         {
             return new MapObject("Helicopter", vatImageID);
+            //A 64x128 pixel image, dissected into 8 pieces and then arranged as:
+            //  1234
+            //  5678
         }
-        #endregion
-
         #endregion
 
         #region Common tile decorations
