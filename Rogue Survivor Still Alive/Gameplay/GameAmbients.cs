@@ -19,12 +19,12 @@ namespace djack.RogueSurvivor.Gameplay
 
         //@@MP - for when a helicopter is stationary or hovering (Release 6-4)
         public const string STATIONARY_HELICOPTER_FARTHEST = "stationary helicopter farthest";
-        public const string STATIONARY_HELICOPTER_FARTHEST_FILE = PATH + "stationary helicopter farthest";
-        public const string STATIONARY_HELICOPTER_FAR = "stationary helicopter far";
-        public const string STATIONARY_HELICOPTER_FAR_FILE = PATH + "stationary helicopter far";
-        public const string STATIONARY_HELICOPTER_NEAR = "stationary helicopter near";
-        public const string STATIONARY_HELICOPTER_NEAR_FILE = PATH + "stationary helicopter near";
+        public const string STATIONARY_HELICOPTER_FARTHEST_FILE = PATH + "helicopter_farthest";
+        public const string STATIONARY_HELICOPTER_FAR = "helicopter far";
+        public const string STATIONARY_HELICOPTER_FAR_FILE = PATH + "stationary helicopter_far";
+        public const string STATIONARY_HELICOPTER_NEAR = "stationary helicopter nearby";
+        public const string STATIONARY_HELICOPTER_NEAR_FILE = PATH + "helicopter_nearby";
         public const string STATIONARY_HELICOPTER_PLAYER = "stationary helicopter player";
-        public const string STATIONARY_HELICOPTER_PLAYER_FILE = PATH + "stationary helicopter player";
+        public const string STATIONARY_HELICOPTER_PLAYER_FILE = PATH + "helicopter_player";
     }
 }

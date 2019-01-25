@@ -341,7 +341,7 @@ namespace djack.RogueSurvivor.Engine
         readonly Color TINT_EVENING = Color.FromArgb(205, 230, 245);//215, 215, 215);
         readonly Color TINT_MIDNIGHT = Color.FromArgb(165, 165, 165);//195, 195, 195);
         readonly Color TINT_NIGHT = Color.FromArgb(165, 165, 165);//205, 205, 205);
-        readonly Color TINT_SUNRISE = Color.FromArgb(240,215,215);//225, 225, 225);
+        readonly Color TINT_SUNRISE = Color.FromArgb(240, 215, 215);//225, 225, 225);
         readonly Color TINT_NIGHT_VISION = Color.FromArgb(25, 120, 30); //@@MP (Release 6-3)
         #endregion
 
@@ -614,9 +614,9 @@ namespace djack.RogueSurvivor.Engine
             }
 
             public override void Draw(IRogueUI ui)
-                {
-                    ui.UI_DrawPopupTitle(Title, TitleColor, Lines, TextColor, BoxBorderColor, BoxFillColor, ScreenPosition.X, ScreenPosition.Y);
-                }
+            {
+                ui.UI_DrawPopupTitle(Title, TitleColor, Lines, TextColor, BoxBorderColor, BoxFillColor, ScreenPosition.X, ScreenPosition.Y);
+            }
         }
 
         class OverlayPopupTitleColors : Overlay // alpha10 added
@@ -651,7 +651,7 @@ namespace djack.RogueSurvivor.Engine
         struct CharGen
         {
             public bool IsUndead { get; set; }
-            public GameActors.IDs UndeadModel{ get; set; }
+            public GameActors.IDs UndeadModel { get; set; }
             public bool IsMale { get; set; }
             public Skills.IDs StartingSkill { get; set; }
         }
@@ -1088,7 +1088,7 @@ namespace djack.RogueSurvivor.Engine
                 msg.Color = OTHER_ACTION_COLOR;
 
             return msg;
-        }    
+        }
 
         void ClearMessages()
         {
@@ -1658,12 +1658,12 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_NATGUARD_FACTOR: s_Options.NatGuardFactor -= 10; break;
                             case GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor -= 10; break;
                             case GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)
-                            //case GameOptions.IDs.GAME_RATS_UPGRADE: //@@MP (Release 5-7)
-                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                                     s_Options.RatsUpgrade = false;
-                                else*/
-                                     /*s_Options.RatsUpgrade = !s_Options.RatsUpgrade; 
-                                break;*/
+                                                                                                                                              //case GameOptions.IDs.GAME_RATS_UPGRADE: //@@MP (Release 5-7)
+                                                                                                                                              /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
+                                                                                                                                                   s_Options.RatsUpgrade = false;
+                                                                                                                                              else*/
+                                                                                                                                              /*s_Options.RatsUpgrade = !s_Options.RatsUpgrade; 
+                                                                                                                                         break;*/
                             case GameOptions.IDs.GAME_SHAMBLERS_UPGRADE:
                                 /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.ShamblersUpgrade = false;
@@ -3297,7 +3297,7 @@ namespace djack.RogueSurvivor.Engine
                 KeyEventArgs key = m_UI.UI_WaitKey();
                 switch (key.KeyCode)
                 {
-#region the character keys
+                    #region the character keys
                     case Keys.A:
                         if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
                             suppliedName += "A";
@@ -3564,7 +3564,7 @@ namespace djack.RogueSurvivor.Engine
                         suppliedName += " ";
                         break;
 
-#endregion
+                    #endregion
 
                     case Keys.Back: //backspace
                         if (suppliedName.Length > 0)
@@ -3731,7 +3731,7 @@ namespace djack.RogueSurvivor.Engine
             else if (enteredNumerals == "0" || enteredNumerals == "00")
             {
                 string difficulty = "TODO in Rel 6-5";
-                switch(difficulty)
+                switch (difficulty)
                 {
                     case "beginner": chosenDay = new Random().Next(07, 28); break;
                     case "experienced": chosenDay = new Random().Next(14, 28); break;
@@ -3744,7 +3744,7 @@ namespace djack.RogueSurvivor.Engine
                 chosenDay = 28; //user didn't pick a day
             return choiceDone;
         }
-#endregion
+        #endregion
 
         void StartNewGame(string suppliedName) //@@MP - added parameter for user to supply a name (Release 5-7)
         {
@@ -3787,7 +3787,7 @@ namespace djack.RogueSurvivor.Engine
             AddMessage(new Message(String.Format("Press {0} to redefine keys", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE)), 0, Color.LightGreen));
             AddMessage(new Message(String.Format("Press {0} for a legend of icons", s_KeyBindings.Get(PlayerCommand.ICONS_LEGEND)), 0, Color.LightGreen));
             int iTip = m_Rules.Roll(0, GameTips.TIPS.Length);
-            AddMessage(new Message(String.Format( "Did you know that", GameTips.TIPS[iTip]), 0, Color.LightGreen)); //@@MP (Release 6-3)
+            AddMessage(new Message(String.Format("Did you know that", GameTips.TIPS[iTip]), 0, Color.LightGreen)); //@@MP (Release 6-3)
             AddMessage(new Message("<press ENTER>", 0, Color.Yellow));
             //RefreshPlayer();
             RedrawPlayScreen();
@@ -4264,11 +4264,11 @@ namespace djack.RogueSurvivor.Engine
             AddDevMiscStuff();
 #endif
 
-             //@@MP - option removed (Release 6-1)
+            //@@MP - option removed (Release 6-1)
             ////////////////////////
             // Reveal starting map?
             ////////////////////////
-#region
+            #region
             /*if (s_Options.RevealStartingDistrict)
             {
                 List<Zone> startZones = startMap.GetZonesAt(m_Player.Location.Position.X, m_Player.Location.Position.Y);
@@ -4329,7 +4329,7 @@ namespace djack.RogueSurvivor.Engine
             fromMap.SetExitAt(from, new Exit(toMap, to));
         }
 
-#region -Uniques
+        #region -Uniques
         UniqueActor SpawnUniqueSewersThing(World world)
         {
             ///////////////////////////////////////////////////////
@@ -4375,7 +4375,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueBigBear() //@@MP - unused parameter (Release 5-7)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Big Bear", false, 0);
             actor.IsUnique = true;
@@ -4409,7 +4409,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -4425,7 +4425,7 @@ namespace djack.RogueSurvivor.Engine
         UniqueActor CreateUniqueFamuFataru() //@@MP - unused parameter (Release 5-7)
         {
 
-#region
+            #region
             ActorModel model = GameActors.FemaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Famu Fataru", false, 0);
             actor.IsUnique = true;
@@ -4459,7 +4459,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -4474,7 +4474,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueSantaman() //@@MP - unused parameter (Release 5-7)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Santaman", false, 0);
             actor.IsUnique = true;
@@ -4508,7 +4508,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemShotgunAmmo());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -4523,7 +4523,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueRoguedjack() //@@MP - unused parameter (Release 5-7)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Roguedjack", false, 0);
             actor.IsUnique = true;
@@ -4557,7 +4557,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -4572,7 +4572,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueDuckman() //@@MP - unused parameter (Release 5-7)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Duckman", false, 0);
             actor.IsUnique = true;
@@ -4609,7 +4609,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             return new UniqueActor()
             {
@@ -4623,7 +4623,7 @@ namespace djack.RogueSurvivor.Engine
 
         UniqueActor CreateUniqueHansVonHanz() //@@MP - unused parameter (Release 5-7)
         {
-#region
+            #region
             ActorModel model = GameActors.MaleCivilian;
             Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Hans von Hanz", false, 0);
             actor.IsUnique = true;
@@ -4657,7 +4657,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
             actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-#endregion
+            #endregion
 
             // done.
             return new UniqueActor()
@@ -4899,7 +4899,7 @@ namespace djack.RogueSurvivor.Engine
             int gridSeed = m_Session.Seed + gridY * world.Size + gridX;
 
             // 3. Set gen params.
-#region
+            #region
             BaseTownGenerator.Parameters genParams = BaseTownGenerator.DEFAULT_PARAMS;
             genParams.MapWidth = genParams.MapHeight = s_Options.DistrictSize;
             genParams.District = district;
@@ -4946,7 +4946,7 @@ namespace djack.RogueSurvivor.Engine
             // Special params.
             genParams.GeneratePoliceStation = (district.WorldPosition == policeStationDistrictPos);
             genParams.GenerateHospital = (district.WorldPosition == hospitalDistrictPos);
-#endregion
+            #endregion
 
             // 4. Generate map.
             BaseTownGenerator.Parameters prevParams = m_TownGenerator.Params;
@@ -4984,7 +4984,7 @@ namespace djack.RogueSurvivor.Engine
             // done.
             return subway;
         }
-#endregion
+        #endregion
 
         void GeneratePlayerOnMap(Map map, BaseTownGenerator townGen, string suppliedName) //@@MP - added parameter for user to supply a name (Release 5-7)
         {
@@ -4993,7 +4993,7 @@ namespace djack.RogueSurvivor.Engine
             /////////////////////////////////////////////////////
             // Create player actor : living/undead x male/female
             /////////////////////////////////////////////////////
-#region
+            #region
             ActorModel playerModel;
             Actor player;
             if (m_CharGen.IsUndead)
@@ -5063,12 +5063,12 @@ namespace djack.RogueSurvivor.Engine
             }
 
             player.Controller = new PlayerController();
-#endregion
+            #endregion
 
             /////////////
             // Spawn him.
             /////////////
-#region
+            #region
             // living: try to spawn inside on a couch, then if failed spawn anywhere inside.
             // undead: spawn outside.
             // NEVER spawn in CHAR Office!!
@@ -5102,7 +5102,7 @@ namespace djack.RogueSurvivor.Engine
                         ;
                 }
             }
-#endregion
+            #endregion
         }
 
         void RefreshPlayer()
@@ -5402,7 +5402,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // 1. Advance all maps.
                 // if player quit/loaded at any time, don't bother!
-    #region
+                #region
                 foreach (Map map in district.Maps)
                 {
                     int prevLocalTurn = map.LocalTime.TurnCounter;
@@ -5419,12 +5419,12 @@ namespace djack.RogueSurvivor.Engine
                     }
                     while (map.LocalTime.TurnCounter == prevLocalTurn);
                 }
-    #endregion
+                #endregion
 
                 // 2. Advance district.
-    #region
+                #region
                 // 2.1. Advance world time if current district, or grow plants if other district and a new day
-    #region
+                #region
                 if (district == m_Session.CurrentMap.District)
                 {
                     ++m_Session.WorldTime.TurnCounter;
@@ -5439,7 +5439,7 @@ namespace djack.RogueSurvivor.Engine
                         OnNewDay();
                         foreach (Map map in district.Maps) //@@MP (Release 5-5)
                         {
-                             if (m_Session.WorldTime.Day % 2 == 0) //@@MP - now only happens every 2nd day (Release 6-1)
+                            if (m_Session.WorldTime.Day % 2 == 0) //@@MP - now only happens every 2nd day (Release 6-1)
                                 CheckIfPlantsFruit(map);
                         }
                     }
@@ -5461,11 +5461,11 @@ namespace djack.RogueSurvivor.Engine
                     foreach (Map map in district.Maps)
                         CheckIfPlantsFruit(map);
                 }
-    #endregion
+                #endregion
 
                 // 2.2. Check for events.
 
-    #region Entry/Surface map
+                #region Entry/Surface map
                 // 1 Invasion?
                 if (CheckForEvent_ZombieInvasion(district.EntryMap))
                 {
@@ -5506,18 +5506,18 @@ namespace djack.RogueSurvivor.Engine
                 {
                     FireEvent_BandOfSurvivors(district.EntryMap);
                 }
-    #endregion
-            
-    #region Sewers
+                #endregion
+
+                #region Sewers
                 // 1 Sewers Invasion?
                 if (CheckForEvent_SewersInvasion(district.SewersMap))
                 {
                     FireEvent_SewersInvasion(district.SewersMap);
                 }
-    #endregion
+                #endregion
 
-    #region DISABLED Subway
-    #if false
+                #region DISABLED Subway
+#if false
                 if (district.SubwayMap != null)
                 {
                     // 1 Subway Invasion?
@@ -5526,12 +5526,12 @@ namespace djack.RogueSurvivor.Engine
                         FireEvent_SubwayInvasion(district.SubwayMap);
                     }
                 }
-    #endif
-    #endregion
-    #endregion
+#endif
+                #endregion
+                #endregion
 
                 // 3. Simulate nearby districts?
-    #region
+                #region
                 // if player is sleeping in this map and option enabled.
                 if (s_Options.IsSimON && m_Player != null && m_Player.IsSleeping && s_Options.SimulateWhenSleeping && m_Player.Location.Map.District == district)
                 {
@@ -5551,17 +5551,17 @@ namespace djack.RogueSurvivor.Engine
             //////////////////////////////////////////////////////////
 
             // 0. Secret maps.
-#region
+            #region
             if (map.IsSecret)
             {
                 // don't play the map at all, jump in time.
                 ++map.LocalTime.TurnCounter;
                 return;
             }
-#endregion
+            #endregion
 
             // 1. Get next actor to Act.
-#region
+            #region
             Actor actor = m_Rules.GetNextActorToAct(map); //@@MP - unused parameter (Release 5-7)
 
             // alpha10 ai loop bug detection
@@ -5590,7 +5590,7 @@ namespace djack.RogueSurvivor.Engine
                     m_DEBUG_prevAiActor = actor;
                 }
             }
-#endregion
+            #endregion
 
             // 2. If none move to next turn and return.
             #region
@@ -5599,10 +5599,10 @@ namespace djack.RogueSurvivor.Engine
                 NextMapTurn(map, sim);
                 return;
             }
-#endregion
+            #endregion
 
             // 3. Ask actor to act. Handle player and AI differently.
-#region
+            #region
             actor.PreviousStaminaPoints = actor.StaminaPoints;
             if (actor.Controller == null)
             {
@@ -5625,7 +5625,7 @@ namespace djack.RogueSurvivor.Engine
             actor.PreviousFoodPoints = actor.FoodPoints;
             actor.PreviousSleepPoints = actor.SleepPoints;
             if (s_Options.IsSanityEnabled) actor.PreviousSanity = actor.Sanity; //@@MP (Release 1)
-#endregion
+            #endregion
         }
 
         void NextMapTurn(Map map, SimFlags sim)
@@ -5678,7 +5678,7 @@ namespace djack.RogueSurvivor.Engine
                 bool hasInfection = Rules.HasInfection(m_Session.GameMode);
                 if (hasCorpses || hasInfection)
                 {
-#region Corpses
+                    #region Corpses
                     if (hasCorpses && map.CountCorpses > 0)
                     {
                         // decide who zombifies or rots.
@@ -5739,9 +5739,9 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
 
-#region Infection effects
+                    #region Infection effects
                     if (hasInfection)
                     {
                         List<Actor> infectedToKill = null;
@@ -5751,7 +5751,7 @@ namespace djack.RogueSurvivor.Engine
                             {
                                 int infectionP = m_Rules.ActorInfectionPercent(a);
 
-#region
+                                #region
                                 if (m_Rules.Roll(0, 1000) < m_Rules.InfectionEffectTriggerChance1000(infectionP))
                                 {
                                     bool isVisible = IsVisibleToPlayer(a);
@@ -5837,7 +5837,7 @@ namespace djack.RogueSurvivor.Engine
                                         infectedToKill.Add(a);
                                     }
                                 } // trigged effect
-#endregion
+                                #endregion
                             } // is infected
                         } // each actor
 
@@ -5865,7 +5865,7 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
                 }  // non STD game.
                 #endregion
 
@@ -5917,10 +5917,10 @@ namespace djack.RogueSurvivor.Engine
                         map.RemoveScent(scent);
                     scentGarbage = null;
                 }
-#endregion
+                #endregion
 
                 //      2.3 Actor scents.
-#region
+                #region
                 foreach (Actor actor in map.Actors)
                 {
                     DropActorScent(actor);
@@ -5941,8 +5941,8 @@ namespace djack.RogueSurvivor.Engine
                         if (m_Rules.IsWeatherRain(m_Session.World.Weather) && !map.GetTileAt(actor.Location.Position).IsInside) //@@MP - added check for inside (Release 6-1)
                         { // FIXME there still the weather bug when simulating = weather used is current world weather, not map weather
                             if (m_Rules.RollChance(baseExtinguishChance))
-                                    ExtinguishOnFireActor(actor); //@@MP - remove fire decoration and status
-                                continue;
+                                ExtinguishOnFireActor(actor); //@@MP - remove fire decoration and status
+                            continue;
                         }
                         else
                         {
@@ -5963,10 +5963,10 @@ namespace djack.RogueSurvivor.Engine
                 }
                 // reset actor index.
                 map.CheckNextActorIndex = 0;
-#endregion
+                #endregion
 
                 // 3.2 Hunger and rot.
-#region
+                #region
                 List<Actor> actorsStarvedToDeath = null;
                 foreach (Actor actor in map.Actors)
                 {
@@ -6023,7 +6023,7 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
                 }
-#region Kill (zombify) starved actors.
+                #region Kill (zombify) starved actors.
                 if (actorsStarvedToDeath != null)
                 {
                     foreach (Actor actor in actorsStarvedToDeath)
@@ -6055,18 +6055,18 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
                 }
-#endregion
+                #endregion
 
                 // reset actor index.
                 map.CheckNextActorIndex = 0;
-#endregion
+                #endregion
 
                 // 3.3 Actor gauges & states
-#region
+                #region
                 foreach (Actor actor in map.Actors)
                 {
                     // 3.3.1 Handle sleeping actors.
-#region
+                    #region
                     if (actor.Model.Abilities.HasToSleep)
                     {
                         // sleep vs sleep points loss.
@@ -6151,7 +6151,7 @@ namespace djack.RogueSurvivor.Engine
                     #endregion
 
                     // 3.3.2 AP, STA, stop running if tired
-#region
+                    #region
                     //regen AP
                     actor.ActionPoints += m_Rules.ActorSpeed(actor);
 
@@ -6172,10 +6172,10 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
 
                     // 3.3.3 Exhausted actors might collapse.
-#region
+                    #region
                     else if (m_Rules.IsActorExhausted(actor))
                     {
                         if (m_Rules.RollChance(Rules.SLEEP_EXHAUSTION_COLLAPSE_CHANCE))
@@ -6199,18 +6199,18 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
 
                     // 3.3.4 Sanity and trust
-#region
+                    #region
                     // sanity loss.
-#region
+                    #region
                     if (actor.Model.Abilities.HasSanity && s_Options.IsSanityEnabled) //@@MP - this is where the each-turn sanity loss happens (Release 1)
                         if (--actor.Sanity <= 0) actor.Sanity = 0;
-#endregion
+                    #endregion
 
                     // leader trust & leader/follower bond.
-#region
+                    #region
                     if (actor.HasLeader)
                     {
                         // trust.
@@ -6301,14 +6301,14 @@ namespace djack.RogueSurvivor.Engine
                     }
                     #endregion
                 }
-#endregion
-#endregion
+                #endregion
+                #endregion
 
                 // 4. Check explosives.
-#region
+                #region
                 // 4.1 Update fuses.
                 bool hasExplosivesToExplode = false;
-#region
+                #region
                 // on ground.
                 foreach (Inventory groundInv in map.GroundInventories)
                 {
@@ -6347,10 +6347,10 @@ namespace djack.RogueSurvivor.Engine
                             hasExplosivesToExplode = true;
                     }
                 }
-#endregion
+                #endregion
 
                 // 4.2 Explode.
-#region
+                #region
                 if (hasExplosivesToExplode)
                 {
                     bool hasExplodedSomething = false;
@@ -6448,7 +6448,7 @@ namespace djack.RogueSurvivor.Engine
                             //already on fire so no need to check if fire will spread to it; just add these coordinates to the list of checked positions
                             alreadyTestedForFireSpreadThisTurnPoints.Add(new Point { X = x, Y = y });
 
-#region 5.2.1 First, check if this fire spreads to an adjacent tile/s
+                            #region 5.2.1 First, check if this fire spreads to an adjacent tile/s
                             Point position = new Point(x, y);
                             map.ForEachAdjacentInMap(position, (adj) =>
                             {
@@ -6485,7 +6485,7 @@ namespace djack.RogueSurvivor.Engine
                             });
                             #endregion
 
-#region 5.2.2 Now, roll to extinguish fires that existed prior to this turn
+                            #region 5.2.2 Now, roll to extinguish fires that existed prior to this turn
                             //check if the fire started on this tile this turn, in which case we don't want to extinguish it
                             bool fireSpreadToThisTileThisTurn = false;
                             for (int z = 0; z < spreadToThisTurnPoints.Count; z++)
@@ -6515,8 +6515,8 @@ namespace djack.RogueSurvivor.Engine
                                 //roll to extinguish the fire on this tile
                                 if (m_Rules.RollChance(thisTileExtinguishChance))
                                     ExtinguishOnFireTile(map.GetTileAt(x, y));
-#endregion
-#region 5.2.3 Finally, burn the actor if they stood in the fire for a turn (ie not extinguished)
+                                #endregion
+                                #region 5.2.3 Finally, burn the actor if they stood in the fire for a turn (ie not extinguished)
                                 else //if (map.IsAnyTileFireThere(map, new Point(x, y))) //is it still on fire?
                                 {
                                     //it was already on fire when this turn started, so the fire did not spread here this turn and we must therefore
@@ -6529,13 +6529,13 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
                 }
-#endregion
+                #endregion
 
-#endregion
+                #endregion
             }   // skipped in lodetail turns.
 
             // -- Check timers.
-#region
+            #region
             if (map.CountTimers > 0)
             {
                 List<TimedTask> timersGarbage = null;
@@ -6554,17 +6554,17 @@ namespace djack.RogueSurvivor.Engine
                         map.RemoveTimer(t);
                 }
             }
-#endregion
+            #endregion
 
             // -- Advance local time.
-#region
+            #region
             bool wasLocalNight = map.LocalTime.IsNight;
             ++map.LocalTime.TurnCounter;
             bool isLocalDay = !map.LocalTime.IsNight;
-#endregion
+            #endregion
 
             // -- Check for NPC upgrade.
-#region
+            #region
             if (wasLocalNight && isLocalDay)
             {
                 HandleLivingNPCsUpgrade(map);
@@ -6573,7 +6573,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 HandleUndeadNPCsUpgrade(map);
             }
-#endregion
+            #endregion
         }
 
         static void SpendActorActionPoints(Actor actor, int actionCost) //@@MP - made static (Release 5-7)
@@ -6644,7 +6644,7 @@ namespace djack.RogueSurvivor.Engine
                 AddMessage(new Message(String.Format("({0} trust with {1})", mod, a.TheName), m_Session.WorldTime.TurnCounter, Color.White));
         }
 
-#region -SIMULATION ***
+        #region -SIMULATION ***
         static SimFlags ComputeSimFlagsForTurn(int turn) //@@MP - made static (Release 5-7)
         {
             bool loDetail = false;
@@ -6724,7 +6724,7 @@ namespace djack.RogueSurvivor.Engine
             return hadToSim;
         }
 
-#region --Simulation Thread
+        #region --Simulation Thread
         /*void RestartSimThread() // alpha10 obsolete, we do it "manually" in some places
         {
             StopSimThread();
@@ -6851,12 +6851,12 @@ namespace djack.RogueSurvivor.Engine
             lock (m_SimStateLock) { m_SimThreadIsWorking = false; }
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "sim thread: working stopped");
         }
-#endregion
-#endregion
-#endregion
+        #endregion
+        #endregion
+        #endregion
 
-#region 4. GAME OVER
-#region -PLAYER DEATH & POST MORTEM
+        #region 4. GAME OVER
+        #region -PLAYER DEATH & POST MORTEM
         void PlayerDied(Actor killer, string reason)
         {
             // stop sim thread.
@@ -6873,7 +6873,7 @@ namespace djack.RogueSurvivor.Engine
             ///////////
             // Scoring
             ///////////
-#region
+            #region
             m_Session.Scoring.TurnsSurvived = m_Session.WorldTime.TurnCounter;
             m_Session.Scoring.SetKiller(killer);
             if (m_Player.CountFollowers > 0)
@@ -6898,12 +6898,12 @@ namespace djack.RogueSurvivor.Engine
             else
                 m_Session.Scoring.DeathReason = String.Format("Death by {0}", reason);
             m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Died.");
-#endregion
+            #endregion
 
             /////////////////////////////////////////
             // Tip, Message, screenshot & permadeath.
             /////////////////////////////////////////
-#region
+            #region
             int iTip = m_Rules.Roll(0, GameTips.TIPS.Length);
             AddOverlay(new OverlayPopup(new string[] { "TIP OF THE DEAD", "Did you know that...", GameTips.TIPS[iTip] }, Color.White, Color.White, POPUP_FILLCOLOR, new Point(0, 0)));
 
@@ -6933,10 +6933,91 @@ namespace djack.RogueSurvivor.Engine
             }
 
             AddMessagePressEnter();
-#endregion
+            #endregion
 
             // post mortem.
             HandlePostMortem();
+
+            // music.
+            m_MusicManager.StopAll();
+
+            // alpha10.1 bot release control
+#if DEBUG
+            BotReleaseControl();
+#endif
+        }
+
+        void PlayerWasRescued() //@@MP (Release 6-4)
+        {
+            // stop sim thread.
+            StopSimThread(true);
+
+            // mouse.
+            m_UI.UI_SetCursor(null);
+
+            // music.
+            m_AmbientSFXManager.StopAll();
+            m_MusicManager.StopAll();
+            m_MusicManager.Play(GameMusics.PLAYER_SUCCESS / HOPE, AudioPriority.PRIORITY_EVENT);
+
+            ///////////
+            // Scoring
+            ///////////
+            #region
+            m_Session.Scoring.TurnsSurvived = m_Session.WorldTime.TurnCounter;
+            if (m_Player.CountFollowers > 0)
+            {
+                foreach (Actor fo in m_Player.Followers)
+                    m_Session.Scoring.AddFollowerWhenDied(fo);
+            }
+
+            List<Zone> zone = m_Player.Location.Map.GetZonesAt(m_Player.Location.Position.X, m_Player.Location.Position.Y);
+            if (zone == null)
+            {
+                m_Session.Scoring.DeathPlace = m_Player.Location.Map.Name;
+            }
+            else
+            {
+                string zoneName = zone[0].Name;
+                m_Session.Scoring.DeathPlace = String.Format("{0} at {1}", m_Player.Location.Map.Name, zoneName);
+            }
+
+            m_Session.Scoring.DeathReason = String.Format("Rescued to Murdoch air force base");
+            m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "Rescued.");
+            #endregion
+
+            /////////////////////////////////////////
+            // Tip, Message, screenshot & permadeath.
+            /////////////////////////////////////////
+            #region
+            int iTip = m_Rules.Roll(0, GameTips.TIPS.Length);
+            AddOverlay(new OverlayPopup(new string[] { "TIP OF THE DEAD", "Did you know that...", GameTips.TIPS[iTip] }, Color.White, Color.White, POPUP_FILLCOLOR, new Point(0, 0)));
+
+            ClearMessages();
+            AddMessage(new Message("**** YOU WERE RESCUED! ****", m_Session.WorldTime.TurnCounter, Color.Red));
+            AddMessage(new Message(String.Format("Congratulations. Survivng that dead city was no small feat."), m_Session.WorldTime.TurnCounter, Color.Red));
+            AddMessage(new Message(String.Format("But could you have survived even longer...?"), m_Session.WorldTime.TurnCounter, Color.Red));
+
+            // if permadeath on delete save file.
+            if (s_Options.IsPermadeathOn)
+                DeleteSavedGame(GetUserSave());
+
+            // screenshot.
+            if (s_Options.IsDeathScreenshotOn)
+            {
+                RedrawPlayScreen();
+                string shotname = DoTakeScreenshot();
+                if (shotname == null)
+                    AddMessage(MakeErrorMessage("could not save rescue screenshot."));
+                else
+                    AddMessage(new Message(String.Format("Rescue screenshot saved : {0}.", shotname), m_Session.WorldTime.TurnCounter, Color.Red));
+            }
+
+            AddMessagePressEnter();
+            #endregion
+
+            // post-rescue.
+            HandlePostRescue();
 
             // music.
             m_MusicManager.StopAll();
@@ -6981,27 +7062,27 @@ namespace djack.RogueSurvivor.Engine
             graveyard.Append(String.Format("ROGUE SURVIVOR: {0}", SetupConfig.GAME_VERSION));
             graveyard.Append(String.Format("POST MORTEM - {0}", m_Session.Scoring.GameMode)); //m_Session.GameMode.ToString())); //@@MP - added game mode (Release 5-2)
 
-#region Summary
+            #region Summary
             graveyard.Append(String.Format("{0} was {1} and {2}.", name, AorAn(m_Player.Model.Name), AorAn(m_Player.Faction.MemberName)));
             graveyard.Append(String.Format("{0} survived to see {1}.", heOrShe, deathTime.ToString()));
             graveyard.Append(String.Format("{0}'s spirit guided {1} for {2}.", name, himOrHer, realTimeString));
             if (m_Session.Scoring.ReincarnationNumber > 0)
                 graveyard.Append(String.Format("{0} was reincarnation {1}.", heOrShe, m_Session.Scoring.ReincarnationNumber));
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> SCORING");
-#region
+            #region
             graveyard.Append(String.Format("{0} scored a net total of {1} points.", heOrShe, m_Session.Scoring.TotalPoints));
             graveyard.Append(String.Format("- difficulty rating of {0}%.", (int)(100 * m_Session.Scoring.DifficultyRating)));
             graveyard.Append(String.Format("- {0} base points for survival.", m_Session.Scoring.SurvivalPoints));
             graveyard.Append(String.Format("- {0} base points for kills.", m_Session.Scoring.KillPoints));
             graveyard.Append(String.Format("- {0} base points for achievements.", m_Session.Scoring.AchievementPoints));
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> ACHIEVEMENTS");
-#region
+            #region
             foreach (Achievement ach in m_Session.Scoring.Achievements)
             {
                 if (ach.IsDone)
@@ -7012,7 +7093,7 @@ namespace djack.RogueSurvivor.Engine
             if (m_Session.Scoring.CompletedAchievementsCount == 0)
             {
                 graveyard.Append("Didn't achieve anything notable. And then died.");
-                graveyard.Append(String.Format("(unlock all the {0} achievements to 'win' this game version)", Scoring.MAX_ACHIEVEMENTS));
+                graveyard.Append(String.Format("(there are {0} available achievements in total)", Scoring.MAX_ACHIEVEMENTS)); //@@MP - removed reference to 'winning' the game (Release 6-4)
             }
             else
             {
@@ -7026,16 +7107,16 @@ namespace djack.RogueSurvivor.Engine
                 graveyard.Append("(later versions of the game will feature real winning conditions and multiple endings...)");
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> DEATH");
-#region
+            #region
             graveyard.Append(String.Format("{0} in {1}.", m_Session.Scoring.DeathReason, m_Session.Scoring.DeathPlace));
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> KILLS");
-#region
+            #region
             if (m_Session.Scoring.HasNoKills)
             {
                 graveyard.Append(String.Format("{0} was a pacifist. Or too scared to fight.", heOrShe));
@@ -7059,19 +7140,19 @@ namespace djack.RogueSurvivor.Engine
             }
 
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> FUN FACTS!");
-#region
+            #region
             graveyard.Append(String.Format("While {0} has died, others are still surviving", name));
             string[] funFacts = CompileDistrictFunFacts(m_Player.Location.Map.District);
             for (int i = 0; i < funFacts.Length; i++)
                 graveyard.Append(funFacts[i]);
             graveyard.Append("");
-#endregion
+            #endregion
 
             graveyard.Append("> SKILLS");
-#region
+            #region
             if (m_Player.Sheet.SkillTable.Skills == null)
             {
                 graveyard.Append(String.Format("{0} was a jack of all trades. Or incompetent.", heOrShe));
@@ -7084,10 +7165,10 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> INVENTORY");
-#region
+            #region
             if (m_Player.Inventory.IsEmpty)
             {
                 graveyard.Append(String.Format("{0} travelled light. Or was really bad at scavenging.", heOrShe));
@@ -7104,10 +7185,10 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> FOLLOWERS");
-#region
+            #region
             if (m_Session.Scoring.FollowersWhendDied == null || m_Session.Scoring.FollowersWhendDied.Count == 0)
             {
                 graveyard.Append(String.Format("{0} was a lone wolf. Or everyone else was dead.", heOrShe));
@@ -7153,10 +7234,10 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> EVENTS");
-#region
+            #region
             if (m_Session.Scoring.HasNoEvents)
             {
                 graveyard.Append(String.Format("{0} had a quiet life. Or dull and boring.", heOrShe));
@@ -7171,10 +7252,10 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> CUSTOM OPTIONS");
-#region
+            #region
             //@@MP - want the graveyard to lists all modifiers, rather than just those changed from default (Release 4)
             graveyard.Append(String.Format("- difficulty rating of {0}%.", (int)(100 * m_Session.Scoring.DifficultyRating)));
             //if (s_Options.IsPermadeathOn)
@@ -7221,14 +7302,14 @@ namespace djack.RogueSurvivor.Engine
             /*if (s_Options.IsLivingReincRestricted) //if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS) //@@MP (Release 5-2), disabled IsLivingReincRestricted (Release 5-7)
                 graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED), s_Options.IsLivingReincRestricted ? "on" : "off"));*/
             graveyard.Append(" ");
-#endregion
+            #endregion
 
             graveyard.Append("> R.I.P");
-#region
+            #region
             graveyard.Append(String.Format("May {0} rest in peace, and not rise again.", HeOrShe(m_Player))); //@@MP - replaced with something better (Release 1)
-            /*graveyard.Append(String.Format("For {0} body is now a meal for evil.", HisOrHer(m_Player)));
-            graveyard.Append("The End.");*/
-#endregion
+                                                                                                              /*graveyard.Append(String.Format("For {0} body is now a meal for evil.", HisOrHer(m_Player)));
+                                                                                                              graveyard.Append("The End.");*/
+            #endregion
 
             /////////////////////
             // Save to graveyard
@@ -7319,7 +7400,363 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-#region -Fun Facts!
+        void HandlePostRescue() //@@MP (Release 6-4)
+        {
+            ////////////////
+            // Prepare data.
+            ////////////////
+            WorldTime rescueTime = new WorldTime();
+            rescueTime.TurnCounter = m_Session.Scoring.TurnsSurvived;
+            bool isMale = m_Player.Model.DollBody.IsMale;
+            string heOrShe = isMale ? "He" : "She";
+            //string hisOrHer = HisOrHer(m_Player); //@@MP - unused (Release 5-7)
+            string himOrHer = isMale ? "him" : "her";
+            string name = m_Player.TheName.Replace("(YOU) ", "");
+            TimeSpan rt = m_Session.Scoring.RealLifePlayingTime;
+            string realTimeString = TimeSpanToString(rt);
+            m_Session.Scoring.Side = m_Player.Model.Abilities.IsUndead ? DifficultySide.FOR_UNDEAD : DifficultySide.FOR_SURVIVOR;
+            m_Session.Scoring.DifficultyRating = Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber);
+
+            ////////////////////////////////////
+            // Format scoring into a text file.
+            ///////////////////////////////////
+            TextFile graveyard = new TextFile();
+
+            graveyard.Append(String.Format("ROGUE SURVIVOR: {0}", SetupConfig.GAME_VERSION));
+            graveyard.Append(String.Format("POST-RESCUE SUMMARY - {0}", m_Session.Scoring.GameMode)); //m_Session.GameMode.ToString())); //@@MP - added game mode (Release 5-2)
+
+            #region Summary
+            graveyard.Append(String.Format("{0} was {1} and {2}.", name, AorAn(m_Player.Model.Name), AorAn(m_Player.Faction.MemberName)));
+            graveyard.Append(String.Format("{0} was rescued on {1}.", heOrShe, rescueTime.ToString()));
+            graveyard.Append(String.Format("{0}'s spirit guided {1} for {2}.", name, himOrHer, realTimeString));
+            if (m_Session.Scoring.ReincarnationNumber > 0)
+                graveyard.Append(String.Format("{0} was reincarnation {1}.", heOrShe, m_Session.Scoring.ReincarnationNumber));
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> SCORING");
+            #region
+            graveyard.Append(String.Format("{0} scored a net total of {1} points.", heOrShe, m_Session.Scoring.TotalPoints));
+            graveyard.Append(String.Format("- difficulty rating of {0}%.", (int)(100 * m_Session.Scoring.DifficultyRating)));
+            graveyard.Append(String.Format("- {0} base points for survival.", m_Session.Scoring.SurvivalPoints));
+            graveyard.Append(String.Format("- {0} base points for kills.", m_Session.Scoring.KillPoints));
+            graveyard.Append(String.Format("- {0} base points for achievements.", m_Session.Scoring.AchievementPoints));
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> ACHIEVEMENTS");
+            #region
+            foreach (Achievement ach in m_Session.Scoring.Achievements)
+            {
+                if (ach.IsDone)
+                    graveyard.Append(String.Format("- {0} for {1} points!", ach.Name, ach.ScoreValue));
+                else
+                    graveyard.Append(String.Format("- Fail : {0}.", ach.TeaseName));
+            }
+            graveyard.Append(String.Format("Total achievements : {0}/{1}.", m_Session.Scoring.CompletedAchievementsCount, Scoring.MAX_ACHIEVEMENTS));
+            if (m_Session.Scoring.CompletedAchievementsCount >= Scoring.MAX_ACHIEVEMENTS)
+                graveyard.Append("You achieved everything and managed to escape the city! Very impressive!");
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> RESCUE");
+            #region
+            graveyard.Append(String.Format("{0} in {1}.", m_Session.Scoring.DeathReason, m_Session.Scoring.DeathPlace));
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> KILLS");
+            #region
+            if (m_Session.Scoring.HasNoKills)
+            {
+                graveyard.Append(String.Format("{0} was a pacifist. Or too scared to fight.", heOrShe));
+            }
+            else
+            {
+                // models kill list.
+                foreach (Scoring.KillData killData in m_Session.Scoring.Kills)
+                {
+                    string modelName = killData.Amount > 1 ? Models.Actors[killData.ActorModelID].PluralName : Models.Actors[killData.ActorModelID].Name;
+                    graveyard.Append(String.Format("{0,4} {1}.", killData.Amount, modelName));
+                }
+            }
+            // murders? only livings.
+            if (!m_Player.Model.Abilities.IsUndead)
+            {
+                if (m_Player.MurdersCounter > 0)
+                {
+                    graveyard.Append(String.Format("{0} committed {1} murder{2}!", heOrShe, m_Player.MurdersCounter, m_Player.MurdersCounter > 1 ? "s" : ""));
+                }
+            }
+
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> FUN FACTS!");
+            #region
+            graveyard.Append(String.Format("While {0} has escaped the city, others are still surviving", name));
+            string[] funFacts = CompileDistrictFunFacts(m_Player.Location.Map.District);
+            for (int i = 0; i < funFacts.Length; i++)
+                graveyard.Append(funFacts[i]);
+            graveyard.Append("");
+            #endregion
+
+            graveyard.Append("> SKILLS");
+            #region
+            if (m_Player.Sheet.SkillTable.Skills == null)
+            {
+                graveyard.Append(String.Format("{0} had no particular skills.", heOrShe));
+            }
+            else
+            {
+                foreach (Skill sk in m_Player.Sheet.SkillTable.Skills)
+                {
+                    graveyard.Append(String.Format("{0}-{1}.", sk.Level, Skills.Name(sk.ID)));
+                }
+            }
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> INVENTORY");
+            #region
+            if (m_Player.Inventory.IsEmpty)
+            {
+                graveyard.Append(String.Format("{0} travelled light. Really light.", heOrShe));
+            }
+            else
+            {
+                foreach (Item it in m_Player.Inventory.Items)
+                {
+                    string desc = DescribeItemShort(it);
+                    if (it.IsEquipped)
+                        graveyard.Append(String.Format("- {0} (equipped).", desc));
+                    else
+                        graveyard.Append(String.Format("- {0}.", desc));
+                }
+            }
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> FOLLOWERS");
+            #region
+            if (m_Session.Scoring.FollowersWhendDied == null || m_Session.Scoring.FollowersWhendDied.Count == 0)
+            {
+                graveyard.Append(String.Format("{0} was a lone wolf. Or everyone else was dead.", heOrShe));
+            }
+            else
+            {
+                // names.
+                StringBuilder sb = new StringBuilder(String.Format("{0} was leading", heOrShe));
+                bool firstFo = true;
+                int i = 0;
+                int count = m_Session.Scoring.FollowersWhendDied.Count;
+                foreach (Actor fo in m_Session.Scoring.FollowersWhendDied)
+                {
+                    if (firstFo)
+                        sb.Append(" ");
+                    else
+                    {
+                        if (i == count)
+                            sb.Append(".");
+                        else if (i == count - 1)
+                            sb.Append(" and ");
+                        else
+                            sb.Append(", ");
+                    }
+                    sb.Append(fo.TheName);
+                    ++i;
+                    firstFo = false;
+                }
+                sb.Append(".");
+                graveyard.Append(sb.ToString());
+
+                // skills.
+                foreach (Actor fo in m_Session.Scoring.FollowersWhendDied)
+                {
+                    graveyard.Append(String.Format("{0} skills : ", fo.Name));
+                    if (fo.Sheet.SkillTable != null && fo.Sheet.SkillTable.Skills != null)
+                    {
+                        foreach (Skill sk in fo.Sheet.SkillTable.Skills)
+                        {
+                            graveyard.Append(String.Format("{0}-{1}.", sk.Level, Skills.Name(sk.ID)));
+                        }
+                    }
+                }
+            }
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> EVENTS");
+            #region
+            if (m_Session.Scoring.HasNoEvents)
+            {
+                graveyard.Append(String.Format("{0} had a relatively quiet life for an apocalypse.", heOrShe));
+            }
+            else
+            {
+                foreach (Scoring.GameEventData ev in m_Session.Scoring.Events)
+                {
+                    WorldTime evTime = new WorldTime();
+                    evTime.TurnCounter = ev.Turn;
+                    graveyard.Append(String.Format("- {0,13} : {1}", evTime.ToString(), ev.Text));
+                }
+            }
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> CUSTOM OPTIONS");
+            #region
+            //@@MP - want the graveyard to lists all modifiers, rather than just those changed from default (Release 4)
+            graveyard.Append(String.Format("- difficulty rating of {0}%.", (int)(100 * m_Session.Scoring.DifficultyRating)));
+            //if (s_Options.IsPermadeathOn)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_PERMADEATH), s_Options.IsPermadeathOn ? "yes" : "no")); //@@MP - actually shows yes or no now (Release 5-7)
+            //if (s_Options.IsSanityEnabled)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SANITY), s_Options.IsSanityEnabled ? "on" : "off"));
+            //if (s_Options.CitySize != GameOptions.DEFAULT_CITY_SIZE)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_CITY_SIZE), s_Options.CitySize));
+            //if (s_Options.DistrictSize != GameOptions.DEFAULT_DISTRICT_SIZE)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_DISTRICT_SIZE), s_Options.DistrictSize));
+            //if (!s_Options.RevealStartingDistrict)
+            //graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT), s_Options.RevealStartingDistrict ? "yes" : "no")); //@@MP (Release 6-1)
+            //if (s_Options.MaxCivilians != GameOptions.DEFAULT_MAX_CIVILIANS)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_CIVILIANS), s_Options.MaxCivilians));
+            //if (s_Options.MaxUndeads != GameOptions.DEFAULT_MAX_UNDEADS)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_UNDEADS), s_Options.MaxUndeads));
+            //if (s_Options.DayZeroUndeadsPercent != GameOptions.DEFAULT_DAY_ZERO_UNDEADS_PERCENT)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT), s_Options.DayZeroUndeadsPercent));
+            //if (s_Options.ZombieInvasionDailyIncrease != GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE), s_Options.ZombieInvasionDailyIncrease));
+            if (Rules.HasEvolution(m_Session.GameMode)) //@@MP (Release 5-2)
+            {
+                //if(!s_Options.AllowUndeadsEvolution)
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION), s_Options.AllowUndeadsEvolution ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SKELETONS_UPGRADE), s_Options.SkeletonsUpgrade ? "yes" : "no"));
+                //graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_RATS_UPGRADE), s_Options.RatsUpgrade ? "yes" : "no")); //@@MP (Release 5-7)
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SHAMBLERS_UPGRADE), s_Options.ShamblersUpgrade ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS), s_Options.ZombifiedsUpgradeDays));
+            }
+            else
+            {
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS), s_Options.VTGAntiviralPills ? "yes" : "no"));
+            }
+            //if (!s_Options.NPCCanStarveToDeath)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH), s_Options.NPCCanStarveToDeath ? "yes" : "no"));
+            //if(s_Options.StarvedZombificationChance != GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE), s_Options.StarvedZombificationChance));
+            //if (s_Options.ZombificationChance != GameOptions.DEFAULT_ZOMBIFICATION_CHANCE)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE), s_Options.ZombificationChance));
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS), s_Options.IsAggressiveHungryCiviliansOn ? "yes" : "no")); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_NATGUARD_FACTOR), s_Options.NatGuardFactor)); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR), s_Options.SuppliesDropFactor)); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.UI_COMBAT_ASSISTANT), s_Options.IsCombatAssistantOn ? "on" : "off")); //@@MP (Release 5-2)
+            /*if (s_Options.IsLivingReincRestricted) //if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS) //@@MP (Release 5-2), disabled IsLivingReincRestricted (Release 5-7)
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED), s_Options.IsLivingReincRestricted ? "on" : "off"));*/
+            graveyard.Append(" ");
+            #endregion
+
+            graveyard.Append("> R.I.P");
+            #region
+            graveyard.Append(String.Format("May Murdoch base prove to be haven for {0}.", HeOrShe(m_Player))); //@@MP - replaced with something better (Release 1)
+                                                                                                              /*graveyard.Append(String.Format("For {0} body is now a meal for evil.", HisOrHer(m_Player)));
+                                                                                                              graveyard.Append("The End.");*/
+            #endregion
+
+            /////////////////////
+            // Save to graveyard
+            /////////////////////
+            #region
+            int gx, gy;
+            gx = gy = 0;
+            m_UI.UI_Clear(Color.Black);
+            m_UI.UI_DrawStringBold(Color.Yellow, "Saving rescue to graveyard...", 0, 0);
+            gy += BOLD_LINE_SPACING;
+            m_UI.UI_Repaint();
+            string graveName = GetUserNewGraveyardName();
+            string graveFile = GraveFilePath(graveName);
+            if (!graveyard.Save(graveFile))
+            {
+                m_UI.UI_DrawStringBold(Color.Red, "Could not save to graveyard.", 0, gy);
+                gy += BOLD_LINE_SPACING;
+            }
+            else
+            {
+                m_UI.UI_DrawStringBold(Color.Yellow, "Grave saved to :", 0, gy);
+                gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawString(Color.White, graveFile, 0, gy);
+                gy += BOLD_LINE_SPACING;
+            }
+            DrawFootnote(Color.White, "press ENTER");
+            m_UI.UI_Repaint();
+            WaitEnter();
+            #endregion
+
+            ///////////////////////////////
+            // Display grave as text file.
+            ///////////////////////////////
+            #region
+            graveyard.FormatLines(TEXTFILE_CHARS_PER_LINE);
+            int iLine = 0;
+            bool loop = false;
+            do
+            {
+                // header.
+                m_UI.UI_Clear(Color.Black);
+                gx = gy = 0;
+                DrawHeader();
+                gy += BOLD_LINE_SPACING;
+
+                // text.
+                int linesThisPage = 0;
+                m_UI.UI_DrawStringBold(Color.White, "---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+", 0, gy);
+                gy += BOLD_LINE_SPACING;
+                while (linesThisPage < TEXTFILE_LINES_PER_PAGE && iLine < graveyard.FormatedLines.Count)
+                {
+                    string line = graveyard.FormatedLines[iLine];
+                    m_UI.UI_DrawStringBold(Color.White, line, gx, gy);
+                    gy += BOLD_LINE_SPACING;
+                    ++iLine;
+                    ++linesThisPage;
+                }
+
+                // footer.
+                m_UI.UI_DrawStringBold(Color.White, "---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+---------+", 0, CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING);
+                if (iLine < graveyard.FormatedLines.Count)
+                    DrawFootnote(Color.White, "press ENTER for more");
+                else
+                    DrawFootnote(Color.White, "press ENTER to leave");
+
+                // wait.
+                m_UI.UI_Repaint();
+                WaitEnter();
+
+                // loop?
+                loop = (iLine < graveyard.FormatedLines.Count);
+            }
+            while (loop);
+            #endregion
+
+            ///////////////
+            // High Score?
+            ///////////////
+            #region
+            StringBuilder skillsSb = new StringBuilder();
+            if (m_Player.Sheet.SkillTable.Skills != null)
+            {
+                foreach (Skill sk in m_Player.Sheet.SkillTable.Skills)
+                {
+                    skillsSb.AppendFormat("{0}-{1} ", sk.Level, Skills.Name(sk.ID));
+                }
+            }
+            HiScore newHiScore = HiScore.FromScoring(name, m_Session.Scoring, skillsSb.ToString());
+            if (m_HiScoreTable.Register(newHiScore))
+            {
+                SaveHiScoreTable();
+                HandleHiScores(true);
+            }
+            #endregion
+        }
+
+        #region -Fun Facts!
         [Flags]
         enum MapListFlags
         {
@@ -18220,7 +18657,39 @@ namespace djack.RogueSurvivor.Engine
                 return true;
             }
 
-            // special cases: unopenable ('locked') doors
+            #region Special cases
+            //1. army rescue helicopter (endgame) //@@MP (Release 6-4)
+            MapObject helicopter = player.Location.Map.GetMapObjectAt(player.Location.Position + direction);
+            if (helicopter.AName == "Helicopter")
+            {
+                // ask for confirmation.
+                AddMessage(MakeYesNoMessage("Really escape on the helicopter and finish the game"));
+                RedrawPlayScreen();
+                bool confirm = WaitYesOrNo();
+
+                if (confirm)
+                {
+                    // achievement?
+                    if (!m_Session.Scoring.HasCompletedAchievement(Achievement.IDs.RESCUED_BY_HELICOPTER))
+                    {
+                        // completed!
+                        m_Session.Scoring.SetCompletedAchievement(Achievement.IDs.RESCUED_BY_HELICOPTER);
+
+                        // achievement!
+                        ShowNewAchievement(Achievement.IDs.RESCUED_BY_HELICOPTER);
+                    }
+                    ClearMessages();
+                    PlayerWasRescued();
+                    return true;
+                }
+                else
+                {
+                    AddMessage(new Message("Ok, but remember, it won't wait forever...", m_Session.WorldTime.TurnCounter, Color.Yellow));
+                    return false;
+                }
+            }
+
+            //2. unopenable ('locked') doors
             MapObject lockedDoor = player.Location.Map.GetMapObjectAt(player.Location.Position + direction);
             if (lockedDoor != null && lockedDoor.AName == "a locked door") //@@MP - moved this check from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
             {
@@ -18255,7 +18724,7 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
 
-            //tearing down barricades as living
+            //3. tearing down barricades as living
             DoorWindow door = player.Location.Map.GetMapObjectAt(player.Location.Position + direction) as DoorWindow;
             if (door != null && door.IsBarricaded && !player.Model.Abilities.IsUndead) //barricaded doors
             {
@@ -18284,6 +18753,7 @@ namespace djack.RogueSurvivor.Engine
                     return false;
                 }
             }
+            #endregion
 
             //@@MP - moved from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3), moved below doors (Release 6-3)
             MapObject mapObj = player.Location.Map.GetMapObjectAt(player.Location.Position + direction);

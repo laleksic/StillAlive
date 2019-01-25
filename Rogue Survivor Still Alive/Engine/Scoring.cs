@@ -31,6 +31,8 @@ namespace djack.RogueSurvivor.Engine
             ARMY_FOUND_UNDERGROUND_BASE,
             ARMY_POWER_UNDERGROUND_BASE,
 
+            RESCUED_BY_HELICOPTER, //@@MP (Release 6-4)
+
             _COUNT,
         }
         #endregion
@@ -102,7 +104,6 @@ namespace djack.RogueSurvivor.Engine
 
         #region Constants
         public const int MAX_ACHIEVEMENTS = (int) Achievement.IDs._COUNT;
-
         public const int SCORE_BONUS_FOR_KILLING_LIVING_AS_UNDEAD = 12 * WorldTime.TURNS_PER_HOUR; 
         #endregion
 
@@ -346,6 +347,15 @@ namespace djack.RogueSurvivor.Engine
                     "Did not power on the XXX base",
                     new string[] { "Helicopter evac is a go"},
                    GameMusics.CHAR_UNDERGROUND_FACILITY,
+                   3000));
+
+            //@@MP (Release 6-4)
+            InitAchievement(Achievement.IDs.RESCUED_BY_HELICOPTER,
+                new Achievement(Achievement.IDs.RESCUED_BY_HELICOPTER,
+                    "Escaped the city by army rescue helicopter",
+                    "Did not escape the city",
+                    new string[] { "So long, it's been a blast" },
+                   GameMusics.HEYTHERE,
                    3000));
             #endregion
 
