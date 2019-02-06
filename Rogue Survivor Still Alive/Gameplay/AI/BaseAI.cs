@@ -567,13 +567,24 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         // helps civs ai getting stuck in semi-infinite loop when running out of new exploration to do.
                         DoorWindow doorWindow = next.Map.GetMapObjectAt(next.Position) as DoorWindow;
                         if (doorWindow != null)
-                            score += 100;
-                        if (next.Map.GetExitAt(next.Position) != null)
-                            score += 50;
+                        {
+                            if (next.Position == m_prevLocation.Position) //@@MP - don't backtrack (Release 6-4)
+                                score -= 10000;
+                            else
+                                score += 100;
+                        }
+                        Exit exit = next.Map.GetExitAt(next.Position);
+                        if (exit != null)
+                        {
+                            if (exit.ToMap == m_prevLocation.Map && exit.ToPosition == m_prevLocation.Position) //@@MP - don't backtrack (Release 6-4)
+                                score -= 10000;
+                            else
+                                score += 50;
+                        }
 
                         // alpha10.1 prefer inside when almost sleepy
                         if (game.Rules.IsAlmostSleepy(m_Actor) && next.Map.GetTileAt(next.Position).IsInside)
-                            score += 100;
+                        score += 100;
                     }
                     return score;
                 },
