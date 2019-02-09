@@ -5187,6 +5187,7 @@ namespace djack.RogueSurvivor.Engine
             m_MusicManager.Load(GameMusics.INTRO, GameMusics.INTRO_FILE);
             m_MusicManager.Load(GameMusics.LIMBO, GameMusics.LIMBO_FILE);
             m_MusicManager.Load(GameMusics.PLAYER_DEATH, GameMusics.PLAYER_DEATH_FILE);
+            m_MusicManager.Load(GameMusics.POST_RESCUE, GameMusics.POST_RESCUE_FILE); //@@MP (Release 6-4)
             m_MusicManager.Load(GameMusics.ROGUEDJACK_THEME_SONG, GameMusics.ROGUEDJACK_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.SANTAMAN_THEME_SONG, GameMusics.SANTAMAN_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.SEWERS, GameMusics.SEWERS_FILE);
@@ -5565,6 +5566,7 @@ namespace djack.RogueSurvivor.Engine
             Actor actor = m_Rules.GetNextActorToAct(map); //@@MP - unused parameter (Release 5-7)
 
             // alpha10 ai loop bug detection
+#if DEBUG
             if (actor != null && !actor.IsPlayer)
             {
                 if (actor == m_DEBUG_prevAiActor)
@@ -5590,11 +5592,12 @@ namespace djack.RogueSurvivor.Engine
                     m_DEBUG_prevAiActor = actor;
                 }
             }
-            #endregion
+#endif
+#endregion
 
-            // 2. If none move to next turn and return.
-            #region
-            if (actor == null)
+                        // 2. If none move to next turn and return.
+                        #region
+                        if (actor == null)
             {
                 NextMapTurn(map, sim);
                 return;
@@ -6958,7 +6961,7 @@ namespace djack.RogueSurvivor.Engine
             // music.
             m_AmbientSFXManager.StopAll();
             m_MusicManager.StopAll();
-            m_MusicManager.Play(GameMusics.PLAYER_SUCCESS / HOPE, AudioPriority.PRIORITY_EVENT);
+            m_MusicManager.Play(GameMusics.POST_RESCUE, AudioPriority.PRIORITY_EVENT);
 
             ///////////
             // Scoring

@@ -56,6 +56,9 @@ namespace djack.RogueSurvivor.Gameplay
         public const string PLAYER_DEATH = "playerdeath";
         public const string PLAYER_DEATH_FILE = PATH + "RS - Post Mortem";
 
+        public const string POST_RESCUE = "Post-rescue"; //@@MP (Release 6-4)
+        public const string POST_RESCUE_FILE = PATH + "Post-rescue"; //@@MP (Release 6-4)
+
         public const string ROGUEDJACK_THEME_SONG = "roguedjack theme song";
         public const string ROGUEDJACK_THEME_SONG_FILE = PATH + "RS - Roguedjack Theme Song";
 
