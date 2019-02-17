@@ -703,14 +703,14 @@ namespace djack.RogueSurvivor.Data
         public void PlaceMapObjectAt(MapObject mapObj, Point position)
         {
             if (mapObj == null)
-                throw new ArgumentNullException("mapObj","actor");
+                throw new ArgumentNullException("mapObj","null mapObj passed");
             MapObject other = GetMapObjectAt(position);
             if (other == mapObj)
                 return;
             if (other == mapObj)
-                throw new InvalidOperationException("mapObject already at position");
+                throw new InvalidOperationException("mapObj already at position");
             if (other != null)
-                throw new InvalidOperationException("another mapObject already at position");
+                throw new InvalidOperationException("another MapObject already at position");
             if (!IsInBounds(position.X, position.Y))
                 throw new ArgumentOutOfRangeException("position","position out of map bounds");
             if (!GetTileAt(position.X, position.Y).Model.IsWalkable)

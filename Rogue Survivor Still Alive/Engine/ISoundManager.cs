@@ -49,7 +49,7 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Start playing a music from the beginning if not already playing and if music is enabled.
         /// </summary>
-        void PlayIfNotAlreadyPlaying(string musicname, int priority);
+        void PlayIfNotAlreadyPlaying(string musicname, int priority, bool looping = false); //@@MP - added looping parameter (Release 6-4)
 
         /// <summary>
         /// Restart playing in a loop a music from the beginning if music is enabled.

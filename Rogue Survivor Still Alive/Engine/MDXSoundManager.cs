@@ -127,7 +127,7 @@ namespace djack.RogueSurvivor.Engine
         /// Start playing a music from the beginning if not already playing and if music is enabled.
         /// </summary>
         /// <param name="musicname"></param>
-        public void PlayIfNotAlreadyPlaying(string musicname, int priority)
+        public void PlayIfNotAlreadyPlaying(string musicname, int priority, bool looping = false) //@@MP - added looping parameter (Release 6-4)
         {
             if (!m_IsAudioEnabled)
                 return;
@@ -137,7 +137,10 @@ namespace djack.RogueSurvivor.Engine
             {
                 if (!IsPlaying(music))
                 {
-                    Play(music);
+                    if (looping)
+                        PlayLooping(musicname, priority);
+                    else
+                        Play(music);
                     this.Track = musicname;
                     this.Priority = priority;
                 }

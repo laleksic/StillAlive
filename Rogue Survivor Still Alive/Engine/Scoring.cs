@@ -42,19 +42,19 @@ namespace djack.RogueSurvivor.Engine
         public string Name { get; private set; }
         public string TeaseName { get; private set; }
         public string[] Text { get; private set; }
-        public string MusicID { get; private set; }
+        public string SFXID { get; private set; } //@@MP - switched from Music to SFX (Release 6-4)
         public int ScoreValue { get; private set; }
         public bool IsDone { get; set; }
         #endregion
 
         #region Init
-        public Achievement(IDs id, string name, string teaseName, string[] text, string musicID, int scoreValue)
+        public Achievement(IDs id, string name, string teaseName, string[] text, string sfxID, int scoreValue)
         {
             this.ID = id;
             this.Name = name;
             this.TeaseName = teaseName;
             this.Text = text;
-            this.MusicID = musicID;
+            this.SFXID = sfxID;
             this.ScoreValue = scoreValue;
             this.IsDone = false;
         }
@@ -302,7 +302,7 @@ namespace djack.RogueSurvivor.Engine
                     "Broke into a CHAR Office",
                     "Did not break into a XXX office",
                     new string[] { "There must be something to find here..." },
-                    GameMusics.HEYTHERE,
+                    GameSounds.ACHIEVEMENT,
                     1000));
 
             InitAchievement(Achievement.IDs.CHAR_FOUND_UNDERGROUND_FACILITY,
@@ -310,7 +310,7 @@ namespace djack.RogueSurvivor.Engine
                     "Found the CHAR Underground Facility",
                     "Did not find the XXX facility",
                     new string[] { "Now, how do I get the power on...?" },
-                    GameMusics.CHAR_UNDERGROUND_FACILITY,
+                    GameSounds.ACHIEVEMENT,
                     2000));
 
             InitAchievement(Achievement.IDs.CHAR_POWER_UNDERGROUND_FACILITY,
@@ -319,7 +319,7 @@ namespace djack.RogueSurvivor.Engine
                     "Did not power on the XXX facility",
                     new string[] { "You hear what sounds like a door unlocking ",
                                     "somewhere nearby..." },
-                   GameMusics.CHAR_UNDERGROUND_FACILITY,
+                   GameSounds.ACHIEVEMENT,
                    3000));
             #endregion
 
@@ -330,7 +330,7 @@ namespace djack.RogueSurvivor.Engine
                     "Broke into the Army Office",
                     "Did not break into the XXX base",
                     new string[] { "There must be more to it than this..." },
-                    GameMusics.HEYTHERE,
+                    GameSounds.ACHIEVEMENT,
                     1000));
 
             InitAchievement(Achievement.IDs.ARMY_FOUND_UNDERGROUND_BASE,
@@ -338,7 +338,7 @@ namespace djack.RogueSurvivor.Engine
                     "Found the Army underground base",
                     "Did not find the XXX base",
                     new string[] { "Now, how do I get the power on...?" },
-                    GameMusics.CHAR_UNDERGROUND_FACILITY,
+                    GameSounds.ACHIEVEMENT,
                     2000));
 
             InitAchievement(Achievement.IDs.ARMY_POWER_UNDERGROUND_BASE,
@@ -346,7 +346,7 @@ namespace djack.RogueSurvivor.Engine
                     "Powered up the Army underground base",
                     "Did not power on the XXX base",
                     new string[] { "Helicopter evac is a go"},
-                   GameMusics.CHAR_UNDERGROUND_FACILITY,
+                   GameSounds.ACHIEVEMENT,
                    3000));
 
             //@@MP (Release 6-4)
@@ -355,7 +355,7 @@ namespace djack.RogueSurvivor.Engine
                     "Escaped the city by army rescue helicopter",
                     "Did not escape the city",
                     new string[] { "So long, it's been a blast" },
-                   GameMusics.HEYTHERE,
+                   GameSounds.ACHIEVEMENT,
                    3000));
             #endregion
 
@@ -365,7 +365,7 @@ namespace djack.RogueSurvivor.Engine
                     "Killed The Sewers Thing",
                     "Did not kill the XXX",
                     new string[] { "One less Thing to worry about!" },
-                    GameMusics.HEYTHERE,
+                    GameSounds.ACHIEVEMENT,
                     1000));
             #endregion
 
@@ -375,7 +375,7 @@ namespace djack.RogueSurvivor.Engine
                     "Reached day 7",
                     "Did not reach day 7",
                     new string[] { "Keep staying alive!" },
-                    GameMusics.HEYTHERE,
+                    GameSounds.ACHIEVEMENT,
                     1000));
 
             InitAchievement(Achievement.IDs.REACHED_DAY_14,
@@ -383,7 +383,7 @@ namespace djack.RogueSurvivor.Engine
                     "Reached day 14",
                     "Did not reach day 14",
                     new string[] { "Keep staying alive!" },
-                    GameMusics.HEYTHERE,
+                    GameSounds.ACHIEVEMENT,
                     1000));
 
             InitAchievement(Achievement.IDs.REACHED_DAY_21,
@@ -391,7 +391,7 @@ namespace djack.RogueSurvivor.Engine
                     "Reached day 21",
                     "Did not reach day 21",
                     new string[] { "Keep staying alive!" },
-                    GameMusics.HEYTHERE,
+                    GameSounds.ACHIEVEMENT,
                     1000));
 
             InitAchievement(Achievement.IDs.REACHED_DAY_28,
@@ -399,7 +399,7 @@ namespace djack.RogueSurvivor.Engine
                     "Reached day 28",
                     "Did not reach day 28",
                     new string[] { "Is this the end?" },
-                    GameMusics.HEYTHERE,
+                    GameSounds.ACHIEVEMENT,
                     1000));
             #endregion
             #endregion

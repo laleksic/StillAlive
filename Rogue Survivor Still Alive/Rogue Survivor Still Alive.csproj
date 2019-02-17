@@ -1182,22 +1182,22 @@
     <Content Include="Resources\Sfx\access_granted.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\helicopter_flyover.ogg">
+    <Content Include="Resources\Ambients\helicopter_static_far.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\helicopter_static_far.ogg">
+    <Content Include="Resources\Ambients\helicopter_static_farthest.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\helicopter_static_farthest.ogg">
+    <Content Include="Resources\Ambients\helicopter_static_nearby.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Sfx\helicopter_static_nearby.ogg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\Sfx\helicopter_static_visible.ogg">
+    <Content Include="Resources\Ambients\helicopter_static_visible.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Music\Post-rescue.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Sfx\achievement.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\Sfx\night_vision.ogg">

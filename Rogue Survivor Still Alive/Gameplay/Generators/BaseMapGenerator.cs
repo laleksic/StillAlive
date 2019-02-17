@@ -890,7 +890,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         }
         protected static MapObject MakeObjArmyRadioCupboard(string armyRadioCupboardImageID)
         {
-            return new MapObject("Radio equipment", armyRadioCupboardImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
+            return new MapObject("radio equipment", armyRadioCupboardImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
                 IsMaterialTransparent = false,
                 IsContainer = true,
@@ -901,7 +901,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         }
         protected static MapObject MakeObjArmyFootlocker(string armyFootlockerImageID)
         {
-            return new MapObject("Footlocker", armyFootlockerImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            return new MapObject("footlocker", armyFootlockerImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
             {
                 IsMaterialTransparent = true,
                 IsContainer = true,
@@ -913,7 +913,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public MapObject MakeObjHelicopter(string vatImageID) //@@MP (Release 6-4)
         {
-            return new MapObject("Helicopter", vatImageID);
+            return new MapObject("helicopter", vatImageID);
             //A 64x128 pixel image, dissected into 8 pieces and then arranged as:
             //  1234
             //  5678

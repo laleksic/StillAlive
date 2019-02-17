@@ -236,5 +236,9 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ACCESS_DENIED_FILE = PATH + "access_denied";
         public const string ACCESS_GRANTED = "access granted";
         public const string ACCESS_GRANTED_FILE = PATH + "access_granted";
+
+        //@@MP (Release 6-4)
+        public const string ACHIEVEMENT = "achievement";
+        public const string ACHIEVEMENT_FILE = PATH + "achievement";
     }
 }

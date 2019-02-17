@@ -6639,7 +6639,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             int seed = (surfaceMap.Seed << 1) ^ surfaceMap.Seed;
             Map map = new Map(seed, "Police Station - Offices", 20, 20)
             {
-                Lighting = Lighting.DARKNESS
+                Lighting = Lighting.LIT //@@MP - was Darkness (Release 6-4)
             };
             DoForEachTile(map.Rect, (pt) => map.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
 
@@ -6789,7 +6789,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             int seed = (surfaceMap.Seed << 1) ^ surfaceMap.Seed;
             Map map = new Map(seed, "Police Station - Jails", 22, 6)
             {
-                Lighting = Lighting.DARKNESS
+                Lighting = Lighting.LIT //@@MP - was Darkness (Release 6-4)
             };
             DoForEachTile(map.Rect, (pt) => map.GetTileAt(pt).IsInside = true); //@@MP - unused parameter (Release 5-7)
 

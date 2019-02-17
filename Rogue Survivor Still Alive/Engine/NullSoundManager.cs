@@ -26,7 +26,7 @@ namespace djack.RogueSurvivor.Engine
 
         public void Play(string musicname, int priority) { }
 
-        public void PlayIfNotAlreadyPlaying(string musicname, int priority) { }
+        public void PlayIfNotAlreadyPlaying(string musicname, int priority, bool looping = false) { } //@@MP - added looping parameter (Release 6-4)
 
         public void PlayLooping(string musicname, int priority) { }
 
