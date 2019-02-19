@@ -4534,11 +4534,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     totalLights++;
                 });
 
-                if (totalLightsBatteries >= 6 * WorldTime.TURNS_PER_HOUR)
+                if (totalLightsBatteries > 0) //@@MP - actor already has a light, which auto recharges for AIs (Release 6-4)
                     return ItemRating.JUNK;
                 else if (itLight.Batteries <= 0)
                     return ItemRating.JUNK;
-                else if (totalLights == 0) //@@MP - don't have a light. lights are now very important given the darkness revamp (Release 6-2)
+                else if (totalLights == 0 && itLight.Batteries > 0) //@@MP - don't have a light. lights are now very important given the darkness revamp (Release 6-2)
                     return ItemRating.NEED;
             }
 

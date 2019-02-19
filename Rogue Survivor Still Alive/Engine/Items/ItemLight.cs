@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using djack.RogueSurvivor.Data;
 
@@ -44,6 +41,11 @@ namespace djack.RogueSurvivor.Engine.Items
                 else
                     return (this.Model as ItemLightModel).OutOfBatteriesImageID;
             }
+        }
+
+        public int MaxBatteries //@@MP (Release 6-4)
+        {
+            get { return (this.Model as ItemLightModel).MaxBatteries; }
         }
         #endregion
 

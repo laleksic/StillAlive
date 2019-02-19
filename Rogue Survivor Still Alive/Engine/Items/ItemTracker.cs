@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using djack.RogueSurvivor.Data;
 
@@ -35,6 +32,11 @@ namespace djack.RogueSurvivor.Engine.Items
         public bool CanTrackPolice
         {
             get { return (this.Tracking & ItemTrackerModel.TrackingFlags.POLICE_FACTION) != 0; }
+        }
+
+        public int MaxBatteries //@@MP (Release 6-4)
+        {
+            get { return (this.Model as ItemTrackerModel).MaxBatteries; }
         }
 
         // alpha10

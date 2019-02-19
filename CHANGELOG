@@ -1,14 +1,16 @@
-STILL ALIVE 2.4.0.1 (aka Release 6-4, ??/??/2019) [Author: MP]
+STILL ALIVE 2.4.0.3 (aka Release 6-4, 20/02/2019) [Author: MP]
 ---------------------
 
 Features:
--Added end game objective.
+-Added an endgame objective.
 -Extended the audio range of the bigger explosives.
 -Achievements now have a standard sound effect.
 -Police station lights are now on.
+-Lights on the 'non-critical' levels of the hospital are now off.
 
 Fixes:
 -Fixed grammar for messages regarding other actors.
+-Increased the range of louder sounds.
 
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).
@@ -22,6 +24,7 @@ Outstanding known issues:
 Development:
 -Can now play looping audio with ISoundManager.PlayIfNotAlreadyPlaying()
 -Achievements now use SFXManager rather than MusicManager
+-AIs now have infinite batteries and no longer seek (nor need) to recharge them
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -157,16 +160,6 @@ Development:
 -Improved tile fires implementation.
 -Modified the way Alpha 10 implemented music, primarily to cater for multiple tracks per non-special map.
 -Modified the way Alpha 10 rates items for the AI.
-
-Known issues:
--Occasionally, popups (hints, trades) may not be displayed yet the player is still prompted for their interaction.
--Changing districts performance with simulation enabled decays as the game goes on.
--Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in later releases.
--Music is louder than other sounds. They will be normalised in an upcoming release.
--Random crash/hang bug.
--Occasionally, random turns take an extra second or two to process.
--Tile fires were heavily revamped and are probably now broken in some way :P
-
 
 **********ALPHA 10 CHANGES, MERGED INTO STILL ALIVE:
 
@@ -378,10 +371,6 @@ Fixes:
 -Restored (albeit delayed) blood splatter cleanup, and added undead corpse cleanup.
 -Fixed bug in saving screenshots.
 -Removed the redundant option for reincarnating in sewers. You can now reinc in sewers.
-
-Known issues:
--Changing districts performance with simulation enabled decays as the game goes on.
--Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in later releases.
 
 Development:
 -Minor refactoring of turn processing.

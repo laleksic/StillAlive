@@ -3760,7 +3760,6 @@ namespace djack.RogueSurvivor.Engine
             }
             while (worldMade == false);
             CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
-            DoHospitalPowerOn(); //@@MP (Release 6-2)
 #if DEBUG
             /*Item temp = new ItemGrenade(GameItems.C4, GameItems.C4_PRIMED);
             m_Player.Inventory.AddAll(temp);
@@ -3825,9 +3824,7 @@ namespace djack.RogueSurvivor.Engine
             AddMessage(new Message(String.Format(isUndead ? "Hungry..." : "Oh my god! The world has gone to hell!", m_Player.Name), 0, Color.Red)); //@@MP (Release 6-3)
             AddMessage(new Message(String.Format(isUndead ? "Must eat..." : "I need to find a way out of here!", m_Player.Name), 0, Color.Red)); //@@MP (Release 6-3)
             AddMessage(new Message(String.Format(isUndead ? "Hungry..." : "Surely the army will send a rescue force...", m_Player.Name), 0, Color.Red)); //@@MP (Release 6-3)
-            //AddMessage(new Message("<press ENTER>", 0, Color.Yellow));
             RedrawPlayScreen();
-            //WaitEnter();
 
             /*// wake up!
             ClearMessages();
@@ -6236,8 +6233,8 @@ namespace djack.RogueSurvivor.Engine
                                             Conjugate(actor.Leader, VERB_FEEL), actor.Name, HimOrHer(actor.Leader))));
                         }
                     }
-#endregion
-#endregion
+                    #endregion
+                    #endregion
 
                     // 3.3.5 Check batteries : lights, trackers, NVGs.
 #region
@@ -6252,17 +6249,16 @@ namespace djack.RogueSurvivor.Engine
                         ItemLight NVGs = eyesItem as ItemLight;
                         if (NVGs != null)
                         {
-                            if (NVGs.Batteries > 0)
+                            if (actor.IsPlayer && NVGs.Batteries > 0)
                             {
                                 --NVGs.Batteries;
                                 if (NVGs.Batteries <= 0)
                                 {
-                                    if (actor.IsPlayer)
-                                    {
-                                        AddMessage(MakeMessage(actor, String.Format(": {0} ran out of battery.", NVGs.TheName)));
-                                    }
+                                    AddMessage(MakeMessage(actor, String.Format(": {0} ran out of battery.", NVGs.TheName)));
                                 }
                             }
+                            else
+                                NVGs.Batteries = NVGs.MaxBatteries; //@@MP - AIs now get infinite batteries (Release 6-4)
                         }
                     }
 
@@ -6275,35 +6271,35 @@ namespace djack.RogueSurvivor.Engine
                         ItemLight light = leftItem as ItemLight;
                         if (light != null)
                         {
-                            if (light.Batteries > 0)
+                            if (actor.IsPlayer && light.Batteries > 0)
                             {
                                 --light.Batteries;
                                 if (light.Batteries <= 0)
                                 {
-                                    if (IsVisibleToPlayer(actor))
-                                    {
-                                        AddMessage(MakeMessage(actor, String.Format(": {0} light goes off.", light.TheName)));
-                                    }
+                                    AddMessage(MakeMessage(actor, String.Format(": {0} light goes off.", light.TheName)));
                                 }
                             }
-                            continue;
+                            else
+                                light.Batteries = light.MaxBatteries; //@@MP - AIs now get infinite batteries (Release 6-4)
+
+                            continue; //@@MP -skip checking for ItemTracker, as we know it was an ItemLight
                         }
 
                         // tracker?
                         ItemTracker tracker = leftItem as ItemTracker;
                         if (tracker != null)
                         {
-                            if (tracker.Batteries > 0)
+                            if (actor.IsPlayer && tracker.Batteries > 0)
                             {
                                 --tracker.Batteries;
                                 if (tracker.Batteries <= 0)
                                 {
-                                    if (IsVisibleToPlayer(actor))
-                                    {
-                                        AddMessage(MakeMessage(actor, String.Format(": {0} goes off.", tracker.TheName)));
-                                    }
+                                    AddMessage(MakeMessage(actor, String.Format(": {0} goes off.", tracker.TheName)));
                                 }
                             }
+                            else
+                                tracker.Batteries = tracker.MaxBatteries; //@@MP - AIs now get infinite batteries (Release 6-4)
+
                             continue;
                         }
                     }
@@ -17451,11 +17447,11 @@ namespace djack.RogueSurvivor.Engine
             else
             {
                 // drop or discard.
-                /*if (it is ItemTracker) //@@MP - don't delete, as trackers and lights are still valuable (Release 6-2)
+                if (it is ItemTracker)
                 {
                     discardMe = (it as ItemTracker).Batteries <= 0;
                 }
-                else if (it is ItemLight)
+                /*else if (it is ItemLight) //@@MP - don't delete, as lights are still valuable (Release 6-2), was also trackers (Release 6-4)
                 {
                     discardMe = (it as ItemLight).Batteries <= 0;
                 }*/
@@ -17463,10 +17459,10 @@ namespace djack.RogueSurvivor.Engine
                 {
                     discardMe = (it as ItemSprayPaint).PaintQuantity <= 0;
                 }
-                else if (it is ItemSprayScent)
+                /*else if (it is ItemSprayScent) //@@MP - don't delete, as AI are interested in scents, which are finite (Release 6-4)
                 {
                     discardMe = (it as ItemSprayScent).SprayQuantity <= 0;
-                }
+                }*/
             }
 
             if (discardMe)
@@ -17798,7 +17794,7 @@ namespace djack.RogueSurvivor.Engine
                 m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.EQUIP_GUN_PLAYER, AudioPriority.PRIORITY_EVENT);
         }
 
-        /*void DoUseSprayScentItem(Actor actor, ItemSprayScent spray)  // alpha10 obsolete
+        /*void DoUseSprayScentItem(Actor actor, ItemSprayScent spray)  // alpha10 obsolete, see DoSprayOdorSuppressor
         {
             // spend APs.
             SpendActorActionPoints(actor, Rules.BASE_ACTION_COST);
