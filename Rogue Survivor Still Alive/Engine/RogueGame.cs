@@ -5566,40 +5566,47 @@ namespace djack.RogueSurvivor.Engine
             // 1. Get next actor to Act.
 #region
             Actor actor = m_Rules.GetNextActorToAct(map); //@@MP - unused parameter (Release 5-7)
-
-            // alpha10 ai loop bug detection
-#if DEBUG
-            if (actor != null && !actor.IsPlayer)
+            if (actor != null)
             {
-                if (actor == m_DEBUG_prevAiActor)
+                if (actor.IsBotPlayer || !actor.IsPlayer)
                 {
-                    if (++m_DEBUG_sameAiActorCount >= DEBUG_AI_ACTOR_LOOP_COUNT_WARNING)
+                    //@@MP - workaround for actors getting too many turns in succession. Detection code by zaimoni (Release 6-4)
+                    if (actor.ActionPoints > actor.Doll.Body.Speed)
                     {
-                        // TO DEVS: you might want to add a debug breakpoint here ->
-                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: AI actor " + actor.Name + " is probably looping!!");
-#if DEBUG
-                        // in release mode throw an exception as infinite loop is a fatal bug. comment out to keep going to let us debug the ai
-                        /*Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
-                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);*/
-                        DoWait(actor);
-#else
-                        // alpha10.1 in release, just spend a turn. it's better than crashing the game!
-                        DoWait(actor);
-#endif
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, actor.Name + " is hyperactive. Max speed: " + actor.Doll.Body.Speed.ToString() + ", actual: " + actor.ActionPoints.ToString());
+                        actor.ActionPoints = actor.Doll.Body.Speed;
                     }
-                }
-                else
-                {
-                    m_DEBUG_sameAiActorCount = 0;
-                    m_DEBUG_prevAiActor = actor;
+
+#if DEBUG
+                    // alpha10 ai loop bug detection
+                    if (actor == m_DEBUG_prevAiActor)
+                    {
+                        if (++m_DEBUG_sameAiActorCount >= DEBUG_AI_ACTOR_LOOP_COUNT_WARNING)
+                        {
+                            // TO DEVS: you might want to add a debug breakpoint here ->
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: AI actor " + actor.Name + " is probably looping!!");
+
+                            // throw an exception as infinite loop is a fatal bug, or comment out to keep going to let us debug the ai
+                            /*Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);*/
+
+                            // in release, just spend a turn. it's better than crashing the game!
+                            DoWait(actor);
+                        }
+                    }
+                    else
+                    {
+                        m_DEBUG_sameAiActorCount = 0;
+                        m_DEBUG_prevAiActor = actor;
+                    }
+#endif
                 }
             }
-#endif
-#endregion
+            #endregion
 
-                        // 2. If none move to next turn and return.
-#region
-                        if (actor == null)
+            // 2. If none move to next turn and return.
+            #region
+            if (actor == null)
             {
                 NextMapTurn(map, sim);
                 return;
@@ -6233,8 +6240,8 @@ namespace djack.RogueSurvivor.Engine
                                             Conjugate(actor.Leader, VERB_FEEL), actor.Name, HimOrHer(actor.Leader))));
                         }
                     }
-                    #endregion
-                    #endregion
+#endregion
+#endregion
 
                     // 3.3.5 Check batteries : lights, trackers, NVGs.
 #region
@@ -7019,7 +7026,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             AddMessagePressEnter();
-            #endregion
+#endregion
 
             // post-rescue.
             HandlePostRescue();
@@ -26630,7 +26637,7 @@ namespace djack.RogueSurvivor.Engine
         // detect cases where an ai is proably performing an infinite sequence of ap free actions.
         Actor m_DEBUG_prevAiActor;
         int m_DEBUG_sameAiActorCount;
-        const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 10;
+        const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 3;
 #endregion
 #endregion
 #endregion

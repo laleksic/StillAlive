@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.0.3 (aka Release 6-4, 20/02/2019) [Author: MP]
+STILL ALIVE 2.4.0.4 (aka Release 6-4, 28/02/2019) [Author: MP]
 ---------------------
 
 Features:
@@ -11,6 +11,7 @@ Features:
 Fixes:
 -Fixed grammar for messages regarding other actors.
 -Increased the range of louder sounds.
+-Worked around actors receiving excessive action points.
 
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).
