@@ -7,6 +7,7 @@ Features:
 -Achievements now have a standard sound effect.
 -Police station lights are now on.
 -Lights on the 'non-critical' levels of the hospital are now off.
+-Removed randomness of starvation after FOO reaches zero. Zero now means dead straight away.
 
 Fixes:
 -Fixed grammar for messages regarding other actors.
@@ -26,6 +27,7 @@ Development:
 -Can now play looping audio with ISoundManager.PlayIfNotAlreadyPlaying()
 -Achievements now use SFXManager rather than MusicManager
 -AIs now have infinite batteries and no longer seek (nor need) to recharge them
+-Improved AI looping detection based on RS Revived code
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 

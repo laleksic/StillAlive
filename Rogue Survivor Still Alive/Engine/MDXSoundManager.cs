@@ -116,7 +116,7 @@ namespace djack.RogueSurvivor.Engine
             Audio music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing music {0}.", musicname));
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing music {0}.", musicname));
                 Play(music);
                 this.Track = musicname;
                 this.Priority = priority;
@@ -159,7 +159,7 @@ namespace djack.RogueSurvivor.Engine
             Audio music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping music {0}.", musicname));
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping music {0}.", musicname));
                 music.Ending += new EventHandler(OnLoopingMusicEnding);
                 Play(music);
                 this.Track = musicname;
@@ -175,7 +175,7 @@ namespace djack.RogueSurvivor.Engine
             Audio music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming looping music {0}.", musicname));
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming looping music {0}.", musicname));
                 Resume(music);
             }
         }
@@ -191,7 +191,7 @@ namespace djack.RogueSurvivor.Engine
             Audio music;
             if (m_Musics.TryGetValue(musicname, out music))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("stopping music {0}.", musicname));
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("stopping music {0}.", musicname));
                 Stop(music);
             }
             this.Track = "";
@@ -200,7 +200,7 @@ namespace djack.RogueSurvivor.Engine
 
         public void StopAll()
         {
-            Logger.WriteLine(Logger.Stage.RUN_SOUND, "stopping all musics.");
+            //Logger.WriteLine(Logger.Stage.RUN_SOUND, "stopping all musics.");
             foreach (Audio a in m_Musics.Values)
             {
                 Stop(a);

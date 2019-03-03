@@ -33,13 +33,15 @@ REDEFINE KEYS : Shift + K       SCREENSHOT : Shift + N          LOAD GAME : Shif
 <SECTION>
 1. THE GAME
 -----------
+Note: This manual is mainly written with playing a living survivor in mind.
 
  SETTING & OBJECTIVE
  -------------------
-It's a zombie apocalypse. You have to find ways to survive: food, shelter, weapons and companions.
-Livings need to eat and sleep, and can die if you become starved. The manual is mainly written with playing a living survivor in mind.
-You can also reincarnate into different characters when you die, or play the game as an undead.
+It's an undead apocalypse. You have to find ways to survive: food, shelter, weapons and companions.
 Your town is known for being the headquarters of the world famous C.H.A.R. Corporation. You've heard strange rumors about them...
+The army have established a safe zone and are evacuating towns all around the region.
+You must find a way to survive until helicopter rescue arrives. But you'll need to work out where that will be...
+You don't have to make it to the helicopter, but after that point you'll be on your own.
 
 
  GAME MODE
@@ -48,25 +50,20 @@ There are 3 different game modes, each enabling or disabling some aspects of the
 STANDARD (STD) : The default game setting
 CORPSES AND INFECTION (C&I) : Adds infection and corpses
 VINTAGE (VTG) : C&I and a limited selection of zombie types for a more classic feel
-
-
- CHARACTER CREATION
- ------------------
-You can start as a living (a civilian survivor) or an undead. When starting as an undead you can choose your race.
-Starting as a living you can choose a gender and a starting skill. See the Skills section for mode details.
+You can also reincarnate into different characters when you die, or play the game as an undead.
 
 
  PROGRESSION
  -----------
 Livings and undeads progress differently.
-* Livings gain a level with each sunrise. You can upgrade a skill from a set of skills presented at random.
-* Undeads need to kill to evolve into a more powerful undead. Not all undeads evolve.
+* Livings gain a level with each sunrise. You can upgrade a skill from a set of options presented at random.
+* Undeads need to kill to evolve into a more powerful undead. Not all undead types evolve.
 
 
  BASIC GAMEPLAY
  --------------
 Rogue Survivor handles combat and progression differently than most roguelikes.
-The game doesn't change the difficulty depending on your level and there is no obvious difficulty progression.
+The game doesn't change the difficulty depending on your skill levels, and there is no obvious difficulty progression.
 Don't expect to be able to bash zombies left and right recklessly, even with lots of skill upgrades.
 You should fear for your life and make use of the Run action. Don't hesitate to flee and hide; you don't HAVE to kill every undead in sight. 
 Undeads, however, play very differently from livings...
@@ -117,7 +114,6 @@ You can set some options to control how reincarnation works (see the options sec
 <SECTION>
 2. THE CITY
 -----------
-
 You can see what you know about the city by using the City Info command (default I).
 
 > DISTRICTS
@@ -159,14 +155,11 @@ Shops carry different items. But it's an apocalypse, so sooner or later there wi
 - Sewers Maintenance : there is one of them in most districts
 - Subway Station     : there is one in each district linked by the subway line
 - CHAR Offices       : private property, you are not supposed to go there...
+- Army offices       : there's probably a couple scattered around the place
 
 
-> DAY AND NIGHT
-During the night your FoV (field of view = distance at which you can see) diminish and you tire faster.
-Undeads are not affected by day or night.
-
-
-> WEATHER
+> WEATHER AND FOV
+During the night your FoV (field of view) diminish and you tire faster. Undeads are not affected by day or night.
 Weather can change daily. Some weather types have an effect.
 - Sunny and Cloudy : no effect
 - Rain             : livings FoV - 1, scents decay faster
@@ -205,8 +198,6 @@ Times are tough, and sometimes you will have no choice but to commit murder to s
 <SECTION>
 3. PLAYER SHEET
 ---------------
-
-Your name and appearance are generated when you start a new game.
 
 > HIT POINTS (HP)
 How much hurt you can take. Damage dealt to your HP is also dealt to your STA. At zero or less HP you die.
@@ -276,7 +267,7 @@ Under the hood the game use an Action Points (AP) system : every action cost a n
 
 
 > FIELD OF VIEW (FOV)
-How far you can see. Weather can diminish your FoV.
+How far you can see. Weather can diminish your FoV. Certain items can increase 
 During the night your FoV will progressively diminish. During the day your FoV will progressively increase back to its maximum value.
 
 
@@ -310,7 +301,6 @@ List your current skills and their level. See the Skills section for more detail
 <SECTION>
 4. ACTIONS & COMMANDS
 ---------------------
-
 This section describes the actions you can perform in the game and the interactions with other actors and objects.
 You can redefine the keys in game (default Shift-K).
 
@@ -338,6 +328,7 @@ Walk or run around. If you try to move where you cannot you might "bump" into so
 -Taking items from shelves and containers
 -Chatting or trading with an actor
 -Attacking an actor or a barricade
+-Recharging electronic equipment at a generator
 
 
 > USING LADDERS AND STAIRS  (default X)
@@ -553,7 +544,6 @@ Takes a screenshot of the game. Screenshots are saved in your game installation 
 <SECTION>
 5. SKILLS
 ---------
-
 All skills are passively applied when appropriate (ie. they add bonuses to actions and abilities).
 Skill levels range from 0 to 5. Skills are helpful, but unlike many games you will never become extremely powerful.
 When leveling up you get to choose one skill to learn or improve.
@@ -646,19 +636,21 @@ Increase the chances for a nearby law enforcer or gang member to ignore you.
 --------
 
 - Ammo items         : use to reload.
-- Barricade Material : reinforce doors and windows; use the barricade action.
-- Body Armor         : reduces damage but can hinder your movements; has a chance to break; use to equip.
+- Barricade material : reinforce doors and windows; use the barricade action.
+- Body armor         : reduces damage but can hinder your movements; has a chance to break; use to equip.
 - Food               : use to eat.
-- Flashlight         : see farther in the dark; use to equip.
+- Liquor             : can be made into molotovs.
+- Flashlight         : see farther in the dark; use to equip. Recharge at power generators.
+- Night vision       : see farther in the dark; use to equip. Recharge at power generators.
 - Medicines          : use to heal or re-energize.
-- Melee Weapon       : has a chance to break; use to equip.
-- Ranged Weapon      : use to equip; fire action to fire.
+- Melee weapon       : has a chance to break; use to equip.
+- Ranged weapon      : use to equip; fire action to fire.
   - Firearms         : the best ranged weapons.
   - Bows             : weaker and shorter range but ammunition is more available.
 - Seeds              : use a shovel to plant seeds on grassy ground and grow vegetables.
 - Grenades           : have a fuse that last x turns before exploding; fire action to throw. 
-- Spray Paint        : tag places you want to remember; use the tag action.
-- Spray Scent        : neutralize odors, typically to erase your tracks.
+- Spray paint        : tag places you want to remember; use the tag action.
+- Spray scent        : neutralize odors, typically to erase your tracks.
 - Tracker            : keep contact with your people; use to equip.
 
 
@@ -666,7 +658,6 @@ Increase the chances for a nearby law enforcer or gang member to ignore you.
 <SECTION>
 7. FOLLOWERS
 ------------
-
 This section describes followers and what you can expect from them. Player undeads do not get followers.
 
 
@@ -894,10 +885,6 @@ This option is unnecessary when using "Synchronous Simulation" and will therefor
 > "Allow undeads evolution"
 Allow undeads to evolve into more powerful beings. Disabling this option makes the game much easier for the livings.
 This option is not relevant to Vintage mode, where it is permanently disabled.
-
-
-> "Max Reincarnations"
-Number of times you can reincarnate in a game. Set it to 0 to disable reincarnation altogether.
 
 
 > "Permadeath"

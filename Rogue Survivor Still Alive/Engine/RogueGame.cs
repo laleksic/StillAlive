@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DEBUGAILOOPING
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
@@ -5570,11 +5571,15 @@ namespace djack.RogueSurvivor.Engine
             {
                 if (actor.IsBotPlayer || !actor.IsPlayer)
                 {
-                    //@@MP - workaround for actors getting too many turns in succession. Detection code by zaimoni (Release 6-4)
+                    //@@MP - workaround for actors getting too many turns in succession [detection code by zaimoni] (Release 6-4)
                     if (actor.ActionPoints > actor.Doll.Body.Speed)
                     {
-                        Logger.WriteLine(Logger.Stage.RUN_MAIN, actor.Name + " is hyperactive. Max speed: " + actor.Doll.Body.Speed.ToString() + ", actual: " + actor.ActionPoints.ToString());
-                        actor.ActionPoints = actor.Doll.Body.Speed;
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, actor.Name + " is hyperactive. Max speed: " + actor.Doll.Body.Speed.ToString() + ", actual: " + actor.ActionPoints.ToString()); 
+                        do
+                        {
+                            actor.ActionPoints -=actor.Doll.Body.Speed; //@@MP - ensures it can't go beyond maximum (Release 6-4)
+                        }
+                        while (actor.ActionPoints > actor.Doll.Body.Speed);
                     }
 
 #if DEBUG
@@ -5584,14 +5589,18 @@ namespace djack.RogueSurvivor.Engine
                         if (++m_DEBUG_sameAiActorCount >= DEBUG_AI_ACTOR_LOOP_COUNT_WARNING)
                         {
                             // TO DEVS: you might want to add a debug breakpoint here ->
-                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: AI actor " + actor.Name + " is probably looping!!");
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: actor " + actor.Name + " is possibly looping...");
 
-                            // throw an exception as infinite loop is a fatal bug, or comment out to keep going to let us debug the ai
+                            // Option 1. 
+                            //uncomment the DEBUGAILOOPING preprocessing directive
+#if !DEBUGAILOOPING
+                            // Option 2. when not debugging AI looping, just spend a turn. it's better than crashing the game!
+                            DoWait(actor);
+
+                            // Option 3. throw an exception
                             /*Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
                             Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);*/
-
-                            // in release, just spend a turn. it's better than crashing the game!
-                            DoWait(actor);
+#endif
                         }
                     }
                     else
@@ -5600,7 +5609,7 @@ namespace djack.RogueSurvivor.Engine
                         m_DEBUG_prevAiActor = actor;
                     }
 #endif
-                }
+                        }
             }
             #endregion
 
@@ -5611,10 +5620,12 @@ namespace djack.RogueSurvivor.Engine
                 NextMapTurn(map, sim);
                 return;
             }
-#endregion
+            #endregion
 
             // 3. Ask actor to act. Handle player and AI differently.
-#region
+            #region
+            int actionPointsBeforeTurn = actor.ActionPoints;
+            Location locationBeforeTurn = actor.Location;
             actor.PreviousStaminaPoints = actor.StaminaPoints;
             if (actor.Controller == null)
             {
@@ -5637,6 +5648,20 @@ namespace djack.RogueSurvivor.Engine
             actor.PreviousFoodPoints = actor.FoodPoints;
             actor.PreviousSleepPoints = actor.SleepPoints;
             if (s_Options.IsSanityEnabled) actor.PreviousSanity = actor.Sanity; //@@MP (Release 1)
+
+#if (DEBUG && DEBUGAILOOPING)
+            //clues as to what happened if an actor might be looping  //@@MP - added (Release 6-4)
+            if (++m_DEBUG_sameAiActorCount >= DEBUG_AI_ACTOR_LOOP_COUNT_WARNING)
+            {
+                if (actor.ActionPoints == actionPointsBeforeTurn)
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " spent no AP");
+                else if (actor.ActionPoints > actionPointsBeforeTurn)
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " has more AP than when the turn started");
+
+                if (actor.Location == locationBeforeTurn)
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " did not move to another tile");
+            }
+#endif
 #endregion
         }
 
@@ -5992,15 +6017,15 @@ namespace djack.RogueSurvivor.Engine
                         if (m_Rules.IsActorStarving(actor))
                         {
                             // kill him?
-                            if (m_Rules.RollChance(Rules.FOOD_STARVING_DEATH_CHANCE))
-                            {
+                            /*if (m_Rules.RollChance(Rules.FOOD_STARVING_DEATH_CHANCE)) //@@MP - removed randonmess (Release 6-4)
+                            {*/
                                 if (actor.IsPlayer || s_Options.NPCCanStarveToDeath)
                                 {
                                     if (actorsStarvedToDeath == null)
                                         actorsStarvedToDeath = new List<Actor>();
                                     actorsStarvedToDeath.Add(actor);
                                 }
-                            }
+                            //}
                         }
                     }
                     else if (actor.Model.Abilities.IsRotting)
@@ -6085,7 +6110,7 @@ namespace djack.RogueSurvivor.Engine
                         if (actor.IsSleeping)
                         {
 
-                            bool isOnCouch = m_Rules.IsOnCouch(actor);
+                            bool isOnCouch = m_Rules.IsOnCouch(actor); //IsCouch is a flag on mapobjects, indicating they can be slept on
                             // activity.
                             actor.Activity = Activity.SLEEPING;
 
@@ -6160,12 +6185,13 @@ namespace djack.RogueSurvivor.Engine
                             if (actor.SleepPoints < 0) actor.SleepPoints = 0;
                         }
                     }
-#endregion
+                    #endregion
 
                     // 3.3.2 AP, STA, stop running if tired
-#region
+                    #region
                     //regen AP
-                    actor.ActionPoints += m_Rules.ActorSpeed(actor);
+                    if (!actor.IsSleeping)
+                        actor.ActionPoints += m_Rules.ActorSpeed(actor);
 
                     //regen STA
                     if (actor.StaminaPoints < m_Rules.ActorMaxSTA(actor))
@@ -26637,7 +26663,7 @@ namespace djack.RogueSurvivor.Engine
         // detect cases where an ai is proably performing an infinite sequence of ap free actions.
         Actor m_DEBUG_prevAiActor;
         int m_DEBUG_sameAiActorCount;
-        const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 3;
+        const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 5;
 #endregion
 #endregion
 #endregion

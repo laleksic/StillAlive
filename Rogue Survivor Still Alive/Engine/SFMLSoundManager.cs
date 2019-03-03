@@ -107,7 +107,7 @@ namespace djack.RogueSurvivor.Engine
             SFMLSound sound;
             if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing sound {0}.", soundname));
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing sound {0}.", soundname));
                 Play(sound);
                 this.Track = soundname;
                 this.Priority = priority;
@@ -150,7 +150,7 @@ namespace djack.RogueSurvivor.Engine
             SFMLSound sound;
             if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping sound {0}.", soundname));
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("playing looping sound {0}.", soundname));
                 sound.Loop = true;
                 Play(sound);
                 this.Track = soundname;
@@ -166,7 +166,7 @@ namespace djack.RogueSurvivor.Engine
             SFMLSound sound;
             if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming looping sound {0}.", soundname));
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming looping sound {0}.", soundname));
                 Resume(sound);
             }
         }
@@ -176,7 +176,7 @@ namespace djack.RogueSurvivor.Engine
             SFMLSound sound;
             if (m_Sounds.TryGetValue(soundname, out sound))
             {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("stopping sound {0}.", soundname));
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("stopping sound {0}.", soundname));
                 Stop(sound);
             }
             this.Track = "";
@@ -185,7 +185,7 @@ namespace djack.RogueSurvivor.Engine
 
         public void StopAll()
         {
-            Logger.WriteLine(Logger.Stage.RUN_SOUND, "stopping all sounds.");
+            //Logger.WriteLine(Logger.Stage.RUN_SOUND, "stopping all sounds.");
             foreach (SFMLSound a in m_Sounds.Values)
             {
                 Stop(a);
