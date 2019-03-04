@@ -1903,7 +1903,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // 2. Too dark to see //@@MP - added (Release 6-2)
-            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0) //@@MP - too dark to read (Release 6-2)
+            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0)
             {
                 reason = "it's too dark too see";
                 return false;
@@ -2933,7 +2933,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // 4. Too dark to see //@@MP - added (Release 6-2)
-            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0) //@@MP - too dark to read (Release 6-2)
+            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0)
             {
                 reason = "it's too dark to see";
                 return false;
@@ -2981,7 +2981,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // 3. Too dark to see //@@MP - added (Release 6-2)
-            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0) //@@MP - too dark to read (Release 6-2)
+            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0)
             {
                 reason = "it's too dark to see";
                 return false;
@@ -3948,8 +3948,7 @@ namespace djack.RogueSurvivor.Engine
             if (light == Lighting.OUTSIDE && time.IsNight)
             {
                 if (FOV < 2)
-                    FOV = FOV;
-                    //FOV += 1;
+                    FOV = FOV; //FOV += 1;
             }
 
             // done.

@@ -1,3 +1,20 @@
+STILL ALIVE 2.4.1.0 (aka Release 6-5, ??/??/2019) [Author: MP] *WIP*
+---------------------
+
+Features: 
+-Other tiles are lit up by light sources outside the player's FoV (eg distant fires).
+
+Outstanding known issues:
+-Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).
+-Changing districts performance with simulation enabled decays as the game goes on.
+-Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in later releases.
+-Music is louder than other sounds. They will be normalised in a future release.
+-Random crash/hang bug.
+-Occasionally, random turns take an extra second or two to process.
+-AI looping behaviour, particularly attacking then fleeing repeatedly.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.4.0.4 (aka Release 6-4, 28/02/2019) [Author: MP]
 ---------------------
 
@@ -13,15 +30,6 @@ Fixes:
 -Fixed grammar for messages regarding other actors.
 -Increased the range of louder sounds.
 -Worked around actors receiving excessive action points.
-
-Outstanding known issues:
--Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).
--Changing districts performance with simulation enabled decays as the game goes on.
--Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in later releases.
--Music is louder than other sounds. They will be normalised in a future release.
--Random crash/hang bug.
--Occasionally, random turns take an extra second or two to process.
--AI looping behaviour, particularly attacking then fleeing repeatedly.
 
 Development:
 -Can now play looping audio with ISoundManager.PlayIfNotAlreadyPlaying()

@@ -3771,6 +3771,8 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
             m_Player.Inventory.AddAll(ammo);*/
+            Item temp = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
+            m_Player.Inventory.AddAll(temp);
 #endif
 
             // scoring : hello there.
@@ -5574,7 +5576,7 @@ namespace djack.RogueSurvivor.Engine
                     //@@MP - workaround for actors getting too many turns in succession [detection code by zaimoni] (Release 6-4)
                     if (actor.ActionPoints > actor.Doll.Body.Speed)
                     {
-                        Logger.WriteLine(Logger.Stage.RUN_MAIN, actor.Name + " is hyperactive. Max speed: " + actor.Doll.Body.Speed.ToString() + ", actual: " + actor.ActionPoints.ToString()); 
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, actor.Name + " is hyperactive. Max speed: " + actor.Doll.Body.Speed.ToString() + ", actual: " + actor.ActionPoints.ToString() + " [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]"); 
                         do
                         {
                             actor.ActionPoints -=actor.Doll.Body.Speed; //@@MP - ensures it can't go beyond maximum (Release 6-4)
@@ -5589,7 +5591,7 @@ namespace djack.RogueSurvivor.Engine
                         if (++m_DEBUG_sameAiActorCount >= DEBUG_AI_ACTOR_LOOP_COUNT_WARNING)
                         {
                             // TO DEVS: you might want to add a debug breakpoint here ->
-                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: actor " + actor.Name + " is possibly looping...");
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: actor " + actor.Name + " is possibly looping... [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
 
                             // Option 1. 
                             //uncomment the DEBUGAILOOPING preprocessing directive
@@ -5654,12 +5656,12 @@ namespace djack.RogueSurvivor.Engine
             if (++m_DEBUG_sameAiActorCount >= DEBUG_AI_ACTOR_LOOP_COUNT_WARNING)
             {
                 if (actor.ActionPoints == actionPointsBeforeTurn)
-                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " spent no AP");
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " spent no AP [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
                 else if (actor.ActionPoints > actionPointsBeforeTurn)
-                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " has more AP than when the turn started");
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " has more AP than when the turn started [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
 
                 if (actor.Location == locationBeforeTurn)
-                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " did not move to another tile");
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " did not move to another tile [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
             }
 #endif
 #endregion
@@ -11516,7 +11518,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // Get targeting data.
-            HashSet<Point> fov = LOS.ComputeFOVFor(m_Rules, player, m_Session.WorldTime, m_Session.World.Weather);
+            HashSet<Point> fov = LOS.ComputeFOVFor(m_Rules, player, m_Session.WorldTime, m_Session.World.Weather, false);
             List<Actor> potentialTargets = m_Rules.GetEnemiesInFov(player, fov);
 
             if (potentialTargets == null || potentialTargets.Count == 0)
@@ -12868,7 +12870,7 @@ namespace djack.RogueSurvivor.Engine
             foreach (Actor fo in player.Followers)
             {
                 followers[iFo] = fo;
-                fovs[iFo] = LOS.ComputeFOVFor(m_Rules, fo, m_Session.WorldTime, m_Session.World.Weather);
+                fovs[iFo] = LOS.ComputeFOVFor(m_Rules, fo, m_Session.WorldTime, m_Session.World.Weather, false);
                 bool inView = fovs[iFo].Contains(player.Location.Position) && m_PlayerFOV.Contains(fo.Location.Position);
                 bool linkedByPhone = AreLinkedByPhone(player, fo);
                 hasLinkWith[iFo] = inView || linkedByPhone;
@@ -13066,7 +13068,7 @@ namespace djack.RogueSurvivor.Engine
             string desc = DescribePlayerFollowerStatus(follower);
 
             // compute follower fov.
-            HashSet<Point> followerFOV = LOS.ComputeFOVFor(m_Rules, follower, m_Session.WorldTime, m_Session.World.Weather);
+            HashSet<Point> followerFOV = LOS.ComputeFOVFor(m_Rules, follower, m_Session.WorldTime, m_Session.World.Weather, false);
 
             // loop.
             bool loop = true;
@@ -20018,7 +20020,7 @@ namespace djack.RogueSurvivor.Engine
         {
             if (player == null)
                 return;
-            m_PlayerFOV = LOS.ComputeFOVFor(m_Rules, player, m_Session.WorldTime, m_Session.World.Weather);
+            m_PlayerFOV = LOS.ComputeFOVFor(m_Rules, player, m_Session.WorldTime, m_Session.World.Weather, true); //@@MP - added that other tiles light up by other light sources outside FoV (Release 6-5)
             player.Location.Map.SetViewAndMarkVisited(m_PlayerFOV);
         }
 

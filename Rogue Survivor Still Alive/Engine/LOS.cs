@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 
 using djack.RogueSurvivor.Data;
+using djack.RogueSurvivor.Engine.Items;
 
 namespace djack.RogueSurvivor.Engine
 {
@@ -283,7 +284,7 @@ namespace djack.RogueSurvivor.Engine
                 });
         }
 
-        public static HashSet<Point> ComputeFOVFor(Rules rules, Actor actor, WorldTime time, Weather weather)
+        public static HashSet<Point> ComputeFOVFor(Rules rules, Actor actor, WorldTime time, Weather weather, bool checkForOtherLitTiles) //@@MP - added that other tiles light up by other light sources outside FoV (Release 6-5)
         {
             Location fromLocation = actor.Location;
             HashSet<Point> visibleSet = new HashSet<Point>();
@@ -311,6 +312,10 @@ namespace djack.RogueSurvivor.Engine
                 {
                     to.Y = y;
 
+                    // If we already know tile is visible, pass. //@@MP - moved to top (Release 6-5)
+                    if (visibleSet.Contains(to))
+                        continue;
+
                     // Distance check.
                     Point pos = new Point(to.X, to.Y);
                     bool isAdjacent = rules.IsAdjacent(actor.Location.Position, pos);
@@ -320,19 +325,16 @@ namespace djack.RogueSurvivor.Engine
                             continue;
                     }
 
-                    // If we already know tile is visible, pass.
-                    if (visibleSet.Contains(to))
-                        continue;
-
+                    // all immediately adjacent tiles automatically visible when FOV > 0, even if they don't fit in the circle determined above
                     if (isAdjacent && maxRange > 0)
                     {
-                        visibleSet.Add(to); // all immediately adjacent tiles automatically visible when FOV > 0, even if they don't fit in the circle determined above
+                        visibleSet.Add(to);
                         continue;
                     }
 
                     // Trace line.
                     if (!FOVSub(fromLocation, to, maxRange, ref visibleSet))
-                    {                        
+                    {
                         // if its a wall (in FoV terms), remember.
                         bool isFovWall = false;
                         Tile tile = map.GetTileAt(x, y);
@@ -340,8 +342,8 @@ namespace djack.RogueSurvivor.Engine
                         if (!tile.Model.IsTransparent && !tile.Model.IsWalkable)
                             isFovWall = true;
                         else if (mapObj != null)
-                            isFovWall = true;                           
-                        if(isFovWall)
+                            isFovWall = true;
+                        if (isFovWall)
                             wallsToFix.Add(to);
 
                         // next.
@@ -374,6 +376,39 @@ namespace djack.RogueSurvivor.Engine
             foreach (Point fixedWall in fixedWalls)
             {
                 visibleSet.Add(fixedWall);
+            }
+
+            // Other light sources, like fires or actors with torches, outside the regular player FoV //@@MP (Release 6-5)
+            if (checkForOtherLitTiles)
+            {
+                for (int x = 0; x < map.Width; x++)
+                {
+                    for (int y = 0; y < map.Height; y++)
+                    {
+                        Point spot = new Point(x, y);
+                        if (map.IsAnyTileFireThere(map, spot))
+                        {
+                            visibleSet.Add(spot);
+                            foreach (Direction d in Direction.COMPASS)
+                            {
+                                //lights up the tiles around it
+                                Point next = spot + d;
+                                if (map.IsInBounds(next))
+                                    visibleSet.Add(next);
+                            }
+                        }
+                        /*Inventory inv = map.GetItemsAt(pos);
+                        if (inv != null)
+                        {
+                            foreach (Item item in inv.Items)
+                            {
+                                ItemLight light = item as ItemLight;
+                                if (light != null && light.)
+                                    continue;
+                            }
+                        }*/
+                    }
+                }
             }
 
             return visibleSet;
