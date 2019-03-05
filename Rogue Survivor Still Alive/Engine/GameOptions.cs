@@ -612,7 +612,7 @@ namespace djack.RogueSurvivor.Engine
             m_SFXVolume = 100; //@@MP (Release 2)
             m_PlayAmbientSFXs = true; //@@MP (Release 6-1)
             m_AmbientSFXVolume = 100; //@@MP (Release 6-1)
-            m_AnimDelay = true;
+            m_AnimDelay = false; //@@MP (Release 6-5)
             m_ShowMinimap = true;
             //m_ShowPlayerTagsOnMinimap = true; //@@MP (Release 5-7)
             m_EnabledAdvisor = true;
@@ -781,7 +781,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE:
                     return "The zombies invasion increases in size each day, to fill up to Maximum Undeads on a map.";
                 case IDs.UI_ANIM_DELAY:
-                    return "Enable or disable UI delays when showing actions or events on the map.\nYou should keep it on when learning the game and then disable it for a faster play.";
+                    return "Enable or disable UI delays when actions or events take place.\nHaving it on can help when learning the game, or if you prefer to see events take place as they happen.";
                 case IDs.UI_MUSIC:
                     return "Enable or disable music. Musics are not essential for gameplay.\nIf you can't hear music, try using RSConfig from the game folder.";
                 case IDs.UI_MUSIC_VOLUME:

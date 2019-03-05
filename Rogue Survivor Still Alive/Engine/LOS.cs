@@ -259,7 +259,7 @@ namespace djack.RogueSurvivor.Engine
             return CanTraceViewLine(fromLocation, toPosition, maxRange);
 #endif
 
-            // Asymetric bresenham : use the fact we are tracing FROM to TO to addvisible tiles on the fly.
+            // Asymetric bresenham : use the fact we are tracing FROM to TO to add visible tiles on the fly.
             // Pros: fixed "holes" in fov : if you can see a tile you can see everything in its line too.
             // Cons: rare cases of asymetry in FOV : i can see you, but you can't see me.
             Map map = fromLocation.Map;
@@ -343,6 +343,7 @@ namespace djack.RogueSurvivor.Engine
                             isFovWall = true;
                         else if (mapObj != null)
                             isFovWall = true;
+
                         if (isFovWall)
                             wallsToFix.Add(to);
 
@@ -386,19 +387,61 @@ namespace djack.RogueSurvivor.Engine
                     for (int y = 0; y < map.Height; y++)
                     {
                         Point spot = new Point(x, y);
-                        if (map.IsAnyTileFireThere(map, spot))
+
+                        //only consider spots that we actually have line of sight to
+                        HashSet<Point> spotSet = new HashSet<Point>();
+                        spotSet.Add(spot);
+                        if (!FOVSub(fromLocation, spot, 10, ref spotSet))
+                            continue; //this spot is not in LOS, skip it
+
+                        //car fires
+                        MapObject mapObj = map.GetMapObjectAt(spot);
+                        if (mapObj != null && mapObj.IsOnFire)
                         {
                             visibleSet.Add(spot);
-                            foreach (Direction d in Direction.COMPASS)
+                            foreach (Direction d in Direction.COMPASS_4)
                             {
                                 //lights up the tiles around it
                                 Point next = spot + d;
                                 if (map.IsInBounds(next))
                                     visibleSet.Add(next);
                             }
+                            continue;
                         }
+                        //tile fires - check these first, as it may also be in adjacent tiles
+                        else if (map.IsAnyTileFireThere(map, spot))
+                        {
+                            visibleSet.Add(spot);
+                            foreach (Direction d in Direction.COMPASS_4)
+                            {
+                                //lights up the tiles around it
+                                Point next = spot + d;
+                                if (map.IsInBounds(next))
+                                    visibleSet.Add(next);
+                            }
+                            continue;
+                        }
+                        //actors with torches
+                        else if (map.GetActorAt(spot) != null)
+                        {
+                            Actor act = map.GetActorAt(spot);
+                            ItemLight torch = (act.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight);
+                            if (torch != null && torch.Batteries > 0)
+                            {
+                                visibleSet.Add(spot);
+                                /*foreach (Direction d in Direction.COMPASS_4)
+                                {
+                                    //lights up the tiles around it
+                                    Point next = spot + d;
+                                    if (map.IsInBounds(next))
+                                        visibleSet.Add(next);
+                                }*/
+                                continue;
+                            }
+                        }
+                        //ground inventory (eg candles)
                         /*Inventory inv = map.GetItemsAt(pos);
-                        if (inv != null)
+                        else if (inv != null)
                         {
                             foreach (Item item in inv.Items)
                             {
