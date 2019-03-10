@@ -429,13 +429,13 @@ namespace djack.RogueSurvivor.Engine
                             if (torch != null && torch.Batteries > 0)
                             {
                                 visibleSet.Add(spot);
-                                /*foreach (Direction d in Direction.COMPASS_4)
+                                foreach (Direction d in Direction.COMPASS_4)
                                 {
                                     //lights up the tiles around it
                                     Point next = spot + d;
                                     if (map.IsInBounds(next))
                                         visibleSet.Add(next);
-                                }*/
+                                }
                                 continue;
                             }
                         }
