@@ -2893,7 +2893,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     {
                         int y = b.InsideRect.Bottom - i;
 
-                        //place a safes along the wall
+                        //place safes along the wall
                         Point safept = new Point(b.InsideRect.Right - 1, y);
                         if (map.IsWalkable(safept))
                             map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
@@ -2906,7 +2906,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         {
                             //center the secure door opposite the main entrance
                             Point vaultpt = new Point(wallpt.X, midY);
-                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), vaultpt);
+                            PlaceBankVaultDoor(map, vaultpt);
                         }
 
                         Point counterpt = new Point(b.InsideRect.Right - 5, y);
@@ -2927,7 +2927,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     {
                         int y = b.InsideRect.Bottom - i;
 
-                        //place a safes along the wall
+                        //place safes along the wall
                         Point safept = new Point(b.InsideRect.Left, y);
                         if (map.IsWalkable(safept))
                             map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
@@ -2940,7 +2940,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         {
                             //center the secure door opposite the main entrance
                             Point vaultpt = new Point(wallpt.X, midY);
-                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), vaultpt);
+                            PlaceBankVaultDoor(map, vaultpt);
                         }
 
                         Point counterpt = new Point(b.InsideRect.Left + 4, y);
@@ -2961,7 +2961,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     {
                         int x = b.InsideRect.Left + i;
 
-                        //place a safes along the wall
+                        //place safes along the wall
                         Point safept = new Point(x, b.InsideRect.Bottom - 1);
                         if (map.IsWalkable(safept))
                             map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
@@ -2974,7 +2974,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         {
                             //center the secure door opposite the main entrance
                             Point vaultpt = new Point(midX, wallpt.Y);
-                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), vaultpt);
+                            PlaceBankVaultDoor(map, vaultpt);
                         }
 
                         Point counterpt = new Point(x, b.InsideRect.Bottom - 5);
@@ -2995,7 +2995,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     {
                         int x = b.InsideRect.Left + i;
 
-                        //place a safes along the wall
+                        //place safes along the wall
                         Point safept = new Point(x, b.InsideRect.Top);
                         if (map.IsWalkable(safept))
                             map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
@@ -3008,7 +3008,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         {
                             //center the secure door opposite the main entrance
                             Point vaultpt = new Point(midX, wallpt.Y);
-                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), vaultpt);
+                            PlaceBankVaultDoor(map, vaultpt);
                         }
 
                         Point counterpt = new Point(x, b.InsideRect.Top + 4);
@@ -3082,6 +3082,27 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // Done
             return true;
+        }
+
+        private void PlaceBankVaultDoor(Map map, Point pt) //@@MP (Release 6-5)
+        {
+            //randomly select 
+            int roll = m_DiceRoller.Roll(0, 3);
+            switch (roll)
+            {
+                case 0: map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), pt); break;
+                case 1:
+                    map.PlaceMapObjectAt(MakeObjIronDoor(), pt);
+                    DoorWindow openDoor = (map.GetMapObjectAt(pt) as DoorWindow);
+                    openDoor.SetState(DoorWindow.STATE_OPEN);
+                    break;
+                case 2:
+                    map.PlaceMapObjectAt(MakeObjIronDoor(), pt);
+                    DoorWindow brokenDoor = (map.GetMapObjectAt(pt) as DoorWindow);
+                    brokenDoor.SetState(DoorWindow.STATE_BROKEN);
+                    break;
+                default: throw new InvalidOperationException("unhandled roll");
+            }
         }
 
         /// <summary>
