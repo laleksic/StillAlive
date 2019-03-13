@@ -18732,8 +18732,8 @@ namespace djack.RogueSurvivor.Engine
             }
 
             //2. unopenable ('locked') doors
-            MapObject lockedDoor = player.Location.Map.GetMapObjectAt(player.Location.Position + direction);
-            if (lockedDoor != null && lockedDoor.AName == "a locked door") //@@MP - moved this check from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
+            DoorWindow lockedDoor = (player.Location.Map.GetMapObjectAt(player.Location.Position + direction) as DoorWindow);
+            if (lockedDoor != null && lockedDoor.IsLocked) //@@MP - moved this check from Engine\Rules : CanActorGetItemFromContainer() (Release 5-3)
             {
                 if (IsInArmyOffice(lockedDoor.Location)) //@@MP - added check for army office pass card (Release 6-3)
                 {
@@ -18743,8 +18743,8 @@ namespace djack.RogueSurvivor.Engine
                         Point pt = new Point(lockedDoor.Location.Position.X, lockedDoor.Location.Position.Y);
                         //remove the current door
                         map.RemoveMapObjectAt(pt.X, pt.Y);
-                        //replace it with the standard, unlocked iron door
-                        map.PlaceMapObjectAt(m_TownGenerator.MakeObjIronDoor(), pt);
+                        //replace it with the standard, unlocked iron door. it's replaced rather than SetState to reset the hitpoints to standard
+                        map.PlaceMapObjectAt(m_TownGenerator.MakeObjIronDoor(DoorWindow.STATE_CLOSED), pt);
                         m_SFXManager.Play(GameSounds.ACCESS_GRANTED, AudioPriority.PRIORITY_EVENT);
                         AddMessage(new Message("You've unlocked the door with the army access card.", m_Session.WorldTime.TurnCounter, Color.Yellow));
                         return true;

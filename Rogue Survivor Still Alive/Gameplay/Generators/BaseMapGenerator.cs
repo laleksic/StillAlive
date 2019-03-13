@@ -305,7 +305,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #region Common map objects
         protected static DoorWindow MakeObjWoodenDoor() //@@MP - made static (Release 5-7)
         {
-            return new DoorWindow("wooden door", GameImages.OBJ_WOODEN_DOOR_CLOSED, GameImages.OBJ_WOODEN_DOOR_OPEN, GameImages.OBJ_WOODEN_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS)
+            return new DoorWindow("wooden door", GameImages.OBJ_WOODEN_DOOR_CLOSED, GameImages.OBJ_WOODEN_DOOR_OPEN, GameImages.OBJ_WOODEN_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS, DoorWindow.STATE_CLOSED)
             {
                 GivesWood = true
             };
@@ -313,7 +313,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static DoorWindow MakeObjHospitalDoor() //@@MP - made static (Release 5-7)
         {
-            return new DoorWindow("door", GameImages.OBJ_HOSPITAL_DOOR_CLOSED, GameImages.OBJ_HOSPITAL_DOOR_OPEN, GameImages.OBJ_HOSPITAL_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS)
+            return new DoorWindow("door", GameImages.OBJ_HOSPITAL_DOOR_CLOSED, GameImages.OBJ_HOSPITAL_DOOR_OPEN, GameImages.OBJ_HOSPITAL_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS, DoorWindow.STATE_CLOSED)
             {
                 GivesWood = true
             };
@@ -321,7 +321,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static DoorWindow MakeObjCharDoor() //@@MP - made static (Release 5-7)
         {
-            return new DoorWindow("CHAR door", GameImages.OBJ_CHAR_DOOR_CLOSED, GameImages.OBJ_CHAR_DOOR_OPEN, GameImages.OBJ_CHAR_DOOR_BROKEN, 4 * DoorWindow.BASE_HITPOINTS)
+            return new DoorWindow("CHAR door", GameImages.OBJ_CHAR_DOOR_CLOSED, GameImages.OBJ_CHAR_DOOR_OPEN, GameImages.OBJ_CHAR_DOOR_BROKEN, 4 * DoorWindow.BASE_HITPOINTS, DoorWindow.STATE_CLOSED)
             {
                 GivesWood = true
             };
@@ -329,33 +329,25 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static DoorWindow MakeObjGlassDoor() //@@MP - made static (Release 5-7)
         {
-            return new DoorWindow("glass door", GameImages.OBJ_GLASS_DOOR_CLOSED, GameImages.OBJ_GLASS_DOOR_OPEN, GameImages.OBJ_GLASS_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS / 4)
+            return new DoorWindow("glass door", GameImages.OBJ_GLASS_DOOR_CLOSED, GameImages.OBJ_GLASS_DOOR_OPEN, GameImages.OBJ_GLASS_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS / 4, DoorWindow.STATE_CLOSED)
             {
                 IsMaterialTransparent = true,
                 BreaksWhenFiredThrough = true
             };
         }
 
-        public DoorWindow MakeObjIronDoor() //@@MP - made public (Release 6-3)
+        public DoorWindow MakeObjIronDoor(int state) //@@MP - made public (Release 6-3)
         {
-            return new DoorWindow("iron door", GameImages.OBJ_IRON_DOOR_CLOSED, GameImages.OBJ_IRON_DOOR_OPEN, GameImages.OBJ_IRON_DOOR_BROKEN, 8 * DoorWindow.BASE_HITPOINTS)
+            return new DoorWindow("iron door", GameImages.OBJ_IRON_DOOR_CLOSED, GameImages.OBJ_IRON_DOOR_OPEN, GameImages.OBJ_IRON_DOOR_BROKEN, 8 * DoorWindow.BASE_HITPOINTS, state)
             {
                 IsAn = true,
                 IsMetal = true //@@MP (Release 5-4)
             };
         }
 
-        protected static MapObject MakeObjLockedDoor(string doorImageID) //@@MP (Release 4), made static (Release 5-7)
-        {
-            return new MapObject("locked door", doorImageID)
-            {
-                IsMetal = true //@@MP (Release 5-4)
-            };
-        }
-
         protected static DoorWindow MakeObjRollerDoor() //@@MP (Release 4), made static (Release 5-7)
         {
-            return new DoorWindow("roller door", GameImages.OBJ_ROLLER_DOOR_CLOSED, GameImages.OBJ_ROLLER_DOOR_OPEN, GameImages.OBJ_ROLLER_DOOR_BROKEN, 6 * DoorWindow.BASE_HITPOINTS)
+            return new DoorWindow("roller door", GameImages.OBJ_ROLLER_DOOR_CLOSED, GameImages.OBJ_ROLLER_DOOR_OPEN, GameImages.OBJ_ROLLER_DOOR_BROKEN, 6 * DoorWindow.BASE_HITPOINTS, DoorWindow.STATE_CLOSED)
             {
                 IsMetal = true, //@@MP (Release 5-4)
             };
@@ -364,7 +356,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         protected static DoorWindow MakeObjWindow() //@@MP - made static (Release 5-7)
         {
             // windows as transparent doors.
-            return new DoorWindow("window", GameImages.OBJ_WINDOW_CLOSED, GameImages.OBJ_WINDOW_OPEN, GameImages.OBJ_WINDOW_BROKEN, DoorWindow.BASE_HITPOINTS / 4)
+            return new DoorWindow("window", GameImages.OBJ_WINDOW_CLOSED, GameImages.OBJ_WINDOW_OPEN, GameImages.OBJ_WINDOW_BROKEN, DoorWindow.BASE_HITPOINTS / 4, DoorWindow.STATE_CLOSED)
             {
                 IsWindow = true,
                 IsMaterialTransparent = true,

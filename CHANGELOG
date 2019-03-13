@@ -1,10 +1,13 @@
-STILL ALIVE 2.4.1.0 (aka Release 6-5, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.1.1 (aka Release 6-5, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
 -Other tiles are lit up by light sources outside the player's FoV (eg distant fires).
 -Animations Delay option now off by default.
 -Bank vaults now have a chance of being open/broken into.
+
+Development:
+-Added a new STATE_LOCKED for doors.
 
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).

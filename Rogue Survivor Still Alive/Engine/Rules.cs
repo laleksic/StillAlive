@@ -1814,10 +1814,10 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // 2. Door is not closed nor barricaded.
-            if (!door.IsClosed || door.BarricadePoints > 0)
+            // 2. Door is not closed or is barricaded.
+            if (!door.IsClosed || door.BarricadePoints > 0 || door.IsLocked) //@@MP - added, even tho under the current code it will never reach .IsLocked (Release 6-5)
             {
-                reason = "not closed nor barricaded";
+                reason = "not closed, is locked, or is barricaded";
                 return false;
             }
 
@@ -1917,7 +1917,7 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
             // 3b. Door is not closed.
-            if (door.State != DoorWindow.STATE_CLOSED)
+            if (door.State == DoorWindow.STATE_OPEN) //@@MP - tweaked to account for new STATE_LOCKED (Release 6-5)
             {
                 reason = "the door is open";
                 return false;

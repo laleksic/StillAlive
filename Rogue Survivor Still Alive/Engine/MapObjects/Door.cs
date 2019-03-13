@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using djack.RogueSurvivor.Data;
 
@@ -25,6 +23,7 @@ namespace djack.RogueSurvivor.Engine.MapObjects
         public const int STATE_CLOSED = 1;
         public const int STATE_OPEN = 2;
         public const int STATE_BROKEN = 3;
+        public const int STATE_LOCKED = 4; //@@MP (Release 6-5)
         #endregion
 
         #region Properties
@@ -41,6 +40,11 @@ namespace djack.RogueSurvivor.Engine.MapObjects
         public bool IsBroken
         {
             get { return this.State == STATE_BROKEN; }
+        }
+
+        public bool IsLocked
+        {
+            get { return this.State == STATE_LOCKED; }
         }
 
         public override bool IsTransparent
@@ -96,7 +100,7 @@ namespace djack.RogueSurvivor.Engine.MapObjects
         #endregion
 
         #region Init
-        public DoorWindow(string name, string closedImageID, string openImageID, string brokenImageID, int hitPoints)
+        public DoorWindow(string name, string closedImageID, string openImageID, string brokenImageID, int hitPoints, int state) //@@MP - added state (Release 6-5)
             : base(name, closedImageID, Break.BREAKABLE, Fire.BURNABLE, hitPoints)
         {
             m_ClosedImageID = closedImageID;
@@ -104,7 +108,7 @@ namespace djack.RogueSurvivor.Engine.MapObjects
             m_BrokenImageID = brokenImageID;
             m_BarricadePoints = 0;
 
-            SetState(STATE_CLOSED);
+            SetState(state); //@@MP - was hardcoded Closed (Release 6-5)
         }
         #endregion
 
@@ -129,6 +133,12 @@ namespace djack.RogueSurvivor.Engine.MapObjects
                     this.HitPoints = 0;
                     m_BarricadePoints = 0;
                     this.IsWalkable = true;
+                    break;
+
+                case STATE_LOCKED: //@@MP (Release 6-5)
+                    this.ImageID = m_ClosedImageID;
+                    this.IsWalkable = false;
+                    if (this.IsMetal) this.HitPoints = 40000;
                     break;
 
                 default:

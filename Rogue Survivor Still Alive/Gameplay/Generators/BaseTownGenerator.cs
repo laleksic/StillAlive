@@ -952,7 +952,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 // room.
                 TileFill(subway, m_Game.GameTiles.FLOOR_CONCRETE, toolsRoom);
                 TileRectangle(subway, m_Game.GameTiles.WALL_BRICK, toolsRoom);
-                PlaceDoor(subway, toolsRoom.Left + toolsRoomWidth / 2, (toolsRoomDir == Direction.N ? toolsRoom.Bottom - 1 : toolsRoom.Top), m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor());
+                PlaceDoor(subway, toolsRoom.Left + toolsRoomWidth / 2, (toolsRoomDir == Direction.N ? toolsRoom.Bottom - 1 : toolsRoom.Top), m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
                 subway.AddZone(MakeUniqueZone("tools room", toolsRoom));
 
                 // shelves on walls with construction items.
@@ -3090,14 +3090,18 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             int roll = m_DiceRoller.Roll(0, 3);
             switch (roll)
             {
-                case 0: map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), pt); break;
+                case 0:
+                    map.PlaceMapObjectAt(MakeObjIronDoor(DoorWindow.STATE_LOCKED), pt);
+                    DoorWindow lockedDoor = (map.GetMapObjectAt(pt) as DoorWindow);
+                    lockedDoor.SetState(DoorWindow.STATE_LOCKED);
+                    break;
                 case 1:
-                    map.PlaceMapObjectAt(MakeObjIronDoor(), pt);
+                    map.PlaceMapObjectAt(MakeObjIronDoor(DoorWindow.STATE_LOCKED), pt);
                     DoorWindow openDoor = (map.GetMapObjectAt(pt) as DoorWindow);
                     openDoor.SetState(DoorWindow.STATE_OPEN);
                     break;
                 case 2:
-                    map.PlaceMapObjectAt(MakeObjIronDoor(), pt);
+                    map.PlaceMapObjectAt(MakeObjIronDoor(DoorWindow.STATE_LOCKED), pt);
                     DoorWindow brokenDoor = (map.GetMapObjectAt(pt) as DoorWindow);
                     brokenDoor.SetState(DoorWindow.STATE_BROKEN);
                     break;
@@ -3602,16 +3606,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     doorSide = Direction.W;
                     // west
-                    map.SetTileModelAt(b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                    map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Left, midY));
+                    PlaceDoor(map, b.BuildingRect.Left, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED)); //need to remove any non-walkable tile
                     if (b.InsideRect.Height >= 8) //more space, so add another door
                     {
-                        map.SetTileModelAt(b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                        map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Left, midY - 1));
+                        PlaceDoor(map, b.BuildingRect.Left, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                         if (b.InsideRect.Height >= 12) //even more space, so add another door
                         {
-                            map.SetTileModelAt(b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Left, midY + 1));
+                            PlaceDoor(map, b.BuildingRect.Left, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                         }
                     }
                 }
@@ -3619,16 +3620,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     doorSide = Direction.E;
                     // east
-                    map.SetTileModelAt(b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                    map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Right - 1, midY));
+                    PlaceDoor(map, b.BuildingRect.Right - 1, midY, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                     if (b.InsideRect.Height >= 8)
                     {
-                        map.SetTileModelAt(b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                        map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Right - 1, midY - 1));
+                        PlaceDoor(map, b.BuildingRect.Right - 1, midY - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                         if (b.InsideRect.Height >= 12)
                         {
-                            map.SetTileModelAt(b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(b.BuildingRect.Right - 1, midY + 1));
+                            PlaceDoor(map, b.BuildingRect.Right - 1, midY + 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                         }
                     }
                 }
@@ -3640,16 +3638,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     doorSide = Direction.N;
                     // north
-                    map.SetTileModelAt(midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                    map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX, b.BuildingRect.Top));
+                    PlaceDoor(map, midX, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                     if (b.InsideRect.Width >= 8)
                     {
-                        map.SetTileModelAt(midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                        map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX - 1, b.BuildingRect.Top));
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                         if (b.InsideRect.Width >= 12)
                         {
-                            map.SetTileModelAt(midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX + 1, b.BuildingRect.Top));
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Top, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                         }
                     }
                 }
@@ -3657,16 +3652,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     doorSide = Direction.S;
                     // south
-                    map.SetTileModelAt(midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                    map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX, b.BuildingRect.Bottom - 1));
+                    PlaceDoor(map, midX, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                     if (b.InsideRect.Width >= 8)
                     {
-                        map.SetTileModelAt(midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                        map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX - 1, b.BuildingRect.Bottom - 1));
+                        PlaceDoor(map, midX - 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                         if (b.InsideRect.Width >= 12)
                         {
-                            map.SetTileModelAt(midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY); //need to remove any non-walkable tile
-                            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(midX + 1, b.BuildingRect.Bottom - 1));
+                            PlaceDoor(map, midX + 1, b.BuildingRect.Bottom - 1, m_Game.GameTiles.FLOOR_WALKWAY, MakeObjIronDoor(DoorWindow.STATE_LOCKED));
                         }
                     }
                 }
@@ -3733,8 +3725,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 throw new InvalidOperationException("unhandled door side");
 
             TileRectangle(map, m_Game.GameTiles.WALL_ARMY_BASE, corridorRect);
-            map.SetTileModelAt(corridorDoor.X, corridorDoor.Y, m_Game.GameTiles.FLOOR_ARMY); //need to remove any non-walkable tile
-            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(corridorDoor.X, corridorDoor.Y));
+            PlaceDoor(map, corridorDoor.X, corridorDoor.Y, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor(DoorWindow.STATE_CLOSED)); //need to remove any non-walkable tile
             #endregion
 
             /////////////////////////
@@ -3787,22 +3778,22 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 if (horizontalCorridor)
                 {
-                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Bottom - 1, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Bottom - 1, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
                 }
                 else
                 {
-                    PlaceDoor(map, roomRect.Right - 1, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                    PlaceDoor(map, roomRect.Right - 1, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
                 }
             }
             foreach (Rectangle roomRect in officesTwo)
             {
                 if (horizontalCorridor)
                 {
-                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Top, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                    PlaceDoor(map, roomRect.Left + roomRect.Width / 2, roomRect.Top, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
                 }
                 else
                 {
-                    PlaceDoor(map, roomRect.Left, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                    PlaceDoor(map, roomRect.Left, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
                 }
             }
 
@@ -4577,7 +4568,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     throw new InvalidOperationException("unhandled roll");
             }
             // add the door.
-            PlaceDoor(map, doorX, doorY, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor());
+            PlaceDoor(map, doorX, doorY, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
             BarricadeDoors(map, b.BuildingRect, Rules.BARRICADING_MAX);
             #endregion
 
@@ -4856,7 +4847,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 TileRectangle(map, m_Game.GameTiles.WALL_STONE, powerRoomRect);
 
                 // add door with signs.
-                PlaceDoor(map, powerRoomEntry.X, powerRoomEntry.Y, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor());
+                PlaceDoor(map, powerRoomEntry.X, powerRoomEntry.Y, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
                 map.GetTileAt(powerRoomEntry.X, powerRoomEntry.Y - 1).AddDecoration(GameImages.DECO_POWER_SIGN_BIG);
                 map.GetTileAt(powerRoomEntry.X, powerRoomEntry.Y + 1).AddDecoration(GameImages.DECO_POWER_SIGN_BIG);
 
@@ -6048,7 +6039,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     if (door == null)
                         return;
                     surfaceMap.RemoveMapObjectAt(pt.X, pt.Y);
-                    door = MakeObjIronDoor();
+                    door = MakeObjIronDoor(DoorWindow.STATE_CLOSED);
                     door.BarricadePoints = Rules.BARRICADING_MAX;
                     surfaceMap.PlaceMapObjectAt(door, pt);
                 });
@@ -6113,13 +6104,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // add iron doors closing each corridor.
             for (int x = qTopLeft.Right; x < qBotRight.Left; x++)
             {
-                PlaceDoor(underground, x, qTopLeft.Bottom - 1, m_Game.GameTiles.FLOOR_OFFICE, MakeObjIronDoor());
-                PlaceDoor(underground, x, qBotLeft.Top, m_Game.GameTiles.FLOOR_OFFICE, MakeObjIronDoor());
+                PlaceDoor(underground, x, qTopLeft.Bottom - 1, m_Game.GameTiles.FLOOR_OFFICE, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
+                PlaceDoor(underground, x, qBotLeft.Top, m_Game.GameTiles.FLOOR_OFFICE, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
             }
             for (int y = qTopLeft.Bottom; y < qBotLeft.Top; y++)
             {
-                PlaceDoor(underground, qTopLeft.Right - 1, y, m_Game.GameTiles.FLOOR_OFFICE, MakeObjIronDoor());
-                PlaceDoor(underground, qTopRight.Left, y, m_Game.GameTiles.FLOOR_OFFICE, MakeObjIronDoor());
+                PlaceDoor(underground, qTopLeft.Right - 1, y, m_Game.GameTiles.FLOOR_OFFICE, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
+                PlaceDoor(underground, qTopRight.Left, y, m_Game.GameTiles.FLOOR_OFFICE, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
             }
             #endregion
 
@@ -6628,7 +6619,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // Entry hall.
             Rectangle entryHall = Rectangle.FromLTRB(policeBlock.BuildingRect.Left, policeBlock.BuildingRect.Top + 2, policeBlock.BuildingRect.Right, policeBlock.BuildingRect.Bottom);
             TileRectangle(surfaceMap, m_Game.GameTiles.WALL_POLICE_STATION, entryHall);
-            PlaceDoor(surfaceMap, entryHall.Left + entryHall.Width / 2, entryHall.Top, m_Game.GameTiles.FLOOR_TILES, MakeObjIronDoor());
+            PlaceDoor(surfaceMap, entryHall.Left + entryHall.Width / 2, entryHall.Top, m_Game.GameTiles.FLOOR_TILES, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
             PlaceDoor(surfaceMap, entryDoorPos.X, entryDoorPos.Y, m_Game.GameTiles.FLOOR_TILES, MakeObjGlassDoor());
             DoForEachTile(entryHall, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
@@ -6683,7 +6674,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     #region
                     // make room with door.
                     TileRectangle(map, m_Game.GameTiles.WALL_POLICE_STATION, roomRect);
-                    PlaceDoor(map, roomRect.Left, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor());
+                    PlaceDoor(map, roomRect.Left, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_CONCRETE, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
 
                     // shelves with weaponry & armor next to the walls.
                     DoForEachTile(inRoomRect, //@@MP - unused parameter (Release 5-7)
@@ -6846,7 +6837,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Rectangle corridor = Rectangle.FromLTRB(1, 1, map.Width, yCells);
             map.AddZone(MakeUniqueZone("cells corridor", corridor));
             // - the switch to open/close the cells.
-            map.PlaceMapObjectAt(MakeObjLockedDoor(GameImages.OBJ_IRON_DOOR_CLOSED), new Point(map.Width - 3, 1)); //@@MP - added for funneling (Release 6-1)
+            PlaceDoor(map, map.Width - 3, 1,m_Game.GameTiles.FLOOR_TILES, MakeObjIronDoor(DoorWindow.STATE_CLOSED)); //@@MP - added for funneling (Release 6-1)
             map.PlaceMapObjectAt(MakeObjBankTeller(GameImages.OBJ_BANK_TELLER), new Point(map.Width - 2, 1)); //@@MP - added for blocking (Release 6-1)
             map.PlaceMapObjectAt(MakeObjPowerGenerator(GameImages.OBJ_POWERGEN_OFF, GameImages.OBJ_POWERGEN_ON), new Point(map.Width - 2, 2)); //@@MP - moved generator 1 south (Release 6-1)
 
@@ -7634,7 +7625,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     if (door == null)
                         return;
                     surfaceMap.RemoveMapObjectAt(pt.X, pt.Y);
-                    door = MakeObjIronDoor();
+                    door = MakeObjIronDoor(DoorWindow.STATE_CLOSED);
                     door.BarricadePoints = Rules.BARRICADING_MAX;
                     surfaceMap.PlaceMapObjectAt(door, pt);
                 });
@@ -7682,7 +7673,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     new Point(roomRect.Left, roomRect.Top + roomRect.Height / 2);
                 if (underground.GetMapObjectAt(westEastDoorPos) == null)
                 {
-                    DoorWindow door = MakeObjIronDoor();
+                    DoorWindow door = MakeObjIronDoor(DoorWindow.STATE_CLOSED);
                     PlaceDoorIfAccessibleAndNotAdjacent(underground, westEastDoorPos.X, westEastDoorPos.Y, m_Game.GameTiles.FLOOR_ARMY, 6, door);
                 }
 
@@ -7691,7 +7682,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     new Point(roomRect.Left + roomRect.Width / 2, roomRect.Top);
                 if (underground.GetMapObjectAt(northSouthDoorPos) == null)
                 {
-                    DoorWindow door = MakeObjIronDoor();
+                    DoorWindow door = MakeObjIronDoor(DoorWindow.STATE_CLOSED);
                     PlaceDoorIfAccessibleAndNotAdjacent(underground, northSouthDoorPos.X, northSouthDoorPos.Y, m_Game.GameTiles.FLOOR_ARMY, 6, door);
                 }
             }
@@ -7699,13 +7690,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // add iron doors closing each corridor.
             for (int x = qTopLeft.Right; x < qBotRight.Left; x++)
             {
-                PlaceDoor(underground, x, qTopLeft.Bottom - 1, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
-                PlaceDoor(underground, x, qBotLeft.Top, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                PlaceDoor(underground, x, qTopLeft.Bottom - 1, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
+                PlaceDoor(underground, x, qBotLeft.Top, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
             }
             for (int y = qTopLeft.Bottom; y < qBotLeft.Top; y++)
             {
-                PlaceDoor(underground, qTopLeft.Right - 1, y, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
-                PlaceDoor(underground, qTopRight.Left, y, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor());
+                PlaceDoor(underground, qTopLeft.Right - 1, y, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
+                PlaceDoor(underground, qTopRight.Left, y, m_Game.GameTiles.FLOOR_ARMY, MakeObjIronDoor(DoorWindow.STATE_CLOSED));
             }
             #endregion
 
