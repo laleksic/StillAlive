@@ -17258,6 +17258,14 @@ namespace djack.RogueSurvivor.Engine
                 Inventory itemsThere = map.GetItemsAt(position);
                 if (itemsThere != null && itemsThere.Contains(it))
                     map.RemoveItemAt(it, position);
+
+                //@@MP - if it was a 'locked safe' see if it's now empty (Release 6-5)
+                Tile tile = map.GetTileAt(position);
+                if (tile.HasLockedPlayerSafe)
+                {
+                    tile.HasLockedPlayerSafe = false;
+                    tile.RemoveDecoration(GameImages.ICON_PLAYER_OWNED_BANK_SAFE);
+                }
             }
 
             // message
@@ -17482,11 +17490,11 @@ namespace djack.RogueSurvivor.Engine
             else
             {
                 // drop or discard.
-                if (it is ItemTracker)
+                /*if (it is ItemTracker)  //@@MP - don't, as they are still valuable (Release 6-5)
                 {
                     discardMe = (it as ItemTracker).Batteries <= 0;
                 }
-                /*else if (it is ItemLight) //@@MP - don't delete, as lights are still valuable (Release 6-2), was also trackers (Release 6-4)
+                else if (it is ItemLight)
                 {
                     discardMe = (it as ItemLight).Batteries <= 0;
                 }*/
@@ -17494,10 +17502,10 @@ namespace djack.RogueSurvivor.Engine
                 {
                     discardMe = (it as ItemSprayPaint).PaintQuantity <= 0;
                 }
-                /*else if (it is ItemSprayScent) //@@MP - don't delete, as AI are interested in scents, which are finite (Release 6-4)
+                else if (it is ItemSprayScent) //@@MP - reinstated (Release 6-5)
                 {
                     discardMe = (it as ItemSprayScent).SprayQuantity <= 0;
-                }*/
+                }
             }
 
             if (discardMe)
@@ -17528,7 +17536,7 @@ namespace djack.RogueSurvivor.Engine
             it.EquippedPart = DollPart.NONE;
         }
 
-        static void DropItem(Actor actor, Item it) //@@MP - made static (Release 5-7)
+        void DropItem(Actor actor, Item it)
         {
             // remove from inventory.
             actor.Inventory.RemoveAllQuantity(it);
@@ -17545,6 +17553,24 @@ namespace djack.RogueSurvivor.Engine
                     if (groundInv == null || !groundInv.IsFull)
                     {
                         actor.Location.Map.DropItemAt(it, next);
+                        //@@MP - now 'lock' it if it's the player and an open bank safe (Release 6-5)
+                        if (actor.IsPlayer)
+                        {
+                            MapObject openBankSafe = map.GetMapObjectAt(next);
+                            if (openBankSafe != null && (openBankSafe.ImageID == GameImages.OBJ_BANK_SAFE_OPEN))
+                            {
+                                //it doesn't already belong to the player, so allocate it now
+                                Tile tile = map.GetTileAt(position);
+                                if (!tile.HasDecoration(GameImages.ICON_PLAYER_OWNED_BANK_SAFE))
+                                {
+                                    //add an icon as decoration, so the player knows its locked for them
+                                    tile.AddDecoration(GameImages.ICON_PLAYER_OWNED_BANK_SAFE);
+                                    tile.HasLockedPlayerSafe = true;
+                                    //BaseAI.BehaviorGoGetInterestingItems() and BehaviorGoEatFoodOnGround() stops AI from taking items from this 'locked' safe
+                                    AddMessage(new Message(String.Format("You lock {0} away in the safe. No one else can get at it now", it.TheName), m_Session.WorldTime.TurnCounter, Color.Yellow));
+                                }
+                            }
+                        }
                         break;
                     }
                 }
@@ -18807,7 +18833,11 @@ namespace djack.RogueSurvivor.Engine
             }
             else if (mapObj != null && !mapObj.IsContainer) //@@MP - swapped the if and else ifs (Release 6-2)
             {
-                AddMessage(MakeErrorMessage("Cannot climb on that"));
+                if (mapObj.ImageID == GameImages.OBJ_BANK_SAFE_CLOSED) //@@MP - custom message to help the player understand that they can only use open safes (Release 6-5)
+                    AddMessage(MakeErrorMessage("That safe is locked by someone else"));
+                else
+                    AddMessage(MakeErrorMessage("Cannot climb on that"));
+
                 RedrawPlayScreen();
                 return false;
             }

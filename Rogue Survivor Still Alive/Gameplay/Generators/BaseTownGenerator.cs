@@ -2896,7 +2896,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         //place safes along the wall
                         Point safept = new Point(b.InsideRect.Right - 1, y);
                         if (map.IsWalkable(safept))
-                            map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
+                            PlaceBankSafe(map, safept); //@@MP (Release 6-5)
 
                         //place a wall another 2 tiles in from the safes
                         Point wallpt = new Point(b.InsideRect.Right - 3, y);
@@ -2930,7 +2930,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         //place safes along the wall
                         Point safept = new Point(b.InsideRect.Left, y);
                         if (map.IsWalkable(safept))
-                            map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
+                            PlaceBankSafe(map, safept); //@@MP (Release 6-5)
 
                         //place a wall another 2 tiles in from the safes
                         Point wallpt = new Point(b.InsideRect.Left + 2, y);
@@ -2964,7 +2964,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         //place safes along the wall
                         Point safept = new Point(x, b.InsideRect.Bottom - 1);
                         if (map.IsWalkable(safept))
-                            map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
+                            PlaceBankSafe(map, safept); //@@MP (Release 6-5)
 
                         //place a wall another 2 tiles in from the safes
                         Point wallpt = new Point(x, b.InsideRect.Bottom - 3);
@@ -2998,7 +2998,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         //place safes along the wall
                         Point safept = new Point(x, b.InsideRect.Top);
                         if (map.IsWalkable(safept))
-                            map.PlaceMapObjectAt(MakeObjBankSafe(GameImages.OBJ_BANK_SAFE), safept);
+                            PlaceBankSafe(map, safept); //@@MP (Release 6-5)
 
                         //place a wall another 2 tiles in from the safes
                         Point wallpt = new Point(x, b.InsideRect.Top + 2);
@@ -3082,6 +3082,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // Done
             return true;
+        }
+
+        private void PlaceBankSafe(Map map, Point safept) //@@MP (Release 6-5)
+        {
+            if (m_DiceRoller.RollChance(25)) //don't want too many safes or it would be too easy
+                map.PlaceMapObjectAt(MakeObjOpenBankSafe(GameImages.OBJ_BANK_SAFE_OPEN), safept);
+            else
+                map.PlaceMapObjectAt(MakeObjClosedBankSafe(GameImages.OBJ_BANK_SAFE_CLOSED), safept);
         }
 
         private void PlaceBankVaultDoor(Map map, Point pt) //@@MP (Release 6-5)

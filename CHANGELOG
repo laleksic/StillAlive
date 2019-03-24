@@ -1,10 +1,15 @@
-STILL ALIVE 2.4.1.1 (aka Release 6-5, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.2.3 (aka Release 6-5, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
 -Other tiles are lit up by light sources outside the player's FoV (eg distant fires).
 -Animations Delay option now off by default.
 -Bank vaults now have a chance of being open/broken into.
+-Available bank safes can be used by the player to store items that no AI can touch.
+
+Fixes:
+-Empty spray cans can be removed from the game again.
+-Trackers are no longer removed from the game when dropped.
 
 Development:
 -Added a new STATE_LOCKED for doors.

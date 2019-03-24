@@ -813,12 +813,23 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected static MapObject MakeObjBankSafe(string banksafeImageID) //@@MP - made static (Release 5-7)
+        protected static MapObject MakeObjOpenBankSafe(string banksafeImageID) //@@MP (Release 6-5)
         {
-            return new MapObject("bank safe", banksafeImageID)
+            return new MapObject("open bank safe", banksafeImageID)
             {
-                IsContainer = true,
-                IsMetal = true //@@MP (Release 5-4)
+                IsMetal = true,
+                IsWalkable = true,
+                IsMovable = false,
+                StandOnFovBonus = false,
+            };
+        }
+
+        protected static MapObject MakeObjClosedBankSafe(string banksafeImageID) //@@MP (Release 6-5)
+        {
+            return new MapObject("closed bank safe", banksafeImageID)
+            {
+                IsMetal = true,
+                IsMovable = false
             };
         }
 

@@ -85,7 +85,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ICON_SANITY_INSANE = @"Icons\sanity_insane";
         public const string ICON_BORING_ITEM = @"Icons\boring_item";
         public const string ICON_ZGRAB = @"Icons\zgrab";  // alpha10
-
+        public const string ICON_PLAYER_OWNED_BANK_SAFE = @"Icons\player_owned_bank_safe"; //@@MP (Release 6-5)
         #endregion
 
         #region Tiles
@@ -183,7 +183,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_PLAYER_TAG2 = @"Tiles\Decoration\player_tag2";
         public const string DECO_PLAYER_TAG3 = @"Tiles\Decoration\player_tag3";
         public const string DECO_PLAYER_TAG4 = @"Tiles\Decoration\player_tag4";
-
         public const string DECO_ROGUEDJACK_TAG = @"Tiles\Decoration\roguedjack";
 
         public const string DECO_SEWER_LADDER = @"Tiles\Decoration\sewer_ladder";
@@ -260,7 +259,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_BAR_STOOL = @"MapObjects\bar_stool";
         public const string OBJ_BAR_SHELVES = @"MapObjects\bar_shelves";
         public const string OBJ_WORKBENCH = @"MapObjects\workbench";
-        public const string OBJ_BANK_SAFE = @"MapObjects\bank_safe";
         public const string OBJ_BANK_TELLER = @"MapObjects\bank_teller";
         public const string OBJ_BERRY_BUSH = @"MapObjects\berry_bush";
         public const string OBJ_CLINIC_BED = @"MapObjects\clinic_bed";
@@ -347,6 +345,10 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_ARMY_BUNK_BED = @"MapObjects\army_bunk_bed";
         public const string OBJ_ARMY_FOOTLOCKER = @"MapObjects\army_footlocker";
         public const string OBJ_ARMY_TABLE = @"MapObjects\army_table";
+
+        //@@MP - (Release 6-5)
+        public const string OBJ_BANK_SAFE_CLOSED = @"MapObjects\bank_safe_closed";
+        public const string OBJ_BANK_SAFE_OPEN = @"MapObjects\bank_safe_open";
         #endregion
 
         #region Actors
@@ -716,6 +718,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ICON_SANITY_DISTURBED);
             Load(ICON_BORING_ITEM);
             Load(ICON_ZGRAB);  // alpha10
+            Load(ICON_PLAYER_OWNED_BANK_SAFE); //@@MP (Release 6-5)
             #endregion
 
             #region Tiles
@@ -815,13 +818,11 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_PLAYER_TAG2);
             Load(DECO_PLAYER_TAG3);
             Load(DECO_PLAYER_TAG4);
-
             Load(DECO_ROGUEDJACK_TAG);
 
             Load(DECO_SEWER_LADDER);
             Load(DECO_SEWER_HOLE);
             Load(DECO_SEWERS_BUILDING);
-
             Load(DECO_SUBWAY_BUILDING);
 
             Load(DECO_STAIRS_DOWN);
@@ -895,7 +896,6 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_BAR_STOOL);
             Load(OBJ_BAR_SHELVES);
             Load(OBJ_WORKBENCH);
-            Load(OBJ_BANK_SAFE);
             Load(OBJ_BANK_TELLER);
             Load(OBJ_BERRY_BUSH);
             Load(OBJ_CLINIC_BED);
@@ -975,13 +975,17 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_HOSPITAL_WARDROBE);
 
             Load(OBJ_PICKET_FENCE); //@@MP alpha10 (Release 6-1)
-
+            
             //@@MP (Release 6-4)
             Load(OBJ_ARMY_RADIO_CUPBOARD);
             Load(OBJ_ARMY_COMPUTER_STATION);
             Load(OBJ_ARMY_BUNK_BED);
             Load(OBJ_ARMY_FOOTLOCKER);
             Load(OBJ_ARMY_TABLE);
+
+            //@@MP (Release 6-5)
+            Load(OBJ_BANK_SAFE_CLOSED);
+            Load(OBJ_BANK_SAFE_OPEN);
             #endregion
 
             #region Actors

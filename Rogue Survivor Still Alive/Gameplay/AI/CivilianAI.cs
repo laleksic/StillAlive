@@ -665,8 +665,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
 #region Get items
                 // alpha10 new common behaviour code, also used by GangAI
-                ActorAction getItemAction = BehaviorGoGetInterestingItems(game, mapPercepts,
-                    false, false, CANT_GET_ITEM_EMOTE, true, ref m_LastItemsSaw);
+                ActorAction getItemAction = BehaviorGoGetInterestingItems(game, mapPercepts, false, false, CANT_GET_ITEM_EMOTE, true, ref m_LastItemsSaw);
 
                 if (getItemAction != null)
                     return getItemAction;
