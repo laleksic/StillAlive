@@ -85,7 +85,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ICON_SANITY_INSANE = @"Icons\sanity_insane";
         public const string ICON_BORING_ITEM = @"Icons\boring_item";
         public const string ICON_ZGRAB = @"Icons\zgrab";  // alpha10
-        public const string ICON_PLAYER_OWNED_BANK_SAFE = @"Icons\player_owned_bank_safe"; //@@MP (Release 6-5)
         #endregion
 
         #region Tiles
@@ -349,6 +348,7 @@ namespace djack.RogueSurvivor.Gameplay
         //@@MP - (Release 6-5)
         public const string OBJ_BANK_SAFE_CLOSED = @"MapObjects\bank_safe_closed";
         public const string OBJ_BANK_SAFE_OPEN = @"MapObjects\bank_safe_open";
+        public const string OBJ_BANK_SAFE_OPEN_OWNED = @"MapObjects\bank_safe_open_owned";
         #endregion
 
         #region Actors
@@ -718,7 +718,6 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ICON_SANITY_DISTURBED);
             Load(ICON_BORING_ITEM);
             Load(ICON_ZGRAB);  // alpha10
-            Load(ICON_PLAYER_OWNED_BANK_SAFE); //@@MP (Release 6-5)
             #endregion
 
             #region Tiles
@@ -986,6 +985,7 @@ namespace djack.RogueSurvivor.Gameplay
             //@@MP (Release 6-5)
             Load(OBJ_BANK_SAFE_CLOSED);
             Load(OBJ_BANK_SAFE_OPEN);
+            Load(OBJ_BANK_SAFE_OPEN_OWNED);
             #endregion
 
             #region Actors

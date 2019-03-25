@@ -154,8 +154,9 @@ Shops carry different items. But it's an apocalypse, so sooner or later there wi
 > OTHER BUILDINGS
 - Sewers Maintenance : there is one of them in most districts
 - Subway Station     : there is one in each district linked by the subway line
-- CHAR Offices       : private property, you are not supposed to go there...
+- CHAR offices       : private property, you are not supposed to go there...
 - Army offices       : there's probably a couple scattered around the place
+- Banks              : might have a safe way to store items where others can't get at them
 
 
 > WEATHER AND FOV
@@ -419,7 +420,7 @@ To drop items on your current tile, right-click the item in your inventory.
 
 
 > EQUIPING/UNEQUIPING AND USING ITEMS  (mouse, default shortcuts Control-<number>)
-To use/equip/unquip an item, left-click it in your inventory. Equiping/unequiping an item does cost a turn, but using an item does.
+To use/equip/unquip an item, left-click it in your inventory. Equiping/unequiping an item doesn't cost a turn, but using an item does.
 
 
 > GIVING ITEMS  (mouse, then default G)
@@ -929,6 +930,7 @@ A simple early strategy to prioritise vital items : food, medikits and protectio
 - Make a base of operations in a shop, pushing shelves to block or open the entrance.
 - Loot items from various buildings and store them in your base.
 - Secure your base with traps. Use the Stench Killer to cover your tracks.
+- Banks have safes. Safes will allow you to store items where others can't get at them.
 - Before food becomes scarce, grab some seeds and a shovel and plant vegies (they only grow every 2 days!).
 - Explore places like the Police Station and the Hospital.
 - When you are ready, explore the CHAR Offices.

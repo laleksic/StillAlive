@@ -1592,8 +1592,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return true;
                     if (IsTileTaboo(p.Location.Position))
                         return true;
-                    Tile tile = map.GetTileAt(p.Location.Position); //@@MP - can't take items from a 'locked' bank safe (Release 6-5)
-                    if (tile.HasLockedPlayerSafe) //if(tile.HasDecoration(GameImages.ICON_PLAYER_OWNED_BANK_SAFE))
+                    MapObject mapObj = map.GetMapObjectAt(p.Location.Position); //@@MP - can't take items from a (player-owned) 'locked' bank safe (Release 6-5)
+                    if (mapObj != null && mapObj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED)
                         return true;
                     if (!HasAnyInterestingItem(game, p.Percepted as Inventory, ItemSource.GROUND_STACK))
                         return true;
@@ -3728,8 +3728,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (invThere != null && invThere.HasItemOfType(typeof(ItemFood)))
             {
                 // check that the food isn't in a 'locked' safe //@@MP (Release 6-5)
-                Tile tileActor = m_Actor.Location.Map.GetTileAt(m_Actor.Location.Position);
-                if (tileActor.HasLockedPlayerSafe) //if (!tileActor.HasDecoration(GameImages.ICON_PLAYER_OWNED_BANK_SAFE))
+                MapObject mapObjHere = m_Actor.Location.Map.GetMapObjectAt(m_Actor.Location.Position);
+                if (mapObjHere != null && mapObjHere.ImageID != GameImages.OBJ_BANK_SAFE_OPEN_OWNED)
                 {
                     // eat the first food we get.
                     Item eatIt = invThere.GetFirstByType(typeof(ItemFood));
@@ -3738,8 +3738,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             // 2) go to nearest food.
             Percept nearest = FilterNearest(game, foodStacks);
-            Tile tileNearest = m_Actor.Location.Map.GetTileAt(nearest.Location.Position);
-            if (tileNearest.HasLockedPlayerSafe) //if (!tileNearest.HasDecoration(GameImages.ICON_PLAYER_OWNED_BANK_SAFE)) // check that the food isn't in a 'locked' safe //@@MP (Release 6-5)
+            MapObject mapObjNearest = m_Actor.Location.Map.GetMapObjectAt(m_Actor.Location.Position);
+            if (mapObjNearest != null && mapObjNearest.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED) // check that the food isn't in a 'locked' safe //@@MP (Release 6-5)
                 return null;
             else
                 return BehaviorStupidBumpToward(game, nearest.Location.Position, false, false);

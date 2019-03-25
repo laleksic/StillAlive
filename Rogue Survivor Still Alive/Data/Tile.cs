@@ -65,12 +65,6 @@ namespace djack.RogueSurvivor.Data
             set { if (value) m_Flags |= Flags.IS_SCORCHED; else m_Flags &= ~Flags.IS_SCORCHED; }
         }
 
-        public bool HasLockedPlayerSafe //@@MP (Release 6-5)
-        {
-            get;
-            set;
-        }
-
         public bool HasDecorations
         {
             get { return m_Decorations != null; }

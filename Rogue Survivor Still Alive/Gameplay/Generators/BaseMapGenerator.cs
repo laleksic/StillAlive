@@ -833,6 +833,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
+        public MapObject MakeObjOwnedBankSafe(string banksafeImageID) //@@MP (Release 6-5)
+        {
+            return new MapObject("your secure bank safe", banksafeImageID)
+            {
+                IsMetal = true,
+                IsWalkable = true,
+                IsMovable = false,
+                StandOnFovBonus = false,
+            };
+        }
+
         protected static MapObject MakeObjBankTeller(string banktellerImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("bank teller", banktellerImageID)

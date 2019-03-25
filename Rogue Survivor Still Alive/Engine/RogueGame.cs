@@ -17260,11 +17260,18 @@ namespace djack.RogueSurvivor.Engine
                     map.RemoveItemAt(it, position);
 
                 //@@MP - if it was a 'locked safe' see if it's now empty (Release 6-5)
-                Tile tile = map.GetTileAt(position);
-                if (tile.HasLockedPlayerSafe)
+                if (actor.IsPlayer) //AI don't get locked safes
                 {
-                    tile.HasLockedPlayerSafe = false;
-                    tile.RemoveDecoration(GameImages.ICON_PLAYER_OWNED_BANK_SAFE);
+                    MapObject mapObj = map.GetMapObjectAt(position);
+                    if (mapObj != null && mapObj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED) //yup, its an owned safe
+                    {
+                        itemsThere = map.GetItemsAt(position);
+                        if (itemsThere == null) //the player took the last item there, so it's no longer a 'locked' safe owned by them
+                        {
+                            map.RemoveMapObjectAt(position.X, position.Y); //remove the existing object that signals it as belonging to the player
+                            map.PlaceMapObjectAt(m_TownGenerator.MakeObjOwnedBankSafe(GameImages.OBJ_BANK_SAFE_OPEN), position); //replace it with an ordinary open one
+                        }
+                    }
                 }
             }
 
@@ -17560,15 +17567,11 @@ namespace djack.RogueSurvivor.Engine
                             if (openBankSafe != null && (openBankSafe.ImageID == GameImages.OBJ_BANK_SAFE_OPEN))
                             {
                                 //it doesn't already belong to the player, so allocate it now
-                                Tile tile = map.GetTileAt(position);
-                                if (!tile.HasDecoration(GameImages.ICON_PLAYER_OWNED_BANK_SAFE))
-                                {
-                                    //add an icon as decoration, so the player knows its locked for them
-                                    tile.AddDecoration(GameImages.ICON_PLAYER_OWNED_BANK_SAFE);
-                                    tile.HasLockedPlayerSafe = true;
-                                    //BaseAI.BehaviorGoGetInterestingItems() and BehaviorGoEatFoodOnGround() stops AI from taking items from this 'locked' safe
-                                    AddMessage(new Message(String.Format("You lock {0} away in the safe. No one else can get at it now", it.TheName), m_Session.WorldTime.TurnCounter, Color.Yellow));
-                                }
+                                //BaseAI.BehaviorGoGetInterestingItems() and BehaviorGoEatFoodOnGround() stops AI from taking items from this 'locked' safe
+                                Point safept = new Point(next.X, next.Y);
+                                map.RemoveMapObjectAt(safept.X, safept.Y); //remove the existing vault
+                                map.PlaceMapObjectAt(m_TownGenerator.MakeObjOwnedBankSafe(GameImages.OBJ_BANK_SAFE_OPEN_OWNED), safept); //replace it with one to flag it belonging to the player
+                                AddMessage(new Message(String.Format("You lock {0} away in the safe. No one else can get at it now", it.TheName), m_Session.WorldTime.TurnCounter, Color.Yellow));
                             }
                         }
                         break;
@@ -23726,6 +23729,21 @@ namespace djack.RogueSurvivor.Engine
                 case AdvisorHint.ACTOR_MELEE:   // adjacent to an enemy.
                     return IsAdjacentToEnemy(map, pos, m_Player);
 
+                case AdvisorHint.BANK_SAFE: //@@MP (Release 6-5)
+                    {
+                        foreach (Direction d in Direction.COMPASS)
+                        {
+                            Point pt = pos + d;
+                            if (!map.IsInBounds(pt))
+                                continue;
+
+                            MapObject mapObj = map.GetMapObjectAt(pt);
+                            if (mapObj != null && (mapObj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN))
+                                return !m_Player.Model.Abilities.IsUndead;
+                        }
+                        return false;
+                    };
+
                 case AdvisorHint.BARRICADE:  // barricading.
                     return map.HasAnyAdjacentInMap(pos, (pt) =>
                     {
@@ -24079,6 +24097,15 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You are next to an enemy.",
                             "To ATTACK him, try to MOVE on him."};
+                    break;
+
+                case AdvisorHint.BANK_SAFE: //@@MP (Release 6-5)
+                    title = "STORE ITEMS IN BANK SAFE";
+                    body = new string[] {
+                            "You are next to an open bank safe.",
+                            "To securely store items, move onto the safe and drop them.",
+                            "An icon will highlight the safe, showing that you own it.",
+                            "Only you have the code. No one else will be able to take your items from the safe."};
                     break;
 
                 case AdvisorHint.BARRICADE:

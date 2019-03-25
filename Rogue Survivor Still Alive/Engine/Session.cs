@@ -292,6 +292,11 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         ABSOLUTE_DARKNESS, //@@MP (Release 6-2)
 
+        /// <summary>
+        /// The player is next to an open bank safe (that can be used for storing items)
+        /// </summary>
+        BANK_SAFE, //@@MP (Release 6-5)
+
         // alpha10 new hints from here down
         /// <summary>
         /// Sanity.
