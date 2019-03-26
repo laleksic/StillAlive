@@ -39,7 +39,8 @@ namespace djack.RogueSurvivor.Gameplay
             // misc
             "...nowhere is truly safe? You'll be found sooner or later, so prepare...",
             "...you can plant vegie seeds with a shovel and a clear patch of ground?",
-            "...most walls and doors can be demolished with C4?"
+            "...most walls and doors can be demolished with C4?",
+            "...bank have safes, which provide a way to securely store your items?"
         };
     }
 }

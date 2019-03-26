@@ -1,5 +1,4 @@
-﻿#define DEBUGAILOOPING
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
@@ -3766,13 +3765,17 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(temp);
             m_Player.Inventory.AddAll(temp);
             Item nvg = new ItemLight(GameItems.NIGHT_VISION_MALE);
-            m_Player.Inventory.AddAll(nvg);
+            m_Player.Inventory.AddAll(nvg);*/
             Item gun = new ItemRangedWeapon(GameItems.ARMY_RIFLE);
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
-            m_Player.Inventory.AddAll(ammo);*/
-            Item temp = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
-            m_Player.Inventory.AddAll(temp);
+            m_Player.Inventory.AddAll(ammo);
+            Item temp1 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
+            m_Player.Inventory.AddAll(temp1);
+            Item temp2 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
+            m_Player.Inventory.AddAll(temp2);
+            Item temp3 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
+            m_Player.Inventory.AddAll(temp3);
 #endif
 
             // scoring : hello there.
@@ -5576,15 +5579,14 @@ namespace djack.RogueSurvivor.Engine
                     //@@MP - workaround for actors getting too many turns in succession [detection code by zaimoni] (Release 6-4)
                     if (actor.ActionPoints > actor.Doll.Body.Speed)
                     {
-                        Logger.WriteLine(Logger.Stage.RUN_MAIN, actor.Name + " is hyperactive. Max speed: " + actor.Doll.Body.Speed.ToString() + ", actual: " + actor.ActionPoints.ToString() + " [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]"); 
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, actor.Name + " is hyperactive. Max speed: " + actor.Doll.Body.Speed.ToString() + ", actual: " + actor.ActionPoints.ToString() + " [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
                         do
                         {
-                            actor.ActionPoints -=actor.Doll.Body.Speed; //@@MP - ensures it can't go beyond maximum (Release 6-4)
+                            actor.ActionPoints -= actor.Doll.Body.Speed; //@@MP - ensures it can't go beyond maximum (Release 6-4)
                         }
                         while (actor.ActionPoints > actor.Doll.Body.Speed);
                     }
 
-#if DEBUG
                     // alpha10 ai loop bug detection
                     if (actor == m_DEBUG_prevAiActor)
                     {
@@ -5593,16 +5595,17 @@ namespace djack.RogueSurvivor.Engine
                             // TO DEVS: you might want to add a debug breakpoint here ->
                             Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: actor " + actor.Name + " is possibly looping... [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
 
-                            // Option 1. 
-                            //uncomment the DEBUGAILOOPING preprocessing directive
-#if !DEBUGAILOOPING
-                            // Option 2. when not debugging AI looping, just spend a turn. it's better than crashing the game!
-                            DoWait(actor);
+#if !DEBUG
+                            //@@MP - at the time of writing there was excessive looping, so exception throwing was not an option (Release 6-5)
+                            goto SkipToEnd;
 
-                            // Option 3. throw an exception
-                            /*Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
-                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);*/
+                            // throw an exception
+                            Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);
 #endif
+                            SkipToEnd:
+                            // when not debugging AI looping, just spend a turn. it's better than crashing the game!
+                            DoWait(actor);
                         }
                     }
                     else
@@ -5610,22 +5613,21 @@ namespace djack.RogueSurvivor.Engine
                         m_DEBUG_sameAiActorCount = 0;
                         m_DEBUG_prevAiActor = actor;
                     }
-#endif
-                        }
+                }
             }
-            #endregion
+#endregion
 
             // 2. If none move to next turn and return.
-            #region
+#region
             if (actor == null)
             {
                 NextMapTurn(map, sim);
                 return;
             }
-            #endregion
+#endregion
 
             // 3. Ask actor to act. Handle player and AI differently.
-            #region
+#region
             int actionPointsBeforeTurn = actor.ActionPoints;
             Location locationBeforeTurn = actor.Location;
             actor.PreviousStaminaPoints = actor.StaminaPoints;
@@ -6187,10 +6189,10 @@ namespace djack.RogueSurvivor.Engine
                             if (actor.SleepPoints < 0) actor.SleepPoints = 0;
                         }
                     }
-                    #endregion
+#endregion
 
                     // 3.3.2 AP, STA, stop running if tired
-                    #region
+#region
                     //regen AP
                     if (!actor.IsSleeping)
                         actor.ActionPoints += m_Rules.ActorSpeed(actor);
