@@ -15,13 +15,14 @@
 0. DEFAULT HOTKEYS
 ---------------
 
+ICONS LEGEND : F1
 MOVE : Numpad 1-4,6-9           ITEM SLOTS : 1-10               RUN : R		
 SLEEP : Z                       WAIT 1 TURN : Numpad 5          WAIT 1 HOUR : W
-CITY INFO : I                   MESSAGES LOG : Shift + M        ICONS LEGEND : F1
+CITY INFO : I                   MESSAGES LOG : Shift + M        USE SPRAY : A
 FIRE : F                        MARK ENEMIES : E                MAKE MOLOTOVS : M
-CLOSE : C                       USE LADDER/STAIRS : X           USE SPRAY : A
-BREAK : K                       PUSH : P                        PLANT SEEDS: J
-BARRICADE : B                   BUILD SMALL FORT. : N           BUILD LARGE FORT : Ctrl + N
+CLOSE : C                       USE LADDER/STAIRS : X           PLANT SEEDS: J
+BREAK : K                       PUSH : P                        BUILD SMALL FORT. : N
+BARRICADE : B                   PULL : Ctrl + P                 BUILD LARGE FORT. : Ctrl + N
 INITIATE TRADE : E              GIVE : G                        SHOUT : S
 LEAD FOLLOWER : L               ORDER FOLLOWER : O              SWITCH PLACE : Ctrl + S
 ABANDON GAME : Shift + A        QUIT GAME : Shift + Q           SAVE GAME : Shift + S
@@ -156,7 +157,7 @@ Shops carry different items. But it's an apocalypse, so sooner or later there wi
 - Subway Station     : there is one in each district linked by the subway line
 - CHAR offices       : private property, you are not supposed to go there...
 - Army offices       : there's probably a couple scattered around the place
-- Banks              : might have a safe way to store items where others can't get at them
+- Banks              : offer a safe way to store items where others can't get at them
 
 
 > WEATHER AND FOV
@@ -930,7 +931,7 @@ A simple early strategy to prioritise vital items : food, medikits and protectio
 - Make a base of operations in a shop, pushing shelves to block or open the entrance.
 - Loot items from various buildings and store them in your base.
 - Secure your base with traps. Use the Stench Killer to cover your tracks.
-- Banks have safes. Safes will allow you to store items where others can't get at them.
+- Banks safes will allow you to store items where others can't get at them (stand on an open safe and drop items).
 - Before food becomes scarce, grab some seeds and a shovel and plant vegies (they only grow every 2 days!).
 - Explore places like the Police Station and the Hospital.
 - When you are ready, explore the CHAR Offices.

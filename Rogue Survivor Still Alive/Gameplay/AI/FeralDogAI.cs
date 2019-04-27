@@ -173,7 +173,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 7 wander
             m_Actor.Activity = Activity.IDLE;
-            return BehaviorWander(game);
+            ActorAction determinedAction = BehaviorWander(game);
+            if (determinedAction != null)
+                return determinedAction;
+            else
+                return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
         }
 
         private static ActorAction BehaviorFightOrFlee(RogueGame game, List<Percept> enemies, bool isLeaderVisible, bool isLeaderFighting, ActorCourage courage, string[] fIGHT_EMOTES, RouteFinder.SpecialActions allowedChargeActions)

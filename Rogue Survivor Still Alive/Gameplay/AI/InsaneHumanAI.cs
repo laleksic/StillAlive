@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
+using System.Drawing;   // Point
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
@@ -82,6 +81,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             "THAT WAS COMPLETLY UNCALLED FOR!",
             "ROBOTS WON'T FOOL ME!"
         };
+
+        static string[] FIGHT_EMOTES =
+{
+            "Leave me alone",         // flee
+            "Damn it I'm trapped!",     // trapped
+            "I'm not afraid"            // fight
+        };
         #endregion
 
         #region Fields
@@ -107,6 +113,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             ///////////////////////////////////////////////////////////////////////
             // alpha10 OBSOLETE 1 equip weapon
+            // 0.1 if underground in total darkness, find nearest exit //@@MP (Release 6-5)
             // 1 equip best items //alpha10
             // 2 (chance) move closer to an enemy, nearest & visible enemies first
             // 3 (chance) shout insanities.
@@ -114,8 +121,76 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 5 wander
             ///////////////////////////////////////////////////////////////////////
 
-            // alpha10
-            m_Actor.IsRunning = false;
+            m_Actor.IsRunning = false; // don't run by default. // alpha10
+            //@@MP (Release 6-5)
+            ActorAction determinedAction = null;
+            Map map = m_Actor.Location.Map;
+
+            // 0.1 if in total darkness //@@MP - added (Release 6-5)
+            #region
+            int fov = game.Rules.ActorFOV(m_Actor, map.LocalTime, game.Session.World.Weather);
+            if (fov <= 0) //can't see anything, too dark
+            {
+                if (!game.Rules.CanActorSeeSky(m_Actor)) //if underground find nearest exit
+                {
+                    //if already on exit, leave
+                    determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
+                    if (determinedAction != null)
+                    {
+                        return determinedAction;
+                    }
+                    else
+                    {
+                        //find the nearest exit
+                        determinedAction = BehaviorGoToNearestAIExit(game);
+                        if (determinedAction != null)
+                        {
+                            m_Actor.Activity = Activity.IDLE;
+                            return determinedAction;
+                        }
+                        else if (IsAdjacentToEnemy(game, m_Actor)) //can't get to an exit. use self-defense if we're trapped by an enemy
+                        {
+                            Point pt = m_Actor.Location.Position;
+                            int adjacentEnemies = 0;
+                            foreach (Direction d in Direction.COMPASS_LIST)
+                            {
+                                Point p = pt + d;
+                                if (map.IsInBounds(p) && map.IsWalkable(p))
+                                {
+                                    Actor a = map.GetActorAt(p);
+                                    if (a == null)
+                                        continue;
+                                    else if (game.Rules.AreEnemies(m_Actor, a))
+                                    {
+                                        ++adjacentEnemies;
+
+                                        // emote, trapped
+                                        if (m_Actor.Model.Abilities.CanTalk)
+                                            game.DoEmote(m_Actor, FIGHT_EMOTES[1], true);
+
+                                        //lash out at the first adjacent enemy each time so that we focus on it, hopefully killing it and making a gap to run through
+                                        determinedAction = BehaviorMeleeAttack(game, a);
+                                        if (determinedAction != null)
+                                        {
+                                            m_Actor.Activity = Activity.FIGHTING;
+                                            return determinedAction;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (adjacentEnemies == 0) //if it's fallen through to here it's because the actor is trapped by friendly actors / map objects that can't be pushed, jumped or broken / walls
+                            {
+                                if (m_Actor.Model.Abilities.CanTalk)
+                                    game.DoEmote(m_Actor, FIGHT_EMOTES[1], true);
+
+                                Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Name + " seems to be stuck in the dark... [district: " + m_Actor.Location.Map.District.Name + "] [coords: " + pt.ToString() + "] [turn #" + game.Session.WorldTime.TurnCounter + "]");
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
 
             // 1 equip best items
             #region
@@ -229,7 +304,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 5 wander
             m_Actor.Activity = Activity.IDLE;
-            return BehaviorWander(game);
+            determinedAction = BehaviorWander(game);
+            if (determinedAction != null)
+                return determinedAction;
+            else
+                return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
         }
         #endregion
     }

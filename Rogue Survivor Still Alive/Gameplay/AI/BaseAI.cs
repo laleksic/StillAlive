@@ -854,15 +854,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
         }
 
-        protected ActorAction BehaviorGoToNearestExit(RogueGame game) //@@MP (Release 6-2)
+        protected ActorAction BehaviorGoToNearestAIExit(RogueGame game) //@@MP (Release 6-2), renamed (Release 6-5)
         {
             // find nearest exit
             Point? exitPos = null;
             float nearestDist = float.MaxValue;
-            if (m_Actor.IsBotPlayer)
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Location.Position.ToString());
 
-            //foreach (Exit exit in m_Actor.Location.Map.Exits) //@@MP - wft this doesn't work. it detects an exit at some abritray point, usually nowhere nearby
+            //foreach (Exit exit in m_Actor.Location.Map.Exits) //@@MP - wft this doesn't work. it selects an exit at some arbitrary point, usually nowhere nearby
+            //so instead, we have to check all sports manually :/
             int xmin = m_Actor.Location.Position.X - 20;
             int xmax = m_Actor.Location.Position.X + 20;
             int ymin = m_Actor.Location.Position.Y - 20;
@@ -874,22 +873,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     if (m_Actor.Location.Map.IsInBounds(x,y))
                     {
-                        //Exit exit = m_Actor.Location.Map.GetExitAt(x, y);
-                        Tile exit = m_Actor.Location.Map.GetTileAt(x, y);
-                        if (exit != null && (exit.HasDecoration(GameImages.DECO_STAIRS_UP) || exit.HasDecoration(GameImages.DECO_STAIRS_DOWN)))
+                        Exit exit = m_Actor.Location.Map.GetExitAt(x, y);
+                        if (exit != null && exit.IsAnAIExit) //@@MP - used proper method IsAnAIExit (Release 6-5)
                         {
-                            //Point pt = exit.ToPosition;
-                            Point pt = new Point(x, y);
-
-                            if (m_Actor.IsBotPlayer)
-                                Logger.WriteLine(Logger.Stage.RUN_MAIN, pt.ToString());
-                            //Logger.WriteLine(Logger.Stage.RUN_MAIN, exit.ToPosition.ToString());
-
-                            float dist = game.Rules.StdDistance(m_Actor.Location.Position, pt);
+                            float dist = game.Rules.StdDistance(m_Actor.Location.Position, exit.ToPosition);
                             if (dist < nearestDist)
                             {
                                 nearestDist = dist;
-                                exitPos = pt;
+                                exitPos = exit.ToPosition;
                             }
                         }
                     }
@@ -980,6 +971,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
             Actor targetActor = target.Percepted as Actor;
             if (targetActor == null)
                 throw new ArgumentException("percepted is not an actor");
+
+            // melee!
+            return BehaviorMeleeAttack(game, targetActor); //@@MP - refactored out to allow for specifying a particular actor as target (Release 6-5)
+        }
+        
+        protected ActorAction BehaviorMeleeAttack(RogueGame game, Actor targetActor) //@@MP (Release 6-5)
+        {
+            if (targetActor == null)
+                throw new ArgumentNullException("actor","null actor");
 
             // if illegal cant.
             if (!game.Rules.CanActorMeleeAttack(m_Actor, targetActor))
@@ -2163,6 +2163,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return false;
                     // ignore if we can walk through it.
                     if (obj.IsWalkable)
+                        return false;
+                    //mechanic workshops can have cars inside, so we need to specifically bar those //@@MP (Release 6-5)
+                    if (obj.AName == "a wrecked car")
                         return false;
                     // finally only if we can push it.
                     return game.Rules.CanActorPush(m_Actor, obj);

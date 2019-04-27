@@ -112,7 +112,7 @@ namespace djack.RogueSurvivor.Data
             get
             {
                 if (m_FireState == Fire.ONFIRE)
-                    return false;
+                    return true; //@@MP - currently cars are the only objects to use ONFIRE, and I want them to be transparent for FoV purposes (Release 6-5)
                 if (m_BreakState == Break.BROKEN)
                     return true;
                 if (m_FireState == Fire.ASHES)

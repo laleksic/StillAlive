@@ -3776,6 +3776,8 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(temp2);
             Item temp3 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
             m_Player.Inventory.AddAll(temp3);
+            Item torch = new ItemLight(GameItems.BIG_FLASHLIGHT);
+            m_Player.Inventory.AddAll(torch);
 #endif
 
             // scoring : hello there.
@@ -3795,7 +3797,7 @@ namespace djack.RogueSurvivor.Engine
             AddMessage(new Message(String.Format("Press {0} to redefine keys", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE)), 0, Color.LightGreen));
             AddMessage(new Message(String.Format("Press {0} for a legend of icons", s_KeyBindings.Get(PlayerCommand.ICONS_LEGEND)), 0, Color.LightGreen));
             int iTip = m_Rules.Roll(0, GameTips.TIPS.Length);
-            AddMessage(new Message(String.Format("Did you know that", GameTips.TIPS[iTip]), 0, Color.LightGreen)); //@@MP (Release 6-3)
+            AddMessage(new Message(String.Format("TIP: {0} ", GameTips.TIPS[iTip]), 0, Color.LightGreen)); //@@MP (Release 6-3)
             AddMessage(new Message("<press ENTER>", 0, Color.Yellow));
             //RefreshPlayer();
             RedrawPlayScreen();
@@ -3970,7 +3972,7 @@ namespace djack.RogueSurvivor.Engine
             // Unique Items
             /////////////////
             m_Session.UniqueItems.TheSubwayWorkerBadge = SpawnUniqueSubwayWorkerBadge(world); // "Subway Worker Badge" - somewhere on the subway tracks...
-            m_Session.UniqueItems.TheArmyOfficePass = SpawnUniqueArmyOfficePass(world); //@@MP - access card for the army offices (Release 6-3)
+            m_Session.UniqueItems.TheArmyOfficePass = SpawnUniqueArmyOfficePass(); //@@MP - access card for the army offices (Release 6-3)
 
             //////////////////
             // Link districts
@@ -4223,7 +4225,7 @@ namespace djack.RogueSurvivor.Engine
                                 chosenDistrict = goodDistricts[i];
                                 m_Session.ArmyHelicopterRescue_DistrictRef = World.CoordToString(chosenDistrict.WorldPosition.X, chosenDistrict.WorldPosition.Y);
                                 m_Session.ArmyHelicopterRescue_Coordinates = new Point(x, y);
-                                m_Session.ArmyHelicopterRescue_Map = chosenDistrict.EntryMap; //@@MPP (Release 6-4)
+                                m_Session.ArmyHelicopterRescue_Map = chosenDistrict.EntryMap; //@@MP (Release 6-4)
                                 break;
                             }
                             if (foundSpot == true)
@@ -4710,7 +4712,7 @@ namespace djack.RogueSurvivor.Engine
             return new UniqueItem() { TheItem = it, IsSpawned = true };
         }
 
-        UniqueItem SpawnUniqueArmyOfficePass(World world) //@@MP (Release 6-3)
+        UniqueItem SpawnUniqueArmyOfficePass() //@@MP (Release 6-3)
         {
             ///////////////////////////////////
             // 1. Select the CHAR underground
@@ -5076,7 +5078,7 @@ namespace djack.RogueSurvivor.Engine
 #region
             // living: try to spawn inside on a couch, then if failed spawn anywhere inside.
             // undead: spawn outside.
-            // NEVER spawn in CHAR Office!!
+            // NEVER spawn in CHAR or army office!!
             bool preferedSpawnOk = townGen.ActorPlace(roller, 10 * map.Width * map.Height, map, player,
                 (pt) =>
                 {
@@ -5085,6 +5087,9 @@ namespace djack.RogueSurvivor.Engine
                         return false;
 
                     if (IsInCHAROffice(new Location(map, pt)))
+                        return false;
+
+                    if (IsInArmyOffice(new Location(map, pt))) //@@MP (Release 6-5)
                         return false;
 
                     MapObject mapObj = map.GetMapObjectAt(pt);
@@ -5098,13 +5103,13 @@ namespace djack.RogueSurvivor.Engine
             {
                 // no couch, try inside but never in char office.
                 bool spawnedInside = townGen.ActorPlace(roller, map.Width * map.Height, map, player,
-                    (pt) => map.GetTileAt(pt.X, pt.Y).IsInside && !IsInCHAROffice(new Location(map, pt)));
+                    (pt) => map.GetTileAt(pt.X, pt.Y).IsInside && !IsInCHAROffice(new Location(map, pt)) && !IsInArmyOffice(new Location(map, pt))); //@@MP added Army (Release 6-5)
 
                 if (!spawnedInside)
                 {
                     // could not spawn inside, do it outside...
-                    while (!townGen.ActorPlace(roller, int.MaxValue, map, player, (pt) => !IsInCHAROffice(new Location(map, pt))))
-                        ;
+                    while (!townGen.ActorPlace(roller, int.MaxValue, map, player, (pt) => !IsInCHAROffice(new Location(map, pt)) && !IsInArmyOffice(new Location(map, pt)))) //@@MP added Army (Release 6-5)
+                    ;
                 }
             }
 #endregion
@@ -5593,19 +5598,27 @@ namespace djack.RogueSurvivor.Engine
                         if (++m_DEBUG_sameAiActorCount >= DEBUG_AI_ACTOR_LOOP_COUNT_WARNING)
                         {
                             // TO DEVS: you might want to add a debug breakpoint here ->
-                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: actor " + actor.Name + " is possibly looping... [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
+                            Point pt = new Point(actor.Location.Position.X, actor.Location.Position.Y);
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: actor " + actor.Name + " is possibly looping.... [district: " + actor.Location.Map.District.Name + "] [coords: " + pt.ToString() + "] [turn #" + m_Session.WorldTime.TurnCounter + "] [tally= " + m_DEBUG_sameAiActorCount + "]");
 
-#if !DEBUG
-                            //@@MP - at the time of writing there was excessive looping, so exception throwing was not an option (Release 6-5)
-                            goto SkipToEnd;
-
+#if DEBUG
+                            //pause the AI to let us find the looping actor and see what they're doing
+                            if (m_Player.IsBotPlayer && m_Player.Location.Map == actor.Location.Map)
+                            {
+                                BotReleaseControl();
+                                AddMessage(new Message("AI LOOPING DETECTED. Released bot control", m_Session.WorldTime.TurnCounter, Color.Pink));
+                                if (actor.IsPlayer)
+                                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "PLAYER looping detected. Released bot control.");
+                            }
+                            DoWait(actor);
+#else
                             // throw an exception
-                            Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
-                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);
-#endif
-                            SkipToEnd:
+                            /*Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);*/
+
                             // when not debugging AI looping, just spend a turn. it's better than crashing the game!
                             DoWait(actor);
+#endif
                         }
                     }
                     else
@@ -5653,20 +5666,22 @@ namespace djack.RogueSurvivor.Engine
             actor.PreviousSleepPoints = actor.SleepPoints;
             if (s_Options.IsSanityEnabled) actor.PreviousSanity = actor.Sanity; //@@MP (Release 1)
 
-#if (DEBUG && DEBUGAILOOPING)
+#if DEBUG && DEBUGAILOOPING
             //clues as to what happened if an actor might be looping  //@@MP - added (Release 6-4)
             if (++m_DEBUG_sameAiActorCount >= DEBUG_AI_ACTOR_LOOP_COUNT_WARNING)
             {
                 if (actor.ActionPoints == actionPointsBeforeTurn)
-                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " spent no AP [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
+                {
+                    if (actor.Location == locationBeforeTurn)
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " spent no AP and did NOT move to another tile [turn# " + m_Session.WorldTime.TurnCounter.ToString() + "]");
+                    else
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " reduced no AP and DID move to another tile [turn# " + m_Session.WorldTime.TurnCounter.ToString() + "]");
+                }
                 else if (actor.ActionPoints > actionPointsBeforeTurn)
-                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " has more AP than when the turn started [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
-
-                if (actor.Location == locationBeforeTurn)
-                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " did not move to another tile [turn#" + m_Session.WorldTime.TurnCounter.ToString() + "]");
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " has more AP than when the turn started [turn# " + m_Session.WorldTime.TurnCounter.ToString() + "]");
             }
 #endif
-#endregion
+            #endregion
         }
 
         void NextMapTurn(Map map, SimFlags sim)
@@ -9402,8 +9417,11 @@ namespace djack.RogueSurvivor.Engine
                     int availableHint = -1;
                     if (s_Options.IsAdvisorEnabled && (availableHint = GetAdvisorFirstAvailableHint()) != -1)
                     {
-                        /*HandleAdvisor(); //@@MP - skip the prompt, just force the hint on the player. Still too buggy
-                        return;*/
+                        /*
+                        //@@MP - skip the prompt, just force the hint on the player. Still too buggy :/
+                        HandleAdvisor();
+                        return;
+                        */
 
                         //advise that a hint is available
                         Point overlayPos = MapToScreen(m_Player.Location.Position.X - 3, m_Player.Location.Position.Y - 1);
@@ -9997,7 +10015,22 @@ namespace djack.RogueSurvivor.Engine
             if (desiredAction != null)
             {
                 if (desiredAction.IsLegal())
+                {
                     desiredAction.Perform();
+#if DEBUG && FALSE
+                    //troubleshooting cop AI 'looping' in first two turns //@@MP (Release 6-5)
+                    if (aiActor.Faction == GameFactions.ThePolice)
+                    {
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, aiActor.Name + " desiredAction: " + desiredAction.ToString());
+                        if (desiredAction.ToString() == "djack.RogueSurvivor.Engine.Actions.ActionEquipItem")
+                        {
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, aiActor.Name + " left hand: " + aiActor.GetEquippedItem(DollPart.LEFT_HAND));
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, aiActor.Name + " right hand: " + aiActor.GetEquippedItem(DollPart.RIGHT_HAND));
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, aiActor.Name + " torso hand: " + aiActor.GetEquippedItem(DollPart.TORSO));
+                        }
+                    }
+#endif
+                }
                 else
                 {
                     // AI attempted illegal action.                    
@@ -10010,6 +10043,8 @@ namespace djack.RogueSurvivor.Engine
                         desiredAction.GetType().ToString(), aiActor.Controller.GetType().ToString(), desiredAction.FailReason));
 #else
                     // in release build just complain and do a wait action instead.
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("AI attempted illegal action {0}; actorAI: {1}; fail reason : {2}.",
+                        desiredAction.GetType().ToString(), aiActor.Controller.GetType().ToString(), desiredAction.FailReason)); //@@MP (Release 6-5)
                     DoWait(aiActor);
 #endif
                 }
@@ -11525,7 +11560,7 @@ namespace djack.RogueSurvivor.Engine
 
             if (potentialTargets == null || potentialTargets.Count == 0)
             {
-                AddMessage(MakeErrorMessage("No targets to fire at."));
+                AddMessage(MakeErrorMessage("No targets in range to fire at.")); //@@MP - specified range to account for light sources beyond standard FoV (Release 6-5)
                 RedrawPlayScreen();
                 return false;
             }
@@ -19787,9 +19822,6 @@ namespace djack.RogueSurvivor.Engine
                 targetTile.IsOnFire = true;
                 targetTile.AddDecoration(GameImages.EFFECT_ONFIRE);
                 targetTile.IsScorched = true; //indicates that it has been burnt, so there is no fuel to burn it again
-                /*map.GetTileAt(x, y).IsOnFire = true;
-                map.GetTileAt(x, y).AddDecoration(GameImages.EFFECT_ONFIRE);
-                map.GetTileAt(x, y).IsScorched = true;*/
             }
         }
 
@@ -20202,7 +20234,9 @@ namespace djack.RogueSurvivor.Engine
                         weatherOrLightingString = "Darkness";
                         // alpha10 desc darkness fov effect
                         int darknessFov = m_Rules.DarknessFov(m_Player);
-                        if (darknessFov != m_Player.Sheet.BaseViewRange)
+                        if (darknessFov == 0) //@@MP (Release 6-5)
+                            weatherOrLightingString += " (CAN'T SEE!)";
+                        else if (darknessFov != m_Player.Sheet.BaseViewRange)
                             weatherOrLightingString += "  fov " + darknessFov;
                         break;
                     case Lighting.LIT:
@@ -20214,6 +20248,8 @@ namespace djack.RogueSurvivor.Engine
                 }
                 if (canActorSeeSky) //@@MP - handled a bit differently from alpha 10 (Release 6-1), switched to variable (Release 6-2)
                     m_UI.UI_DrawString(weatherOrLightingColor, weatherOrLightingString, X1, Y3);
+                else if (m_Session.CurrentMap.Lighting == Lighting.DARKNESS && m_Rules.DarknessFov(m_Player) == 0) //@@MP (Release 6-5)
+                    m_UI.UI_DrawString(Color.Red, weatherOrLightingString, X1, Y3);
                 else
                     m_UI.UI_DrawString(Color.Gray, "[can't see the sky]", X1, Y3);
                 m_UI.UI_DrawString(Color.White, String.Format("Turn {0}", m_Session.WorldTime.TurnCounter), X0, Y4);
@@ -26724,7 +26760,7 @@ namespace djack.RogueSurvivor.Engine
         // detect cases where an ai is proably performing an infinite sequence of ap free actions.
         Actor m_DEBUG_prevAiActor;
         int m_DEBUG_sameAiActorCount;
-        const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 5;
+        const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 7; //@@MP - 5 or less will trigger a lot on turns 1 & 2 when the cops equip all their stuff
 #endregion
 #endregion
 #endregion

@@ -275,9 +275,9 @@ namespace djack.RogueSurvivor.Engine
                 {
                     p.Y = y;
                     MapObject newMapObject = createFn(p);
-                    if (newMapObject != null && map.GetMapObjectAt(x, y) == null)
+                    if (newMapObject != null && map.GetMapObjectAt(p) == null && map.GetExitAt(p) == null) //@@MP - added Exit check (Release 6-5)
                     {
-                        map.PlaceMapObjectAt(newMapObject, new Point(x, y));
+                        map.PlaceMapObjectAt(newMapObject, p);
                     }
                 }
             }
@@ -301,7 +301,7 @@ namespace djack.RogueSurvivor.Engine
                 {
                     p.Y = y;
 
-                    if (isGoodPosFn(p) && map.GetMapObjectAt(x, y) == null)
+                    if (isGoodPosFn(p) && map.GetMapObjectAt(p) == null && map.GetExitAt(p) == null) //@@MP - added Exit check (Release 6-5)
                     {
                         if (goodList == null)
                             goodList = new List<Point>();

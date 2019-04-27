@@ -2154,6 +2154,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Not walkable.
             // 3. Another object there.
             // 4. An actor there.
+            // 5. An exit there.
             ///////////////////////////
 
             // 1. Out of bounds.
@@ -2181,6 +2182,13 @@ namespace djack.RogueSurvivor.Engine
             if (mapObj.Location.Map.GetActorAt(toPos) != null)
             {
                 reason = "blocked by someone";
+                return false;
+            }
+
+            // 5. An exit there. //@@MP (Release 6-5)
+            if (mapObj.Location.Map.GetExitAt(toPos) != null)
+            {
+                reason = "can't push onto stairs/ladders";
                 return false;
             }
 
@@ -4093,7 +4101,8 @@ namespace djack.RogueSurvivor.Engine
         /// 
         /// </summary>
         /// <returns>penalty as number > 0</returns>
-        public int NightFovPenalty(Actor actor, WorldTime time) //@@MP can't be static
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        public int NightFovPenalty(Actor actor, WorldTime time)
         {
             if (actor.Model.Abilities.IsUndead)
                 return 0;
@@ -4123,7 +4132,8 @@ namespace djack.RogueSurvivor.Engine
         /// 
         /// </summary>
         /// <returns>penalty as number > 0</returns>
-        public int WeatherFovPenalty(Actor actor, Weather weather) //@@MP - can't be static
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        public int WeatherFovPenalty(Actor actor, Weather weather)
         {
             if (actor.Model.Abilities.IsUndead)
                 return 0;

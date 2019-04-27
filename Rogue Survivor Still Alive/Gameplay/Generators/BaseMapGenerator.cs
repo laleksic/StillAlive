@@ -522,7 +522,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new MapObject("wardrobe", wardrobeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
-                IsMaterialTransparent = false,
                 IsContainer = true,
                 GivesWood = true,
                 IsMovable = true,
@@ -633,7 +632,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         //@@MP (Release 3)
         protected static MapObject MakeObjCHARvat(string vatImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("CHAR vat", vatImageID);
+            return new MapObject("CHAR vat", vatImageID)
+            {
+                IsMaterialTransparent = true //@@MP (Release 6-5)
+            };
         }
 
         protected static MapObject MakeObjCHARdesktop(string CHARdesktopImageID) //@@MP - made static (Release 5-7)
@@ -906,7 +908,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new MapObject("radio equipment", armyRadioCupboardImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
             {
-                IsMaterialTransparent = false,
                 IsContainer = true,
                 GivesWood = true,
                 IsMovable = true,

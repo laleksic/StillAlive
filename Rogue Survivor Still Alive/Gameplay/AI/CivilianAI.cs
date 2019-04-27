@@ -50,7 +50,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         static string[] FIGHT_EMOTES = 
         {
-            "Go away",                  // flee
+            "Get away from me",         // flee
             "Damn it I'm trapped!",     // trapped
             "I'm not afraid"            // fight
         };
@@ -231,7 +231,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // "courageous" : has leader, see leader, he is fighting and actor not tired.
             // - RULES
             // 0.1 run away from primed explosives (and fires //@@MP (Release 4)).
-            // 0.2 if underground in total darkness, find nearest exit //@@MP (Release 6-2)
+            // 0.2 if underground in total darkness, find nearest exit //@@MP (Release 6-5)
             // 1 throw grenades at enemies.
             // alpha10 OBSOLETE 2 equip weapon/armor
             // 3 fire at nearest (always if has leader, half of the time if not)  - check directives
@@ -322,29 +322,67 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 0.2 if underground in total darkness, find nearest exit //@@MP (Release 6-2)
+            // 0.2 if in total darkness //@@MP (Release 6-2)
             #region
-            if (!game.Rules.CanActorSeeSky(m_Actor))
+            int fov = game.Rules.ActorFOV(m_Actor, map.LocalTime, game.Session.World.Weather); //@@MP m_Actor.Location.Map (Release 6-2)
+            if (fov <=0) //can't see anything, too dark
             {
-                int fov = game.Rules.ActorFOV(m_Actor, map.LocalTime, game.Session.World.Weather); //@@MP m_Actor.Location.Map (Release 6-2)
-                if (fov <=0) //can't see anything, too dark
+                if (!game.Rules.CanActorSeeSky(m_Actor)) //if underground find nearest exit
                 {
                     //if already on exit, leave
                     determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
-                    if (determinedAction == null)
+                    if (determinedAction != null)
+                    {
+                        return determinedAction; //@@MP - forgot to actually have them use it (Release 6-5)
+                    }
+                    else
                     {
                         //find the nearest exit
-                        determinedAction = BehaviorGoToNearestExit(game);
+                        determinedAction = BehaviorGoToNearestAIExit(game);
                         if (determinedAction != null)
                         {
                             m_Actor.Activity = Activity.IDLE;
                             return determinedAction;
                         }
-                    }
-                    else
-                    {
-                        m_Actor.Activity = Activity.IDLE;
-                        return determinedAction;
+                        else if (IsAdjacentToEnemy(game, m_Actor)) //@@MP - can't get to an exit. use self-defense if we're trapped by an enemy (Release 6-5)
+                        {
+                            Point pt = m_Actor.Location.Position;
+                            int adjacentEnemies = 0;
+                            foreach (Direction d in Direction.COMPASS_LIST)
+                            {
+                                Point p = pt + d;
+                                if (map.IsInBounds(p) && map.IsWalkable(p))
+                                {
+                                    Actor a = map.GetActorAt(p);
+                                    if (a == null)
+                                        continue;
+                                    else if (game.Rules.AreEnemies(m_Actor, a))
+                                    {
+                                        ++adjacentEnemies;
+
+                                        // emote, trapped
+                                        if (m_Actor.Model.Abilities.CanTalk)
+                                            game.DoEmote(m_Actor, FIGHT_EMOTES[1], true);
+
+                                        //lash out at the first adjacent enemy each time so that we focus on it, hopefully killing it and making a gap to run through
+                                        determinedAction = BehaviorMeleeAttack(game, a);
+                                        if (determinedAction != null)
+                                        {
+                                            m_Actor.Activity = Activity.FIGHTING;
+                                            return determinedAction;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (adjacentEnemies == 0) //if it's fallen through to here it's because the actor is trapped by friendly actors / map objects that can't be pushed, jumped or broken / walls
+                            {
+                                if (m_Actor.Model.Abilities.CanTalk)
+                                    game.DoEmote(m_Actor, FIGHT_EMOTES[1], true);
+
+                                Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Name + " seems to be stuck in the dark... [district: " + m_Actor.Location.Map.District.Name + "] [coords: " + pt.ToString() + "] [turn #" + game.Session.WorldTime.TurnCounter + "]");
+                            }
+                        }
                     }
                 }
             }
@@ -563,7 +601,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             //// 10 recharge lights //@@MP - added (Release 6-2)
             #region
-            #if false //@@MP - simplified by making AI's batteries infinitely regenerating (Release 6-4)
+            #if false //@@MP - simplified by making AI's batteries infinitely regenerating, making #10 redundant (Release 6-4)
             //ItemLight equippedLight = GetEquippedLight();
             //if (equippedLight != null && (equippedLight.Batteries <= ((equippedLight.Model as ItemLightModel).MaxBatteries) / 1.5))
             //ItemLight bestLight = HasItemOfType(typeof(ItemLight));
@@ -664,7 +702,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 //Map map = m_Actor.Location.Map; //@@MP (Release 6-2)
 
 #region Get items
-                // alpha10 new common behaviour code, also used by GangAI
+                // 13. alpha10 new common behaviour code, also used by GangAI
                 ActorAction getItemAction = BehaviorGoGetInterestingItems(game, mapPercepts, false, false, CANT_GET_ITEM_EMOTE, true, ref m_LastItemsSaw);
 
                 if (getItemAction != null)
@@ -672,6 +710,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 #endregion
 
 #region Trade
+                // 14
                 if (Directives.CanTrade)
                 {
                     // get actors we want to trade with.
@@ -1086,7 +1125,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 #endregion
 
-            // 32 wander.
+            // 32 wander or wait
 #region
             // VERBOSE BOT
 #if DEBUG
@@ -1094,8 +1133,23 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 game.AddMessage(new Message(">> Bot is Wandering", map.LocalTime.TurnCounter)); //@@MP m_Actor.Location.Map (Release 6-2)
 #endif
             // END VERBOSE BOT
+
             m_Actor.Activity = Activity.IDLE;
-            return BehaviorWander(game);
+            determinedAction = BehaviorWander(game);
+            if (determinedAction != null)
+            {
+                return determinedAction;
+            }
+            else
+            {
+#if DEBUG && DEBUGAISELECTACTION
+                //to assist with AI debugging
+                Point pt = new Point(m_Actor.Location.Position.X, m_Actor.Location.Position.Y);
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "CivilianAI::SelectAction() fell through to wait for " + m_Actor.Name + " @" + m_Actor.Location.Map.District.Name.ToString() + " " + pt.ToString() + " on turn #" + game.Session.WorldTime.TurnCounter);
+#endif
+                return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
+            }
+
 #endregion
 
 #endregion

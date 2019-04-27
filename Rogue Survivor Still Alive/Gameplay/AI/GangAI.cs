@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;   // Point
 
 using djack.RogueSurvivor.Data;
@@ -33,7 +31,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         {
             "Fuck you",
             "Fuck it I'm trapped!",
-            "Come on"
+            "Let's do this"
         };
 
         const string CANT_GET_ITEM_EMOTE = "Fuck can't get that shit!"; // alpha10
@@ -72,6 +70,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
         {
             HashSet<Point> FOV = m_LOSSensor.FOV;
             List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
+            m_Actor.IsRunning = false; // don't run by default. // alpha10
+            //@@MP (Release 6-5)
+            ActorAction determinedAction = null;
+            Map map = m_Actor.Location.Map;
 
             // A. Extinguish self  //@@MP (Release 6-1)
             if (m_Actor.IsOnFire)
@@ -84,10 +86,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return goToWaterAction;
                 }
             }
-
-            // alpha10
-            // don't run by default.
-            m_Actor.IsRunning = false;
 
             // 0. Equip best item
             ActorAction bestEquip = BehaviorEquipBestItems(game, true, true);
@@ -118,7 +116,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // - FLAGS
             // "courageous" : always if not tired.
             // - RULES
-            // 0 run away from primed explosives (and fires //@@MP (Release 5-2)).
+            // 0.1 run away from primed explosives (and fires //@@MP (Release 5-2))
+            // 0.2 if underground in total darkness, find nearest exit //@@MP (Release 6-5)
             // alpha10 OBSOLETE 1 equip weapon/armor
             // 2 fire at nearest.
             // 3 shout/fight/flee.
@@ -159,7 +158,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ClearTabooTiles();
             }
 
-            // 0 run away from primed explosives and fires //@@MP - added (Release 5-2)
+            // 0.1 run away from primed explosives and fires //@@MP - added (Release 5-2)
             #region
             ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
             if (runFromFires != null)
@@ -173,6 +172,72 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
                 return runFromExplosives;
+            }
+            #endregion
+
+            // 0.2 if in total darkness //@@MP - addded (Release 6-5)
+            #region
+            int fov = game.Rules.ActorFOV(m_Actor, map.LocalTime, game.Session.World.Weather);
+            if (fov <= 0) //can't see anything, too dark
+            {
+                if (!game.Rules.CanActorSeeSky(m_Actor)) //if underground find nearest exit
+                {
+                    //if already on exit, leave
+                    determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
+                    if (determinedAction != null)
+                    {
+                        return determinedAction;
+                    }
+                    else
+                    {
+                        //find the nearest exit
+                        determinedAction = BehaviorGoToNearestAIExit(game);
+                        if (determinedAction != null)
+                        {
+                            m_Actor.Activity = Activity.IDLE;
+                            return determinedAction;
+                        }
+                        else if (IsAdjacentToEnemy(game, m_Actor)) //can't get to an exit. use self-defense if we're trapped by an enemy
+                        {
+                            Point pt = m_Actor.Location.Position;
+                            int adjacentEnemies = 0;
+                            foreach (Direction d in Direction.COMPASS_LIST)
+                            {
+                                Point p = pt + d;
+                                if (map.IsInBounds(p) && map.IsWalkable(p))
+                                {
+                                    Actor a = map.GetActorAt(p);
+                                    if (a == null)
+                                        continue;
+                                    else if (game.Rules.AreEnemies(m_Actor, a))
+                                    {
+                                        ++adjacentEnemies;
+
+                                        // emote, trapped
+                                        if (m_Actor.Model.Abilities.CanTalk)
+                                            game.DoEmote(m_Actor, FIGHT_EMOTES[1], true);
+
+                                        //lash out at the first adjacent enemy each time so that we focus on it, hopefully killing it and making a gap to run through
+                                        determinedAction = BehaviorMeleeAttack(game, a);
+                                        if (determinedAction != null)
+                                        {
+                                            m_Actor.Activity = Activity.FIGHTING;
+                                            return determinedAction;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (adjacentEnemies == 0) //if it's fallen through to here it's because the actor is trapped by friendly actors / map objects that can't be pushed, jumped or broken / walls
+                            {
+                                if (m_Actor.Model.Abilities.CanTalk)
+                                    game.DoEmote(m_Actor, FIGHT_EMOTES[1], true);
+
+                                Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Name + " seems to be stuck in the dark... [district: " + m_Actor.Location.Map.District.Name + "] [coords: " + pt.ToString() + "] [turn #" + game.Session.WorldTime.TurnCounter + "]");
+                            }
+                        }
+                    }
+                }
             }
             #endregion
 
@@ -217,7 +282,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             List<Percept> friends = FilterNonEnemies(game, mapPercepts);
             if (friends != null)
             {
-                Map map = m_Actor.Location.Map; //@@MP (Release 6-1)
                 foreach (Point p in FOV)
                 {
                     if (map.IsAnyTileFireThere(m_Actor.Location.Map, p))
@@ -560,7 +624,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 18 wander
             m_Actor.Activity = Activity.IDLE;
-            return BehaviorWander(game);
+            determinedAction = BehaviorWander(game);
+            if (determinedAction != null)
+                return determinedAction;
+            else
+                return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
         }
         #endregion
     }

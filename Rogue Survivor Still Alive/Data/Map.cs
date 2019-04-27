@@ -715,6 +715,8 @@ namespace djack.RogueSurvivor.Data
                 throw new ArgumentOutOfRangeException("position","position out of map bounds");
             if (!GetTileAt(position.X, position.Y).Model.IsWalkable)
                 throw new InvalidOperationException("cannot place map objects on unwalkable tiles");
+            if (GetExitAt(position) != null) //@@MP (Release 6-5)
+                throw new InvalidOperationException("cannot place map objects on exits");
 
             if (HasMapObject(mapObj))
             {

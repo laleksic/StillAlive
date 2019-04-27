@@ -141,8 +141,8 @@ namespace djack.RogueSurvivor.Data
                 case 9: 
                 case 10: m_Phase = DayPhase.MORNING; m_IsNight = false; break;
                 case 11: 
-                case 12: m_Phase = DayPhase.MIDDAY; m_IsNight = false; break;
-                case 13:
+                case 12:
+                case 13: m_Phase = DayPhase.MIDDAY; m_IsNight = false; break;
                 case 14:
                 case 15: 
                 case 16: m_Phase = DayPhase.AFTERNOON; m_IsNight = false; break;

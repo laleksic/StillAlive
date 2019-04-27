@@ -339,9 +339,10 @@ namespace djack.RogueSurvivor.Engine
                         bool isFovWall = false;
                         Tile tile = map.GetTileAt(x, y);
                         MapObject mapObj = map.GetMapObjectAt(x, y);
-                        if (!tile.Model.IsTransparent && !tile.Model.IsWalkable)
+                        //Logger.WriteLine(Logger.Stage.RUN_MAIN, mapObj.Location.Position.ToString() + ". objMatTransparent= " + mapObj.IsMaterialTransparent + ". tileTransparent= " + tile.Model.IsTransparent.ToString() + ". mapTransparent= " + map.IsTransparent(x,y).ToString());
+                        if (!tile.Model.IsWalkable && !tile.Model.IsTransparent) //@@MP - swapped the order of the two coditions, as currently all tile modesls are transparent (Release 6-5)
                             isFovWall = true;
-                        else if (mapObj != null)
+                        else if (mapObj != null && !mapObj.IsTransparent) //@@MP - added transparency check (Release 6-5)
                             isFovWall = true;
 
                         if (isFovWall)

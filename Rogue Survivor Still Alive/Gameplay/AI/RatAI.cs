@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
@@ -85,7 +83,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
 
-                // then try rest, the closer the best.
+                // then try the rest, the closer the best.
                 List<Percept> oldEnemies = Filter(enemies, (p) => p.Turn != m_Actor.Location.Map.LocalTime.TurnCounter); //@@MP - unused parameter (Release 5-7)
                 if (oldEnemies != null)
                 {
@@ -143,7 +141,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 4 wander
             m_Actor.Activity = Activity.IDLE;
-            return BehaviorWander(game);
+            ActorAction determinedAction = BehaviorWander(game);
+            if (determinedAction != null)
+                return determinedAction;
+            else
+                return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
         }
         #endregion
     }

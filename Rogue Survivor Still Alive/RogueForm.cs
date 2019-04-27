@@ -299,17 +299,23 @@ namespace djack.RogueSurvivor
                 UI_Repaint();
             }
 
-            // alpha10.1
-            // INSERT - DEV - Toggle bot mode
+            // INSERT - DEV - Toggle bot mode // alpha10.1
             if (e.KeyCode == Keys.Insert)
             {
                 m_Game.BotToggleControl();
                 UI_Repaint();
             }
 
-            // HOME
-            if (e.KeyCode == Keys.Home) //@@MP - make it rain (Release 6-2)
+            // HOME - DEV misc
+            if (e.KeyCode == Keys.Home)
             {
+                /*
+                //@@MP - drop ItemLight
+                Item item = m_Game.Player.GetEquippedItem(DollPart.LEFT_HAND);
+                m_Game.Player.Inventory.RemoveAllQuantity(item);
+                item.EquippedPart = DollPart.NONE;*/
+
+                //@@MP - make it rain
                 m_Game.Session.World.Weather = Weather.HEAVY_RAIN;
                 UI_Repaint();
             }

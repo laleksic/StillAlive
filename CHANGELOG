@@ -1,16 +1,20 @@
-STILL ALIVE 2.4.2.3 (aka Release 6-5, ??/??/2019) [Author: MP] *RC*
+STILL ALIVE 2.4.2.6 (aka Release 6-5, 27/04/2019) [Author: MP]
 ---------------------
 
 Features: 
 -Other tiles are lit up by light sources outside the player's FoV (eg distant fires).
+-As I tightened up the darkness FoV, I've compensated somewhat by removing FoV blocking effect of cars on fire.
 -Animations Delay option now off by default.
 -Bank vaults now have a chance of being open/broken into.
--Available bank safes can be used by the player to store items that no AI can touch.
+-Open bank safes can be used by the player to store items that no AI can touch.
 
 Fixes:
 -Empty spray cans can be removed from the game again.
 -Trackers are no longer removed from the game when dropped.
--Changing districts should no longer lead to crashes caused by AI looping.
+-Reduced AI stuck behaviours. *Hopefully* no longer leads to crashes caused by AI looping.
+-Added flag to the status section to let the player know when they're in absolute darkness.
+-Removed a source of AI looping (civs now actually use exits when in darkness).
+-Player can no longer spawn in an army office.
 
 Development:
 -Added a new STATE_LOCKED for doors.
@@ -18,11 +22,9 @@ Development:
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).
 -Changing districts performance with simulation enabled decays as the game goes on.
--Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in later releases.
+-Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in a future release.
 -Music and some sounds are louder than other sounds. They will be normalised in a future release.
--Random crash/hang bug.
--Occasionally, random turns take an extra second or two to process.
--AI looping behaviour, particularly attacking then fleeing repeatedly.
+-Odd AI behaviour, particularly attacking then fleeing repeatedly, and a trading fixation.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 

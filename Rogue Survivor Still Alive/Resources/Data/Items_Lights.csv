@@ -1,5 +1,5 @@
 "ID","NAME","PLURAL","FOV bonus","BATTERIES in hours","FLAVOR"
-"LIGHT_FLASHLIGHT","flashlight","flashlights",2,32,"Let There Be Light!"
+"LIGHT_FLASHLIGHT","flashlight","flashlights",2,36,"Let There Be Light!"
 "LIGHT_BIG_FLASHLIGHT","big flashlight","big flashlights",4,18,"Let There Be MORE Light!"
 "LIGHT_NIGHT_VISION_FEMALE","night vision","night vision",5,18,"It's all so green"
 "LIGHT_NIGHT_VISION_MALE","night vision","night vision",5,18,"It's all so green"

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Drawing;
 
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
@@ -136,7 +134,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 3 wander
             m_Actor.Activity = Activity.IDLE;
-            return BehaviorWander(game);
+            ActorAction determinedAction = BehaviorWander(game);
+            if (determinedAction != null)
+                return determinedAction;
+            else
+                return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
         }
         #endregion
     }

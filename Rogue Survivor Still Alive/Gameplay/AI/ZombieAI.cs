@@ -294,7 +294,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 9 wander
             m_Actor.Activity = Activity.IDLE;
-            return BehaviorWander(game);
+            ActorAction determinedAction = BehaviorWander(game);
+            if (determinedAction != null)
+                return determinedAction;
+            else
+                return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
         }
         #endregion
     }
