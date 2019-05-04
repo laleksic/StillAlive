@@ -8,10 +8,16 @@ namespace djack.RogueSurvivor.Gameplay
     {
         const string PATH = @"Resources\Ambients\";
 
+        //@@MP (Release 6-1)
         public const string RAIN_OUTSIDE = "outside whilst raining";
         public const string RAIN_OUTSIDE_FILE = PATH + "rain_outside_looped";
         public const string RAIN_INSIDE = "inside whilst raining";
         public const string RAIN_INSIDE_FILE = PATH + "rain_inside_looped";
+        //@@MP (Release 6-6)
+        public const string THUNDERING_RAIN_OUTSIDE = "outside whilst thundering rain";
+        public const string THUNDERING_RAIN_OUTSIDE_FILE = PATH + "thundering_rain_outside_looped";
+        public const string THUNDERING_RAIN_INSIDE = "inside whilst thundering rain";
+        public const string THUNDERING_RAIN_INSIDE_FILE = PATH + "thundering_rain_inside_looped";
 
         //@@MP (Release 6-1)
         public const string HELICOPTER_FLYOVER = "helicopter flyover";
@@ -26,5 +32,9 @@ namespace djack.RogueSurvivor.Gameplay
         public const string STATIONARY_HELICOPTER_NEAR_FILE = PATH + "helicopter_static_nearby";
         public const string STATIONARY_HELICOPTER_VISIBLE = "stationary helicopter visible";
         public const string STATIONARY_HELICOPTER_VISIBLE_FILE = PATH + "helicopter_static_visible";
+
+        //@@MP (Release 6-6)
+        public const string NIGHT_ANIMALS_OUTSIDE = "wild animals";
+        public const string NIGHT_ANIMALS_OUTSIDE_FILE = PATH + "night_animals_outside";
     }
 }

@@ -158,6 +158,8 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Scope = "member", Target = "djack.RogueSurvivor.Engine.RogueGame.#StopSimThread(System.Boolean)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Scope = "member", Target = "djack.RogueSurvivor.Engine.RogueGame.#SimThreadProc()")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "djack.RogueSurvivor.Gameplay.Generators.BaseMapGenerator.#MakeItemMolotov()")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1023:IndexersShouldNotBeMultidimensional", Scope = "member", Target = "djack.RogueSurvivor.Engine.CSVTable.#Item[System.Int32,System.Int32]")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Scope = "member", Target = "djack.RogueSurvivor.Engine.RogueGame.#BotTakeControl()")]
 
 // attributes that are applied to this project.
 // Project-level suppressions either have no target or are given 

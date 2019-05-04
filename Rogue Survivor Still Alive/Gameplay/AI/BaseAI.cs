@@ -979,7 +979,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         protected ActorAction BehaviorMeleeAttack(RogueGame game, Actor targetActor) //@@MP (Release 6-5)
         {
             if (targetActor == null)
-                throw new ArgumentNullException("actor","null actor");
+                throw new ArgumentNullException("targetActor", "null actor");
 
             // if illegal cant.
             if (!game.Rules.CanActorMeleeAttack(m_Actor, targetActor))
@@ -1003,7 +1003,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // select rapid fire if one shot is not enough to kill target, has more than one ammo loaded and chance to hit good enough.  // alpha10
             FireMode fireMode = FireMode.DEFAULT;
-            if ((GetEquippedWeapon() as ItemRangedWeapon).Ammo >= 2)
+            ItemRangedWeapon rangedWeapon = GetEquippedWeapon() as ItemRangedWeapon;
+            if ((rangedWeapon.Model as ItemRangedWeaponModel).IsSingleShot && rangedWeapon.Ammo >= 2) //@@MP - some weapons are not single-shot = can't rapid fire (Release 6-6)
             {
                 Attack rangedAttack = game.Rules.ActorRangedAttack(m_Actor, m_Actor.CurrentRangedAttack, game.Rules.GridDistance(m_Actor.Location.Position, targetActor.Location.Position), targetActor);
                 if (rangedAttack.DamageValue < targetActor.HitPoints)

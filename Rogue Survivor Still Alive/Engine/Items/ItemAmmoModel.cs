@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using djack.RogueSurvivor.Data;
 
 namespace djack.RogueSurvivor.Engine.Items
@@ -18,6 +15,7 @@ namespace djack.RogueSurvivor.Engine.Items
         HEAVY_RIFLE,
         BOLT,
         NAIL, //@@MP (Release 5-1)
+        PRECISION_RIFLE, //@@MP (Release 6-6)
 
         _COUNT
     }

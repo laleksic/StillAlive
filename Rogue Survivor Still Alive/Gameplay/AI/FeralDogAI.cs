@@ -180,7 +180,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
         }
 
-        private static ActorAction BehaviorFightOrFlee(RogueGame game, List<Percept> enemies, bool isLeaderVisible, bool isLeaderFighting, ActorCourage courage, string[] fIGHT_EMOTES, RouteFinder.SpecialActions allowedChargeActions)
+        private static ActorAction BehaviorFightOrFlee(RogueGame game, List<Percept> enemies, bool isLeaderVisible, bool isLeaderFighting, ActorCourage courage, string[] FIGHT_EMOTES, RouteFinder.SpecialActions allowedChargeActions)
         {
             throw new NotImplementedException();
         }

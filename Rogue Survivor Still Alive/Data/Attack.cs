@@ -10,7 +10,8 @@ namespace djack.RogueSurvivor.Data
     {
         PHYSICAL,
         FIREARM,
-        BOW
+        BOW,
+        OTHER //@@MP - stun guns, nail guns, etc (Release 6-6)
     }
 
     [Serializable]

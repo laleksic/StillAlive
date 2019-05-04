@@ -3727,7 +3727,7 @@ namespace djack.RogueSurvivor.Engine
             while (loop);
 
             // done.
-            if (enteredNumerals != "")
+            if (!String.IsNullOrEmpty(enteredNumerals))
                 chosenDay = Convert.ToInt32(enteredNumerals);
             else if (enteredNumerals == "0" || enteredNumerals == "00")
             {
@@ -3759,7 +3759,7 @@ namespace djack.RogueSurvivor.Engine
                 worldMade = GenerateWorld(true, s_Options.CitySize, suppliedName); //@@MP - added parameter for user to supply a name (Release 5-7)
             }
             while (worldMade == false);
-            CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
+            CheckAmbientSFX(m_Player.Location.Map); //@@MP (Release 5-3)
 #if DEBUG
             /*Item temp = new ItemGrenade(GameItems.C4, GameItems.C4_PRIMED);
             m_Player.Inventory.AddAll(temp);
@@ -5179,11 +5179,11 @@ namespace djack.RogueSurvivor.Engine
             m_UI.UI_DrawStringBold(Color.White, "Loading music...", 0, 0);
             m_UI.UI_Repaint();
 
-            //MUSIC - event or location-specific
+            #region MUSIC - event or location-specific
             m_MusicManager.Load(GameMusics.ARMY, GameMusics.ARMY_FILE);
             m_MusicManager.Load(GameMusics.BIGBEAR_THEME_SONG, GameMusics.BIGBEAR_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.BIKER, GameMusics.BIKER_FILE);
-            m_MusicManager.Load(GameMusics.BLACK_OPS, GameMusics.BLACK_OPS_FILE); //@@MP (Release 6-1)
+            m_MusicManager.Load(GameMusics.BLACK_OPS, GameMusics.BLACK_OPS_FILE);
             m_MusicManager.Load(GameMusics.CHAR_UNDERGROUND_FACILITY, GameMusics.CHAR_UNDERGROUND_FACILITY_FILE);
             m_MusicManager.Load(GameMusics.DUCKMAN_THEME_SONG, GameMusics.DUCKMAN_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.FAMU_FATARU_THEME_SONG, GameMusics.FAMU_FATARU_THEME_SONG_FILE);
@@ -5197,19 +5197,22 @@ namespace djack.RogueSurvivor.Engine
             m_MusicManager.Load(GameMusics.INTRO, GameMusics.INTRO_FILE);
             m_MusicManager.Load(GameMusics.LIMBO, GameMusics.LIMBO_FILE);
             m_MusicManager.Load(GameMusics.PLAYER_DEATH, GameMusics.PLAYER_DEATH_FILE);
-            m_MusicManager.Load(GameMusics.POST_RESCUE, GameMusics.POST_RESCUE_FILE); //@@MP (Release 6-4)
+            m_MusicManager.Load(GameMusics.POST_RESCUE, GameMusics.POST_RESCUE_FILE);
             m_MusicManager.Load(GameMusics.ROGUEDJACK_THEME_SONG, GameMusics.ROGUEDJACK_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.SANTAMAN_THEME_SONG, GameMusics.SANTAMAN_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.SEWERS, GameMusics.SEWERS_FILE);
             m_MusicManager.Load(GameMusics.SLEEP, GameMusics.SLEEP_FILE);
             m_MusicManager.Load(GameMusics.SUBWAY, GameMusics.SUBWAY_FILE);
             m_MusicManager.Load(GameMusics.SURVIVORS, GameMusics.SURVIVORS_FILE);
+            #endregion
 
-            //BACKGROUND MUSIC //@@MP (Release 6-1)
+            #region BACKGROUND MUSIC
+            //@@MP (Release 6-1)
             m_MusicManager.Load(GameMusics.SURFACE, GameMusics.SURFACE_FILE); // alpha10
 
             //add each to a playlist //@@MP (Release 6-1)
             m_bgMusicPlaylist.Add(GameMusics.SURFACE);
+            #endregion
 
             m_UI.UI_Clear(Color.Black);
             m_UI.UI_DrawStringBold(Color.White, "Loading music... done!", 0, 0);
@@ -5219,26 +5222,43 @@ namespace djack.RogueSurvivor.Engine
             m_UI.UI_DrawStringBold(Color.White, "Loading sfxs...", 0, 0);
             m_UI.UI_Repaint();
 
-            //SOUND EFFECTS
-            m_SFXManager.Load(GameSounds.UNDEAD_EAT_PLAYER, GameSounds.UNDEAD_EAT_PLAYER_FILE); //@@MP - added a NEARBY (Release 3)
-            m_SFXManager.Load(GameSounds.UNDEAD_RISE_PLAYER, GameSounds.UNDEAD_RISE_PLAYER_FILE); //@@MP - added a NEARBY (Release 3)
+            #region SOUND EFFECTS
+            m_SFXManager.Load(GameSounds.UNDEAD_EAT_PLAYER, GameSounds.UNDEAD_EAT_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.UNDEAD_RISE_PLAYER, GameSounds.UNDEAD_RISE_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.NIGHTMARE, GameSounds.NIGHTMARE_FILE);
-            //@@MP - new sounds below here (Release 2)
             m_SFXManager.Load(GameSounds.MELEE_ATTACK_PLAYER, GameSounds.MELEE_ATTACK_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.MELEE_ATTACK_NEARBY, GameSounds.MELEE_ATTACK_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.MELEE_ATTACK_MISS_PLAYER, GameSounds.MELEE_ATTACK_MISS_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.MELEE_ATTACK_MISS_NEARBY, GameSounds.MELEE_ATTACK_MISS_NEARBY_FILE);
-            m_SFXManager.Load(GameSounds.PISTOL_FIRE_PLAYER, GameSounds.PISTOL_FIRE_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.PISTOL_SINGLE_SHOT_PLAYER, GameSounds.PISTOL_SINGLE_SHOT_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.PISTOL_RAPID_FIRE_PLAYER, GameSounds.PISTOL_RAPID_FIRE_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.HUNTING_RIFLE_FIRE_PLAYER, GameSounds.HUNTING_RIFLE_FIRE_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.SHOTGUN_FIRE_PLAYER, GameSounds.SHOTGUN_FIRE_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.CROSSBOW_FIRE_PLAYER, GameSounds.CROSSBOW_FIRE_PLAYER_FILE);
-            m_SFXManager.Load(GameSounds.PISTOL_FIRE_NEARBY, GameSounds.PISTOL_FIRE_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.PRECISION_RIFLE_FIRE_PLAYER, GameSounds.PRECISION_RIFLE_FIRE_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.REVOLVER_SINGLE_SHOT_PLAYER, GameSounds.REVOLVER_SINGLE_SHOT_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.REVOLVER_RAPID_FIRE_PLAYER, GameSounds.REVOLVER_RAPID_FIRE_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.ARMY_RIFLE_SINGLE_SHOT_PLAYER, GameSounds.ARMY_RIFLE_SINGLE_SHOT_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.ARMY_RIFLE_RAPID_FIRE_PLAYER, GameSounds.ARMY_RIFLE_RAPID_FIRE_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.PISTOL_SINGLE_SHOT_NEARBY, GameSounds.PISTOL_SINGLE_SHOT_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.PISTOL_RAPID_FIRE_NEARBY, GameSounds.PISTOL_RAPID_FIRE_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.HUNTING_RIFLE_FIRE_NEARBY, GameSounds.HUNTING_RIFLE_FIRE_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.SHOTGUN_FIRE_NEARBY, GameSounds.SHOTGUN_FIRE_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.CROSSBOW_FIRE_NEARBY, GameSounds.CROSSBOW_FIRE_NEARBY_FILE);
-            m_SFXManager.Load(GameSounds.PISTOL_FIRE_FAR, GameSounds.PISTOL_FIRE_FAR_FILE);
+            m_SFXManager.Load(GameSounds.PRECISION_RIFLE_FIRE_NEARBY, GameSounds.PRECISION_RIFLE_FIRE_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.REVOLVER_SINGLE_SHOT_NEARBY, GameSounds.REVOLVER_SINGLE_SHOT_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.REVOLVER_RAPID_FIRE_NEARBY, GameSounds.REVOLVER_RAPID_FIRE_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.ARMY_RIFLE_SINGLE_SHOT_NEARBY, GameSounds.ARMY_RIFLE_SINGLE_SHOT_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.ARMY_RIFLE_RAPID_FIRE_NEARBY, GameSounds.ARMY_RIFLE_RAPID_FIRE_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.PISTOL_SINGLE_SHOT_FAR, GameSounds.PISTOL_SINGLE_SHOT_FAR_FILE);
+            m_SFXManager.Load(GameSounds.PISTOL_RAPID_FIRE_FAR, GameSounds.PISTOL_RAPID_FIRE_FAR_FILE);
             m_SFXManager.Load(GameSounds.HUNTING_RIFLE_FIRE_FAR, GameSounds.HUNTING_RIFLE_FIRE_FAR_FILE);
             m_SFXManager.Load(GameSounds.SHOTGUN_FIRE_FAR, GameSounds.SHOTGUN_FIRE_FAR_FILE);
+            m_SFXManager.Load(GameSounds.PRECISION_RIFLE_FIRE_FAR, GameSounds.PRECISION_RIFLE_FIRE_FAR_FILE);
+            m_SFXManager.Load(GameSounds.REVOLVER_SINGLE_SHOT_FAR, GameSounds.REVOLVER_SINGLE_SHOT_FAR_FILE);
+            m_SFXManager.Load(GameSounds.REVOLVER_RAPID_FIRE_FAR, GameSounds.REVOLVER_RAPID_FIRE_FAR_FILE);
+            m_SFXManager.Load(GameSounds.ARMY_RIFLE_SINGLE_SHOT_FAR, GameSounds.ARMY_RIFLE_SINGLE_SHOT_FAR_FILE);
+            m_SFXManager.Load(GameSounds.ARMY_RIFLE_RAPID_FIRE_FAR, GameSounds.ARMY_RIFLE_RAPID_FIRE_FAR_FILE);
             m_SFXManager.Load(GameSounds.ARMOR_ZIPPER, GameSounds.ARMOR_ZIPPER_FILE);
             m_SFXManager.Load(GameSounds.EQUIP_GUN_PLAYER, GameSounds.EQUIP_GUN_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.TORCH_CLICK_PLAYER, GameSounds.TORCH_CLICK_PLAYER_FILE);
@@ -5249,7 +5269,7 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.SPRAY_SCENT, GameSounds.SPRAY_SCENT_FILE);
             m_SFXManager.Load(GameSounds.SPRAY_TAG, GameSounds.SPRAY_TAG_FILE);
             m_SFXManager.Load(GameSounds.EAT_FOOD, GameSounds.EAT_FOOD_FILE);
-            m_SFXManager.Load(GameSounds.VOMIT_PLAYER, GameSounds.VOMIT_PLAYER_FILE); //@@MP - added a NEARBY (Release 3)
+            m_SFXManager.Load(GameSounds.VOMIT_PLAYER, GameSounds.VOMIT_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.GLASS_DOOR, GameSounds.GLASS_DOOR_FILE);
             m_SFXManager.Load(GameSounds.WOODEN_DOOR_OPEN, GameSounds.WOODEN_DOOR_OPEN_FILE);
             m_SFXManager.Load(GameSounds.WOODEN_DOOR_CLOSE, GameSounds.WOODEN_DOOR_CLOSE_FILE);
@@ -5269,7 +5289,6 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.SCREAM_FAR_05, GameSounds.SCREAM_FAR_05_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_06, GameSounds.SCREAM_FAR_06_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_07, GameSounds.SCREAM_FAR_07_FILE);
-            //@@MP (Release 3)
             m_SFXManager.Load(GameSounds.BASH_WOOD_PLAYER, GameSounds.BASH_WOOD_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.BASH_WOOD_NEARBY, GameSounds.BASH_WOOD_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.TURN_PAGE, GameSounds.TURN_PAGE_FILE);
@@ -5289,23 +5308,21 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.BEAR_TRAP_NEARBY, GameSounds.BEAR_TRAP_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.CAN_TRAP_FAR, GameSounds.CAN_TRAP_FAR_FILE);
             m_SFXManager.Load(GameSounds.BEAR_TRAP_FAR, GameSounds.BEAR_TRAP_FAR_FILE);
-            //@MP (Release 4)
             m_SFXManager.Load(GameSounds.DYNAMITE_VISIBLE, GameSounds.DYNAMITE_VISIBLE_FILE);
             m_SFXManager.Load(GameSounds.DYNAMITE_AUDIBLE, GameSounds.DYNAMITE_AUDIBLE_FILE);
             m_SFXManager.Load(GameSounds.GRENADE_VISIBLE, GameSounds.GRENADE_VISIBLE_FILE);
             m_SFXManager.Load(GameSounds.GRENADE_AUDIBLE, GameSounds.GRENADE_AUDIBLE_FILE);
             m_SFXManager.Load(GameSounds.MOLOTOV_VISIBLE, GameSounds.MOLOTOV_VISIBLE_FILE);
             m_SFXManager.Load(GameSounds.MOLOTOV_AUDIBLE, GameSounds.MOLOTOV_AUDIBLE_FILE);
+            m_SFXManager.Load(GameSounds.FLASHBANG_VISIBLE, GameSounds.FLASHBANG_VISIBLE_FILE);
+            m_SFXManager.Load(GameSounds.FLASHBANG_AUDIBLE, GameSounds.FLASHBANG_AUDIBLE_FILE);
             m_SFXManager.Load(GameSounds.SMOKING, GameSounds.SMOKING_FILE);
             m_SFXManager.Load(GameSounds.ROLLER_DOOR, GameSounds.ROLLER_DOOR_FILE);
-            //@MP (Release 5-1)
             m_SFXManager.Load(GameSounds.NAIL_GUN, GameSounds.NAIL_GUN_FILE);
-            //@MP (Release 5-3)
             m_SFXManager.Load(GameSounds.BREAK_WOODENDOOR_PLAYER, GameSounds.BREAK_WOODENDOOR_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.BREAK_WOODENDOOR_NEARBY, GameSounds.BREAK_WOODENDOOR_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.BREAK_GLASSDOOR_PLAYER, GameSounds.BREAK_GLASSDOOR_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.BREAK_GLASSDOOR_NEARBY, GameSounds.BREAK_GLASSDOOR_NEARBY_FILE);
-            //@MP (Release 5-4)
             m_SFXManager.Load(GameSounds.BREAK_METALDOOR_PLAYER, GameSounds.BREAK_METALDOOR_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.BREAK_METALDOOR_NEARBY, GameSounds.BREAK_METALDOOR_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.BASH_OTHER_OBJECTS_PLAYER, GameSounds.BASH_OTHER_OBJECTS_PLAYER_FILE);
@@ -5316,26 +5333,25 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.BASH_METALDOOR_NEARBY, GameSounds.BASH_METALDOOR_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.PUSH_WOODEN_OBJECT_VISIBLE, GameSounds.PUSH_WOODEN_OBJECT_VISIBLE_FILE);
             m_SFXManager.Load(GameSounds.PUSH_WOODEN_OBJECT_AUDIBLE, GameSounds.PUSH_WOODEN_OBJECT_AUDIBLE_FILE);
-            //@@MP - relocated from music to sfx (Release 6-1)
             m_SFXManager.Load(GameSounds.REINCARNATE, GameSounds.REINCARNATE_FILE);
-            //@@MP (Release 6-2)
             m_SFXManager.Load(GameSounds.NIGHT_VISION, GameSounds.NIGHT_VISION_FILE);
-            //@@MP (Release 6-3)
             m_SFXManager.Load(GameSounds.ACCESS_DENIED, GameSounds.ACCESS_DENIED_FILE);
             m_SFXManager.Load(GameSounds.ACCESS_GRANTED, GameSounds.ACCESS_GRANTED_FILE);
-            //@@MP (Release 6-4)
             m_SFXManager.Load(GameSounds.ACHIEVEMENT, GameSounds.ACHIEVEMENT_FILE);
+            #endregion
 
-            //AMBIENT SOUND
-            m_AmbientSFXManager.Load(GameAmbients.RAIN_OUTSIDE, GameAmbients.RAIN_OUTSIDE_FILE); //@MP (Release 5-3), separated to own instance (Release 6-1)
-            m_AmbientSFXManager.Load(GameAmbients.RAIN_INSIDE, GameAmbients.RAIN_INSIDE_FILE); //@MP (Release 5-3), separated to own instance (Release 6-1)
-            m_AmbientSFXManager.Load(GameAmbients.HELICOPTER_FLYOVER, GameAmbients.HELICOPTER_FLYOVER_FILE); //@MP (Release 6-1)
-            //@@MP (Release 6-4)
+            #region AMBIENT SOUND
+            m_AmbientSFXManager.Load(GameAmbients.RAIN_OUTSIDE, GameAmbients.RAIN_OUTSIDE_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.RAIN_INSIDE, GameAmbients.RAIN_INSIDE_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.HELICOPTER_FLYOVER, GameAmbients.HELICOPTER_FLYOVER_FILE);
             m_AmbientSFXManager.Load(GameAmbients.STATIONARY_HELICOPTER_FARTHEST, GameAmbients.STATIONARY_HELICOPTER_FARTHEST_FILE);
             m_AmbientSFXManager.Load(GameAmbients.STATIONARY_HELICOPTER_FAR, GameAmbients.STATIONARY_HELICOPTER_FAR_FILE);
             m_AmbientSFXManager.Load(GameAmbients.STATIONARY_HELICOPTER_NEAR, GameAmbients.STATIONARY_HELICOPTER_NEAR_FILE);
             m_AmbientSFXManager.Load(GameAmbients.STATIONARY_HELICOPTER_VISIBLE, GameAmbients.STATIONARY_HELICOPTER_VISIBLE_FILE);
-            
+            m_AmbientSFXManager.Load(GameAmbients.THUNDERING_RAIN_OUTSIDE, GameAmbients.THUNDERING_RAIN_OUTSIDE_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.THUNDERING_RAIN_INSIDE, GameAmbients.THUNDERING_RAIN_INSIDE_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.NIGHT_ANIMALS_OUTSIDE, GameAmbients.NIGHT_ANIMALS_OUTSIDE_FILE);
+            #endregion
 
             m_UI.UI_Clear(Color.Black);
             m_UI.UI_DrawStringBold(Color.White, "Loading sfxs... done!", 0, 0);
@@ -9221,7 +9237,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // change.
                 m_Session.World.Weather = newWeather;
-                CheckRainSFX(m_Player.Location.Map); //@@MP (Release 5-3)
+                CheckAmbientSFX(m_Player.Location.Map); //@@MP (Release 5-3)
 
                 // message.
                 if (m_Rules.CanActorSeeSky(m_Player)) //@@MP - only mention if the player can see the sky, in line with alpha 10 (Release 6-1)
@@ -9238,45 +9254,107 @@ namespace djack.RogueSurvivor.Engine
         }
 
         /// <summary>
-        /// Plays the rain sound effect if required
+        /// Plays an ambient track as required
         /// </summary>
-        void CheckRainSFX(Map map) //@@MP (Release 5-3)
+        void CheckAmbientSFX(Map map) //@@MP (Release 5-3), changed to support new ambients (Release 6-6)
         {
-            if (!m_Rules.IsWeatherRain(m_Session.World.Weather) || m_Session.CurrentMap.Name.Contains("basement") || map == map.District.SubwayMap || map == map.District.SewersMap ||
+            if (m_Session.CurrentMap.Name.Contains("basement") || map == map.District.SubwayMap || map == map.District.SewersMap ||
                 map == m_Session.UniqueMaps.Hospital_Offices.TheMap || map == m_Session.UniqueMaps.Hospital_Patients.TheMap ||
                 map == m_Session.UniqueMaps.Hospital_Power.TheMap || map == m_Session.UniqueMaps.Hospital_Storage.TheMap ||
                 map == m_Session.UniqueMaps.PoliceStation_OfficesLevel.TheMap || map == m_Session.UniqueMaps.PoliceStation_JailsLevel.TheMap ||
                 map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap || map == m_Session.UniqueMaps.ArmyBase.TheMap)
-            { //in case they're already playing ie the rain stopped this turn
-                if (m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_OUTSIDE))
-                    m_AmbientSFXManager.Stop(GameAmbients.RAIN_OUTSIDE);
-
-                if (m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_INSIDE))
-                    m_AmbientSFXManager.Stop(GameAmbients.RAIN_INSIDE);
-
+            {
+                //stop any ambients sounds that we couldn't hear in these locations
+                m_AmbientSFXManager.StopAll();
                 return;
             }
-            else //it's raining and we're somewhere we can hear it
+            else // we're somewhere that we could hear ambient noise
             {
                 Tile tile = map.GetTileAt(Player.Location.Position);
                 if (tile == null)
                     return;
-                else if (tile.IsInside)
-                {
-                    if (!m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_INSIDE)) //start playing before we stop the other, to make the transition more seamless (no audio gap)
-                        m_AmbientSFXManager.PlayLooping(GameAmbients.RAIN_INSIDE, AudioPriority.PRIORITY_BGM);
 
-                    if (m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_OUTSIDE))
-                        m_AmbientSFXManager.Stop(GameAmbients.RAIN_OUTSIDE);
-                }
-                else
+                if (m_Session.World.Weather == Weather.RAIN)
                 {
-                    if (!m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_OUTSIDE))
-                        m_AmbientSFXManager.PlayLooping(GameAmbients.RAIN_OUTSIDE, AudioPriority.PRIORITY_BGM);
+                    if (tile.IsInside)
+                    {
+                        //start playing before we stop the other, to make the transition more seamless (no audio gap)
+                        if (!m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_INSIDE))
+                            m_AmbientSFXManager.PlayLooping(GameAmbients.RAIN_INSIDE, AudioPriority.PRIORITY_BGM);
 
-                    if (m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_INSIDE))
-                        m_AmbientSFXManager.Stop(GameAmbients.RAIN_INSIDE);
+                        //stop any other ambients
+                        StopAllAmbientsExcept(GameAmbients.RAIN_INSIDE);
+                    }
+                    else
+                    {
+                        if (!m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_OUTSIDE))
+                            m_AmbientSFXManager.PlayLooping(GameAmbients.RAIN_OUTSIDE, AudioPriority.PRIORITY_BGM);
+
+                        StopAllAmbientsExcept(GameAmbients.RAIN_OUTSIDE);
+                    }
                 }
+                else if (m_Session.World.Weather == Weather.HEAVY_RAIN)
+                {
+                    if (tile.IsInside)
+                    {
+                        if (!m_AmbientSFXManager.IsPlaying(GameAmbients.THUNDERING_RAIN_INSIDE))
+                            m_AmbientSFXManager.PlayLooping(GameAmbients.THUNDERING_RAIN_INSIDE, AudioPriority.PRIORITY_BGM);
+
+                        StopAllAmbientsExcept(GameAmbients.THUNDERING_RAIN_INSIDE);
+                    }
+                    else
+                    {
+                        if (!m_AmbientSFXManager.IsPlaying(GameAmbients.THUNDERING_RAIN_OUTSIDE))
+                            m_AmbientSFXManager.PlayLooping(GameAmbients.THUNDERING_RAIN_OUTSIDE, AudioPriority.PRIORITY_BGM);
+
+                        StopAllAmbientsExcept(GameAmbients.THUNDERING_RAIN_OUTSIDE);
+                    }
+                }
+                else if (m_Session.WorldTime.IsNight && !tile.IsInside)
+                {
+                    if (!m_AmbientSFXManager.IsPlaying(GameAmbients.NIGHT_ANIMALS_OUTSIDE))
+                        m_AmbientSFXManager.PlayLooping(GameAmbients.NIGHT_ANIMALS_OUTSIDE, AudioPriority.PRIORITY_BGM);
+
+                    StopAllAmbientsExcept(GameAmbients.NIGHT_ANIMALS_OUTSIDE);
+                }
+                else //none of the ambients apply for the current weather and time of day
+                    m_AmbientSFXManager.StopAll();
+            }
+        }
+
+        /// <summary>
+        /// Stops all other ambient sound files except the one passed as the parameter
+        /// </summary>
+        private void StopAllAmbientsExcept(string musicname) //@@MP (Release 6-6)
+        {
+            if (musicname != GameAmbients.RAIN_INSIDE)
+            {
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_INSIDE))
+                    m_AmbientSFXManager.Stop(GameAmbients.RAIN_INSIDE);
+            }
+
+            if (musicname != GameAmbients.RAIN_OUTSIDE)
+            {
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.RAIN_OUTSIDE))
+                    m_AmbientSFXManager.Stop(GameAmbients.RAIN_OUTSIDE);
+            }
+
+            if (musicname != GameAmbients.THUNDERING_RAIN_INSIDE)
+            {
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.THUNDERING_RAIN_INSIDE))
+                    m_AmbientSFXManager.Stop(GameAmbients.THUNDERING_RAIN_INSIDE);
+            }
+
+            if (musicname != GameAmbients.THUNDERING_RAIN_OUTSIDE)
+            {
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.THUNDERING_RAIN_OUTSIDE))
+                    m_AmbientSFXManager.Stop(GameAmbients.THUNDERING_RAIN_OUTSIDE);
+            }
+
+            if (musicname != GameAmbients.NIGHT_ANIMALS_OUTSIDE)
+            {
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.NIGHT_ANIMALS_OUTSIDE))
+                    m_AmbientSFXManager.Stop(GameAmbients.NIGHT_ANIMALS_OUTSIDE);
             }
         }
 
@@ -11569,7 +11647,12 @@ namespace djack.RogueSurvivor.Engine
             Attack rangedAttack = m_Rules.ActorRangedAttack(player, player.CurrentRangedAttack, 0, null);
             int iCurrentTarget = 0;
             List<Point> LoF = new List<Point>(rangedAttack.Range);
-            FireMode mode = m_Session.Player_CurrentFireMode;  // alpha10
+            FireMode mode;
+            bool singleShot = (rangedWeapon.Model as ItemRangedWeaponModel).IsSingleShot; //@@MP - some weapons are not single-shot = can't rapid fire (Release 6-6)
+            if (singleShot)
+                mode = FireMode.DEFAULT;
+            else
+                mode = m_Session.Player_CurrentFireMode;  // alpha10
             do
             {
                 Actor currentTarget = potentialTargets[iCurrentTarget];
@@ -11621,13 +11704,20 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else if (key.KeyCode == Keys.M)    // next mode
                 {
-                    // switch.
-                    mode = (FireMode)(((int)mode + 1) % (int)FireMode._COUNT);
-                    // tell.
-                    AddMessage(new Message(String.Format("Switched to {0} fire mode.", mode.ToString()), m_Session.WorldTime.TurnCounter, Color.Yellow));
-                    // save preference to session // alpha10
-                    m_Session.Player_CurrentFireMode = mode;
-
+                    if (singleShot) //@@MP - some weapons are not single-shot = can't rapid fire (Release 6-6)
+                    {
+                        AddMessage(new Message(String.Format("{0} cannot rapid fire.", rangedWeapon.Model.SingleName), m_Session.WorldTime.TurnCounter, Color.Red));
+                        m_Session.Player_CurrentFireMode = FireMode.DEFAULT;
+                    }
+                    else
+                    {
+                        // switch.
+                        mode = (FireMode)(((int)mode + 1) % (int)FireMode._COUNT);
+                        // tell.
+                        AddMessage(new Message(String.Format("Switched to {0} fire mode.", mode.ToString()), m_Session.WorldTime.TurnCounter, Color.Yellow));
+                        // save preference to session // alpha10
+                        m_Session.Player_CurrentFireMode = mode;
+                    }
                 }
                 else if (key.KeyCode == Keys.F) // do fire
                 {
@@ -14430,11 +14520,11 @@ namespace djack.RogueSurvivor.Engine
                 gy += BOLD_LINE_SPACING;
                 m_UI.UI_DrawString(Color.White, "  *   - current     ?   - unvisited", gx, gy);
                 gy += LINE_SPACING;
-                m_UI.UI_DrawString(Color.White, "  Bus - Business    Gen - General    Gre - Green", gx, gy);
+                m_UI.UI_DrawString(Color.White, "  Bus - Business    Gen - General", gx, gy);
                 gy += LINE_SPACING;
                 m_UI.UI_DrawString(Color.White, "  Res - Residential Sho - Shopping", gx, gy);
                 gy += LINE_SPACING;
-                m_UI.UI_DrawString(Color.White, "  =   - Subway Line", gx, gy);
+                m_UI.UI_DrawString(Color.White, "  Gre - Green       =   - Subway Line", gx, gy);
                 gy += LINE_SPACING;
 #endregion
 
@@ -14456,7 +14546,7 @@ namespace djack.RogueSurvivor.Engine
                         Zone subwayZone;
                         if ((subwayZone = map.GetZoneByPartialName(NAME_SUBWAY_STATION)) != null)
                         {
-                            m_UI.UI_DrawStringBold(Color.Blue, String.Format("at {0} : {1}.", World.CoordToString(x, y), subwayZone.Name), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.Blue, String.Format(" at {0} : {1}", World.CoordToString(x, y), subwayZone.Name), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -14470,7 +14560,7 @@ namespace djack.RogueSurvivor.Engine
                         /*Zone sewersZone;
                         if ((sewersZone = map.GetZoneByPartialName(NAME_SEWERS_MAINTENANCE)) != null)
                         {
-                            m_UI.UI_DrawStringBold(Color.Green, String.Format("at {0} : {1}.", World.CoordToString(x, y), sewersZone.Name), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.Green, String.Format(" at {0} : {1}", World.CoordToString(x, y), sewersZone.Name), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -14482,7 +14572,7 @@ namespace djack.RogueSurvivor.Engine
                         // Police station?
                         if (map == m_Session.UniqueMaps.PoliceStation_OfficesLevel.TheMap.District.EntryMap)
                         {
-                            m_UI.UI_DrawStringBold(Color.CadetBlue, String.Format("at {0} : Police Station.", World.CoordToString(x, y)), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.CadetBlue, String.Format(" at {0} : Police Station", World.CoordToString(x, y)), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -14494,7 +14584,7 @@ namespace djack.RogueSurvivor.Engine
                         // Hospital?
                         if (map == m_Session.UniqueMaps.Hospital_Admissions.TheMap.District.EntryMap)
                         {
-                            m_UI.UI_DrawStringBold(Color.White, String.Format("at {0} : Hospital.", World.CoordToString(x, y)), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.White, String.Format(" at {0} : Hospital", World.CoordToString(x, y)), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -14507,7 +14597,7 @@ namespace djack.RogueSurvivor.Engine
                         // - CHAR Underground Facility?
                         if (m_Session.PlayerKnows_CHARUndergroundFacilityLocation && map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap.District.EntryMap)
                         {
-                            m_UI.UI_DrawStringBold(Color.Red, String.Format("at {0} : {1}.", World.CoordToString(x, y), m_Session.UniqueMaps.CHARUndergroundFacility.TheMap.Name), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.Red, String.Format(" at {0} : {1}", World.CoordToString(x, y), m_Session.UniqueMaps.CHARUndergroundFacility.TheMap.Name), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -14520,7 +14610,7 @@ namespace djack.RogueSurvivor.Engine
                             map == m_Session.UniqueActors.TheSewersThing.TheActor.Location.Map.District.EntryMap &&
                             !m_Session.UniqueActors.TheSewersThing.TheActor.IsDead)
                         {
-                            m_UI.UI_DrawStringBold(Color.Red, String.Format("at {0} : The Sewers Thing lives down there.", World.CoordToString(x, y)), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.Red, String.Format(" at {0} : The Sewers Thing lives down there.", World.CoordToString(x, y)), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -14532,7 +14622,7 @@ namespace djack.RogueSurvivor.Engine
                         // - Army base?
                         if (m_Session.PlayerKnows_ArmyBaseLocation && map == m_Session.UniqueMaps.ArmyBase.TheMap.District.EntryMap)
                         {
-                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format("at {0} : {1}.", World.CoordToString(x, y), m_Session.UniqueMaps.ArmyBase.TheMap.Name), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format(" at {0} : {1}", World.CoordToString(x, y), m_Session.UniqueMaps.ArmyBase.TheMap.Name), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -14543,7 +14633,7 @@ namespace djack.RogueSurvivor.Engine
                         // Helicopter rescue location
                         if (m_Session.PlayerKnows_HelicopterArrivalDetails && map == m_Session.UniqueMaps.ArmyBase.TheMap.District.EntryMap)
                         {
-                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format("at {0} : {1}{2} on day {3}.", m_Session.ArmyHelicopterRescue_DistrictRef, "Helicopter rescue spot @", (m_Session.ArmyHelicopterRescue_Coordinates.X + "-" + m_Session.ArmyHelicopterRescue_Coordinates.Y), m_Session.ArmyHelicopterRescue_Day.ToString()), gx, gy);
+                            m_UI.UI_DrawStringBold(Color.Khaki, String.Format(" at {0} : {1}{2} on day {3}", m_Session.ArmyHelicopterRescue_DistrictRef, "Helicopter rescue spot @", (m_Session.ArmyHelicopterRescue_Coordinates.X + "-" + m_Session.ArmyHelicopterRescue_Coordinates.Y), m_Session.ArmyHelicopterRescue_Day.ToString()), gx, gy);
                             gy += BOLD_LINE_SPACING;
                             if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
                             {
@@ -14552,8 +14642,92 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
-#endregion
+                #endregion
+
+                /////////////////
+                // Tag locations  //@@MP (Release 6-6)
+                /////////////////
+                #region
+                gx = 350;
+                gy = 2 * BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, "> YOUR TAG LOCATIONS", gx, gy);
+                gy += BOLD_LINE_SPACING;
+                gx += 32;
+                int tagsCount = 0;
+                for (int dy = 0; dy < m_Session.World.Size; dy++)
+                {
+                    for (int dx = 0; dx < m_Session.World.Size; dx++)
+                    {
+                        District d = m_Session.World[dx, dy];
+                        Map map = d.EntryMap;
+                        if (m_Session.Scoring.HasVisited(map))
+                        {
+                            for (int ma = 0; ma < map.Width; ma++)
+                            {
+                                for (int mb = 0; mb < map.Height; mb++)
+                                {
+                                    Tile tile = map.GetTileAt(ma, mb);
+                                    if (tile.IsVisited)
+                                    {
+                                        string colour = null;
+                                        Color tagColor = Color.White;
+                                        if (tile.HasDecoration(GameImages.DECO_PLAYER_TAG1))
+                                        {
+                                            colour = "yellow";
+                                            tagColor = Color.Gold;
+                                        }
+                                        else if (tile.HasDecoration(GameImages.DECO_PLAYER_TAG2))
+                                        {
+                                            colour = "blue";
+                                            tagColor = Color.Blue;
+                                        }   
+                                        else if (tile.HasDecoration(GameImages.DECO_PLAYER_TAG3))
+                                        {
+                                            colour = "green";
+                                            tagColor = Color.LimeGreen;
+                                        }   
+                                        else if (tile.HasDecoration(GameImages.DECO_PLAYER_TAG4))
+                                        {
+                                            colour = "pink";
+                                            tagColor = Color.HotPink;
+                                        }   
+
+                                        if (!String.IsNullOrEmpty(colour))
+                                        {
+                                            //get the name of the tag's location in-map
+                                            string locName = "";
+                                            List<Zone> zones = map.GetZonesAt(ma, mb);
+                                            if (zones == null || zones.Count == 0)
+                                                ;
+                                            else
+                                            {
+                                                foreach (Zone z in zones)
+                                                {
+                                                    int index = z.Name.IndexOf("@"); //eg "Subway Station@29-42"
+                                                    string nameOnly = (index > 0 ? z.Name.Substring(0, index) : "");
+                                                    locName += String.Format("{0} ", nameOnly); //eg "Subway Station"
+                                                }
+                                            }
+
+                                            gy += BOLD_LINE_SPACING;
+                                            m_UI.UI_DrawStringBold(tagColor, (colour + " at " + World.CoordToString(dx, dy) + " : " + locName + "(" + ma + "," + mb + ")"), gx, gy);
+                                            ++tagsCount;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (tagsCount == 0)
+                {
+                    gy += BOLD_LINE_SPACING;
+                    m_UI.UI_DrawStringBold(Color.White, "*no tags sprayed yet", gx, gy);
+                    ++tagsCount;
+                }
+                #endregion
+                #endregion
             }
 
             DrawFootnote(Color.White, "press ESC to leave");
@@ -14746,7 +14920,7 @@ namespace djack.RogueSurvivor.Engine
             //@@MP check ambient sound effects
             if (actor.IsPlayer) //@@MP - added check (Release 6-1)
             {
-                CheckRainSFX(map); //@MP (Release 5-3)
+                CheckAmbientSFX(map); //@MP (Release 5-3)
                 CheckLandedHelicopterSFX(map); //@@MP (Release 6-4)
             }
 
@@ -15814,40 +15988,34 @@ namespace djack.RogueSurvivor.Engine
                     SpendActorActionPoints(attacker, Rules.BASE_ACTION_COST);
 
                     // do attack.
-                    DoSingleRangedAttack(attacker, defender, LoF, 0);
+                    DoSingleRangedAttack(attacker, defender, LoF, 0, 1);
                     break;
 
                 case FireMode.RAPID:
                     // spend AP.
                     SpendActorActionPoints(attacker, Rules.BASE_ACTION_COST);
 
-                    // 1st attack
-                    DoSingleRangedAttack(attacker, defender, LoF, 1);
+                    //@@MP - re-wrote the following section (Release 6-6)
 
-                    // 2nd attack.
-                    // special cases:
-                    // - target was killed by 1st attack.
-                    // - no more ammo.
+                    // do we have enough ammo for rapid-fire?
                     ItemRangedWeapon w = attacker.GetEquippedWeapon() as ItemRangedWeapon;
-                    if (defender.IsDead)
+                    bool secondShotPossible = false;
+                    int soundEffect = 1;
+                    if (w.Ammo >= 2)
                     {
-                        // spend 2nd shot ammo.
-                        --w.Ammo;
+                        soundEffect = 2;
+                        secondShotPossible = true;
+                    }
 
-                        // shoot at nothing.
-                        Attack attack = attacker.CurrentRangedAttack;
-                        AddMessage(MakeMessage(attacker, String.Format("{0} at nothing.", Conjugate(attacker, attack.Verb))));
-                    }
-                    else if (w.Ammo <= 0)
-                    {
-                        // fail silently.
-                        return;
-                    }
-                    else
-                    {
-                        // perform attack normally.
-                        DoSingleRangedAttack(attacker, defender, LoF, 2);
-                    }
+                    // 1st attack
+                    DoSingleRangedAttack(attacker, defender, LoF, 1, soundEffect);
+
+                    // 2nd attack, if possible
+                    if (defender.IsDead)
+                        --w.Ammo;
+                    else if (secondShotPossible == true)
+                        DoSingleRangedAttack(attacker, defender, LoF, 2, 0);
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("mode","unhandled ranged attack fire mode");
@@ -15861,7 +16029,8 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="defender"></param>
         /// <param name="LoF"></param>
         /// <param name="shotCounter">0 for normal shot, 1 for 1st rapid fire shot, 2 for 2nd rapid fire shot</param>
-        void DoSingleRangedAttack(Actor attacker, Actor defender, List<Point> LoF, int shotCounter)
+        /// <param name="soundEffect">0 for none, 1 for single-shot, 2 for rapid-fire</param>
+        void DoSingleRangedAttack(Actor attacker, Actor defender, List<Point> LoF, int shotCounter, int soundEffect)
         {
             // set activiy & target.
             attacker.Activity = Activity.FIGHTING;
@@ -15917,79 +16086,127 @@ namespace djack.RogueSurvivor.Engine
             bool isAttVisible = IsVisibleToPlayer(attacker.Location);
             bool isPlayer = attacker.IsPlayer || defender.IsPlayer;
 
-            if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS))// || isPlayer) //@@MP - the player is shot at or shoots, so play the CQC sound (Release 2), changed from isVisible to IsAudible with a supplied a range (Release 5-4)
+            if (soundEffect > 0) //@@MP - added parameter for playing (or not) the desired SFX type (Release 6-6)
             {
-                switch (weapon.TheName.ToString())
+                if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP - the player is shot at or shoots, so play the CQC sound (Release 2), changed from isVisible to IsAudible with a supplied a range (Release 5-4)
                 {
-                    case "the pistol":
-                    case "the Kolt revolver":
-                    case "the army pistol":
-                    case "the Hans von Hanz pistol":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
-                        break;
-                    case "the hunting rifle":
-                    case "the precision rifle":
-                    case "the army rifle":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
-                        break;
-                    case "the shotgun":
-                    case "the Santaman shotgun":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
-                        break;
-                    case "the hunting crossbow":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CROSSBOW_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
-                        break;
-                    case "the nail gun":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.NAIL_GUN, AudioPriority.PRIORITY_EVENT);
-                        break;
-                    default: break;
+                    switch (weapon.TheName.ToString())
+                    {
+                        case "the pistol":
+                        case "the army pistol":
+                        case "the Hans von Hanz pistol":
+                            if (soundEffect == 1)
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_SINGLE_SHOT_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_RAPID_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the hunting rifle":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the precision rifle":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PRECISION_RIFLE_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the army rifle":
+                            if (soundEffect == 1)
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_SINGLE_SHOT_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_RAPID_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the shotgun":
+                        case "the Santaman shotgun":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the hunting crossbow":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CROSSBOW_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the nail gun":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.NAIL_GUN, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the Kolt revolver":
+                            if (soundEffect == 1)
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_SINGLE_SHOT_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_RAPID_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        default: break;
+                    }
                 }
-            }
-            else if (IsAudibleToPlayer(attacker.Location, Rules.MODERATE_NOISE_RADIUS))  //@@MP - we see the shooter, so play the nearby sound (Release 2), changed from isVisible to IsAudible with a supplied a range (Release 5-4)
-            {
-                switch (weapon.TheName.ToString())
+                else if (IsAudibleToPlayer(attacker.Location, Rules.MODERATE_NOISE_RADIUS)) //@@MP - we see the shooter, so play the nearby sound (Release 2), changed from isVisible to IsAudible with a supplied a range (Release 5-4)
                 {
-                    case "the pistol":
-                    case "the Kolt revolver":
-                    case "the army pistol":
-                    case "the Hans von Hanz pistol":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
-                        break;
-                    case "the hunting rifle":
-                    case "the precision rifle":
-                    case "the army rifle":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
-                        break;
-                    case "the shotgun":
-                    case "the Santaman shotgun":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
-                        break;
-                    case "the hunting crossbow":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CROSSBOW_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
-                        break;
-                    default: break;
+                    switch (weapon.TheName.ToString())
+                    {
+                        case "the pistol":
+                        case "the army pistol":
+                        case "the Hans von Hanz pistol":
+                            if (soundEffect == 1)
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_SINGLE_SHOT_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_RAPID_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the hunting rifle":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the precision rifle":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PRECISION_RIFLE_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the army rifle":
+                            if (soundEffect == 1)
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_SINGLE_SHOT_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_RAPID_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the shotgun":
+                        case "the Santaman shotgun":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the hunting crossbow":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CROSSBOW_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the Kolt revolver":
+                            if (soundEffect == 1)
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_SINGLE_SHOT_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_RAPID_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        default: break;
+                    }
                 }
-            }
-            else if (IsAudibleToPlayer(attacker.Location, Rules.LOUD_NOISE_RADIUS)) //&& !isPlayer && m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP - the noise is within earshot somewhere, so play the far-off sound (Release 2), changed from isVisible to IsAudible with a supplied a range (Release 5-4)
-            {
-                switch (weapon.TheName.ToString())
+                else if (IsAudibleToPlayer(attacker.Location, Rules.LOUD_NOISE_RADIUS)) // && m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP - the noise is within earshot somewhere, so play the far-off sound (Release 2), changed from isVisible to IsAudible with a supplied a range (Release 5-4)
                 {
-                    case "the pistol":
-                    case "the Kolt revolver":
-                    case "the army pistol":
-                    case "the Hans von Hanz pistol":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_FIRE_FAR, AudioPriority.PRIORITY_BGM);
-                        break;
-                    case "the hunting rifle":
-                    case "the precision rifle":
-                    case "the army rifle":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_FAR, AudioPriority.PRIORITY_BGM);
-                        break;
-                    case "the shotgun":
-                    case "the Santaman shotgun":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_FAR, AudioPriority.PRIORITY_BGM);
-                        break;
-                    default: break;
+                    switch (weapon.TheName.ToString())
+                    {
+                        case "the pistol":
+                        case "the army pistol":
+                        case "the Hans von Hanz pistol":
+                            if (soundEffect == 1)
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_SINGLE_SHOT_FAR, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_RAPID_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the hunting rifle":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_FAR, AudioPriority.PRIORITY_BGM);
+                            break;
+                        case "the precision rifle":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PRECISION_RIFLE_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the army rifle":
+                            if (soundEffect == 1)
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_SINGLE_SHOT_FAR, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_RAPID_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        case "the shotgun":
+                        case "the Santaman shotgun":
+                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_FAR, AudioPriority.PRIORITY_BGM);
+                            break;
+                        case "the Kolt revolver":
+                            if (soundEffect == 1)
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_SINGLE_SHOT_FAR, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_RAPID_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
+                            break;
+                        default: break;
+                    }
                 }
             }
 
@@ -17435,8 +17652,18 @@ namespace djack.RogueSurvivor.Engine
                         rangedModel.Attack.HitValue, rangedModel.Attack.Hit2Value, rangedModel.Attack.Hit3Value,
                         rangedModel.Attack.DamageValue,
                         rangedModel.Attack.Range);
-                    if ((actor.IsPlayer) && (it.Model != GameItems.HUNTING_CROSSBOW)) //@@MP (Release 2)
-                        m_SFXManager.Play(GameSounds.EQUIP_GUN_PLAYER, AudioPriority.PRIORITY_EVENT);
+
+                    if (actor.IsPlayer)
+                    {
+                        if (rangedModel.IsSingleShot && m_Session.Player_CurrentFireMode == FireMode.RAPID) //@@MP - enforce single-shot weapon models (Release 6-6)
+                        {
+                            AddMessage(new Message(String.Format("{0} cannot rapid fire. Switched to single-shot", rangedModel.SingleName), m_Session.WorldTime.TurnCounter, Color.Red));
+                            m_Session.Player_CurrentFireMode = FireMode.DEFAULT;
+                        }
+
+                        if (rangedModel.Attack.Kind == AttackKind.FIREARM) //@@MP (Release 2), now generically applies to all firearms (Release 6-6)
+                            m_SFXManager.Play(GameSounds.EQUIP_GUN_PLAYER, AudioPriority.PRIORITY_EVENT);
+                    }
                 }
             }
 #endregion
@@ -18676,7 +18903,7 @@ namespace djack.RogueSurvivor.Engine
             if (actor.IsPlayer && m_MusicManager.Track == GameMusics.SLEEP) //alpha 10 added check for specific track
             {
                 m_MusicManager.Stop(GameMusics.SLEEP); //@@MP - specified track in response to alpha 10 (Release 6-1)
-                CheckRainSFX(actor.Location.Map); //@@MP - restart the rain sound if required (Release 5-3)
+                CheckAmbientSFX(actor.Location.Map); //@@MP - restart the rain sound if required (Release 5-3)
             }
         }
 #endregion
@@ -20316,7 +20543,13 @@ namespace djack.RogueSurvivor.Engine
                 return sb.ToString();
 
             foreach (Zone z in zones)
-                sb.Append(String.Format("{0} ", z.Name));
+            {
+                //@@MP - removed the unecessary coordinates (Release 6-6)
+                int index = z.Name.IndexOf("@"); //eg "Subway Station@29-42"
+                string nameOnly = (index > 0 ? z.Name.Substring(0, index) : "");
+                sb.Append(String.Format("{0} ", nameOnly));//eg "Subway Station"
+            }
+                
 
             return sb.ToString();
         }
@@ -23174,7 +23407,7 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        private Point FindNonHelicopterSpotToMovePlayer(Map map, Point source, List<Point> heliPoints)
+        private static Point FindNonHelicopterSpotToMovePlayer(Map map, Point source, List<Point> heliPoints)
         {
             Point winningPoint = Point.Empty;
             int winningScore = 0;
@@ -26021,7 +26254,10 @@ namespace djack.RogueSurvivor.Engine
                     else
                         lines.Add("> ranged weapon");
 
-                    lines.Add(string.Format("Rapid Fire Atk: {0} {1}", rm.RapidFireHit1Value, rm.RapidFireHit2Value)); // alpha10
+                    if (rm.IsSingleShot) //@@MP - some weapons are not single-shot = can't rapid fire (Release 6-6)
+                        lines.Add(string.Format("{0} cannot rapid fire", rm.SingleName));
+                    else
+                        lines.Add(string.Format("Rapid Fire Atk: {0} {1}", rm.RapidFireHit1Value, rm.RapidFireHit2Value)); // alpha10
 
                     lines.Add(string.Format("Rng  : {0}-{1}", rm.Attack.Range, rm.Attack.EfficientRange));
                     if (rw.Ammo < rm.MaxAmmo)
@@ -26637,10 +26873,10 @@ namespace djack.RogueSurvivor.Engine
             {
                 Type aiClass = m_Player.Model.DefaultController;
                 if (aiClass == null)
-                    throw new Exception("actor model has null defaultcontroller");
+                    throw new InvalidOperationException("actor model has null defaultcontroller");
                 ActorController aiController = aiClass.GetConstructor(Type.EmptyTypes).Invoke(null) as ActorController;
                 if (!(aiController is BaseAI))
-                    throw new Exception("actor model defaultcontroller is not BaseAI");
+                    throw new InvalidOperationException("actor model defaultcontroller is not BaseAI");
 
                 m_botControl = aiController as BaseAI;
                 m_botControl.TakeControl(m_Player);

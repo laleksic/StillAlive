@@ -1199,14 +1199,19 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new ItemSprayScent(m_Game.GameItems.STENCH_KILLER);
         }
 
-        public Item MakeItemArmyRifle()
-        {
-            return new ItemRangedWeapon(m_Game.GameItems.ARMY_RIFLE);
-        }
-
         public Item MakeItemPrecisionRifle()
         {
             return new ItemRangedWeapon(m_Game.GameItems.PRECISION_RIFLE);
+        }
+
+        public Item MakeItemPrecisionRifleAmmo() //@@MP (Release 6-6)
+        {
+            return new ItemAmmo(m_Game.GameItems.AMMO_PRECISION_RIFLE);
+        }
+
+        public Item MakeItemArmyRifle()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.ARMY_RIFLE);
         }
 
         public Item MakeItemHeavyRifleAmmo()

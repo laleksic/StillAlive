@@ -1,6 +1,5 @@
 ﻿REQUIREMENTS
 
-Operating system: XP, Vista, Win7
 Minimum resolution: 800*600
 Disk space: 120mb
 .NET Framework: 3.5
@@ -23,24 +22,24 @@ TROUBLESHOOTING
 -(sound) A sound is stuck playing at the start of every turn
 	Save your progress (Shift+S) and then exit the game. The looping sound will be gone when you restart the game.
 
--(sound) I turned off sound effects but I still hear rain.
-	For technical and indolence reasons rain counts as music. Sorry.
-
 -(sound) Some sounds don't always play when they should (eg gunshots).
 	This is due to technical limitations, but may be addressed in future versions.
 
 -(interface) Sometimes the controls stop responding / I'm prompted do something without seeing any pop-up text.
-	This is a deficiency in the video engine and will be address in a future version.
+	This is a known issue and will be address in a future version.
 
 -(interface) The game text is blurry
 	If you have an Intel onboard GPU (ie no dedicated graphics card), open the Intel control panel and set "3Dtexture" to "Quality".
-	Dedicated graphics cards provide similar configuration options that are forced at the driver level, and therefore apply to
-	all games. Check the Control Panel for your flavour of grpahics card.
+	Dedicated graphics cards provide similar configuration options that are forced at the driver level, and therefore apply to all games. Check the Control Panel for your flavour of grpahics card.
 
 -(ffdshow) ffdshow spams instances in the task bar
 	Open ffdshow configuration, go to DirectShow and set "Multiple ffdshow instances" to "none".
 
+-(modding) I've changed one of the game's image, sound or Excel files but it was overwritten.
+	The game will deploy it's own content files whenever their last modified date is more recent than that of any file using the same name. To ensure your files are used instead, change their last modified date to be today. NirSoft's BulkFileChanger or Romain Petges' Attribute Changer 9 make this easy.
+
 -(general information)
-	Check the wiki at http://roguesurvivor.wikia.com/wiki/Main_Page
-	or the forums at http://roguesurvivor.proboards.com/
-	or the Discord at https://discord.gg/PPGHpDr
+	Forums : http://roguesurvivor.proboards.com/
+	GitLab : https://gitlab.com/RogueSurvivor-StillAlive/StillAlive
+	Wiki : http://roguesurvivor.wikia.com/wiki/Main_Page
+	Discord : https://discord.gg/PPGHpDr

@@ -107,6 +107,7 @@ namespace djack.RogueSurvivor.Gameplay
             AMMO_SHOTGUN,
             AMMO_BOLTS,
             AMMO_NAILS, //@@MP (Release 5-1)
+            AMMO_PRECISION_RIFLE, //@@MP (Release 6-6)
 
             TRAP_EMPTY_CAN,
             TRAP_BEAR_TRAP,
@@ -413,6 +414,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemAmmoModel AMMO_SHOTGUN { get { return this[IDs.AMMO_SHOTGUN] as ItemAmmoModel; } }
         public ItemAmmoModel AMMO_BOLTS { get { return this[IDs.AMMO_BOLTS] as ItemAmmoModel; } }
         public ItemAmmoModel AMMO_NAILS { get { return this[IDs.AMMO_NAILS] as ItemAmmoModel; } } //@@MP (Release 5-1)
+        public ItemAmmoModel AMMO_PRECISION_RIFLE { get { return this[IDs.AMMO_PRECISION_RIFLE] as ItemAmmoModel; } } //@@MP (Release 6-6)
         #endregion
 
         #region Explosives
@@ -1246,12 +1248,13 @@ namespace djack.RogueSurvivor.Gameplay
 
             #region Ranged weapons
             // alpha10 added rapid fire properties
+            //@@MP - added isSingleShot property (Release 6-6)
             RangedWeaponData rwp;
 
             rwp = DATA_RANGED_ARMY_PISTOL;
             this[IDs.RANGED_ARMY_PISTOL] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_ARMY_PISTOL,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.HEAVY_PISTOL)
+                    rwp.MAXAMMO, AmmoType.HEAVY_PISTOL, false)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR,
@@ -1261,7 +1264,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_ARMY_RIFLE;
             this[IDs.RANGED_ARMY_RIFLE] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_ARMY_RIFLE,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("fire a salvo at", "fires a salvo at"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                     rwp.MAXAMMO, AmmoType.HEAVY_RIFLE) 
+                     rwp.MAXAMMO, AmmoType.HEAVY_RIFLE, false) 
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR,
@@ -1271,7 +1274,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_HUNTING_CROSSBOW;
             this[IDs.RANGED_HUNTING_CROSSBOW] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_HUNTING_CROSSBOW,
                 Attack.RangedAttack(AttackKind.BOW, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.BOLT)
+                    rwp.MAXAMMO, AmmoType.BOLT, true)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR
@@ -1280,7 +1283,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_HUNTING_RIFLE;
             this[IDs.RANGED_HUNTING_RIFLE] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_HUNTING_RIFLE,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.LIGHT_RIFLE)
+                    rwp.MAXAMMO, AmmoType.LIGHT_RIFLE, true)
                 {
                     EquipmentPart = DollPart.RIGHT_HAND,
                     FlavorDescription = rwp.FLAVOR
@@ -1289,7 +1292,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_PISTOL;
             this[IDs.RANGED_PISTOL] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_PISTOL,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL)
+                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false)
                 {
                     EquipmentPart = DollPart.RIGHT_HAND,
                     FlavorDescription =rwp.FLAVOR
@@ -1298,7 +1301,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_KOLT_REVOLVER;
             this[IDs.RANGED_KOLT_REVOLVER] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_KOLT_REVOLVER,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL)
+                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR
@@ -1307,7 +1310,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_PRECISION_RIFLE;
             this[IDs.RANGED_PRECISION_RIFLE] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_PRECISION_RIFLE,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.HEAVY_RIFLE)
+                    rwp.MAXAMMO, AmmoType.PRECISION_RIFLE, true) //@@MP - new ammo type for precision rifles (Release 6-6)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR
@@ -1316,7 +1319,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_SHOTGUN;
             this[IDs.RANGED_SHOTGUN] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_SHOTGUN,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.SHOTGUN)
+                    rwp.MAXAMMO, AmmoType.SHOTGUN, true)
                 {
                     EquipmentPart = DollPart.RIGHT_HAND,
                     FlavorDescription = rwp.FLAVOR
@@ -1325,7 +1328,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_UNIQUE_SANTAMAN_SHOTGUN;
             this[IDs.UNIQUE_SANTAMAN_SHOTGUN] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_SANTAMAN_SHOTGUN,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.SHOTGUN)
+                    rwp.MAXAMMO, AmmoType.SHOTGUN, true)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR,
@@ -1336,7 +1339,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_UNIQUE_HANS_VON_HANZ_PISTOL;
             this[IDs.UNIQUE_HANS_VON_HANZ_PISTOL] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_HANS_VON_HANZ_PISTOL,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL)
+                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR,
@@ -1346,8 +1349,8 @@ namespace djack.RogueSurvivor.Gameplay
 
             rwp = DATA_RANGED_NAIL_GUN; //@@MP (Release 5-1)
             this[IDs.RANGED_NAIL_GUN] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_NAIL_GUN,
-                Attack.RangedAttack(AttackKind.FIREARM, new Verb("nail"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.NAIL)
+                Attack.RangedAttack(AttackKind.OTHER, new Verb("nail"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE), //@@MP - was AttackKind.FIREARM (Release 6-6)
+                    rwp.MAXAMMO, AmmoType.NAIL, true)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR
@@ -1400,6 +1403,14 @@ namespace djack.RogueSurvivor.Gameplay
             //@@MP (Release 5-1)
             this[IDs.AMMO_NAILS] = new ItemAmmoModel("nails", "nails", GameImages.ITEM_AMMO_NAILS,
                 AmmoType.NAIL, 99)
+            {
+                IsPlural = true,
+                FlavorDescription = ""
+            };
+
+            //@@MP (Release 6-6)
+            this[IDs.AMMO_PRECISION_RIFLE] = new ItemAmmoModel("precision rifle bullets", "precision rifle bullets", GameImages.ITEM_AMMO_PRECISION_RIFLE,
+                AmmoType.PRECISION_RIFLE, 99)
             {
                 IsPlural = true,
                 FlavorDescription = ""

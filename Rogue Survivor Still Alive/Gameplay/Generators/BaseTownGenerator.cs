@@ -7874,7 +7874,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                     // table + tracker/armor/weapon.
                     Item it;
-                    int randomItem = m_DiceRoller.Roll(0, 19);
+                    int randomItem = m_DiceRoller.Roll(0, 20);
                     switch (randomItem)
                     {
                         case 0: it = MakeItemArmyRifle(); break;
@@ -7893,9 +7893,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         case 13:
                         case 14: it = MakeItemArmyBodyArmor(); break;
                         case 15: it = MakeItemPrecisionRifle(); break;
-                        case 16: it = MakeItemBlackOpsGPS(); break;
-                        case 17: it = MakeItemNightVisionGoggles(); break;
-                        case 18: it = MakeItemC4Explosive(); break;
+                        case 16: it = MakeItemPrecisionRifleAmmo(); break;//@@MP (Release 6-6)
+                        case 17: it = MakeItemBlackOpsGPS(); break;
+                        case 18: it = MakeItemNightVisionGoggles(); break;
+                        case 19: it = MakeItemC4Explosive(); break;
                         default:
                             throw new InvalidOperationException("unhandled roll");
                     }
@@ -8558,6 +8559,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // give items.
             newBO.Inventory.AddAll(MakeItemPrecisionRifle());
+            newBO.Inventory.AddAll(MakeItemPrecisionRifleAmmo()); //@@MP (Release 6-6)
             newBO.Inventory.AddAll(MakeItemHeavyRifleAmmo());
             newBO.Inventory.AddAll(MakeItemArmyPistol());
             newBO.Inventory.AddAll(MakeItemHeavyPistolAmmo());
@@ -8611,13 +8613,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             Rectangle r = b.Rectangle;
 
             // N
-            map.AddZone(MakeUniqueZone("walkway", new Rectangle(r.Left, r.Top, r.Width - 1, 1)));
+            map.AddZone(MakeUniqueZone("sidewalk", new Rectangle(r.Left, r.Top, r.Width - 1, 1)));
             // S
-            map.AddZone(MakeUniqueZone("walkway", new Rectangle(r.Left + 1, r.Bottom - 1, r.Width - 1, 1)));
+            map.AddZone(MakeUniqueZone("sidewalk", new Rectangle(r.Left + 1, r.Bottom - 1, r.Width - 1, 1)));
             // E
-            map.AddZone(MakeUniqueZone("walkway", new Rectangle(r.Right - 1, r.Top, 1, r.Height - 1)));
+            map.AddZone(MakeUniqueZone("sidewalk", new Rectangle(r.Right - 1, r.Top, 1, r.Height - 1)));
             // W
-            map.AddZone(MakeUniqueZone("walkway", new Rectangle(r.Left, r.Top + 1, 1, r.Height - 1)));
+            map.AddZone(MakeUniqueZone("sidewalk", new Rectangle(r.Left, r.Top + 1, 1, r.Height - 1)));
         }
         #endregion
     }

@@ -500,6 +500,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_AMMO_SHOTGUN = @"Items\item_ammo_shotgun";
         public const string ITEM_AMMO_BOLTS =  @"Items\item_ammo_bolts";
         public const string ITEM_AMMO_NAILS = @"Items\item_ammo_nail_gun"; //@@MP (Release 5-1)
+        public const string ITEM_AMMO_PRECISION_RIFLE = @"Items\item_ammo_precision_rifle"; //@@MP (Release 6-6)
 
         public const string ITEM_ARMY_BODYARMOR = @"Items\item_army_bodyarmor";
         public const string ITEM_ARMY_PISTOL = @"Items\item_army_pistol";
@@ -1140,6 +1141,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_AMMO_LIGHT_PISTOL);
             Load(ITEM_AMMO_LIGHT_RIFLE);
             Load(ITEM_AMMO_NAILS); //@@MP (Release 5-1)
+            Load(ITEM_AMMO_PRECISION_RIFLE); //@@MP (Release 6-6)
             Load(ITEM_AMMO_SHOTGUN);
             Load(ITEM_ARMY_BODYARMOR);
             Load(ITEM_ARMY_PISTOL);

@@ -12,6 +12,7 @@ namespace djack.RogueSurvivor.Engine.Items
         #region Fields
         int m_MaxAmmo;
         AmmoType m_AmmoType;
+        bool m_IsSingleShot; //@@MP (Release 6-6)
         #endregion
 
         #region Properties
@@ -23,6 +24,11 @@ namespace djack.RogueSurvivor.Engine.Items
         public bool IsBow
         {
             get { return this.Attack.Kind == AttackKind.BOW; }
+        }
+
+        public bool IsSingleShot //@@MP - not capable of Rapid Fire (Release 6-6)
+        {
+            get { return m_IsSingleShot; }
         }
 
         public int MaxAmmo
@@ -48,11 +54,12 @@ namespace djack.RogueSurvivor.Engine.Items
         #endregion
 
         #region Init
-        public ItemRangedWeaponModel(string aName, string theNames, string imageID, Attack attack, int maxAmmo, AmmoType ammoType)
+        public ItemRangedWeaponModel(string aName, string theNames, string imageID, Attack attack, int maxAmmo, AmmoType ammoType, bool isSingleShot) //@@MP - added isSingleShot (Release 6-6)
             : base(aName, theNames, imageID, attack)
         {
             m_MaxAmmo = maxAmmo;
             m_AmmoType = ammoType;
+            m_IsSingleShot = isSingleShot;
         }
         #endregion
     }

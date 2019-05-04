@@ -1,3 +1,25 @@
+STILL ALIVE 2.4.3.0 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+---------------------
+
+Features: 
+-Change appearance of Zombie Master its evolutions, and some weapons and ammo.
+-City Info now lists the locations you have tagged, including the colour of each tag.
+-Extended range of precision rifles, and other tweaks to weapon damage.
+-Added Rapid Fire sound effects for applicable firearms.
+-Added sound effects for precision rifle, army rifle, and revolver. Revised pistol SFX.
+
+Fixes:
+-Crossbows, hunting rifles and precision rifles can't be used in Rapid Fire mode.
+
+Outstanding known issues:
+-Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).
+-Changing districts performance with simulation enabled decays as the game goes on.
+-Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in a future release.
+-Music and some sounds are louder than other sounds. They will be normalised in a future release.
+-Odd AI behaviour, particularly attacking then fleeing repeatedly, and a trading fixation.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.4.2.6 (aka Release 6-5, 27/04/2019) [Author: MP]
 ---------------------
 
@@ -18,13 +40,6 @@ Fixes:
 
 Development:
 -Added a new STATE_LOCKED for doors.
-
-Outstanding known issues:
--Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).
--Changing districts performance with simulation enabled decays as the game goes on.
--Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in a future release.
--Music and some sounds are louder than other sounds. They will be normalised in a future release.
--Odd AI behaviour, particularly attacking then fleeing repeatedly, and a trading fixation.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
