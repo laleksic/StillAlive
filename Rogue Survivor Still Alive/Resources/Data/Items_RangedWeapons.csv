@@ -1,7 +1,7 @@
 "ID","NAME","PLURAL","ATK","RAPID1","RAPID2","DMG","RANGE","MAXAMMO","FLAVOR"
 "RANGED_ARMY_PISTOL","army pistol","army pistols",24,16,12,24,6,12,"Armed and dangerous."
 "RANGED_ARMY_RIFLE","army rifle","army rifles",30,25,25,40,8,30,"Aim. Shoot. Kill."
-"RANGED_HUNTING_CROSSBOW","hunting crossbow","hunting crossbows",20,0,0,16,5,20,"Aim between the eyes."
+"RANGED_HUNTING_CROSSBOW","hunting crossbow","hunting crossbows",20,0,0,16,5,50,"Aim between the eyes."
 "RANGED_HUNTING_RIFLE","hunting rifle","hunting rifles",30,0,0,24,8,7,"Good hunting!"
 "RANGED_PISTOL","pistol","pistols",20,15,10,20,6,10,"Trusty sidearm."
 "RANGED_KOLT_REVOLVER","Kolt revolver","Kolt revolvers",30,22,15,24,6,6,"K for Kolt."

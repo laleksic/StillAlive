@@ -16626,7 +16626,10 @@ namespace djack.RogueSurvivor.Engine
                         break;
                     default: throw new ArgumentOutOfRangeException("itemModel","unhandled explosive type");
                 }
-                AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You see an explosion", location.Position)); //@@MP - made applicable whether sfx enabled or not (Release 5-4)
+                if (isVisible) //@@MP - added appropriate wording if the explosion was seen, rather than just heard (Release 6-6)
+                    MakePlayerCentricMessage("You see an explosion", location.Position);
+                else
+                    AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You hear an explosion", location.Position)); //@@MP - made applicable whether sfx enabled or not (Release 5-4)
                 RedrawPlayScreen();
             }
             else if (IsAudibleToPlayer(location, Rules.BOOMING_NOISE_RADIUS)) //(m_Rules.RollChance(PLAYER_HEAR_EXPLOSION_CHANCE)) //@@MP - explosions are rare, so no need to worry about message/sfx spam (Release 2), suppiled IsAudible with a range (Release 5-4), was LOUD radius (Release 6-4)
