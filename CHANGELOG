@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.3.0 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.4.2 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -7,9 +7,11 @@ Features:
 -Extended range of precision rifles, and other tweaks to weapon damage.
 -Added Rapid Fire sound effects for applicable firearms.
 -Added sound effects for precision rifle, army rifle, and revolver. Revised pistol SFX.
+[WIP]-Bows skill now includes bonus to explosives damage.
 
 Fixes:
 -Crossbows, hunting rifles and precision rifles can't be used in Rapid Fire mode.
+-Enforced animation delay for some important events, even if it is disabled in the options.
 
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).

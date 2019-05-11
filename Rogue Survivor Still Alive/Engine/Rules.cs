@@ -321,6 +321,7 @@ namespace djack.RogueSurvivor.Engine
 
         public static int SKILL_BOWS_ATK_BONUS = 10;
         public static int SKILL_BOWS_DMG_BONUS = 4;
+        public static int SKILL_EXPLOSIVES_DMG_BONUS = 1; //@@MP (Release 6-6)
 
         public static float SKILL_CARPENTRY_BARRICADING_BONUS = 0.15f;
         public static int SKILL_CARPENTRY_LEVEL3_BUILD_BONUS = 1;
@@ -3729,8 +3730,8 @@ namespace djack.RogueSurvivor.Engine
             switch (baseAttack.Kind)
             {
                 case AttackKind.BOW:
-                    hitMod = SKILL_BOWS_ATK_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.BOWS);
-                    dmgBonus = SKILL_BOWS_DMG_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.BOWS);
+                    hitMod = SKILL_BOWS_ATK_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.BOWS_EXPLOSIVES);
+                    dmgBonus = SKILL_BOWS_DMG_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.BOWS_EXPLOSIVES);
                     break;
                 case AttackKind.FIREARM:
                     hitMod = SKILL_FIREARMS_ATK_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.FIREARMS);

@@ -31,9 +31,9 @@ namespace djack.RogueSurvivor.Gameplay
             AWAKE,
 
             /// <summary>
-            /// Bonus to bows attack.
+            /// Bonus to bows and explosives attacks.
             /// </summary>
-            BOWS,
+            BOWS_EXPLOSIVES, //@@MP - expanded to explosives (Release 6-6)
 
             /// <summary>
             /// Bonus to barricading points; can build fortifications, consume less material.
@@ -311,7 +311,7 @@ namespace djack.RogueSurvivor.Gameplay
             SkillData[] data;
 
             LoadDataFromCSV<SkillData>(ui, path, "skills", SkillData.COUNT_FIELDS, SkillData.FromCSVLine,
-                new IDs[] { IDs.AGILE, IDs.AWAKE, IDs.BOWS, IDs.CARPENTRY, IDs.CHARISMATIC, IDs.FIREARMS, IDs.HARDY, IDs.HAULER,
+                new IDs[] { IDs.AGILE, IDs.AWAKE, IDs.BOWS_EXPLOSIVES, IDs.CARPENTRY, IDs.CHARISMATIC, IDs.FIREARMS, IDs.HARDY, IDs.HAULER,
                             IDs.HIGH_STAMINA, IDs.LEADERSHIP, IDs.LIGHT_EATER, IDs.LIGHT_FEET, IDs.LIGHT_SLEEPER, IDs.MARTIAL_ARTS, IDs.MEDIC,
                             IDs.NECROLOGY, IDs.STRONG, IDs.STRONG_PSYCHE, IDs.TOUGH, IDs.UNSUSPICIOUS,
                             IDs.Z_AGILE, IDs.Z_EATER, IDs.Z_GRAB, IDs.Z_INFECTOR, IDs.Z_LIGHT_EATER, IDs.Z_LIGHT_FEET, IDs.Z_STRONG, IDs.Z_TOUGH, IDs.Z_TRACKER },
@@ -333,7 +333,7 @@ namespace djack.RogueSurvivor.Gameplay
             Rules.SKILL_AWAKE_SLEEP_BONUS = s.VALUE1;
             Rules.SKILL_AWAKE_SLEEP_REGEN_BONUS = s.VALUE2;
 
-            s = data[(int)IDs.BOWS];
+            s = data[(int)IDs.BOWS_EXPLOSIVES]; //@@MP - expanded to explosives (Release 6-6)
             Rules.SKILL_BOWS_ATK_BONUS = (int)s.VALUE1;
             Rules.SKILL_BOWS_DMG_BONUS = (int)s.VALUE2;
 

@@ -15,7 +15,7 @@ namespace djack.RogueSurvivor.Gameplay
         //@@MP (Release 2), added rapid-fire (Release 6-6)
         public const string PISTOL_SINGLE_SHOT_PLAYER = "player fires pistol";
         public const string PISTOL_SINGLE_SHOT_PLAYER_FILE = PATH + "pistol_single-shot_player";
-        public const string PISTOL_RAPID_FIRE_PLAYER = "player fires pistol";
+        public const string PISTOL_RAPID_FIRE_PLAYER = "player fires pistol burst";
         public const string PISTOL_RAPID_FIRE_PLAYER_FILE = PATH + "pistol_rapid-fire_player";
         public const string HUNTING_RIFLE_FIRE_PLAYER = "player fires hunting rifle";
         public const string HUNTING_RIFLE_FIRE_PLAYER_FILE = PATH + "huntingrifle_player";
@@ -25,18 +25,18 @@ namespace djack.RogueSurvivor.Gameplay
         public const string CROSSBOW_FIRE_PLAYER_FILE = PATH + "crossbow_player";
         public const string REVOLVER_SINGLE_SHOT_PLAYER = "player fires revolver";
         public const string REVOLVER_SINGLE_SHOT_PLAYER_FILE = PATH + "revolver_single-shot_player";
-        public const string REVOLVER_RAPID_FIRE_PLAYER = "player fires revolver";
+        public const string REVOLVER_RAPID_FIRE_PLAYER = "player fires revolver rounds";
         public const string REVOLVER_RAPID_FIRE_PLAYER_FILE = PATH + "revolver_rapid-fire_player";
         public const string PRECISION_RIFLE_FIRE_PLAYER = "player fires precision rifle";
         public const string PRECISION_RIFLE_FIRE_PLAYER_FILE = PATH + "precision_rifle_player";
         public const string ARMY_RIFLE_SINGLE_SHOT_PLAYER = "player fires army rifle";
         public const string ARMY_RIFLE_SINGLE_SHOT_PLAYER_FILE = PATH + "army_rifle_single-shot_player";
-        public const string ARMY_RIFLE_RAPID_FIRE_PLAYER = "player fires army rifle";
+        public const string ARMY_RIFLE_RAPID_FIRE_PLAYER = "player fires army rifle burst";
         public const string ARMY_RIFLE_RAPID_FIRE_PLAYER_FILE = PATH + "army_rifle_rapid-fire_player";
 
         public const string PISTOL_SINGLE_SHOT_NEARBY = "pistol firing nearby";
         public const string PISTOL_SINGLE_SHOT_NEARBY_FILE = PATH + "pistol_single-shot_nearby";
-        public const string PISTOL_RAPID_FIRE_NEARBY = "pistol firing nearby";
+        public const string PISTOL_RAPID_FIRE_NEARBY = "pistol shots nearby";
         public const string PISTOL_RAPID_FIRE_NEARBY_FILE = PATH + "pistol_rapid-fire_nearby";
         public const string HUNTING_RIFLE_FIRE_NEARBY = "hunting rifle firing nearby";
         public const string HUNTING_RIFLE_FIRE_NEARBY_FILE = PATH + "huntingrifle_nearby";
@@ -46,34 +46,32 @@ namespace djack.RogueSurvivor.Gameplay
         public const string CROSSBOW_FIRE_NEARBY_FILE = PATH + "crossbow_nearby";
         public const string REVOLVER_SINGLE_SHOT_NEARBY = "revolver firing nearby";
         public const string REVOLVER_SINGLE_SHOT_NEARBY_FILE = PATH + "revolver_single-shot_nearby";
-        public const string REVOLVER_RAPID_FIRE_NEARBY = "revolver firing nearby";
+        public const string REVOLVER_RAPID_FIRE_NEARBY = "revolver shots nearby";
         public const string REVOLVER_RAPID_FIRE_NEARBY_FILE = PATH + "revolver_rapid-fire_nearby";
         public const string PRECISION_RIFLE_FIRE_NEARBY = "precision rifle firing nearby";
         public const string PRECISION_RIFLE_FIRE_NEARBY_FILE = PATH + "precision_rifle_nearby";
         public const string ARMY_RIFLE_SINGLE_SHOT_NEARBY = "army rifle firing nearby";
         public const string ARMY_RIFLE_SINGLE_SHOT_NEARBY_FILE = PATH + "army_rifle_single-shot_nearby";
-        public const string ARMY_RIFLE_RAPID_FIRE_NEARBY = "army rifle firing nearby";
+        public const string ARMY_RIFLE_RAPID_FIRE_NEARBY = "army rifle burst nearby";
         public const string ARMY_RIFLE_RAPID_FIRE_NEARBY_FILE = PATH + "army_rifle_rapid-fire_nearby";
 
         public const string PISTOL_SINGLE_SHOT_FAR = "pistol firing somewhere";
         public const string PISTOL_SINGLE_SHOT_FAR_FILE = PATH + "pistol_single-shot_far";
-        public const string PISTOL_RAPID_FIRE_FAR = "pistol firing somewhere";
+        public const string PISTOL_RAPID_FIRE_FAR = "pistol shots somewhere";
         public const string PISTOL_RAPID_FIRE_FAR_FILE = PATH + "pistol_rapid-fire_far";
         public const string HUNTING_RIFLE_FIRE_FAR = "hunting rifle firing somewhere";
         public const string HUNTING_RIFLE_FIRE_FAR_FILE = PATH + "huntingrifle_far";
         public const string SHOTGUN_FIRE_FAR = "shotgun firing somewhere";
         public const string SHOTGUN_FIRE_FAR_FILE = PATH + "shotgun-a2_far";
-        public const string CROSSBOW_FIRE_FAR = "crossbow firing far";
-        public const string CROSSBOW_FIRE_FAR_FILE = PATH + "crossbow_far";
         public const string REVOLVER_SINGLE_SHOT_FAR = "revolver firing somewhere";
         public const string REVOLVER_SINGLE_SHOT_FAR_FILE = PATH + "revolver_single-shot_far";
-        public const string REVOLVER_RAPID_FIRE_FAR = "revolver firing somewhere";
+        public const string REVOLVER_RAPID_FIRE_FAR = "revolver shots somewhere";
         public const string REVOLVER_RAPID_FIRE_FAR_FILE = PATH + "revolver_rapid-fire_far";
-        public const string PRECISION_RIFLE_FIRE_FAR = "player fires precision rifle";
+        public const string PRECISION_RIFLE_FIRE_FAR = "precision rifle firing somewhere";
         public const string PRECISION_RIFLE_FIRE_FAR_FILE = PATH + "precision_rifle_far";
         public const string ARMY_RIFLE_SINGLE_SHOT_FAR = "army rifle firing somewhere";
         public const string ARMY_RIFLE_SINGLE_SHOT_FAR_FILE = PATH + "army_rifle_single-shot_far";
-        public const string ARMY_RIFLE_RAPID_FIRE_FAR = "army rifle firing somewhere";
+        public const string ARMY_RIFLE_RAPID_FIRE_FAR = "army rifle burst somewhere";
         public const string ARMY_RIFLE_RAPID_FIRE_FAR_FILE = PATH + "army_rifle_rapid-fire_far";
 
         public const string MELEE_ATTACK_PLAYER = "player does melee attack";

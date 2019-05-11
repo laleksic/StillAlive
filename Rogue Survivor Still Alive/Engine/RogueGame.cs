@@ -855,9 +855,13 @@ namespace djack.RogueSurvivor.Engine
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "RogueGame() done");
         }
 
-        void AnimDelay(int msecs)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forced"></param>
+        void AnimDelay(int msecs, bool forced)
         {
-            if (s_Options.IsAnimDelayOn)
+            if (s_Options.IsAnimDelayOn || forced) //@@MP - added forced for situations where the user must see the delay (Release 6-6)
                 m_UI.UI_Wait(msecs);
         }
         #endregion
@@ -3763,13 +3767,15 @@ namespace djack.RogueSurvivor.Engine
 #if DEBUG
             /*Item temp = new ItemGrenade(GameItems.C4, GameItems.C4_PRIMED);
             m_Player.Inventory.AddAll(temp);
-            m_Player.Inventory.AddAll(temp);
+            m_Player.Inventory.AddAll(temp);*/
             Item nvg = new ItemLight(GameItems.NIGHT_VISION_MALE);
-            m_Player.Inventory.AddAll(nvg);*/
-            Item gun = new ItemRangedWeapon(GameItems.ARMY_RIFLE);
+            m_Player.Inventory.AddAll(nvg);
+            /*Item gun = new ItemRangedWeapon(GameItems.ARMY_RIFLE);
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
-            m_Player.Inventory.AddAll(ammo);
+            m_Player.Inventory.AddAll(ammo);*/
+            Item gun = new ItemRangedWeapon(GameItems.PRECISION_RIFLE);
+            m_Player.Inventory.AddAll(gun);
             Item temp1 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
             m_Player.Inventory.AddAll(temp1);
             Item temp2 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
@@ -3778,6 +3784,7 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(temp3);
             Item torch = new ItemLight(GameItems.BIG_FLASHLIGHT);
             m_Player.Inventory.AddAll(torch);
+            m_TownGenerator.GiveStartingSkillToActor(m_Player, Skills.IDs.BOWS_EXPLOSIVES);
 #endif
 
             // scoring : hello there.
@@ -5918,21 +5925,24 @@ namespace djack.RogueSurvivor.Engine
                         {
                             foreach (Actor a in infectedToKill)
                             {
+                                KillActor(null, a, "infection");
+
                                 if (IsVisibleToPlayer(a))
                                     AddMessage(MakeMessage(a, String.Format("{0} of infection!", Conjugate(a, VERB_DIE))));
-                                KillActor(null, a, "infection");
+
                                 // if player, force zombify NOW.
                                 if (a.IsPlayer)
                                 {
                                     // remove player corpse!
                                     //map.TryRemoveCorpseOf(a); //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
+
                                     // zombify player!
                                     Zombify(null, a, false);
 
                                     // show
                                     AddMessage(MakeMessage(a, Conjugate(a, "turn") + " into a Zombie!"));
                                     RedrawPlayScreen();
-                                    AnimDelay(DELAY_LONG);
+                                    AnimDelay(DELAY_LONG, true);
                                 }
                             }
                         }
@@ -6115,14 +6125,16 @@ namespace djack.RogueSurvivor.Engine
                         {
                             // remove morpse!
                             //map.TryRemoveCorpseOf(actor); //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
+
                             // zombify!
                             Zombify(null, actor, false);
+
                             // show.
                             if (IsVisibleToPlayer(actor))
                             {
                                 AddMessage(MakeMessage(actor, String.Format("{0} into a Zombie!", Conjugate(actor, "turn"))));
                                 RedrawPlayScreen();
-                                AnimDelay(DELAY_LONG);
+                                AnimDelay(DELAY_LONG, true);
                             }
                         }
                     }
@@ -6450,7 +6462,7 @@ namespace djack.RogueSurvivor.Engine
                                     {
                                         // boom!
                                         map.RemoveItemAt(primed, pos.Value);
-                                        DoBlast(new Location(map, pos.Value), (primed.Model as ItemExplosiveModel).BlastAttack, it.Model);
+                                        DoBlast(new Location(map, pos.Value), (primed.Model as ItemExplosiveModel).BlastAttack, it.Model, primed.Owner); //@@MP - added Owner (Release 6-6)
                                         hasExplodedSomething = true;
                                         break;
                                     }
@@ -6480,7 +6492,7 @@ namespace djack.RogueSurvivor.Engine
                                     {
                                         // boom!
                                         actor.Inventory.RemoveAllQuantity(primed);
-                                        DoBlast(new Location(map, actor.Location.Position), (primed.Model as ItemExplosiveModel).BlastAttack, it.Model);
+                                        DoBlast(new Location(map, actor.Location.Position), (primed.Model as ItemExplosiveModel).BlastAttack, it.Model, primed.Owner); //@@MP - added thrower (Release 6-6)
                                         hasExplodedSomething = true;
                                         break;
                                     }
@@ -8997,9 +9009,9 @@ namespace djack.RogueSurvivor.Engine
                         // useful only if has to sleep.                    
                         return actor.Model.Abilities.HasToSleep ? HI_UTIL : USELESS_UTIL;
 
-                    case Skills.IDs.BOWS:
+                    case Skills.IDs.BOWS_EXPLOSIVES:
                         {
-                            // useful only if has bow weapon.
+                            // useful only if has bow. slightly useful for explosives, but low priority
                             if (actor.Inventory != null)
                             {
                                 foreach (Item it in actor.Inventory.Items)
@@ -9008,6 +9020,8 @@ namespace djack.RogueSurvivor.Engine
                                         if ((it.Model as ItemRangedWeaponModel).IsBow)
                                             return HI_UTIL;
                                     }
+                                    else if (it is ItemExplosive) //@@MP (Release 6-6)
+                                        return LOW_UTIL;
                             }
                             return USELESS_UTIL;
                         }
@@ -15227,7 +15241,7 @@ namespace djack.RogueSurvivor.Engine
                 }                    
             }
 
-            // effect: damage on victim? (actor)  //@MP - moved to after the sfx to make them sync better (Release 5-4)
+            // effect: damage on victim?  //@MP - moved to after the sfx to make them sync better (Release 5-4)
             int damage = model.Damage * trap.Quantity;
             if (damage > 0 && victim != null) //@@MP - victim can be null if an object (eg chair) is pushed onto the tile
             {
@@ -15246,7 +15260,10 @@ namespace djack.RogueSurvivor.Engine
                     AddOverlay(new OverlayImage(MapToScreen(victim.Location.Position), GameImages.ICON_MELEE_DAMAGE));
                     AddOverlay(new OverlayText(MapToScreen(victim.Location.Position).Add(DAMAGE_DX, DAMAGE_DY), Color.White, damage.ToString(), Color.Black));
                     RedrawPlayScreen();
-                    AnimDelay(victim.IsPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                    if (victim.IsPlayer)
+                        AnimDelay(DELAY_SHORT, true);
+                    else
+                        AnimDelay(DELAY_SHORT, false);
                     ClearOverlays();
                     RedrawPlayScreen();
                 }
@@ -15818,12 +15835,12 @@ namespace djack.RogueSurvivor.Engine
                                 ClearMessages();
                             AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_DISARM), defender));
                             AddMessage(new Message(string.Format("{0} is sent flying!", disarmIt.TheName), attacker.Location.Map.LocalTime.TurnCounter));
-                            if (isPlayer && !isBot)
+                            if (attacker.IsPlayer && !isBot)
                                 AddMessagePressEnter();
                             else
                             {
                                 RedrawPlayScreen();
-                                AnimDelay(DELAY_SHORT);
+                                AnimDelay(DELAY_SHORT, false);
                             }
                         }
                     }
@@ -15858,7 +15875,8 @@ namespace djack.RogueSurvivor.Engine
                             AddMessage(MakeMessage(attacker, Conjugate(attacker, defender.Model.Abilities.IsUndead ? VERB_DESTROY : m_Rules.IsMurder(attacker, defender) ? VERB_MURDER : VERB_KILL), defender, " !"));
                             AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_KILLED));
                             RedrawPlayScreen();
-                            AnimDelay(DELAY_LONG);
+                            if (attacker.IsPlayer)
+                                AnimDelay(DELAY_NORMAL, true);
                         }
 
                         // kill.
@@ -15868,16 +15886,18 @@ namespace djack.RogueSurvivor.Engine
                         if (attacker.Model.Abilities.IsUndead && !defender.Model.Abilities.IsUndead)
                             SeeingCauseInsanity(attacker.Location, Rules.SANITY_HIT_EATEN_ALIVE, String.Format("{0} eaten alive", defender.Name), attacker); //@@MP - updated for the change to this method (Release 5-2)
 
-                        // turn victim into zombie; always turn player into zombie NOW if killed by zombifier or if was infected.
+                        // turn victim into zombie?
                         if (Rules.HasImmediateZombification(m_Session.GameMode) || defender == m_Player)
                         {
+                            // turn player into zombie now if killed by a zombifier?
                             if (attacker.Model.Abilities.CanZombifyKilled && !defender.Model.Abilities.IsUndead && m_Rules.RollChance(s_Options.ZombificationChance))
                             {
-                                if (defender.IsPlayer)
+                                /*if (defender.IsPlayer)  //@@MP - commented out because Zombify handles corpse removal (Release 6-6)
                                 {
                                     // remove player corpse.
                                     defender.Location.Map.TryRemoveCorpseOf(defender);
-                                }
+                                }*/
+
                                 // add new zombie.
                                 Zombify(attacker, defender, false);
 
@@ -15886,20 +15906,22 @@ namespace djack.RogueSurvivor.Engine
                                 {
                                     AddMessage(MakeMessage(attacker, Conjugate(attacker, "turn"), defender, " into a Zombie!"));
                                     RedrawPlayScreen();
-                                    AnimDelay(DELAY_LONG);
+                                    AnimDelay(DELAY_LONG, false);
                                 }
                             }
+                            // always turn player into zombie if infected
                             else if (defender == m_Player && !defender.Model.Abilities.IsUndead && defender.Infection > 0)
                             {
                                 // remove player corpse.
                                 //defender.Location.Map.TryRemoveCorpseOf(defender); //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
+
                                 // zombify player!
                                 Zombify(null, defender, false);
 
                                 // show
                                 AddMessage(MakeMessage(defender, Conjugate(defender, "turn") + " into a Zombie!"));
                                 RedrawPlayScreen();
-                                AnimDelay(DELAY_LONG);
+                                AnimDelay(DELAY_LONG, true);
                             }
                         }
                     }
@@ -15912,7 +15934,7 @@ namespace djack.RogueSurvivor.Engine
                             AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_MELEE_DAMAGE));
                             AddOverlay(new OverlayText(MapToScreen(defender.Location.Position).Add(DAMAGE_DX, DAMAGE_DY), Color.White, dmgRoll.ToString(), Color.Black));
                             RedrawPlayScreen();
-                            AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                            AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT,false);
                         }
                     }
                 }
@@ -15923,7 +15945,7 @@ namespace djack.RogueSurvivor.Engine
                         AddMessage(MakeMessage(attacker, Conjugate(attacker, attack.Verb), defender, " for no effect."));
                         AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_MELEE_MISS));
                         RedrawPlayScreen();
-                        AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                        AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT,false);
                     }
                 }
 
@@ -15941,7 +15963,7 @@ namespace djack.RogueSurvivor.Engine
                     AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_MISS), defender));
                     AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_MELEE_MISS));
                     RedrawPlayScreen();
-                    AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                    AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT,false);
                 }
             } // end of miss
 
@@ -15964,7 +15986,10 @@ namespace djack.RogueSurvivor.Engine
                     {
                         AddMessage(MakeMessage(attacker, String.Format(": {0} breaks and is now useless!", meleeWeapon.TheName)));
                         RedrawPlayScreen();
-                        AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                        if (attacker.IsPlayer)
+                            AddMessagePressEnter();
+                        else
+                            AnimDelay(DELAY_SHORT,false);
                     }
                 }
             }
@@ -16285,7 +16310,10 @@ namespace djack.RogueSurvivor.Engine
                             AddMessage(MakeMessage(attacker, Conjugate(attacker, defender.Model.Abilities.IsUndead ? VERB_DESTROY : m_Rules.IsMurder(attacker,defender) ? VERB_MURDER : VERB_KILL), defender, " !"));
                             AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_KILLED));
                             RedrawPlayScreen();
-                            AnimDelay(DELAY_LONG);
+                            bool forced = false;
+                            if (attacker.IsPlayer)
+                                forced = true;
+                            AnimDelay(DELAY_NORMAL, forced);
                         }
 
                         // kill.
@@ -16300,7 +16328,7 @@ namespace djack.RogueSurvivor.Engine
                             AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_RANGED_DAMAGE));
                             AddOverlay(new OverlayText(MapToScreen(defender.Location.Position).Add(DAMAGE_DX, DAMAGE_DY), Color.White, dmgRoll.ToString(), Color.Black));
                             RedrawPlayScreen();
-                            AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                            AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT,false);
                         }
                     }
                 }
@@ -16311,7 +16339,7 @@ namespace djack.RogueSurvivor.Engine
                         AddMessage(MakeMessage(attacker, Conjugate(attacker, attack.Verb), defender, " for no effect."));
                         AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_RANGED_MISS));
                         RedrawPlayScreen();
-                        AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                        AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT,false);
                     }
                 }
 
@@ -16337,7 +16365,7 @@ namespace djack.RogueSurvivor.Engine
                     AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_MISS), defender));
                     AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_RANGED_MISS));
                     RedrawPlayScreen();
-                    AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                    AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT,false);
                 }
             }
 #endregion
@@ -16371,7 +16399,7 @@ namespace djack.RogueSurvivor.Engine
                         if (isObjVisible)
                             AddOverlay(new OverlayRect(Color.Red, new Rectangle(MapToScreen(pt), new Size(TILE_SIZE, TILE_SIZE))));
                       
-                        AnimDelay(attacker.IsPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                        AnimDelay(DELAY_SHORT, false);
                     }
 
                     // destroy that object.
@@ -16412,7 +16440,7 @@ namespace djack.RogueSurvivor.Engine
                 AddOverlay(new OverlayRect(Color.Red, new Rectangle(MapToScreen(targetPos), new Size(TILE_SIZE, TILE_SIZE))));
                 AddMessage(MakeMessage(actor, String.Format("{0} a {1}!", Conjugate(actor, VERB_THROW), grenade.Model.SingleName)));
                 RedrawPlayScreen();
-                AnimDelay(DELAY_LONG);
+                AnimDelay(DELAY_LONG,true);
                 ClearOverlays();
                 RedrawPlayScreen();
             }
@@ -16441,6 +16469,7 @@ namespace djack.RogueSurvivor.Engine
 
             // drop primed grenade at target position.
             actor.Location.Map.DropItemAt(primedGrenade, targetPos);
+            primedGrenade.Owner = actor; //@@MP - so we can determine later if skills add extra damage to the blast (Release 6-6)
 
             // message about throwing.
             bool isVisible = IsVisibleToPlayer(actor) || IsVisibleToPlayer(actor.Location.Map, targetPos);
@@ -16450,7 +16479,7 @@ namespace djack.RogueSurvivor.Engine
                 AddOverlay(new OverlayRect(Color.Red, new Rectangle(MapToScreen(targetPos), new Size(TILE_SIZE, TILE_SIZE))));
                 AddMessage(MakeMessage(actor, String.Format("{0} back a {1}!", Conjugate(actor, VERB_THROW), primedGrenade.Model.SingleName)));
                 RedrawPlayScreen();
-                AnimDelay(DELAY_LONG);
+                AnimDelay(DELAY_LONG,true);
                 ClearOverlays();
                 RedrawPlayScreen();
             }
@@ -16595,7 +16624,7 @@ namespace djack.RogueSurvivor.Engine
             AddOverlay(new OverlayText(screenPos, Color.Red, damage.ToString(), Color.Black));
         }
 
-        void DoBlast(Location location, BlastAttack blastAttack, ItemModel itemModel) //@@MP - added itemExplosiveModel to determine the relevant sfx (Release 4)
+        void DoBlast(Location location, BlastAttack blastAttack, ItemModel itemModel, Actor thrower) //@@MP - added itemExplosiveModel to determine the relevant sfx (Release 4), added thrower (Release 6-6)
         {
             // noise.
             OnLoudNoise(location.Map, location.Position, "A loud EXPLOSION");
@@ -16610,19 +16639,19 @@ namespace djack.RogueSurvivor.Engine
                 {
                     case (int)GameItems.IDs.EXPLOSIVE_GRENADE_PRIMED:
                         m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GRENADE_VISIBLE, AudioPriority.PRIORITY_EVENT);
-                        AnimDelay(DELAY_SHORT); //@@MP - the longer the delay the slower the explosion appers on screen
+                        AnimDelay(DELAY_SHORT,true); //@@MP - the longer the delay the slower the explosion appers on screen
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED:
                         if (isVisible)
                             m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_VISIBLE, AudioPriority.PRIORITY_EVENT);
                         else
                             m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_AUDIBLE, AudioPriority.PRIORITY_BGM); //@@MP - it's close enough that it would still be audible
-                        AnimDelay(DELAY_LONG); //@MP - make it look like the fire spreads, also pads out to match the sound more
+                        AnimDelay(DELAY_LONG,true); //@MP - make it look like the fire spreads, also pads out to better match the sound
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED:
                     case (int)GameItems.IDs.EXPLOSIVE_C4_PRIMED: //@@MP (Release 6-3)
                         m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_VISIBLE, AudioPriority.PRIORITY_EVENT);
-                        AnimDelay(DELAY_SHORT);
+                        AnimDelay(DELAY_SHORT,true);
                         break;
                     default: throw new ArgumentOutOfRangeException("itemModel","unhandled explosive type");
                 }
@@ -16657,20 +16686,20 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // ground zero explosion.
-            ApplyExplosionDamage(location, 0, blastAttack, itemModel); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
+            ApplyExplosionDamage(location, 0, blastAttack, itemModel, thrower); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4), added thrower (Release 6-6)
 
             // explosion wave.
             for (int waveDistance = 1; waveDistance <= blastAttack.Radius; waveDistance++)
             {
                 // do it.
-                bool anyVisible = ApplyExplosionWave(location, waveDistance, blastAttack, itemModel); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
+                bool anyVisible = ApplyExplosionWave(location, waveDistance, blastAttack, itemModel, thrower); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
 
                 // show.
                 if (anyVisible)
                 {
                     isVisible = true; // alpha10
                     RedrawPlayScreen();
-                    AnimDelay(DELAY_NORMAL);
+                    AnimDelay(DELAY_NORMAL,true);
                 }
             }
 
@@ -16679,7 +16708,7 @@ namespace djack.RogueSurvivor.Engine
                 ClearOverlays();
         }
 
-        bool ApplyExplosionWave(Location center, int waveDistance, BlastAttack blast, ItemModel itemModel) //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
+        bool ApplyExplosionWave(Location center, int waveDistance, BlastAttack blast, ItemModel itemModel, Actor thrower) //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4), added thrower (Release 6-6)
         {
             bool anyVisible = false;
             Map map = center.Map;
@@ -16697,7 +16726,7 @@ namespace djack.RogueSurvivor.Engine
                 for (int x = xmin; x <= xmax; x++)
                 {
                     pt.X = x;
-                    anyVisible |= ApplyExplosionWaveSub(center, pt, waveDistance, blast, itemModel); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
+                    anyVisible |= ApplyExplosionWaveSub(center, pt, waveDistance, blast, itemModel, thrower); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4), added thrower (Release 6-6)
                 }
             }
 
@@ -16708,7 +16737,7 @@ namespace djack.RogueSurvivor.Engine
                 for (int x = xmin; x <= xmax; x++)
                 {
                     pt.X = x;
-                    anyVisible |= ApplyExplosionWaveSub(center, pt, waveDistance, blast, itemModel); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
+                    anyVisible |= ApplyExplosionWaveSub(center, pt, waveDistance, blast, itemModel, thrower); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4), added thrower (Release 6-6)
                 }
             }
 
@@ -16721,7 +16750,7 @@ namespace djack.RogueSurvivor.Engine
                 for (int y = ymin + 1; y < ymax; y++)
                 {
                     pt.Y = y;
-                    anyVisible |= ApplyExplosionWaveSub(center, pt, waveDistance, blast, itemModel); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
+                    anyVisible |= ApplyExplosionWaveSub(center, pt, waveDistance, blast, itemModel, thrower); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4), added thrower (Release 6-6)
                 }
             }
 
@@ -16734,7 +16763,7 @@ namespace djack.RogueSurvivor.Engine
                 for (int y = ymin + 1; y < ymax; y++)
                 {
                     pt.Y = y;
-                    anyVisible |= ApplyExplosionWaveSub(center, pt, waveDistance, blast, itemModel); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
+                    anyVisible |= ApplyExplosionWaveSub(center, pt, waveDistance, blast, itemModel, thrower); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4), added thrower (Release 6-6)
                 }
             }
 
@@ -16742,12 +16771,12 @@ namespace djack.RogueSurvivor.Engine
             return anyVisible;
         }
 
-        bool ApplyExplosionWaveSub(Location blastCenter, Point pt, int waveDistance, BlastAttack blast, ItemModel itemModel) //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
+        bool ApplyExplosionWaveSub(Location blastCenter, Point pt, int waveDistance, BlastAttack blast, ItemModel itemModel, Actor thrower) //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
         {
             if (blastCenter.Map.IsInBounds(pt) && LOS.CanTraceFireLine(blastCenter, pt,waveDistance, null))
             {
                 // do damage.
-                int damage = ApplyExplosionDamage(new Location(blastCenter.Map, pt), waveDistance, blast, itemModel); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4)
+                int damage = ApplyExplosionDamage(new Location(blastCenter.Map, pt), waveDistance, blast, itemModel, thrower); //@@MP - added ItemModel argument for pass through to ApplyExplosionDamage (Release 4), added thrower (Release 6-6)
 
                 // show if visible.
                 if (IsVisibleToPlayer(blastCenter.Map, pt))
@@ -16762,7 +16791,7 @@ namespace djack.RogueSurvivor.Engine
             return false;
         }
 
-        int ApplyExplosionDamage(Location location, int distanceFromBlast, BlastAttack blast, ItemModel itemModel) //@@MP - added ItemModel argument (Release 4)
+        int ApplyExplosionDamage(Location location, int distanceFromBlast, BlastAttack blast, ItemModel itemModel, Actor thrower) //@@MP - added ItemModel argument (Release 4), added thrower (Release 6-6)
         {
             Map map = location.Map;
 
@@ -16785,6 +16814,8 @@ namespace djack.RogueSurvivor.Engine
 
                 // damage.
 #region
+                if (thrower != null)
+                    modifiedDamage += (Rules.SKILL_EXPLOSIVES_DMG_BONUS * thrower.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.BOWS_EXPLOSIVES));
                 int dmgToVictim = modifiedDamage - (victim.CurrentDefence.Protection_Hit + victim.CurrentDefence.Protection_Shot) / 2;
                 if (dmgToVictim > 0)
                 {
@@ -17687,7 +17718,7 @@ namespace djack.RogueSurvivor.Engine
                 if (actor.IsPlayer) //@@MP (Release 2)
                 {
                     if (IsItemNightVision(it)) //@@MP (Release 6-3)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.NIGHT_VISION, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.NIGHT_VISION, AudioPriority.PRIORITY_BGM);
                     else //@@MP (Release 2)
                         m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER, AudioPriority.PRIORITY_BGM);
 
@@ -18444,7 +18475,7 @@ namespace djack.RogueSurvivor.Engine
                     AddOverlay(new OverlayText(screenPos.Add(DAMAGE_DX, DAMAGE_DY), Color.White, bashAttack.DamageValue.ToString(), Color.Black)); // alpha10
                     AddMessage(MakeMessage(actor, string.Format("{0} the barricade for {1} damage.", Conjugate(actor, VERB_BASH), bashAttack.DamageValue))); // alpha10
                     RedrawPlayScreen();
-                    AnimDelay(actor.IsPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                    AnimDelay(DELAY_SHORT,false);
                     ClearOverlays();
                 }
                 else if (IsVisibleToPlayer(actor))
@@ -18499,7 +18530,7 @@ namespace djack.RogueSurvivor.Engine
                         if (isObjectVisible)
                             AddOverlay(new OverlayImage(MapToScreen(mapObj.Location.Position), GameImages.ICON_KILLED));
                         RedrawPlayScreen();
-                        AnimDelay(DELAY_LONG);
+                        AnimDelay(DELAY_NORMAL,false);
                     }
                     else
                     {
@@ -18517,7 +18548,7 @@ namespace djack.RogueSurvivor.Engine
                             AddOverlay(new OverlayImage(MapToScreen(actor.Location.Position), GameImages.ICON_MELEE_ATTACK));
 
                         RedrawPlayScreen();
-                        AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                        AnimDelay(DELAY_SHORT,false);
                     }
 
                     // alpha10 bug fix; clear overlays only if action is visible
@@ -19261,7 +19292,8 @@ namespace djack.RogueSurvivor.Engine
                     {
                         AddMessage(MakeMessage(actor, String.Format(": {0} breaks and is now useless!", torsoItem.TheName)));
                         RedrawPlayScreen();
-                        AnimDelay(actor.IsPlayer ? DELAY_NORMAL : DELAY_SHORT);
+                        if (actor.IsPlayer)
+                            AnimDelay(DELAY_NORMAL,true);
                     }
                 }
             }
@@ -19471,7 +19503,7 @@ namespace djack.RogueSurvivor.Engine
                             AddOverlay(new OverlayRect(Color.Yellow, new Rectangle(MapToScreen(killer.Location.Position), new Size(TILE_SIZE, TILE_SIZE))));
                             AddMessage(MakeMessage(killer, String.Format("{0} a {1} horror!", Conjugate(killer, VERB_TRANSFORM_INTO), levelUpModel.Name)));
                             RedrawPlayScreen();
-                            AnimDelay(DELAY_LONG);
+                            AnimDelay(DELAY_NORMAL,false);
                             ClearOverlays();
                         }
                     }
@@ -20087,7 +20119,7 @@ namespace djack.RogueSurvivor.Engine
                     AddMessage(new Message(actor.Name + " died in flames!", m_Session.WorldTime.TurnCounter, OTHER_ACTION_COLOR));
                     AddOverlay(new OverlayImage(MapToScreen(actor.Location.Position), GameImages.ICON_KILLED));
                     RedrawPlayScreen();
-                    AnimDelay(DELAY_LONG);
+                    AnimDelay(DELAY_SHORT, false);
                 }
                 KillActor(null, actor, "fire");
                 ExtinguishOnFireActor(actor); //remove the flames from the corpse
@@ -20118,7 +20150,7 @@ namespace djack.RogueSurvivor.Engine
                         AddMessage(new Message(actor.Name + " died in flames!", m_Session.WorldTime.TurnCounter, OTHER_ACTION_COLOR));
                         AddOverlay(new OverlayImage(MapToScreen(actor.Location.Position), GameImages.ICON_KILLED));
                         RedrawPlayScreen();
-                        AnimDelay(DELAY_LONG);
+                        AnimDelay(DELAY_SHORT, false);
                     }
                     KillActor(null, actor, "fire");
                     ExtinguishOnFireActor(actor); //remove the flames from the corpse
@@ -26286,6 +26318,7 @@ namespace djack.RogueSurvivor.Engine
                 case AmmoType.LIGHT_RIFLE: return "light rifle bullets";
                 case AmmoType.SHOTGUN: return "shotgun cartridge";
                 case AmmoType.NAIL: return "nails"; //@MP (Release 5-1-1)
+                case AmmoType.PRECISION_RIFLE: return "precision rifle rounds"; //@@MP (Release 6-6)
                 default:
                     throw new ArgumentOutOfRangeException("at", "unhandled ammo type");
             }
@@ -26639,8 +26672,8 @@ namespace djack.RogueSurvivor.Engine
                     return String.Format("+{0} melee ATK, +{1} DEF", Rules.SKILL_AGILE_ATK_BONUS, Rules.SKILL_AGILE_DEF_BONUS);
                 case Skills.IDs.AWAKE:
                     return String.Format("+{0}% max SLP, +{1}% SLP regen ", (int)(100 * Rules.SKILL_AWAKE_SLEEP_BONUS), (int)(100 * Rules.SKILL_AWAKE_SLEEP_REGEN_BONUS));
-                case Skills.IDs.BOWS:
-                    return String.Format("bows +{0} ATK, +{1} DMG", Rules.SKILL_BOWS_ATK_BONUS, Rules.SKILL_BOWS_DMG_BONUS);
+                case Skills.IDs.BOWS_EXPLOSIVES: //@@MP - expanded to includes explosives (Release 6-6)
+                    return String.Format("bows +{0} ATK, +{1} DMG. explosives +{2}", Rules.SKILL_BOWS_ATK_BONUS, Rules.SKILL_BOWS_DMG_BONUS, Rules.SKILL_EXPLOSIVES_DMG_BONUS);
                 case Skills.IDs.CARPENTRY:
                     return String.Format("build, -{0} mat. at lvl 3, +{1}% barricading", Rules.SKILL_CARPENTRY_LEVEL3_BUILD_BONUS, (int)(100 * Rules.SKILL_CARPENTRY_BARRICADING_BONUS));
                 case Skills.IDs.CHARISMATIC:

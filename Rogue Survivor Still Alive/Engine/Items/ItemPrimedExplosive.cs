@@ -10,11 +10,24 @@ namespace djack.RogueSurvivor.Engine.Items
     class ItemPrimedExplosive : ItemExplosive
     {
         #region Fields
-
+        Actor m_Owner; //@@MP (Release 6-6)
         #endregion
 
         #region Properties
         public int FuseTimeLeft { get; set; }
+
+        public Actor Owner //@@MP (Release 6-6)
+        {
+            get
+            {
+                // cleanup dead owner reference
+                if (m_Owner != null && m_Owner.IsDead)
+                    m_Owner = null;
+
+                return m_Owner;
+            }
+            set { m_Owner = value; }
+        }
         #endregion
 
         #region Init
@@ -28,6 +41,18 @@ namespace djack.RogueSurvivor.Engine.Items
 
             //this.FuseTimeLeft = (model as ItemExplosiveModel).FuseDelay;
             this.FuseTimeLeft = itemModel.FuseDelay;
+        }
+        #endregion
+
+        #region Pre-saving
+        //@@MP (Release 6-6)
+        public override void OptimizeBeforeSaving()
+        {
+            base.OptimizeBeforeSaving();
+
+            // cleanup dead owner ref
+            if (m_Owner != null && m_Owner.IsDead)
+                m_Owner = null;
         }
         #endregion
     }
