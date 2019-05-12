@@ -41,7 +41,6 @@ namespace djack.RogueSurvivor.Engine
 
         const int DAMAGE_DX = 10;
         const int DAMAGE_DY = 10;
-        public const int FIRE_DAMAGE = 4; //@@MP (Release 4), reduced from 5 to 4 (Release 5-7)
 
         #region -UI elements
         const int RIGHTPANEL_X = TILE_SIZE * TILE_VIEW_WIDTH + 4; //=676 total
@@ -356,9 +355,10 @@ namespace djack.RogueSurvivor.Engine
 
         #region 'Still Alive' misc additions
         const int BLOOD_WALL_SPLAT_CHANCE = 20; //@@MP (Release 2)
-        const int BASE_TILE_FIRE_DAMAGE = 2; //@@MP (Release 5-2)
+        const int BASE_TILE_FIRE_DAMAGE = 1; //@@MP (Release 5-2), lowered from 2 to 1 (Release 6-6)
         const int BASE_ISONFIRE_FIRE_DAMAGE = 3; //@@MP (Release 5-7)
         const int TILE_FIRE_SPREAD_CHANCE = 6; //@@MP - even small increases make fire spread significantly (Release 6-1)
+        const int CATCH_ONFIRE_FROM_TILE_CHANCE = 10; //@@MP (Release 6-6)
         #endregion
 
         #region NPC player sleeping snoring message chance
@@ -5752,12 +5752,12 @@ namespace djack.RogueSurvivor.Engine
                     baseExtinguishChance = CLEAR_WEATHER_FIRE_EXTINGUISH_CHANCE;
 
                 // 1. Raise the deads; Check infections (non-STD)
-#region
+                #region
                 bool hasCorpses = Rules.HasCorpses(m_Session.GameMode);
                 bool hasInfection = Rules.HasInfection(m_Session.GameMode);
                 if (hasCorpses || hasInfection)
                 {
-#region Corpses
+                    #region Corpses
                     if (hasCorpses && map.CountCorpses > 0)
                     {
                         // decide who zombifies or rots.
@@ -5818,9 +5818,9 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
 
-#region Infection effects
+                    #region Infection effects
                     if (hasInfection)
                     {
                         List<Actor> infectedToKill = null;
@@ -5830,7 +5830,7 @@ namespace djack.RogueSurvivor.Engine
                             {
                                 int infectionP = m_Rules.ActorInfectionPercent(a);
 
-#region
+                                #region
                                 if (m_Rules.Roll(0, 1000) < m_Rules.InfectionEffectTriggerChance1000(infectionP))
                                 {
                                     bool isVisible = IsVisibleToPlayer(a);
@@ -5916,7 +5916,7 @@ namespace djack.RogueSurvivor.Engine
                                         infectedToKill.Add(a);
                                     }
                                 } // trigged effect
-#endregion
+                                #endregion
                             } // is infected
                         } // each actor
 
@@ -5947,14 +5947,14 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                     }
-#endregion
+                    #endregion
                 }  // non STD game.
-#endregion
+                #endregion
 
                 // 2. Update odors.
-#region
+                #region
                 //      2.1 **OBSOLETE** Odor suppression/generation. //alpha 10 obsolete
-#region
+                #region
                 /*List<OdorScent> scentGenerated = new List<OdorScent>();
                 foreach (OdorScent scent in map.Scents)
                 {
@@ -5973,10 +5973,10 @@ namespace djack.RogueSurvivor.Engine
                 }
                 foreach (OdorScent genScent in scentGenerated)
                     map.ModifyScentAt(genScent.Odor, genScent.Strength, genScent.Position);*/
-#endregion
+                #endregion
 
                 //      2.2 Odors on map decay.
-#region
+                #region
                 List<OdorScent> scentGarbage = null;
                 foreach (OdorScent scent in map.Scents)
                 {
@@ -5999,40 +5999,46 @@ namespace djack.RogueSurvivor.Engine
                         map.RemoveScent(scent);
                     scentGarbage = null;
                 }
-#endregion
+                #endregion
 
                 //      2.3 Actor scents.
-#region
+                #region
                 foreach (Actor actor in map.Actors)
                 {
                     DropActorScent(actor);
                     DecayActorScents(actor); //alpha 10, decay moved in
                 }
-#endregion
-#endregion
+                #endregion
+                #endregion
 
                 // 3. Update actors.
                 //@@MP - reordered for performance. checks the things that will kill first, then the rest (Release 5-7)
 #region
                 // 3.1. Check those on fire
 #region
+                List<Actor> exemptFromTileFireDMGThisTurn = new List<Actor>(); //@@MP - added (Release 6-6)
                 foreach (Actor actor in map.Actors.ToList()) //@@MP - ToList avoids illeagally trying to modify a collection whilst iterating through it
                 {
                     if (actor.IsOnFire) //Burning actors? //@@MP (Release 5-7)
                     {
+                        //outside whilst raining? chance to extinguish
                         if (m_Rules.IsWeatherRain(m_Session.World.Weather) && !map.GetTileAt(actor.Location.Position).IsInside) //@@MP - added check for inside (Release 6-1)
                         { // FIXME there still the weather bug when simulating = weather used is current world weather, not map weather
                             if (m_Rules.RollChance(baseExtinguishChance))
+                            {
                                 ExtinguishOnFireActor(actor); //@@MP - remove fire decoration and status
-                            continue;
+                                continue;
+                            }
                         }
                         else
                         {
                             if (!actor.Model.Abilities.IsUndead) //undead aren't smart enough to stop, drop & roll
                             {
                                 if (m_Rules.RollChance(CLEAR_WEATHER_FIRE_EXTINGUISH_CHANCE))
-                                    ExtinguishOnFireActor(actor); //@@MP - remove fire decoration and status
-                                continue;
+                                {
+                                    ExtinguishOnFireActor(actor);
+                                    continue;
+                                }
                             }
                         }
 
@@ -6040,6 +6046,7 @@ namespace djack.RogueSurvivor.Engine
                         {
                             Actor actorReceivingDamage = actor as Actor; //@@MP - can't alter a foreach collection
                             ApplyBurnDamageToOnFireActor(actorReceivingDamage);
+                            exemptFromTileFireDMGThisTurn.Add(actorReceivingDamage); //@@MP - record so that we don't burn them again later when checking tile fires, because that would be excessive (Release 6-6)
                         }
                     }
                 }
@@ -6562,7 +6569,7 @@ namespace djack.RogueSurvivor.Engine
                                             //set the tile on fire
                                             SetTileOnFire(map, adj.X, adj.Y); //@@MP - new property-based approach (Release 6-1)
                                             //if there's an actor or corpse/s on the tile that just caught on fire, burn them
-                                            ApplyBurnDamageFromTileFire(map, new Point(adj.X, adj.Y));
+                                            ApplyBurnDamageFromTileFire(map, new Point(adj.X, adj.Y), exemptFromTileFireDMGThisTurn); //@@MP - added list of excluded actors (Release 6-6)
                                         }
                                     }
                                 }
@@ -6606,7 +6613,7 @@ namespace djack.RogueSurvivor.Engine
                                     //it was already on fire when this turn started, so the fire did not spread here this turn and we must therefore
                                     //burn the actor (ie they were waiting/sleeping/trapped/silly/molotoved/flamethrowered) and
                                     //any corpse or plant here
-                                    ApplyBurnDamageFromTileFire(map, new Point(x, y));
+                                    ApplyBurnDamageFromTileFire(map, new Point(x, y), exemptFromTileFireDMGThisTurn); //@@MP - added list of excluded actors (Release 6-6)
                                 }
 #endregion
                             }
@@ -11647,7 +11654,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // Get targeting data.
-            HashSet<Point> fov = LOS.ComputeFOVFor(m_Rules, player, m_Session.WorldTime, m_Session.World.Weather, false);
+            HashSet<Point> fov = LOS.ComputeFOVFor(this, player, m_Session.WorldTime, m_Session.World.Weather, false);
             List<Actor> potentialTargets = m_Rules.GetEnemiesInFov(player, fov);
 
             if (potentialTargets == null || potentialTargets.Count == 0)
@@ -13011,7 +13018,7 @@ namespace djack.RogueSurvivor.Engine
             foreach (Actor fo in player.Followers)
             {
                 followers[iFo] = fo;
-                fovs[iFo] = LOS.ComputeFOVFor(m_Rules, fo, m_Session.WorldTime, m_Session.World.Weather, false);
+                fovs[iFo] = LOS.ComputeFOVFor(this, fo, m_Session.WorldTime, m_Session.World.Weather, false);
                 bool inView = fovs[iFo].Contains(player.Location.Position) && m_PlayerFOV.Contains(fo.Location.Position);
                 bool linkedByPhone = AreLinkedByPhone(player, fo);
                 hasLinkWith[iFo] = inView || linkedByPhone;
@@ -13209,7 +13216,7 @@ namespace djack.RogueSurvivor.Engine
             string desc = DescribePlayerFollowerStatus(follower);
 
             // compute follower fov.
-            HashSet<Point> followerFOV = LOS.ComputeFOVFor(m_Rules, follower, m_Session.WorldTime, m_Session.World.Weather, false);
+            HashSet<Point> followerFOV = LOS.ComputeFOVFor(this, follower, m_Session.WorldTime, m_Session.World.Weather, false);
 
             // loop.
             bool loop = true;
@@ -16421,6 +16428,8 @@ namespace djack.RogueSurvivor.Engine
             if (grenade == null)
                 throw new InvalidOperationException("throwing grenade but no grenade equipped ");
 
+            Map map = actor.Location.Map;
+
             // spend AP.
             SpendActorActionPoints(actor, Rules.BASE_ACTION_COST);
 
@@ -16428,9 +16437,9 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.Consume(grenade);
 
             // drop primed grenade at target position.
-            Map map = actor.Location.Map;
             ItemGrenadePrimed primedGrenade = new ItemGrenadePrimed(m_GameItems[grenade.PrimedModelID]);
             map.DropItemAt(primedGrenade, targetPos);
+            primedGrenade.Owner = actor; //@@MP - so we can determine later if skills add extra damage to the blast (Release 6-6)
 
             // message about throwing.
             bool isVisible = IsVisibleToPlayer(actor) || IsVisibleToPlayer(actor.Location.Map, targetPos);
@@ -16445,10 +16454,13 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
             }
 
-            //@@MP - civilians in the blast radius will become enemies of the thrower (Release 5-7)
-            //check for civilians within 2 tiles. any larger is unreasonable to assume the thrower was targeting the victim
-            List<Actor> actorsNearbyTargetPos = GetActorsInGivenRadius(map, targetPos, (primedGrenade.Model as ItemExplosiveModel).BlastAttack.Radius);
-            if (actorsNearbyTargetPos != null && primedGrenade.Model.ID != GameItems.DYNAMITE.ID && primedGrenade.Model.ID != GameItems.DYNAMITE_PRIMED.ID) //dynamite is placed, not thrown, and huge radius
+            //@@MP (Release 5-7), (Release 6-6)
+            //check for civilians within 2 tiles, or half the radius for bigger explosives. any larger is unreasonable to assume the thrower was targeting the victim
+            int halfBlastRadius = Convert.ToInt32((primedGrenade.Model as ItemExplosiveModel).BlastAttack.Radius / 2);
+            int provocationRadius = Math.Max(2, halfBlastRadius);
+            // civilians in the blast radius will become aggrevated by the thrower
+            List<Actor> actorsNearbyTargetPos = GetActorsInGivenRadius(map, targetPos, provocationRadius);
+            if (actorsNearbyTargetPos != null && primedGrenade.Model.ID != GameItems.DYNAMITE.ID && primedGrenade.Model.ID != GameItems.DYNAMITE_PRIMED.ID) //dynamite is placed, not thrown, and huge radius, so we don't want to factor it in here
             {
                 HandleBlastRadiusActorsAggression(actor, actorsNearbyTargetPos); //actor (so we don't act upon the thrower), list of actors in radius
             }
@@ -16461,6 +16473,8 @@ namespace djack.RogueSurvivor.Engine
             if (primedGrenade == null)
                 throw new InvalidOperationException("throwing primed grenade but no primed grenade equipped ");
 
+            Map map = actor.Location.Map;
+
             // spend AP.
             SpendActorActionPoints(actor, Rules.BASE_ACTION_COST);
 
@@ -16468,7 +16482,7 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.RemoveAllQuantity(primedGrenade);
 
             // drop primed grenade at target position.
-            actor.Location.Map.DropItemAt(primedGrenade, targetPos);
+            map.DropItemAt(primedGrenade, targetPos);
             primedGrenade.Owner = actor; //@@MP - so we can determine later if skills add extra damage to the blast (Release 6-6)
 
             // message about throwing.
@@ -16484,11 +16498,13 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
             }
 
-            //@@MP - civilians in the blast radius will become enemies of the thrower (Release 5-7)
-            //check for civilians within 2 tiles. any larger is unreasonable to assume the thrower was targeting the victim
-            Map map = actor.Location.Map;
-            List<Actor> actorsNearbyTargetPos = GetActorsInGivenRadius(map, targetPos, (primedGrenade.Model as ItemExplosiveModel).BlastAttack.Radius);
-            if (actorsNearbyTargetPos != null && primedGrenade.Model.ID != GameItems.DYNAMITE_PRIMED.ID && primedGrenade.Model.ID != GameItems.DYNAMITE.ID) //dynamite is placed, not thrown, and huge radius
+            //@@MP (Release 5-7), (Release 6-6)
+            // check for civilians within 2 tiles, or half the radius for bigger explosives. any larger is unreasonable to assume the thrower was targeting the victim
+            int halfBlastRadius = Convert.ToInt32((primedGrenade.Model as ItemExplosiveModel).BlastAttack.Radius / 2);
+            int provocationRadius = Math.Max(2, halfBlastRadius);
+            List<Actor> actorsNearbyTargetPos = GetActorsInGivenRadius(map, targetPos, provocationRadius);
+            // civilians in the blast radius will become aggrevated by the thrower
+            if (actorsNearbyTargetPos != null && primedGrenade.Model.ID != GameItems.DYNAMITE_PRIMED.ID && primedGrenade.Model.ID != GameItems.DYNAMITE.ID) //dynamite is placed, not thrown, and huge radius, so we don't want to factor it in here
             {
                 HandleBlastRadiusActorsAggression(actor, actorsNearbyTargetPos); //actor (so we don't act upon the thrower), list of actors in radius
             }
@@ -16813,21 +16829,36 @@ namespace djack.RogueSurvivor.Engine
 #endregion*/
 
                 // damage.
-#region
-                if (thrower != null)
+                #region
+                if (thrower != null) //@@MP - added bonus from skill (Release 6-6)
                     modifiedDamage += (Rules.SKILL_EXPLOSIVES_DMG_BONUS * thrower.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.BOWS_EXPLOSIVES));
+                else
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "blah");
+
                 int dmgToVictim = modifiedDamage - (victim.CurrentDefence.Protection_Hit + victim.CurrentDefence.Protection_Shot) / 2;
+
+                // inflict.
+                bool splatterBlood = true; //@@MP (Release 6-6)
+                if (itemModel.IsFlameWeapon) //@@MP - fire damage required something customised, as you'll see below and in 7.2 of NextMapTurn()
+                {
+                    /*
+                    int resolvedDmgToVicitim = dmgToVictim;
+                    //@@MP - NextMapTurn() will inflict base fire damage whether it be tile or IsOnFire, so for this initial hit just include any damage over and above that
+                    //so unless a flame weapon does greater than BASE_TILE_FIRE_DAMAGE + BASE_ISONFIRE_FIRE_DAMAGE, no dmg will be done by the hit, and NMT() will be the baseline
+                    resolvedDmgToVicitim -= BASE_TILE_FIRE_DAMAGE;
+                    resolvedDmgToVicitim -= BASE_ISONFIRE_FIRE_DAMAGE;
+                    resolvedDmgToVicitim = Math.Max(resolvedDmgToVicitim, 0); //@MP - don't go below zero, which would add HP (Release 6-6)
+                    InflictDamage(victim, resolvedDmgToVicitim, false); //@@MP - now that InflictDamage doesn't have to cause blood splatter, don't for fires (Release 5-2)
+                    */
+
+                    splatterBlood = false;
+                    SetActorOnFire(victim);
+                }
+
                 if (dmgToVictim > 0)
                 {
-                    // inflict.
-                    if (itemModel.IsFlameWeapon) //@@MP - fire damage required something customised, as you'll see below and in 7.2 of NextMapTurn()
-                    {
-                        int resolvedDmgToVicitim = dmgToVictim - FIRE_DAMAGE; //@@MP - NextMapTurn() will inflict base fire damage, so for this initial hit just include any damage over and above (or add health if the eventual damage should be below what NMT() will remove)
-                        InflictDamage(victim, resolvedDmgToVicitim, false); //@@MP - now that InflictDamage doesn't have to cause blood splatter, don't for fires (Release 5-2)
-                        SetActorOnFire(victim);
-                    }
-                    else //@@MP - it's a standard explosive, so chance to cause blood splatter (Release 5-2)
-                        InflictDamage(victim, dmgToVictim, true);
+                    //@@MP - it's a standard explosive, so chance to cause blood splatter (Release 5-2)
+                    InflictDamage(victim, dmgToVictim, splatterBlood);
 
                     // message.
                     if (IsVisibleToPlayer(victim))
@@ -16850,7 +16881,8 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else
                     AddMessage(new Message(String.Format("{0} is hit for no damage.", victim.Name), map.LocalTime.TurnCounter, Color.White));
-#endregion
+
+                #endregion
             }
 #endregion
 
@@ -16959,10 +16991,10 @@ namespace djack.RogueSurvivor.Engine
 
             if (!wallDestroyed) //@@MP - add scorch sprite where ground or surviving wall was blasted (Release 2)
                 ScorchBurntTile(map, location.Position.X, location.Position.Y, modifiedDamage);
-#endregion
+            #endregion
 
-            //@@MP - molotovs start fires (Release 4)
-            if (itemModel.IsFlameWeapon)//(itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED) //@@MP - switched to the new method (Release 5-2)
+            // flame weapons start fires  //@@MP (Release 4)
+            if (itemModel.IsFlameWeapon) //@@MP - switched to the new property (Release 5-2)
                 SetTileOnFire(map, location.Position.X, location.Position.Y);
 
             // return damage done.
@@ -20059,7 +20091,7 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else if (damage > 40 && damage <= 120)
                 {
-                    if (GameTiles.IsWallModel(tile.Model)) //@@MP - now a scorch for walls and floor each (Release 6-3)
+                    if (m_GameTiles.IsWallModel(tile.Model)) //@@MP - now a scorch for walls and floor each (Release 6-3)
                         map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER_WALL);
                     else
                         map.GetTileAt(x, y).AddDecoration(GameImages.DECO_SCORCH_MARK_INNER_FLOOR);
@@ -20131,7 +20163,7 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Applies damage to any actor standing on a tile where there is fire. Distinct from the actor actually being IsOnFire
         /// </summary>
-        void ApplyBurnDamageFromTileFire(Map map, Point point) //@@MP (Release 5-2), renamed (Release 5-7)
+        void ApplyBurnDamageFromTileFire(Map map, Point point, List<Actor> exemptFromTileFireDMGThisTurn) //@@MP (Release 5-2), renamed (Release 5-7), added exempt parameter (Release 6-6)
         {
             /*flame weapons like molotovs have their own damage values for initial impact (like any other explosion), but NextMapTurn() actually handles all fire damage, so to prevent
             duplicating damage in NextMapTurn() the difference between base FIRE_DAMAGE and weapon initial impact dmg calculates damage is taken into account by ApplyExplosionDamage().
@@ -20141,21 +20173,26 @@ namespace djack.RogueSurvivor.Engine
             Actor actor = map.GetActorAt(point);
             if (actor != null && !actor.IsSkeletonType && actor.HitPoints > 0) //skeletons are invulnerable to fire // added hitpoints check (Release 6-1)
             {
-                InflictDamage(actor, FIRE_DAMAGE, false);
-                if (actor.HitPoints <= 0)
+                if (!exemptFromTileFireDMGThisTurn.Contains(actor)) //@@MP - they're exempt, probably because they already took fire damage this turn from actually being on fire (Release 6-6)
                 {
-                    // show.
-                    if (IsVisibleToPlayer(actor))
+                    InflictDamage(actor, BASE_TILE_FIRE_DAMAGE, false);
+                    if (actor.HitPoints <= 0)
                     {
-                        AddMessage(new Message(actor.Name + " died in flames!", m_Session.WorldTime.TurnCounter, OTHER_ACTION_COLOR));
-                        AddOverlay(new OverlayImage(MapToScreen(actor.Location.Position), GameImages.ICON_KILLED));
-                        RedrawPlayScreen();
-                        AnimDelay(DELAY_SHORT, false);
+                        // show.
+                        if (IsVisibleToPlayer(actor))
+                        {
+                            AddMessage(new Message(actor.Name + " died in flames!", m_Session.WorldTime.TurnCounter, OTHER_ACTION_COLOR));
+                            AddOverlay(new OverlayImage(MapToScreen(actor.Location.Position), GameImages.ICON_KILLED));
+                            RedrawPlayScreen();
+                            AnimDelay(DELAY_SHORT, false);
+                        }
+                        KillActor(null, actor, "fire");
+                        ExtinguishOnFireActor(actor); //remove the flames from the corpse
+                        if (!actor.Model.Abilities.IsUndead) //@@MP - had this check in the wrong spot in R5-3 (Release 5-7)
+                            SeeingCauseInsanity(actor.Location, Rules.SANITY_HIT_EATEN_ALIVE, String.Format("{0} burnt alive", actor.Name));
                     }
-                    KillActor(null, actor, "fire");
-                    ExtinguishOnFireActor(actor); //remove the flames from the corpse
-                    if (!actor.Model.Abilities.IsUndead) //@@MP - had this check in the wrong spot in R5-3 (Release 5-7)
-                        SeeingCauseInsanity(actor.Location, Rules.SANITY_HIT_EATEN_ALIVE, String.Format("{0} burnt alive", actor.Name));
+                    else if (m_Rules.RollChance(CATCH_ONFIRE_FROM_TILE_CHANCE)) //@@MP - small chance of being set on fire (Release 6-6)
+                        SetActorOnFire(actor);
                 }
             }
 
@@ -20164,7 +20201,7 @@ namespace djack.RogueSurvivor.Engine
             if (corpses != null)
             {
                 foreach (Corpse c in corpses)
-                    InflictDamageToCorpse(c, (float)FIRE_DAMAGE);
+                    InflictDamageToCorpse(c, (float)BASE_TILE_FIRE_DAMAGE);
             }
 
             //damage crops if present (Release 5-5)
@@ -20349,7 +20386,7 @@ namespace djack.RogueSurvivor.Engine
         {
             if (player == null)
                 return;
-            m_PlayerFOV = LOS.ComputeFOVFor(m_Rules, player, m_Session.WorldTime, m_Session.World.Weather, true); //@@MP - added that other tiles light up by other light sources outside FoV (Release 6-5)
+            m_PlayerFOV = LOS.ComputeFOVFor(this, player, m_Session.WorldTime, m_Session.World.Weather, true); //@@MP - added that other tiles light up by other light sources outside FoV (Release 6-5)
             player.Location.Map.SetViewAndMarkVisited(m_PlayerFOV);
         }
 
@@ -26215,7 +26252,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 sb.Append(String.Format("{0};", m_Rules.BlastDamage(blastRadius, m.BlastAttack)));
             }
-            lines.Add(String.Format("Blast damages : {0}", sb.ToString()));
+            lines.Add(String.Format("Blast damages : {0} (by ranges)", sb.ToString()));
 
             // 3. Specialized explosives.
             // grenade?

@@ -284,13 +284,13 @@ namespace djack.RogueSurvivor.Engine
                 });
         }
 
-        public static HashSet<Point> ComputeFOVFor(Rules rules, Actor actor, WorldTime time, Weather weather, bool checkForOtherLitTiles) //@@MP - added that other tiles light up by other light sources outside FoV (Release 6-5)
+        public static HashSet<Point> ComputeFOVFor(RogueGame game, Actor actor, WorldTime time, Weather weather, bool checkForOtherLitTiles) //@@MP - added that other tiles light up by other light sources outside FoV (Release 6-5), switched Rules for Game (Release 6-6)
         {
             Location fromLocation = actor.Location;
             HashSet<Point> visibleSet = new HashSet<Point>();
             Point from = fromLocation.Position;
             Map map = fromLocation.Map;
-            int maxRange = rules.ActorFOV(actor, time, weather);
+            int maxRange = game.Rules.ActorFOV(actor, time, weather);
 
             //////////////////////////////////////////////
             // Brute force ray-casting with wall fix pass
@@ -318,10 +318,10 @@ namespace djack.RogueSurvivor.Engine
 
                     // Distance check.
                     Point pos = new Point(to.X, to.Y);
-                    bool isAdjacent = rules.IsAdjacent(actor.Location.Position, pos);
+                    bool isAdjacent = game.Rules.IsAdjacent(actor.Location.Position, pos);
                     if (!isAdjacent) //@@MP - the circle below cuts out the 'corners'. if maxRange = 0 then the actor can't even see adjacent diagonals (only directly N,S,E,W)
                     {
-                        if (rules.LOSDistance(from, to) > maxRange) //@@MP - aims to keep the view range circular: exclude everything outside the circle's range
+                        if (game.Rules.LOSDistance(from, to) > maxRange) //@@MP - aims to keep the view range circular: exclude everything outside the circle's range
                             continue;
                     }
 
@@ -340,7 +340,7 @@ namespace djack.RogueSurvivor.Engine
                         Tile tile = map.GetTileAt(x, y);
                         MapObject mapObj = map.GetMapObjectAt(x, y);
                         //Logger.WriteLine(Logger.Stage.RUN_MAIN, mapObj.Location.Position.ToString() + ". objMatTransparent= " + mapObj.IsMaterialTransparent + ". tileTransparent= " + tile.Model.IsTransparent.ToString() + ". mapTransparent= " + map.IsTransparent(x,y).ToString());
-                        if (!tile.Model.IsWalkable && !tile.Model.IsTransparent) //@@MP - swapped the order of the two coditions, as currently all tile modesls are transparent (Release 6-5)
+                        if (!tile.Model.IsWalkable && !tile.Model.IsTransparent) //@@MP - swapped the order of the two conditions, as currently all tile models are transparent (Release 6-5)
                             isFovWall = true;
                         else if (mapObj != null && !mapObj.IsTransparent) //@@MP - added transparency check (Release 6-5)
                             isFovWall = true;
@@ -412,15 +412,19 @@ namespace djack.RogueSurvivor.Engine
                         //tile fires - check these first, as it may also be in adjacent tiles
                         else if (map.IsAnyTileFireThere(map, spot))
                         {
-                            visibleSet.Add(spot);
-                            foreach (Direction d in Direction.COMPASS_4)
+                            TileModel tileModel = map.GetTileAt(spot).Model; //@@MP - not on walls because it makes them transparent (Release 6-6)
+                            if (!game.GameTiles.IsWallModel(tileModel))
                             {
-                                //lights up the tiles around it
-                                Point next = spot + d;
-                                if (map.IsInBounds(next))
-                                    visibleSet.Add(next);
+                                visibleSet.Add(spot);
+                                foreach (Direction d in Direction.COMPASS_4)
+                                {
+                                    //lights up the tiles around it
+                                    Point next = spot + d;
+                                    if (map.IsInBounds(next))
+                                        visibleSet.Add(next);
+                                }
+                                continue;
                             }
-                            continue;
                         }
                         //actors with torches
                         else if (map.GetActorAt(spot) != null)
