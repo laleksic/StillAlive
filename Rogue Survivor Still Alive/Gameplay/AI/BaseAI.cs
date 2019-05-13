@@ -2554,8 +2554,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // so we want to get a chance at melee a shooting enemy.
             if (HasEquipedRangedWeapon(enemy))
                 decideToFlee = false;
-            // 2. Always fight if law enforcer vs murderer.
-            // do our duty.
+            // 2. Always fight if we're a law enforcer vs murderer. do our duty.
             else if (m_Actor.Model.Abilities.IsLawEnforcer && enemy.MurdersCounter > 0)
                 decideToFlee = false;
             // 3. Always flee melee if tired.

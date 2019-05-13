@@ -5358,6 +5358,8 @@ namespace djack.RogueSurvivor.Engine
             m_AmbientSFXManager.Load(GameAmbients.THUNDERING_RAIN_OUTSIDE, GameAmbients.THUNDERING_RAIN_OUTSIDE_FILE);
             m_AmbientSFXManager.Load(GameAmbients.THUNDERING_RAIN_INSIDE, GameAmbients.THUNDERING_RAIN_INSIDE_FILE);
             m_AmbientSFXManager.Load(GameAmbients.NIGHT_ANIMALS_OUTSIDE, GameAmbients.NIGHT_ANIMALS_OUTSIDE_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_OUTSIDE, GameAmbients.CHURCH_BELLS_OUTSIDE_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_INSIDE, GameAmbients.CHURCH_BELLS_INSIDE_FILE);
             #endregion
 
             m_UI.UI_Clear(Color.Black);
@@ -12077,6 +12079,8 @@ namespace djack.RogueSurvivor.Engine
             RedrawPlayScreen();
             // check music.
             m_MusicManager.StopAll();
+            m_AmbientSFXManager.StopAll(); //@@MP (Release 6-6)
+            m_SFXManager.StopAll(); //@@MP (Release 6-6)
             m_MusicManager.PlayLooping(GameMusics.SLEEP, AudioPriority.PRIORITY_EVENT);
             return true;
         }
@@ -16457,7 +16461,7 @@ namespace djack.RogueSurvivor.Engine
             //@@MP (Release 5-7), (Release 6-6)
             //check for civilians within 2 tiles, or half the radius for bigger explosives. any larger is unreasonable to assume the thrower was targeting the victim
             int halfBlastRadius = Convert.ToInt32((primedGrenade.Model as ItemExplosiveModel).BlastAttack.Radius / 2);
-            int provocationRadius = Math.Max(2, halfBlastRadius);
+            int provocationRadius = Math.Max(1, halfBlastRadius);
             // civilians in the blast radius will become aggrevated by the thrower
             List<Actor> actorsNearbyTargetPos = GetActorsInGivenRadius(map, targetPos, provocationRadius);
             if (actorsNearbyTargetPos != null && primedGrenade.Model.ID != GameItems.DYNAMITE.ID && primedGrenade.Model.ID != GameItems.DYNAMITE_PRIMED.ID) //dynamite is placed, not thrown, and huge radius, so we don't want to factor it in here
@@ -16501,7 +16505,7 @@ namespace djack.RogueSurvivor.Engine
             //@@MP (Release 5-7), (Release 6-6)
             // check for civilians within 2 tiles, or half the radius for bigger explosives. any larger is unreasonable to assume the thrower was targeting the victim
             int halfBlastRadius = Convert.ToInt32((primedGrenade.Model as ItemExplosiveModel).BlastAttack.Radius / 2);
-            int provocationRadius = Math.Max(2, halfBlastRadius);
+            int provocationRadius = Math.Max(1, halfBlastRadius);
             List<Actor> actorsNearbyTargetPos = GetActorsInGivenRadius(map, targetPos, provocationRadius);
             // civilians in the blast radius will become aggrevated by the thrower
             if (actorsNearbyTargetPos != null && primedGrenade.Model.ID != GameItems.DYNAMITE_PRIMED.ID && primedGrenade.Model.ID != GameItems.DYNAMITE.ID) //dynamite is placed, not thrown, and huge radius, so we don't want to factor it in here

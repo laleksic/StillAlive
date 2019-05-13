@@ -25,4 +25,4 @@
 "BLACKOPS_MAN","blackOp","blackOps",100,30,60,20,10,20,0,0,10,16,0,80,"Erasing."
 "SEWERS_THING","Sewers Thing","Sewers Things",33,400,99,28,12,8,0,0,5,0,5,300,"A relative of The Swamp Thing?"
 "JASON_MYERS","Serial Killer","Serial Killers",125,30,60,20,10,20,0,0,10,16,0,150,"Drug-induced insanity"
-"FERAL_DOG","feral dog","feral dogs",100,15,90,30,10,15,0,0,8,16,100,0,"GRRRR"
+"FERAL_DOG","feral dog","feral dogs",200,10,90,30,10,15,0,0,8,16,100,0,"GRRRR"

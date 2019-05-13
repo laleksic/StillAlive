@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.5.3 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.5.4 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -9,11 +9,13 @@ Features:
 -Added sound effects for precision rifle, army rifle, and revolver. Revised pistol SFX.
 -Bows skill now includes bonus to explosives damage.
 -Added chance to catch on fire when walking through a tile fire.
+-Someone rings church bells just before sundown, warning you to find a safe space for the night.
 
 Fixes:
 -Crossbows, hunting rifles and precision rifles can't be used in Rapid Fire mode.
 -Enforced animation delay for some important events, even if it is disabled in the options.
 -Being on fire actually causes damage to humans now.
+-Sounds are stopped when sleeping.
 
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).
