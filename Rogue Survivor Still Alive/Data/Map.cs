@@ -132,6 +132,12 @@ namespace djack.RogueSurvivor.Data
             set;
         }
 
+        public bool HasChurch //@@MP (Release 6-6)
+        {
+            get;
+            set;
+        }
+
         public Lighting Lighting
         {
             get { return m_Lighting; }

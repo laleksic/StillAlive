@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.5.4 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.5.5 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -16,6 +16,7 @@ Fixes:
 -Enforced animation delay for some important events, even if it is disabled in the options.
 -Being on fire actually causes damage to humans now.
 -Sounds are stopped when sleeping.
+-Corrected confusing range description on ranged weapons.
 
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).

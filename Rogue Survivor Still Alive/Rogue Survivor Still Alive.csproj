@@ -1233,10 +1233,10 @@
     <Content Include="Resources\Ambients\night_animals_outside.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Ambients\church_bells_inside.ogg">
+    <Content Include="Resources\Ambients\church_bells_outside_map.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Ambients\church_bells_outside.ogg">
+    <Content Include="Resources\Ambients\church_bells_within_map.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\Sfx\night_vision.ogg">

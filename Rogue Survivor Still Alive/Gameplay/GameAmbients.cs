@@ -36,9 +36,9 @@ namespace djack.RogueSurvivor.Gameplay
         //@@MP (Release 6-6)
         public const string NIGHT_ANIMALS_OUTSIDE = "wild animals";
         public const string NIGHT_ANIMALS_OUTSIDE_FILE = PATH + "night_animals_outside";
-        public const string CHURCH_BELLS_OUTSIDE = "outside hearing church bells";
-        public const string CHURCH_BELLS_OUTSIDE_FILE = PATH + "church_bells_outside";
-        public const string CHURCH_BELLS_INSIDE = "inside hearing church bells";
-        public const string CHURCH_BELLS_INSIDE_FILE = PATH + "church_bells_inside";
+        public const string CHURCH_BELLS_WITHIN_MAP = "hearing church bells nearby";
+        public const string CHURCH_BELLS_WITHIN_MAP_FILE = PATH + "church_bells_within_map";
+        public const string CHURCH_BELLS_OUTSIDE_MAP = "hearing church bells far off";
+        public const string CHURCH_BELLS_OUTSIDE_MAP_FILE = PATH + "church_bells_outside_map";
     }
 }

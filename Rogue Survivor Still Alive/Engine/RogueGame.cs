@@ -3774,8 +3774,10 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
             m_Player.Inventory.AddAll(ammo);*/
-            Item gun = new ItemRangedWeapon(GameItems.PRECISION_RIFLE);
+            Item gun = new ItemRangedWeapon(GameItems.HUNTING_RIFLE);
             m_Player.Inventory.AddAll(gun);
+            Item gun2 = new ItemRangedWeapon(GameItems.PISTOL);
+            m_Player.Inventory.AddAll(gun2);
             Item temp1 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
             m_Player.Inventory.AddAll(temp1);
             Item temp2 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
@@ -5358,8 +5360,8 @@ namespace djack.RogueSurvivor.Engine
             m_AmbientSFXManager.Load(GameAmbients.THUNDERING_RAIN_OUTSIDE, GameAmbients.THUNDERING_RAIN_OUTSIDE_FILE);
             m_AmbientSFXManager.Load(GameAmbients.THUNDERING_RAIN_INSIDE, GameAmbients.THUNDERING_RAIN_INSIDE_FILE);
             m_AmbientSFXManager.Load(GameAmbients.NIGHT_ANIMALS_OUTSIDE, GameAmbients.NIGHT_ANIMALS_OUTSIDE_FILE);
-            m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_OUTSIDE, GameAmbients.CHURCH_BELLS_OUTSIDE_FILE);
-            m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_INSIDE, GameAmbients.CHURCH_BELLS_INSIDE_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_WITHIN_MAP, GameAmbients.CHURCH_BELLS_WITHIN_MAP_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_OUTSIDE_MAP, GameAmbients.CHURCH_BELLS_OUTSIDE_MAP_FILE);
             #endregion
 
             m_UI.UI_Clear(Color.Black);
@@ -5493,6 +5495,13 @@ namespace djack.RogueSurvivor.Engine
                         if (canSeeSky)
                             AddMessage(new Message(String.Format("Time passes, it is now {0}...", DescribeDayPhase(newPhase)), m_Session.WorldTime.TurnCounter, isNight ? NIGHT_COLOR : DAY_COLOR));
                         CheckWeatherChange(); //@@MP (Release 6-1)
+                        if (newPhase == DayPhase.SUNSET) //@@MP (Release 6-6)
+                        {
+                            if (m_Player.Location.Map.HasChurch && !m_Player.IsSleeping)
+                                m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.CHURCH_BELLS_WITHIN_MAP, AudioPriority.PRIORITY_BGM);
+                            else
+                                m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.CHURCH_BELLS_OUTSIDE_MAP, AudioPriority.PRIORITY_BGM);
+                        }
                     }
                 }
                 else if (wasNight && !m_Session.WorldTime.IsNight && (m_Session.WorldTime.Day % 2 == 0)) //@@MP - a new day in the other districts (Release 5-5), now only happens every 2nd day (Release 6-1)
@@ -9281,14 +9290,18 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         void CheckAmbientSFX(Map map) //@@MP (Release 5-3), changed to support new ambients (Release 6-6)
         {
-            if (m_Session.CurrentMap.Name.Contains("basement") || map == map.District.SubwayMap || map == map.District.SewersMap ||
+            if (m_Player.IsSleeping) //@@MP (Release 6-6)
+            {
+                return;
+            }
+            else if (m_Session.CurrentMap.Name.Contains("basement") || map == map.District.SubwayMap || map == map.District.SewersMap ||
                 map == m_Session.UniqueMaps.Hospital_Offices.TheMap || map == m_Session.UniqueMaps.Hospital_Patients.TheMap ||
                 map == m_Session.UniqueMaps.Hospital_Power.TheMap || map == m_Session.UniqueMaps.Hospital_Storage.TheMap ||
                 map == m_Session.UniqueMaps.PoliceStation_OfficesLevel.TheMap || map == m_Session.UniqueMaps.PoliceStation_JailsLevel.TheMap ||
                 map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap || map == m_Session.UniqueMaps.ArmyBase.TheMap)
             {
                 //stop any ambients sounds that we couldn't hear in these locations
-                m_AmbientSFXManager.StopAll();
+                StopAllAmbientsExcept("all");
                 return;
             }
             else // we're somewhere that we could hear ambient noise
@@ -9341,13 +9354,14 @@ namespace djack.RogueSurvivor.Engine
                     StopAllAmbientsExcept(GameAmbients.NIGHT_ANIMALS_OUTSIDE);
                 }
                 else //none of the ambients apply for the current weather and time of day
-                    m_AmbientSFXManager.StopAll();
+                    StopAllAmbientsExcept("all");
             }
         }
 
         /// <summary>
         /// Stops all other ambient sound files except the one passed as the parameter
         /// </summary>
+        /// <param name="musicname">supply blank to stop all</param>
         private void StopAllAmbientsExcept(string musicname) //@@MP (Release 6-6)
         {
             if (musicname != GameAmbients.RAIN_INSIDE)
@@ -26335,11 +26349,11 @@ namespace djack.RogueSurvivor.Engine
                     else
                         lines.Add(string.Format("Rapid Fire Atk: {0} {1}", rm.RapidFireHit1Value, rm.RapidFireHit2Value)); // alpha10
 
-                    lines.Add(string.Format("Rng  : {0}-{1}", rm.Attack.Range, rm.Attack.EfficientRange));
+                    lines.Add(string.Format("Range : {0}-{1} (efficient-max)", rm.Attack.EfficientRange, rm.Attack.Range)); //@@MP - reversed args to make more sense (release 6-6)
                     if (rw.Ammo < rm.MaxAmmo)
-                        lines.Add(string.Format("Amo  : {0}/{1}", rw.Ammo, rm.MaxAmmo));
+                        lines.Add(string.Format("Ammo : {0}/{1}", rw.Ammo, rm.MaxAmmo));
                     else
-                        lines.Add(string.Format("Amo  : {0} MAX", rw.Ammo));
+                        lines.Add(string.Format("Ammo : {0} MAX", rw.Ammo));
                     lines.Add(string.Format("Type : {0}", DescribeAmmoType(rm.AmmoType)));
                 }
             }
@@ -26870,7 +26884,8 @@ namespace djack.RogueSurvivor.Engine
             // check for current map music and play if not already playing something
             string mapMusic = m_Session.CurrentMap.BgMusic; //some maps, such as CHAR basement, have specific bg music. The surface doesn't though for eg
             if (string.IsNullOrEmpty(mapMusic)) //this is a level that doesn't have bgm
-                m_MusicManager.PlayRandom(m_bgMusicPlaylist, AudioPriority.PRIORITY_BGM); //pick a random bgm to play
+                //m_MusicManager.PlayRandom(m_bgMusicPlaylist, AudioPriority.PRIORITY_BGM); //pick a random bgm to play
+                return; //@@MP - disabled in preference for ambient sound effects (Release 6-6)
             else if (m_MusicManager.Track == mapMusic && m_MusicManager.IsPlaying(mapMusic))
                 return; //no need to do anything, it's already playing the appropriate bgm for this map
             else

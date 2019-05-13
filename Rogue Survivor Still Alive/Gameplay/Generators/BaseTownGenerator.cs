@@ -2132,6 +2132,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // demark building.
             string buildingName = "Church";
             map.AddZone(MakeUniqueZone(buildingName, b.BuildingRect));
+            map.HasChurch = true; //@@MP (Release 6-6)
             // walkway zones.
             MakeWalkwayZones(map, b);
             
