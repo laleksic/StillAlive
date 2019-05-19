@@ -3767,17 +3767,15 @@ namespace djack.RogueSurvivor.Engine
 #if DEBUG
             /*Item temp = new ItemGrenade(GameItems.C4, GameItems.C4_PRIMED);
             m_Player.Inventory.AddAll(temp);
-            m_Player.Inventory.AddAll(temp);*/
+            m_Player.Inventory.AddAll(temp);
             Item nvg = new ItemLight(GameItems.NIGHT_VISION_MALE);
-            m_Player.Inventory.AddAll(nvg);
-            /*Item gun = new ItemRangedWeapon(GameItems.ARMY_RIFLE);
+            m_Player.Inventory.AddAll(nvg);*/
+            Item gun = new ItemRangedWeapon(GameItems.ARMY_RIFLE);
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
-            m_Player.Inventory.AddAll(ammo);*/
-            Item gun = new ItemRangedWeapon(GameItems.HUNTING_RIFLE);
-            m_Player.Inventory.AddAll(gun);
-            Item gun2 = new ItemRangedWeapon(GameItems.PISTOL);
-            m_Player.Inventory.AddAll(gun2);
+            m_Player.Inventory.AddAll(ammo);
+            Item spikes = new ItemRangedWeapon(GameItems.SPIKES);
+            m_Player.Inventory.AddAll(spikes);
             Item temp1 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
             m_Player.Inventory.AddAll(temp1);
             Item temp2 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
@@ -3786,7 +3784,7 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(temp3);
             Item torch = new ItemLight(GameItems.BIG_FLASHLIGHT);
             m_Player.Inventory.AddAll(torch);
-            m_TownGenerator.GiveStartingSkillToActor(m_Player, Skills.IDs.BOWS_EXPLOSIVES);
+            //m_TownGenerator.GiveStartingSkillToActor(m_Player, Skills.IDs.BOWS_EXPLOSIVES);
 #endif
 
             // scoring : hello there.
@@ -14883,16 +14881,16 @@ namespace djack.RogueSurvivor.Engine
                     if (mapObj.TheName == "the chain wire fence") //@@MP - allows for other jumped on sounds added as elseifs. order them by most common descending
                     {
                         if (actor.IsPlayer)
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_PLAYER, AudioPriority.PRIORITY_BGM);
+                            m_SFXManager.Play(GameSounds.CLIMB_FENCE_PLAYER, AudioPriority.PRIORITY_BGM);
                         else
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_NEARBY, AudioPriority.PRIORITY_BGM);
+                            m_SFXManager.Play(GameSounds.CLIMB_FENCE_NEARBY, AudioPriority.PRIORITY_BGM);
                     }
                     else if (mapObj.TheName == "the wrecked car")
                     {
                         if (actor.IsPlayer)    
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_CAR_PLAYER, AudioPriority.PRIORITY_BGM);
+                            m_SFXManager.Play(GameSounds.CLIMB_CAR_PLAYER, AudioPriority.PRIORITY_BGM);
                         else
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_CAR_NEARBY, AudioPriority.PRIORITY_BGM);
+                            m_SFXManager.Play(GameSounds.CLIMB_CAR_NEARBY, AudioPriority.PRIORITY_BGM);
                     }
                 }
 
@@ -15216,16 +15214,16 @@ namespace djack.RogueSurvivor.Engine
                 switch (trap.TheName.ToString())
                 {
                     case "the empty can":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CAN_TRAP_PLAYER, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.CAN_TRAP_PLAYER, AudioPriority.PRIORITY_BGM);
                         break;
                     case "the bear trap":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BEAR_TRAP_PLAYER, AudioPriority.PRIORITY_EVENT);
+                        m_SFXManager.Play(GameSounds.BEAR_TRAP_PLAYER, AudioPriority.PRIORITY_EVENT);
                         break;
                     case "the spike":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SPIKE_TRAP, AudioPriority.PRIORITY_EVENT);
+                        m_SFXManager.Play(GameSounds.SPIKE_TRAP, AudioPriority.PRIORITY_EVENT);
                         break;
                     case "the barbed wire":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BARBED_WIRE_TRAP_PLAYER, AudioPriority.PRIORITY_EVENT);
+                        m_SFXManager.Play(GameSounds.BARBED_WIRE_TRAP_PLAYER, AudioPriority.PRIORITY_EVENT);
                         break;
                     default: break;
                 }
@@ -15235,14 +15233,14 @@ namespace djack.RogueSurvivor.Engine
                 switch (trap.TheName.ToString())
                 {
                     case "the empty can":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CAN_TRAP_NEARBY, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.CAN_TRAP_NEARBY, AudioPriority.PRIORITY_BGM);
                         break;
                     case "the bear trap":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BEAR_TRAP_NEARBY, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.BEAR_TRAP_NEARBY, AudioPriority.PRIORITY_BGM);
                         DoScream(victim, "near"); //@@MP - refactored to a separate method (Release 5-7)
                         break;
                     case "the spike":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SPIKE_TRAP, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.SPIKE_TRAP, AudioPriority.PRIORITY_BGM);
                         DoScream(victim, "near"); //@@MP - refactored to a separate method (Release 5-7)
                         break;
                     default: break;
@@ -15253,10 +15251,10 @@ namespace djack.RogueSurvivor.Engine
                 switch (trap.TheName.ToString())
                 {
                     case "the empty can":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CAN_TRAP_FAR, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.CAN_TRAP_FAR, AudioPriority.PRIORITY_BGM);
                         break;
                     case "the bear trap":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BEAR_TRAP_FAR, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.BEAR_TRAP_FAR, AudioPriority.PRIORITY_BGM);
                         DoScream(victim, "far"); //@@MP - refactored to a separate method (Release 5-7)
                         break;
                     case "the spike":
@@ -15843,9 +15841,9 @@ namespace djack.RogueSurvivor.Engine
             {
                 //hear //@@MP (Release 2)
                 if (isPlayer)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_PLAYER, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.MELEE_ATTACK_PLAYER, AudioPriority.PRIORITY_EVENT);
                 else if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS))//(isDefVisible || isAttVisible) //@MP (Release 5-4)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_NEARBY, AudioPriority.PRIORITY_BGM);
+                    m_SFXManager.Play(GameSounds.MELEE_ATTACK_NEARBY, AudioPriority.PRIORITY_BGM);
 
                 // roll for attacker disarming defender // alpha10
                 if (attacker.Model.Abilities.CanDisarm && m_Rules.RollChance(attack.DisarmChance))
@@ -15978,9 +15976,9 @@ namespace djack.RogueSurvivor.Engine
             else // miss
             {
                 if (isPlayer) //hear //@@MP (Release 2)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_MISS_PLAYER, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.MELEE_ATTACK_MISS_PLAYER, AudioPriority.PRIORITY_EVENT);
                 else if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP - added range (Release 5 - 4)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MELEE_ATTACK_MISS_NEARBY, AudioPriority.PRIORITY_BGM);
+                    m_SFXManager.Play(GameSounds.MELEE_ATTACK_MISS_NEARBY, AudioPriority.PRIORITY_BGM);
 
                 if (isAttVisible || isDefVisible) //@@MP - moved isPlayer into this if (Release 3), undid (Release 5-4)
                 {
@@ -16146,37 +16144,37 @@ namespace djack.RogueSurvivor.Engine
                         case "the army pistol":
                         case "the Hans von Hanz pistol":
                             if (soundEffect == 1)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_SINGLE_SHOT_PLAYER, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.PISTOL_SINGLE_SHOT_PLAYER, AudioPriority.PRIORITY_EVENT);
                             else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_RAPID_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.PISTOL_RAPID_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the hunting rifle":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.HUNTING_RIFLE_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the precision rifle":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PRECISION_RIFLE_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.PRECISION_RIFLE_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the army rifle":
                             if (soundEffect == 1)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_SINGLE_SHOT_PLAYER, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.ARMY_RIFLE_SINGLE_SHOT_PLAYER, AudioPriority.PRIORITY_EVENT);
                             else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_RAPID_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.ARMY_RIFLE_RAPID_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the shotgun":
                         case "the Santaman shotgun":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.SHOTGUN_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the hunting crossbow":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CROSSBOW_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.CROSSBOW_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the nail gun":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.NAIL_GUN, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.NAIL_GUN, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the Kolt revolver":
                             if (soundEffect == 1)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_SINGLE_SHOT_PLAYER, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.REVOLVER_SINGLE_SHOT_PLAYER, AudioPriority.PRIORITY_EVENT);
                             else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_RAPID_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.REVOLVER_RAPID_FIRE_PLAYER, AudioPriority.PRIORITY_EVENT);
                             break;
                         default: break;
                     }
@@ -16189,34 +16187,34 @@ namespace djack.RogueSurvivor.Engine
                         case "the army pistol":
                         case "the Hans von Hanz pistol":
                             if (soundEffect == 1)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_SINGLE_SHOT_NEARBY, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.PISTOL_SINGLE_SHOT_NEARBY, AudioPriority.PRIORITY_EVENT);
                             else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_RAPID_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.PISTOL_RAPID_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the hunting rifle":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.HUNTING_RIFLE_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the precision rifle":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PRECISION_RIFLE_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.PRECISION_RIFLE_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the army rifle":
                             if (soundEffect == 1)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_SINGLE_SHOT_NEARBY, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.ARMY_RIFLE_SINGLE_SHOT_NEARBY, AudioPriority.PRIORITY_EVENT);
                             else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_RAPID_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.ARMY_RIFLE_RAPID_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the shotgun":
                         case "the Santaman shotgun":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.SHOTGUN_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the hunting crossbow":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CROSSBOW_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.CROSSBOW_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the Kolt revolver":
                             if (soundEffect == 1)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_SINGLE_SHOT_NEARBY, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.REVOLVER_SINGLE_SHOT_NEARBY, AudioPriority.PRIORITY_EVENT);
                             else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_RAPID_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.REVOLVER_RAPID_FIRE_NEARBY, AudioPriority.PRIORITY_EVENT);
                             break;
                         default: break;
                     }
@@ -16229,31 +16227,31 @@ namespace djack.RogueSurvivor.Engine
                         case "the army pistol":
                         case "the Hans von Hanz pistol":
                             if (soundEffect == 1)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_SINGLE_SHOT_FAR, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.PISTOL_SINGLE_SHOT_FAR, AudioPriority.PRIORITY_EVENT);
                             else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PISTOL_RAPID_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.PISTOL_RAPID_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the hunting rifle":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.HUNTING_RIFLE_FIRE_FAR, AudioPriority.PRIORITY_BGM);
+                            m_SFXManager.Play(GameSounds.HUNTING_RIFLE_FIRE_FAR, AudioPriority.PRIORITY_BGM);
                             break;
                         case "the precision rifle":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PRECISION_RIFLE_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.PRECISION_RIFLE_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the army rifle":
                             if (soundEffect == 1)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_SINGLE_SHOT_FAR, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.ARMY_RIFLE_SINGLE_SHOT_FAR, AudioPriority.PRIORITY_EVENT);
                             else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ARMY_RIFLE_RAPID_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.ARMY_RIFLE_RAPID_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
                             break;
                         case "the shotgun":
                         case "the Santaman shotgun":
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOTGUN_FIRE_FAR, AudioPriority.PRIORITY_BGM);
+                            m_SFXManager.Play(GameSounds.SHOTGUN_FIRE_FAR, AudioPriority.PRIORITY_BGM);
                             break;
                         case "the Kolt revolver":
                             if (soundEffect == 1)
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_SINGLE_SHOT_FAR, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.REVOLVER_SINGLE_SHOT_FAR, AudioPriority.PRIORITY_EVENT);
                             else
-                                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.REVOLVER_RAPID_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
+                                m_SFXManager.Play(GameSounds.REVOLVER_RAPID_FIRE_FAR, AudioPriority.PRIORITY_EVENT);
                             break;
                         default: break;
                     }
@@ -16672,19 +16670,19 @@ namespace djack.RogueSurvivor.Engine
                 switch (itemModel.ID) //@@MP - play the appropriate sfx for the explosive type (Release 4)
                 {
                     case (int)GameItems.IDs.EXPLOSIVE_GRENADE_PRIMED:
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GRENADE_VISIBLE, AudioPriority.PRIORITY_EVENT);
+                        m_SFXManager.Play(GameSounds.GRENADE_VISIBLE, AudioPriority.PRIORITY_EVENT);
                         AnimDelay(DELAY_SHORT,true); //@@MP - the longer the delay the slower the explosion appers on screen
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_MOLOTOV_PRIMED:
                         if (isVisible)
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_VISIBLE, AudioPriority.PRIORITY_EVENT);
+                            m_SFXManager.Play(GameSounds.MOLOTOV_VISIBLE, AudioPriority.PRIORITY_EVENT);
                         else
-                            m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.MOLOTOV_AUDIBLE, AudioPriority.PRIORITY_BGM); //@@MP - it's close enough that it would still be audible
+                            m_SFXManager.Play(GameSounds.MOLOTOV_AUDIBLE, AudioPriority.PRIORITY_BGM); //@@MP - it's close enough that it would still be audible
                         AnimDelay(DELAY_LONG,true); //@MP - make it look like the fire spreads, also pads out to better match the sound
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED:
                     case (int)GameItems.IDs.EXPLOSIVE_C4_PRIMED: //@@MP (Release 6-3)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_VISIBLE, AudioPriority.PRIORITY_EVENT);
+                        m_SFXManager.Play(GameSounds.DYNAMITE_VISIBLE, AudioPriority.PRIORITY_EVENT);
                         AnimDelay(DELAY_SHORT,true);
                         break;
                     default: throw new ArgumentOutOfRangeException("itemModel","unhandled explosive type");
@@ -16700,11 +16698,11 @@ namespace djack.RogueSurvivor.Engine
                 switch (itemModel.ID) //@@MP - play the appropriate sfx for the explosive type (Release 4)
                 {
                     case (int)GameItems.IDs.EXPLOSIVE_GRENADE_PRIMED:
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GRENADE_AUDIBLE, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.GRENADE_AUDIBLE, AudioPriority.PRIORITY_BGM);
                         break;
                     case (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED:
                     case (int)GameItems.IDs.EXPLOSIVE_C4_PRIMED: //@@MP (Release 6-3)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_VISIBLE, AudioPriority.PRIORITY_EVENT);
+                        m_SFXManager.Play(GameSounds.DYNAMITE_VISIBLE, AudioPriority.PRIORITY_EVENT);
                         break;
                     default: throw new ArgumentOutOfRangeException("itemModel","unhandled explosive type");
                 }
@@ -16714,7 +16712,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 if ((itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_DYNAMITE_PRIMED) || (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_C4_PRIMED)) //@@MP (Release 6-3))
                 {
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DYNAMITE_AUDIBLE, AudioPriority.PRIORITY_EVENT); //@@MP - it's close enough that it would still be super loud
+                    m_SFXManager.Play(GameSounds.DYNAMITE_AUDIBLE, AudioPriority.PRIORITY_EVENT); //@@MP - it's close enough that it would still be super loud
                     AddMessageIfAudibleForPlayer(location, MakePlayerCentricMessage("You hear a huge explosion", location.Position));
                 }
             }
@@ -18062,7 +18060,7 @@ namespace djack.RogueSurvivor.Engine
             // message.
             bool isVisible = IsVisibleToPlayer(actor);
             if (actor.IsPlayer) //@@MP (Release 2)
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.EAT_FOOD, AudioPriority.PRIORITY_EVENT);
+                m_SFXManager.Play(GameSounds.EAT_FOOD, AudioPriority.PRIORITY_EVENT);
             else if (isVisible)
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_EAT), food));
 
@@ -18096,7 +18094,7 @@ namespace djack.RogueSurvivor.Engine
 
             //@@MP (Release 2)
             if (actor.IsPlayer)
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.VOMIT_PLAYER, AudioPriority.PRIORITY_BGM);
+                m_SFXManager.Play(GameSounds.VOMIT_PLAYER, AudioPriority.PRIORITY_BGM);
             else if (IsAudibleToPlayer(actor.Location)) //@@MP (Release 3), changed from IsVisible to IsAudible (Release 5-4)
                 m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.VOMIT_NEARBY, AudioPriority.PRIORITY_EVENT);
         }
@@ -18152,16 +18150,16 @@ namespace djack.RogueSurvivor.Engine
                 {
                     case "the medikit":
                     case "some bandages":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.USE_MEDICINE, AudioPriority.PRIORITY_EVENT);
+                        m_SFXManager.Play(GameSounds.USE_MEDICINE, AudioPriority.PRIORITY_EVENT);
                         break;
                     case "some green pills":
                     case "some blue pills":
                     case "some orange pills":
                     case "some antiviral pills":
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.USE_PILLS, AudioPriority.PRIORITY_EVENT);
+                        m_SFXManager.Play(GameSounds.USE_PILLS, AudioPriority.PRIORITY_EVENT);
                         break;
                     case "some cigarettes": //@@MP (Release 4)
-                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SMOKING, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.SMOKING, AudioPriority.PRIORITY_BGM);
                         break;
                     default: //unexpected, do nothing
                         break;
@@ -18246,7 +18244,7 @@ namespace djack.RogueSurvivor.Engine
         {
             //play sound
             if (actor.IsPlayer) //@@MP (Release 3)
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.TURN_PAGE, AudioPriority.PRIORITY_EVENT);
+                m_SFXManager.Play(GameSounds.TURN_PAGE, AudioPriority.PRIORITY_EVENT);
 
             bool visible = IsVisibleToPlayer(actor);
 
@@ -18320,11 +18318,11 @@ namespace djack.RogueSurvivor.Engine
             if (actor.IsPlayer || IsVisibleToPlayer(actor) || IsVisibleToPlayer(door))
             {
                 if (door.GivesWood)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.WOODEN_DOOR_OPEN, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.WOODEN_DOOR_OPEN, AudioPriority.PRIORITY_EVENT);
                 else if (door.TheName == "the roller door") //@@MP (Release 4)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ROLLER_DOOR, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.ROLLER_DOOR, AudioPriority.PRIORITY_EVENT);
                 else
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GLASS_DOOR, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.GLASS_DOOR, AudioPriority.PRIORITY_EVENT);
 
                 if (!actor.IsPlayer)
                 {
@@ -18347,11 +18345,11 @@ namespace djack.RogueSurvivor.Engine
             if (actor.IsPlayer || IsVisibleToPlayer(actor) || IsVisibleToPlayer(door))
             {
                 if (door.GivesWood)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.WOODEN_DOOR_CLOSE, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.WOODEN_DOOR_CLOSE, AudioPriority.PRIORITY_EVENT);
                 else if (door.TheName == "the roller door") //@@MP (Release 4)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ROLLER_DOOR, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.ROLLER_DOOR, AudioPriority.PRIORITY_EVENT);
                 else
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.GLASS_DOOR, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.GLASS_DOOR, AudioPriority.PRIORITY_EVENT);
                 if (!actor.IsPlayer)
                 {
                     AddMessage(MakeMessage(actor, Conjugate(actor, VERB_CLOSE), door));
@@ -18649,12 +18647,12 @@ namespace djack.RogueSurvivor.Engine
                 {
                     switch (objectMaterial)
                     {
-                        case "glass": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_GLASSDOOR_PLAYER, AudioPriority.PRIORITY_EVENT); break;
-                        case "metal": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_METALDOOR_PLAYER, AudioPriority.PRIORITY_EVENT); break;
-                        case "chain fence": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_PLAYER, AudioPriority.PRIORITY_BGM); break;
-                        case "ceramic": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_CERAMIC_VISIBLE, AudioPriority.PRIORITY_BGM); break;
+                        case "glass": m_SFXManager.Play(GameSounds.BREAK_GLASSDOOR_PLAYER, AudioPriority.PRIORITY_EVENT); break;
+                        case "metal": m_SFXManager.Play(GameSounds.BREAK_METALDOOR_PLAYER, AudioPriority.PRIORITY_EVENT); break;
+                        case "chain fence": m_SFXManager.Play(GameSounds.CLIMB_FENCE_PLAYER, AudioPriority.PRIORITY_BGM); break;
+                        case "ceramic": m_SFXManager.Play(GameSounds.BREAK_CERAMIC_VISIBLE, AudioPriority.PRIORITY_BGM); break;
                         case "wood":
-                        default: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BREAK_WOODENDOOR_PLAYER, AudioPriority.PRIORITY_EVENT); break;
+                        default: m_SFXManager.Play(GameSounds.BREAK_WOODENDOOR_PLAYER, AudioPriority.PRIORITY_EVENT); break;
                     }
                 }
                 else if (IsAudibleToPlayer(mapObj.Location, Rules.MODERATE_NOISE_RADIUS))
@@ -18676,12 +18674,12 @@ namespace djack.RogueSurvivor.Engine
                 {
                     switch (objectMaterial)
                     {
-                        case "metal": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_METALDOOR_PLAYER, AudioPriority.PRIORITY_EVENT); break;
-                        case "chain fence": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.CLIMB_FENCE_PLAYER, AudioPriority.PRIORITY_EVENT); break;
-                        case "ceramic": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_CERAMIC_VISIBLE, AudioPriority.PRIORITY_EVENT); break;
-                        case "wood": m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_WOOD_PLAYER, AudioPriority.PRIORITY_EVENT); break;
+                        case "metal": m_SFXManager.Play(GameSounds.BASH_METALDOOR_PLAYER, AudioPriority.PRIORITY_EVENT); break;
+                        case "chain fence": m_SFXManager.Play(GameSounds.CLIMB_FENCE_PLAYER, AudioPriority.PRIORITY_EVENT); break;
+                        case "ceramic": m_SFXManager.Play(GameSounds.BASH_CERAMIC_VISIBLE, AudioPriority.PRIORITY_EVENT); break;
+                        case "wood": m_SFXManager.Play(GameSounds.BASH_WOOD_PLAYER, AudioPriority.PRIORITY_EVENT); break;
                         case "glass":
-                        default: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BASH_OTHER_OBJECTS_PLAYER, AudioPriority.PRIORITY_EVENT); break;
+                        default: m_SFXManager.Play(GameSounds.BASH_OTHER_OBJECTS_PLAYER, AudioPriority.PRIORITY_EVENT); break;
                     }
                 }
                 else if (IsAudibleToPlayer(mapObj.Location, Rules.MODERATE_NOISE_RADIUS))
@@ -18765,9 +18763,9 @@ namespace djack.RogueSurvivor.Engine
             if (IsAudibleToPlayer(mapObj.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP - changed from isVisible, because if it's that close we'd hear it as loud (Release 5-4)
             {
                 if (mapObj.IsMetal) //@@MP - added sound for wooden items (Release 5-4)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_METAL_OBJECT_VISIBLE, AudioPriority.PRIORITY_EVENT); //@@MP (Release 3)
+                    m_SFXManager.Play(GameSounds.PUSH_METAL_OBJECT_VISIBLE, AudioPriority.PRIORITY_EVENT); //@@MP (Release 3)
                 else
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PUSH_WOODEN_OBJECT_VISIBLE, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.PUSH_WOODEN_OBJECT_VISIBLE, AudioPriority.PRIORITY_EVENT);
 
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_PUSH), mapObj));
                 RedrawPlayScreen();
@@ -18830,7 +18828,7 @@ namespace djack.RogueSurvivor.Engine
             if (IsAudibleToPlayer(actor.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP - changed from isVisible, because if it's that close we'd hear it even if not seen (Release 5-4)
             {
                 if (actor.IsPlayer) //@@MP (Release 3)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOVE_PLAYER, AudioPriority.PRIORITY_EVENT);
+                    m_SFXManager.Play(GameSounds.SHOVE_PLAYER, AudioPriority.PRIORITY_EVENT);
                 else //@@MP - if it's too far away we'd see it but not hear it. another reason for the change to IsAudibleToPlayer
                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHOVE_NEARBY, AudioPriority.PRIORITY_BGM);
             }
