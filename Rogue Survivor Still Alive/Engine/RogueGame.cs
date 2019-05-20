@@ -3774,22 +3774,24 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
             m_Player.Inventory.AddAll(ammo);
-            Item seeds = new Item(GameItems.VEGETABLE_SEEDS);
+            Item gun2 = new ItemRangedWeapon(GameItems.HUNTING_RIFLE);
+            m_Player.Inventory.AddAll(gun2);
+            /*Item seeds = new Item(GameItems.VEGETABLE_SEEDS);
             m_Player.Inventory.AddAll(seeds);
             Item shovel = new ItemMeleeWeapon(GameItems.SHOVEL);
             m_Player.Inventory.AddAll(shovel);
             /*Item spikes = new ItemTrap(GameItems.SPIKES);
-            m_Player.Inventory.AddAll(spikes);
-            Item temp1 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
-            m_Player.Inventory.AddAll(temp1);
-            Item temp2 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
-            m_Player.Inventory.AddAll(temp2);
-            Item temp3 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
-            m_Player.Inventory.AddAll(temp3);*/
-            Item liquor = new ItemMedicine(GameItems.ALCOHOL_LIQUOR_AMBER);
-            m_Player.Inventory.AddAll(liquor);
-            Item beer = new ItemMedicine(GameItems.ALCOHOL_BEER_CAN_RED);
-            m_Player.Inventory.AddAll(beer);
+            m_Player.Inventory.AddAll(spikes);*/
+            Item molo1 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
+            m_Player.Inventory.AddAll(molo1);
+            Item molo2 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
+            m_Player.Inventory.AddAll(molo2);
+            Item molo3 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
+            m_Player.Inventory.AddAll(molo3);
+            /*Item liquor = new ItemMedicine(GameItems.ALCOHOL_LIQUOR_AMBER);
+            m_Player.Inventory.AddAll(liquor);*/
+            Item food = new ItemFood(GameItems.CANNED_FOOD);
+            m_Player.Inventory.AddAll(food);
             Item torch = new ItemLight(GameItems.BIG_FLASHLIGHT);
             m_Player.Inventory.AddAll(torch);
             //m_TownGenerator.GiveStartingSkillToActor(m_Player, Skills.IDs.BOWS_EXPLOSIVES);

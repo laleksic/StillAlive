@@ -4015,7 +4015,7 @@ namespace djack.RogueSurvivor.Engine
         {
             int baseChance = LOUD_NOISE_BASE_WAKEUP_CHANCE;
             int skillBonus = SKILL_LIGHT_SLEEPER_WAKEUP_CHANCE_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LIGHT_SLEEPER);
-            int distBonus = Math.Max(0, (LOUD_NOISE_RADIUS - noiseDistance) * LOUD_NOISE_DISTANCE_BONUS);
+            int distBonus = Math.Max(0, (MODERATE_NOISE_RADIUS - noiseDistance) * LOUD_NOISE_DISTANCE_BONUS); //@@MP - changed from Loud to Moderate, as the former was 5 when this method was designed (Release 6-6)
 
             return baseChance + skillBonus + distBonus;
         }

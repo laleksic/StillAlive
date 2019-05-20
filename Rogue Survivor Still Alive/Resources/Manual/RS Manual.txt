@@ -491,8 +491,8 @@ Press M then the number key that corresponds with the inventory slot containing 
 Press 0 for inventory slot 10. You can now equip and throw the molotov like a grenade (F).
 
 
-> PLANT SEEDS  (default J)
-When you have seeds and a shovel or pickaxe, find some grassy ground and Press J to plant the seeds. Come back the first thing in the morning
+> PLANT SEEDS
+When you have seeds and a shovel or pickaxe, find some grassy ground and click to use the seeds. Come back the first thing in the morning
 and reap the rewards. But be quick; the early bird gets the worm!
 
 
@@ -560,8 +560,8 @@ Helps you fight better. Increases your Melee Atk and your Def.
 Helps you staying awake longer. Increases your maximum SLP points and your SLP recovery speed when sleeping.
 
 
-> BOWS
-Improve your efficiency with bows. Increases the Atk and Dmg value when shooting bows.
+> BOWS & EXPLOSIVES
+Improve your proficiency with bows and explosives. Increases the Atk and Dmg value when shooting bows and throwing explosives.
 
 
 > CARPENTRY
@@ -576,7 +576,7 @@ Increased chance of other people wanting to trade an item they would otherwise h
 
 
 > FIREARMS
-Improves your efficiency with firearms. Increases the Atk and Dmg value when shooting firearms.
+Improves your proficiency with firearms. Increases the Atk and Dmg value when shooting firearms.
 
 
 > HARDY
@@ -597,6 +597,10 @@ Allows you to get more followers. Increases your maximum followers.
 
 > LIGHT EATER
 Helps you ignore your stomach. Increases your maximum FOO and the nutrition value of food items you eat.
+
+
+> LIGHT FEET
+Improves your ability to avoid triggering traps.
 
 
 > LIGHT SLEEPER
@@ -650,7 +654,7 @@ Increase the chances for a nearby law enforcer or gang member to ignore you.
   - Firearms         : the best ranged weapons.
   - Bows             : weaker and shorter range but ammunition is more available.
 - Seeds              : use a shovel to plant seeds on grassy ground and grow vegetables.
-- Grenades           : have a fuse that last x turns before exploding; fire action to throw. 
+- Explosives         : have a fuse that last x turns before exploding; fire action to throw. 
 - Spray paint        : tag places you want to remember; use the tag action.
 - Spray scent        : neutralize odors, typically to erase your tracks.
 - Tracker            : keep contact with your people; use to equip.

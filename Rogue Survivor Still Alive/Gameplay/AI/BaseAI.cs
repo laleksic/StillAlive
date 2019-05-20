@@ -1591,6 +1591,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return true;
                     if (IsOccupiedByOther(map, p.Location.Position))
                         return true;
+                    if (map.IsAnyTileFireThere(map, p.Location.Position)) //@MP (Release 6-6)
+                        return true;
                     if (IsTileTaboo(p.Location.Position))
                         return true;
                     MapObject mapObj = map.GetMapObjectAt(p.Location.Position); //@@MP - can't take items from a (player-owned) 'locked' bank safe (Release 6-5)
@@ -2993,7 +2995,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         {
             // prepare data.
             Direction prevDirection = Direction.FromVector(m_Actor.Location.Position.X - m_prevLocation.Position.X, m_Actor.Location.Position.Y - m_prevLocation.Position.Y);
-            bool imStarvingOrCourageous = game.Rules.IsActorStarving(m_Actor) || Directives.Courage == ActorCourage.COURAGEOUS;
+            //bool imStarvingOrCourageous = game.Rules.IsActorStarving(m_Actor) || Directives.Courage == ActorCourage.COURAGEOUS; //@@MP - unused now (Release 6-6)
             bool isIntelligent = m_Actor.Model.Abilities.IsIntelligent;
 
             // eval all adjacent tiles for exploration utility and get the best one.
@@ -3021,23 +3023,30 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     Map map = next.Map;
                     Point pos = next.Position;
                     int trapsDamage = ComputeTrapsMaxDamageForMe(game, map, pos);
-                    bool tileFire = map.IsAnyTileFireThere(map, pos);
 
-                    // intelligent NPC: forbid stepping on deadly traps, unless starving (desperate) or 'courageous' (stupid)
-                    if (isIntelligent && !imStarvingOrCourageous)
+                    // eliminate the no-no cases first
+                    // intelligent NPC: forbid stepping on traps, unless starving (desperate)
+                    if (isIntelligent)
                     {
-                        if (map.IsAnyTileWaterThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position)) //@@MP (Release 6-1)
-                            return float.NaN; //don't wander into water for no good reason
-                        else if (tileFire)
+                        if (map.IsAnyTileFireThere(map, pos))
                             return float.NaN; //@@MP - intelligent AI won't step on fire (Release 4)
-                        else if (trapsDamage > 0) //otherwise it's probably just a can //@@MP - used to only check for traps that would probably kill. now a little more robust (Release 4)
+                        else if (map.IsAnyTileWaterThere(map, pos)) //@@MP (Release 6-1)
+                            return float.NaN; //don't wander into water for no good reason
+
+                        if (trapsDamage > 0) //otherwise it's probably just a can
                         {
-                            int trapsChance = ComputeTrapsTriggerChance(map, pos);
-                            // if death or a big chunk of health, don't do it.
-                            if (trapsDamage >= (m_Actor.HitPoints / 2)) //@@MP - added division by 2 (Release 4)
-                                return float.NaN;
-                            else if (trapsChance >= 33)
-                                return float.NaN;
+                            //@@MP - used to only check for traps that would probably kill. now a little more robust (Release 4)
+                            if (game.Rules.IsActorReallyHungry(m_Actor))
+                            {
+                                int trapsChance = ComputeTrapsTriggerChance(map, pos);
+                                // if death or a big chunk of health, don't do it.
+                                if (trapsDamage >= (m_Actor.HitPoints / 3)) //@@MP - added division by 3 (Release 4)
+                                    return float.NaN;
+                                else if (trapsChance >= 33)
+                                    return float.NaN;
+                            }
+                            else
+                                return float.NaN; //don't risk traps when not desperate
                         }
                     }
 
@@ -3046,7 +3055,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     // 1st Prefer unexplored zones.
                     // 2nd Prefer unexplored locs.
                     // 3rd Prefer doors and barricades (doors/windows, pushables)
-                    // 4th If intelligent, punish stepping on unsafe traps and fires. // alpha10, was "Punish stepping on activated traps."
+                    // 4th If intelligent, punish stepping on unsafe traps.  // alpha10, was "Punish stepping on activated traps."
                     // 5th Prefer inside during the night vs outside during the day, and inside if sleepy // alpha10.1
                     // 6th Prefer continue in same direction.
                     // 7th Small randomness.
@@ -3054,12 +3063,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     const int EXPLORE_ZONES = 1000;
                     const int EXPLORE_LOCS = 500;
                     const int EXPLORE_BARRICADES = 100;
-                    const int AVOID_TRAPS = -1500; // alpha10 greatly increase penalty and x by potential damage, was -50
+                    const int AVOID_TRAPS = -50;
                     const int EXPLORE_INOUT = 50;
                     const int EXPLORE_IN_ALMOST_SLEEPY = 100; // alpha10.1
                     const int EXPLORE_DIRECTION = 25;
                     const int EXPLORE_RANDOM = 10;
-                    const int AVOID_FIRES = -2000; //@@MP - added (Release 4)
 
                     int score = 0;
                     // 0st Punish backtracking // alpha10.1
@@ -3075,15 +3083,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     MapObject mapObj = map.GetMapObjectAt(pos);
                     if (mapObj != null && (mapObj.IsMovable || mapObj is DoorWindow))
                         score += EXPLORE_BARRICADES;
-                    // 4th If intelligent punish stepping on unsafe traps. // alpha10
-                    if (isIntelligent && imStarvingOrCourageous)
-                    {
-                        if (trapsDamage > 0)
-                            score += AVOID_TRAPS;
-
-                        if (tileFire) //@@MP - livings and smart undead know that jumping into fire is really stupid (Release 4), moved from #8 (Release 6-1)
-                            score += AVOID_FIRES;
-                    }
+                    // 4th If intelligent punish stepping on traps. // alpha10
+                    if (isIntelligent && trapsDamage > 0)
+                        score += AVOID_TRAPS;
                     // 5th Prefer inside during the night vs outside during the day, and inside if sleepy // alpha10.1
                     if (map.GetTileAt(pos.X, pos.Y).IsInside) //inside
                     {
