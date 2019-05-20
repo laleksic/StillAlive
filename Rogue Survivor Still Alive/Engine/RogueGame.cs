@@ -5371,7 +5371,7 @@ namespace djack.RogueSurvivor.Engine
             m_AmbientSFXManager.Load(GameAmbients.STATIONARY_HELICOPTER_VISIBLE, GameAmbients.STATIONARY_HELICOPTER_VISIBLE_FILE);
             m_AmbientSFXManager.Load(GameAmbients.THUNDERING_RAIN_OUTSIDE, GameAmbients.THUNDERING_RAIN_OUTSIDE_FILE);
             m_AmbientSFXManager.Load(GameAmbients.THUNDERING_RAIN_INSIDE, GameAmbients.THUNDERING_RAIN_INSIDE_FILE);
-            m_AmbientSFXManager.Load(GameAmbients.NIGHT_ANIMALS_OUTSIDE, GameAmbients.NIGHT_ANIMALS_OUTSIDE_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.NIGHT_ANIMALS, GameAmbients.NIGHT_ANIMALS_FILE);
             m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_WITHIN_MAP, GameAmbients.CHURCH_BELLS_WITHIN_MAP_FILE);
             m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_OUTSIDE_MAP, GameAmbients.CHURCH_BELLS_OUTSIDE_MAP_FILE);
             #endregion
@@ -9304,7 +9304,7 @@ namespace djack.RogueSurvivor.Engine
         {
             if (m_Player.IsSleeping) //@@MP (Release 6-6)
             {
-                return;
+                return; //they'll already be stopped
             }
             else if (m_Session.CurrentMap.Name.Contains("basement") || map == map.District.SubwayMap || map == map.District.SewersMap ||
                 map == m_Session.UniqueMaps.Hospital_Offices.TheMap || map == m_Session.UniqueMaps.Hospital_Patients.TheMap ||
@@ -9358,12 +9358,12 @@ namespace djack.RogueSurvivor.Engine
                         StopAllAmbientsExcept(GameAmbients.THUNDERING_RAIN_OUTSIDE);
                     }
                 }
-                else if (m_Session.WorldTime.IsNight && !tile.IsInside)
+                else if (m_Session.WorldTime.IsNight)
                 {
-                    if (!m_AmbientSFXManager.IsPlaying(GameAmbients.NIGHT_ANIMALS_OUTSIDE))
-                        m_AmbientSFXManager.PlayLooping(GameAmbients.NIGHT_ANIMALS_OUTSIDE, AudioPriority.PRIORITY_BGM);
+                    if (!m_AmbientSFXManager.IsPlaying(GameAmbients.NIGHT_ANIMALS))
+                        m_AmbientSFXManager.PlayLooping(GameAmbients.NIGHT_ANIMALS, AudioPriority.PRIORITY_BGM);
 
-                    StopAllAmbientsExcept(GameAmbients.NIGHT_ANIMALS_OUTSIDE);
+                    StopAllAmbientsExcept(GameAmbients.NIGHT_ANIMALS);
                 }
                 else //none of the ambients apply for the current weather and time of day
                     StopAllAmbientsExcept("all");
@@ -9400,10 +9400,10 @@ namespace djack.RogueSurvivor.Engine
                     m_AmbientSFXManager.Stop(GameAmbients.THUNDERING_RAIN_OUTSIDE);
             }
 
-            if (musicname != GameAmbients.NIGHT_ANIMALS_OUTSIDE)
+            if (musicname != GameAmbients.NIGHT_ANIMALS)
             {
-                if (m_AmbientSFXManager.IsPlaying(GameAmbients.NIGHT_ANIMALS_OUTSIDE))
-                    m_AmbientSFXManager.Stop(GameAmbients.NIGHT_ANIMALS_OUTSIDE);
+                if (m_AmbientSFXManager.IsPlaying(GameAmbients.NIGHT_ANIMALS))
+                    m_AmbientSFXManager.Stop(GameAmbients.NIGHT_ANIMALS);
             }
         }
 
@@ -25626,7 +25626,27 @@ namespace djack.RogueSurvivor.Engine
             }
             else
                 lines.Add(String.Format("{0}.", Capitalize(actor.Name)));
-            lines.Add(String.Format("{0}.", Capitalize(actor.Model.Name)));
+
+            //@@MP - also describe their courage (Release 6-6)
+            if (!actor.IsPlayer)
+            {
+                ActorDirective directives = (actor.Controller as AIController).Directives;
+                if (directives != null)
+                {
+                    string courage = directives.Courage.ToString();
+                    string display = "unpredicatable";
+                    switch (courage)
+                    {
+                        case "COWARD": display = "cowardly"; break;
+                        case "CAUTIOUS": display = "cautious"; break;
+                        case "COURAGEOUS": display = "courageous"; break;
+                        default: break;
+                    }
+                    lines.Add(String.Format("{0} ({1}).", Capitalize(actor.Model.Name), display));
+                }
+                else
+                    lines.Add(String.Format("{0}.", Capitalize(actor.Model.Name)));
+            }
 
             lines.Add(String.Format("{0} since {1}.", actor.Model.Abilities.IsUndead ? "Undead" : "Staying alive", new WorldTime(actor.SpawnTime).ToString()));
             AIController ai = actor.Controller as AIController;

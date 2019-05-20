@@ -760,6 +760,7 @@ namespace djack.RogueSurvivor.Gameplay
                          HasInventory = true,                         
                          CanUseMapObjects = true,
                          CanBreakObjects = true,
+                         CanBashDoors = true, //@@MP (Release 6-6)
                          CanJump = true,
                          CanTire = true,
                          CanRun = true,
@@ -791,6 +792,7 @@ namespace djack.RogueSurvivor.Gameplay
                          HasInventory = true,
                          CanUseMapObjects = true,
                          CanBreakObjects = true,
+                         CanBashDoors = true, //@@MP (Release 6-6)
                          CanJump = true,
                          CanTire = true,
                          CanRun = true,
@@ -825,6 +827,7 @@ namespace djack.RogueSurvivor.Gameplay
                          HasInventory = true,
                          CanUseMapObjects = true,
                          CanBreakObjects = true,
+                         CanBashDoors = true, //@@MP (Release 6-6)
                          CanJump = true,
                          CanTire = true,
                          CanRun = true,
@@ -862,6 +865,7 @@ namespace djack.RogueSurvivor.Gameplay
                         CanTalk = true,
                         CanUseMapObjects = true,
                         CanBreakObjects = true,
+                        CanBashDoors = true, //@@MP (Release 6-6)
                         CanJump = true,
                         CanTire = true,
                         CanRun = true,
@@ -893,6 +897,7 @@ namespace djack.RogueSurvivor.Gameplay
                          HasInventory = true,
                          CanUseMapObjects = true,
                          CanBreakObjects = true,
+                         CanBashDoors = true, //@@MP (Release 6-6)
                          CanJump = true,
                          CanTire = true,
                          CanRun = true,
@@ -925,7 +930,6 @@ namespace djack.RogueSurvivor.Gameplay
                          HasInventory = true,
                          HasToEat = true,
                          HasToSleep = true,
-                         CanBreakObjects = true,
                          CanJump = true,
                          CanTire = true,
                          CanRun = true,

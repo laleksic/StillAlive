@@ -1482,37 +1482,42 @@ namespace djack.RogueSurvivor.Engine
                 if (CanActorGetItemFromContainer(actor, to, out reason))
                     return new ActionGetFromContainer(actor, game, to);
 
-                // 3.3 Break? Only allow bashing actors to do that (don't want Civilians to bash stuff on their way)
-                if (!actor.IsPlayer && actor.Model.Abilities.CanBashDoors && IsBreakableFor(actor, mapObj, out reason)) //@@MP - stopped players from auto-breaking on bump (Release 6-2)
-                    return new ActionBreak(actor, game, mapObj);
-
-                // 3.4 Power Generator?
-                PowerGenerator powGen = mapObj as PowerGenerator;
-                if (powGen != null)
+                // 3.3 Power Generator?
+                if (!actor.Model.Abilities.IsUndead) //@@MP - undead won't have rechargeable objects (Release 6-6)
                 {
-                    // Recharge battery powered item?
-                    if (powGen.IsOn)
+                    PowerGenerator powGen = mapObj as PowerGenerator;
+                    if (powGen != null)
                     {
-                        Item leftItem = actor.GetEquippedItem(DollPart.LEFT_HAND);
-                        if (leftItem != null && CanActorRechargeItemBattery(actor, leftItem, out reason))
-                            return new ActionRechargeItemBattery(actor, game, leftItem);
-                        Item rightItem = actor.GetEquippedItem(DollPart.RIGHT_HAND);
-                        if (rightItem != null && CanActorRechargeItemBattery(actor, rightItem, out reason))
-                            return new ActionRechargeItemBattery(actor, game, rightItem);
-                        Item eyesItem = actor.GetEquippedItem(DollPart.EYES); //@@MP (Release 6-3)
-                        if (eyesItem != null && CanActorRechargeItemBattery(actor, eyesItem, out reason))
-                            return new ActionRechargeItemBattery(actor, game, eyesItem);
-                    }
+                        // Recharge battery powered item?
+                        if (powGen.IsOn)
+                        {
+                            Item leftItem = actor.GetEquippedItem(DollPart.LEFT_HAND);
+                            if (leftItem != null && CanActorRechargeItemBattery(actor, leftItem, out reason))
+                                return new ActionRechargeItemBattery(actor, game, leftItem);
+                            Item rightItem = actor.GetEquippedItem(DollPart.RIGHT_HAND);
+                            if (rightItem != null && CanActorRechargeItemBattery(actor, rightItem, out reason))
+                                return new ActionRechargeItemBattery(actor, game, rightItem);
+                            Item eyesItem = actor.GetEquippedItem(DollPart.EYES); //@@MP (Release 6-3)
+                            if (eyesItem != null && CanActorRechargeItemBattery(actor, eyesItem, out reason))
+                                return new ActionRechargeItemBattery(actor, game, eyesItem);
+                        }
 
-                    // Switch?
-                    if(IsSwitchableFor(actor, powGen, out reason))
-                        // switch it.
-                        return new ActionSwitchPowerGenerator(actor, game, powGen);
-            
-                    // Can do nothing by bumping.
-                    return null;
+                        // Switch?
+                        if (IsSwitchableFor(actor, powGen, out reason))
+                            // switch it.
+                            return new ActionSwitchPowerGenerator(actor, game, powGen);
+                    }
                 }
 
+                // 3.4 Break? (don't want Civilians to bash stuff on their way through)
+                if (actor.Model.Abilities.IsUndead || IsActorInsane(actor))  //@@MP - as per Alpha 9a, only undead can pointlessly bash stuff. also added insane (Release 6-6)
+                {
+                    if (!actor.IsPlayer && actor.Model.Abilities.CanBreakObjects && IsBreakableFor(actor, mapObj, out reason)) //@@MP - stopped players from auto-breaking on bump (Release 6-2)
+                        return new ActionBreak(actor, game, mapObj);
+                }
+
+                // Can do nothing by bumping.
+                return null;
             }
             #endregion
 

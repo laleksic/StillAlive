@@ -34,8 +34,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string STATIONARY_HELICOPTER_VISIBLE_FILE = PATH + "helicopter_static_visible";
 
         //@@MP (Release 6-6)
-        public const string NIGHT_ANIMALS_OUTSIDE = "wild animals";
-        public const string NIGHT_ANIMALS_OUTSIDE_FILE = PATH + "night_animals_outside";
+        public const string NIGHT_ANIMALS = "wild animals";
+        public const string NIGHT_ANIMALS_FILE = PATH + "night_animals";
         public const string CHURCH_BELLS_WITHIN_MAP = "hearing church bells nearby";
         public const string CHURCH_BELLS_WITHIN_MAP_FILE = PATH + "church_bells_within_map";
         public const string CHURCH_BELLS_OUTSIDE_MAP = "hearing church bells far off";

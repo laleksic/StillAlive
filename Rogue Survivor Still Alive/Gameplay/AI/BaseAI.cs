@@ -636,15 +636,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         }
 
                         // alpha10 check special actions
-                        if (canCheckBreak)
-                        {
-                            MapObject obj = m_Actor.Location.Map.GetMapObjectAt(next.Position);
-                            if (obj != null)
-                            {
-                                if (game.Rules.IsBreakableFor(m_Actor, obj))
-                                    return new ActionBreak(m_Actor, game, obj);
-                            }
-                        }
                         if (canCheckPush)
                         {
                             MapObject obj = m_Actor.Location.Map.GetMapObjectAt(next.Position);
@@ -662,6 +653,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
                                     if (validPushes.Count > 0)
                                         return new ActionPush(m_Actor, game, obj, validPushes[game.Rules.Roll(0, validPushes.Count)]);
                                 }
+                            }
+                        }
+                        if (canCheckBreak) //@@MP - swapped priority with Push (Release 6-6) 
+                        {
+                            MapObject obj = m_Actor.Location.Map.GetMapObjectAt(next.Position);
+                            if (obj != null)
+                            {
+                                if (game.Rules.IsBreakableFor(m_Actor, obj))
+                                    return new ActionBreak(m_Actor, game, obj);
                             }
                         }
 
@@ -720,7 +720,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         cost = MOVE_DISTANCE_PENALTY;
                 }
 
-                // actions that always consume sta or may take more than one turn
+                // actions that always consume STA or may take more than one turn
                 if (action is ActionBashDoor ||
                     action is ActionBreak ||
                     action is ActionPush)
@@ -2510,8 +2510,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             string[] emotes,
             RouteFinder.SpecialActions allowedChargeActions) //alpha 10 added RouteFinder
         {
-            // alpha10 filter out unreachables if no ranged weapon equipped
-            // (we shouldnt be here anyway if we have a ranged weapon)
+            // alpha10 filter out unreachables if no ranged weapon equipped (we shouldnt be here anyway if we have a ranged weapon)
             if (m_Actor.GetEquippedRangedWeapon() == null)
             {
                 FilterOutUnreachablePercepts(game, ref enemies, allowedChargeActions);
@@ -2526,7 +2525,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             Actor enemy = nearestEnemy.Percepted as Actor;
 
-            // always try to heal if enemy next attack could kill us //alpha 10
+            // always try to heal if next enemy attack could kill us //alpha 10
             Attack enemyAttack = GetActorAttack(enemy); // get enemy attack  // alpha10
             if (m_Actor.HitPoints - enemyAttack.DamageValue <= 0)
             {
@@ -2542,9 +2541,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // get safe range from enemy, just out of his reach.
             int safeRange = Math.Max(2, enemyAttack.Range + 1);  // melee attack range is 0 not 1!
             int distToEnemy = game.Rules.GridDistance(m_Actor.Location.Position, enemy.Location.Position);
-            //bool inSafeRange = distToEnemy >= safeRange; //@@MP - unused (Release 6-1)
+            bool inSafeRange = distToEnemy >= safeRange;
 
-            // Cases that are a no brainer, in this order:
+            // Cases that are a no-brainer, in this order:
             // 1. Always fight if he has a ranged weapon.
             // 2. Always fight if law enforcer vs murderer.
             // 3. Always flee melee if tired.
@@ -2558,7 +2557,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             else if (m_Actor.Model.Abilities.IsLawEnforcer && enemy.MurdersCounter > 0)
                 decideToFlee = false;
             // 3. Always flee melee if tired.
-            else if (game.Rules.IsActorTired(m_Actor) && distToEnemy == 1)
+            else if (game.Rules.IsActorTired(m_Actor) && !inSafeRange) //@@MP - switched from a plain distance check to an attack range (Release 6-6)
                 decideToFlee = true;
             // Case need more analysis.
             else
@@ -2578,12 +2577,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             break;
 
                         case ActorCourage.CAUTIOUS:
-                            // kite.
-                            decideToFlee = WantToEvadeMelee(game, m_Actor, courage, enemy);
-                            doRun = !HasSpeedAdvantage(game, m_Actor, enemy);
-                            break;
-
-                        case ActorCourage.COURAGEOUS:
                             // fight if leader is fighting.
                             // otherwise kite.
                             if (isLeaderFighting)
@@ -2593,6 +2586,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                                 decideToFlee = WantToEvadeMelee(game, m_Actor, courage, enemy);
                                 doRun = !HasSpeedAdvantage(game, m_Actor, enemy);
                             }
+                            break;
+
+                        case ActorCourage.COURAGEOUS:
+                            // always fight
+                            decideToFlee = false;
                             break;
 
                         default:
@@ -2615,6 +2613,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             break;
 
                         case ActorCourage.CAUTIOUS:
+                            // always flee and run.
+                            decideToFlee = true;
+                            doRun = !HasSpeedAdvantage(game, m_Actor, enemy);
+                            break;
+
                         case ActorCourage.COURAGEOUS:
                             // kite.
                             decideToFlee = WantToEvadeMelee(game, m_Actor, courage, enemy);
