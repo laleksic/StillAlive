@@ -3774,14 +3774,22 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
             m_Player.Inventory.AddAll(ammo);
-            Item spikes = new ItemRangedWeapon(GameItems.SPIKES);
+            Item seeds = new Item(GameItems.VEGETABLE_SEEDS);
+            m_Player.Inventory.AddAll(seeds);
+            Item shovel = new ItemMeleeWeapon(GameItems.SHOVEL);
+            m_Player.Inventory.AddAll(shovel);
+            /*Item spikes = new ItemTrap(GameItems.SPIKES);
             m_Player.Inventory.AddAll(spikes);
             Item temp1 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
             m_Player.Inventory.AddAll(temp1);
             Item temp2 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
             m_Player.Inventory.AddAll(temp2);
             Item temp3 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
-            m_Player.Inventory.AddAll(temp3);
+            m_Player.Inventory.AddAll(temp3);*/
+            Item liquor = new ItemMedicine(GameItems.ALCOHOL_LIQUOR_AMBER);
+            m_Player.Inventory.AddAll(liquor);
+            Item beer = new ItemMedicine(GameItems.ALCOHOL_BEER_CAN_RED);
+            m_Player.Inventory.AddAll(beer);
             Item torch = new ItemLight(GameItems.BIG_FLASHLIGHT);
             m_Player.Inventory.AddAll(torch);
             //m_TownGenerator.GiveStartingSkillToActor(m_Player, Skills.IDs.BOWS_EXPLOSIVES);
@@ -5345,6 +5353,12 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.ACCESS_DENIED, GameSounds.ACCESS_DENIED_FILE);
             m_SFXManager.Load(GameSounds.ACCESS_GRANTED, GameSounds.ACCESS_GRANTED_FILE);
             m_SFXManager.Load(GameSounds.ACHIEVEMENT, GameSounds.ACHIEVEMENT_FILE);
+            m_SFXManager.Load(GameSounds.DRINK, GameSounds.DRINK_FILE);
+            m_SFXManager.Load(GameSounds.PLANT_SEEDS, GameSounds.PLANT_SEEDS_FILE);
+            m_SFXManager.Load(GameSounds.PLACE_TRAP, GameSounds.PLACE_TRAP_FILE);
+            m_SFXManager.Load(GameSounds.MAKE_MOLOTOV, GameSounds.MAKE_MOLOTOV_FILE);
+            m_SFXManager.Load(GameSounds.MALE_HURT, GameSounds.MALE_HURT_FILE);
+            m_SFXManager.Load(GameSounds.FEMALE_HURT, GameSounds.FEMALE_HURT_FILE);
             #endregion
 
             #region AMBIENT SOUND
@@ -10040,16 +10054,6 @@ namespace djack.RogueSurvivor.Engine
                                 }
                                 loop = !HandlePlayerMakeMolotov(player);//, mousePos); //@@MP - mousePos was unused (Release 5-5)
                                 break;
-
-                            case PlayerCommand.PLANT_SEEDS: //@@MP (Release 5-5)
-                                if (TryPlayerInsanity())
-                                {
-                                    loop = false;
-                                    break;
-                                }
-                                loop = !HandlePlayerPlantSeeds(player);
-                                break;
-
 #endregion
 
                             case PlayerCommand.NONE:
@@ -11929,6 +11933,7 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else if (IsItemLiquorForMolotov(it))
                 {
+                    m_SFXManager.Play(GameSounds.MAKE_MOLOTOV, AudioPriority.PRIORITY_EVENT); //@@MP (Release 6-6)
                     int liquorQuantity = it.Quantity;
                     m_Player.Inventory.RemoveAllQuantity(it); //remove the liquor
                     for (int i = 0; i != liquorQuantity; i++)
@@ -12256,11 +12261,11 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
-        bool HandlePlayerPlantSeeds(Actor player) //@@MP (Release 5-5)
+        bool HandlePlayerPlantSeeds() //@@MP (Release 5-5)
         {
             // 1. check that a player is standing on grass
-            Tile tile = player.Location.Map.GetTileAt(player.Location.Position);
-            MapObject objectThere = player.Location.Map.GetMapObjectAt(player.Location.Position);
+            Tile tile = m_Player.Location.Map.GetTileAt(m_Player.Location.Position);
+            MapObject objectThere = m_Player.Location.Map.GetMapObjectAt(m_Player.Location.Position);
             if (tile.Model.ID != (int)GameTiles.IDs.FLOOR_GRASS || objectThere != null) //it must be clear grass, empty of objects
             {
                 AddMessage(new Message("Find a clear, grassy spot to plant seeds.", m_Session.WorldTime.TurnCounter, Color.Red));
@@ -12270,9 +12275,9 @@ namespace djack.RogueSurvivor.Engine
             // 2. check that the player has seeds and a shovel
             int readytoplant = 0;
             Item seeds = null;
-            if (!player.Inventory.IsEmpty)
+            if (!m_Player.Inventory.IsEmpty)
             {
-                foreach (Item it in player.Inventory.Items)
+                foreach (Item it in m_Player.Inventory.Items)
                 {
                     if (it.Model.ID == (int)GameItems.IDs.VEGETABLE_SEEDS)
                     {
@@ -12282,7 +12287,7 @@ namespace djack.RogueSurvivor.Engine
                     if (readytoplant > 0) break;
                 }
 
-                foreach (Item it in player.Inventory.Items)
+                foreach (Item it in m_Player.Inventory.Items)
                 {
                     if (it.Model.ID == (int)GameItems.IDs.MELEE_SHORT_SHOVEL || it.Model.ID == (int)GameItems.IDs.MELEE_SHOVEL || it.Model.ID == (int)GameItems.IDs.MELEE_PICKAXE)
                     {
@@ -12309,8 +12314,9 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // 3. no issues so plant it; swap grass for planted tile
-            player.Location.Map.SetTileModelAt(player.Location.Position.X, player.Location.Position.Y, GameTiles.FLOOR_PLANTED);
-            player.Inventory.Consume(seeds);
+            m_SFXManager.Play(GameSounds.PLANT_SEEDS, AudioPriority.PRIORITY_EVENT); //@@MP (Release 6-6)
+            m_Player.Location.Map.SetTileModelAt(m_Player.Location.Position.X, m_Player.Location.Position.Y, GameTiles.FLOOR_PLANTED);
+            m_Player.Inventory.Consume(seeds);
             return true;
         }
 
@@ -15271,9 +15277,17 @@ namespace djack.RogueSurvivor.Engine
                 InflictDamage(victim, damage, false);
                 switch (trap.TheName.ToString()) //@@MP - ensure at least some blood is dropped for the nastier traps (Release 3)
                 {
+                    case "the barbed wire":
                     case "the bear trap":
                     case "the spike":
                         SplatterBlood(map, pos, true);
+                        if (victim.IsPlayer) //@@MP (Release 6-6)
+                        {
+                            if (victim.Doll.Body.IsMale)
+                                m_SFXManager.Play(GameSounds.MALE_HURT, AudioPriority.PRIORITY_EVENT);
+                            else
+                                m_SFXManager.Play(GameSounds.FEMALE_HURT, AudioPriority.PRIORITY_EVENT);
+                        }
                         break;
                     default: break;
                 }
@@ -17826,6 +17840,9 @@ namespace djack.RogueSurvivor.Engine
             ItemTrap trap = it as ItemTrap; //@@MP (Release 5-7)
             if (trap != null)
             {
+                if (actor.IsPlayer) //@@MP (Release 6-6)
+                    m_SFXManager.Play(GameSounds.PLACE_TRAP, AudioPriority.PRIORITY_EVENT);
+
                 // drop one at a time.
                 ItemTrap clone = trap.Clone();
                 //alpha10 clone.IsActivated = trap.IsActivated;
@@ -17983,6 +18000,8 @@ namespace djack.RogueSurvivor.Engine
                 DoUseTrapItem(actor, it as ItemTrap);
             /*else if (it is ItemSprayScent) // alpha10 new way to use spray scent
                 DoUseSprayScentItem(actor, it as ItemSprayScent);*/
+            else if (it.Model.ID == (int)GameItems.IDs.VEGETABLE_SEEDS) //@@MP (Release 6-6)
+                HandlePlayerPlantSeeds();
 
             // alpha10 defrag ai inventories
             if (defragInventory)
@@ -18159,9 +18178,13 @@ namespace djack.RogueSurvivor.Engine
                         m_SFXManager.Play(GameSounds.USE_PILLS, AudioPriority.PRIORITY_EVENT);
                         break;
                     case "some cigarettes": //@@MP (Release 4)
-                        m_SFXManager.Play(GameSounds.SMOKING, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.Play(GameSounds.SMOKING, AudioPriority.PRIORITY_EVENT);
                         break;
-                    default: //unexpected, do nothing
+                    case "some beers": //@@MP (Release 6-6)
+                    case "some liquor": //@@MP (Release 6-6)
+                        m_SFXManager.Play(GameSounds.DRINK, AudioPriority.PRIORITY_EVENT);
+                        break;
+                    default: //unexpected or no sfx provided, do nothing
                         break;
                 }
             }
@@ -24841,8 +24864,7 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You can find vegie seeds in hardware stores.",
                             "Seeds can be planted using a shovel or pick axe.",
-                            "On the next morning they will grow into harvestable vegies.",
-                            String.Format("To PLANT : <{0}>.", s_KeyBindings.Get(PlayerCommand.PLANT_SEEDS).ToString())
+                            "On the next morning they will grow into harvestable vegies."
                         };
                     break;
 
@@ -26202,12 +26224,6 @@ namespace djack.RogueSurvivor.Engine
             else if (it is ItemEntertainment)
             {
                 lines.AddRange(DescribeItemEntertainment(it as ItemEntertainment));
-            }
-
-            //is related to planting seeds?  //@@MP (Release 5-6)
-            if ((it.Model.ID == (int)GameItems.IDs.VEGETABLE_SEEDS) || (it.Model.ID == (int)GameItems.IDs.MELEE_SHORT_SHOVEL) || (it.Model.ID == (int)GameItems.IDs.MELEE_SHOVEL) || (it.Model.ID == (int)GameItems.IDs.MELEE_PICKAXE))
-            {
-                inInvAdditionalDesc = String.Format("plant seeds : <{0}>.", s_KeyBindings.Get(PlayerCommand.PLANT_SEEDS).ToString());
             }
 
             // 3. Flavor description

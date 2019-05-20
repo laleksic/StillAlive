@@ -72,7 +72,6 @@ namespace djack.RogueSurvivor.Engine
             Set(PlayerCommand.MOVE_W, Keys.NumPad4);
             Set(PlayerCommand.OPTIONS_MODE, Keys.O | Keys.Shift);
             Set(PlayerCommand.ORDER_MODE, Keys.O);
-            Set(PlayerCommand.PLANT_SEEDS, Keys.J); //@@MP (Release 5-5)
             Set(PlayerCommand.PULL_MODE, Keys.P | Keys.Control); // alpha10
             Set(PlayerCommand.PUSH_MODE, Keys.P);
             Set(PlayerCommand.QUIT_GAME, Keys.Q | Keys.Shift);

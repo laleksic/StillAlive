@@ -67,7 +67,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Vomit : https://freesound.org/people/Anko6/sounds/388525/ by Anko6
 -Eating : https://freesound.org/people/Sethroph/sounds/334209/ by Sethroph
 -Building (barricade, fortify, repair) : https://freesound.org/people/cognito%20perceptu/sounds/17012/ by cognito perceptu
--Molotov : https://freesound.org/people/Benboncan/sounds/74899/ by Benboncan
+-Molotov explosion : https://freesound.org/people/Benboncan/sounds/74899/ by Benboncan
 -Commotion : https://freesound.org/people/MrProfDrDickweed/sounds/271206/ by MrProfDrDickweed
 -Jump on car : https://freesound.org/people/nmscher/sounds/86233/ by nmscher
 -Equip gun : https://freesound.org/people/SmartWentCody/sounds/179011/ by SmartWentCody
@@ -115,6 +115,15 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Owl : https://freesound.org/people/howebzar/sounds/415153/ by howebzar
 -Plant seeds : https://freesound.org/people/doorajar/sounds/427074/ by doorajar
 -Church bells : https://freesound.org/people/SometimesJasmine/sounds/399678/ by SometimesJasmine
+-Hurt by trap (female) : https://freesound.org/people/Reitanna/sounds/344033/ by Reitanna
+-Hurt by trap (male) : https://freesound.org/people/Under7dude/sounds/163441/ by Under7dude
+-Place trap : https://freesound.org/people/nebyoolae/sounds/318067/ by nebyoolae
+-Make molotov
+	clink : https://freesound.org/people/Fugeni/sounds/416288/ by Fugeni
+	lighter : https://freesound.org/people/SomeoneCool14/sounds/423777/ by SomeoneCool14
+-Drink : 
+	slurp : https://freesound.org/people/morgantj/sounds/58847/ by morgantj
+	ahh : https://freesound.org/people/Q.K./sounds/56270/ by Q.K.
 
 
 IMAGE CREDITS

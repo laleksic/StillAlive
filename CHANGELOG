@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.5.7 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.5.8 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -19,6 +19,7 @@ Fixes:
 -Corrected confusing range description on ranged weapons.
 -Sound effects can now overlap.
 -Reduced spikes trap damage.
+-Planting seeds is no longer a separate key binding
 
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).

@@ -20,7 +20,7 @@ MOVE : Numpad 1-4,6-9           ITEM SLOTS : 1-10               RUN : R
 SLEEP : Z                       WAIT 1 TURN : Numpad 5          WAIT 1 HOUR : W
 CITY INFO : I                   MESSAGES LOG : Shift + M        USE SPRAY : A
 FIRE : F                        MARK ENEMIES : E                MAKE MOLOTOVS : M
-CLOSE : C                       USE LADDER/STAIRS : X           PLANT SEEDS: J
+CLOSE : C                       USE LADDER/STAIRS : X           
 BREAK : K                       PUSH : P                        BUILD SMALL FORT. : N
 BARRICADE : B                   PULL : Ctrl + P                 BUILD LARGE FORT. : Ctrl + N
 INITIATE TRADE : E              GIVE : G                        SHOUT : S

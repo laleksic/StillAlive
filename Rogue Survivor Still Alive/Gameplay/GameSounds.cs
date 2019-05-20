@@ -282,5 +282,18 @@ namespace djack.RogueSurvivor.Gameplay
         public const string FLASHBANG_VISIBLE_FILE = PATH + "flashbang_visible";
         public const string FLASHBANG_AUDIBLE = "flashbang explosion nearby";
         public const string FLASHBANG_AUDIBLE_FILE = PATH + "flashbang_audible";
+
+        public const string DRINK = "drinks";
+        public const string DRINK_FILE = PATH + "drink";
+        public const string PLANT_SEEDS = "plants seeds";
+        public const string PLANT_SEEDS_FILE = PATH + "plant_seeds";
+        public const string PLACE_TRAP = "places trap";
+        public const string PLACE_TRAP_FILE = PATH + "place_trap";
+        public const string MAKE_MOLOTOV = "makes molotov";
+        public const string MAKE_MOLOTOV_FILE = PATH + "make_molotov";
+        public const string MALE_HURT = "male hurt";
+        public const string MALE_HURT_FILE = PATH + "male_hurt";
+        public const string FEMALE_HURT = "female hurt";
+        public const string FEMALE_HURT_FILE = PATH + "female_hurt";
     }
 }
