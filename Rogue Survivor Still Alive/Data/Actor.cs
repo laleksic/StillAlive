@@ -245,6 +245,16 @@ namespace djack.RogueSurvivor.Data
             set { SetFlag(Flags.IS_INWATER, value); }
         }
 
+        public bool IsFleeing //@@MP (Release 6-6)
+        {
+            get { return m_Activity == Activity.FLEEING || m_Activity == Activity.FLEEING_FROM_EXPLOSIVE; }
+        }
+
+        public bool IsFightingOrFleeing //@@MP (Release 6-6)
+        {
+            get { return m_Activity == Activity.FLEEING || m_Activity == Activity.FLEEING_FROM_EXPLOSIVE || m_Activity == Activity.FIGHTING || m_Activity == Activity.CHASING; }
+        }
+
         public Inventory Inventory
         {
             get { return m_Inventory; }

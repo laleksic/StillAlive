@@ -1630,7 +1630,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction makeRoomForFood = BehaviorMakeRoomForFood(game, interestingReachableStacks);
             if (makeRoomForFood != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return makeRoomForFood;
             }
 
@@ -1638,7 +1638,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction grabAction = BehaviorGrabFromStack(game, nearestStack.Location.Position, nearestStack.Percepted as Inventory, canBreak, canPush);
             if (grabAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return grabAction;
             }
             else //@@MP (Release 6-6)

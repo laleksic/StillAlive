@@ -336,7 +336,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         determinedAction = BehaviorGoToNearestAIExit(game);
                         if (determinedAction != null)
                         {
-                            m_Actor.Activity = Activity.IDLE;
+                            m_Actor.Activity = Activity.FINDING_EXIT;
                             return determinedAction;
                         }
                         else if (IsAdjacentToEnemy(game, m_Actor)) //@@MP - can't get to an exit. use self-defense if we're trapped by an enemy (Release 6-5)
@@ -395,7 +395,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     ActionUnequipItem unequipGre = new ActionUnequipItem(m_Actor, game, eqGrenade);
                     if (unequipGre.IsLegal())
                     {
-                        m_Actor.Activity = Activity.IDLE;
+                        m_Actor.Activity = Activity.FIGHTING;
                         return unequipGre;
                     }
                 }
@@ -405,6 +405,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorThrowGrenade(game, FOV, enemies); //@@MP m_LOSSensor.FOV, enemies); (Release 6-2)
                 if (determinedAction != null)
                 {
+                    m_Actor.Activity = Activity.FIGHTING;
                     return determinedAction;
                 }
             }
@@ -470,7 +471,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             List<Percept> friends = FilterNonEnemies(game, mapPercepts);
             if (friends != null)
             {
-                //Map map = m_Actor.Location.Map; //@@MP - added (Release 6-1), removed (Release 6-2)
                 //HashSet<Point> FOV = m_LOSSensor.FOV; //@@MP (Release 6-2)
                 foreach (Point p in FOV)
                 {
@@ -480,7 +480,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         determinedAction = BehaviorWarnFriendsOfFire(game, friends);
                         if (determinedAction != null)
                         {
-                            m_Actor.Activity = Activity.FLEEING;
+                            m_Actor.Activity = Activity.SHOUTING;
                             return determinedAction;
                         }
                     }
@@ -498,7 +498,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         determinedAction = BehaviorWarnFriends(game, friends, FilterNearest(game, enemies).Percepted as Actor);
                         if (determinedAction != null)
                         {
-                            m_Actor.Activity = Activity.IDLE;
+                            m_Actor.Activity = Activity.SHOUTING;
                             return determinedAction;
                         }
                     }
@@ -518,7 +518,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             determinedAction = BehaviorUseMedicine(game, 2, 1, 2, 4, 2);
             if (determinedAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.HEALING;
                 return determinedAction;
             }
             #endregion
@@ -555,7 +555,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorEat(game);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.EATING;
                     return determinedAction;
                 }
                 if (game.Rules.IsActorStarving(m_Actor) || game.Rules.IsActorInsane(m_Actor))
@@ -563,7 +563,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     determinedAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
                     if (determinedAction != null)
                     {
-                        m_Actor.Activity = Activity.IDLE;
+                        m_Actor.Activity = Activity.EATING;
                         return determinedAction;
                     }
                 }
@@ -582,7 +582,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     determinedAction = BehaviorSecurePerimeter(game, FOV); //@@MP m_LOSSensor.FOV); (Release 6-2)
                     if (determinedAction != null)
                     {
-                        m_Actor.Activity = Activity.IDLE;
+                        m_Actor.Activity = Activity.PATROLLING;
                         return determinedAction;
                     }
 
@@ -636,7 +636,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             determinedAction = BehaviorDropUselessItem(game);
             if (determinedAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return determinedAction;
             }
 #endregion
@@ -722,7 +722,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             if (!game.Rules.CanActorInitiateTradeWith(m_Actor, other)) return true;
                             if (IsActorTabooTrade(other)) return true;
                             // alpha10 dont bother someone who is fighting or fleeing
-                            if (other.Activity == Activity.CHASING || other.Activity == Activity.FIGHTING || other.Activity == Activity.FLEEING || other.Activity == Activity.FLEEING_FROM_EXPLOSIVE)
+                            if (other.IsFightingOrFleeing)
                                 return true;
                             // dont bother if no interesting items.
                             if (!HasAnyInterestingItem(game, other.Inventory, ItemSource.ANOTHER_ACTOR)) return true;
@@ -746,6 +746,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                                 MarkActorAsRecentTrade(tradeTarget);
                                 // say, so we make sure we spend a turn and won't loop.
                                 game.DoSay(m_Actor, tradeTarget, String.Format("Hey {0}, let's make a deal!", tradeTarget.Name), RogueGame.Sayflags.NONE);
+                                m_Actor.Activity = Activity.TRADING;
                                 return determinedAction;
                             }
                         }
@@ -759,7 +760,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                                 // might spam for a few turns, but its better than not understanding whats going on.
                                 game.DoSay(m_Actor, tradeTarget, String.Format("Hey {0}, let's make a deal!", tradeTarget.Name), RogueGame.Sayflags.IS_FREE_ACTION);
 
-                                m_Actor.Activity = Activity.FOLLOWING;
+                                m_Actor.Activity = Activity.TRADING;
                                 m_Actor.TargetActor = tradeTarget;
                                 return determinedAction;
                             }
@@ -849,7 +850,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorDropBoringEntertainment(game);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.MANAGING_INVENTORY;
                     return determinedAction;
                 }                
             }
@@ -864,7 +865,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction trapAction = BehaviorBuildTrap(game);
                 if (trapAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.BUILDING;
                     return trapAction;
                 }
             }
@@ -874,7 +875,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction buildAction = BehaviorBuildLargeFortification(game, START_FORT_LINE_CHANCE);
                 if (buildAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.BUILDING;
                     return buildAction;
                 }
             }
@@ -884,7 +885,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction buildAction = BehaviorBuildSmallFortification(game);
                 if (buildAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.BUILDING;
                     return buildAction;
                 }
             }
@@ -924,7 +925,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             ActorAction leadAction = BehaviorLeadActor(game, nearestFriend);
                             if (leadAction != null)
                             {
-                                m_Actor.Activity = Activity.IDLE;
+                                m_Actor.Activity = Activity.CHATTING;
                                 m_Actor.TargetActor = nearestFriend.Percepted as Actor;
                                 return leadAction;
                             }
@@ -945,7 +946,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     game.DoEmote(m_Actor, "Open damn it! I know there's food in there!", true);
 
                     // go!
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.SEARCHING;
                     return determinedAction;
                 }
                 if (game.Rules.RollChance(HUNGRY_PUSH_OBJECTS_CHANCE))
@@ -960,7 +961,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             game.DoEmote(m_Actor, "Where's all the damn food?!", true);
 
                             // go!
-                            m_Actor.Activity = Activity.IDLE;
+                            m_Actor.Activity = Activity.SEARCHING;
                             return determinedAction;
                         }
                     }
@@ -973,7 +974,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             determinedAction = BehaviorGoReviveCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
             if (determinedAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.REVIVING;
                 return determinedAction;
             }
 #endregion
@@ -999,7 +1000,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorTellFriendAboutPercept(game, m_LastRaidHeard);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.CHATTING;
                     return determinedAction;
                 }
             }
@@ -1024,7 +1025,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorTellFriendAboutPercept(game, m_LastSoldierSaw);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.CHATTING;
                     return determinedAction;
                 }
             }
@@ -1037,7 +1038,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorTellFriendAboutPercept(game, m_LastEnemySaw);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.CHATTING;
                     return determinedAction;
                 }
             }
@@ -1050,7 +1051,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorTellFriendAboutPercept(game, m_LastItemsSaw);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.CHATTING;
                     return determinedAction;
                 }
             }
@@ -1064,6 +1065,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorEnforceLaw(game, mapPercepts, out target);
                 if (determinedAction != null)
                 {
+                    m_Actor.Activity = Activity.PATROLLING;
                     m_Actor.TargetActor = target;
                     return determinedAction;
                 }
@@ -1118,7 +1120,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 #endif
                 // END VERBOSE BOT
 
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.EXPLORING;
                 return determinedAction;
             }
 #endregion
@@ -1132,10 +1134,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
 #endif
             // END VERBOSE BOT
 
-            m_Actor.Activity = Activity.IDLE;
             determinedAction = BehaviorWander(game);
             if (determinedAction != null)
             {
+                m_Actor.Activity = Activity.WANDERING;
                 return determinedAction;
             }
             else
@@ -1145,6 +1147,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 Point pt = new Point(m_Actor.Location.Position.X, m_Actor.Location.Position.Y);
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, "CivilianAI::SelectAction() fell through to wait for " + m_Actor.Name + " @" + m_Actor.Location.Map.District.Name.ToString() + " " + pt.ToString() + " on turn #" + game.Session.WorldTime.TurnCounter);
 #endif
+                m_Actor.Activity = Activity.WAITING;
                 return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
             }
 

@@ -186,6 +186,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
                     if (determinedAction != null)
                     {
+                        m_Actor.Activity = Activity.FINDING_EXIT;
                         return determinedAction;
                     }
                     else
@@ -194,7 +195,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         determinedAction = BehaviorGoToNearestAIExit(game);
                         if (determinedAction != null)
                         {
-                            m_Actor.Activity = Activity.IDLE;
+                            m_Actor.Activity = Activity.FINDING_EXIT;
                             return determinedAction;
                         }
                         else if (IsAdjacentToEnemy(game, m_Actor)) //can't get to an exit. use self-defense if we're trapped by an enemy
@@ -290,7 +291,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, friends);
                         if (shoutAction != null)
                         {
-                            m_Actor.Activity = Activity.FLEEING;
+                            m_Actor.Activity = Activity.SHOUTING;
                             return shoutAction;
                         }
                     }
@@ -308,7 +309,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         ActorAction shoutAction = BehaviorWarnFriends(game, friends, FilterNearest(game, currentEnemies).Percepted as Actor);
                         if (shoutAction != null)
                         {
-                            m_Actor.Activity = Activity.IDLE;
+                            m_Actor.Activity = Activity.SHOUTING;
                             return shoutAction;
                         }
                     }
@@ -330,7 +331,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction useMedAction = BehaviorUseMedicine(game, 2, 1, 2, 4, 2);
             if (useMedAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.HEALING;
                 return useMedAction;
             }
             #endregion
@@ -368,7 +369,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction eatAction = BehaviorEat(game);
                 if (eatAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.EATING;
                     return eatAction;
                 }
                 if (game.Rules.IsActorStarving(m_Actor) || game.Rules.IsActorInsane(m_Actor))
@@ -376,7 +377,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     eatAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
                     if (eatAction != null)
                     {
-                        m_Actor.Activity = Activity.IDLE;
+                        m_Actor.Activity = Activity.EATING;
                         return eatAction;
                     }
                 }
@@ -391,7 +392,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction secureSleepAction = BehaviorSecurePerimeter(game, m_LOSSensor.FOV);
                 if (secureSleepAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.PATROLLING;
                     return secureSleepAction;
                 }
 
@@ -411,7 +412,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction dropOutOfBatteries = BehaviorDropUselessItem(game);
             if (dropOutOfBatteries != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return dropOutOfBatteries;
             }
             #endregion
@@ -540,7 +541,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction attackBarricadeAction = BehaviorAttackBarricade(game);
             if (attackBarricadeAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.DESTROYING;
                 return attackBarricadeAction;
             }
             #endregion
@@ -574,7 +575,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     ActorAction leadAction = BehaviorLeadActor(game, nearestFriend);
                     if (leadAction != null)
                     {
-                        m_Actor.Activity = Activity.IDLE;
+                        m_Actor.Activity = Activity.CHATTING;
                         m_Actor.TargetActor = nearestFriend.Percepted as Actor;
                         return leadAction;
                     }
@@ -616,18 +617,23 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction exploreAction = BehaviorExplore(game, m_Exploration);
             if (exploreAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.EXPLORING;
                 return exploreAction;
             }
             #endregion
 
             // 18 wander
-            m_Actor.Activity = Activity.IDLE;
             determinedAction = BehaviorWander(game);
             if (determinedAction != null)
+            {
+                m_Actor.Activity = Activity.WANDERING;
                 return determinedAction;
+            }
             else
+            {
+                m_Actor.Activity = Activity.WAITING;
                 return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
+            }
         }
         #endregion
     }

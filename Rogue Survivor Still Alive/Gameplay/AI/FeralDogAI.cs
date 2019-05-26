@@ -115,7 +115,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (eatFood != null)
                     {
                         RunIfPossible(game.Rules);
-                        m_Actor.Activity = Activity.IDLE;
+                        m_Actor.Activity = Activity.EATING;
                         return eatFood;
                     }
                 }
@@ -133,7 +133,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (eatCorpses != null)
                     {
                         RunIfPossible(game.Rules);
-                        m_Actor.Activity = Activity.IDLE;
+                        m_Actor.Activity = Activity.EATING;
                         return eatCorpses;
                     }
                 }
@@ -172,12 +172,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endregion
 
             // 7 wander
-            m_Actor.Activity = Activity.IDLE;
             ActorAction determinedAction = BehaviorWander(game);
             if (determinedAction != null)
+            {
+                m_Actor.Activity = Activity.WANDERING;
                 return determinedAction;
+            }
             else
+            {
+                m_Actor.Activity = Activity.WAITING;
                 return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
+            }
         }
 
         private static ActorAction BehaviorFightOrFlee(RogueGame game, List<Percept> enemies, bool isLeaderVisible, bool isLeaderFighting, ActorCourage courage, string[] FIGHT_EMOTES, RouteFinder.SpecialActions allowedChargeActions)

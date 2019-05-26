@@ -135,6 +135,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
                     if (determinedAction != null)
                     {
+                        m_Actor.Activity = Activity.FINDING_EXIT;
                         return determinedAction;
                     }
                     else
@@ -143,7 +144,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         determinedAction = BehaviorGoToNearestAIExit(game);
                         if (determinedAction != null)
                         {
-                            m_Actor.Activity = Activity.IDLE;
+                            m_Actor.Activity = Activity.FINDING_EXIT;
                             return determinedAction;
                         }
                         else if (IsAdjacentToEnemy(game, m_Actor)) //can't get to an exit. use self-defense if we're trapped by an enemy
@@ -292,7 +293,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         ActorAction shoutAction = BehaviorWarnFriendsOfFire(game, nonEnemies);
                         if (shoutAction != null)
                         {
-                            m_Actor.Activity = Activity.FLEEING;
+                            m_Actor.Activity = Activity.SHOUTING;
                             return shoutAction;
                         }
                     }
@@ -306,7 +307,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     ActorAction shoutAction = BehaviorWarnFriends(game, nonEnemies, FilterNearest(game, allEnemies).Percepted as Actor);
                     if (shoutAction != null)
                     {
-                        m_Actor.Activity = Activity.IDLE;
+                        m_Actor.Activity = Activity.SHOUTING;
                         return shoutAction;
                     }
                 }
@@ -344,7 +345,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     ActorAction chargeAction = BehaviorChargeEnemy(game, chasePercept, false, false);
                     if (chargeAction != null)
                     {
-                        m_Actor.Activity = Activity.FIGHTING;
+                        m_Actor.Activity = Activity.CHASING;
                         m_Actor.TargetActor = chasePercept.Percepted as Actor;
                         return chargeAction;
                     }
@@ -387,18 +388,23 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction wanderInOfficeAction = BehaviorWander(game, (loc) => RogueGame.IsInCHAROffice(loc));
             if (wanderInOfficeAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.WANDERING;
                 return wanderInOfficeAction;
             }
             #endregion
 
             // 12 wander
-            m_Actor.Activity = Activity.IDLE;
             determinedAction = BehaviorWander(game);
             if (determinedAction != null)
+            {
+                m_Actor.Activity = Activity.WANDERING;
                 return determinedAction;
+            }
             else
+            {
+                m_Actor.Activity = Activity.WAITING;
                 return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
+            }
         }
         #endregion
     }

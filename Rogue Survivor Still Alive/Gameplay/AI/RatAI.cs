@@ -77,7 +77,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                     if (bestBumpAction != null)
                     {
-                        m_Actor.Activity = Activity.CHASING;
+                        m_Actor.Activity = Activity.TRACKING;
                         m_Actor.TargetActor = bestEnemyPercept.Percepted as Actor;
                         return bestBumpAction;
                     }
@@ -123,7 +123,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction eatCorpses = BehaviorGoEatCorpse(game, corpses);
                 if (eatCorpses != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.EATING;
                     return eatCorpses;
                 }
             }
@@ -140,12 +140,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endregion
 
             // 4 wander
-            m_Actor.Activity = Activity.IDLE;
             ActorAction determinedAction = BehaviorWander(game);
             if (determinedAction != null)
+            {
+                m_Actor.Activity = Activity.WANDERING;
                 return determinedAction;
+            }
             else
+            {
+                m_Actor.Activity = Activity.WAITING;
                 return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
+            }
         }
         #endregion
     }

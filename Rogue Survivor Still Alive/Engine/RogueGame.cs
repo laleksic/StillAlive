@@ -14934,10 +14934,7 @@ namespace djack.RogueSurvivor.Engine
 
             // Screams of terror?
 #region
-            if (!actor.IsPlayer &&
-                (actor.Activity == Activity.FLEEING || actor.Activity == Activity.FLEEING_FROM_EXPLOSIVE) &&
-                !actor.Model.Abilities.IsUndead &&
-                actor.Model.Abilities.CanTalk)
+            if (!actor.IsPlayer && actor.IsFleeing && !actor.Model.Abilities.IsUndead &&  actor.Model.Abilities.CanTalk)
             {
                 // loud noise.
                 OnLoudNoise(newLocation.Map, newLocation.Position, "A loud SCREAM");
@@ -21058,6 +21055,21 @@ namespace djack.RogueSurvivor.Engine
             switch (actor.Activity)
             {
                 case Activity.IDLE:
+                case Activity.EATING:
+                case Activity.EXPLORING:
+                case Activity.WANDERING:
+                case Activity.FINDING_EXIT:
+                case Activity.HEALING:
+                case Activity.WAITING:
+                case Activity.PATROLLING:
+                case Activity.CHATTING:
+                case Activity.REVIVING:
+                case Activity.BUILDING:
+                case Activity.MANAGING_INVENTORY:
+                case Activity.TRADING:
+                case Activity.SEARCHING:
+                case Activity.SHOUTING:
+                case Activity.DESTROYING:
                     break;
 
                 case Activity.CHASING:
@@ -25887,6 +25899,52 @@ namespace djack.RogueSurvivor.Engine
 
                 case Activity.SLEEPING:
                     return "Sleeping.";
+
+                //@@MP (Release 6-6)
+                case Activity.EATING:
+                    return "Eating.";
+
+                case Activity.EXPLORING:
+                    return "Exploring.";
+
+                case Activity.WANDERING:
+                    return "Wandering.";
+
+                case Activity.FINDING_EXIT:
+                    return "Leaving.";
+
+                case Activity.HEALING:
+                    return "Treating wounds.";
+
+                case Activity.WAITING:
+                    return "Waiting.";
+
+                case Activity.PATROLLING:
+                    return "Patrolling.";
+
+                case Activity.CHATTING:
+                    return "Chatting.";
+
+                case Activity.REVIVING:
+                    return "Reviving.";
+
+                case Activity.BUILDING:
+                    return "Constructing.";
+
+                case Activity.MANAGING_INVENTORY:
+                    return "Managing inventory.";
+
+                case Activity.TRADING:
+                    return "Trading.";
+
+                case Activity.SEARCHING:
+                    return "Searching for food.";
+
+                case Activity.SHOUTING:
+                    return "Shouting.";
+
+                case Activity.DESTROYING:
+                    return "Destroying something.";
 
                 default:
                     throw new ArgumentException("unhandled activity " + actor.Activity);

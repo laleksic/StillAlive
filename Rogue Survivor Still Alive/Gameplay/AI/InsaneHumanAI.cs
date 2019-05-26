@@ -137,6 +137,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
                     if (determinedAction != null)
                     {
+                        m_Actor.Activity = Activity.FINDING_EXIT;
                         return determinedAction;
                     }
                     else
@@ -145,7 +146,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         determinedAction = BehaviorGoToNearestAIExit(game);
                         if (determinedAction != null)
                         {
-                            m_Actor.Activity = Activity.IDLE;
+                            m_Actor.Activity = Activity.FINDING_EXIT;
                             return determinedAction;
                         }
                         else if (IsAdjacentToEnemy(game, m_Actor)) //can't get to an exit. use self-defense if we're trapped by an enemy
@@ -197,6 +198,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction bestEquip = BehaviorEquipBestItems(game, false, false);
             if (bestEquip != null)
             {
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return bestEquip;
             }
 
@@ -286,7 +288,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (game.Rules.RollChance(SHOUT_CHANCE))
             {
                 string insanity = INSANITIES[game.Rules.Roll(0, INSANITIES.Length)];
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.SHOUTING;
                 game.DoEmote(m_Actor, insanity, true);
             }
             #endregion
@@ -303,12 +305,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // 5 wander
-            m_Actor.Activity = Activity.IDLE;
             determinedAction = BehaviorWander(game);
             if (determinedAction != null)
+            {
+                m_Actor.Activity = Activity.WANDERING;
                 return determinedAction;
+            }
             else
+            {
+                m_Actor.Activity = Activity.WAITING;
                 return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
+            }
         }
         #endregion
     }

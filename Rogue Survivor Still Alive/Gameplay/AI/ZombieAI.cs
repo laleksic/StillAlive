@@ -180,7 +180,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction eatCorpses = BehaviorGoEatCorpse(game, corpses);
                 if (eatCorpses != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.EATING;
                     return eatCorpses;
                 }
             }
@@ -252,7 +252,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction assaultAction = BehaviorAssaultBreakables(game, fov);
                 if (assaultAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.DESTROYING;
                     return assaultAction;
                 }
             }
@@ -273,7 +273,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 #endif
                 if (pushAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.DESTROYING;
                     return pushAction;
                 }
             }
@@ -286,19 +286,24 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction exploreAction = BehaviorExplore(game, m_Exploration);
                 if (exploreAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.EXPLORING;
                     return exploreAction;
                 }
             }
             #endregion
 
             // 9 wander
-            m_Actor.Activity = Activity.IDLE;
             ActorAction determinedAction = BehaviorWander(game);
             if (determinedAction != null)
+            {
+                m_Actor.Activity = Activity.WANDERING;
                 return determinedAction;
+            }
             else
+            {
+                m_Actor.Activity = Activity.WAITING;
                 return new ActionWait(m_Actor, game); //@@MP (Release 6-5)
+            }
         }
         #endregion
     }
