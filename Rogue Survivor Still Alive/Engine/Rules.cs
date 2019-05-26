@@ -102,8 +102,8 @@ namespace djack.RogueSurvivor.Engine
         public const int MELEE_WEAPON_BREAK_CHANCE = 1;
         public const int MELEE_WEAPON_FRAGILE_BREAK_CHANCE = 25; //@@MP - upped from 3 to make fragility realistic (Release 4)
         public const int MELEE_DISARM_BASE_CHANCE = 5;  // alpha10
-        public const int FIREARM_JAM_CHANCE_NO_RAIN = 1;
-        public const int FIREARM_JAM_CHANCE_RAIN = 3;
+        /*public const int FIREARM_JAM_CHANCE_NO_RAIN = 1; //@@MP - removed (Release 6-6)
+        public const int FIREARM_JAM_CHANCE_RAIN = 3; //@@MP - removed (Release 6-6)*/
         //const int FIRE_DISTANCE_VS_RANGE_MODIFIER = 2; // alpha 10 removed
         const float FIRING_WHEN_STA_TIRED = 0.75f;     // -25%
         const float FIRING_WHEN_STA_NOT_FULL = 0.90f;  // -10%
@@ -204,7 +204,7 @@ namespace djack.RogueSurvivor.Engine
         public const int MODERATE_NOISE_RADIUS = 8; //@@MP - eg climbing on a car. can be used for Nearby sfxs (). (Release 5-4)
         public const int QUIET_NOISE_RADIUS = 5; //@@MP - eg conversation. can be used for Player or Visible sfxs (). (Release 5-4)
         const int LOUD_NOISE_BASE_WAKEUP_CHANCE = 10;
-        const int LOUD_NOISE_DISTANCE_BONUS = 8; //10; //@@MP - reduced to balance the increase in LOUD_NOISE_RADIUS (Release 5-3)
+        const int LOUD_NOISE_DISTANCE_BONUS = 10;
         #endregion
 
         #region Victims dropping items.
@@ -254,7 +254,7 @@ namespace djack.RogueSurvivor.Engine
         public const int TRUST_GOOD_GIFT_INCREASE = 3 * WorldTime.TURNS_PER_HOUR;       // 3 trust-hours gained.
         public const int TRUST_MISC_GIFT_INCREASE = TRUST_BASE_INCREASE + TRUST_GOOD_GIFT_INCREASE / 10;
         public const int TRUST_GIVE_ITEM_ORDER_PENALTY = -WorldTime.TURNS_PER_HOUR;     // 1 trust-hours lost.
-        public const int TRUST_FRIENDLY_FIRE_PENALTY = 6 * -WorldTime.TURNS_PER_HOUR;   //@@MP 6 trust-hours lost (Release 5-7)
+        public const int TRUST_FRIENDLY_FIRE_PENALTY = 6 * -WorldTime.TURNS_PER_HOUR;   //@@MP - 6 trust-hours lost (Release 5-7)
         public const int TRUST_LEADER_KILL_ENEMY = 3 * WorldTime.TURNS_PER_HOUR;        // 3 trust-hours gain.
         public const int TRUST_REVIVE_BONUS = 12 * WorldTime.TURNS_PER_HOUR;
         #endregion
@@ -1703,8 +1703,9 @@ namespace djack.RogueSurvivor.Engine
             // Can't if any is true:
             // 1. Target is player.
             // 2. Actors are not traders and not leader->follower relationship.
-            // 3. Target is sleeping.
-            // 4. No item to trade.
+            // 3. Enemies
+            // 4. Target is sleeping.
+            // 5. No item to trade.
             /////////////////////////////
 
             // 1. Target is player.
@@ -1726,20 +1727,21 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
+            // 3. Enemies
             if (AreEnemies(speaker, target))
             {
                 reason = "is an enemy";
                 return false;
             }
 
-            // 3. Target is sleeping.
+            // 4. Target is sleeping.
             if (target.IsSleeping)
             {
                 reason = "is sleeping";
                 return false;
             }
 
-            // 4. No item to trade.
+            // 5. No item to trade.
             if (speaker.Inventory == null || speaker.Inventory.IsEmpty)
             {
                 reason = "nothing to offer";
@@ -4015,7 +4017,8 @@ namespace djack.RogueSurvivor.Engine
         {
             int baseChance = LOUD_NOISE_BASE_WAKEUP_CHANCE;
             int skillBonus = SKILL_LIGHT_SLEEPER_WAKEUP_CHANCE_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.LIGHT_SLEEPER);
-            int distBonus = Math.Max(0, (MODERATE_NOISE_RADIUS - noiseDistance) * LOUD_NOISE_DISTANCE_BONUS); //@@MP - changed from Loud to Moderate, as the former was 5 when this method was designed (Release 6-6)
+            int distBonus = Math.Max(0, (QUIET_NOISE_RADIUS - noiseDistance) * LOUD_NOISE_DISTANCE_BONUS); //@@MP - changed from Loud to Quiet, as the former was 5 when this method was designed (Release 6-6)
+            //@@MP - a lower noise radius means sounds are less likely to wake them up, but that's good because there's lots of loud noises and it was causing too much insomnia
 
             return baseChance + skillBonus + distBonus;
         }

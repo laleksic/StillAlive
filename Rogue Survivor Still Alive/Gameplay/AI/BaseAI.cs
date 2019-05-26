@@ -1550,10 +1550,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // if not interesting, ignore.
                 if (!IsInterestingItemToOwn(game, it, ItemSource.GROUND_STACK))
                     continue;
-                //@@MP - don't grab dynamite. they're so rare we want them for the player (Release 4)
-                //ai can't use them anyway because dynamite must be deployed within the blast radius, which goes against BehaviorThrowGrenade()
-                if (it.Model.ID == (int)GameItems.IDs.EXPLOSIVE_DYNAMITE)
-                    continue;
                 // gettable and interesting, get it.
                 goodItem = it;
                 break;
@@ -1572,9 +1568,21 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // try to move/get one.
             if (position == m_Actor.Location.Position)
+            {
+#if DEBUG
+                if (m_Actor.IsBotPlayer) //@@MP (Release 6-6)
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Location.Map.LocalTime.TurnCounter.ToString() + " trying to grab " + goodItem.AName);
+#endif
                 return new ActionTakeItem(m_Actor, game, position, takeIt);
+            }
             else
+            {
+#if DEBUG
+                if (m_Actor.IsBotPlayer) //@@MP (Release 6-6)
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Location.Map.LocalTime.TurnCounter.ToString() + " going over to grab " + goodItem.AName);
+#endif
                 return BehaviorIntelligentBumpToward(game, position, canBreak, canPush);
+            }
         }
 
         // alpha10 made improved get item rule into a new behaviour; need taboo tile upkeep by caller though!
@@ -1633,17 +1641,28 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_Actor.Activity = Activity.IDLE;
                 return grabAction;
             }
+            else //@@MP (Release 6-6)
+            {
+                // emote
+                if (!m_Actor.Inventory.IsFull)   
+                {
+                    game.DoEmote(m_Actor, cantGetItemEmote);
+#if DEBUG
+                    if (m_Actor.IsBotPlayer) //@@MP (Release 6-6)
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "[turn#" + m_Actor.Location.Map.LocalTime.TurnCounter.ToString() + "] I couldnt grab something from " + nearestStack.Location.Position.ToString());
+#endif
+                }
+            }
 
             // we can't grab the item. mark the tile as taboo.
             MarkTileAsTaboo(nearestStack.Location.Position);
-            // emote
-            game.DoEmote(m_Actor, cantGetItemEmote);
+            
             // failed
             return null;
         }
-        #endregion
+#endregion
 
-        #region Droping items
+#region Droping items
         protected ActorAction BehaviorDropItem(RogueGame game, Item it)
         {
             if (it == null)
@@ -4200,7 +4219,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // with BehaviorMakeRoomForFood() or the npc will cycle drop-take-drop...
 
             // taboo
-            if (IsItemTaboo(it))
+            if (IsItemTaboo(it) || it.IsForbiddenToAI) //@@MP - lazy add forbidden check (Release 6-6)
                 return false;
 
             // consistent with BehaviorMakeRoomForFood (was already in alpha9)
@@ -4438,11 +4457,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <see cref="RateItemExhange(RogueGame, Item, Item)"/>
         public ItemRating RateItem(RogueGame game, Item it, bool owned)  // alpha10 new item rating and trading logic
         {
-            //@@MP - re-ordered for most to least likely (Release 6-1),(Release 6-2)
-
             // Items forbidden to AI.
             if (it.IsForbiddenToAI)
                 return ItemRating.JUNK;
+
+            //@@MP - re-ordered for most to least likely (Release 6-1),(Release 6-2)
 
             // Melee weapons if martial arts or enough.
             if (it is ItemMeleeWeapon)
@@ -4464,7 +4483,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (it is ItemMedicine)
             {
                 //@@MP - added alcohol-specific check (Release 4)(Release 6-2)
-                if (AlreadyHasEnoughAlcoholInInventory(it, 1)) //there's 6 unique models of alcohol, so if left to just the next check the AI would be able to go nuts and take way too much booze. this fixes that
+                //there's 6 unique models of alcohol, so if left to just the next check the AI would be able to go nuts and take way too much booze. this fixes that
+                if (AlreadyHasEnoughAlcoholInInventory(it, 1))
                     return ItemRating.JUNK;
 
                 ItemMedicine itMed = it as ItemMedicine;

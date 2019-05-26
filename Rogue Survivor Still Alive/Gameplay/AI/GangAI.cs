@@ -462,8 +462,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (!hasCurrentEnemies)
             {
                 // alpha10 new common behaviour code, also used by CivilianAI, but Gangs can break and push
-                ActorAction getItemAction = BehaviorGoGetInterestingItems(game, mapPercepts,
-                     true, true, CANT_GET_ITEM_EMOTE, false, ref m_DummyPerceptLastItemsSaw);
+                ActorAction getItemAction = BehaviorGoGetInterestingItems(game, mapPercepts, true, true, CANT_GET_ITEM_EMOTE, false, ref m_DummyPerceptLastItemsSaw);
 
                 if (getItemAction != null)
                     return getItemAction;

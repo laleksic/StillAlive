@@ -1352,6 +1352,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new ItemGrenade(m_Game.GameItems.DYNAMITE, m_Game.GameItems.DYNAMITE_PRIMED)
             {
                 IsForbiddenToAI = true //@@MP (Release 5-5)
+                //they're so rare we want them for the player only.
+                //ai can't use them anyway because dynamite must be deployed within the blast radius, which goes against BehaviorThrowGrenade()
             };
         }
 

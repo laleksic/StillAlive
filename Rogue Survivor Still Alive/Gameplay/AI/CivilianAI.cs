@@ -288,15 +288,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // exploration.
             m_Exploration.Update(m_Actor.Location);
 
-            // clear taboo tiles : periodically or when changing maps.
-            if (map.LocalTime.TurnCounter % WorldTime.TURNS_PER_HOUR == 0 ||  //@@MP m_Actor.Location.Map (Release 6-2)
-                (PrevLocation != null && PrevLocation.Map != map)) //@@MP m_Actor.Location.Map (Release 6-2)
+            // clear periodically or when changing maps.
+            if (map.LocalTime.TurnCounter % WorldTime.TURNS_PER_HOUR == 0 || (PrevLocation != null && PrevLocation.Map != map))
             {
                 ClearTabooTiles();
-            }
-            // clear trades.
-            if (map.LocalTime.TurnCounter % WorldTime.TURNS_PER_DAY == 0) //@@MP m_Actor.Location.Map (Release 6-2)
-            {
                 ClearTabooTrades();
             }
 
@@ -572,30 +567,35 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return determinedAction;
                     }
                 }
+                //TODO: flag to explore for food if none in inv //@@MP
             }
             #endregion
 
             // 9 sleep when almost sleepy and safe.
             #region
-            if (m_SafeTurns >= MIN_TURNS_SAFE_TO_SLEEP && this.Directives.CanSleep && 
-                WouldLikeToSleep(game, m_Actor) && IsInside(m_Actor) && game.Rules.CanActorSleep(m_Actor))
+            if (m_SafeTurns >= MIN_TURNS_SAFE_TO_SLEEP && WouldLikeToSleep(game, m_Actor) && game.Rules.CanActorSleep(m_Actor) && this.Directives.CanSleep)
             {
-                // secure sleep.
-                determinedAction = BehaviorSecurePerimeter(game, FOV); //@@MP m_LOSSensor.FOV); (Release 6-2)
-                if (determinedAction != null)
+                // prefer sleeping indoors
+                if (IsInside(m_Actor))
                 {
-                    m_Actor.Activity = Activity.IDLE;
-                    return determinedAction;
-                }
+                    // secure sleep.
+                    determinedAction = BehaviorSecurePerimeter(game, FOV); //@@MP m_LOSSensor.FOV); (Release 6-2)
+                    if (determinedAction != null)
+                    {
+                        m_Actor.Activity = Activity.IDLE;
+                        return determinedAction;
+                    }
 
-                // sleep.
-                determinedAction = BehaviorSleep(game, FOV); //@@MP m_LOSSensor.FOV); (Release 6-2)
-                if (determinedAction != null)
-                {
-                    if (determinedAction is ActionSleep)
-                        m_Actor.Activity = Activity.SLEEPING;
-                    return determinedAction;
+                    // sleep.
+                    determinedAction = BehaviorSleep(game, FOV); //@@MP m_LOSSensor.FOV); (Release 6-2)
+                    if (determinedAction != null)
+                    {
+                        if (determinedAction is ActionSleep)
+                            m_Actor.Activity = Activity.SLEEPING;
+                        return determinedAction;
+                    }
                 }
+                //TODO: add a flag here so that if we end up exploring/wandering to do so towards indoors (find nearest IsInside) //@@MP
             }
             #endregion
 
@@ -699,8 +699,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
 #region
             if (!hasEnemies && this.Directives.CanTakeItems)
             {
-                //Map map = m_Actor.Location.Map; //@@MP (Release 6-2)
-
 #region Get items
                 // 13. alpha10 new common behaviour code, also used by GangAI
                 ActorAction getItemAction = BehaviorGoGetInterestingItems(game, mapPercepts, false, false, CANT_GET_ITEM_EMOTE, true, ref m_LastItemsSaw);

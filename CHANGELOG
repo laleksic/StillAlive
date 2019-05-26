@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.5.11 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.5.12 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -11,6 +11,7 @@ Features:
 -Added chance to catch on fire when walking through a tile fire.
 -Someone rings church bells just before sundown, warning you to find a safe space for the night.
 -Human description (mouse hover) now includes how courageous they are.
+-Removed weapon jamming.
 
 Fixes:
 -Crossbows, hunting rifles and precision rifles can't be used in Rapid Fire mode.
@@ -24,6 +25,7 @@ Fixes:
 -Altered AI behaviour to reduce kiting behaviour when dealing with enemies.
 -Human AI no longer needlessly break objects, unless they've gone insane.
 -Human AI no longer walking into fires to get at items.
+-Tweaked some weapon damage, hit points, and some armors for balance.
 
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).

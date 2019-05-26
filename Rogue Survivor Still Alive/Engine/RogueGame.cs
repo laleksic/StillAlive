@@ -3774,9 +3774,11 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
             m_Player.Inventory.AddAll(ammo);
-            Item gun2 = new ItemRangedWeapon(GameItems.HUNTING_RIFLE);
+            Item armor = new ItemBodyArmor(GameItems.HUNTER_VEST);
+            m_Player.Inventory.AddAll(armor);
+            /*Item gun2 = new ItemRangedWeapon(GameItems.HUNTING_RIFLE);
             m_Player.Inventory.AddAll(gun2);
-            /*Item seeds = new Item(GameItems.VEGETABLE_SEEDS);
+            Item seeds = new Item(GameItems.VEGETABLE_SEEDS);
             m_Player.Inventory.AddAll(seeds);
             Item shovel = new ItemMeleeWeapon(GameItems.SHOVEL);
             m_Player.Inventory.AddAll(shovel);
@@ -5647,17 +5649,17 @@ namespace djack.RogueSurvivor.Engine
                         {
                             // TO DEVS: you might want to add a debug breakpoint here ->
                             Point pt = new Point(actor.Location.Position.X, actor.Location.Position.Y);
-                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: actor " + actor.Name + " is possibly looping.... [district: " + actor.Location.Map.District.Name + "] [coords: " + pt.ToString() + "] [turn #" + m_Session.WorldTime.TurnCounter + "] [tally= " + m_DEBUG_sameAiActorCount + "]");
-
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "WARNING: " + actor.Name + " is possibly looping.... [district: " + actor.Location.Map.District.Name + "] [coords: " + pt.ToString() + "] [turn #" + m_Session.WorldTime.TurnCounter + "] [tally= " + m_DEBUG_sameAiActorCount + "]");
+                            Logger.WriteLine(Logger.Stage.RUN_MAIN, actor.Name + " last action turn: " + actor.LastActionTurn.ToString() + ", activity: " + actor.Activity.ToString());
 #if DEBUG
                             //pause the AI to let us find the looping actor and see what they're doing
                             if (m_Player.IsBotPlayer && m_Player.Location.Map == actor.Location.Map)
                             {
                                 BotReleaseControl();
                                 AddMessage(new Message("AI LOOPING DETECTED. Released bot control", m_Session.WorldTime.TurnCounter, Color.Pink));
-                                if (actor.IsPlayer)
-                                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "PLAYER looping detected. Released bot control.");
                             }
+
+                            // workaround
                             DoWait(actor);
 #else
                             // throw an exception
@@ -5721,12 +5723,12 @@ namespace djack.RogueSurvivor.Engine
                 if (actor.ActionPoints == actionPointsBeforeTurn)
                 {
                     if (actor.Location == locationBeforeTurn)
-                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " spent no AP and did NOT move to another tile [turn# " + m_Session.WorldTime.TurnCounter.ToString() + "]");
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "... " + actor.Name + " spent no AP and did NOT move to another tile [turn# " + m_Session.WorldTime.TurnCounter.ToString() + "]");
                     else
-                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " reduced no AP and DID move to another tile [turn# " + m_Session.WorldTime.TurnCounter.ToString() + "]");
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "... " + actor.Name + " reduced no AP and DID move to another tile [turn# " + m_Session.WorldTime.TurnCounter.ToString() + "]");
                 }
                 else if (actor.ActionPoints > actionPointsBeforeTurn)
-                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "...actor " + actor.Name + " has more AP than when the turn started [turn# " + m_Session.WorldTime.TurnCounter.ToString() + "]");
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, "... " + actor.Name + " has more AP than when the turn started [turn# " + m_Session.WorldTime.TurnCounter.ToString() + "]");
             }
 #endif
             #endregion
@@ -6090,19 +6092,16 @@ namespace djack.RogueSurvivor.Engine
                         --actor.FoodPoints;
                         if (actor.FoodPoints < 0) actor.FoodPoints = 0;
 
-                        // May kill starved actors.
+                        // kill starved actors.
                         if (m_Rules.IsActorStarving(actor))
                         {
-                            // kill him?
-                            /*if (m_Rules.RollChance(Rules.FOOD_STARVING_DEATH_CHANCE)) //@@MP - removed randonmess (Release 6-4)
-                            {*/
-                                if (actor.IsPlayer || s_Options.NPCCanStarveToDeath)
-                                {
-                                    if (actorsStarvedToDeath == null)
-                                        actorsStarvedToDeath = new List<Actor>();
-                                    actorsStarvedToDeath.Add(actor);
-                                }
-                            //}
+                            //@@MP - removed randonmess (Release 6-4)
+                            if (actor.IsPlayer || s_Options.NPCCanStarveToDeath)
+                            {
+                                if (actorsStarvedToDeath == null)
+                                    actorsStarvedToDeath = new List<Actor>();
+                                actorsStarvedToDeath.Add(actor);
+                            }
                         }
                     }
                     else if (actor.Model.Abilities.IsRotting)
@@ -6156,7 +6155,7 @@ namespace djack.RogueSurvivor.Engine
                         if (!actor.Model.Abilities.IsUndead && Rules.HasImmediateZombification(m_Session.GameMode) && m_Rules.RollChance(s_Options.StarvedZombificationChance))
                         {
                             // remove morpse!
-                            //map.TryRemoveCorpseOf(actor); //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
+                            //map.TryRemoveCorpseOf(actor); //@@MP - Zombify now handles corpse removal (Release 5-6)
 
                             // zombify!
                             Zombify(null, actor, false);
@@ -7190,7 +7189,7 @@ namespace djack.RogueSurvivor.Engine
             graveyard.Append(String.Format("{0} survived to see {1}.", heOrShe, deathTime.ToString()));
             graveyard.Append(String.Format("{0}'s spirit guided {1} for {2}.", name, himOrHer, realTimeString));
             if (m_Session.Scoring.ReincarnationNumber > 0)
-                graveyard.Append(String.Format("{0} was reincarnation {1}.", heOrShe, m_Session.Scoring.ReincarnationNumber));
+                graveyard.Append(String.Format("{0} was reincarnation #{1}.", heOrShe, m_Session.Scoring.ReincarnationNumber));
             graveyard.Append(" ");
 #endregion
 
@@ -16108,11 +16107,15 @@ namespace djack.RogueSurvivor.Engine
             // spend STA.
             SpendActorStaminaPoints(attacker, attack.StaminaPenalty);
 
-            // Firearms weapon jam?
-            if (attack.Kind == AttackKind.FIREARM)
+            // Firearms weapon jam?  //@@MP - removed (Release 6-6)
+            /*if (attack.Kind == AttackKind.FIREARM)
             {
-                int jamChances = m_Rules.IsWeatherRain(m_Session.World.Weather) ? Rules.FIREARM_JAM_CHANCE_RAIN : Rules.FIREARM_JAM_CHANCE_NO_RAIN;
-                if (m_Rules.RollChance(jamChances))
+                int jamChance = Rules.FIREARM_JAM_CHANCE_NO_RAIN;
+                Tile tile = attacker.Location.Map.GetTileAt(attacker.Location.Position);
+                if (m_Rules.IsWeatherRain(m_Session.World.Weather) && !tile.IsInside) //@@MP - now have to be outside (Release 6-6)
+                        jamChance = Rules.FIREARM_JAM_CHANCE_RAIN;
+                
+                if (m_Rules.RollChance(jamChance))
                 {
                     if (IsVisibleToPlayer(attacker))
                     {
@@ -16120,7 +16123,7 @@ namespace djack.RogueSurvivor.Engine
                         return;
                     }
                 }
-            }
+            }*/
 
             // spend ammo.
             ItemRangedWeapon weapon = attacker.GetEquippedWeapon() as ItemRangedWeapon;
