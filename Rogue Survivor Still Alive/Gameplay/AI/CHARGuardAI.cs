@@ -319,7 +319,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction restAction = BehaviorRestIfTired(game);
             if (restAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.RESTING;
                 return new ActionWait(m_Actor, game);
             }
             #endregion

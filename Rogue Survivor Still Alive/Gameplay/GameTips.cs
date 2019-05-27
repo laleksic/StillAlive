@@ -26,6 +26,7 @@ namespace djack.RogueSurvivor.Gameplay
             "you can eat or butcher corpses, at the cost of sanity though.",
             "you can try to revive people using the Medic skill.",
             "reviving a living completely restores one's sanity.",
+            "some guns can be used in Rapid Fire mode, shooting twice in one turn.",
             // misc rules
         	"scents decay faster in the rain. undead track by scent.",
         	"firearms are more likely to jam in the rain.",
@@ -41,7 +42,10 @@ namespace djack.RogueSurvivor.Gameplay
             "you can plant vegie seeds with a shovel and a clear patch of ground.",
             "most walls and doors can be demolished with C4 and dynamite.",
             "banks have safes, which provide a way to securely store your items.",
-            "you might like to change the Animation Delay in the game options."
+            "you might like to change the Animation Delay in the game options.",
+            "empty food cans can be turned into an early-warning noise trap.",
+            "someone rings church bells at sundown. Night is extra dangerous...",
+            "you might like to turn on the Animation Delay in the options menu."
         };
     }
 }

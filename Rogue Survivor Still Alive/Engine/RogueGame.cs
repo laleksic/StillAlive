@@ -1372,6 +1372,8 @@ namespace djack.RogueSurvivor.Engine
                 DrawMenuOrOptions(selected, Color.White, menuEntries, Color.White, null, gx, ref gy);
                 gy += 3 * BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.LightSkyBlue, "Please note that Rogue Survivor: Still Alive is currently in alpha. There will be bugs.", 0, gy);
+                gy += 3 * BOLD_LINE_SPACING;
+                DrawGameTips(gx, gy); //@@MP (Release 6-6)
                 DrawFootnote(Color.White, "cursor to move, ENTER to select");
 
                 // repaint.
@@ -1897,59 +1899,59 @@ namespace djack.RogueSurvivor.Engine
                 const int O_USE_SPRAY = 52;
                 string[] values = new string[]
                 {
-                    s_KeyBindings.Get(PlayerCommand.MOVE_N).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_NE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_E).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_SE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_S).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_SW).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_W).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MOVE_NW).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.WAIT_OR_SELF).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.WAIT_LONG).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ABANDON_GAME).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ADVISOR).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.BARRICADE_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.BREAK_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.CITY_INFO).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.CLOSE_DOOR).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.FIRE_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.GIVE_ITEM).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.HELP_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.HINTS_SCREEN_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.NEGOTIATE_TRADE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ICONS_LEGEND).ToString(), //@MP (Release 6-1)
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_0).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_1).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_2).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_3).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_4).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_5).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_6).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_7).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_8).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ITEM_SLOT_9).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.LEAD_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.LOAD_GAME).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MAKE_MOLOTOV).ToString(), //@@MP (Release 4)
-                    s_KeyBindings.Get(PlayerCommand.MARK_ENEMIES_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.MESSAGE_LOG).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.ORDER_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.PULL_MODE).ToString(), // alpha10
-                    s_KeyBindings.Get(PlayerCommand.PUSH_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.QUIT_GAME).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.RUN_TOGGLE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SAVE_GAME).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SCREENSHOT).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SHOUT).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SLEEP).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.SWITCH_PLACE).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.USE_EXIT).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.USE_SPRAY).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_N).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_NE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_E).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_SE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_S).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_SW).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_W).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_NW).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.WAIT_OR_SELF).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.WAIT_LONG).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ABANDON_GAME).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ADVISOR).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BARRICADE_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BREAK_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.CITY_INFO).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.CLOSE_DOOR).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.FIRE_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.GIVE_ITEM).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.HELP_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.HINTS_SCREEN_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.NEGOTIATE_TRADE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ICONS_LEGEND).ToString(), //@MP (Release 6-1)
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_0).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_1).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_2).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_3).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_4).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_5).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_6).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_7).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_8).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_9).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.LEAD_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.LOAD_GAME).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MAKE_MOLOTOV).ToString(), //@@MP (Release 4)
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MARK_ENEMIES_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.MESSAGE_LOG).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.OPTIONS_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ORDER_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.PULL_MODE).ToString(), // alpha10
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.PUSH_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.QUIT_GAME).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.KEYBINDING_MODE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.RUN_TOGGLE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.SAVE_GAME).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.SCREENSHOT).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.SHOUT).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.SLEEP).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.SWITCH_PLACE).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.USE_EXIT).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.USE_SPRAY).ToString(),
                 };
 
                 int gx, gy;
@@ -2197,6 +2199,12 @@ namespace djack.RogueSurvivor.Engine
 
                 gy += BOLD_LINE_SPACING;
             }
+        }
+
+        void DrawGameTips(int gx, int gy) //@@MP (Release 6-6)
+        {
+            int iTip = m_Rules.Roll(0, GameTips.TIPS.Length);
+            m_UI.UI_DrawStringBold(Color.LightPink, " TIP: " + GameTips.TIPS[iTip], gx, gy);
         }
         #endregion
 
@@ -3812,9 +3820,9 @@ namespace djack.RogueSurvivor.Engine
             ClearMessagesHistory();
             AddMessage(new Message("*** Welcome to Rogue Survivor: Still Alive ***", 0, Color.LightGreen));
             AddMessage(new Message("**********************************************", 0, Color.LightGreen));
-            AddMessage(new Message(String.Format("Press {0} for help", s_KeyBindings.Get(PlayerCommand.HELP_MODE)), 0, Color.LightGreen));
-            AddMessage(new Message(String.Format("Press {0} to redefine keys", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE)), 0, Color.LightGreen));
-            AddMessage(new Message(String.Format("Press {0} for a legend of icons", s_KeyBindings.Get(PlayerCommand.ICONS_LEGEND)), 0, Color.LightGreen));
+            AddMessage(new Message(String.Format("Press {0} for help", s_KeyBindings.GetFriendlyFormat(PlayerCommand.HELP_MODE)), 0, Color.LightGreen));
+            AddMessage(new Message(String.Format("Press {0} to redefine keys", s_KeyBindings.GetFriendlyFormat(PlayerCommand.KEYBINDING_MODE)), 0, Color.LightGreen));
+            AddMessage(new Message(String.Format("Press {0} for a legend of icons", s_KeyBindings.GetFriendlyFormat(PlayerCommand.ICONS_LEGEND)), 0, Color.LightGreen));
             int iTip = m_Rules.Roll(0, GameTips.TIPS.Length);
             AddMessage(new Message(String.Format("TIP: {0} ", GameTips.TIPS[iTip]), 0, Color.LightGreen)); //@@MP (Release 6-3)
             AddMessage(new Message("<press ENTER>", 0, Color.Yellow));
@@ -3837,7 +3845,7 @@ namespace djack.RogueSurvivor.Engine
                     AddMessage(new Message("The hints help a beginner to learn the controls.", 0, Color.LightGreen));
                     AddMessage(new Message("You can disable the Advisor in the Options menu.", 0, Color.LightGreen));
                 }
-                AddMessage(new Message(String.Format("Press {0} during the game to change the options.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE)), 0, Color.LightGreen));
+                AddMessage(new Message(String.Format("Press {0} during the game to change the options.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.OPTIONS_MODE)), 0, Color.LightGreen));
                 AddMessage(new Message("<press ENTER>", 0, Color.Yellow));
                 RedrawPlayScreen();
                 WaitEnter();
@@ -9572,7 +9580,7 @@ namespace djack.RogueSurvivor.Engine
                         string[] hintBody;
                         GetAdvisorHintText((AdvisorHint)availableHint, out hintTitle, out hintBody);
                         m_HintAvailableOverlay.Lines = new string[] {
-                            string.Format("HINT AVAILABLE PRESS <{0}>", s_KeyBindings.Get(PlayerCommand.ADVISOR).ToString()),
+                            string.Format("HINT AVAILABLE PRESS <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.ADVISOR)),
                             hintTitle };
                     }
                     else if (m_HintAvailableOverlay != null && HasOverlay(m_HintAvailableOverlay))
@@ -12214,7 +12222,7 @@ namespace djack.RogueSurvivor.Engine
 
                                 // help message.
                                 AddMessage(new Message("(you can now set directives and orders for your new follower).", m_Session.WorldTime.TurnCounter, Color.White));
-                                AddMessage(new Message(String.Format("(to give order : press <{0}>).", s_KeyBindings.Get(PlayerCommand.ORDER_MODE).ToString()), m_Session.WorldTime.TurnCounter, Color.White));
+                                AddMessage(new Message(String.Format("(to give order : press <{0}>).", s_KeyBindings.GetFriendlyFormat(PlayerCommand.ORDER_MODE).ToString()), m_Session.WorldTime.TurnCounter, Color.White));
 
                             }
                             else if (other.Leader == player)
@@ -17198,8 +17206,8 @@ namespace djack.RogueSurvivor.Engine
         public void DoTrade(Actor speaker, Actor target)
         {
             // clean up activities
-            speaker.Activity = Activity.IDLE;
-            target.Activity = Activity.IDLE;
+            speaker.Activity = Activity.TRADING;
+            target.Activity = Activity.TRADING;
 
             bool isVisible = IsVisibleToPlayer(speaker) || IsVisibleToPlayer(target);
             if (isVisible)
@@ -18733,7 +18741,7 @@ namespace djack.RogueSurvivor.Engine
             foreach (Actor fo in actor.Followers)
             {
                 // follower can help if: not sleeping, idle and adj to map object.
-                if (!fo.IsSleeping && (fo.Activity == Activity.IDLE || fo.Activity == Activity.FOLLOWING) && m_Rules.IsAdjacent(fo.Location, mapObj.Location))
+                if (!fo.IsSleeping && (!fo.IsFightingOrFleeing) && m_Rules.IsAdjacent(fo.Location, mapObj.Location)) //@@MP (Release 6-6)
                 {
                     if (helpers == null) helpers = new List<Actor>(actor.CountFollowers);
                     helpers.Add(fo);
@@ -21070,6 +21078,7 @@ namespace djack.RogueSurvivor.Engine
                 case Activity.SEARCHING:
                 case Activity.SHOUTING:
                 case Activity.DESTROYING:
+                case Activity.RESTING:
                     break;
 
                 case Activity.CHASING:
@@ -24043,9 +24052,9 @@ namespace djack.RogueSurvivor.Engine
                         "You can disable the advisor in the options.",
                         "Read the manual or discover the rest of the game by yourself.",
                         "Good luck and have fun!",
-                        String.Format("To REDEFINE THE KEYS : <{0}>.", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE).ToString()),
-                        String.Format("To CHANGE OPTIONS    : <{0}>.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString()),
-                        String.Format("To READ THE MANUAL   : <{0}>.", s_KeyBindings.Get(PlayerCommand.HELP_MODE).ToString())
+                        String.Format("To REDEFINE THE KEYS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.KEYBINDING_MODE).ToString()),
+                        String.Format("To CHANGE OPTIONS    : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.OPTIONS_MODE).ToString()),
+                        String.Format("To READ THE MANUAL   : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.HELP_MODE).ToString())
                     });
                 return;
             }
@@ -24069,9 +24078,9 @@ namespace djack.RogueSurvivor.Engine
                 new string[] {
                     "The Advisor has no new hint for you in this situation.",
                     "You will see a popup when it has something to say.",
-                    String.Format("To REDEFINE THE KEYS : <{0}>.", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE).ToString()),
-                    String.Format("To CHANGE OPTIONS    : <{0}>.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString()),
-                    String.Format("To READ THE MANUAL   : <{0}>.", s_KeyBindings.Get(PlayerCommand.HELP_MODE).ToString())
+                    String.Format("To REDEFINE THE KEYS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.KEYBINDING_MODE).ToString()),
+                    String.Format("To CHANGE OPTIONS    : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.OPTIONS_MODE).ToString()),
+                    String.Format("To READ THE MANUAL   : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.HELP_MODE).ToString())
                 });
         }
 
@@ -24512,7 +24521,7 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You can barricade an adjacent door or window.",
                             "Barricading uses material such as planks.",
-                            String.Format("To BARRICADE : <{0}>.", s_KeyBindings.Get(PlayerCommand.BARRICADE_MODE).ToString())
+                            String.Format("To BARRICADE : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BARRICADE_MODE).ToString())
                         };
                     break;
 
@@ -24521,8 +24530,8 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You can now build fortifications thanks to the carpentry skill.",
                             "You need enough barricading materials.",
-                            String.Format("To BUILD SMALL FORTIFICATIONS : <{0}>.", s_KeyBindings.Get(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString()),
-                            String.Format("To BUILD LARGE FORTIFICATIONS : <{0}>.", s_KeyBindings.Get(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString())
+                            String.Format("To BUILD SMALL FORTIFICATIONS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString()),
+                            String.Format("To BUILD LARGE FORTIFICATIONS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString())
                         };
                     break;
 
@@ -24541,7 +24550,7 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You know the layout of your town.",
                             "You aso know the most notable locations.",
-                            String.Format("To VIEW THE CITY INFORMATION : <{0}>.", s_KeyBindings.Get(PlayerCommand.CITY_INFO).ToString())
+                            String.Format("To VIEW THE CITY INFORMATION : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.CITY_INFO).ToString())
                         };
                     break;
 
@@ -24554,8 +24563,8 @@ namespace djack.RogueSurvivor.Engine
                             "You can also DRAG corpses to move them.",
                             "You can try to REVIVE corpses if you have the medic skill and a medikit.",
                             "If you are desperate and starving you can resort to cannibalism by EATING corpses.",
-                            String.Format("TO REVIVE the CORPSE : <{0}>", s_KeyBindings.Get(PlayerCommand.REVIVE_CORPSE).ToString()),
-                            String.Format("TO EAT the CORPSE : <{0}>", s_KeyBindings.Get(PlayerCommand.EAT_CORPSE).ToString()),
+                            String.Format("TO REVIVE the CORPSE : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.REVIVE_CORPSE).ToString()),
+                            String.Format("TO EAT the CORPSE : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.EAT_CORPSE).ToString()),
                             String.Format("TO BUTCHER A CORPSE : RIGHT CLICK on it in the corpse list."),
                             String.Format("TO DRAG A CORPSE : LEFT CLICK on it in the corpse list."),
                             String.Format("TO STOP DRAGGING THE CORPSE : LEFT CLICK on it in the corpse list.")
@@ -24575,7 +24584,7 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You are next to a closed door or window.",
                             "To OPEN it, try to MOVE on it.",
-                            String.Format("To CLOSE : <{0}>.", s_KeyBindings.Get(PlayerCommand.CLOSE_DOOR).ToString())
+                            String.Format("To CLOSE : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.CLOSE_DOOR).ToString())
                         };
                     break;
 
@@ -24583,7 +24592,7 @@ namespace djack.RogueSurvivor.Engine
                     title = "CLOSING A DOOR/WINDOW";
                     body = new string[] {
                             "You are next to an open door or window.",
-                            String.Format("To CLOSE : <{0}>.", s_KeyBindings.Get(PlayerCommand.CLOSE_DOOR).ToString())
+                            String.Format("To CLOSE : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.CLOSE_DOOR).ToString())
                         };
                     break;
 
@@ -24592,7 +24601,7 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You are standing on stairs or a ladder.",
                             "You can use this exit to go on another map.",
-                            String.Format("To USE THE EXIT : <{0}>.", s_KeyBindings.Get(PlayerCommand.USE_EXIT).ToString())
+                            String.Format("To USE THE EXIT : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.USE_EXIT).ToString())
                         };
                     break;
 
@@ -24611,8 +24620,8 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "Now could be a good time to save your game.",
                             "You can have only one save game active.",
-                            String.Format("To SAVE THE GAME : <{0}>.", s_KeyBindings.Get(PlayerCommand.SAVE_GAME).ToString()),
-                            String.Format("To LOAD THE GAME : <{0}>.", s_KeyBindings.Get(PlayerCommand.LOAD_GAME).ToString()),
+                            String.Format("To SAVE THE GAME : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.SAVE_GAME).ToString()),
+                            String.Format("To LOAD THE GAME : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.LOAD_GAME).ToString()),
                             /*"You can also load the game from the main menu.",
                             "Saving or loading can take a bit of time, please be patient.",
                             "Or consider turning some game options to lower settings."*/
@@ -24634,7 +24643,7 @@ namespace djack.RogueSurvivor.Engine
                             "Be careful not to be caught in the blast radius.",
                             "Especially dynamite - place that and run until it blows!",
                             "To THROW/PLACE an EXPLOSIVE, EQUIP it and FIRE it.",
-                            String.Format("To FIRE : <{0}>.", s_KeyBindings.Get(PlayerCommand.FIRE_MODE).ToString())
+                            String.Format("To FIRE : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.FIRE_MODE).ToString())
                         };
                     break;
 
@@ -24709,8 +24718,8 @@ namespace djack.RogueSurvivor.Engine
                 case AdvisorHint.KEYS_OPTIONS:
                     title = "KEYS & OPTIONS";
                     body = new string[] {
-                            String.Format("You can view and redefine the KEYS by pressing <{0}>.", s_KeyBindings.Get(PlayerCommand.KEYBINDING_MODE).ToString()),
-                            String.Format("You can change OPTIONS by pressing <{0}>.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString()),
+                            String.Format("You can view and redefine the KEYS by pressing <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.KEYBINDING_MODE).ToString()),
+                            String.Format("You can change OPTIONS by pressing <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.OPTIONS_MODE).ToString()),
                             "Some option changes will only take effect when starting a new game.",
                             "Keys and Options are saved."
                         };
@@ -24720,7 +24729,7 @@ namespace djack.RogueSurvivor.Engine
                     title = "LEADING - RECRUITING";
                     body = new string[] {
                             "You can recruit a follower next to you!",
-                            String.Format("To RECRUIT : <{0}>.", s_KeyBindings.Get(PlayerCommand.LEAD_MODE).ToString())
+                            String.Format("To RECRUIT : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.LEAD_MODE).ToString())
                         };
                     break;
 
@@ -24729,9 +24738,9 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You can give orders to and fire your follower.",
                             "You can also switch place with followers next to you.",
-                            String.Format("To GIVE ORDERS : <{0}>.", s_KeyBindings.Get(PlayerCommand.ORDER_MODE).ToString()),
-                            String.Format("To FIRE YOUR FOLLOWER : <{0}>.", s_KeyBindings.Get(PlayerCommand.LEAD_MODE).ToString()),
-                            String.Format("To SWITCH PLACE : <{0}>.", s_KeyBindings.Get(PlayerCommand.SWITCH_PLACE).ToString())
+                            String.Format("To GIVE ORDERS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.ORDER_MODE).ToString()),
+                            String.Format("To FIRE YOUR FOLLOWER : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.LEAD_MODE).ToString()),
+                            String.Format("To SWITCH PLACE : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.SWITCH_PLACE).ToString())
                         };
                     break;
 
@@ -24747,7 +24756,7 @@ namespace djack.RogueSurvivor.Engine
                     title = "LEADING - SWITCHING PLACE";
                     body = new string[] {
                             "You can switch place with followers next to you.",
-                            String.Format("To SWITCH PLACE : <{0}>.", s_KeyBindings.Get(PlayerCommand.SWITCH_PLACE).ToString())
+                            String.Format("To SWITCH PLACE : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.SWITCH_PLACE).ToString())
                         };
                     break;
 
@@ -24755,7 +24764,7 @@ namespace djack.RogueSurvivor.Engine
                     title = "MAKING A MOLOTOV";
                     body = new string[] {
                             "You've picked up some hard liquor, which can be used to make a molotov.",
-                            String.Format("To MAKE A MOLOTOV : <{0}>.", s_KeyBindings.Get(PlayerCommand.MAKE_MOLOTOV).ToString()),
+                            String.Format("To MAKE A MOLOTOV : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.MAKE_MOLOTOV).ToString()),
                         };
                     break;
 
@@ -24782,7 +24791,7 @@ namespace djack.RogueSurvivor.Engine
                             "When asked for a DIRECTION, press a MOVE key.",
                             "You can also RUN to move faster.",
                             "Running is tiring and spend stamina.",
-                            String.Format("To TOGGLE RUNNING : <{0}>.", s_KeyBindings.Get(PlayerCommand.RUN_TOGGLE).ToString())
+                            String.Format("To TOGGLE RUNNING : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.RUN_TOGGLE).ToString())
                         };
                     break;
 
@@ -24803,7 +24812,7 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You can RUN to move faster.",
                             "Running is tiring and spend stamina.",
-                            String.Format("To TOGGLE RUNNING : <{0}>.", s_KeyBindings.Get(PlayerCommand.RUN_TOGGLE).ToString())
+                            String.Format("To TOGGLE RUNNING : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.RUN_TOGGLE).ToString())
                         };
                     break;
 
@@ -24815,7 +24824,7 @@ namespace djack.RogueSurvivor.Engine
                             "You can't do tiring activities such as running, fighting and jumping.",
                             "You always recover a bit of stamina each turn.",
                             "But you can REST to recover stamina faster.",
-                            String.Format("To REST/WAIT : <{0}>.", s_KeyBindings.Get(PlayerCommand.WAIT_OR_SELF).ToString())
+                            String.Format("To REST/WAIT : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.WAIT_OR_SELF).ToString())
                         };
                     break;
 
@@ -24832,7 +24841,7 @@ namespace djack.RogueSurvivor.Engine
                     title = "GIVING ITEMS";
                     body = new string[] {
                             "You can GIVE ITEMS to other actors.",
-                            String.Format("To GIVE AN ITEM : move the mouse over your item and press <{0}>.", s_KeyBindings.Get(PlayerCommand.GIVE_ITEM).ToString())
+                            String.Format("To GIVE AN ITEM : move the mouse over your item and press <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.GIVE_ITEM).ToString())
                         };
                     break;
 
@@ -24842,7 +24851,7 @@ namespace djack.RogueSurvivor.Engine
                             "Someone is sleeping near you.",
                             "You can SHOUT to try to wake him or her up.",
                             "Other actors can also shout to wake their friends up when they see danger.",
-                            String.Format("To SHOUT : <{0}>.", s_KeyBindings.Get(PlayerCommand.SHOUT).ToString())
+                            String.Format("To SHOUT : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.SHOUT).ToString())
                         };
                     break;
 
@@ -24852,7 +24861,7 @@ namespace djack.RogueSurvivor.Engine
                             "You can TRADE with an actor next to you.",
                             "Actors that can trade with you have a $ icon on the map.",
                             "To ask for a TRADE offer, just try to MOVE into the actor.",
-                            String.Format("To TRADE : press <{0}> and select an NPC with the direction keys.", s_KeyBindings.Get(PlayerCommand.NEGOTIATE_TRADE).ToString())
+                            String.Format("To TRADE : press <{0}> and select an NPC with the direction keys.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.NEGOTIATE_TRADE).ToString())
                         };
                     break;
 
@@ -24861,7 +24870,7 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You can try to BREAK an object around you.",
                             "Typical breakable objects are furnitures, doors and windows.",
-                            String.Format("To BREAK : <{0}>.", s_KeyBindings.Get(PlayerCommand.BREAK_MODE).ToString())
+                            String.Format("To BREAK : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BREAK_MODE).ToString())
                         };
                     break;
 
@@ -24871,8 +24880,8 @@ namespace djack.RogueSurvivor.Engine
                             "You can PUSH/PULL objects and actors around you.",
                             "Only MOVABLE stuff can be pushed (described as 'Can be moved').",
                             "Movable objects will be described as 'Can be moved'",
-                            String.Format("To PUSH : <{0}>.", s_KeyBindings.Get(PlayerCommand.PUSH_MODE).ToString()),
-                            String.Format("To PULL : <{0}>.", s_KeyBindings.Get(PlayerCommand.PULL_MODE).ToString())
+                            String.Format("To PUSH : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.PUSH_MODE).ToString()),
+                            String.Format("To PULL : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.PULL_MODE).ToString())
                         };
                     break;
 
@@ -24901,7 +24910,7 @@ namespace djack.RogueSurvivor.Engine
                             "You have found a can of spraypaint.",
                             "You can tag a symbol on walls and floors.",
                             "Tagged locations appear on your minimap.",
-                            String.Format("To SPRAY : equip the spray and press <{0}>.", s_KeyBindings.Get(PlayerCommand.USE_SPRAY).ToString())
+                            String.Format("To SPRAY : equip the spray and press <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.USE_SPRAY).ToString())
                         };
                     break;
 
@@ -24911,7 +24920,7 @@ namespace djack.RogueSurvivor.Engine
                             "You have found a scent spray.",
                             "You can spray some perfume on yourself or another adjacent actor.",
                             "This is useful to confuse the undeads that hunt using smell.",
-                            String.Format("To SPRAY : equip the spray and press <{0}>.", s_KeyBindings.Get(PlayerCommand.USE_SPRAY).ToString())
+                            String.Format("To SPRAY : equip the spray and press <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.USE_SPRAY).ToString())
                         };
                     break;
 
@@ -24931,7 +24940,7 @@ namespace djack.RogueSurvivor.Engine
                             "You are SLEEPY.",
                             "There are penalties if you don't find a place to sleep.",
                             "Beds and couches are good places to sleep.",
-                            String.Format("To SLEEP : <{0}>.", s_KeyBindings.Get(PlayerCommand.SLEEP).ToString()),
+                            String.Format("To SLEEP : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.SLEEP).ToString()),
                             "Read the manual for more explanations on sleep."
                         };
                     break;
@@ -24942,7 +24951,7 @@ namespace djack.RogueSurvivor.Engine
                             "You can fire your equipped ranged weapon at valid targets within range.",
                             "To fire on a target you need ammo and a clear line of fine.",
                             "The closer the target is, the easier it is to hit and it does slightly more damage.",
-                            String.Format("To FIRE : <{0}>.", s_KeyBindings.Get(PlayerCommand.FIRE_MODE).ToString()),
+                            String.Format("To FIRE : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.FIRE_MODE).ToString()),
                             "When firing you can switch to Rapid Fire mode : you will shoot twice but at reduced accuracy.",
                             "Read the manual for more explanation about firing and ranged weapons."
                         };
@@ -25016,10 +25025,7 @@ namespace djack.RogueSurvivor.Engine
             // wait.
             ClearMessages();
             AddMessage(new Message("You can disable the advisor in the options screen.", m_Session.WorldTime.TurnCounter, Color.White));
-            if (s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString() == "O, Shift") //@@MP - make the shortcut formatted properly, as the original is confusing (Release 5-7)
-                AddMessage(new Message(String.Format("To show the options screen press <Shift+O>.").ToString(), m_Session.WorldTime.TurnCounter, Color.White));
-            else
-                AddMessage(new Message(String.Format("To show the options screen : <{0}>.", s_KeyBindings.Get(PlayerCommand.OPTIONS_MODE).ToString()), m_Session.WorldTime.TurnCounter, Color.White));
+            AddMessage(new Message(String.Format("To show the options screen : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.OPTIONS_MODE).ToString()), m_Session.WorldTime.TurnCounter, Color.White));
             AddMessagePressEnter();
 
             // clear.
@@ -25946,6 +25952,9 @@ namespace djack.RogueSurvivor.Engine
                 case Activity.DESTROYING:
                     return "Destroying something.";
 
+                case Activity.RESTING:
+                    return "Resting.";
+
                 default:
                     throw new ArgumentException("unhandled activity " + actor.Activity);
             }
@@ -26168,8 +26177,8 @@ namespace djack.RogueSurvivor.Engine
                     lines.Add(String.Format("RMB to {0}.", m_Player.Model.Abilities.IsUndead ? "eat" : "butcher"));
                     if (!m_Player.Model.Abilities.IsUndead)
                     {
-                        lines.Add(String.Format("to eat: <{0}>", s_KeyBindings.Get(PlayerCommand.EAT_CORPSE).ToString()));
-                        lines.Add(String.Format("to revive : <{0}>", s_KeyBindings.Get(PlayerCommand.REVIVE_CORPSE).ToString()));
+                        lines.Add(String.Format("to eat: <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.EAT_CORPSE).ToString()));
+                        lines.Add(String.Format("to revive : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.REVIVE_CORPSE).ToString()));
                     }
                 }
             }
@@ -26238,7 +26247,7 @@ namespace djack.RogueSurvivor.Engine
                 if (rwp != null)
                 {
                     isDefaultUse = false;
-                    inInvAdditionalDesc = String.Format("to fire : <{0}>", s_KeyBindings.Get(PlayerCommand.FIRE_MODE).ToString());
+                    inInvAdditionalDesc = String.Format("to fire : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.FIRE_MODE).ToString());
                 }
             }
             else if (it is ItemFood)
@@ -26250,15 +26259,15 @@ namespace djack.RogueSurvivor.Engine
                 lines.AddRange(DescribeItemMedicine(it as ItemMedicine));
                 //@@MP (Release 4)
                 if ((it.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER) || (it.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR))
-                    inInvAdditionalDesc = String.Format("make molotov : <{0}>.", s_KeyBindings.Get(PlayerCommand.MAKE_MOLOTOV).ToString());
+                    inInvAdditionalDesc = String.Format("make molotov : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.MAKE_MOLOTOV).ToString());
             }
             else if (it is ItemBarricadeMaterial)
             {
                 lines.AddRange(DescribeItemBarricadeMaterial(it as ItemBarricadeMaterial));
                 isDefaultUse = false;
                 inInvAdditionalDesc = String.Format("to build : <{0}>/<{1}>/<{2}>",
-                    s_KeyBindings.Get(PlayerCommand.BARRICADE_MODE).ToString(), s_KeyBindings.Get(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString(),
-                    s_KeyBindings.Get(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString());
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BARRICADE_MODE).ToString(), s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString());
             }
             else if (it is ItemBodyArmor)
             {
@@ -26268,13 +26277,13 @@ namespace djack.RogueSurvivor.Engine
             {
                 lines.AddRange(DescribeItemSprayPaint(it as ItemSprayPaint));
                 isDefaultUse = false;
-                inInvAdditionalDesc = String.Format("to spray : <{0}>", s_KeyBindings.Get(PlayerCommand.USE_SPRAY).ToString());
+                inInvAdditionalDesc = String.Format("to spray : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.USE_SPRAY).ToString());
             }
             else if (it is ItemSprayScent)
             {
                 lines.AddRange(DescribeItemSprayScent(it as ItemSprayScent));
                 isDefaultUse = false;
-                inInvAdditionalDesc = String.Format("to spray : <{0}>", s_KeyBindings.Get(PlayerCommand.USE_SPRAY).ToString());
+                inInvAdditionalDesc = String.Format("to spray : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.USE_SPRAY).ToString());
             }
             else if (it is ItemLight)
             {
@@ -26293,7 +26302,7 @@ namespace djack.RogueSurvivor.Engine
             else if (it is ItemExplosive)
             {
                 lines.AddRange(DescribeItemExplosive(it as ItemExplosive));
-                inInvAdditionalDesc = String.Format("to throw : <{0}>", s_KeyBindings.Get(PlayerCommand.FIRE_MODE).ToString());
+                inInvAdditionalDesc = String.Format("to throw : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.FIRE_MODE).ToString());
             }
             else if (it is ItemTrap)
             {
@@ -26325,7 +26334,7 @@ namespace djack.RogueSurvivor.Engine
                     lines.Add(string.Format("to use : <LMB> or <Ctrl-{0}>", iSlot + 1));
                 if (!it.IsEquipped)
                     lines.Add("to drop : <RMB>");
-                lines.Add(String.Format("to give : <{0}>", s_KeyBindings.Get(PlayerCommand.GIVE_ITEM).ToString()));
+                lines.Add(String.Format("to give : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.GIVE_ITEM).ToString()));
                 if (inInvAdditionalDesc != null)
                     lines.Add(inInvAdditionalDesc);
             }

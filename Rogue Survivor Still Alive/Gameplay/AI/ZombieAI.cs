@@ -195,7 +195,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     // memory is obsolete, clear it.
                     m_MemLOSSensor.Clear();
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.FINDING_EXIT;
                     return useExit;
                 }
             }

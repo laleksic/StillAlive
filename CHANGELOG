@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.6.12 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.6.13 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -27,6 +27,7 @@ Fixes:
 -Human AI no longer needlessly break objects, unless they've gone insane.
 -Human AI no longer walking into fires to get at items.
 -Tweaked some weapon damage, hit points, and some armors for balance.
+-Better formatting of keybindings in tooltips and hints.
 
 Development:
 -Added more Activity types.

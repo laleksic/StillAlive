@@ -204,13 +204,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction phoneAction = BehaviorEquipCellPhone(game);
             if (phoneAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return phoneAction;
             }
             phoneAction = BehaviorUnequipCellPhoneIfLeaderHasNot(game);
             if (phoneAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return phoneAction;
             }
 
@@ -220,7 +220,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction bumpAction = BehaviorIntelligentBumpToward(game, location.Position, false, false);
                 if (bumpAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.PATROLLING;
                     return bumpAction;
                 }
             }
@@ -231,7 +231,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction eatAction = BehaviorEat(game);
                 if (eatAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.EATING;
                     return eatAction;
                 }
             }
@@ -240,12 +240,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction useMedAction = BehaviorUseMedicine(game, 2, 1, 2, 4, 2);
             if (useMedAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.HEALING;
                 return useMedAction;
             }
 
             // 5. Wait.
-            m_Actor.Activity = Activity.IDLE;
+            m_Actor.Activity = Activity.WAITING;
             return new ActionWait(m_Actor, game);
         }
         #endregion
@@ -290,13 +290,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction phoneAction = BehaviorEquipCellPhone(game);
             if (phoneAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return phoneAction;
             }
             phoneAction = BehaviorUnequipCellPhoneIfLeaderHasNot(game);
             if (phoneAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return phoneAction;
             }
 
@@ -306,7 +306,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction bumpAction = BehaviorIntelligentBumpToward(game, location.Position, false, false);
                 if (bumpAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.PATROLLING;
                     return bumpAction;
                 }
             }
@@ -317,7 +317,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction eatAction = BehaviorEat(game);
                 if (eatAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.EATING;
                     return eatAction;
                 }
             }
@@ -326,11 +326,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction useMedAction = BehaviorUseMedicine(game, 2, 1, 2, 4, 2);
             if (useMedAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.HEALING;
                 return useMedAction;
             }
 
             // 5. Wander in patrol zones.
+            m_Actor.Activity = Activity.PATROLLING;
             List<Zone> patrolZones = location.Map.GetZonesAt(Order.Location.Position.X, Order.Location.Position.Y);
             return BehaviorWander(game, (loc) =>
             {

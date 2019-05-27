@@ -299,7 +299,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction useExit = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES | UseExitFlags.BREAK_BLOCKING_OBJECTS);
                 if (useExit != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.FINDING_EXIT;
                     return useExit;
                 }
             }

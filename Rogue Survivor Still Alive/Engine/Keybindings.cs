@@ -106,6 +106,28 @@ namespace djack.RogueSurvivor.Engine
         }
 
         /// <summary>
+        /// Get KeyData in human-friendly format.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public string GetFriendlyFormat(PlayerCommand command) //@@MP (Release 6-6)
+        {
+            Keys key;
+            if (m_CommandToKeyData.TryGetValue(command, out key))
+            {
+                string keyAsString = key.ToString();
+                if (keyAsString.Contains(","))
+                {
+                    keyAsString = keyAsString.Replace(",", " +");
+                }
+                
+                return keyAsString;
+            }
+            else
+                return string.Empty;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="key">KeyData</param>

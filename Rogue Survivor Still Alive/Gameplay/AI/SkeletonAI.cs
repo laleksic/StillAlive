@@ -69,7 +69,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction determinedAction = BehaviorWander(game);
             if (determinedAction != null)
             {
-                m_Actor.Activity = Activity.WAITING;
+                m_Actor.Activity = Activity.WANDERING;
                 return determinedAction;
             }
             else

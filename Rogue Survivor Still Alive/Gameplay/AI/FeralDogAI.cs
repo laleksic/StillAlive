@@ -144,7 +144,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #region
             if (game.Rules.IsActorTired(m_Actor))
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.RESTING;
                 return new ActionWait(m_Actor, game);
             }
             if (game.Rules.IsActorSleepy(m_Actor))

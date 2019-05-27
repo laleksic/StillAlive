@@ -204,6 +204,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction bestEquip = BehaviorEquipBestItems(game, true, true);
             if (bestEquip != null)
             {
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return bestEquip;
             }
             // end alpha10
@@ -528,7 +529,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             determinedAction = BehaviorRestIfTired(game);
             if (determinedAction != null)
             {
-                m_Actor.Activity = Activity.IDLE;
+                m_Actor.Activity = Activity.RESTING;
                 return new ActionWait(m_Actor, game);
             }
             #endregion
@@ -818,7 +819,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorUseStenchKiller(game);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.MANAGING_INVENTORY;
                     return determinedAction;
                 }
             }
@@ -843,7 +844,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     determinedAction = BehaviorUseEntertainment(game);
                     if (determinedAction != null)
                     {
-                        m_Actor.Activity = Activity.IDLE;
+                        m_Actor.Activity = Activity.RESTING;
                         return determinedAction;
                     }
                 }
@@ -986,7 +987,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorUseExit(game, UseExitFlags.DONT_BACKTRACK);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.FINDING_EXIT;
                     return determinedAction;
                 }
             }
@@ -1095,7 +1096,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
 
                     // go!
-                    m_Actor.Activity = Activity.IDLE;
+                    m_Actor.Activity = Activity.WAITING;
                     return determinedAction;
                 }
             }

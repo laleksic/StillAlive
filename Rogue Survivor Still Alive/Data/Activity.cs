@@ -127,6 +127,11 @@ namespace djack.RogueSurvivor.Data
         /// <summary>
         /// eg teaeing down barricades
         /// </summary>
-        DESTROYING
+        DESTROYING,
+
+        /// <summary>
+        /// Stamina
+        /// </summary>
+        RESTING
     }
 }
