@@ -34,8 +34,7 @@ namespace djack.RogueSurvivor.Engine
 
         BARRICADE_MODE,
         BREAK_MODE,
-        BUILD_LARGE_FORTIFICATION,
-        BUILD_SMALL_FORTIFICATION,
+        BUILD_FORTIFICATION,
         CLOSE_DOOR,
         EAT_CORPSE,
         FIRE_MODE,
@@ -46,7 +45,6 @@ namespace djack.RogueSurvivor.Engine
         MAKE_MOLOTOV, //@@MP (Release 4)
         MARK_ENEMIES_MODE,
         ORDER_MODE,
-        PLANT_SEEDS, //@@MP (Release 5-5)
         PULL_MODE, // alpha 10
         PUSH_MODE,
         REVIVE_CORPSE,

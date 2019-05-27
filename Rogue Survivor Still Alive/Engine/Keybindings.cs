@@ -50,8 +50,7 @@ namespace djack.RogueSurvivor.Engine
 
             Set(PlayerCommand.ABANDON_GAME, Keys.A | Keys.Shift);
             Set(PlayerCommand.ADVISOR, Keys.H | Keys.Shift);
-            Set(PlayerCommand.BUILD_LARGE_FORTIFICATION, Keys.N | Keys.Control);
-            Set(PlayerCommand.BUILD_SMALL_FORTIFICATION, Keys.N);
+            Set(PlayerCommand.BUILD_FORTIFICATION, Keys.N);
             Set(PlayerCommand.CITY_INFO, Keys.I);
             Set(PlayerCommand.EAT_CORPSE, Keys.E | Keys.Shift);
             Set(PlayerCommand.GIVE_ITEM, Keys.G);

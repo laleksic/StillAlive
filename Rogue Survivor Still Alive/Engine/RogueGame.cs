@@ -104,6 +104,7 @@ namespace djack.RogueSurvivor.Engine
         readonly string[] THROW_GRENADE_MODE_TEXT = new string[] { "THROW GRENADE MODE - directions to select, F to fire,  ESC cancels" };
         readonly string[] MARK_ENEMIES_MODE = new string[] { "MARK ENEMIES MODE - E to make enemy, T next actor, ESC cancels" };
         readonly string[] MAKE_MOLOTOVS_MODE = new string[] { "MAKE MOLOTOVS MODE - follow instructions in the message panel. ESC cancels" }; //@@MP (Release 4)
+        readonly string[] BUILD_FORT_MODE = new string[] { "BUILD FORTIFICATIONS MODE - build a (L)arge or (S)mall fortification? ESC cancels" }; //@@MP (Release 6-6)
         readonly string[] TRADING_DIALOG_MODE_TEXT = new string[] { "TRADING MODE - TAB switch mode, 0..9 select, ESC cancels" }; // alpha10
         readonly Color MODE_TEXTCOLOR = Color.Yellow;
         readonly Color MODE_BORDERCOLOR = Color.Yellow;
@@ -1804,8 +1805,7 @@ namespace djack.RogueSurvivor.Engine
                     "Advisor Hint",
                     "Barricade",
                     "Break",
-                    "Build Large Fortification",
-                    "Build Small Fortification",
+                    "Build Fortification",
                     "City Info",
                     "Close",
                     "Fire",
@@ -1813,6 +1813,7 @@ namespace djack.RogueSurvivor.Engine
                     "Help",
                     "Hints screen",
                     "Icons Legend", //@MP (Release 6-1)
+                    "Negotiate Trade",
                     "Item 1 slot",
                     "Item 2 slot",
                     "Item 3 slot",
@@ -1823,12 +1824,11 @@ namespace djack.RogueSurvivor.Engine
                     "Item 8 slot",
                     "Item 9 slot",
                     "Item 10 slot",
-                    "Lead",
+                    "Take Lead Of",
                     "Load Game",
                     "Make Molotovs", //@MP (Release 4)
                     "Mark Enemies",
                     "Messages Log",
-                    "Negotiate Trade",
                     "Options",
                     "Order",
                     "Pull",  // alpha10
@@ -1858,45 +1858,44 @@ namespace djack.RogueSurvivor.Engine
                 const int O_ADVISOR = 11;
                 const int O_BARRICADE = 12;
                 const int O_BREAK = 13;
-                const int O_BUILD_LARGE_F = 14;
-                const int O_BUILD_SMALL_F = 15;
-                const int O_CITYINFO = 16;
-                const int O_CLOSE = 17;
-                const int O_FIRE = 18;
-                const int O_GIVE = 19;
-                const int O_HELP = 20;
-                const int O_HINTS_SCREEN = 21;
-                const int O_ICONS_LEGEND = 22; //@MP (Release 6-1)
-                const int O_INIT_TRADE = 23; //negotiate
-                const int O_ITEM_1 = 24;
-                const int O_ITEM_2 = 25;
-                const int O_ITEM_3 = 26;
-                const int O_ITEM_4 = 27;
-                const int O_ITEM_5 = 28;
-                const int O_ITEM_6 = 29;
-                const int O_ITEM_7 = 30;
-                const int O_ITEM_8 = 31;
-                const int O_ITEM_9 = 32;
-                const int O_ITEM_10 = 33;
-                const int O_LEAD = 34;
-                const int O_LOAD = 35;
-                const int O_MAKE_MOLOTOV = 36; //@@MP (Release 4), shifted all down 1 below in alpha 10 (was 50)
-                const int O_MARKENEMY = 37;
-                const int O_LOG = 38;
-                const int O_OPTIONS = 39;
-                const int O_ORDER = 40;
-                const int O_PULL = 41;  // alpha10 inserted and shifted all below
-                const int O_PUSH = 42;
-                const int O_QUIT = 43;
-                const int O_REDEFKEYS = 44;
-                const int O_RUN = 45;
-                const int O_SAVE = 46;
-                const int O_SCREENSHOT = 47;
-                const int O_SHOUT = 48;
-                const int O_SLEEP = 49;
-                const int O_SWITCH = 50;
-                const int O_USE_EXIT = 51;
-                const int O_USE_SPRAY = 52;
+                const int O_BUILD_FORT = 14;
+                const int O_CITYINFO = 15;
+                const int O_CLOSE = 16;
+                const int O_FIRE = 17;
+                const int O_GIVE = 18;
+                const int O_HELP = 19;
+                const int O_HINTS_SCREEN = 20;
+                const int O_ICONS_LEGEND = 21; //@MP (Release 6-1)
+                const int O_INIT_TRADE = 22; //negotiate
+                const int O_ITEM_1 = 23;
+                const int O_ITEM_2 = 24;
+                const int O_ITEM_3 = 25;
+                const int O_ITEM_4 = 26;
+                const int O_ITEM_5 = 27;
+                const int O_ITEM_6 = 28;
+                const int O_ITEM_7 = 29;
+                const int O_ITEM_8 = 30;
+                const int O_ITEM_9 = 31;
+                const int O_ITEM_10 = 32;
+                const int O_LEAD = 33;
+                const int O_LOAD = 34;
+                const int O_MAKE_MOLOTOV = 35; //@@MP (Release 4), shifted all down 1 below in alpha 10 (was 50)
+                const int O_MARKENEMY = 36;
+                const int O_LOG = 37;
+                const int O_OPTIONS = 38;
+                const int O_ORDER = 39;
+                const int O_PULL = 40;  // alpha10 inserted and shifted all below
+                const int O_PUSH = 41;
+                const int O_QUIT = 42;
+                const int O_REDEFKEYS = 43;
+                const int O_RUN = 44;
+                const int O_SAVE = 45;
+                const int O_SCREENSHOT = 46;
+                const int O_SHOUT = 47;
+                const int O_SLEEP = 48;
+                const int O_SWITCH = 49;
+                const int O_USE_EXIT = 50;
+                const int O_USE_SPRAY = 51;
                 string[] values = new string[]
                 {
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_N).ToString(),
@@ -1913,16 +1912,15 @@ namespace djack.RogueSurvivor.Engine
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.ADVISOR).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.BARRICADE_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.BREAK_MODE).ToString(),
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString(),
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_FORTIFICATION).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.CITY_INFO).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.CLOSE_DOOR).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.FIRE_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.GIVE_ITEM).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.HELP_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.HINTS_SCREEN_MODE).ToString(),
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.NEGOTIATE_TRADE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.ICONS_LEGEND).ToString(), //@MP (Release 6-1)
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.NEGOTIATE_TRADE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_0).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_1).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.ITEM_SLOT_2).ToString(),
@@ -2031,8 +2029,7 @@ namespace djack.RogueSurvivor.Engine
                             case O_ADVISOR: command = PlayerCommand.ADVISOR; break;
                             case O_BARRICADE: command = PlayerCommand.BARRICADE_MODE; break;
                             case O_BREAK: command = PlayerCommand.BREAK_MODE; break;
-                            case O_BUILD_LARGE_F: command = PlayerCommand.BUILD_LARGE_FORTIFICATION; break;
-                            case O_BUILD_SMALL_F: command = PlayerCommand.BUILD_SMALL_FORTIFICATION; break;
+                            case O_BUILD_FORT: command = PlayerCommand.BUILD_FORTIFICATION; break;
                             case O_CITYINFO: command = PlayerCommand.CITY_INFO; break;
                             case O_CLOSE: command = PlayerCommand.CLOSE_DOOR; break;
                             case O_FIRE: command = PlayerCommand.FIRE_MODE; break;
@@ -3782,8 +3779,8 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
             m_Player.Inventory.AddAll(ammo);
-            Item armor = new ItemBodyArmor(GameItems.HUNTER_VEST);
-            m_Player.Inventory.AddAll(armor);
+            Item set = new ItemSprayScent(GameItems.STENCH_KILLER);
+            m_Player.Inventory.AddAll(set);
             /*Item gun2 = new ItemRangedWeapon(GameItems.HUNTING_RIFLE);
             m_Player.Inventory.AddAll(gun2);
             Item seeds = new Item(GameItems.VEGETABLE_SEEDS);
@@ -3791,20 +3788,20 @@ namespace djack.RogueSurvivor.Engine
             Item shovel = new ItemMeleeWeapon(GameItems.SHOVEL);
             m_Player.Inventory.AddAll(shovel);
             /*Item spikes = new ItemTrap(GameItems.SPIKES);
-            m_Player.Inventory.AddAll(spikes);*/
+            m_Player.Inventory.AddAll(spikes);
             Item molo1 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
             m_Player.Inventory.AddAll(molo1);
             Item molo2 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
             m_Player.Inventory.AddAll(molo2);
             Item molo3 = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
-            m_Player.Inventory.AddAll(molo3);
-            /*Item liquor = new ItemMedicine(GameItems.ALCOHOL_LIQUOR_AMBER);
-            m_Player.Inventory.AddAll(liquor);*/
+            m_Player.Inventory.AddAll(molo3);*/
+            Item liquor = new ItemMedicine(GameItems.ALCOHOL_LIQUOR_AMBER);
+            m_Player.Inventory.AddAll(liquor);
             Item food = new ItemFood(GameItems.CANNED_FOOD);
             m_Player.Inventory.AddAll(food);
             Item torch = new ItemLight(GameItems.BIG_FLASHLIGHT);
             m_Player.Inventory.AddAll(torch);
-            //m_TownGenerator.GiveStartingSkillToActor(m_Player, Skills.IDs.BOWS_EXPLOSIVES);
+            m_TownGenerator.GiveStartingSkillToActor(m_Player, Skills.IDs.CARPENTRY);
 #endif
 
             // scoring : hello there.
@@ -9801,7 +9798,6 @@ namespace djack.RogueSurvivor.Engine
                                 }
                                 loop = !DoUseExit(player, player.Location.Position);
                                 break;
-
                             case PlayerCommand.ITEM_SLOT_0:
                                 if (TryPlayerInsanity())
                                 {
@@ -9916,21 +9912,13 @@ namespace djack.RogueSurvivor.Engine
                                 }
                                 loop = !HandlePlayerBreak(player);
                                 break;
-                            case PlayerCommand.BUILD_LARGE_FORTIFICATION:
+                            case PlayerCommand.BUILD_FORTIFICATION:
                                 if (TryPlayerInsanity())
                                 {
                                     loop = false;
                                     break;
                                 }
                                 loop = !HandlePlayerBuildFortification(player, true);
-                                break;
-                            case PlayerCommand.BUILD_SMALL_FORTIFICATION:
-                                if (TryPlayerInsanity())
-                                {
-                                    loop = false;
-                                    break;
-                                }
-                                loop = !HandlePlayerBuildFortification(player, false);
                                 break;
                             case PlayerCommand.ORDER_MODE:
                                 if (TryPlayerInsanity())
@@ -11585,6 +11573,34 @@ namespace djack.RogueSurvivor.Engine
 
         bool HandlePlayerBuildFortification(Actor player, bool isLarge)
         {
+            //large or small? question player  //@@MP - turned it into a prompt to reduce keybindings (Release 6-6)
+            AddOverlay(new OverlayPopup(BUILD_FORT_MODE, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, Point.Empty));
+            RedrawPlayScreen();
+
+            KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
+            if (inKey.KeyCode == Keys.Escape) // Handle input
+            {
+                AddMessage(new Message("Aborted building fortifications.", m_Session.WorldTime.TurnCounter, Color.White));
+                ClearOverlays();
+                RedrawPlayScreen();
+                return false;
+            }
+            // get choice.
+            else if (inKey.KeyCode == Keys.L)
+                isLarge = true;
+            else if (inKey.KeyCode == Keys.S)
+                isLarge = false;
+            else
+            {
+                AddMessage(MakeErrorMessage("Unhandled key error when building a fortification."));
+                AddMessage(MakeErrorMessage("Did you perhaps hit the wrong key?"));
+                ClearOverlays();
+                RedrawPlayScreen();
+                return false;
+            }
+            ClearOverlays();
+            RedrawPlayScreen();
+
             /////////////////////////////////////
             // Check skill & has enough material.
             /////////////////////////////////////
@@ -11893,9 +11909,7 @@ namespace djack.RogueSurvivor.Engine
         {
             // 1. check that the player actually has suitable liquor
             bool noliquor = true;
-            if (player.Inventory.IsEmpty)
-                noliquor = true;
-            else
+            if (!player.Inventory.IsEmpty)
             {
                 foreach (Item it in player.Inventory.Items)
                 {
@@ -11933,7 +11947,14 @@ namespace djack.RogueSurvivor.Engine
                 int itemNumber = iFirstItem + choice - 1;
                 Item it = player.Inventory[itemNumber];
 
-                if (it == null || !IsItemLiquorForMolotov(it)) // Ignore if not on a liquor item slot.
+                if (choice == -1) //@@MP - added check for non-numeric characters (Release 6-6)
+                {
+                    AddMessage(new Message("Please enter a number corresponding to an inventory slot.", m_Session.WorldTime.TurnCounter, Color.Red));
+                    ClearOverlays();
+                    RedrawPlayScreen();
+                    return false;
+                }
+                else if (it == null || !IsItemLiquorForMolotov(it)) // Ignore if not on a liquor item slot.
                 {
                     AddMessage(new Message("That is not a suitable liquor item for making a molotov.", m_Session.WorldTime.TurnCounter, Color.Red));
                     ClearOverlays();
@@ -11957,8 +11978,11 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else
                 {
-                    throw new ArgumentException("unhandled item when converting to molotov");
-                    //AddMessage(MakeErrorMessage("Unhandled item error when converting to molotov."));
+                    //throw new ArgumentException("unhandled item when converting to molotov");
+                    AddMessage(MakeErrorMessage("Unhandled key error when converting to molotov."));
+                    ClearOverlays();
+                    RedrawPlayScreen();
+                    return false;
                 }
             }
         }
@@ -24529,9 +24553,8 @@ namespace djack.RogueSurvivor.Engine
                     title = "BUILDING FORTIFICATIONS";
                     body = new string[] {
                             "You can now build fortifications thanks to the carpentry skill.",
-                            "You need enough barricading materials.",
-                            String.Format("To BUILD SMALL FORTIFICATIONS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString()),
-                            String.Format("To BUILD LARGE FORTIFICATIONS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString())
+                            "You will need enough barricading materials.",
+                            String.Format("To BUILD FORTIFICATIONS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_FORTIFICATION).ToString()),
                         };
                     break;
 
@@ -26265,9 +26288,8 @@ namespace djack.RogueSurvivor.Engine
             {
                 lines.AddRange(DescribeItemBarricadeMaterial(it as ItemBarricadeMaterial));
                 isDefaultUse = false;
-                inInvAdditionalDesc = String.Format("to build : <{0}>/<{1}>/<{2}>",
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BARRICADE_MODE).ToString(), s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_SMALL_FORTIFICATION).ToString(),
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_LARGE_FORTIFICATION).ToString());
+                inInvAdditionalDesc = String.Format("to build : <{0}>/<{1}>",
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BARRICADE_MODE).ToString(), s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_FORTIFICATION).ToString());
             }
             else if (it is ItemBodyArmor)
             {
