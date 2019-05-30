@@ -385,6 +385,11 @@ If you have the Charismatic skill you have better chances to convince the actor 
 If you are the leader of the actor and he trusts you, he will accept all your offers.
 
 
+> MARK ENEMIES  (default Ctrl-E)
+Enter the mark as enemies mode. Allows you to declare some nearby actors as personal enemies.
+Takes effect immediatly and is a free action. Be careful, remember you can't cancel the personnal enemy status.
+
+
 > ATTACKING AN ACTOR  (Bumping)
 Perform a melee attack on an enemy. This is a tiring action and costs STA.
 Melee weapons increase your Atk and Dmg. Most weapons cost additional STA to handle.
@@ -429,11 +434,6 @@ Move the mouse over the item in your inventory, press the key, then choose someo
 Giving item ends both your turn and the other actor's turn. The other actor must be awake and not an enemy.
 
 
-> BARRICADING OBJECTS  (default B)
-Use the barricade mode. You can barricade doors and windows, and repair fortifications.
-You need to have barricading material such as wooden planks. Barricading consumes one quantity of such an item. 
-
-
 > BREAKING OBJECTS  (default K)
 You can break or dismantle some objects using a melee weapon. Some give barricading material when dismantled.
 
@@ -444,13 +444,13 @@ Pushing is a tiring action, it costs as much STA as the object weight.
 Useful to block paths and make mobile barricades, or escaping crowds of zombies.
 
 
-> MARK ENEMIES  (default Ctrl-E)
-Enter the mark as enemies mode. Allows you to declare some nearby actors as personal enemies.
-Takes effect immediatly and is a free action. Be careful, remember you can't cancel the personnal enemy status.
+> BARRICADING  (default B)
+Use the Build Mode. You can barricade doors and windows, and repair fortifications.
+You need to have barricading material such as wooden planks. Barricading consumes one quantity of such an item. 
 
 
-> BUILDING FORTIFICATIONS  (default N and Control-N)
-You need the carpentry skill. You can build small (N) or large (Control-N) fortifications next to you.
+> BUILDING FORTIFICATIONS  (default B)
+Use the Build Mode. You need the Carpentry skill. You can build small (S) or large (L) fortifications next to you.
 Small fortification :
   - transparent.
   - breaks easily.
@@ -462,12 +462,12 @@ Large fortification :
   - stronger.
   - blocks movement.
   - cannot be moved.
-  - use 4 barrading materials to build.  
-A level 3 carpentry skill lowers the amount of material you need to build fortifications.
+  - use 4 barricading materials to build.  
+A level 3 Carpentry skill lowers the amount of material you need to build fortifications.
 
 
 > REPAIRING FORTIFICATIONS  (default B)
-Use the "Barricading" action on a fortification. You do not need the carpentry skill to repair fortifications.
+Use the "Build Mode" action on a fortification. You do not need the Carpentry skill to repair fortifications.
 
 
 > LEADING  (default T)

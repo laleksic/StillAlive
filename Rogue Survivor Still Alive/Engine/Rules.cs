@@ -2920,7 +2920,7 @@ namespace djack.RogueSurvivor.Engine
             // Can't if any is true:
             // 1. No carpentry skill.
             // 2. Not walkable.
-            // 3. Not engouh material.
+            // 3. Not enough material.
             // 4. Too dark to see
             // 5. Tile occupied.
             ///////////////////////////

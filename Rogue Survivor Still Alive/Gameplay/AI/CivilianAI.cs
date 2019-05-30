@@ -191,7 +191,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorGoToNearestVisibleWater(game, m_LOSSensor.FOV);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.FLEEING;
+                    m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
                     return determinedAction;
                 }
             }
@@ -306,7 +306,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             determinedAction = BehaviorFleeFromFires(game, m_Actor.Location);
             if (determinedAction != null)
             {
-                m_Actor.Activity = Activity.FLEEING;
+                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
                 return determinedAction;
             }
 

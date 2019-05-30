@@ -2701,6 +2701,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // 7. Blocked, turn to fight.
                 ////////////////////////////////////////////////////////////////////////////////////////
 
+                m_Actor.Activity = Activity.FLEEING; //@@MP (Release 6-6)
+
                 // emote?
                 if (m_Actor.Model.Abilities.CanTalk && game.Rules.RollChance(EMOTE_FLEE_CHANCE))
                     game.DoEmote(m_Actor, String.Format("{0} {1}!", emotes[0], enemy.Name));
@@ -2802,7 +2804,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     ActorAction medAction = BehaviorUseMedicine(game, 2, 2, 1, 0, 0);
                     if (medAction != null)
                     {
-                        m_Actor.Activity = Activity.FLEEING;
+                        m_Actor.Activity = Activity.HEALING;
                         return medAction;
                     }
                 }
@@ -3236,12 +3238,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return null;
             }
 
-            // if exit blocked by an enemy and want to attack it, do it.
-            if ((useFlags & UseExitFlags.ATTACK_BLOCKING_ENEMIES) != 0)
+            // blocked by another actor
+            Actor blockingActor = exit.ToMap.GetActorAt(exit.ToPosition);
+            if (blockingActor != null)
             {
-                Actor blockingActor = exit.ToMap.GetActorAt(exit.ToPosition);
-                if (blockingActor != null && game.Rules.AreEnemies(m_Actor, blockingActor) && game.Rules.CanActorMeleeAttack(m_Actor, blockingActor))
-                    return new ActionMeleeAttack(m_Actor, game, blockingActor);
+                // if exit blocked by an enemy and want to attack it, do it.
+                if ((useFlags & UseExitFlags.ATTACK_BLOCKING_ENEMIES) != 0)
+                {
+                    if (game.Rules.AreEnemies(m_Actor, blockingActor) && game.Rules.CanActorMeleeAttack(m_Actor, blockingActor))
+                        return new ActionMeleeAttack(m_Actor, game, blockingActor);
+                    else
+                        return null; //it's a friend  //@@MP - added (Release 6-6)
+                }
+                else //@@MP - added (Release 6-6)
+                    return null; //we're not permitted to attack
             }
 
             // if exit blocked by a breakable object and want to bash, do it.

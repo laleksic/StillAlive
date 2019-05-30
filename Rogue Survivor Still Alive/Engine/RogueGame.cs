@@ -105,6 +105,7 @@ namespace djack.RogueSurvivor.Engine
         readonly string[] MARK_ENEMIES_MODE = new string[] { "MARK ENEMIES MODE - E to make enemy, T next actor, ESC cancels" };
         readonly string[] MAKE_MOLOTOVS_MODE = new string[] { "MAKE MOLOTOVS MODE - follow instructions in the message panel. ESC cancels" }; //@@MP (Release 4)
         readonly string[] BUILD_FORT_MODE = new string[] { "BUILD FORTIFICATIONS MODE - build a (L)arge or (S)mall fortification? ESC cancels" }; //@@MP (Release 6-6)
+        readonly string[] BUILD_MODE = new string[] { "BUILD MODE - build a (B)arricade or (F)ortification? ESC cancels" }; //@@MP (Release 6-6)
         readonly string[] TRADING_DIALOG_MODE_TEXT = new string[] { "TRADING MODE - TAB switch mode, 0..9 select, ESC cancels" }; // alpha10
         readonly Color MODE_TEXTCOLOR = Color.Yellow;
         readonly Color MODE_BORDERCOLOR = Color.Yellow;
@@ -1803,9 +1804,8 @@ namespace djack.RogueSurvivor.Engine
                     "Wait 1 hour",
                     "Abandon Game",
                     "Advisor Hint",
-                    "Barricade",
                     "Break",
-                    "Build Fortification",
+                    "Build Mode",
                     "City Info",
                     "Close",
                     "Fire",
@@ -1856,9 +1856,8 @@ namespace djack.RogueSurvivor.Engine
                 const int O_WAIT_LONG = 9;
                 const int O_ABANDON = 10;
                 const int O_ADVISOR = 11;
-                const int O_BARRICADE = 12;
                 const int O_BREAK = 13;
-                const int O_BUILD_FORT = 14;
+                const int O_BUILD_MODE = 14; //@MP - combined barricade, build small and build large fortications (Release 6-6)
                 const int O_CITYINFO = 15;
                 const int O_CLOSE = 16;
                 const int O_FIRE = 17;
@@ -1910,9 +1909,8 @@ namespace djack.RogueSurvivor.Engine
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.WAIT_LONG).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.ABANDON_GAME).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.ADVISOR).ToString(),
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BARRICADE_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.BREAK_MODE).ToString(),
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_FORTIFICATION).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.CITY_INFO).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.CLOSE_DOOR).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.FIRE_MODE).ToString(),
@@ -2027,9 +2025,8 @@ namespace djack.RogueSurvivor.Engine
                             case O_WAIT_LONG: command = PlayerCommand.WAIT_LONG; break;
                             case O_ABANDON: command = PlayerCommand.ABANDON_GAME; break;
                             case O_ADVISOR: command = PlayerCommand.ADVISOR; break;
-                            case O_BARRICADE: command = PlayerCommand.BARRICADE_MODE; break;
                             case O_BREAK: command = PlayerCommand.BREAK_MODE; break;
-                            case O_BUILD_FORT: command = PlayerCommand.BUILD_FORTIFICATION; break;
+                            case O_BUILD_MODE: command = PlayerCommand.BUILD_MODE; break;
                             case O_CITYINFO: command = PlayerCommand.CITY_INFO; break;
                             case O_CLOSE: command = PlayerCommand.CLOSE_DOOR; break;
                             case O_FIRE: command = PlayerCommand.FIRE_MODE; break;
@@ -9896,14 +9893,6 @@ namespace djack.RogueSurvivor.Engine
                                 }
                                 loop = !HandlePlayerCloseDoor(player);
                                 break;
-                            case PlayerCommand.BARRICADE_MODE:
-                                if (TryPlayerInsanity())
-                                {
-                                    loop = false;
-                                    break;
-                                }
-                                loop = !HandlePlayerBarricade(player);
-                                break;
                             case PlayerCommand.BREAK_MODE:
                                 if (TryPlayerInsanity())
                                 {
@@ -9912,13 +9901,13 @@ namespace djack.RogueSurvivor.Engine
                                 }
                                 loop = !HandlePlayerBreak(player);
                                 break;
-                            case PlayerCommand.BUILD_FORTIFICATION:
+                            case PlayerCommand.BUILD_MODE:
                                 if (TryPlayerInsanity())
                                 {
                                     loop = false;
                                     break;
                                 }
-                                loop = !HandlePlayerBuildFortification(player, true);
+                                loop = !HandlePlayerBuildMode(player);
                                 break;
                             case PlayerCommand.ORDER_MODE:
                                 if (TryPlayerInsanity())
@@ -11367,6 +11356,45 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
+        bool HandlePlayerBuildMode(Actor player) //@@MP - one key to now handle barricading and fortification (Release 6-6)
+        {
+            //barricade or fortification? question player
+            AddOverlay(new OverlayPopup(BUILD_MODE, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, Point.Empty));
+            RedrawPlayScreen();
+
+            string buildType = "";
+            KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
+            if (inKey.KeyCode == Keys.Escape) // Handle input
+            {
+                //AddMessage(new Message("Aborted build mode.", m_Session.WorldTime.TurnCounter, Color.White));
+                ClearOverlays();
+                RedrawPlayScreen();
+                return false;
+            }
+            // get choice.
+            else if (inKey.KeyCode == Keys.B)
+                buildType = "barricade";
+            else if (inKey.KeyCode == Keys.F)
+                buildType = "fortification";
+            else
+            {
+                AddMessage(MakeErrorMessage("Unhandled key error when choosing build type."));
+                AddMessage(MakeErrorMessage("Did you perhaps hit the wrong key?"));
+                ClearOverlays();
+                RedrawPlayScreen();
+                return false;
+            }
+            ClearOverlays();
+            RedrawPlayScreen();
+
+            if (buildType == "barricade")
+                return HandlePlayerBarricade(player);
+            else if (buildType == "fortification")
+                return HandlePlayerBuildFortification(player);
+            else
+                throw new InvalidOperationException("invalid buildType");
+        }
+
         bool HandlePlayerBarricade(Actor player)
         {
             bool loop = true;
@@ -11571,16 +11599,17 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
-        bool HandlePlayerBuildFortification(Actor player, bool isLarge)
+        bool HandlePlayerBuildFortification(Actor player)
         {
             //large or small? question player  //@@MP - turned it into a prompt to reduce keybindings (Release 6-6)
             AddOverlay(new OverlayPopup(BUILD_FORT_MODE, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, Point.Empty));
             RedrawPlayScreen();
 
+            bool isLarge = false;
             KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
             if (inKey.KeyCode == Keys.Escape) // Handle input
             {
-                AddMessage(new Message("Aborted building fortifications.", m_Session.WorldTime.TurnCounter, Color.White));
+                //AddMessage(new Message("Aborted building fortifications.", m_Session.WorldTime.TurnCounter, Color.White));
                 ClearOverlays();
                 RedrawPlayScreen();
                 return false;
@@ -24545,16 +24574,16 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You can barricade an adjacent door or window.",
                             "Barricading uses material such as planks.",
-                            String.Format("To BARRICADE : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BARRICADE_MODE).ToString())
+                            String.Format("To BARRICADE : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_MODE).ToString())
                         };
                     break;
 
                 case AdvisorHint.BUILD_FORTIFICATION:
                     title = "BUILDING FORTIFICATIONS";
                     body = new string[] {
-                            "You can now build fortifications thanks to the carpentry skill.",
+                            "You can now build fortifications thanks to the Carpentry skill.",
                             "You will need enough barricading materials.",
-                            String.Format("To BUILD FORTIFICATIONS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_FORTIFICATION).ToString()),
+                            String.Format("To BUILD FORTIFICATIONS : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_MODE).ToString()),
                         };
                     break;
 
@@ -26288,8 +26317,8 @@ namespace djack.RogueSurvivor.Engine
             {
                 lines.AddRange(DescribeItemBarricadeMaterial(it as ItemBarricadeMaterial));
                 isDefaultUse = false;
-                inInvAdditionalDesc = String.Format("to build : <{0}>/<{1}>",
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BARRICADE_MODE).ToString(), s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_FORTIFICATION).ToString());
+                inInvAdditionalDesc = String.Format("to build : <{0}>",
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_MODE).ToString());
             }
             else if (it is ItemBodyArmor)
             {

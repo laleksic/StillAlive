@@ -32,9 +32,8 @@ namespace djack.RogueSurvivor.Engine
         WAIT_OR_SELF,
         WAIT_LONG,
 
-        BARRICADE_MODE,
         BREAK_MODE,
-        BUILD_FORTIFICATION,
+        BUILD_MODE,
         CLOSE_DOOR,
         EAT_CORPSE,
         FIRE_MODE,

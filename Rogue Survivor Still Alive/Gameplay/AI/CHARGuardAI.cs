@@ -112,7 +112,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
             if (runFromFires != null)
             {
-                m_Actor.Activity = Activity.FLEEING;
+                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
                 return runFromFires;
             }
 

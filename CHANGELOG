@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.6.14 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.6.15 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -28,8 +28,9 @@ Fixes:
 -Human AI no longer walking into fires to get at items.
 -Tweaked some weapon damage, hit points, and some armors for balance.
 -Better formatting of key bindings in tooltips and hints.
--Building small and large fortifications combined to the same hotkey (N).
+-Building barricades and fortifications combined to the same hotkey (B).
 -Fixed mixed up key bindings.
+-Fixed looping caused by AI trying to use an exit blocked by a friendly actor
 
 Development:
 -Added more Activity types.

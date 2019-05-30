@@ -30,7 +30,7 @@ namespace djack.RogueSurvivor.Engine
             m_CommandToKeyData.Clear();
             m_KeyToCommand.Clear();
 
-            Set(PlayerCommand.BARRICADE_MODE, Keys.B);
+            Set(PlayerCommand.BUILD_MODE, Keys.B);
             Set(PlayerCommand.BREAK_MODE, Keys.K);
             Set(PlayerCommand.CLOSE_DOOR, Keys.C);
             Set(PlayerCommand.FIRE_MODE, Keys.F);
@@ -50,7 +50,6 @@ namespace djack.RogueSurvivor.Engine
 
             Set(PlayerCommand.ABANDON_GAME, Keys.A | Keys.Shift);
             Set(PlayerCommand.ADVISOR, Keys.H | Keys.Shift);
-            Set(PlayerCommand.BUILD_FORTIFICATION, Keys.N);
             Set(PlayerCommand.CITY_INFO, Keys.I);
             Set(PlayerCommand.EAT_CORPSE, Keys.E | Keys.Shift);
             Set(PlayerCommand.GIVE_ITEM, Keys.G);
