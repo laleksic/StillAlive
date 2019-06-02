@@ -2863,7 +2863,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         game.DoEmote(m_Actor, String.Format("{0} {1}!", emotes[2], enemy.Name), true);
 
                     // chaaarge!
-                    m_Actor.Activity = Activity.FIGHTING;
+                    m_Actor.Activity = Activity.CHASING;
                     m_Actor.TargetActor = nearestEnemy.Percepted as Actor;
                     return attackAction;
                 }
@@ -2999,7 +2999,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                 string shoutText = "";
                 // friend sleeping, wake up!
-                if (!String.IsNullOrEmpty(whatToShout)) // (whatToShout != "")
+                if (!String.IsNullOrEmpty(whatToShout))
                     shoutText = whatToShout;
                 else
                     shoutText = String.Format("Wake up {0}!", other.Name);
@@ -3371,7 +3371,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // find the best throw point : a spot with many enemies around and no friend to hurt.
             #region
             int maxThrowRange = game.Rules.ActorMaxThrowRange(m_Actor, model.MaxThrowDistance);
-            Dictionary<Point, int> scoreByPosition = new Dictionary<Point, int>(); //@@MP - hold each pt already checked, so we don't have to calculate it again (Release 5-7)
             Point? bestSpot = null;
             int bestSpotScore = 0;
             foreach (Point pt in fov)
@@ -3386,7 +3385,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (!LOS.CanTraceThrowLine(m_Actor.Location, pt, maxThrowRange, null))
                     continue;
                 // useless throwing flame weapons at water tiles
-                if (m_Actor.Location.Map.GetTileAt(m_Actor.Location.Position).Model.IsWater) //@MP - check if water tile (Release 6-1)
+                if (m_Actor.Location.Map.GetTileAt(pt).Model.IsWater) //@MP - check if water tile (Release 6-1), fixed checking the wrong point (Release 6-6)
                     continue;
 
                 // compute interest of throwing there.
@@ -3398,9 +3397,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     for (int y = pt.Y - model.BlastAttack.Radius; y <= pt.Y + model.BlastAttack.Radius; y++)
                     {
-                        Point currentlyCheckingPT = new Point(x, y); //@@MP - added check for PTs already calculated (Release 5-7)
-                        if (scoreByPosition.ContainsKey(currentlyCheckingPT)) //we've already calculated it previously when looping through the points
-                            continue;
                         if (!m_Actor.Location.Map.IsInBounds(x, y)) //the spot we're currently checking is out of bounds
                             continue;
                         Actor otherActor = m_Actor.Location.Map.GetActorAt(x, y);
@@ -3447,9 +3443,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         }
                     }
                 }
-
-                //@@MP - hold the score for this point, so that we don't have to calculate it again
-                scoreByPosition.Add(pt, score); //@@MP (Release 5-7)
 
                 // if negative score (eg: friends get hurt), don't throw.
                 if (score <= 0)

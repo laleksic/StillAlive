@@ -378,7 +378,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction chargeAction = BehaviorChargeEnemy(game, chasePercept, false, false);
                 if (chargeAction != null)
                 {
-                    m_Actor.Activity = Activity.FIGHTING;
+                    m_Actor.Activity = Activity.CHASING;
                     m_Actor.TargetActor = chasePercept.Percepted as Actor;
                     return chargeAction;
                 }

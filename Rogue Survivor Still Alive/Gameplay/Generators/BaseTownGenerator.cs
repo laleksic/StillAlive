@@ -2527,7 +2527,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                 if (m_DiceRoller.RollChance(m_Params.WreckedCarChance))
                                 {
                                     Tile tile = map.GetTileAt(pt.X, pt.Y);
-                                    if (tile.IsInside && tile.Model.IsWalkable)// && tile.Model != m_Game.GameTiles.WALL_STONE)
+                                    if (tile.IsInside && tile.Model.IsWalkable)
                                     {
                                         MapObject car = MakeObjWreckedCar(m_DiceRoller);
                                         return car;
@@ -5836,7 +5836,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             AddExit(basement, basementStairs, map, surfaceStairs, GameImages.DECO_STAIRS_UP, true);
             #endregion
 
-            // random pilars/walls.
+            // random pillars/walls.
             #region
             DoForEachTile(basement.Rect, //@@MP - unused parameter (Release 5-7)
                 (pt) =>
@@ -5883,7 +5883,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                 return MakeObjDrawer(GameImages.OBJ_DRAWER);
                             };
                         case 4: // bed.
-                            return MakeObjBed(GameImages.OBJ_BED);
+                            return MakeObjCouch(GameImages.OBJ_COUCH);
                         case 6:
                         case 7:
                         case 8:
@@ -5956,7 +5956,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             #endregion
 
             // music.  // alpha10
-            basement.BgMusic = GameMusics.SEWERS;
+            basement.BgMusic = GameMusics.SUBWAY;
 
             // done.
             return basement;
