@@ -84,6 +84,7 @@ namespace djack.RogueSurvivor.Data
         //List<Item> m_BoringItems = null; // alpha10 moved out of Actor
         bool m_IsInvincible; //alpha 10
         int m_OdorSuppressorCounter; //alpha 10
+        bool m_IsLooping; //@@MP (Release 6-6)
         #endregion
         #endregion
 
@@ -253,6 +254,12 @@ namespace djack.RogueSurvivor.Data
         public bool IsFightingOrFleeing //@@MP (Release 6-6)
         {
             get { return m_Activity == Activity.FLEEING || m_Activity == Activity.FLEEING_FROM_EXPLOSIVE || m_Activity == Activity.FIGHTING || m_Activity == Activity.CHASING; }
+        }
+
+        public bool IsLooping //@@MP - for debugging only DEBUGIAILOOPING (Release 6-6)
+        {
+            get { return m_IsLooping; }
+            set { m_IsLooping = value; }
         }
 
         public Inventory Inventory

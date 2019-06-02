@@ -854,28 +854,43 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
         }
 
-        protected ActorAction BehaviorGoToNearestAIExit(RogueGame game) //@@MP (Release 6-2), renamed (Release 6-5)
+        /// <summary>
+        /// Go to the nearest exit that the AI can use
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="radius">How many tiles around to search</param>
+        /// <param name="mustBeInside">If the exit's tile must be IsInside</param>
+        /// <returns></returns>
+        protected ActorAction BehaviorGoToNearestAIExit(RogueGame game, int radius, bool mustBeInside) //@@MP (Release 6-2), renamed (Release 6-5) radius & mustBeInside (Release 6-6)
         {
             // find nearest exit
             Point? exitPos = null;
             float nearestDist = float.MaxValue;
+            Map map = m_Actor.Location.Map;
 
             //foreach (Exit exit in m_Actor.Location.Map.Exits) //@@MP - wft this doesn't work. it selects an exit at some arbitrary point, usually nowhere nearby
             //so instead, we have to check all sports manually :/
-            int xmin = m_Actor.Location.Position.X - 20;
-            int xmax = m_Actor.Location.Position.X + 20;
-            int ymin = m_Actor.Location.Position.Y - 20;
-            int ymax = m_Actor.Location.Position.Y + 20;
+            int xmin = m_Actor.Location.Position.X - radius;
+            int xmax = m_Actor.Location.Position.X + radius;
+            int ymin = m_Actor.Location.Position.Y - radius;
+            int ymax = m_Actor.Location.Position.Y + radius;
 
             for (int x = xmin; x < xmax; x++)
             {
                 for (int y = ymin; y < ymax; y++)
                 {
-                    if (m_Actor.Location.Map.IsInBounds(x,y))
+                    if (map.IsInBounds(x, y))
                     {
-                        Exit exit = m_Actor.Location.Map.GetExitAt(x, y);
+                        Exit exit = map.GetExitAt(x, y);
                         if (exit != null && exit.IsAnAIExit) //@@MP - used proper method IsAnAIExit (Release 6-5)
                         {
+                            if (mustBeInside)
+                            {
+                                Tile tile = map.GetTileAt(exit.ToPosition);
+                                if (tile != null && !tile.IsInside) //@@MP - useful when AI want to find basements (Release 6-6)
+                                    continue;
+                            }
+
                             float dist = game.Rules.StdDistance(m_Actor.Location.Position, exit.ToPosition);
                             if (dist < nearestDist)
                             {

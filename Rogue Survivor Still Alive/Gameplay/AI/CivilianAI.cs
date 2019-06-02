@@ -334,7 +334,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     else
                     {
                         //find the nearest exit
-                        determinedAction = BehaviorGoToNearestAIExit(game);
+                        determinedAction = BehaviorGoToNearestAIExit(game, 20, false);
                         if (determinedAction != null)
                         {
                             m_Actor.Activity = Activity.FINDING_EXIT;
@@ -579,6 +579,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // prefer sleeping indoors
                 if (IsInside(m_Actor))
                 {
+                    // prefer sleeping in basement. //@@MP - caused looping, possibly when exit was blocked (Release 6-6)
+                    /*if (game.Rules.CanActorSeeSky(m_Actor)) //if not already in basement
+                    {
+                        determinedAction = BehaviorGoToNearestAIExit(game, 10, true);
+                        if (determinedAction != null)
+                        {
+                            m_Actor.Activity = Activity.FINDING_EXIT;
+                            return determinedAction;
+                        }
+                    }*/
+
                     // secure sleep.
                     determinedAction = BehaviorSecurePerimeter(game, FOV); //@@MP m_LOSSensor.FOV); (Release 6-2)
                     if (determinedAction != null)
@@ -804,7 +815,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             game.DoSay(m_Actor, targetForFood.Percepted as Actor, "HEY! YOU! SHARE SOME FOOD!", RogueGame.Sayflags.IS_FREE_ACTION | RogueGame.Sayflags.IS_DANGER);
 
                         // chaaarge!
-                        m_Actor.Activity = Activity.FIGHTING;
+                        m_Actor.Activity = Activity.CHASING;
                         m_Actor.TargetActor = targetForFood.Percepted as Actor;
                         return determinedAction;
                     }

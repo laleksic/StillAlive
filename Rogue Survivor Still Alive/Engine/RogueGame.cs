@@ -5633,6 +5633,8 @@ namespace djack.RogueSurvivor.Engine
             {
                 if (actor.IsBotPlayer || !actor.IsPlayer)
                 {
+                    actor.IsLooping = false; //@@MP (Release 6-6)
+
                     //@@MP - workaround for actors getting too many turns in succession [detection code by zaimoni] (Release 6-4)
                     if (actor.ActionPoints > actor.Doll.Body.Speed)
                     {
@@ -5660,17 +5662,12 @@ namespace djack.RogueSurvivor.Engine
                                 BotReleaseControl();
                                 AddMessage(new Message("AI LOOPING DETECTED. Released bot control", m_Session.WorldTime.TurnCounter, Color.Pink));
                             }
-
-                            // workaround
-                            DoWait(actor);
-#else
-                            // throw an exception
-                            /*Exception e = new InvalidOperationException("an AI actor is looping, please report the exception details");
-                            Logger.WriteLine(Logger.Stage.RUN_MAIN, "AI stacktrace:" + e.StackTrace);*/
-
-                            // when not debugging AI looping, just spend a turn. it's better than crashing the game!
-                            DoWait(actor);
 #endif
+#if DEBUGAILOOPING
+                            actor.IsLooping = true; //@@MP (Release 6-6)
+#endif
+                            // when not debugging AI looping, just spend a turn. it's better than crashing the game! workaround
+                            DoWait(actor);
                         }
                     }
                     else

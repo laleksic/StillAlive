@@ -141,7 +141,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     else
                     {
                         //find the nearest exit
-                        determinedAction = BehaviorGoToNearestAIExit(game);
+                        determinedAction = BehaviorGoToNearestAIExit(game,20,false);
                         if (determinedAction != null)
                         {
                             m_Actor.Activity = Activity.FINDING_EXIT;
