@@ -31,6 +31,8 @@ Fixes:
 -Building barricades and fortifications combined to the same hotkey (B).
 -Fixed mixed up key bindings.
 -Fixed looping caused by AI trying to use an exit blocked by a friendly actor
+-Fixed bugs when AI deciding whether to throw a grenade.
+-Fixed couches weren't suitable for AI sleeping.
 
 Development:
 -Added more Activity types.

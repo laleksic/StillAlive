@@ -760,6 +760,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 JumpLevel = 1,
                 GivesWood = true,
                 IsMovable = true,
+                IsCouch = true, //@@MP (Release 6-6)
                 Weight = 3
             };
         }
