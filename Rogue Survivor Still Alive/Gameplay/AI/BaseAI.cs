@@ -1804,23 +1804,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (!game.Rules.CanActorSleep(m_Actor))
                 return null;
 
-            // if next to a door/window, try moving away from it.
-            Map map = m_Actor.Location.Map;
-            if (map.HasAnyAdjacentInMap(m_Actor.Location.Position, (pt) => map.GetMapObjectAt(pt) is DoorWindow))
-            {
-                // wander where there is no door/window and not adjacent to a door window.
-                ActorAction wanderAwayFromDoor = BehaviorWander(game, 
-                    (loc) => map.GetMapObjectAt(loc.Position) as DoorWindow == null && !map.HasAnyAdjacentInMap(loc.Position, (pt) => loc.Map.GetMapObjectAt(pt) is DoorWindow));
-                if (wanderAwayFromDoor != null)
-                    return wanderAwayFromDoor;
-                // no good spot, just try normal sleep behavior.
-            }
-
-            // sleep on a couch.
+            // sleep on a couch. 
             if (game.Rules.IsOnCouch(m_Actor))
-            {
                 return new ActionSleep(m_Actor, game);
-            }
+
+            Map map = m_Actor.Location.Map;
+
             // find nearest couch.
             Point? couchPos = null;
             float nearestDist = float.MaxValue;
@@ -1845,6 +1834,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     return moveThere;
                 }
+            }
+
+            //@@MP - moved door/window code to last to stop indecision when a couch is adjacent to a door (Release 6-6)
+            // if next to a door/window, try moving away from it.
+            if (map.HasAnyAdjacentInMap(m_Actor.Location.Position, (pt) => map.GetMapObjectAt(pt) is DoorWindow))
+            {
+                // wander where there is no door/window and not adjacent to a door window.
+                ActorAction wanderAwayFromDoor = BehaviorWander(game,
+                    (loc) => map.GetMapObjectAt(loc.Position) as DoorWindow == null && !map.HasAnyAdjacentInMap(loc.Position, (pt) => loc.Map.GetMapObjectAt(pt) is DoorWindow));
+                if (wanderAwayFromDoor != null)
+                    return wanderAwayFromDoor;
+                // no good spot, just try normal sleep behavior.
             }
 
             // no couch or can't move there, sleep there.

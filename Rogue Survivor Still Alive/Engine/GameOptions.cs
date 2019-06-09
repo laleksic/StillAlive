@@ -122,7 +122,7 @@ namespace djack.RogueSurvivor.Engine
         public const int DEFAULT_DAY_ZERO_UNDEADS_PERCENT = 30;
         public const int DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE = 5;
         public const int DEFAULT_STARVED_ZOMBIFICATION_CHANCE = 0; //@@MP - vanilla = 50 (Release 3)
-        public const int DEFAULT_MAX_REINCARNATIONS = 1;
+        public const int DEFAULT_MAX_REINCARNATIONS = 7; //@@MP - upped after I forgot when removing the max reinc option (Release 6-6)
         public const int DEFAULT_NATGUARD_FACTOR = 100;
         public const int DEFAULT_SUPPLIESDROP_FACTOR = 100;
         public const ZupDays DEFAULT_ZOMBIFIEDS_UPGRADE_DAYS = ZupDays.THREE;

@@ -32,7 +32,9 @@ Fixes:
 -Fixed mixed up key bindings.
 -Fixed looping caused by AI trying to use an exit blocked by a friendly actor
 -Fixed bugs when AI deciding whether to throw a grenade.
+-Fixed conflicting priorities when AI deciding where to sleep.
 -Fixed couches weren't suitable for AI sleeping.
+-Upped maximum reincarnations from 1 to 7.
 
 Development:
 -Added more Activity types.
