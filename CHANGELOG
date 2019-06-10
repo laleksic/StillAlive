@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.6.20 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.6.21 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -36,6 +36,7 @@ Fixes:
 -Fixed couches weren't suitable for AI sleeping.
 -Upped maximum reincarnations from 1 to 7.
 -Fixed nail gun attack value.
+-Fixed darkness FOV status when using a torch.
 
 Development:
 -Added more Activity types.

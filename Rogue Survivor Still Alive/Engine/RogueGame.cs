@@ -20642,12 +20642,11 @@ namespace djack.RogueSurvivor.Engine
                     case Lighting.DARKNESS:
                         weatherOrLightingColor = Color.Blue;
                         weatherOrLightingString = "Darkness";
-                        // alpha10 desc darkness fov effect
-                        int darknessFov = m_Rules.DarknessFov(m_Player);
-                        if (darknessFov == 0) //@@MP (Release 6-5)
+                        int FOV = m_Rules.ActorFOV(m_Player, m_Session.WorldTime, m_Session.World.Weather); //@@MP (Release 6-6)
+                        if (FOV == 0) //@@MP (Release 6-5)
                             weatherOrLightingString += " (CAN'T SEE!)";
-                        else if (darknessFov != m_Player.Sheet.BaseViewRange)
-                            weatherOrLightingString += "  fov " + darknessFov;
+                        else if (FOV != m_Player.Sheet.BaseViewRange)
+                            weatherOrLightingString += "  fov " + FOV;
                         break;
                     case Lighting.LIT:
                         weatherOrLightingColor = Color.Yellow;
