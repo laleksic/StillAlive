@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.6.15 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.6.19 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -38,6 +38,7 @@ Fixes:
 
 Development:
 -Added more Activity types.
+-Added DEBUGAILOOPING and DEBUGBOTMODE preprocessor directives for debugging AI looping.
 
 Outstanding known issues:
 -Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).

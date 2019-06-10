@@ -5633,7 +5633,9 @@ namespace djack.RogueSurvivor.Engine
             {
                 if (actor.IsBotPlayer || !actor.IsPlayer)
                 {
+#if DEBUGAILOOPING
                     actor.IsLooping = false; //@@MP (Release 6-6)
+#endif
 
                     //@@MP - workaround for actors getting too many turns in succession [detection code by zaimoni] (Release 6-4)
                     if (actor.ActionPoints > actor.Doll.Body.Speed)
@@ -5660,7 +5662,7 @@ namespace djack.RogueSurvivor.Engine
                             if (m_Player.IsBotPlayer && m_Player.Location.Map == actor.Location.Map)
                             {
                                 BotReleaseControl();
-                                AddMessage(new Message("AI LOOPING DETECTED. Released bot control", m_Session.WorldTime.TurnCounter, Color.Pink));
+                                AddMessage(new Message("IN-DISTRICT AI LOOPING DETECTED. Released bot control", m_Session.WorldTime.TurnCounter, Color.Pink));
                             }
 #endif
 #if DEBUGAILOOPING
@@ -5709,6 +5711,10 @@ namespace djack.RogueSurvivor.Engine
             else
             {
                 HandleAiActor(actor);
+#if DEBUGAILOOPING
+                if (actor.IsLooping) //@@MP (Release 6-6)
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, actor.Name + " activity in progress: " + actor.ActivityInProgress);
+#endif
             }
             actor.PreviousHitPoints = actor.HitPoints;
             actor.PreviousFoodPoints = actor.FoodPoints;
@@ -19320,6 +19326,12 @@ namespace djack.RogueSurvivor.Engine
                         AddMessage(new Message(String.Format("{0} wakes {1} up!", noiseName, actor.TheName), map.LocalTime.TurnCounter, actor == m_Player ? Color.Red : Color.White));
                         RedrawPlayScreen();
                     }
+
+                    //
+#if DEBUGAILOOPING
+                    if (map.District == m_Player.Location.Map.District)
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("[#{0}] {1} woken up by loud noise: {2}", map.LocalTime.TurnCounter.ToString(), actor.Name, noiseName));
+#endif
                 }
             }
 

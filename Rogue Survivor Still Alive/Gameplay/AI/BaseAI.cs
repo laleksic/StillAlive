@@ -543,6 +543,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (goodWanderLocFn != null && !goodWanderLocFn(next))
                         return false;
                     ActorAction bumpAction = game.Rules.IsBumpableFor(m_Actor, game, next);
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorWander() bumpAction: " + bumpAction.ToString();
+#endif
                     return IsValidWanderAction(game, bumpAction);
                 },
                 (dir) =>
@@ -591,9 +595,23 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 (a, b) => a > b);
 
             if (chooseRandomDir != null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWander() random dir: " + chooseRandomDir.Choice.ToString();
+#endif
                 return new ActionBump(m_Actor, game, chooseRandomDir.Choice);
+            }
+            
             else
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWander() no random dir possible";
+#endif
                 return null;
+            }
+            
         }
 
         protected ActorAction BehaviorWander(RogueGame game)
@@ -630,7 +648,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
                                 {
                                     Direction pushDir = game.Rules.RollDirection();
                                     if (game.Rules.CanPushObjectTo(obj, obj.Location.Position + pushDir))
+                                    {
+#if DEBUGAILOOPING
+                                        if (m_Actor.IsLooping)
+                                            m_Actor.ActivityInProgress = "BehaviorBumpToward() push dir: " + pushDir.ToString();
+#endif
                                         return new ActionPush(m_Actor, game, obj, pushDir);
+                                    }
                                 }
                             }
                         }
@@ -651,7 +675,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
                                             validPushes.Add(pushDir);
                                     }
                                     if (validPushes.Count > 0)
+                                    {
+#if DEBUGAILOOPING
+                                        if (m_Actor.IsLooping)
+                                            m_Actor.ActivityInProgress = "BehaviorBumpToward() pushing";
+#endif
                                         return new ActionPush(m_Actor, game, obj, validPushes[game.Rules.Roll(0, validPushes.Count)]);
+                                    }
                                 }
                             }
                         }
@@ -661,7 +691,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             if (obj != null)
                             {
                                 if (game.Rules.IsBreakableFor(m_Actor, obj))
+                                {
+#if DEBUGAILOOPING
+                                    if (m_Actor.IsLooping)
+                                        m_Actor.ActivityInProgress = "BehaviorBumpToward() breaking";
+#endif
                                     return new ActionBreak(m_Actor, game, obj);
+                                }
+                                
                             }
                         }
 
@@ -692,9 +729,21 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 (a, b) => !float.IsNaN(a) && a < b);
 
             if (bestCloserDir != null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorBumpToward() bestCloserDir: " + bestCloserDir.Choice.ToString();
+#endif
                 return bestCloserDir.Choice;
+            }
             else
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorBumpToward() no bestCloserDir";
+#endif
                 return null;
+            }
         }
         
         /// <summary>
@@ -849,9 +898,21 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 (a, b) => a > b);
 
             if (bestAwayDir != null)// && bestAwayDir.Value > notMovingValue) nope, moving is always better than not moving
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWalkAwayFrom() bestAwayDir: " + bestAwayDir.Choice.ToString();
+#endif
                 return new ActionBump(m_Actor, game, bestAwayDir.Choice);
+            }
             else
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWalkAwayFrom() no bestAwayDir";
+#endif
                 return null;
+            }
         }
 
         /// <summary>
@@ -908,10 +969,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction moveThere = BehaviorStupidBumpToward(game, exitPos.Value, false, false);
                 if (moveThere != null)
                 {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorGoToNearestAIExit() moveThere: " + exitPos.Value.ToString();
+#endif
                     return moveThere;
                 }
             }
 
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorGoToNearestAIExit() no exitPos";
+#endif
             return null; //no exit available
         }
 
@@ -938,11 +1007,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     ActorAction moveThere = BehaviorIntelligentBumpToward(game, pt, false, false);
                     if (moveThere != null)
                     {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorGoToVisibleGenerator() moveThere: " + pt.ToString();
+#endif
                         return moveThere;
                     }
                 }
             }
 
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorGoToVisibleGenerator() no generator visible";
+#endif
             return null; //no generator i can see
         }
 
@@ -972,10 +1049,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction moveThere = BehaviorIntelligentBumpToward(game, waterPos.Value, false, false);
                 if (moveThere != null)
                 {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorGoToVisibleGenerator() moveThere: " + waterPos.Value.ToString();
+#endif
                     return moveThere;
                 }
             }
 
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorGoToNearestVisibleWater() no water visible";
+#endif
             return null; //no water i can see
         }
         #endregion
@@ -998,9 +1083,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // if illegal cant.
             if (!game.Rules.CanActorMeleeAttack(m_Actor, targetActor))
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorMeleeAttack() can't melee attack " + targetActor.Name;
+#endif
                 return null;
+            }
 
             // melee!
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorMeleeAttack() attacking " + targetActor.Name;
+#endif
             return new ActionMeleeAttack(m_Actor, game, targetActor);
         }
         #endregion
@@ -1013,8 +1108,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 throw new ArgumentException("percepted is not an actor");
 
             // if illegal cant.
-            if (!game.Rules.CanActorFireAt(m_Actor,targetActor))
+            if (!game.Rules.CanActorFireAt(m_Actor, targetActor))
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorRangedAttack() can't ranged attack " + targetActor.Name;
+#endif
                 return null;
+            }
 
             // select rapid fire if one shot is not enough to kill target, has more than one ammo loaded and chance to hit good enough.  // alpha10
             FireMode fireMode = FireMode.DEFAULT;
@@ -1033,6 +1134,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // fire!
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorRangedAttack() ranged attack " + targetActor.Name + "(fire mode: " + fireMode.ToString() + ")";
+#endif
             return new ActionRangedAttack(m_Actor, game, targetActor, fireMode);
         }
         #endregion
@@ -1129,7 +1234,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (eqArmor != null)
             {
                 if (game.Rules.CanActorUnequipItem(m_Actor, eqArmor))
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorEquipBestBodyArmor() unequip armor: " + eqArmor.ToString();
+#endif
                     return new ActionUnequipItem(m_Actor, game, eqArmor);
+                }
                 else
                     return null;
             }
@@ -1138,12 +1249,22 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (eqArmor == null)
             {
                 if (game.Rules.CanActorEquipItem(m_Actor, bestArmor))
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorEquipBestBodyArmor() equip armor: " + bestArmor.ToString();
+#endif
                     return new ActionEquipItem(m_Actor, game, bestArmor);
+                }
                 else
                     return null;
             }
 
             // Fail.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipBestBodyArmor() can't equip armor";
+#endif
             return null;
         }
 
@@ -1172,13 +1293,25 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (eqTrack != null)
             {
                 if (!wantTracker && game.Rules.CanActorUnequipItem(m_Actor, eqTrack))
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorEquipCellPhone() no need for cell phone, unequiping";
+#endif
                     return new ActionUnequipItem(m_Actor, game, eqTrack);
+                }
                 else
                     return null;
             }
 
             if (!wantTracker)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorEquipCellPhone() no need to equip cell phone";
+#endif
                 return null;
+            }
 
             // Equip first available cellphone.
             Item newTracker = GetFirstTracker((it) => it.CanTrackFollowersOrLeader && !IsItemTaboo(it));
@@ -1186,10 +1319,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 // equip new.
                 if (game.Rules.CanActorEquipItem(m_Actor, newTracker))
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorEquipCellPhone() equipping " + newTracker.TheName;
+#endif
                     return new ActionEquipItem(m_Actor, game, newTracker);
+                }
             }
 
             // Fail.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipCellPhone() can't equip cell phone";
+#endif
             return null;
         }
 
@@ -1213,10 +1356,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 // unequip!
                 if (game.Rules.CanActorUnequipItem(m_Actor, tr))
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorUnequipCellPhoneIfLeaderHasNot() unequip " + tr.TheName;
+#endif
                     return new ActionUnequipItem(m_Actor, game, tr);
+                }
             }
 
             // fail.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorUnequipCellPhoneIfLeaderHasNot() fail";
+#endif
             return null;
         }
 
@@ -1225,13 +1378,29 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // get left eq item.
             Item eqLeft = m_Actor.GetEquippedItem(DollPart.LEFT_HAND);
             if (eqLeft == null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorUnequipLeftItem() nothing in left hand to unequip";
+#endif
                 return null;
+            }
 
             // try to unequip it.
             if (game.Rules.CanActorUnequipItem(m_Actor, eqLeft))
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorUnequipLeftItem() uneqip " + eqLeft.TheName;
+#endif
                 return new ActionUnequipItem(m_Actor, game, eqLeft);
+            }
 
             // fail.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorUnequipLeftItem() fail";
+#endif
             return null;
         }
 
@@ -1254,9 +1423,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // if we have a rw equiped but out of ammo and no ammo to reload it, unequip, leave hand free for melee weapon.
                 ItemRangedWeapon eqRw = m_Actor.GetEquippedRangedWeapon();
                 if (eqRw != null && eqRw.Ammo == 0 && GetCompatibleAmmoItem(game, eqRw, false) == null)
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorEquipBestRangedWeapon() unequip ranged weapon";
+#endif
                     return new ActionUnequipItem(m_Actor, game, eqRw);
+                }
 
                 // no rw with ammo to equip
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorEquipBestRangedWeapon() no ranged weapon w/ ammo";
+#endif
                 return null;
             }
 
@@ -1267,12 +1446,28 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     ItemAmmo ammo = GetCompatibleAmmoItem(game, best, true);
                     if (ammo != null)
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorEquipBestRangedWeapon() reload ranged wep";
+#endif
                         return new ActionUseItem(m_Actor, game, ammo);
+                    }
                     else
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorEquipBestRangedWeapon() unequip empty ranged wep";
+#endif
                         return new ActionUnequipItem(m_Actor, game, best);
+                    }
                 }
 
                 // best ranged weapon equiped & has ammo, we're fine.
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorEquipBestRangedWeapon() best ranged wep already equipped";
+#endif
                 return null;
             }
 
@@ -1281,6 +1476,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // replace current weapon with best one
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipBestRangedWeapon() equipping " + best.TheName;
+#endif
             return BehaviourReplaceEquipped(game, m_Actor.GetEquippedWeapon(), best);
         }
 
@@ -1293,6 +1492,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (best.IsEquipped)
                 return null;
 
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipBestMeleeWeapon() equipping " + best.TheName;
+#endif
             return BehaviourReplaceEquipped(game, m_Actor.GetEquippedWeapon(), best);
         }
 
@@ -1315,6 +1518,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // replace current left hand item with best one
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipBestLight() equipping " + best.TheName;
+#endif            
             return BehaviourReplaceEquipped(game, m_Actor.GetEquippedItem(DollPart.LEFT_HAND), best);
         }
 
@@ -1337,6 +1544,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // replace current left hand item with best one
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipBestCellPhone() equipping " + best.TheName;
+#endif
             return BehaviourReplaceEquipped(game, m_Actor.GetEquippedItem(DollPart.LEFT_HAND), best);
         }
 
@@ -1358,6 +1569,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // replace current left hand item with best one
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipBestStenchKiller() equipping " + best.TheName;
+#endif
             return BehaviourReplaceEquipped(game, m_Actor.GetEquippedItem(DollPart.LEFT_HAND), best);
         }
 
@@ -1439,6 +1654,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // armor
             if (canUseTorso)
             {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorEquipBestItems() best armor check";
+#endif
+
                 action = BehaviorEquipBestBodyArmor(game);
                 if (action != null)
                     return action;
@@ -1447,6 +1667,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // right hand weapons, prefering ranged weapon over melee in most cases.
             if (canUseRightHand)
             {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorEquipBestItems() best right hand wep check";
+#endif
+
                 // equip best ranged weapon only if not forbidden by directives or ai
                 if (Directives.CanFireWeapons && !(m_Actor.Model as ActorModel).Abilities.AI_NotInterestedInRangedWeapons)
                 {
@@ -1479,11 +1704,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // left-hand items
             if (canUseLeftHand)
             {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorEquipBestItems() best left hand item check";
+#endif
+
                 // ordered by priority: lights -> cellphone -> spray
 
-                ItemLight eqLight = GetEquippedLight();
-
                 // lights, if no cellphone equipped
+                ItemLight eqLight = GetEquippedLight();
                 if (NeedsLight())
                 {
                     action = BehaviorEquipBestLight(game);
@@ -1529,7 +1758,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
             }
 
-            // no equipement action to do
+            // no equipment action to do
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipBestItems() no relevant action";
+#endif
             return null;
         }
         #endregion
@@ -1584,15 +1817,21 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // try to move/get one.
             if (position == m_Actor.Location.Position)
             {
-#if DEBUG
-                if (m_Actor.IsBotPlayer) //@@MP (Release 6-6)
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorGrabFromStack() trying to grab " + goodItem.AName;
+#elif DEBUGBOTMODE
+                if (m_Actor.IsBotPlayer)
                     Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Location.Map.LocalTime.TurnCounter.ToString() + " trying to grab " + goodItem.AName);
 #endif
                 return new ActionTakeItem(m_Actor, game, position, takeIt);
             }
             else
             {
-#if DEBUG
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorGrabFromStack() going over to grab " + goodItem.AName;
+#elif DEBUGBOTMODE
                 if (m_Actor.IsBotPlayer) //@@MP (Release 6-6)
                     Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Location.Map.LocalTime.TurnCounter.ToString() + " going over to grab " + goodItem.AName);
 #endif
@@ -1645,6 +1884,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction makeRoomForFood = BehaviorMakeRoomForFood(game, interestingReachableStacks);
             if (makeRoomForFood != null)
             {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorGoGetInterestingItems() making room for food";
+#endif
                 m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return makeRoomForFood;
             }
@@ -1653,6 +1896,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction grabAction = BehaviorGrabFromStack(game, nearestStack.Location.Position, nearestStack.Percepted as Inventory, canBreak, canPush);
             if (grabAction != null)
             {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorGoGetInterestingItems() grabbing: " + grabAction.ToString();
+#endif
                 m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return grabAction;
             }
@@ -1662,7 +1909,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (!m_Actor.Inventory.IsFull)   
                 {
                     game.DoEmote(m_Actor, cantGetItemEmote);
-#if DEBUG
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorGoGetInterestingItems() can't grab item";
+#elif DEBUGBOTMODE
                     if (m_Actor.IsBotPlayer) //@@MP (Release 6-6)
                         Logger.WriteLine(Logger.Stage.RUN_MAIN, "[turn#" + m_Actor.Location.Map.LocalTime.TurnCounter.ToString() + "] I couldnt grab something from " + nearestStack.Location.Position.ToString());
 #endif
@@ -1671,8 +1921,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // we can't grab the item. mark the tile as taboo.
             MarkTileAsTaboo(nearestStack.Location.Position);
-            
+
             // failed
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorGoGetInterestingItems() failed";
+#endif
             return null;
         }
 #endregion
@@ -1690,6 +1944,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 MarkItemAsTaboo(it);
 
                 // unequip.
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorDropItem() unequip " + it.TheName;
+#endif
                 return new ActionUnequipItem(m_Actor, game, it);
             }
 
@@ -1700,17 +1958,31 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 UnmarkItemAsTaboo(it);
 
                 // drop.
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorDropItem() drop " + it.TheName;
+#endif
                 return new ActionDropItem(m_Actor, game, it);
             }
 
             // failed!
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorDropItem() failed";
+#endif
             return null;
         }
 
         protected ActorAction BehaviorDropUselessItem(RogueGame game)
         {
             if (m_Actor.Inventory.IsEmpty)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorDropUselessItem() empty inventory";
+#endif
                 return null;
+            }
 
             // unequip/drop first light/tracker/spray out of batteries/quantity.
             // alpha10 ammo with no compatible ranged weapon and inventory full
@@ -1764,10 +2036,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     dropIt = true;
 
                 if (dropIt)
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorDropUselessItem() dropping " + it.TheName;
+#endif
                     return BehaviorDropItem(game, it);
+                }
             }
 
             // nope.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorDropUselessItem() nothing I should drop";
+#endif
             return null;
         }
         #endregion
@@ -1780,6 +2062,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // tired, rest.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorRestIfTired() will rest (wait)";
+#endif
             return new ActionWait(m_Actor, game);
         }
 
@@ -1793,8 +2079,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // i can haz it?
             if (!game.Rules.CanActorUseItem(m_Actor, it))
                 return null;
-            
+
             // eat it!
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEat() will eat " + it.TheName;
+#endif
             return new ActionUseItem(m_Actor, game, it);
         }
 
@@ -1806,7 +2096,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // sleep on a couch. 
             if (game.Rules.IsOnCouch(m_Actor))
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorSleep() sleep on couch";
+#endif
                 return new ActionSleep(m_Actor, game);
+            }
 
             Map map = m_Actor.Location.Map;
 
@@ -1832,6 +2128,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction moveThere = BehaviorIntelligentBumpToward(game, couchPos.Value, false, false);
                 if (moveThere != null)
                 {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorSleep() move to couch @ " + couchPos.Value.ToString();
+#endif
                     return moveThere;
                 }
             }
@@ -1844,11 +2144,21 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction wanderAwayFromDoor = BehaviorWander(game,
                     (loc) => map.GetMapObjectAt(loc.Position) as DoorWindow == null && !map.HasAnyAdjacentInMap(loc.Position, (pt) => loc.Map.GetMapObjectAt(pt) is DoorWindow));
                 if (wanderAwayFromDoor != null)
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorSleep() walk away from door";
+#endif
                     return wanderAwayFromDoor;
+                }
                 // no good spot, just try normal sleep behavior.
             }
 
             // no couch or can't move there, sleep there.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorSleep() sleep on ground";
+#endif
             return new ActionSleep(m_Actor, game);
         }
         #endregion
@@ -1903,9 +2213,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // if trap needs to be activated, do it.
             if (!trap.IsActivated && !trap.TrapModel.ActivatesWhenDropped)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorBuildTrap() activating trap " + trap.TheName;
+#endif
                 return new ActionUseItem(m_Actor, game, trap);
+            }
 
             // trap ready to setup, do it!
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorBuildTrap() placing trap " + trap.TheName;
+#endif
             game.DoEmote(m_Actor, String.Format("{0} {1}!", reason, trap.AName), false);
             return new ActionDropItem(m_Actor, game, trap);
         }
@@ -2023,16 +2343,32 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // if no choice, fail.
             if (choice == null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorBuildSmallFortification() no choice";
+#endif
                 return null;
+            }
 
             // get pos.
             Point adj = m_Actor.Location.Position + choice.Choice;
 
             // if can't build there, fail.
             if (!game.Rules.CanActorBuildFortification(m_Actor, adj, false, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorBuildSmallFortification() can't build @ " + adj.ToString();
+#endif
                 return null;
+            }
 
             // ok!
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorBuildSmallFortification() build @ " + adj.ToString();
+#endif
             return new ActionBuildFortification(m_Actor, game, adj, false, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
         }
 
@@ -2102,16 +2438,32 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // if no choice, fail.
             if (choice == null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorBuildSmallFortification() no choice";
+#endif
                 return null;
+            }
 
             // get pos.
             Point adj = m_Actor.Location.Position + choice.Choice;
 
             // if can't build there, fail.
             if (!game.Rules.CanActorBuildFortification(m_Actor, adj, true, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorBuildLargeFortification() can't build @ " + adj.ToString();
+#endif
                 return null;
+            }
 
             // ok!
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorBuildLargeFortification() build @ " + adj.ToString();
+#endif
             return new ActionBuildFortification(m_Actor, game, adj, true, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
         }
 
@@ -2137,9 +2489,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
             DoorWindow randomBarricade = map.GetMapObjectAt(adjBarricades[game.Rules.Roll(0, adjBarricades.Count)]) as DoorWindow;
             ActionBreak attackBarricade = new ActionBreak(m_Actor, game, randomBarricade);
             if (attackBarricade.IsLegal())
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorAttackBarricade() attack " + randomBarricade.Location.Position.ToString();
+#endif
                 return attackBarricade;
+            }
 
             // nope :(
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorAttackBarricade() nope";
+#endif
             return null;
         }
 
@@ -2172,13 +2534,23 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 ActionBreak breakIt = new ActionBreak(m_Actor, game, nearest.Percepted as MapObject);
                 if (breakIt.IsLegal())
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorAssaultBreakables() attack " + breakIt.ToString();
+#endif
                     return breakIt;
+                }
                 else
                     // illegal, don't bother with it.
                     return null;
             }
 
             // not adjacent, try to get there.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorAssaultBreakables() move to " + nearest.Location.Position.ToString();
+#endif
             return BehaviorIntelligentBumpToward(game, nearest.Location.Position, true, true);
         }
 
@@ -2217,9 +2589,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
             MapObject randomPushable = map.GetMapObjectAt(adjPushables[game.Rules.Roll(0, adjPushables.Count)]);
             ActionPush pushIt = new ActionPush(m_Actor, game, randomPushable, game.Rules.RollDirection());
             if (pushIt.IsLegal())
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorPushNonWalkableObject() push " + randomPushable.TheName;
+#endif
                 return pushIt;
+            }
 
             // nope :(
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorPushNonWalkableObject() nope";
+#endif
             return null;
         }
         #endregion
@@ -2267,10 +2649,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 (a, b) => a > b);
 
             // if no suitable items or best item scores zero, do not want!
-            if (bestMedChoice == null || bestMedChoice.Value <= 0) //@@MP - this is why booze should give a postive overall score, even though it has stamina negatives
+            if (bestMedChoice == null || bestMedChoice.Value <= 0) //@@MP - meds must give a postive overall score otherwise looping could result
                 return null;
-                
+
             // use med.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorUseMedicine() use " + bestMedChoice.Choice.TheName;
+#endif
             return new ActionUseItem(m_Actor, game, bestMedChoice.Choice);
         }
         
@@ -2286,11 +2672,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (!game.Rules.CanActorUseItem(m_Actor, ent))
                 return null;
 
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorUseEntertainment() use " + ent.TheName;
+#endif
             return new ActionUseItem(m_Actor, game, ent);
         }
 
         protected ActorAction BehaviorDropBoringEntertainment(RogueGame game)
         {
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorDropBoringEntertainment()";
+#endif
+
             Inventory inv = m_Actor.Inventory;
             if (inv.IsEmpty) return null;
 
@@ -2316,7 +2711,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // if close enough and visible, wait there.
             int dist = game.Rules.GridDistance(m_Actor.Location.Position, otherPosition);
             if (isVisible && dist <= maxDist)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorFollowActor() hanging around leader";
+#endif
                 return new ActionWait(m_Actor, game);
+            }
 
             // if in different map and standing on an exit that leads there, try to use the exit.
             if (other.Location.Map != m_Actor.Location.Map)
@@ -2325,7 +2726,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (exitThere != null && exitThere.ToMap == other.Location.Map)
                 {
                     if (game.Rules.CanActorUseExit(m_Actor, m_Actor.Location.Position))
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorFollowActor() use exit " + m_Actor.Location.Position.ToString();
+#endif
                         return new ActionUseExit(m_Actor, m_Actor.Location.Position, game);
+                    }
                 }
             }
 
@@ -2338,10 +2745,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     RunIfPossible(game.Rules);
 
                 // done.
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorFollowActor() move toward " + otherPosition.ToString();
+#endif
                 return bumpAction;
             }
-            
+
             // fail.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorFollowActor() fail";
+#endif
             return null;
         }
 
@@ -2373,10 +2788,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     RunIfPossible(game.Rules);
 
                 // done.
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorHangAroundActor() move toward " + hangSpot.ToString();
+#endif
                 return bumpAction;
             }
 
             // fail.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorHangAroundActor() fail";
+#endif
             return null;
         }
         #endregion
@@ -2403,19 +2826,41 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // if exit there and can and want to use it, do it.
                 Exit exitThere = map.GetExitAt(m_Actor.Location.Position);
                 if (exitThere != null && m_Actor.Model.Abilities.AI_CanUseAIExits)
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorTrackScent() use exit " + exitThere.ToPosition.ToString();
+#endif
                     return BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES | UseExitFlags.BREAK_BLOCKING_OBJECTS);
+                }
                 else
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorTrackScent() on best spot " + best.Location.Position.ToString();
+#endif
                     return null;
+                }
             }
 
             // 2. Best scent is adjacent.
             // try to bump there.
             ActorAction bump = BehaviorIntelligentBumpToward(game, best.Location.Position, false, false);
             if (bump != null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorTrackScent() move toward " + best.Location.Position.ToString();
+#endif
                 return bump;
+            }
             #endregion
 
             // nope.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorTrackScent() nope";
+#endif
             return null;
         }
         #endregion
@@ -2426,7 +2871,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // try melee attack first.
             ActorAction attack = BehaviorMeleeAttack(game, target);
             if (attack != null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorChargeEnemy() melee " + target.ToString();
+#endif
                 return attack;
+            }
 
             Actor enemy = target.Percepted as Actor;
 
@@ -2436,9 +2887,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // meds?
                 ActorAction useMed = BehaviorUseMedicine(game, 0, 1, 0, 0, 0);
                 if (useMed != null)
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorChargeEnemy() use med " + useMed.ToString();
+#endif
                     return useMed;
+                }
 
                 // rest!
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorChargeEnemy() rest for STA";
+#endif
                 return new ActionWait(m_Actor, game);
             }
 
@@ -2452,10 +2913,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     RunIfPossible(game.Rules);
 
                 // chaaarge!
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorChargeEnemy() charging " + enemy.Name;
+#endif
                 return bumpAction;
             }
 
             // failed.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorChargeEnemy() nope";
+#endif
             return null;
         }
         #endregion
@@ -2472,15 +2941,29 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // if next to him, lead him.
             if (game.Rules.IsAdjacent(m_Actor.Location.Position, other.Location.Position))
             {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorLeadActor() take lead of " + other.Name;
+#endif
                 return new ActionTakeLead(m_Actor, game, other);
             }
 
             // then try getting closer.
             ActorAction bumpAction = BehaviorIntelligentBumpToward(game, other.Location.Position, false, false);
             if (bumpAction != null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorLeadActor() move toward " + other.Name;
+#endif
                 return bumpAction;
+            }
 
             // failed.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorLeadActor() failed take lead of " + other.Name;
+#endif
             return null;
 
         }
@@ -2528,6 +3011,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // try to move toward farther dude.
             if (target == null)
                 return null;
+
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorDontLeaveFollowersBehind() move toward " + target.Name;
+#endif
             return BehaviorIntelligentBumpToward(game, target.Location.Position, false, false);
         }
         #endregion
@@ -2571,6 +3059,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     m_Actor.Activity = Activity.FIGHTING;
                     m_Actor.TargetActor = enemy;
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorFightOrFlee() heal, attacker: " + enemy.Name;
+#endif
                     return healAction;
                 }
             }
@@ -2696,6 +3188,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         {
                             // enemy has no ranged weapon and unreachable, possibly no threat to us better
                             // do something else instead.
+#if DEBUGAILOOPING
+                            if (m_Actor.IsLooping)
+                                m_Actor.ActivityInProgress = "BehaviorFightOrFlee() enemy no threat: " + enemy.Name;
+#endif
                             return null;
                         }
                     }
@@ -2749,6 +3245,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         (a, b) => a > b);
                     if (closeDoorBetweenDirection != null)
                     {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorFightOrFlee() close door: " + enemy.Name;
+#endif
                         return new ActionCloseDoor(m_Actor, game, m_Actor.Location.Map.GetMapObjectAt(m_Actor.Location.Position + closeDoorBetweenDirection.Choice) as DoorWindow);
                     }
                 }
@@ -2778,6 +3278,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         (a, b) => a > b);
                     if (barricadeDoorBetweenDirection != null)
                     {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorFightOrFlee() barricade door: " + enemy.Name;
+#endif
                         return new ActionBarricadeDoor(m_Actor, game, m_Actor.Location.Map.GetMapObjectAt(m_Actor.Location.Position + barricadeDoorBetweenDirection.Choice) as DoorWindow, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
                     }
                 }
@@ -2805,6 +3309,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         // do it?
                         if (doUseExit)
                         {
+#if DEBUGAILOOPING
+                            if (m_Actor.IsLooping)
+                                m_Actor.ActivityInProgress = "BehaviorFightOrFlee() use exit: " + enemy.Name;
+#endif
                             m_Actor.Activity = Activity.FLEEING;
                             return useExit;
                         }
@@ -2820,6 +3328,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     ActorAction medAction = BehaviorUseMedicine(game, 2, 2, 1, 0, 0);
                     if (medAction != null)
                     {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorFightOrFlee() use med: " + enemy.Name;
+#endif
                         m_Actor.Activity = Activity.HEALING;
                         return medAction;
                     }
@@ -2832,6 +3344,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     if (game.Rules.GridDistance(m_Actor.Location.Position, enemy.Location.Position) >= safeRange)
                     {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorFightOrFlee() rest when safe: " + enemy.Name;
+#endif
                         m_Actor.Activity = Activity.FLEEING;
                         return new ActionWait(m_Actor, game);
                     }
@@ -2845,6 +3361,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     if (doRun)
                         RunIfPossible(game.Rules);
+
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorFightOrFlee() get away from " + enemy.Name;
+#endif
                     m_Actor.Activity = Activity.FLEEING;
                     return bumpAction;
                 }
@@ -2861,6 +3382,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         if (m_Actor.Model.Abilities.CanTalk && game.Rules.RollChance(EMOTE_FLEE_TRAPPED_CHANCE))
                             game.DoEmote(m_Actor, emotes[1], true);
 
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorFightOrFlee() can't flee; fight " + enemy.Name;
+#endif
                         return BehaviorMeleeAttack(game, nearestEnemy);
                     }
                 }
@@ -2879,6 +3404,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         game.DoEmote(m_Actor, String.Format("{0} {1}!", emotes[2], enemy.Name), true);
 
                     // chaaarge!
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorFightOrFlee() charge " + enemy.Name;
+#endif
                     m_Actor.Activity = Activity.CHASING;
                     m_Actor.TargetActor = nearestEnemy.Percepted as Actor;
                     return attackAction;
@@ -2887,6 +3416,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // nope.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorFightOrFlee() nope";
+#endif
             return null;
         }
         #endregion
@@ -2901,7 +3434,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // Shout if leader is sleeping.
             // (kinda hax, but make followers more useful for players over phone)
             if (m_Actor.HasLeader && m_Actor.Leader.IsSleeping)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWarnFriends() shout at leader " + m_Actor.Leader.Name;
+#endif
                 return new ActionShout(m_Actor, game);
+            }
 
             // Shout if we have a friend sleeping.
             foreach (Percept p in friends)
@@ -2919,6 +3458,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     continue;
 
                 // friend sleeping, wake up!
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWarnFriends() shout at " + other.Name;
+#endif
                 string shoutText = nearestEnemy == null ? String.Format("Wake up {0}!", other.Name) : String.Format("Wake up {0}! {1} sighted!", other.Name, nearestEnemy.Name);
                 return new ActionShout(m_Actor, game, shoutText);
             }
@@ -2993,7 +3536,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // tell friend - if legal.
             ActionSay say = new ActionSay(m_Actor, game, friend, tellMsg, RogueGame.Sayflags.NONE);
             if (say.IsLegal())
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorTellFriendAboutPercept() say: " + tellMsg;
+#endif
                 return say;
+            }
             else
                 return null;
         }
@@ -3019,10 +3568,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     shoutText = whatToShout;
                 else
                     shoutText = String.Format("Wake up {0}!", other.Name);
+
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWarnFriendsOfFire() shout: " + shoutText;
+#endif
                 return new ActionShout(m_Actor, game, shoutText);
             }
 
             // no one to alert.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorWarnFriendsOfFire() no friends nearby";
+#endif
             return null;
         }
         #endregion
@@ -3145,9 +3703,21 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 (a, b) => !float.IsNaN(a) && a > b);
 
             if (chooseExploreDir != null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorExplore() direction: " + chooseExploreDir.ToString();
+#endif
                 return new ActionBump(m_Actor, game, chooseExploreDir.Choice);
+            }
             else
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorExplore() no worthy direction";
+#endif
                 return null;
+            }
         }
         #endregion
 
@@ -3159,7 +3729,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (prevDoor == null)
                 return null;
             if (game.Rules.IsClosableFor(m_Actor, prevDoor))
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorCloseDoorBehindMe() close " + prevDoor.Location.Position.ToString();
+#endif
                 return new ActionCloseDoor(m_Actor, game, prevDoor);
+            }
 
             // nope.
             return null;
@@ -3187,22 +3763,51 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (door.IsOpen && game.Rules.IsClosableFor(m_Actor, door))
                 {
                     if (game.Rules.IsAdjacent(door.Location.Position, m_Actor.Location.Position))
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorSecurePerimeter() close door: " + door.Location.Position.ToString();
+#endif
                         return new ActionCloseDoor(m_Actor, game, door);
+                    }
+                    
                     else
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorSecurePerimeter() go to door: " + door.Location.Position.ToString();
+#endif
                         return BehaviorIntelligentBumpToward(game, door.Location.Position, false, false);
+                    }
                 }
 
                 // 2. Barricade unbarricaded windows.
                 if (door.IsWindow && !door.IsBarricaded && game.Rules.CanActorBarricadeDoor(m_Actor,door, game.Session.World.Weather)) //@@MP - added weather parameter (Release 6-2)
                 {
                     if (game.Rules.IsAdjacent(door.Location.Position, m_Actor.Location.Position))
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorSecurePerimeter() barricade door: " + door.Location.Position.ToString();
+#endif
                         return new ActionBarricadeDoor(m_Actor, game, door, game.Session.World.Weather); //@@MP - added weather parameter (Release 6-2)
+                    }
                     else
-                        return BehaviorIntelligentBumpToward(game, door.Location.Position, false, false);                    
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorSecurePerimeter() go to door: " + door.Location.Position.ToString();
+#endif
+                        return BehaviorIntelligentBumpToward(game, door.Location.Position, false, false);
+                    }
                 }
             }
 
             // nothing to secure.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorSecurePerimeter() nothing to secure";
+#endif
             return null;
         }
         #endregion
@@ -3251,7 +3856,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if ((useFlags & UseExitFlags.DONT_BACKTRACK) != 0)
             {
                 if (exit.ToMap == m_prevLocation.Map && exit.ToPosition == m_prevLocation.Position)
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorUseExit() don't backtrack";
+#endif
                     return null;
+                }
             }
 
             // blocked by another actor
@@ -3262,12 +3873,30 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if ((useFlags & UseExitFlags.ATTACK_BLOCKING_ENEMIES) != 0)
                 {
                     if (game.Rules.AreEnemies(m_Actor, blockingActor) && game.Rules.CanActorMeleeAttack(m_Actor, blockingActor))
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorUseExit() attack blocker " + blockingActor.Name;
+#endif
                         return new ActionMeleeAttack(m_Actor, game, blockingActor);
+                    }
                     else
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorUseExit() friend blocking " + blockingActor.Name;
+#endif
                         return null; //it's a friend  //@@MP - added (Release 6-6)
+                    }
                 }
                 else //@@MP - added (Release 6-6)
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorUseExit() not allowed to attack";
+#endif
                     return null; //we're not permitted to attack
+                }
             }
 
             // if exit blocked by a breakable object and want to bash, do it.
@@ -3275,14 +3904,30 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 MapObject blockingObj = exit.ToMap.GetMapObjectAt(exit.ToPosition);
                 if (blockingObj != null && game.Rules.IsBreakableFor(m_Actor, blockingObj))
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorUseExit() break object: " + blockingObj.TheName;
+#endif
                     return new ActionBreak(m_Actor, game, blockingObj);
+                }
             }
 
             // if using exit is illegal, fail.
             if (!game.Rules.CanActorUseExit(m_Actor, m_Actor.Location.Position))
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorUseExit() can't exit @ " + m_Actor.Location.Position.ToString();
+#endif
                 return null;
+            }
 
             // use the exit.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorUseExit() use exit @ " + m_Actor.Location.Position.ToString();
+#endif
             return new ActionUseExit(m_Actor, m_Actor.Location.Position, game);
         }
         #endregion
@@ -3321,6 +3966,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction runAway = BehaviorWalkAwayFrom(game, primedExplosives);
             if (runAway == null)
                 return null;
+
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorFleeFromExplosives() get away: " + runAway.ToString();
+#endif
             RunIfPossible(game.Rules);
             return runAway;
         }
@@ -3360,6 +4010,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             if (bestAwayDir != null)// && bestAwayDir.Value > notMovingValue) nope, moving is always better than not moving
             {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorFleeFromFires() get away to " + bestAwayDir.Choice.ToString();
+#endif
                 RunIfPossible(game.Rules);
                 return new ActionBump(m_Actor, game, bestAwayDir.Choice);
             }
@@ -3480,6 +4134,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // equip then throw.
             if (!grenade.IsEquipped)
             {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorThrowGrenade() equip grenade";
+#endif
+
                 // alpha10 mark right hand as taboo so behavior BehaviorEquipBestItems will not undo us and loop forever
                 MarkEquipmentSlotAsTaboo(DollPart.RIGHT_HAND);
 
@@ -3497,6 +4156,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ActorAction throwAction = new ActionThrowGrenade(m_Actor, game, bestSpot.Value);
                 if (!throwAction.IsLegal())
                     return null;
+
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorThrowGrenade() throw @ " + bestSpot.Value.ToString();
+#endif
                 return throwAction;
             }
         }
@@ -3534,6 +4198,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             if (!hasFoodVisible)
                 return null;
+
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorMakeRoomForFood() food sighted, drop something";
+#endif
 
             // want to get rid of an item.
             // order of preference:
@@ -3660,7 +4329,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 ActionSprayOdorSuppressor sprayIt = new ActionSprayOdorSuppressor(m_Actor, game, spray, sprayOn);
                 if (sprayIt.IsLegal())
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorUseStenchKiller() spray on " + sprayOn.Name;
+#endif
                     return sprayIt;
+                }
             }
 
             // nope.
@@ -3729,6 +4404,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 game.DoEmote(target, String.Format("moves unnoticed by {0}.", m_Actor.Name));
 
                 // done.
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorEnforceLaw() did not spot: " + m_Actor.Name;
+#endif
                 return null;
             }
 
@@ -3743,6 +4422,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
 
             // make him our enemy and tell him!
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEnforceLaw() read rights to " + target.Name;
+#endif
             game.DoMakeAggression(m_Actor, target);
             return new ActionSay(m_Actor, game, target, 
                 String.Format("HEY! YOU ARE WANTED FOR {0} MURDER{1}!", target.MurdersCounter, target.MurdersCounter > 1 ? "s" : ""), RogueGame.Sayflags.IS_IMPORTANT | RogueGame.Sayflags.IS_DANGER);
@@ -3779,6 +4462,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     // eat the first food we get.
                     Item eatIt = invThere.GetFirstByType(typeof(ItemFood));
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorGoEatFoodOnGround() eat " + eatIt.TheName;
+#endif
                     return new ActionEatFoodOnGround(m_Actor, game, eatIt);
                 }
             }
@@ -3786,9 +4473,22 @@ namespace djack.RogueSurvivor.Gameplay.AI
             Percept nearest = FilterNearest(game, foodStacks);
             MapObject mapObjNearest = m_Actor.Location.Map.GetMapObjectAt(m_Actor.Location.Position);
             if (mapObjNearest != null && mapObjNearest.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED) // check that the food isn't in a 'locked' safe //@@MP (Release 6-5)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorGoEatFoodOnGround() can't get; food is in a safe";
+#endif
                 return null;
+            }
             else
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorGoEatFoodOnGround() go get food @ " + nearest.Location.Position.ToString();
+#endif
                 return BehaviorStupidBumpToward(game, nearest.Location.Position, false, false);
+            }
+            
         }
         #endregion
 
@@ -3812,10 +4512,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // eat the first corpse.
                 Corpse eatIt = corpses[0];
                 if (game.Rules.CanActorEatCorpse(m_Actor, eatIt))
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorGoEatCorpse() eat corpse @ " + eatIt.Position.ToString();
+#endif
                     return new ActionEatCorpse(m_Actor, game, eatIt);
+                }
             }
             // 2) go to nearest corpses.
             Percept nearest = FilterNearest(game, corpsesPercepts);
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorGoEatCorpse() go to corpse @ " + nearest.Location.Position.ToString();
+#endif
             return m_Actor.Model.Abilities.IsIntelligent ? 
                     BehaviorIntelligentBumpToward(game, nearest.Location.Position, true, true) : 
                     BehaviorStupidBumpToward(game, nearest.Location.Position, true, true);
@@ -3864,11 +4574,21 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 foreach (Corpse c in corpses)
                 {
                     if (game.Rules.CanActorReviveCorpse(m_Actor, c) && !game.Rules.AreEnemies(m_Actor,c.DeadGuy))
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorGoReviveCorpse() revive corpse @ " + c.Position.ToString();
+#endif
                         return new ActionReviveCorpse(m_Actor, game, c);
+                    }
                 }
             }
             // 2) go to nearest revivable.
             Percept nearest = FilterNearest(game, revivables);
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorGoReviveCorpse() go to corpse @ " + nearest.Location.Position.ToString();
+#endif
             return m_Actor.Model.Abilities.IsIntelligent ?
                     BehaviorIntelligentBumpToward(game, nearest.Location.Position, false, false) :
                     BehaviorStupidBumpToward(game, nearest.Location.Position, false, false);
@@ -3878,7 +4598,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         #endregion
 
-        #region Behaviors helpers
+#region Behaviors helpers
 
         #region Messages
         static string MakeCentricLocationDirection(RogueGame game, Location from, Location to) //@@MP - made static (Release 5-7)
