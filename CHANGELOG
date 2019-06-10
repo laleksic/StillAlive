@@ -1,4 +1,4 @@
-STILL ALIVE 2.4.6.19 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
+STILL ALIVE 2.4.6.20 (aka Release 6-6, ??/??/2019) [Author: MP] *WIP*
 ---------------------
 
 Features: 
@@ -35,6 +35,7 @@ Fixes:
 -Fixed conflicting priorities when AI deciding where to sleep.
 -Fixed couches weren't suitable for AI sleeping.
 -Upped maximum reincarnations from 1 to 7.
+-Fixed nail gun attack value.
 
 Development:
 -Added more Activity types.
