@@ -4134,19 +4134,26 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // equip then throw.
             if (!grenade.IsEquipped)
             {
-#if DEBUGAILOOPING
-                if (m_Actor.IsLooping)
-                    m_Actor.ActivityInProgress = "BehaviorThrowGrenade() equip grenade";
-#endif
-
                 // alpha10 mark right hand as taboo so behavior BehaviorEquipBestItems will not undo us and loop forever
                 MarkEquipmentSlotAsTaboo(DollPart.RIGHT_HAND);
 
                 Item otherEquipped = m_Actor.GetEquippedWeapon();
                 if (otherEquipped != null)
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorThrowGrenade() unequip right hand item first";
+#endif
                     return new ActionUnequipItem(m_Actor, game, otherEquipped);
+                }
                 else
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorThrowGrenade() equip grenade";
+#endif
                     return new ActionEquipItem(m_Actor, game, grenade);
+                }
             }
             else
             {
@@ -4155,7 +4162,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                 ActorAction throwAction = new ActionThrowGrenade(m_Actor, game, bestSpot.Value);
                 if (!throwAction.IsLegal())
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorThrowGrenade() throw @ " + bestSpot.Value.ToString();
+#endif
                     return null;
+                }
 
 #if DEBUGAILOOPING
                 if (m_Actor.IsLooping)

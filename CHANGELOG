@@ -35,7 +35,7 @@ Fixes:
 -Fixed conflicting priorities when AI deciding where to sleep.
 -Fixed couches weren't suitable for AI sleeping.
 -Upped maximum reincarnations from 1 to 7.
--Fixed nail gun attack value.
+-Fixed chance to hit for ranged weapons with a max range of 1.
 -Fixed darkness FOV status when using a torch.
 
 Development:

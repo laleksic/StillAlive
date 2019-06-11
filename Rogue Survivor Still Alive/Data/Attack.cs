@@ -54,7 +54,12 @@ namespace djack.RogueSurvivor.Data
 
         public int EfficientRange
         {
-            get { return this.Range / 2; }
+            get {
+                if (this.Range == 1) //@@MP - otherwise range of 1 would always miss (Release 6-6)
+                    return this.Range;
+                else
+                    return this.Range / 2;
+            }
         }
 
         // alpha10

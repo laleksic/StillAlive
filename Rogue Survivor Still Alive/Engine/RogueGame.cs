@@ -3776,11 +3776,11 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(gun);
             Item ammo = new ItemAmmo(GameItems.AMMO_HEAVY_RIFLE);
             m_Player.Inventory.AddAll(ammo);
-            Item set = new ItemSprayScent(GameItems.STENCH_KILLER);
-            m_Player.Inventory.AddAll(set);
-            /*Item gun2 = new ItemRangedWeapon(GameItems.HUNTING_RIFLE);
+            /*Item set = new ItemSprayScent(GameItems.STENCH_KILLER);
+            m_Player.Inventory.AddAll(set);*/
+            Item gun2 = new ItemRangedWeapon(GameItems.NAIL_GUN);
             m_Player.Inventory.AddAll(gun2);
-            Item seeds = new Item(GameItems.VEGETABLE_SEEDS);
+            /*Item seeds = new Item(GameItems.VEGETABLE_SEEDS);
             m_Player.Inventory.AddAll(seeds);
             Item shovel = new ItemMeleeWeapon(GameItems.SHOVEL);
             m_Player.Inventory.AddAll(shovel);
@@ -27253,7 +27253,7 @@ namespace djack.RogueSurvivor.Engine
         // detect cases where an ai is proably performing an infinite sequence of ap free actions.
         Actor m_DEBUG_prevAiActor;
         int m_DEBUG_sameAiActorCount;
-        const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 7; //@@MP - 5 or less will trigger a lot on turns 1 & 2 when the cops equip all their stuff
+        const int DEBUG_AI_ACTOR_LOOP_COUNT_WARNING = 10; //@@MP - 5 or less will trigger a lot on turns 1 & 2 when the cops equip all their stuff
 #endregion
 #endregion
 #endregion
