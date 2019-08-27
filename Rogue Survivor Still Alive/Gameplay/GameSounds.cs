@@ -12,6 +12,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string NIGHTMARE = "nightmare";
         public const string NIGHTMARE_FILE = PATH + "sfx - nightmare";
 
+        #region Player
         //@@MP (Release 2), added rapid-fire (Release 6-6)
         public const string PISTOL_SINGLE_SHOT_PLAYER = "player fires pistol";
         public const string PISTOL_SINGLE_SHOT_PLAYER_FILE = PATH + "pistol_single-shot_player";
@@ -33,7 +34,9 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ARMY_RIFLE_SINGLE_SHOT_PLAYER_FILE = PATH + "army_rifle_single-shot_player";
         public const string ARMY_RIFLE_RAPID_FIRE_PLAYER = "player fires army rifle burst";
         public const string ARMY_RIFLE_RAPID_FIRE_PLAYER_FILE = PATH + "army_rifle_rapid-fire_player";
+        #endregion
 
+        #region Nearby
         public const string PISTOL_SINGLE_SHOT_NEARBY = "pistol firing nearby";
         public const string PISTOL_SINGLE_SHOT_NEARBY_FILE = PATH + "pistol_single-shot_nearby";
         public const string PISTOL_RAPID_FIRE_NEARBY = "pistol shots nearby";
@@ -54,7 +57,9 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ARMY_RIFLE_SINGLE_SHOT_NEARBY_FILE = PATH + "army_rifle_single-shot_nearby";
         public const string ARMY_RIFLE_RAPID_FIRE_NEARBY = "army rifle burst nearby";
         public const string ARMY_RIFLE_RAPID_FIRE_NEARBY_FILE = PATH + "army_rifle_rapid-fire_nearby";
+        #endregion
 
+        #region Far
         public const string PISTOL_SINGLE_SHOT_FAR = "pistol firing somewhere";
         public const string PISTOL_SINGLE_SHOT_FAR_FILE = PATH + "pistol_single-shot_far";
         public const string PISTOL_RAPID_FIRE_FAR = "pistol shots somewhere";
@@ -73,6 +78,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ARMY_RIFLE_SINGLE_SHOT_FAR_FILE = PATH + "army_rifle_single-shot_far";
         public const string ARMY_RIFLE_RAPID_FIRE_FAR = "army rifle burst somewhere";
         public const string ARMY_RIFLE_RAPID_FIRE_FAR_FILE = PATH + "army_rifle_rapid-fire_far";
+        #endregion
 
         public const string MELEE_ATTACK_PLAYER = "player does melee attack";
         public const string MELEE_ATTACK_PLAYER_FILE = PATH + "melee_attack_player";
@@ -295,5 +301,36 @@ namespace djack.RogueSurvivor.Gameplay
         public const string MALE_HURT_FILE = PATH + "male_hurt";
         public const string FEMALE_HURT = "female hurt";
         public const string FEMALE_HURT_FILE = PATH + "female_hurt";
+
+        //@@MP (Release 7-1)
+        public const string CHAINSAW_PLAYER = "player uses chainsaw";
+        public const string CHAINSAW_PLAYER_FILE = PATH + "chainsaw_player";
+        public const string CHAINSAW_NEARBY = "chainsaw used nearby";
+        public const string CHAINSAW_NEARBY_FILE = PATH + "chainsaw_nearby";
+        public const string CHAINSAW_FAR = "chainsaw used somewhere";
+        public const string CHAINSAW_FAR_FILE = PATH + "chainsaw_far";
+
+        public const string FLAMETHROWER_VISIBLE = "flamethrower burst";
+        public const string FLAMETHROWER_VISIBLE_FILE = PATH + "flamethrower_visible";
+        public const string FLAMETHROWER_AUDIBLE = "flamethrower burst nearby";
+        public const string FLAMETHROWER_AUDIBLE_FILE = PATH + "flamethrower_audible";
+
+        public const string FUEL_CAN_VISIBLE = "fuel can explosion";
+        public const string FUEL_CAN_VISIBLE_FILE = PATH + "fuel_can_visible";
+        public const string FUEL_CAN_AUDIBLE = "fuel can explosion nearby";
+        public const string FUEL_CAN_AUDIBLE_FILE = PATH + "fuel_can_audible";
+
+        public const string FUEL_PUMP_VISIBLE = "fuel pump explosion";
+        public const string FUEL_PUMP_VISIBLE_FILE = PATH + "fuel_pump_visible";
+        public const string FUEL_PUMP_AUDIBLE = "fuel pump explosion nearby";
+        public const string FUEL_PUMP_AUDIBLE_FILE = PATH + "fuel_pump_audible";
+
+        public const string GLOWSTICK = "lights glowstick";
+        public const string GLOWSTICK_FILE = PATH + "glowstick";
+        public const string FLARE = "lights flare";
+        public const string FLARE_FILE = PATH + "flare";
+
+        public const string EQUIP = "equips";
+        public const string EQUIP_FILE = PATH + "equip";
     }
 }

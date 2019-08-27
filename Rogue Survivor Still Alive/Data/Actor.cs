@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using djack.RogueSurvivor.Gameplay;
 using djack.RogueSurvivor.Engine.Items;
+using djack.RogueSurvivor.Engine;
+using System.Drawing;
 
 namespace djack.RogueSurvivor.Data
 {
@@ -62,6 +64,8 @@ namespace djack.RogueSurvivor.Data
         int m_previousSleepPoints;
         int m_Sanity;
         int m_previousSanity;
+        int m_BloodAlcohol; //@@MP (Release 7-1)
+        int m_previousBloodAlcohol; //@@MP (Release 7-1)
         Location m_Location;
         int m_ActionPoints;
         int m_LastActionTurn;
@@ -86,6 +90,7 @@ namespace djack.RogueSurvivor.Data
         int m_OdorSuppressorCounter; //alpha 10
         bool m_IsLooping; //@@MP (Release 6-6)
         string m_ActivityInProgress; //@@MP (Release 6-6)
+        int m_RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
         #endregion
         #endregion
 
@@ -269,6 +274,11 @@ namespace djack.RogueSurvivor.Data
             set { m_ActivityInProgress = value; }
         }
 
+        public bool IsDrunk  //@@MP (Release 7-1)
+        {
+            get { return (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL / 2); }
+        }
+
         public Inventory Inventory
         {
             get { return m_Inventory; }
@@ -353,6 +363,18 @@ namespace djack.RogueSurvivor.Data
         {
             get { return m_previousSanity; }
             set { m_previousSanity = value; }
+        }
+
+        public int BloodAlcohol //@@MP (Release 7-1)
+        {
+            get { return m_BloodAlcohol; }
+            set { m_BloodAlcohol = value; }
+        }
+
+        public int PreviousBloodAlcohol //@@MP (Release 7-1)
+        {
+            get { return m_previousBloodAlcohol; }
+            set { m_previousBloodAlcohol = value; }
         }
 
         public ActorSheet Sheet
@@ -507,6 +529,15 @@ namespace djack.RogueSurvivor.Data
             set { m_DraggedCorpse = value; }
         }
 
+        /// <summary>
+        /// Tracks the usage of expenable items that are often used mutliple times on one turn (medicine, entertainment)
+        /// </summary>
+        public int RepetitiveNoAPCostActionsThisTurnCount //@@MP (Release 7-1)
+        {
+            get { return m_RepetitiveNoAPCostActionsThisTurnCount; }
+            set { m_RepetitiveNoAPCostActionsThisTurnCount = value; }
+        }
+
         // alpha 10 from here down
         public bool IsInvincible
         {
@@ -567,6 +598,7 @@ namespace djack.RogueSurvivor.Data
             m_FoodPoints = m_previousFoodPoints = m_Sheet.BaseFoodPoints;
             m_SleepPoints = m_previousSleepPoints = m_Sheet.BaseSleepPoints;
             m_Sanity = m_previousSanity = m_Sheet.BaseSanity;
+            m_BloodAlcohol = m_previousBloodAlcohol = 0; //@@MP (Release 7-1)
 
             // create inventory.
             if (model.Abilities.HasInventory)
@@ -1034,6 +1066,40 @@ namespace djack.RogueSurvivor.Data
         public ItemRangedWeapon GetEquippedRangedWeapon()
         {
             return GetEquippedItem(DollPart.RIGHT_HAND) as ItemRangedWeapon;
+        }
+        #endregion
+
+        #region BloodAlcohol helpers  //@@MP (Release 7-1)
+        public string GetIntoxicationDescription()
+        {
+            if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL)
+                return "blacked out!"; //100%
+            else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.8)
+                return "hammered"; //80-99%
+            else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.6)
+                return "drunk"; //60-79%
+            else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.4)
+                return "tipsy"; //40-59%
+            else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.2)
+                return "buzzed"; //20-39%
+            else
+                return "sober"; //0-19%
+        }
+
+        public Color GetIntoxicationTextColor()
+        {
+            if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL)
+                return Color.Red; //100%
+            else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.8)
+                return Color.Tomato; //80-99%
+            else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.6)
+                return Color.DarkSalmon; //60-79%
+            else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.4)
+                return Color.MediumAquamarine; //40-59%
+            else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.2)
+                return Color.PaleGreen; //20-39%
+            else
+                return Color.Green; //0-19%
         }
         #endregion
 

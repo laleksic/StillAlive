@@ -203,7 +203,7 @@ namespace djack.RogueSurvivor
                 m_Game.Player.StaminaPoints = m_Game.Rules.ActorMaxSTA(m_Game.Player);
                 m_Game.Player.FoodPoints = m_Game.Rules.ActorMaxFood(m_Game.Player);
                 m_Game.Player.SleepPoints = m_Game.Rules.ActorMaxSleep(m_Game.Player);
-                if (m_Game.Session.GameMode == GameMode.GM_STANDARD) m_Game.Player.Infection = 0;
+                if (m_Game.Session.GameMode != GameMode.GM_STANDARD) m_Game.Player.Infection = 0;
                 if (RogueGame.Options.IsSanityEnabled) m_Game.Player.Sanity = m_Game.Rules.ActorMaxSanity(m_Game.Player); //@MP - fixed crappy implem (Release 5-2)
                 //m_Game.Player.Inventory.MaxCapacity = 10;
                 /*Tile tile = m_Game.Session.CurrentMap.GetTileAt(m_Game.Player.Location.Position);
@@ -500,6 +500,9 @@ namespace djack.RogueSurvivor
         // alpha10
         public void UI_DrawPopupTitle(string title, Color titleColor, string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
+            if (lines == null || lines.Length == 0) //@@MP (Release 7-1)
+                return;
+
             /////////////////
             // Measure lines
             /////////////////
@@ -560,6 +563,9 @@ namespace djack.RogueSurvivor
         // alpha10
         public void UI_DrawPopupTitleColors(string title, Color titleColor, string[] lines, Color[] colors, Color boxBorderColor, Color boxFillColor, int gx, int gy)
         {
+            if (lines == null || lines.Length == 0 || colors == null || colors.Length == 0) //@@MP (Release 7-1)
+                return;
+
             /////////////////
             // Measure lines
             /////////////////

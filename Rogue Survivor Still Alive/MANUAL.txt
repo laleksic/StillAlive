@@ -19,7 +19,7 @@ ICONS LEGEND : F1
 MOVE : Numpad 1-4,6-9           ITEM SLOTS : 1-10               RUN : R		
 SLEEP : Z                       WAIT 1 TURN : Numpad 5          WAIT 1 HOUR : W
 CITY INFO : I                   MESSAGES LOG : Shift + M        USE SPRAY : A
-FIRE : F                        MARK ENEMIES : Ctrl + E         MAKE MOLOTOVS : M
+FIRE : F                        MARK ENEMIES : Ctrl + E         INFO MODE : M (mouse alternative)
 CLOSE : C                       BREAK : K                       USE LADDER/STAIRS : X
 PUSH : P                        BUILD FORTIFICATION : N
 PULL : Ctrl + P                 BARRICADE : B
@@ -486,9 +486,8 @@ Give orders or directives to your followers. See the Followers section for more 
 Make a lot of noise. Useful to try to wake up nearby sleepers. The closer you are when shouting the more chance they have to wake up.
 
 
-> MAKE MOLOTOV  (default M)
-Press M then the number key that corresponds with the inventory slot containing the liquor that you want to convert to a molotov.
-Press 0 for inventory slot 10. You can now equip and throw the molotov like a grenade (F).
+> INSPECTION MODE  (default M)
+Press M to enter Inspection Mode, where the movement keys can be used to view in-map info rather than having to use the mouse.
 
 
 > PLANT SEEDS

@@ -16,6 +16,7 @@ namespace djack.RogueSurvivor.Engine.Items
         public int Protection_Shot { get; private set; }
         public int Encumbrance { get; private set; }
         public int Weight { get; private set; }
+        public int Fire_Resistance { get; private set; } //@@MP (Release 7-1)
         #endregion
 
         #region Init
@@ -30,6 +31,7 @@ namespace djack.RogueSurvivor.Engine.Items
             this.Protection_Shot = m.Protection_Shot;
             this.Encumbrance = m.Encumbrance;
             this.Weight = m.Weight;
+            this.Fire_Resistance = m.Fire_Resistance; //@@MP (Release 7-1)
         }
         #endregion
 

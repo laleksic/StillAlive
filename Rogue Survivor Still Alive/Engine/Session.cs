@@ -297,6 +297,11 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         BANK_SAFE, //@@MP (Release 6-5)
 
+        /// <summary>
+        /// The player has picked up a siphon kit or item that uses fuel
+        /// </summary>
+        SIPHON_FUEL, //@@MP (Release 7-1)
+
         // alpha10 new hints from here down
         /// <summary>
         /// Sanity.

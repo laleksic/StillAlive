@@ -134,8 +134,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 14 follow leader
             // 15 take lead (if leadership)
             // 16 (leader) don't leave follower behind.
-            // 17 explore
-            // 18 wander
+            // 17 make molotovs
+            // 18 explore
+            // 19 wander
             //////////////////////////////////////////////////////////////////////
 
             // get data.
@@ -612,7 +613,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 17 explore
+            // 17 make molotovs   //@@MP (Release 7-1)
+            #region
+            determinedAction = BehaviorMakeMolotovs(game);
+            if (determinedAction != null)
+            {
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
+                return determinedAction;
+            }
+            #endregion
+
+            // 18 explore
             #region
             ActorAction exploreAction = BehaviorExplore(game, m_Exploration);
             if (exploreAction != null)
@@ -622,7 +633,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 18 wander
+            // 19 wander
             determinedAction = BehaviorWander(game);
             if (determinedAction != null)
             {

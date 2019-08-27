@@ -57,7 +57,7 @@ namespace djack.RogueSurvivor.Engine
             Set(PlayerCommand.ICONS_LEGEND, Keys.F1); //@@MP (Release 6-1)
             Set(PlayerCommand.NEGOTIATE_TRADE, Keys.E);
             Set(PlayerCommand.LOAD_GAME, Keys.L | Keys.Shift);
-            Set(PlayerCommand.MAKE_MOLOTOV, Keys.M); //@@MP (Release 4)
+            Set(PlayerCommand.INSPECTION_MODE, Keys.M); //@@MP (Release 7-1)
             Set(PlayerCommand.MARK_ENEMIES_MODE, Keys.E | Keys.Control);
             Set(PlayerCommand.MESSAGE_LOG, Keys.M | Keys.Shift);
             Set(PlayerCommand.MOVE_E, Keys.NumPad6);

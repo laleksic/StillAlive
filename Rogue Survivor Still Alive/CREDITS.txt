@@ -1,47 +1,4 @@
-﻿Rogue Survivor is a free zombie survival roguelike sandbox game with unique features and (limited) modding support.
-The game takes place in a town famous for being the headquarters of the powerful CHAR Corporation. You wake up amidst the chaos and you must find ways to survive. 
-
-Survive in the city
--Play as living or undead
--Survive the zombies... and the humans
--The undeads get stronger every day 
--Find food and shelter... but you're not alone
--Reincarnate when you die and continue playing as another character
--Graphic tiles, mouse support and musics
-
-Interact with NPCs
--Fight raiding gangs 
--AI controlled survivors are trying to survive just like you
--Trade with other survivors
--Lead a band of survivors   
--Get help from the National Guard
--Commit murders... but watch out for the police
-
-A dynamic, procedurally generated game world
--A city with different districts, buildings, sewers and subway
--Push or destroy objects, build barricades
--Day/night cycle
--Weather 
--Things happen all the time, the world is not waiting for you
-
-Get tools, skills and friends
--Learn skills by surviving to see a new sunrise
--Scavenge items and barricading material
--Various weapons and items  
--Get followers and turn them into useful buddies
-
-Learn, customize and mod
--In-game manual and hint system 
--Redefine the keys
--Wide range of options to configure the gameplay and the difficulty
--Resizable game window, playable on any resolution
--More than 10 original musics
--Mod the graphics, musics, actors, items and skills
--Option of rendering and audio engines
-
---------------------------------------------------------------------
-
-SOUND CREDITS
+﻿ ** SOUND CREDITS **
 
 Each file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links below.
 All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
@@ -51,7 +8,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Hunting rifle : https://freesound.org/people/morganpurkis/sounds/387692/ by morganpurkis
 -Shotgun v2 : https://freesound.org/people/Deganoth/sounds/348671/ by Deganoth
 -Crossbow : https://freesound.org/people/Erdie/sounds/65733/ by Erdie
--Explosion : https://freesound.org/people/Quaker540/sounds/245372/ by Quaker540
+-Dynamite : https://freesound.org/people/Quaker540/sounds/245372/ by Quaker540
 -Spray scent : https://freesound.org/people/debsound/sounds/123036/ by debsound
 -Spray paint : https://freesound.org/people/SmartWentCody/sounds/179008/ by SmartWentCody
 -Scream 01 : https://freesound.org/people/adriancalzon/sounds/219858/ by adriancalzon
@@ -124,9 +81,27 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Drink : 
 	slurp : https://freesound.org/people/morgantj/sounds/58847/ by morgantj
 	ahh : https://freesound.org/people/Q.K./sounds/56270/ by Q.K.
+-Chainsaw : https://freesound.org/people/DrinkingWindGames/sounds/463730/ by DrinkingWindGames
+-Stun gun : https://freesound.org/people/JavierZumer/sounds/257236/ by JavierZumer
+-Fire extinguisher : https://freesound.org/people/bumpelsnake/sounds/456603/ by bumpelsnake
+-Trip mine trigger : https://freesound.org/people/RutgerMuller/sounds/51126/ by RutgerMuller
+-Smoke grenade
+	burst : https://freesound.org/people/sora955/sounds/231322/ by sora955
+	smoke : https://opengameart.org/content/steam-release-sounds by bart
+-Fuel can explosion
+	burst : https://freesound.org/people/smcameron/sounds/51464/ by smcameron
+	fire : https://freesound.org/people/Benboncan/sounds/74899/ by Benboncan
+-Fuel pump explosion
+	explosion : https://freesound.org/people/Quaker540/sounds/245372/ by Quaker540
+	fire : https://freesound.org/people/Benboncan/sounds/74899/ by Benboncan
+-Flare : https://freesound.org/people/kyles/sounds/450833/ by kyles
+-Glowstick
+	snap : https://freesound.org/people/herraportti/sounds/436652/ by herraportti
+	shake : https://freesound.org/people/deleted_user_4966198/sounds/264194/ by deleted_user_4966198
+-Binoculars : https://freesound.org/people/RoganDerrick/sounds/260437/ by RoganDerrick
 
 
-IMAGE CREDITS
+** IMAGE CREDITS **
 
 Each and every file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links below.
 All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
@@ -145,7 +120,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Helicopter : https://opengameart.org/content/fall-to-the-earth by Gamelves.com
 
 
-MUSIC CREDITS
+** MUSIC CREDITS *
 
 Each and every file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links below.
 All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/

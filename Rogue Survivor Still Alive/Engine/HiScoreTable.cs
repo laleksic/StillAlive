@@ -189,7 +189,7 @@ namespace djack.RogueSurvivor.Engine
             }
             else
             {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load high score table (no high scores?).");
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load high score table (no high scores yet?).");
                 return null;
             }
         }

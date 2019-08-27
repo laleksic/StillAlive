@@ -32,6 +32,7 @@ namespace djack.RogueSurvivor.Gameplay
         	"firearms are more likely to jam in the rain.",
             "certain outfits change the chances to get attention from cops and gangs.",
             "trading and grouping with people are good for your sanity.",
+            "too much alcohol will have adverse effects, but it does have its uses.",
             // followers
             "you can use cellphones to keep contact with your followers.",
             //"followers can help you push objects.",
@@ -45,7 +46,8 @@ namespace djack.RogueSurvivor.Gameplay
             "you might like to change the Animation Delay in the game options.",
             "empty food cans can be turned into an early-warning noise trap.",
             "someone rings church bells at sundown. Night is extra dangerous...",
-            "you might like to turn on the Animation Delay in the options menu."
+            "you might like to turn on the Animation Delay in the options menu.",
+            "you might like to turn off Sanity in the options menu."
         };
     }
 }

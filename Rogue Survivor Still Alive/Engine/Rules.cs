@@ -7,6 +7,7 @@ using djack.RogueSurvivor.Gameplay;
 using djack.RogueSurvivor.Engine.Actions;
 using djack.RogueSurvivor.Engine.Items;
 using djack.RogueSurvivor.Engine.MapObjects;
+using System.Linq;
 
 namespace djack.RogueSurvivor.Engine
 {
@@ -15,6 +16,7 @@ namespace djack.RogueSurvivor.Engine
         #region Constants
         public const int BASE_ACTION_COST = 100;
         public const int BASE_SPEED = BASE_ACTION_COST;
+        public const int AI_REPETITIVE_NOAPCOST_ACTION_LIMIT = 8; //@@MP (Release 7-1)
 
         #region Stamina
         /// <summary>
@@ -110,6 +112,11 @@ namespace djack.RogueSurvivor.Engine
         // alpha10 made into constants
         const float FIRING_WHEN_SLP_EXHAUSTED = 0.50f; // -50%
         const float FIRING_WHEN_SLP_SLEEPY = 0.75f; // -25%
+        //@@MP (Release 7-1)
+        const float FIRING_WHEN_BLACKOUT_DRUNK = 0.50f; // -50%
+        const float FIRING_WHEN_HAMMERED = 0.66f; // -33%
+        const float FIRING_WHEN_DRUNK = 0.75f; // -25%
+        const float FIRING_WHEN_TIPSY = 0.95f; // -5%
         #endregion
 
         #region Body armors
@@ -146,6 +153,9 @@ namespace djack.RogueSurvivor.Engine
         public const int SANITY_RECOVER_BOND = 4 * WorldTime.TURNS_PER_HOUR;  //alpha 10. was 1h
         public const int SANITY_RECOVER_CHAT_OR_TRADE = 3 * WorldTime.TURNS_PER_HOUR; //alpha 10 added
         // alpha10 increased san recovery; chating & trading also recover san
+
+        public const int ALCOHOL_STANDARD_UNIT = WorldTime.TURNS_PER_HOUR; //@@MP (Release 7-1)
+        public const int BLACKOUT_DRUNK_LEVEL = 5 * WorldTime.TURNS_PER_HOUR; //@@MP (Release 7-1)
 
         /// <summary>
         /// When starving, chance of dying from starvation each turn.
@@ -214,6 +224,7 @@ namespace djack.RogueSurvivor.Engine
 
         #region Improvised weapons
         public const int IMPROVED_WEAPONS_FROM_BROKEN_WOOD_CHANCE = 25;
+        public const int VOMIT_WHILE_SIPHONING_CHANCE = 25; //@@MP (Release 7-1)
         #endregion
 
         /* alpha10 replaced with rapid fire attacks property of ranged weapons
@@ -712,6 +723,7 @@ namespace djack.RogueSurvivor.Engine
             // 1. Actor cant use items.
             // 2. Item not equipable.
             // (DISABLED 3. No free slot on doll.)
+            // 4. special items
             ////////////////////////////
 
             // 1. Actor cant use items.
@@ -737,6 +749,28 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 #endif
+
+            // 4. special items //@@MP (Release 7-1)
+            bool canSeeSky = CanActorSeeSky(actor);
+            bool isNight = actor.Location.Map.LocalTime.IsNight;
+            // 4a. too bright for NVGs
+            /*
+             * aloow NVGs, as otherwise the player couldn't recharge them in Lit or outdoor daytime areas (Release 7-1)
+             * 
+            bool outsideDuringDay = (canSeeSky && !isNight);
+            if (IsItemNightVision(it) && (actor.Location.Map.Lighting == Lighting.LIT || outsideDuringDay)) //@@MP (Release 6-3)
+            {
+                reason = "It's too bright to equip night vision goggles";
+                return false;
+            }
+            */
+            // 4b. too dark for binoculars
+            bool outsideAtNight = (canSeeSky && isNight);
+            if (IsItemBinoculars(it) && (actor.Location.Map.Lighting == Lighting.DARKNESS || outsideAtNight))
+            {
+                reason = "It's too dark to use binoculars";
+                return false;
+            }
 
             // all clear.
             reason = "";
@@ -802,7 +836,7 @@ namespace djack.RogueSurvivor.Engine
             ////////////////////////
 
             // 1. Equipped.
-            if(it.IsEquipped)
+            if(it.IsEquipped && !it.Model.IsThrowable) //@@MP (Release 7-1)
             {
                 reason = "unequip first";
                 return false;
@@ -977,6 +1011,33 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsItemAlcoholForDrinking(Item item) //@@MP (Release 7-1)
+        {
+            if (item == null)
+                return false;
+            else if ((item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN) || (item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN) ||
+                (item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE) || (item.Model.ID == (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_RED))
+                return true;
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// checks if item is a liquor of a suitable type for a molotov
+        /// </summary>
+        public bool IsItemLiquorForMolotov(Item item) //@@MP (Release 4), made static (Release 5-7)
+        {
+            if (item == null)
+                return false;
+            else if ((item.Model.ID == (int)GameItems.IDs.LIQUOR_AMBER) || (item.Model.ID == (int)GameItems.IDs.LIQUOR_CLEAR))
+                return true;
+            else
+                return false;
+        }
+
         public bool CanActorRechargeItemBattery(Actor actor, Item it, out string reason)
         {
             if (actor == null)
@@ -1008,7 +1069,7 @@ namespace djack.RogueSurvivor.Engine
             // 3. Not a battery powered item.
             if (!IsItemBatteryPowered(it))
             {
-                reason = "not a battery powered item";
+                reason = "not a battery-powered item";
                 return false;
             }
 
@@ -1019,7 +1080,10 @@ namespace djack.RogueSurvivor.Engine
 
         public bool IsItemBatteryPowered(Item it)
         {
-            if (it == null) return false;
+            if (it == null)
+                return false;
+            else if (!it.Model.IsBatteryPowered) //@@MP (Release 7-1)
+                return false;
             return (it is ItemLight || it is ItemTracker);
         }
 
@@ -1031,6 +1095,26 @@ namespace djack.RogueSurvivor.Engine
             ItemTracker tracker = it as ItemTracker;
             if (tracker != null && tracker.IsFullyCharged) return true;
             return false;
+        }
+
+        public bool IsItemNightVision(Item item) //@@MP (Release 6-3)
+        {
+            if (item.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_FEMALE)
+                return true;
+            else if (item.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_MALE)
+                return true;
+            else
+                return false;
+        }
+
+        public bool IsItemBinoculars(Item item) //@@MP (Release 7-1)
+        {
+            if (item.Model.ID == (int)GameItems.IDs.LIGHT_BINOCULARS_MALE)
+                return true;
+            else if (item.Model.ID == (int)GameItems.IDs.LIGHT_BINOCULARS_FEMALE)
+                return true;
+            else
+                return false;
         }
 
         public bool CanActorGiveItemTo(Actor actor, Actor target, Item gift, out string reason)
@@ -1211,6 +1295,7 @@ namespace djack.RogueSurvivor.Engine
             // 1. Target not adjacent in map or not sharing an exit.
             // 2. Stamina below min level.
             // 3. Target is dead (doh!).
+            // 4. Chainsaw but no fuel
             //////////////////////////////
 
             // 1. Target not adjacent in map or not sharing an exit.
@@ -1259,6 +1344,17 @@ namespace djack.RogueSurvivor.Engine
             {
                 reason = "already dead!";
                 return false;
+            }
+
+            // 4. Chainsaw but no fuel //@@MP (Release 7-1)
+            ItemMeleeWeapon meleeWeapon = actor.GetEquippedWeapon() as ItemMeleeWeapon;
+            if (meleeWeapon != null && meleeWeapon.Model.ID == (int)GameItems.IDs.MELEE_CHAINSAW)
+            {
+                if (!actor.Inventory.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.AMMO_FUEL))
+                {
+                    reason = "no fuel in inventory";
+                    return false;
+                }
             }
 
             // all clear.
@@ -2413,6 +2509,93 @@ namespace djack.RogueSurvivor.Engine
             return list;
         }
 
+        /// <summary>
+        /// List fuel cans (ammo) in fov, sorted by distance (closest first).
+        /// </summary>
+        public List<KeyValuePair<Item, Point>> GetFuelCansInFov(Actor actor, HashSet<Point> fov) //@@MP (Release 7-1)
+        {
+            if (actor == null)
+                throw new ArgumentNullException("actor");
+            if (fov == null)
+                throw new ArgumentNullException("fov");
+
+            Dictionary<Item, Point> dict = new Dictionary<Item, Point>();
+
+            foreach (Point pt in fov)
+            {
+                Inventory inv = actor.Location.Map.GetItemsAt(pt);
+                if (inv == null)
+                    continue;
+                foreach (Item item in inv.Items)
+                {
+                    ItemAmmo ammo = item as ItemAmmo;
+                    if (ammo != null)
+                    {
+                        if (ammo.Model.ID == (int)GameItems.IDs.AMMO_FUEL)
+                            dict.Add(item, pt);
+                    }
+                }
+            }
+
+            List<KeyValuePair<Item, Point>> list = dict.ToList();
+            if (list != null)
+            {
+                list.Sort((a, b) =>
+                {
+
+                    float dA = StdDistance(a.Value, actor.Location.Position);
+                    float dB = StdDistance(b.Value, actor.Location.Position);
+
+                    return dA < dB ? -1 :
+                        dA > dB ? 1 :
+                        0;
+                });
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// List fuel pumps (MapObject) in fov, sorted by distance (closest first).
+        /// </summary>
+        public List<KeyValuePair<MapObject, Point>> GetFuelPumpsInFov(Actor actor, HashSet<Point> fov) //@@MP (Release 7-1)
+        {
+            //if it gets to the point of having multiple MapObjects that can be targeted by firearms, make that a Flag
+
+            if (actor == null)
+                throw new ArgumentNullException("actor");
+            if (fov == null)
+                throw new ArgumentNullException("fov");
+
+            Dictionary<MapObject, Point> dict = new Dictionary<MapObject, Point>();
+
+            foreach (Point pt in fov)
+            {
+                MapObject obj = actor.Location.Map.GetMapObjectAt(pt);
+                if (obj == null)
+                    continue;
+                else if (obj.AName == "a fuel pump")
+                    dict.Add(obj, pt);
+            }
+
+            List<KeyValuePair<MapObject, Point>> list = dict.ToList();
+            if (list != null)
+            {
+                list.Sort((a, b) =>
+                {
+
+                    float dA = StdDistance(a.Value, actor.Location.Position);
+                    float dB = StdDistance(b.Value, actor.Location.Position);
+
+                    return dA < dB ? -1 :
+                        dA > dB ? 1 :
+                        0;
+                });
+            }
+
+            return list;
+        }
+
         public bool CanActorFireAt(Actor actor, Actor target)
         {
             string reason;
@@ -2488,13 +2671,61 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        public bool CanActorThrowTo(Actor actor, Point pos, List<Point> LoF)
+        public bool CanActorFireAt(Actor actor, Point targetPT, List<Point> LoF, out string reason) //@@MP (Release 7-1)
         {
-            string reason;
-            return CanActorThrowTo(actor, pos, LoF, out reason);
+            if (actor == null)
+                throw new ArgumentNullException("actor");
+            if (targetPT == null)
+                throw new ArgumentNullException("target");
+
+            ///////////////////////////////////////
+            // Cannot fire if:
+            // 1. No ranged weapon or out of range.
+            // 2. No ammo.
+            // 3. No LoF.
+            ///////////////////////////////////////
+            if (LoF != null)
+                LoF.Clear();
+
+            // 1. No ranged weapon or out of range.
+            ItemRangedWeapon rangedWeapon = actor.GetEquippedWeapon() as ItemRangedWeapon;
+            if (rangedWeapon == null)
+            {
+                reason = "no ranged weapon equipped";
+                return false;
+            }
+            if (actor.CurrentRangedAttack.Range < GridDistance(actor.Location.Position, targetPT))
+            {
+                reason = "out of range";
+                return false;
+            }
+
+            // 2. No ammo.
+            if (rangedWeapon.Ammo <= 0)
+            {
+                reason = "no ammo left";
+                return false;
+            }
+
+            // 3. No LoF.
+            if (!LOS.CanTraceFireLine(actor.Location, targetPT, actor.CurrentRangedAttack.Range, LoF))
+            {
+                reason = "no line of fire";
+                return false;
+            }
+
+            // all clear.
+            reason = "";
+            return true;
         }
 
-        public bool CanActorThrowTo(Actor actor, Point pos, List<Point> LoF, out string reason)
+        public bool CanActorThrowGrenadeTo(Actor actor, Point pos, List<Point> LoF) //@@MP - renamed for sister method (Release 7-1)
+        {
+            string reason;
+            return CanActorThrowGrenadeTo(actor, pos, LoF, out reason);
+        }
+
+        public bool CanActorThrowGrenadeTo(Actor actor, Point pos, List<Point> LoF, out string reason) //@@MP - renamed for sister method (Release 7-1)
         {
             if (actor == null)
                 throw new ArgumentNullException("actor");
@@ -2539,6 +2770,50 @@ namespace djack.RogueSurvivor.Engine
             return true;
 
         }
+
+        /// <summary>
+        /// For non-grenade items, eg ItemLight flares
+        /// </summary>
+        public bool CanActorThrowItemTo(Actor actor, Point pos, List<Point> LoF, Item item, int maxThrowDist, out string reason) //@@MP (Release 7-1)
+        {
+            if (actor == null)
+                throw new ArgumentNullException("actor");
+
+            ///////////////////////////////////////
+            // Cannot fire if:
+            // 1. No throwable item
+            // 2. Out of range.
+            // 3. No LoT.
+            ///////////////////////////////////////
+            if (LoF != null)
+                LoF.Clear();
+
+            // 1. No throwable item or out of range.
+            if (item == null || !item.Model.IsThrowable)
+            {
+                reason = "no throwable item";
+                return false;
+            }
+
+            // 2. Out of range
+            if (GridDistance(actor.Location.Position, pos) > maxThrowDist)
+            {
+                reason = "out of throwing range";
+                return false;
+            }
+
+            // 3. No LoT.
+            if (!LOS.CanTraceThrowLine(actor.Location, pos, maxThrowDist, LoF))
+            {
+                reason = "no line of throwing";
+                return false;
+            }
+
+            // all clear.
+            reason = "";
+            return true;
+
+        }
         #endregion
 
         #region Hunger/Rot & Sleep & Sanity
@@ -2554,7 +2829,7 @@ namespace djack.RogueSurvivor.Engine
 
         public bool IsActorStarving(Actor a)
         {
-            return a.Model.Abilities.HasToEat && a.FoodPoints <= 0;
+            return a.Model.Abilities.HasToEat && a.FoodPoints <= (FOOD_HUNGRY_LEVEL / 3); //@@MP (Release 7-1)
         }
 
         public bool IsRottingActorHungry(Actor a)
@@ -2652,7 +2927,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // 3. Is hungry or worse.
-            if (IsActorHungry(actor) || IsActorStarving(actor))
+            if (IsActorHungry(actor)) //@@MP - obsolete starving check (Release 7-1)
             {
                 reason = "hungry";
                 return false;
@@ -3724,6 +3999,13 @@ namespace djack.RogueSurvivor.Engine
                 disarmChance *= 3f / 4f;
             }
 
+            //drunk penalty  //@@MP (Release 7-1)
+            if (actor.IsDrunk)
+            {
+                hit *= FIRING_WHEN_BLACKOUT_DRUNK;
+                disarmChance *= 3f / 4f;
+            }
+
             // done.
             return Attack.MeleeAttack(baseAttack.Verb, (int)hit, (int)dmg, baseAttack.StaminaPenalty, (int)disarmChance);
         }
@@ -3797,6 +4079,32 @@ namespace djack.RogueSurvivor.Engine
                 rapidHit2 *= FIRING_WHEN_STA_TIRED;
             }
 
+            //drunk penalty  //@@MP (Release 7-1)
+            if (actor.BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL) //100% intoxicated
+            {
+                hit *= FIRING_WHEN_BLACKOUT_DRUNK;
+                rapidHit1 *= FIRING_WHEN_BLACKOUT_DRUNK;
+                rapidHit2 *= FIRING_WHEN_BLACKOUT_DRUNK;
+            }
+            else if (actor.BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.8) //80-99%
+            {
+                hit *= FIRING_WHEN_HAMMERED;
+                rapidHit1 *= FIRING_WHEN_HAMMERED;
+                rapidHit2 *= FIRING_WHEN_HAMMERED;
+            }
+            else if (actor.BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.6) //60-79%
+            {
+                hit *= FIRING_WHEN_DRUNK;
+                rapidHit1 *= FIRING_WHEN_DRUNK;
+                rapidHit2 *= FIRING_WHEN_DRUNK;
+            }
+            else if (actor.BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.4) //40-59%
+            {
+                hit *= FIRING_WHEN_TIPSY;
+                rapidHit1 *= FIRING_WHEN_TIPSY;
+                rapidHit2 *= FIRING_WHEN_TIPSY;
+            }
+
             // return attack.
             return Attack.RangedAttack(baseAttack.Kind, baseAttack.Verb, (int)hit, (int)rapidHit1, (int)rapidHit2, (int)dmg, baseAttack.Range);
         }
@@ -3828,6 +4136,41 @@ namespace djack.RogueSurvivor.Engine
             }
 
             int percent = (100 * hits) / ROLLS;
+            return percent;
+        }
+
+        public int ComputeChancesRangedHitOnItem(Actor actor, Point targetPT, int shotCounter) //@@MP (Release 7-1)
+        {
+            Attack attack = actor.CurrentRangedAttack;
+            int distance = GridDistance(actor.Location.Position, targetPT);
+
+            int percent = 100;
+            int thisshotHitValue = (shotCounter == 0 ? attack.HitValue : shotCounter == 1 ? attack.Hit2Value : attack.Hit3Value);
+
+            //1. penalise based on Range:
+            //  for each pt in distance chance = -2%
+            //  for each extra pt beyond EfficientRange chance = -5%
+            int distancePenalty;
+            if (distance <= attack.EfficientRange)
+                distancePenalty = 2;
+            else
+                distancePenalty = 5;
+
+            percent -= (distance * distancePenalty);
+
+            //2. penalise the rapid-fire inaccuracy
+            //  ATK is the accuracy stat for ranged weapons. a single shot is aimed and therefore more accurate than rapid-fire.
+            //  (offset by the fact that a second shot by rapid-fire is another - albeit lesser - opportunity to hit).
+            //  so if single-shot is your best chance to hit, lets call that the baseline of 100%.
+            int baseline = Math.Min(thisshotHitValue, attack.HitValue); //cap it in case someone has decided to set rapid-fire shots as higher than a single shot
+
+            //  next we add a penalty factor for rapid-fired shots. if we're computing for a single-fire shot it's just 1:1 (no extra penalty)
+            //  our baseline is HitValue as 100%, so eg if Hit2Value is only 33% of HitValue, we must penalise the overall chance by 66%
+            double penalty = ((double)thisshotHitValue / baseline);
+
+            //  now remove the penalty as a factor of the percent chance after distance has already been factored in
+            percent = Convert.ToInt16(penalty * percent);
+
             return percent;
         }
 
@@ -3930,12 +4273,16 @@ namespace djack.RogueSurvivor.Engine
                 FOV -= 1;
 
             // light equipped or standing next to someone with light.
-            // works only in darkness or during the night.
-            if (light == Lighting.DARKNESS || (light == Lighting.OUTSIDE && time.IsNight))
+            ItemLight eyesLight = actor.GetEquippedItem(DollPart.EYES) as ItemLight;
+            if (eyesLight != null && IsItemBinoculars(eyesLight))// && light != Lighting.DARKNESS) //@@MP - special case for binoculars (Release 7-1)
             {
-                int lightBonus = 0;
-
-                lightBonus = GetLightBonusEquipped(actor); //does the actor have a torch on?
+                //if (light != Lighting.OUTSIDE && !time.IsNight)
+                    FOV += eyesLight.FovBonus;
+            }
+            // other lights only work in darkness or during the night.
+            else if (light == Lighting.DARKNESS || (light == Lighting.OUTSIDE && time.IsNight))
+            {
+                int lightBonus = GetLightBonusEquipped(actor); //does the actor have a torch on?
                 if (lightBonus == 0) //otherwise, does anyone else around him?
                 {
                     Map map = actor.Location.Map;
@@ -3963,8 +4310,8 @@ namespace djack.RogueSurvivor.Engine
             // outside at night minimum FOV = 1, and that's a tad too little. this is a lazy workaround //@@MP (Release 6-2)
             if (light == Lighting.OUTSIDE && time.IsNight)
             {
-                if (FOV < 2)
-                    FOV = FOV; //FOV += 1;
+                if (FOV < 1)
+                    FOV = 1;
             }
 
             // done.
@@ -4530,10 +4877,10 @@ namespace djack.RogueSurvivor.Engine
             return mode != GameMode.GM_STANDARD;
         }
 
-        public static bool HasCorpses(GameMode mode)
+        /*public static bool HasCorpses(GameMode mode)  //@@MP - obsolete. all modes now have corpses (Release 7-1)
         {
             return mode != GameMode.GM_STANDARD;
-        }
+        }*/
 
         public static bool HasEvolution(GameMode mode)
         {

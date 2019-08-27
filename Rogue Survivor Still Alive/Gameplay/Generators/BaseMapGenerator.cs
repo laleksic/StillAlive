@@ -446,9 +446,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// </summary>
         /// <param name="roller"></param>
         /// <returns></returns>
-        protected static MapObject MakeObjWreckedCar(DiceRoller roller) //@@MP - made static (Release 5-7)
+        protected static Car MakeObjWreckedCar(DiceRoller roller) //@@MP - made static (Release 5-7), made a Car object (Release 7-1)
         {
-            return MakeObjWreckedCar(CARS[roller.Roll(0, CARS.Length)]);
+            return MakeObjWreckedCar(CARS[roller.Roll(0, CARS.Length)], roller.Roll(0,99));  //@@MP - added random fuel level (Release 7-1)
         }
 
         /// <summary>
@@ -456,9 +456,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// </summary>
         /// <param name="carImageID"></param>
         /// <returns></returns>
-        protected static MapObject MakeObjWreckedCar(string carImageID) //@@MP - made static (Release 5-7)
+        protected static Car MakeObjWreckedCar(string carImageID, int fuelUnits) //@@MP - made static (Release 5-7), made a Car object (Release 7-1)
         {
-            return new MapObject("wrecked car", carImageID)
+            return new Car("wrecked car", carImageID, fuelUnits)  //@@MP - added random fuel level (Release 7-1)
             {
                 BreakState = MapObject.Break.BROKEN,
                 IsMaterialTransparent = true,
@@ -905,6 +905,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsMovable = true,
             };
         }
+
         protected static MapObject MakeObjArmyRadioCupboard(string armyRadioCupboardImageID)
         {
             return new MapObject("radio equipment", armyRadioCupboardImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
@@ -915,6 +916,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 Weight = 15
             };
         }
+
         protected static MapObject MakeObjArmyFootlocker(string armyFootlockerImageID)
         {
             return new MapObject("footlocker", armyFootlockerImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
@@ -929,10 +931,23 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public MapObject MakeObjHelicopter(string vatImageID) //@@MP (Release 6-4)
         {
-            return new MapObject("helicopter", vatImageID);
             //A 64x128 pixel image, dissected into 8 pieces and then arranged as:
             //  1234
             //  5678
+            return new MapObject("helicopter", vatImageID)
+            {
+                IsMetal = true
+            };
+        }
+
+        //@@MP (Release 7-1)
+        protected static MapObject MakeObjFuelPump(string fuelPumpImageID)
+        {
+            return new MapObject("fuel pump", fuelPumpImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
+            {
+                IsMaterialTransparent = true,
+                IsMetal = true
+            };
         }
         #endregion
 
@@ -1000,7 +1015,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 Quantity = m_Rules.Roll(1, m_Game.GameItems.PILLS_ANTIVIRAL.StackingLimit)
             };
         }
-
 
         public Item MakeItemGroceries()
         {
@@ -1358,19 +1372,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public Item MakeItemAlcohol()
+        public Item MakeItemBeer()
         {
             int quantity;
             ItemMedicineModel alcoholType;
-            int roll = m_Game.Rules.Roll(0, 6);
+            int roll = m_Game.Rules.Roll(0, 4);
             switch (roll)
             {
                 case 0: alcoholType = m_Game.GameItems.ALCOHOL_BEER_BOTTLE_BROWN; quantity = 6; break;
                 case 1: alcoholType = m_Game.GameItems.ALCOHOL_BEER_BOTTLE_GREEN; quantity = 6; break;
                 case 2: alcoholType = m_Game.GameItems.ALCOHOL_BEER_CAN_BLUE; quantity = 6; break;
                 case 3: alcoholType = m_Game.GameItems.ALCOHOL_BEER_CAN_RED; quantity = 6; break;
-                case 4: alcoholType = m_Game.GameItems.ALCOHOL_LIQUOR_AMBER; quantity = 3; break;
-                case 5: alcoholType = m_Game.GameItems.ALCOHOL_LIQUOR_CLEAR; quantity = 3; break;
                 default:
                     throw new InvalidOperationException("unhandled roll");
             }
@@ -1438,6 +1450,147 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         public Item MakeItemC4Explosive()
         {
             return new ItemExplosive(m_Game.GameItems.C4,m_Game.GameItems.C4_PRIMED);
+        }
+
+        //@@MP (Release 7-1)
+        public Item MakeItemSnackBar()
+        {
+            return new ItemFood(m_Game.GameItems.SNACK_BAR)
+            {
+                Quantity = m_Rules.Roll(1, m_Game.GameItems.SNACK_BAR.StackingLimit)
+            };
+        }
+
+        public Item MakeItemFireHazardSuit()
+        {
+            return new ItemBodyArmor(m_Game.GameItems.FIRE_HAZARD_SUIT)
+            {
+                IsForbiddenToAI = true
+            };
+        }
+
+        public Item MakeItemMatches()
+        {
+            return new ItemExplosive(m_Game.GameItems.MATCHES, m_Game.GameItems.MATCHES_PRIMED)
+            {
+                Quantity = 20
+            };
+        }
+
+        public Item MakeItemEnergyDrink()
+        {
+            return new ItemMedicine(m_Game.GameItems.ENERGY_DRINK)
+            {
+                Quantity = m_Rules.Roll(1, m_Game.GameItems.ENERGY_DRINK.StackingLimit)
+            };
+        }
+
+        public Item MakeItemBinoculars()
+        {
+            return new ItemLight(m_Game.GameItems.BINOCULARS_FEMALE); //code under DoTakeItem() will switch to male type if required
+        }
+
+        public Item MakeItemSiphonKit()
+        {
+            return new Item(m_Game.GameItems.SIPHON_KIT)
+            {
+                IsForbiddenToAI = true
+            };
+        }
+
+        public Item MakeItemFuelAmmo()
+        {
+            return new ItemAmmo(m_Game.GameItems.AMMO_FUEL);
+        }
+
+        public Item MakeItemChainsaw()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.CHAINSAW)
+            {
+                IsForbiddenToAI = true //AI can't use them because they need fuel cans for ammo, which is currently only handled for the player. TODO in the future?
+            };
+        }
+
+        public Item MakeItemFlamethrower()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.FLAMETHROWER);
+        }
+
+        public Item MakeItemCandlesBox()
+        {
+            return new Item(m_Game.GameItems.CANDLES_BOX)
+            {
+                Quantity = 40,
+                IsForbiddenToAI = true //TODO in the future?
+            };
+        }
+
+        public Item MakeItemFlaresKit()
+        {
+            return new Item(m_Game.GameItems.FLARES_KIT)
+            {
+                Quantity = 40,
+                IsForbiddenToAI = true //TODO in the future?
+            };
+        }
+
+        public Item MakeItemGlowsticksBox()
+        {
+            return new Item(m_Game.GameItems.GLOWSTICKS_BOX)
+            {
+                Quantity = 60,
+                IsForbiddenToAI = true //TODO in the future?
+            };
+        }
+
+        public Item MakeItemLitFlare()
+        {
+            return new ItemLight(m_Game.GameItems.LIGHT_FLARE);
+        }
+
+        public Item MakeItemLitGlowstick()
+        {
+            return new ItemLight(m_Game.GameItems.LIGHT_GLOWSTICK);
+        }
+
+        public Item MakeItemLiquorForMolotov()
+        {
+            int quantity;
+            ItemModel alcoholType;
+            int roll = m_Game.Rules.Roll(0, 2);
+            switch (roll)
+            {
+                case 0: alcoholType = m_Game.GameItems.LIQUOR_AMBER; quantity = 6; break;
+                case 1: alcoholType = m_Game.GameItems.LIQUOR_CLEAR; quantity = 6; break;
+                default:
+                    throw new InvalidOperationException("unhandled roll");
+            }
+
+            return new Item(alcoholType)
+            {
+                Quantity = quantity
+            };
+        }
+
+        public Item MakeItemAlcohol()
+        {
+            Item alcoholType;
+            if (m_Game.Rules.RollChance(66))
+            {
+                alcoholType = MakeItemBeer();
+                return new ItemMedicine(alcoholType.Model)
+                {
+                    Quantity = alcoholType.Quantity
+                };
+            }
+            else
+            {
+                alcoholType = MakeItemLiquorForMolotov();
+                return new Item(alcoholType.Model)
+                {
+                    Quantity = alcoholType.Quantity
+                };
+            }
         }
         #endregion
 

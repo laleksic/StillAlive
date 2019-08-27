@@ -41,7 +41,7 @@ namespace djack.RogueSurvivor.Engine
         ICONS_LEGEND, //@@MP (Release 6-1)
         NEGOTIATE_TRADE, // alpha 10 renamed
         LEAD_MODE,
-        MAKE_MOLOTOV, //@@MP (Release 4)
+        INSPECTION_MODE, //@@MP (Release 7-1)
         MARK_ENEMIES_MODE,
         ORDER_MODE,
         PULL_MODE, // alpha 10

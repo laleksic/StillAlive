@@ -1,3 +1,43 @@
+Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
+
+STILL ALIVE 2.5.0.9 (aka Release 7-1, 26/08/2019) [Author: MP]
+---------------------
+
+Features:
+-Added new items: snack bars, binoculars, chainsaws, siphon kits, fire hazard suits, candles, flares, glowsticks and energy drinks.
+-Candles, flares and glowsticks to use as light sources.
+-Binoculars extend FOV during the day and in fully lit environments.
+-Armor now has a fire resistance value.
+-By using siphon kits, cars are a source of fuel for flamethrowers [WIP] and chainsaws.
+-Fuel cans and fuel pumps [WIP] can be blown up with firearms.
+-Increased the size of the police armouries.
+-Making molotovs is no longer a separate key; just use liquor bottles like any other item to do so.
+-Removed prompt when insanity forces a random action on the player.
+-Advisor hints automatically appear rather than prompting the user for display.
+-Inspection Mode as keyboard alternative to mouse hover on map cells.
+-Removed option to not show corpses in Std game mode.
+-Removed the restriction to butcher or revive corpses in Std game mode.
+
+Fixes:
+-Halved the number of vegetables that can be stacked in inventory.
+-Balanced encumberance (-DEF) values of armor, and some weapon values.
+-Fixed crash caused by AI trading forbidden items (especially relevant for bot mode).
+-Fixed looping caused by AI excessive use of actions that cost no AP.
+-Superimposed image when treading through ponds now has proper opacity.
+-Fixed night vision goggles use outside during daytime.
+-Fixed crash caused by AI trying to trade cell phones or trackers.
+-Various corrections regarding game modes.
+-Fix prompts being cleared under incorrect circumstances.
+-Starvation was at zero food points. Fixed to be 1/4 food points. [credit to taberone]
+-Fixed unique actors invincibility. [credit to taberone & zaimoni]
+
+Development:
+-Added flag to differentiate fire as the source of damage to an actor.
+-Added flag to track an actor's item usage per turn.
+-Added method for throwing items.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.4.6.21 (aka Release 6-6, 11/06/2019) [Author: MP]
 ---------------------
 
@@ -41,12 +81,6 @@ Fixes:
 Development:
 -Added more Activity types.
 -Added DEBUGAILOOPING and DEBUGBOTMODE preprocessor directives for debugging AI looping.
-
-Outstanding known issues:
--Occasionally, popups (hints, trades) may not be displayed (the player is still prompted for their interaction).
--Changing districts performance with simulation enabled decays as the game goes on.
--Lacking difficulty options, and the current scoring multipliers are broken. These will be addressed in a future release.
--Music and some sounds are louder than other sounds. They will be normalised in a future release.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 

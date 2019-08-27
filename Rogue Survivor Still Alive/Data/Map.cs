@@ -687,6 +687,98 @@ namespace djack.RogueSurvivor.Data
         }
         #endregion
 
+        #region -Stats
+        public int CountLivings() //@@MP - refactored from RogueGame (Release 7-1)
+        {
+            int count = 0;
+            foreach (Actor a in m_ActorsList)
+                if (!a.Model.Abilities.IsUndead)
+                    ++count;
+
+            return count;
+        }
+
+        public int CountActorsBasedOn(Predicate<Actor> predFn) //@@MP - refactored from RogueGame (Release 7-1)
+        {
+            int count = 0;
+            foreach (Actor a in m_ActorsList)
+                if (predFn(a))
+                    ++count;
+
+            return count;
+        }
+
+        public int CountFaction(Faction f) //@@MP - refactored from RogueGame (Release 7-1)
+        {
+            int count = 0;
+            foreach (Actor a in m_ActorsList)
+                if (a.Faction == f)
+                    ++count;
+
+            return count;
+        }
+
+        public int CountUndeads() //@@MP - refactored from RogueGame (Release 7-1)
+        {
+            int count = 0;
+            foreach (Actor a in m_ActorsList)
+                if (a.Model.Abilities.IsUndead)
+                    ++count;
+
+            return count;
+        }
+
+        public int CountFoodItemsNutrition(RogueGame game) //@@MP - refactored from RogueGame (Release 7-1)
+        {
+            ItemFood itemFood = null; //@@MP (Release 5-7)
+
+            // food items on ground.
+            int groundNutrition = 0;
+            foreach (Inventory inv in m_aux_GroundItemsList)
+            {
+                if (inv.IsEmpty)
+                    continue;
+
+                foreach (Item it in inv.Items)
+                {
+                    itemFood = it as ItemFood;
+                    if (itemFood != null)//if (it is ItemFood)
+                        groundNutrition += game.Rules.FoodItemNutrition(itemFood, this.LocalTime.TurnCounter);//it as ItemFood, map.LocalTime.TurnCounter);
+
+                    itemFood = null;
+                }
+            }
+            // food items carried by actors.
+            int carriedNutrition = 0;
+            foreach (Actor a in m_ActorsList)
+            {
+                Inventory inv = a.Inventory;
+                if (inv == null || inv.IsEmpty)
+                    continue;
+
+                foreach (Item it in inv.Items)
+                {
+                    itemFood = it as ItemFood;
+                    if (itemFood != null)//if (it is ItemFood)
+                        carriedNutrition += game.Rules.FoodItemNutrition(itemFood, this.LocalTime.TurnCounter);//it as ItemFood, map.LocalTime.TurnCounter);
+
+                    itemFood = null;
+                }
+            }
+
+            return groundNutrition + carriedNutrition;
+        }
+
+        public bool HasActorOfModelID(GameActors.IDs actorModelID) //@@MP - refactored from RogueGame (Release 7-1)
+        {
+            foreach (Actor a in m_ActorsList)
+                if (a.Model.ID == (int)actorModelID)
+                    return true;
+
+            return false;
+        }
+        #endregion
+
         #region Map Objects
         public bool HasMapObject(MapObject mapObj)
         {

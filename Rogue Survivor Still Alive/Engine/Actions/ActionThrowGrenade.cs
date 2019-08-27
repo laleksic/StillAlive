@@ -25,7 +25,7 @@ namespace djack.RogueSurvivor.Engine.Actions
         #region ActorAction
         public override bool IsLegal()
         {
-            return m_Game.Rules.CanActorThrowTo(m_Actor, m_ThrowPos, null, out m_FailReason);
+            return m_Game.Rules.CanActorThrowGrenadeTo(m_Actor, m_ThrowPos, null, out m_FailReason);
         }
 
         public override void Perform()

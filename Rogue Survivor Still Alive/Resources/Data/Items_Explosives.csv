@@ -3,4 +3,6 @@
 "EXPLOSIVE_MOLOTOV","molotov","molotovs",0,3,3,1,1,1,0,0,0,0,"A fiery cocktail"
 "EXPLOSIVE_DYNAMITE","dynamite","dynamite",10,0,1,3,200,100,50,25,0,0,"Stand wayyyy back!"
 "EXPLOSIVE_C4","C4 explosive","C4 explosives",8,0,1,2,200,100,50,0,0,0,"Face toward enemy"
-"EXPLOSVE_FLAMETHROWER", "flame thrower","flame throwers",0,3,1,1,3,3,0,0,0,0,"Flame grilled"
+"EXPLOSIVE_MATCHES","match","matches",0,1,20,0,0,0,0,0,0,0,"Strike a light"
+"EXPLOSIVE_FUEL_CAN","fuel can","fuel cans",0,0,1,1,1,1,0,0,0,0,"FOR IN-CODE USE ONLY"
+"EXPLOSIVE_FUEL_PUMP","fuel pump","fuel pumps",0,0,1,5,200,100,50,25,15,5,"FOR IN-CODE USE ONLY"

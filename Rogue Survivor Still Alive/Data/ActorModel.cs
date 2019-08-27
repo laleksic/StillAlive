@@ -29,7 +29,6 @@ namespace djack.RogueSurvivor.Data
             set { m_ID = value; }
         }
 
- 
         public string ImageID
         {
             get { return m_ImageID; }

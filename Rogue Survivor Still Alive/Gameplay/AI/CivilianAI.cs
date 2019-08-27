@@ -263,8 +263,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 28 tell friend about latest items.
             // 29 (law enforcer) watch for murderers.
             // 30 (leader) don't leave followers behind.
-            // 31 explore.
-            // 32 wander.
+            // 31 make molotovs
+            // 32 explore.
+            // 33 wander.
             //////////////////////////////////////////////////////////////////////
 
             // get data.
@@ -864,7 +865,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     m_Actor.Activity = Activity.MANAGING_INVENTORY;
                     return determinedAction;
-                }                
+                }
             }
 #endregion
 
@@ -1111,10 +1112,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return determinedAction;
                 }
             }
-#endregion
+            #endregion
 
-            // 31 explore
-#region
+            // 31 make molotovs   //@@MP (Release 7-1)
+            #region
+            determinedAction = BehaviorMakeMolotovs(game);
+            if (determinedAction != null)
+            {
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
+                return determinedAction;
+            }
+            #endregion
+
+            // 32 explore
+            #region
             // DEBUG BOT
 #if DEBUG
             if (botBreakpoint)
@@ -1137,7 +1148,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 #endregion
 
-            // 32 wander or wait
+            // 33 wander or wait
 #region
             // VERBOSE BOT
 #if DEBUG

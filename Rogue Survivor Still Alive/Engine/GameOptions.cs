@@ -20,7 +20,6 @@ namespace djack.RogueSurvivor.Engine
             //UI_SHOW_PLAYER_TAG_ON_MINIMAP, //@@MP (Release 5-7)
             UI_ANIM_DELAY,
             UI_SHOW_MINIMAP,
-            UI_SHOW_CORPSES,
             UI_ADVISOR,
             UI_COMBAT_ASSISTANT,
             UI_SHOW_TARGETS,
@@ -141,7 +140,6 @@ namespace djack.RogueSurvivor.Engine
         int m_AmbientSFXVolume; //@@MP (Release 6-1)
         bool m_AnimDelay;
         bool m_ShowMinimap;
-        bool m_ShowCorpses; //@@MP - drop corpses even in standard game mode (Release 1)
         bool m_Autosaving; //@@MP (Release 6-1)
         bool m_EnabledAdvisor;
         bool m_CombatAssistant;
@@ -149,7 +147,6 @@ namespace djack.RogueSurvivor.Engine
         float m_cachedSimRatioFloat;
         bool m_SimulateWhenSleeping;
         bool m_SimThread;
-        //bool m_ShowPlayerTagsOnMinimap; //@@MP (Release 5-7)
         int m_SpawnSkeletonChance;
         int m_SpawnZombieChance;
         int m_SpawnZombieMasterChance;
@@ -250,23 +247,11 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        public bool ShowCorpses //@@MP (Release 1)
-        {
-            get { return m_ShowCorpses; }
-            set { m_ShowCorpses = value; }
-        }
-
         public bool Autosaving //@@MP (Release 6-1)
         {
             get { return m_Autosaving; }
             set { m_Autosaving = value; }
         }
-
-        /*public bool ShowPlayerTagsOnMinimap //@@MP (Release 5-7)
-        {
-            get { return m_ShowPlayerTagsOnMinimap; }
-            set { m_ShowPlayerTagsOnMinimap = value; }
-        }*/
 
         public bool IsAnimDelayOn
         {
@@ -614,7 +599,6 @@ namespace djack.RogueSurvivor.Engine
             m_AmbientSFXVolume = 100; //@@MP (Release 6-1)
             m_AnimDelay = false; //@@MP (Release 6-5)
             m_ShowMinimap = true;
-            //m_ShowPlayerTagsOnMinimap = true; //@@MP (Release 5-7)
             m_EnabledAdvisor = true;
             m_CombatAssistant = false;
             this.SimulateDistricts = DEFAULT_SIM_DISTRICTS;
@@ -633,7 +617,6 @@ namespace djack.RogueSurvivor.Engine
             m_StarvedZombificationChance = DEFAULT_STARVED_ZOMBIFICATION_CHANCE;
             m_MaxReincarnations = DEFAULT_MAX_REINCARNATIONS;
             m_Sanity = true;
-            m_ShowCorpses = true; //@@MP (Release 1)
             m_Autosaving = true; //@@MP (Release 6-1)
             //m_CanReincarnateAsRat = false; //@@MP (Release 5-7)
             //m_CanReincarnateToSewers = false; //@@MP (Release 5-7)
@@ -702,8 +685,6 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.UI_AMBIENTSFXS:                        return "   (Sfx) Ambient Sounds (eg weather)"; //@@MP (Release 6-1)
                 case IDs.UI_AMBIENTSFXS_VOLUME:                 return "   (Sfx) Ambient Sound Effects Volume"; //@@MP (Release 6-1)
                 case IDs.UI_SHOW_MINIMAP:                       return "   (Gfx) Show Minimap";
-                //case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:         return "   (Gfx) Show Tags on Minimap"; //@@MP (Release 5-7)
-                case IDs.UI_SHOW_CORPSES:                       return "   (Gfx) Show Corpses in STD Game Mode";
                 case IDs.UI_ADVISOR:                            return "  (Help) Enable Advisor";
                 case IDs.UI_COMBAT_ASSISTANT:                   return "  (Help) Combat Assistant";
                 case IDs.UI_SHOW_TARGETS:                       return "  (Help) Show Other Actors Targets"; // alpha 10
@@ -788,8 +769,6 @@ namespace djack.RogueSurvivor.Engine
                     return "Music volume.";
                 case IDs.UI_SHOW_MINIMAP:
                     return "Display or hide the minimap.\nThe minimap could potentially crash the game on some very old graphics cards.";
-                /*case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:
-                    return "Highlight tags painted by the player as yellow dots in the minimap.";*/
                 case IDs.UI_ADVISOR:
                     return "Enable or disable the in-game hints system. The advisor helps you learn the game as a living.\nIt will only give you hints it hasn't already shown you.\nAll hints are also available from the main menu.";
                 case IDs.UI_COMBAT_ASSISTANT:
@@ -810,8 +789,6 @@ namespace djack.RogueSurvivor.Engine
                     return "Enable or disable ambient sounds. SFXs are not essential for gameplay, though it is recommended you keep them enabled.\nIf you can't hear SFXs, try using RSConfig from the game folder.";
                 case IDs.UI_AMBIENTSFXS_VOLUME: //@@MP
                     return "Ambient sounds volume (rain, etc)";
-                case IDs.UI_SHOW_CORPSES: //@@MP
-                    return "Show corpses in STD Game Mode. Adds to the immersion.";
                 case IDs.UI_AUTOSAVE: //@@MP
                     return "Automatically saves your game every 12 in-game hours, equivalent to every 360 turns.";
                 default:
@@ -995,10 +972,6 @@ namespace djack.RogueSurvivor.Engine
                     return AmbientSFXVolume.ToString() + "%";
                 case IDs.UI_SHOW_MINIMAP:
                     return IsMinimapOn ? "ON " : "OFF";
-                case IDs.UI_SHOW_CORPSES: //@@MP (Release 1)
-                    return ShowCorpses ? "ON*   (default ON)" : "OFF*  (default ON)";
-                /*case IDs.UI_SHOW_PLAYER_TAG_ON_MINIMAP:   //@@MP (Release 5-7)
-                    return ShowPlayerTagsOnMinimap ? "YES" : "NO ";*/
                 case IDs.UI_SHOW_PLAYER_TARGETS:
                     return ShowPlayerTargets ? "ON    (default ON)" : "OFF   (default ON)";
                 case IDs.UI_SHOW_TARGETS:

@@ -284,7 +284,9 @@ namespace djack.RogueSurvivor.Engine
                 });
         }
 
-        public static HashSet<Point> ComputeFOVFor(RogueGame game, Actor actor, WorldTime time, Weather weather, bool checkForOtherLitTiles) //@@MP - added that other tiles light up by other light sources outside FoV (Release 6-5), switched Rules for Game (Release 6-6)
+        //@@MP - added that other tiles light up by other light sources outside FoV (Release 6-5), switched Rules for Game (Release 6-6)
+        //@@MP - added maxItemLightTintRange for lights that cast a tint around the player (Release 7-1)
+        public static HashSet<Point> ComputeFOVFor(RogueGame game, Actor actor, WorldTime time, Weather weather, bool checkForOtherLitTiles)//, int maxItemLightTintRange = 0)
         {
             Location fromLocation = actor.Location;
             HashSet<Point> visibleSet = new HashSet<Point>();
@@ -381,13 +383,36 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // Other light sources, like fires or actors with torches, outside the regular player FoV //@@MP (Release 6-5)
-            if (checkForOtherLitTiles)
+            if (checkForOtherLitTiles && actor.IsPlayer) //@@MP - filtered to player only (Release 7-1)
             {
+                /*****************************************
+                 * * DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
+                // get the player's light (if any) //@@MP (Release 7-1)
+                string tintImageOnPlayer = null;
+                ItemLight playerHeldLight = (actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight);
+                if (playerHeldLight != null && playerHeldLight.Batteries > 0)
+                {
+                    tintImageOnPlayer = GetTintForItemLight(game, playerHeldLight);
+                }
+                
+                // ItemLights have a maximum range for which they cast their light, which is often less than the total FOV of the actor.
+                // We do this because otherwise the range of the tint could be crazy, because lights add to the existing FOV rather than set the FOV.
+                int tintRangeOnPlayer = Math.Min(game.Rules.ActorFOV(actor, time, weather), maxItemLightTintRange);  //@@MP (Release 7-1)
+                *****************************************/
+
+                // Now check each point on the map
                 for (int x = 0; x < map.Width; x++)
                 {
                     for (int y = 0; y < map.Height; y++)
                     {
                         Point spot = new Point(x, y);
+
+                        /*****************************************
+                         * DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
+                        //add a tint for it (as required)  //@@MP (Release 7-1)
+                        if (game.Rules.GridDistance(actor.Location.Position, spot) <= tintRangeOnPlayer && tintImageOnPlayer != null)
+                            AddTintToTile(map, spot, tintImageOnPlayer);
+                        *****************************************/
 
                         //only consider spots that we actually have line of sight to
                         HashSet<Point> spotSet = new HashSet<Point>();
@@ -395,19 +420,22 @@ namespace djack.RogueSurvivor.Engine
                         if (!FOVSub(fromLocation, spot, 10, ref spotSet))
                             continue; //this spot is not in LOS, skip it
 
-                        //car fires
+                        //MapObjects: car fires
                         MapObject mapObj = map.GetMapObjectAt(spot);
                         if (mapObj != null && mapObj.IsOnFire)
                         {
                             visibleSet.Add(spot);
-                            foreach (Direction d in Direction.COMPASS_4)
+
+                            foreach (Direction d in Direction.COMPASS)
                             {
                                 //lights up the tiles around it
                                 Point next = spot + d;
                                 if (map.IsInBounds(next))
+                                {
                                     visibleSet.Add(next);
+                                }
                             }
-                            continue;
+                            continue; //already lit up this tile and adjacents, no need to chek for other light sources
                         }
                         //tile fires - check these first, as it may also be in adjacent tiles
                         else if (map.IsAnyTileFireThere(map, spot))
@@ -416,51 +444,137 @@ namespace djack.RogueSurvivor.Engine
                             if (!game.GameTiles.IsWallModel(tileModel))
                             {
                                 visibleSet.Add(spot);
-                                foreach (Direction d in Direction.COMPASS_4)
+
+                                foreach (Direction d in Direction.COMPASS)
                                 {
                                     //lights up the tiles around it
                                     Point next = spot + d;
                                     if (map.IsInBounds(next))
+                                    {
                                         visibleSet.Add(next);
+                                    }
                                 }
                                 continue;
                             }
                         }
-                        //actors with torches
+                        //Actors: carrying ItemLights eg torches
                         else if (map.GetActorAt(spot) != null)
                         {
                             Actor act = map.GetActorAt(spot);
-                            ItemLight torch = (act.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight);
-                            if (torch != null && torch.Batteries > 0)
+                            ItemLight heldLight = (act.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight);
+                            if (heldLight != null && heldLight.Batteries > 0)
                             {
+                                //string tintImage = GetTintForItemLight(game, heldLight);
+                                //AddTintToTile(map, spot, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
+
                                 visibleSet.Add(spot);
-                                foreach (Direction d in Direction.COMPASS_4)
+
+                                foreach (Direction d in Direction.COMPASS)
                                 {
                                     //lights up the tiles around it
                                     Point next = spot + d;
                                     if (map.IsInBounds(next))
+                                    {
                                         visibleSet.Add(next);
+                                        //AddTintToTile(map, next, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
+                                    }
                                 }
                                 continue;
                             }
                         }
-                        //ground inventory (eg candles)
-                        /*Inventory inv = map.GetItemsAt(pos);
-                        else if (inv != null)
+                        //Tile Decorations eg lit candles //@MP (Release 7-1)
+                        else if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.DECO_LIT_CANDLE))
                         {
-                            foreach (Item item in inv.Items)
+                            visibleSet.Add(spot);
+
+                            foreach (Direction d in Direction.COMPASS)
                             {
-                                ItemLight light = item as ItemLight;
-                                if (light != null && light.)
-                                    continue;
+                                //lights up the tiles around it
+                                Point next = spot + d;
+                                if (map.IsInBounds(next))
+                                {
+                                    visibleSet.Add(next);
+                                }
                             }
-                        }*/
+                            continue;
+                        }
+                        //ground inventory items  //@MP (Release 7-1)
+                        else
+                        {
+                            bool cont = false;
+                            Inventory inv = map.GetItemsAt(spot);
+                            if (inv != null)
+                            {
+                                foreach (Item item in inv.Items)
+                                {
+                                    ItemLight light = item as ItemLight;
+                                    if (light != null)
+                                    {
+                                        //string tintImage = GetTintForItemLight(game, light);
+                                        //AddTintToTile(map, spot, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
+
+                                        visibleSet.Add(spot);
+
+                                        foreach (Direction d in Direction.COMPASS_4)
+                                        {
+                                            //lights up the tiles around it
+                                            Point next = spot + d;
+                                            if (map.IsInBounds(next))
+                                            {
+                                                visibleSet.Add(next);
+                                                //AddTintToTile(map, next, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
+                                            }
+                                        }
+                                        cont = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (cont) continue; //in case more types are added after groundinv
+                        }
+                    }
+                }
+            }
+
+            //remove tint from tiles where there is no longer that light source //@@MP (Release 7-1)
+            for (int a = 0; a < map.Width; a++)
+            {
+                for (int b = 0; b < map.Height; b++)
+                {
+                    Point spot = new Point(a, b);
+                    if (!visibleSet.Contains(spot))
+                    {
+                        string tintImage;
+                        if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.EFFECT_LIGHT_TINT_FLARE))
+                            tintImage = Gameplay.GameImages.EFFECT_LIGHT_TINT_FLARE;
+                        else if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.EFFECT_LIGHT_TINT_GLOWSTICK))
+                            tintImage = Gameplay.GameImages.EFFECT_LIGHT_TINT_GLOWSTICK;
+                        else
+                            continue;
+
+                        map.GetTileAt(spot).RemoveDecoration(tintImage);
                     }
                 }
             }
 
             return visibleSet;
         }
-        #endregion
+
+        static string GetTintForItemLight(RogueGame game, Item light) //@@MP (Release 7-1)
+        {
+            if (light.Model == game.GameItems.LIGHT_FLARE)
+                return Gameplay.GameImages.EFFECT_LIGHT_TINT_FLARE;
+            else if (light.Model == game.GameItems.LIGHT_GLOWSTICK)
+                return Gameplay.GameImages.EFFECT_LIGHT_TINT_GLOWSTICK;
+            else
+                return null; //it's not an item that would provide light whilst on the ground
+        }
+
+        static void AddTintToTile(Map map, Point pt, string tintImage) //@@MP (Release 7-1)
+        {
+            if (tintImage != null && !map.GetTileAt(pt).HasDecoration(tintImage))
+                map.GetTileAt(pt).AddDecoration(tintImage); //add tint
+        }
+#endregion
     }
 }

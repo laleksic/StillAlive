@@ -26,7 +26,7 @@ TROUBLESHOOTING
 	This is due to technical limitations, but may be addressed in future versions.
 
 -(interface) Sometimes the controls stop responding / I'm prompted do something without seeing any pop-up text.
-	This is a known issue and will be address in a future version.
+	This is a known issue and will be addressed in a future version. Trying pressing Escape, Enter or N (for No) to get around it.
 
 -(interface) The game text is blurry
 	If you have an Intel onboard GPU (ie no dedicated graphics card), open the Intel control panel and set "3Dtexture" to "Quality".
@@ -36,7 +36,8 @@ TROUBLESHOOTING
 	Open ffdshow configuration, go to DirectShow and set "Multiple ffdshow instances" to "none".
 
 -(modding) I've changed one of the game's image, sound or Excel files but it was overwritten.
-	The game will deploy it's own content files whenever their last modified date is more recent than that of any file using the same name. To ensure your files are used instead, change their last modified date to be today. NirSoft's BulkFileChanger or Romain Petges' Attribute Changer 9 make this easy.
+	The game will deploy it's own content files whenever their last modified date is more recent than that of any file using the same name.
+	To ensure your files are used instead, change their last modified date to be today. NirSoft's BulkFileChanger or Romain Petges' Attribute Changer 9 make this easy.
 
 -(general information)
 	Forums : http://roguesurvivor.proboards.com/

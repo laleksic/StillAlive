@@ -33,9 +33,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return String.Format("ChoiceEval({0}; {1:F})", (this.Choice == null ? "NULL" : this.Choice.ToString()), this.Value);
             }
         }
-
-        List<int> alcoholList = new List<int>(new int[] { (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN, (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN,
-                (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE, (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_RED, (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER, (int)GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR });
         #endregion
 
         #region Constants
@@ -971,7 +968,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
 #if DEBUGAILOOPING
                     if (m_Actor.IsLooping)
-                        m_Actor.ActivityInProgress = "BehaviorGoToNearestAIExit() moveThere: " + exitPos.Value.ToString();
+                        m_Actor.ActivityInProgress = "BehaviorGoToNearestAIExit() current: " + m_Actor.Location.Position.ToString() + ", moveThere: " + exitPos.Value.ToString();
 #endif
                     return moveThere;
                 }
@@ -1254,6 +1251,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (m_Actor.IsLooping)
                         m_Actor.ActivityInProgress = "BehaviorEquipBestBodyArmor() equip armor: " + bestArmor.ToString();
 #endif
+                    ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
                     return new ActionEquipItem(m_Actor, game, bestArmor);
                 }
                 else
@@ -1298,6 +1296,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (m_Actor.IsLooping)
                         m_Actor.ActivityInProgress = "BehaviorEquipCellPhone() no need for cell phone, unequiping";
 #endif
+                    ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
                     return new ActionUnequipItem(m_Actor, game, eqTrack);
                 }
                 else
@@ -1324,6 +1323,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (m_Actor.IsLooping)
                         m_Actor.ActivityInProgress = "BehaviorEquipCellPhone() equipping " + newTracker.TheName;
 #endif
+                    ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
                     return new ActionEquipItem(m_Actor, game, newTracker);
                 }
             }
@@ -1521,7 +1521,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 #if DEBUGAILOOPING
             if (m_Actor.IsLooping)
                 m_Actor.ActivityInProgress = "BehaviorEquipBestLight() equipping " + best.TheName;
-#endif            
+#endif
+            ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
             return BehaviourReplaceEquipped(game, m_Actor.GetEquippedItem(DollPart.LEFT_HAND), best);
         }
 
@@ -1548,6 +1549,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.IsLooping)
                 m_Actor.ActivityInProgress = "BehaviorEquipBestCellPhone() equipping " + best.TheName;
 #endif
+            ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
             return BehaviourReplaceEquipped(game, m_Actor.GetEquippedItem(DollPart.LEFT_HAND), best);
         }
 
@@ -1624,7 +1626,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (replaceWith != null)
             {
                 if (game.Rules.CanActorEquipItem(m_Actor, replaceWith))
+                {
+                    ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
                     return new ActionEquipItem(m_Actor, game, replaceWith);
+                }
             }
             return null;
         }
@@ -1962,6 +1967,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (m_Actor.IsLooping)
                     m_Actor.ActivityInProgress = "BehaviorDropItem() drop " + it.TheName;
 #endif
+                ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount;
                 return new ActionDropItem(m_Actor, game, it);
             }
 
@@ -1975,6 +1981,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected ActorAction BehaviorDropUselessItem(RogueGame game)
         {
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
             if (m_Actor.Inventory.IsEmpty)
             {
 #if DEBUGAILOOPING
@@ -2041,6 +2050,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (m_Actor.IsLooping)
                         m_Actor.ActivityInProgress = "BehaviorDropUselessItem() dropping " + it.TheName;
 #endif
+                    ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount;
                     return BehaviorDropItem(game, it);
                 }
             }
@@ -2071,6 +2081,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected ActorAction BehaviorEat(RogueGame game)
         {
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
             // find best edible eat.
             Item it = GetBestEdibleItem(game);
             if (it == null)
@@ -2085,6 +2098,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.IsLooping)
                 m_Actor.ActivityInProgress = "BehaviorEat() will eat " + it.TheName;
 #endif
+            ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount;
             return new ActionUseItem(m_Actor, game, it);
         }
 
@@ -2609,6 +2623,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #region Healing & Entertainment
         protected ActorAction BehaviorUseMedicine(RogueGame game, int factorHealing, int factorStamina, int factorSleep, int factorCure, int factorSan)
         {
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
             // if no items, don't bother.
             Inventory inv = m_Actor.Inventory;
             if (inv == null || inv.IsEmpty)
@@ -2657,11 +2674,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.IsLooping)
                 m_Actor.ActivityInProgress = "BehaviorUseMedicine() use " + bestMedChoice.Choice.TheName;
 #endif
+            ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
             return new ActionUseItem(m_Actor, game, bestMedChoice.Choice);
         }
         
         protected ActorAction BehaviorUseEntertainment(RogueGame game)
         {
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
             Inventory inv = m_Actor.Inventory;
             if (inv.IsEmpty) return null;
 
@@ -2676,11 +2697,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.IsLooping)
                 m_Actor.ActivityInProgress = "BehaviorUseEntertainment() use " + ent.TheName;
 #endif
+            ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
             return new ActionUseItem(m_Actor, game, ent);
         }
 
         protected ActorAction BehaviorDropBoringEntertainment(RogueGame game)
         {
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
 #if DEBUGAILOOPING
             if (m_Actor.IsLooping)
                 m_Actor.ActivityInProgress = "BehaviorDropBoringEntertainment()";
@@ -2693,7 +2718,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 ItemEntertainment ent = it as ItemEntertainment;
                 if (ent != null && ent.IsBoringFor(m_Actor))  // alpha10 boring items item centric
+                {
+                    ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
                     return new ActionDropItem(m_Actor, game, it);
+                }
             }
 
             return null;
@@ -3320,7 +3348,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
                 #endregion
 
-                // 4. Use medecine?
+                // 4. Use medicine?
                 #region
                 // when to use medicine? only when fighting vs an unranged enemy and not in contact.
                 if ((enemy.GetEquippedRangedWeapon() == null) && (!game.Rules.IsAdjacent(m_Actor.Location, enemy.Location)))
@@ -3427,6 +3455,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #region Communication
         protected ActorAction BehaviorWarnFriends(RogueGame game, List<Percept> friends, Actor nearestEnemy)
         {
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
             // Never if actor is itself adjacent to the enemy.
             if (game.Rules.IsAdjacent(m_Actor.Location, nearestEnemy.Location))
                 return null;
@@ -3439,6 +3470,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (m_Actor.IsLooping)
                     m_Actor.ActivityInProgress = "BehaviorWarnFriends() shout at leader " + m_Actor.Leader.Name;
 #endif
+                ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
                 return new ActionShout(m_Actor, game);
             }
 
@@ -3462,6 +3494,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (m_Actor.IsLooping)
                     m_Actor.ActivityInProgress = "BehaviorWarnFriends() shout at " + other.Name;
 #endif
+                ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
                 string shoutText = nearestEnemy == null ? String.Format("Wake up {0}!", other.Name) : String.Format("Wake up {0}! {1} sighted!", other.Name, nearestEnemy.Name);
                 return new ActionShout(m_Actor, game, shoutText);
             }
@@ -3472,6 +3505,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected ActorAction BehaviorTellFriendAboutPercept(RogueGame game, Percept percept)
         {
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
             // get an adjacent awake friend, if none nothing to do.
             Map map = m_Actor.Location.Map;
             List<Point> friends = map.FilterAdjacentInMap(m_Actor.Location.Position,
@@ -3541,6 +3577,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (m_Actor.IsLooping)
                     m_Actor.ActivityInProgress = "BehaviorTellFriendAboutPercept() say: " + tellMsg;
 #endif
+                ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
                 return say;
             }
             else
@@ -3549,6 +3586,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected ActorAction BehaviorWarnFriendsOfFire(RogueGame game, List<Percept> friends, string whatToShout = "") //@@MP - actor has spotted a fire (Release 5-2)
         {
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
             // Shout if we have a friend sleeping.
             foreach (Percept p in friends)
             {
@@ -3573,6 +3613,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (m_Actor.IsLooping)
                     m_Actor.ActivityInProgress = "BehaviorWarnFriendsOfFire() shout: " + shoutText;
 #endif
+                ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
                 return new ActionShout(m_Actor, game, shoutText);
             }
 
@@ -4177,6 +4218,31 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return throwAction;
             }
         }
+
+        protected ActorAction BehaviorMakeMolotovs(RogueGame game) //@@MP (Release 7-1)
+        {
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
+            // don't bother if no grenade in inventory.
+            Inventory inv = m_Actor.Inventory;
+            if (inv == null || inv.IsEmpty)
+                return null;
+
+            if (inv.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.EXPLOSIVE_MOLOTOV))
+                return null; //already got molotovs
+
+            foreach (Item it in m_Actor.Inventory.Items)
+            {
+                if (game.Rules.IsItemLiquorForMolotov(it))
+                {
+                    m_Actor.RepetitiveNoAPCostActionsThisTurnCount = Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT; //only allow once per turn
+                    return new ActionUseItem(m_Actor, game, it);
+                }
+            }
+
+            return null;
+        }
         #endregion
 
         #region Inventory management
@@ -4347,6 +4413,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (m_Actor.IsLooping)
                         m_Actor.ActivityInProgress = "BehaviorUseStenchKiller() spray on " + sprayOn.Name;
 #endif
+                    ++m_Actor.RepetitiveNoAPCostActionsThisTurnCount;
                     return sprayIt;
                 }
             }
@@ -5134,12 +5201,16 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.Inventory == null || m_Actor.Inventory.IsEmpty)
                 return false;
 
+            List<int> alcoholList = new List<int>(new int[] { (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN, (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN,
+                (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE, (int)GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_RED });
+
             /*List<GameItems.IDs> alcohollist = new List<GameItems.IDs>(new GameItems.IDs[] { GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN, GameItems.IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN,
-                GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE, GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_RED, GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER, GameItems.IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR });
+                GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE, GameItems.IDs.MEDICINE_ALCOHOL_BEER_CAN_RED });
+
             for (int i = 0; i < alcohollist.Count; i++)
             {
                 if (it.Model.ID == (int)alcohollist[i])*/
-            
+
             if (alcoholList.Exists(x => x == it.Model.ID)) //it's an alcohol
             {
                 foreach (Item invitem in m_Actor.Inventory.Items)
@@ -5193,20 +5264,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <summary>
         /// Rate item when trading for another item of a different type and in most some cases if checking is interesting to pick up/steal/not drop.
         /// 
-        /// Items of same type MUST be checked with RateItemExhange instead, as a new item might be
+        /// Items of same type MUST be checked with RateItemExchange instead, as a new item might be
         /// an improvement over an old one, even if individually it would be rated as junk by RateItem.
         /// This is because items come from different sources : pick up new items (it replaces nothing and only its
         /// own worth is important), trade/replace items (it replace an old item and need to be compared to the
         /// one we lost).
         /// Eg: picking up another spray scent is junk if we have already one with spray left (rated Junk by RateItem)
-        /// BUT exhanging a spray scent with more spray is better (exhange rated Accept by RateItemExhange). 
+        /// BUT exhanging a spray scent with more spray is better (exchange rated Accept by RateItemExchange). 
         /// 
         /// FIXME -- ideally we would like the AI to be able to go pickup say a better melee weapon and drop the worse
         /// one it had previously; but this needs a new behaviour; implement that BehaviorImproveOnItems() later...
         /// </summary>
         /// <see cref="RateTradeOffer(RogueGame, Actor, Item, Item)"/>
         /// <see cref="IsInterestingItemToOwn(RogueGame, Item, bool)"/>
-        /// <see cref="RateItemExhange(RogueGame, Item, Item)"/>
+        /// <see cref="RateItemExchange(RogueGame, Item, Item)"/>
         public ItemRating RateItem(RogueGame game, Item it, bool owned)  // alpha10 new item rating and trading logic
         {
             // Items forbidden to AI.
@@ -5235,7 +5306,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (it is ItemMedicine)
             {
                 //@@MP - added alcohol-specific check (Release 4)(Release 6-2)
-                //there's 6 unique models of alcohol, so if left to just the next check the AI would be able to go nuts and take way too much booze. this fixes that
+                //there's 4 models of alcohol, so if left to just the next check the AI would be able to go nuts and take way too much booze. this fixes that
                 if (AlreadyHasEnoughAlcoholInInventory(it, 1))
                     return ItemRating.JUNK;
 
@@ -5455,7 +5526,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // Spray paint (AI never use it).
             if (it is ItemSprayPaint)
                 return ItemRating.JUNK;
-
+            
             // (Unprimed) Explosive if none.
             if (it is ItemExplosive)
             {
@@ -5499,17 +5570,21 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <param name="asked">the item the other actor wants from us</param>
         /// <returns></returns>
         /// <see cref="RateItem(RogueGame, Item, bool)"/>
-        /// <see cref="RateItemExhange(RogueGame, Item, Item)"/>
+        /// <see cref="RateItemExchange(RogueGame, Item, Item)"/>
         /// <see cref="TRADE_RATING_MATRIX"/>
         public TradeRating RateTradeOffer(RogueGame game, Actor tradingWith, Item offered, Item asked)
         {
+            // Items forbidden to AI. //@@MP (Release 7-1)
+            if (offered.IsForbiddenToAI || asked.IsForbiddenToAI)
+                return TradeRating.REFUSE;
+
             // always accept deals with trusted leader
             if (tradingWith == m_Actor.Leader && game.Rules.IsActorTrustingLeader(m_Actor))
                 return TradeRating.ACCEPT;
 
             // handle special case of trading items of the same type. eg: trading melee weapons.
             if (offered.GetType() == asked.GetType())
-                return RateItemExhange(game, asked, offered);
+                return RateItemExchange(game, asked, offered);
 
             // special case of asking a rw and offering compatible ammo.
             // eg: offering light rifle bullets but asking the rifle.
@@ -5543,8 +5618,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <param name="nIt">item we are getting</param>
         /// <returns></returns>
         /// <see cref="RateTradeOffer(RogueGame, Actor, Item, Item)"/>
-        protected TradeRating RateItemExhange(RogueGame game, Item oIt, Item nIt)
+        protected TradeRating RateItemExchange(RogueGame game, Item oIt, Item nIt)
         {
+            // Items forbidden to AI. //@@MP (Release 7-1)
+            if (oIt.IsForbiddenToAI || nIt.IsForbiddenToAI)
+                return TradeRating.REFUSE;
+
             // first reject/accept if one is junk and not the other
             ItemRating oRating = RateItem(game, oIt, true);
             ItemRating nRating = RateItem(game, nIt, false);
@@ -5622,6 +5701,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     nScore < oScore ? TradeRating.REFUSE :
                     TradeRating.MAYBE;
             }
+
+            if (game.Rules.IsItemLiquorForMolotov(oIt)) //@@MP (Release 7-1)
+                return TradeRating.MAYBE;
 
             if (oIt is ItemMeleeWeapon)
             {
@@ -5705,7 +5787,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
                      TradeRating.MAYBE;
             }
 
-
             if (oIt is ItemBodyArmor)
             {
                 ItemBodyArmor oArm = oIt as ItemBodyArmor;
@@ -5737,8 +5818,17 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return TradeRating.REFUSE;
             }
 
+            if (oIt is ItemTracker) //@@MP (Release 7-1)
+            {
+                return TradeRating.REFUSE;
+            }
+
+#if !DEBUG
+            return TradeRating.REFUSE; //@@MP - better to skip over rather than crash the game on players (Release 7-1)
+#endif
+
             // unhandled items! should not happen!
-            throw new InvalidOperationException("RateItemExhange: unhandled item type" + oIt.GetType());
+            throw new InvalidOperationException("RateItemExchange: unhandled item type " + oIt.GetType() + "(" + oIt.AName + ")");
         }
 #endregion
 

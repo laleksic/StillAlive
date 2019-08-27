@@ -18,9 +18,10 @@ namespace djack.RogueSurvivor.Data
         DollPart m_EquipmentSlot;
         bool m_DontAutoEquip;
         bool m_IsUnbreakable;
-        //@@MP (Release 5-7)
-        bool m_IsRecreational;
-        bool m_IsFlameWeapon;
+        bool m_IsRecreational; //@@MP (Release 5-7)
+        bool m_IsFlameWeapon; //@@MP (Release 5-7)
+        bool m_IsThrowable; //@@MP (Release 7-1)
+        bool m_IsBatteryPowered; //@@MP (Release 7-1)
         #endregion
 
         #region Properties
@@ -107,16 +108,37 @@ namespace djack.RogueSurvivor.Data
             set { m_IsUnbreakable = value; }
         }
 
+        /// <summary>
+        /// Chance to set target on fire
+        /// </summary>
         public bool IsFlameWeapon //@@MP (Release 5-2)
         {
             get { return m_IsFlameWeapon; } //@@MP - removed the hard-coded model IDs (Release 5-7)
             set { m_IsFlameWeapon = value; }
         }
 
-        public bool IsRecreational //@@MP - allows player to use item even if it is wasteful ie RogueGame.DoUseMedicineItem (Release 5-7)
+        /// <summary>
+        /// Allows player to use item even if it's wasteful ie RogueGame.DoUseMedicineItem
+        /// </summary>
+        public bool IsRecreational //@@MP (Release 5-7)
         {
             get { return m_IsRecreational; }
             set { m_IsRecreational = value; }
+        }
+
+        /// <summary>
+        /// Can be thrown instead of just dropped (non-grenades)
+        /// </summary>
+        public bool IsThrowable //@@MP (Release 7-1)
+        {
+            get { return m_IsThrowable; }
+            set { m_IsThrowable = value; }
+        }
+
+        public bool IsBatteryPowered //@@MP (Release 7-1)
+        {
+            get { return m_IsBatteryPowered; }
+            set { m_IsBatteryPowered = value; }
         }
         #endregion
 

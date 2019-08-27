@@ -37,6 +37,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ICON_THREAT_DANGER = @"Icons\threat_danger";
         public const string ICON_THREAT_HIGH_DANGER = @"Icons\threat_high_danger";
         public const string ICON_CANT_RUN = @"Icons\cant_run";
+        public const string ICON_DRUNK = @"Icons\drunk"; //@@MP (Release 7-1)
         public const string ICON_EXPIRED_FOOD = @"Icons\expired_food";
         public const string ICON_FOOD_ALMOST_HUNGRY = @"Icons\food_almost_hungry";
         public const string ICON_FOOD_HUNGRY = @"Icons\food_hungry";
@@ -220,6 +221,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_WALL_STONE_DAMAGED = @"Tiles\Decoration\wall_stone_damaged";
         public const string DECO_WALL_LIGHT_BROWN_DAMAGED = @"Tiles\Decoration\wall_light_brown_damaged"; //@@MP (Release 4)
         public const string DECO_WALL_ARMY_BASE_DAMAGED = @"Tiles\Decoration\wall_army_base_damaged"; //@@MP (Release 6-3)
+
+        public const string DECO_LIT_CANDLE = @"Tiles\Decoration\lit_candle"; //@@MP (Release 7-1)
         #endregion
 
         #region Map objects
@@ -249,6 +252,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_ROLLER_DOOR_OPEN = @"MapObjects\roller_door_open";
         public const string OBJ_ROLLER_DOOR_BROKEN = @"MapObjects\roller_door_broken";
 
+        public const string OBJ_PICKET_FENCE = @"MapObjects\picket_fence"; //@@MP - based on alpha 10 (Release 6-1)
         public const string OBJ_BENCH = @"MapObjects\bench";
         public const string OBJ_FENCE = @"MapObjects\fence";
         //@@MP (Release 4)
@@ -316,17 +320,17 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string OBJ_BARRELS = @"MapObjects\barrels";
         public const string OBJ_JUNK = @"MapObjects\junk";
+        public const string OBJ_BOARD = @"MapObjects\announcement_board";
+        public const string OBJ_SMALL_WOODEN_FORTIFICATION = @"MapObjects\wooden_small_fortification";
+        public const string OBJ_LARGE_WOODEN_FORTIFICATION = @"MapObjects\wooden_large_fortification";
 
         public const string OBJ_POWERGEN_OFF = @"MapObjects\power_generator_off";
         public const string OBJ_POWERGEN_ON = @"MapObjects\power_generator_on";
+        public const string OBJ_FIRE_EXTINGUISHER_REFILLER = @"MapObjects\fire_extinguisher_refiller"; //@@MP (Release 7-1)
+        public const string OBJ_FUEL_PUMP = @"MapObjects\fuel_pump"; //@@MP (Release 7-1)
 
         public const string OBJ_GATE_CLOSED = @"MapObjects\gate_closed";
-        public const string OBJ_GATE_OPEN = @"MapObjects\gate_open";
-
-        public const string OBJ_BOARD = @"MapObjects\announcement_board";
-
-        public const string OBJ_SMALL_WOODEN_FORTIFICATION = @"MapObjects\wooden_small_fortification";
-        public const string OBJ_LARGE_WOODEN_FORTIFICATION = @"MapObjects\wooden_large_fortification";
+        public const string OBJ_GATE_OPEN = @"MapObjects\gate_open";      
 
         public const string OBJ_HOSPITAL_BED = @"MapObjects\hospital_bed";
         public const string OBJ_HOSPITAL_CHAIR = @"MapObjects\hospital_chair";
@@ -335,8 +339,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_HOSPITAL_DOOR_OPEN = @"MapObjects\hospital_door_open";
         public const string OBJ_HOSPITAL_DOOR_CLOSED = @"MapObjects\hospital_door_closed";
         public const string OBJ_HOSPITAL_DOOR_BROKEN = @"MapObjects\hospital_door_broken";
-
-        public const string OBJ_PICKET_FENCE = @"MapObjects\picket_fence"; //@@MP - based on alpha 10 (Release 6-1)
 
         //@@MP - (Release 6-3)
         public const string OBJ_ARMY_RADIO_CUPBOARD = @"MapObjects\army_radio_cupboard";
@@ -501,6 +503,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_AMMO_BOLTS =  @"Items\item_ammo_bolts";
         public const string ITEM_AMMO_NAILS = @"Items\item_ammo_nail_gun"; //@@MP (Release 5-1)
         public const string ITEM_AMMO_PRECISION_RIFLE = @"Items\item_ammo_precision_rifle"; //@@MP (Release 6-6)
+        public const string ITEM_AMMO_FUEL = @"Items\item_ammo_fuel"; //@@MP (Release 7-1)
 
         public const string ITEM_ARMY_BODYARMOR = @"Items\item_army_bodyarmor";
         public const string ITEM_ARMY_PISTOL = @"Items\item_army_pistol";
@@ -517,12 +520,16 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_BIGBEAR_BAT = @"Items\item_bigbear_bat";
         public const string ITEM_BIG_FLASHLIGHT = @"Items\item_big_flashlight";
         public const string ITEM_BIG_FLASHLIGHT_OUT = @"Items\item_big_flashlight_out";
+        public const string ITEM_BINOCULARS_FEMALE = @"Items\item_binoculars_female"; //@MP (Release 7-1)
+        public const string ITEM_BINOCULARS_MALE = @"Items\item_binoculars_male"; //@MP (Release 7-1)
         public const string ITEM_BOOK = @"Items\item_book";
         public const string ITEM_BLACKOPS_GPS = @"Items\item_blackops_gps";
         public const string ITEM_C4 = @"Items\item_c4"; //@@MP (Release 6-3)
         public const string ITEM_C4_PRIMED = @"Items\item_c4_primed"; //@@MP (Release 6-3)
+        public const string ITEM_CANDLES_BOX = @"Items\item_candles_box"; //@@MP (Release 7-1)
         public const string ITEM_CANNED_FOOD = @"Items\item_canned_food";
         public const string ITEM_CELL_PHONE = @"Items\item_cellphone";
+        public const string ITEM_CHAINSAW = @"Items\item_chainsaw"; //@@MP (Release 7-1)
         public const string ITEM_CHAR_DOCUMENT = @"Items\item_CHAR_document"; //@@MP (Release 3)
         public const string ITEM_CHAR_LIGHT_BODYARMOR = @"Items\item_CHAR_light_bodyarmor";
         public const string ITEM_CIGARETTES = @"Items\item_cigarettes"; //@@MP (Release 4)
@@ -531,14 +538,19 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_DYNAMITE = @"Items\item_dynamite"; //@@MP (Release 4)
         public const string ITEM_DYNAMITE_PRIMED = @"Items\item_dynamite_primed"; //@@MP (Release 4)
         public const string ITEM_EMPTY_CAN = @"Items\item_empty_can";
+        public const string ITEM_ENERGY_DRINK = @"Items\item_energy_drink"; //@@MP (Release 7-1)
         public const string ITEM_FAMU_FATARU_KATANA = @"Items\item_famu_fataru_katana";
+        public const string ITEM_FIRE_EXTINGUISHER = @"Items\item_fire_extinguisher"; //@@MP (Release 7-1)
+        public const string ITEM_FIRE_HAZARD_SUIT = @"Items\item_fire_hazard_suit"; //@@MP (Release 7-1)
+        public const string ITEM_FLAMETHROWER = @"Items\item_flamethrower"; //@@MP (Release 7-1)
+        public const string ITEM_FLARES_KIT = @"Items\item_flares_kit"; //@@MP (Release 7-1)
         public const string ITEM_FLASHLIGHT = @"Items\item_flashlight";
         public const string ITEM_FLASHLIGHT_OUT = @"Items\item_flashlight_out";
         public const string ITEM_FREE_ANGELS_JACKET = @"Items\item_free_angels_jacket";
+        public const string ITEM_GLOWSTICKS_BOX = @"Items\item_glowsticks_box"; //@@MP (Release 7-1)
+        public const string ITEM_GOLF_CLUB = @"Items\item_golfclub";
         public const string ITEM_GRENADE = @"Items\item_grenade";
         public const string ITEM_GRENADE_PRIMED = @"Items\item_grenade_primed";
-        public const string ITEM_JASON_MYERS_AXE = @"Items\item_jason_myers_axe";
-        public const string ITEM_GOLF_CLUB = @"Items\item_golfclub";
         public const string ITEM_GROCERIES = @"Items\item_groceries";
         public const string ITEM_HANS_VON_HANZ_PISTOL = @"Items\item_hans_von_hanz_pistol";
         public const string ITEM_HELLS_SOULS_JACKET = @"Items\item_hells_souls_jacket";
@@ -550,11 +562,16 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_IMPROVISED_CLUB = @"Items\item_improvised_club";
         public const string ITEM_IMPROVISED_SPEAR = @"Items\item_improvised_spear";
         public const string ITEM_IRON_GOLF_CLUB = @"Items\item_iron_golfclub";
+        public const string ITEM_JASON_MYERS_AXE = @"Items\item_jason_myers_axe";
         public const string ITEM_KOLT_REVOLVER = @"Items\item_kolt_revolver";
         public const string ITEM_LIQUOR_BOTTLE_AMBER = @"Items\item_liquor_bottle_amber"; //@@MP (Release 4)
         public const string ITEM_LIQUOR_BOTTLE_CLEAR = @"Items\item_liquor_bottle_clear"; //@@MP (Release 4)
+        public const string ITEM_LIT_FLARE = @"Items\item_lit_flare"; //@@MP (Release 7-1)
+        public const string ITEM_LIT_GLOWSTICK = @"Items\item_lit_glowstick"; //@@MP (Release 7-1)
         public const string ITEM_MACHETE = @"Items\item_machete"; //@@MP (Release 3)
         public const string ITEM_MAGAZINE = @"Items\item_magazine";
+        public const string ITEM_MATCHES = @"Items\item_matchbox"; //@@MP (Release 7-1)
+        public const string ITEM_MATCHES_PRIMED = @"Items\item_match_primed"; //@@MP (Release 7-1)
         public const string ITEM_MEDIKIT = @"Items\item_medikit";
         public const string ITEM_MOLOTOV = @"Items\item_molotov"; //@@MP (Release 4)
         public const string ITEM_MOLOTOV_PRIMED = @"Items\item_molotov_primed"; //@@MP (Release 4)
@@ -574,11 +591,13 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_PRECISION_RIFLE = @"Items\item_precision_rifle";
         public const string ITEM_ROGUEDJACK_KEYBOARD = @"Items\item_roguedjack_keyboard";
         public const string ITEM_SANTAMAN_SHOTGUN = @"Items\item_santaman_shotgun";
+        public const string ITEM_SHORT_SHOVEL = @"Items\item_short_shovel";
         public const string ITEM_SHOTGUN = @"Items\item_shotgun";
         public const string ITEM_SHOVEL = @"Items\item_shovel";
+        public const string ITEM_SIPHON_KIT = @"Items\item_siphon_kit"; //@@MP (Release 7-1)
         public const string ITEM_SMALL_HAMMER = @"Items\item_small_hammer";
+        public const string ITEM_SNACK_BAR = @"Items\item_snack_bar"; //@@MP (Release 7-1)
         public const string ITEM_SPIKES = @"Items\item_spikes";
-        public const string ITEM_SHORT_SHOVEL = @"Items\item_short_shovel";
         public const string ITEM_SPRAYPAINT = @"Items\item_spraypaint";
         public const string ITEM_SPRAYPAINT2 = @"Items\item_spraypaint2";
         public const string ITEM_SPRAYPAINT3 = @"Items\item_spraypaint3";
@@ -598,6 +617,23 @@ namespace djack.RogueSurvivor.Gameplay
         #region Effects
         public const string EFFECT_BARRICADED = @"Effects\barricaded";
         public const string EFFECT_ONFIRE = @"Effects\onFire";
+        public const string EFFECT_ROT1_1 = @"Effects\rot1_1";
+        public const string EFFECT_ROT1_2 = @"Effects\rot1_2";
+        public const string EFFECT_ROT2_1 = @"Effects\rot2_1";
+        public const string EFFECT_ROT2_2 = @"Effects\rot2_2";
+        public const string EFFECT_ROT3_1 = @"Effects\rot3_1";
+        public const string EFFECT_ROT3_2 = @"Effects\rot3_2";
+        public const string EFFECT_ROT4_1 = @"Effects\rot4_1";
+        public const string EFFECT_ROT4_2 = @"Effects\rot4_2";
+        public const string EFFECT_ROT5_1 = @"Effects\rot5_1";
+        public const string EFFECT_ROT5_2 = @"Effects\rot5_2";
+        public const string EFFECT_LIGHT_TINT_CANDLE = @"Effects\light_tint_candle"; //@@MP (Release 7-1)
+        public const string EFFECT_LIGHT_TINT_FLARE = @"Effects\light_tint_flare"; //@@MP (Release 7-1)
+        public const string EFFECT_LIGHT_TINT_GLOWSTICK = @"Effects\light_tint_glowstick"; //@@MP (Release 7-1)
+        public const string EFFECT_WEATHER_RAIN1 = @"Effects\weather_rain1";
+        public const string EFFECT_WEATHER_RAIN2 = @"Effects\weather_rain2";
+        public const string EFFECT_WEATHER_HEAVY_RAIN1 = @"Effects\weather_heavy_rain1";
+        public const string EFFECT_WEATHER_HEAVY_RAIN2 = @"Effects\weather_heavy_rain2";
         #endregion
 
         #region Misc
@@ -617,24 +653,10 @@ namespace djack.RogueSurvivor.Gameplay
         public const string TRACK_BLACKOPS_POSITION = @"track_blackops_position";
         public const string TRACK_POLICE_POSITION = @"track_police_position";
 
-        public const string WEATHER_RAIN1 = @"weather_rain1";
-        public const string WEATHER_RAIN2 = @"weather_rain2";
-        public const string WEATHER_HEAVY_RAIN1 = @"weather_heavy_rain1";
-        public const string WEATHER_HEAVY_RAIN2 = @"weather_heavy_rain2";
-
         public const string CORPSE_DRAGGED = @"corpse_dragged";
-        public const string ROT1_1 = @"rot1_1";
-        public const string ROT1_2 = @"rot1_2";
-        public const string ROT2_1 = @"rot2_1";
-        public const string ROT2_2 = @"rot2_2";
-        public const string ROT3_1 = @"rot3_1";
-        public const string ROT3_2 = @"rot3_2";
-        public const string ROT4_1 = @"rot4_1";
-        public const string ROT4_2 = @"rot4_2";
-        public const string ROT5_1 = @"rot5_1";
-        public const string ROT5_2 = @"rot5_2";
 
         public const string ICONS_LEGEND = @"icons_legend"; //@@MP (Release 6-1)
+        public const string INSPECTION_MODE_HIGHLIGHT = @"inspection_mode_highlight"; //@@MP (Release 7-1)
         #endregion
 
         #endregion
@@ -665,7 +687,6 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ACTIVITY_FOLLOWING_PLAYER);
             Load(ACTIVITY_SLEEPING);
 
-            Load(ICON_EXPIRED_FOOD);
             Load(ICON_TARGET);
             Load(ICON_MELEE_ATTACK);
             Load(ICON_MELEE_MISS);
@@ -683,6 +704,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ICON_SLEEP_ALMOST_SLEEPY);
             Load(ICON_SLEEP_SLEEPY);
             Load(ICON_SLEEP_EXHAUSTED);
+            Load(ICON_DRUNK); //@@MP (Release 7-1)
+            Load(ICON_EXPIRED_FOOD);
             Load(ICON_SPOILED_FOOD);
             Load(ICON_FOOD_ALMOST_HUNGRY);
             Load(ICON_FOOD_HUNGRY);
@@ -857,6 +880,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_WALL_STONE_DAMAGED);
             Load(DECO_WALL_LIGHT_BROWN_DAMAGED); //@@MP (Release 4)
             Load(DECO_WALL_ARMY_BASE_DAMAGED); //@@MP (Release 6-3)
+
+            Load(DECO_LIT_CANDLE); //@@MP (Release 7-1)
             #endregion
 
             #region Map objects
@@ -887,6 +912,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_ROLLER_DOOR_OPEN);
             Load(OBJ_ROLLER_DOOR_BROKEN);
 
+            Load(OBJ_PICKET_FENCE); //@@MP alpha10 (Release 6-1)
             Load(OBJ_BENCH);
             Load(OBJ_FENCE);
             //@@MP (Release 4)
@@ -954,17 +980,17 @@ namespace djack.RogueSurvivor.Gameplay
 
             Load(OBJ_BARRELS);
             Load(OBJ_JUNK);
+            Load(OBJ_BOARD);
+            Load(OBJ_SMALL_WOODEN_FORTIFICATION);
+            Load(OBJ_LARGE_WOODEN_FORTIFICATION);
 
             Load(OBJ_POWERGEN_OFF);
             Load(OBJ_POWERGEN_ON);
+            Load(OBJ_FIRE_EXTINGUISHER_REFILLER); //@@MP (Release 7-1)
+            Load(OBJ_FUEL_PUMP); //@@MP (Release 7-1)
 
             Load(OBJ_GATE_CLOSED);
             Load(OBJ_GATE_OPEN);
-
-            Load(OBJ_BOARD);
-
-            Load(OBJ_SMALL_WOODEN_FORTIFICATION);
-            Load(OBJ_LARGE_WOODEN_FORTIFICATION);
 
             Load(OBJ_HOSPITAL_BED);
             Load(OBJ_HOSPITAL_CHAIR);
@@ -974,8 +1000,6 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_HOSPITAL_NIGHT_TABLE);
             Load(OBJ_HOSPITAL_WARDROBE);
 
-            Load(OBJ_PICKET_FENCE); //@@MP alpha10 (Release 6-1)
-            
             //@@MP (Release 6-4)
             Load(OBJ_ARMY_RADIO_CUPBOARD);
             Load(OBJ_ARMY_COMPUTER_STATION);
@@ -1136,6 +1160,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_EQUIPPED);
 
             Load(ITEM_AMMO_BOLTS);
+            Load(ITEM_AMMO_FUEL); //@@MP (Release 7-1)
             Load(ITEM_AMMO_HEAVY_PISTOL);
             Load(ITEM_AMMO_HEAVY_RIFLE);
             Load(ITEM_AMMO_LIGHT_PISTOL);
@@ -1158,12 +1183,16 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_BIGBEAR_BAT);
             Load(ITEM_BIG_FLASHLIGHT);
             Load(ITEM_BIG_FLASHLIGHT_OUT);
+            Load(ITEM_BINOCULARS_FEMALE); //@@MP (Release 7-1)
+            Load(ITEM_BINOCULARS_MALE); //@@MP (Release 7-1)
             Load(ITEM_BLACKOPS_GPS);
             Load(ITEM_BOOK);
             Load(ITEM_C4); //@@MP (Release 6-3)
             Load(ITEM_C4_PRIMED); //@@MP (Release 6-3)
+            Load(ITEM_CANDLES_BOX); //@@MP (Release 7-1)
             Load(ITEM_CANNED_FOOD);
             Load(ITEM_CELL_PHONE);
+            Load(ITEM_CHAINSAW); //@@MP (Release 7-1)
             Load(ITEM_CHAR_DOCUMENT); //@@MP (Release 3)
             Load(ITEM_CHAR_LIGHT_BODYARMOR);
             Load(ITEM_CIGARETTES); //@@MP (Release 4)
@@ -1172,14 +1201,21 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_DYNAMITE); //@@MP (Release 4)
             Load(ITEM_DYNAMITE_PRIMED); //@@MP (Release 4)
             Load(ITEM_EMPTY_CAN);
+            Load(ITEM_ENERGY_DRINK); //@@MP (Release 7-1)
             Load(ITEM_FAMU_FATARU_KATANA);
+            Load(ITEM_FIRE_EXTINGUISHER); //@@MP (Release 7-1)
+            Load(ITEM_FIRE_HAZARD_SUIT); //@@MP (Release 7-1)
+            Load(ITEM_FLAMETHROWER); //@@MP (Release 7-1)
+            Load(ITEM_FLARES_KIT); //@@MP (Release 7-1)
             Load(ITEM_FLASHLIGHT);
             Load(ITEM_FLASHLIGHT_OUT);
             Load(ITEM_FREE_ANGELS_JACKET);
+            Load(ITEM_GLOWSTICKS_BOX); //@@MP (Release 7-1)
             Load(ITEM_GOLF_CLUB);
             Load(ITEM_GRENADE);
             Load(ITEM_GRENADE_PRIMED);
             Load(ITEM_GROCERIES);
+            Load(ITEM_HANS_VON_HANZ_PISTOL);
             Load(ITEM_HELLS_SOULS_JACKET);
             Load(ITEM_HOCKEY_STICK); //@@MP (Release 3)
             Load(ITEM_HUGE_HAMMER);
@@ -1190,11 +1226,13 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_IMPROVISED_SPEAR);
             Load(ITEM_IRON_GOLF_CLUB);
             Load(ITEM_JASON_MYERS_AXE);
-            Load(ITEM_HANS_VON_HANZ_PISTOL);
             Load(ITEM_KOLT_REVOLVER);
             Load(ITEM_LIQUOR_BOTTLE_AMBER); //@@MP (Release 4)
             Load(ITEM_LIQUOR_BOTTLE_CLEAR); //@@MP (Release 4)
+            Load(ITEM_LIT_FLARE); //@@MP (Release 7-1)
+            Load(ITEM_LIT_GLOWSTICK); //@@MP (Release 7-1)
             Load(ITEM_MACHETE); //@@MP (Release 3)
+            Load(ITEM_MATCHES); //@@MP (Release 7-1)
             Load(ITEM_MAGAZINE);
             Load(ITEM_MEDIKIT);
             Load(ITEM_MOLOTOV); //@@MP (Release 4)
@@ -1215,10 +1253,12 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_PRECISION_RIFLE);
             Load(ITEM_ROGUEDJACK_KEYBOARD);
             Load(ITEM_SANTAMAN_SHOTGUN);
+            Load(ITEM_SHORT_SHOVEL);
             Load(ITEM_SHOTGUN);
             Load(ITEM_SHOVEL);
+            Load(ITEM_SIPHON_KIT); //@@MP (Release 7-1)
             Load(ITEM_SMALL_HAMMER);
-            Load(ITEM_SHORT_SHOVEL);
+            Load(ITEM_SNACK_BAR); //@@MP (Release 7-1)
             Load(ITEM_SPIKES);
             Load(ITEM_SPRAYPAINT);
             Load(ITEM_SPRAYPAINT2);
@@ -1241,6 +1281,23 @@ namespace djack.RogueSurvivor.Gameplay
 
             Load(EFFECT_BARRICADED);
             Load(EFFECT_ONFIRE);
+            Load(EFFECT_ROT1_1);
+            Load(EFFECT_ROT1_2);
+            Load(EFFECT_ROT2_1);
+            Load(EFFECT_ROT2_2);
+            Load(EFFECT_ROT3_1);
+            Load(EFFECT_ROT3_2);
+            Load(EFFECT_ROT4_1);
+            Load(EFFECT_ROT4_2);
+            Load(EFFECT_ROT5_1);
+            Load(EFFECT_ROT5_2);
+            Load(EFFECT_LIGHT_TINT_CANDLE); //@@MP (Release 7-1)
+            Load(EFFECT_LIGHT_TINT_FLARE); //@@MP (Release 7-1)
+            Load(EFFECT_LIGHT_TINT_GLOWSTICK); //@@MP (Release 7-1)
+            Load(EFFECT_WEATHER_RAIN1);
+            Load(EFFECT_WEATHER_RAIN2);
+            Load(EFFECT_WEATHER_HEAVY_RAIN1);
+            Load(EFFECT_WEATHER_HEAVY_RAIN2);
             #endregion
 
             #region Misc
@@ -1260,22 +1317,9 @@ namespace djack.RogueSurvivor.Gameplay
             Load(TRACK_FOLLOWER_POSITION);
             Load(TRACK_POLICE_POSITION);
             Load(TRACK_UNDEAD_POSITION);
-            Load(WEATHER_RAIN1);
-            Load(WEATHER_RAIN2);
-            Load(WEATHER_HEAVY_RAIN1);
-            Load(WEATHER_HEAVY_RAIN2);
-            Load(ROT1_1);
-            Load(ROT1_2);
-            Load(ROT2_1);
-            Load(ROT2_2);
-            Load(ROT3_1);
-            Load(ROT3_2);
-            Load(ROT4_1);
-            Load(ROT4_2);
-            Load(ROT5_1);
-            Load(ROT5_2);
             Load(CORPSE_DRAGGED);
             Load(ICONS_LEGEND);  //@@MP (Release 6-1)
+            Load(INSPECTION_MODE_HIGHLIGHT); //@@MP (Release 7-1)
             #endregion
 
             Notify(ui, "done!");

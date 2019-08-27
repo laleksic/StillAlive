@@ -383,32 +383,29 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             }
             // Army Base //@@MP (Release 6-3)
             int armyOfficesCount = 0;
-            if (armyOfficesCount == 0) //unless we've already generated one in the world, as that's all we want
+            foreach (Block b in emptyBlocks)
             {
-                foreach (Block b in emptyBlocks)
+                if (m_Params.District.Kind == DistrictKind.GREEN)// || m_Params.District.Kind == DistrictKind.GENERAL)
                 {
-                    if (m_Params.District.Kind == DistrictKind.GREEN)// || m_Params.District.Kind == DistrictKind.GENERAL)
+                    if (armyOfficesCount == 0) //we only want one per district
                     {
-                        if (armyOfficesCount == 0)
+                        ArmyBuildingType btype = MakeArmyOffice(map, b);
+                        if (btype != ArmyBuildingType.NONE)
                         {
-                            ArmyBuildingType btype = MakeArmyOffice(map, b);
-                            if (btype != ArmyBuildingType.NONE)
+                            if (btype == ArmyBuildingType.OFFICE) //it will be because we don't have any others
                             {
-                                if (btype == ArmyBuildingType.OFFICE) //it will be because we don't have any others
-                                {
-                                    ++armyOfficesCount;
-                                    PopulateArmyOfficeBuilding(map, b);
-                                }
-                                completedBlocks.Add(b);
-                                continue;
+                                ++armyOfficesCount;
+                                PopulateArmyOfficeBuilding(map, b);
                             }
+                            completedBlocks.Add(b);
+                            continue;
                         }
                     }
                 }
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Army offices generated: " + armyOfficesCount.ToString());
-                foreach (Block b in completedBlocks)
-                    emptyBlocks.Remove(b);
             }
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "Army offices generated: " + armyOfficesCount.ToString());
+            foreach (Block b in completedBlocks)
+                emptyBlocks.Remove(b);
             #endregion
 
             // shops.
@@ -5361,7 +5358,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     return MakeItemAlcohol();
                 default:
                     throw new ArgumentOutOfRangeException("shop","unhandled shoptype");
-
             }
         }
 
@@ -5398,7 +5394,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                             return MakeItemBandages();
                     }
                 case 5: return MakeItemStenchKiller();
-
                 default:
                     throw new InvalidOperationException("unhandled roll");
             }
@@ -5406,7 +5401,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeShopSportsWearItem() //@@MP (Release 3)
         {
-            int roll = m_DiceRoller.Roll(0, 11);
+            int roll = m_DiceRoller.Roll(0, 13);
 
             switch (roll)
             {
@@ -5421,6 +5416,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 8: 
                 case 9: return MakeItemTennisRacket();
                 case 10: return MakeItemMagazines();
+                case 11:
+                case 12: return MakeItemGlowsticksBox(); //@@MP (Release 7-1)
                 default:
                     throw new InvalidOperationException("unhandled roll");
             }
@@ -5428,7 +5425,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeShopConstructionItem() //@@MP - split each item into its own single roll (Release 3)
         {
-            int roll = m_DiceRoller.Roll(0, 18);
+            int roll = m_DiceRoller.Roll(0, 19);
             switch (roll)
             {
                 case 0: return MakeItemStandardAxe();
@@ -5439,16 +5436,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 5: return MakeItemCrowbar();
                 case 6: return MakeItemHugeHammer(); //m_DiceRoller.RollChance(50) ? MakeItemHugeHammer() : MakeItemSmallHammer();
                 case 7: return MakeItemSprayPaint();
-                case 8: return MakeItemWoodenPlank();
-                case 9: return MakeItemFlashlight();
-                case 10: return MakeItemBigFlashlight();
-                case 11: return MakeItemSpikes();
-                case 12: return MakeItemBarbedWire();
-                case 13: return MakeItemSmallHammer();
-                case 14: return MakeItemShortShovel();
-                case 15: return MakeItemNailGun(); //@@MP (Release 5-1)
-                case 16: return MakeItemNailGunAmmo(); //@@MP (Release 5-1)
-                case 17: return MakeItemVegetableSeeds(); //@@MP (Release 5-5)    
+                case 8: return MakeItemFlashlight();
+                case 9: return MakeItemBigFlashlight();
+                case 10: return MakeItemSpikes();
+                case 11: return MakeItemBarbedWire();
+                case 12: return MakeItemSmallHammer();
+                case 13: return MakeItemShortShovel();
+                case 14: return MakeItemNailGun(); //@@MP (Release 5-1)
+                case 15: return MakeItemNailGunAmmo(); //@@MP (Release 5-1)
+                case 16: return MakeItemVegetableSeeds(); //@@MP (Release 5-5)
+                case 17: return MakeItemSiphonKit(); //@@MP (Release 7-1)
+                case 18: return MakeItemChainsaw(); //@@MP (Release 7-1)
                 default:
                     throw new InvalidOperationException("unhandled roll");
             }
@@ -5531,11 +5529,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             else
             {
                 // Outfits&Traps
-                int roll = m_DiceRoller.Roll(0, 3);
+                int roll = m_DiceRoller.Roll(0, 4);
                 switch (roll)
                 {
                     case 0: return MakeItemHunterVest();
                     case 1: return MakeItemBearTrap();
+                    case 2: return MakeItemBinoculars(); //@@MP added (Release 7-1)
                     case 3: return MakeItemStenchKiller(); //@@MP added (Release 1)
                     default: 
                         return null;
@@ -5545,16 +5544,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeShopGeneralItem()
         {
-            int roll = m_DiceRoller.Roll(0, 6);
+            int roll = m_DiceRoller.Roll(0, 8);
             switch (roll)
             { //@@MP - changed the items to be more realistic (Release 4)
                 case 0: return MakeShopPharmacyItem();
-                case 1: return MakeShopPharmacyItem();
-                case 2: return MakeItemFlashlight();
+                case 1: 
+                case 2: return MakeItemSnackBar(); //@@MP - was torch (Release 7-1)
                 case 3: return MakeShopGroceryItem();
                 case 4: return MakeItemMagazines();
                 case 5: return MakeItemCigarettes();
                 case 6: return MakeItemCellPhone(); //@MP - added more phones, because they were too rare (Release 5-4)
+                case 7: return MakeItemEnergyDrink(); //@@MP (Release 7-1)
                 default: 
                     throw new InvalidOperationException("unhandled roll");
             }
@@ -5589,58 +5589,38 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         
         public Item MakeRandomBedroomItem() //@@ MP (Release 1)(Release 3)
         {
-            int randomItem = m_DiceRoller.Roll(0, 25);
+            int randomItem = m_DiceRoller.Roll(0, 20);
 
             switch (randomItem)
             {
-                case 0:
+                case 0: 
                 case 1: return MakeItemBandages();
-                case 2: return MakeItemPillsSTA();
-                case 3: return MakeItemPillsSLP();
-                case 4: //@@MP - if Sanity is disabled generate homely stuff instead (Release 1)
+                case 2: 
+                case 3: return MakeItemCandlesBox();
+                case 4:
                     if (RogueGame.Options.IsSanityEnabled) //@MP - fixed crappy implem (Release 5-2)
                         return MakeItemPillsSAN();
                     else
-                    {
-                        if (m_DiceRoller.RollChance(50))
-                            return MakeItemBook();
-                        else
-                            return MakeItemMagazines();
-                    }
+                        return MakeItemPillsSLP();
                 case 5: return MakeItemTennisRacket(); //@@MP (Release 3)
-                case 6: return MakeItemSmallHammer(); //@@MP (Release 3)
-                case 7: return MakeItemIronGolfClub(); //@@MP (Release 3)
-                case 8: return MakeItemBaseballBat();
-                case 9: return MakeItemRandomPistol();
-                case 10: // rare fire weapon
-                    if (m_DiceRoller.RollChance(30))
-                    {
+                case 6: return MakeItemIronGolfClub(); //@@MP (Release 3)
+                case 7: return MakeItemBaseballBat();
+                case 8: return MakeItemRandomPistol();
+                case 9: // rare fire weapon
                         if (m_DiceRoller.RollChance(50))
                             return MakeItemShotgun();
                         else
                             return MakeItemHuntingRifle();
-                    }
-                    else
-                    {
-                        if (m_DiceRoller.RollChance(50))
-                            return MakeItemShotgunAmmo();
-                        else
-                            return MakeItemLightRifleAmmo();
-                    }
-                case 11: 
-                case 12:
-                case 13: return MakeItemCellPhone();
-                case 14:
-                case 15: return MakeItemFlashlight();
-                case 16: return MakeItemHockeyStick(); //@@MP (Release 3)
-                case 17: return MakeItemLightPistolAmmo();
-                case 18: return MakeItemPipeWrench(); //@@MP (Release 3)
-                case 19: return MakeItemStenchKiller();
-                case 20: return MakeItemHunterVest();
-                case 21: return MakeItemCigarettes(); //@@MP (Release 4)
-                case 22:
-                case 23:
-                case 24:
+                case 10: 
+                case 11:
+                case 12: return MakeItemCellPhone();
+                case 13: return MakeItemFlashlight();
+                case 14: return MakeItemHockeyStick(); //@@MP (Release 3)
+                case 15: 
+                case 16: return MakeItemStenchKiller();
+                case 17: return MakeItemHunterVest();
+                case 18: return MakeItemCigarettes(); //@@MP (Release 4)
+                case 19:
                     if (m_DiceRoller.RollChance(50))
                         return MakeItemBook();
                     else
@@ -6670,7 +6650,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // - offices rooms on the east side, doors leading west.
             Rectangle officesRect = Rectangle.FromLTRB(3, 0, map.Width, map.Height);
             List<Rectangle> roomsList = new List<Rectangle>();
-            MakeRoomsPlan(map, ref roomsList, officesRect, 5, 5);
+            MakeRoomsPlan(map, ref roomsList, officesRect, 7, 7);
             foreach (Rectangle roomRect in roomsList)
             {
                 Rectangle inRoomRect = Rectangle.FromLTRB(roomRect.Left + 1, roomRect.Top + 1, roomRect.Right - 1, roomRect.Bottom - 1);
@@ -6689,7 +6669,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     DoForEachTile(inRoomRect, //@@MP - unused parameter (Release 5-7)
                         (pt) =>
                         {
-                            if (!map.IsWalkable(pt.X, pt.Y) || CountAdjWalls(map, pt.X, pt.Y) == 0 || CountAdjDoors(map, pt.X, pt.Y) > 0)
+                            if (!map.IsWalkable(pt.X, pt.Y) || CountAdjMapObjects(map, pt.X, pt.Y) > 1 || CountAdjDoors(map, pt.X, pt.Y) > 0) //CountAdjWalls(map, pt.X, pt.Y) == 0 
                                 return;
 
                             // shelf.
@@ -6712,23 +6692,25 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                                     it = m_DiceRoller.RollChance(50) ? (m_DiceRoller.RollChance(50) ? MakeItemFlashlight() : MakeItemBigFlashlight()) : MakeItemPoliceRadio();
                                     break;
 
-                                    // 20% truncheon
+                                    // 10% truncheon
                                 case 4:
-                                case 5:
                                     it = MakeItemTruncheon();
                                     break;
 
-                                    // 20% pistol/ammo - 30% pistol 70% amo
+                                    // 20% pistol/ammo - 30% pistol 70% ammo
+                                case 5:
                                 case 6:
-                                case 7:
                                     it = m_DiceRoller.RollChance(30) ? MakeItemPistol() : MakeItemLightPistolAmmo();
                                     break;
 
-                                    // 20% shotgun/ammo - 30% shotgun 70% amo
+                                    // 20% shotgun/ammo - 30% shotgun 70% ammo
+                                case 7:
                                 case 8:
-                                case 9:
                                     it = m_DiceRoller.RollChance(30) ? MakeItemShotgun() : MakeItemShotgunAmmo();
                                     break;
+
+                                    // 10% flares kit
+                                case 9: it = MakeItemFlaresKit(); break;//@@MP (Release 7-1)
 
                                 default:
                                     throw new InvalidOperationException("unhandled roll");
@@ -6752,19 +6734,24 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     TileRectangle(map, m_Game.GameTiles.WALL_POLICE_STATION, roomRect);
                     PlaceDoor(map, roomRect.Left, roomRect.Top + roomRect.Height / 2, m_Game.GameTiles.FLOOR_PLANKS, MakeObjWoodenDoor());
 
-                    // add furniture : 1 table, 2 chairs.
-                    MapObjectPlaceInGoodPosition(map, inRoomRect,
+                    for (int i = 0; i < 5; i++)
+                    {
+                        // add furniture : 1 table, 2 chairs.
+                        MapObjectPlaceInGoodPosition(map, inRoomRect,
                         (pt) => map.IsWalkable(pt.X, pt.Y) && CountAdjDoors(map, pt.X, pt.Y) == 0,
                         m_DiceRoller,
                         (pt) => MakeObjTable(GameImages.OBJ_TABLE));
-                    MapObjectPlaceInGoodPosition(map, inRoomRect,
-                        (pt) => map.IsWalkable(pt.X, pt.Y) && CountAdjDoors(map, pt.X, pt.Y) == 0,
-                        m_DiceRoller,
-                        (pt) => MakeObjChair(GameImages.OBJ_CHAIR));
-                    MapObjectPlaceInGoodPosition(map, inRoomRect,
-                        (pt) => map.IsWalkable(pt.X, pt.Y) && CountAdjDoors(map, pt.X, pt.Y) == 0,
-                        m_DiceRoller,
-                        (pt) => MakeObjChair(GameImages.OBJ_CHAIR));
+
+                        MapObjectPlaceInGoodPosition(map, inRoomRect,
+                            (pt) => map.IsWalkable(pt.X, pt.Y) && CountAdjDoors(map, pt.X, pt.Y) == 0 && CountAdjMapObjects(map, pt.X, pt.Y) > 0,
+                            m_DiceRoller,
+                            (pt) => MakeObjChair(GameImages.OBJ_CHAIR));
+
+                        MapObjectPlaceInGoodPosition(map, inRoomRect,
+                            (pt) => map.IsWalkable(pt.X, pt.Y) && CountAdjDoors(map, pt.X, pt.Y) == 0 && CountAdjMapObjects(map, pt.X, pt.Y) > 0,
+                            m_DiceRoller,
+                            (pt) => MakeObjChair(GameImages.OBJ_CHAIR));
+                    }
 
                     // zone.
                     map.AddZone(MakeUniqueZone("office", inRoomRect));
@@ -7875,7 +7862,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                     // table + tracker/armor/weapon.
                     Item it;
-                    int randomItem = m_DiceRoller.Roll(0, 20);
+                    int randomItem = m_DiceRoller.Roll(0, 24);
                     switch (randomItem)
                     {
                         case 0: it = MakeItemArmyRifle(); break;
@@ -7898,6 +7885,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         case 17: it = MakeItemBlackOpsGPS(); break;
                         case 18: it = MakeItemNightVisionGoggles(); break;
                         case 19: it = MakeItemC4Explosive(); break;
+                        case 20: it = MakeItemFlamethrower(); break;//@@MP (Release 7-1)
+                        case 21: it = MakeItemFuelAmmo(); break;//@@MP (Release 7-1)
+                        case 22:
+                        case 23:
+                            if (m_DiceRoller.RollChance(50))//@@MP (Release 7-1)
+                                it = MakeItemFlaresKit();
+                            else
+                                it = MakeItemGlowsticksBox();
+                            break;
                         default:
                             throw new InvalidOperationException("unhandled roll");
                     }

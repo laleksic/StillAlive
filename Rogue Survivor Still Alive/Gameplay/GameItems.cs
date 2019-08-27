@@ -27,15 +27,15 @@ namespace djack.RogueSurvivor.Gameplay
             MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN,
             MEDICINE_ALCOHOL_BEER_CAN_BLUE,
             MEDICINE_ALCOHOL_BEER_CAN_RED,
-            MEDICINE_ALCOHOL_LIQUOR_AMBER,
-            MEDICINE_ALCOHOL_LIQUOR_CLEAR,
             MEDICINE_CIGARETTES,
+            MEDICINE_ENERGY_DRINK, //@@MP (Release 7-1)
 
             FOOD_ARMY_RATION,
             FOOD_GROCERIES,
             FOOD_CANNED_FOOD,
             FOOD_WILD_BERRIES, //@@MP (Release 4)
             FOOD_VEGETABLES, //@@MP (Release 5-3), (Release 5-5)
+            FOOD_SNACK_BAR, //@@MP (Release 7-1)
 
             MELEE_BASEBALLBAT,
             MELEE_COMBAT_KNIFE,
@@ -50,6 +50,15 @@ namespace djack.RogueSurvivor.Gameplay
             MELEE_TRUNCHEON,
             MELEE_IMPROVISED_CLUB,
             MELEE_IMPROVISED_SPEAR,
+            //@@MP (Release 3)
+            MELEE_TENNIS_RACKET,
+            MELEE_HOCKEY_STICK,
+            MELEE_MACHETE,
+            MELEE_STANDARD_AXE,
+            MELEE_PICKAXE,
+            MELEE_PIPE_WRENCH,
+            //@@MP (Release 7-1)
+            MELEE_CHAINSAW,
 
             RANGED_ARMY_PISTOL,
             RANGED_ARMY_RIFLE,
@@ -60,6 +69,7 @@ namespace djack.RogueSurvivor.Gameplay
             RANGED_PRECISION_RIFLE,
             RANGED_SHOTGUN,
             RANGED_NAIL_GUN, //@@MP (Release 5-1)
+            RANGED_FLAMETHROWER, //@@MP (Release 7-1)
 
             EXPLOSIVE_GRENADE,
             EXPLOSIVE_GRENADE_PRIMED,
@@ -71,8 +81,22 @@ namespace djack.RogueSurvivor.Gameplay
             //@@MP (Release 6-3)
             EXPLOSIVE_C4,
             EXPLOSIVE_C4_PRIMED,
+            //@@MP (Release 7-1)
+            EXPLOSIVE_MATCHES,
+            EXPLOSIVE_MATCHES_PRIMED,
+            EXPLOSIVE_FUEL_CAN,
+            EXPLOSIVE_FUEL_CAN_PRIMED,
+            EXPLOSIVE_FUEL_PUMP,
+            EXPLOSIVE_FUEL_PUMP_PRIMED,
 
             BAR_WOODEN_PLANK,
+            VEGETABLE_SEEDS, //@@MP (Release 5-3), (Release 5-5)
+            SIPHON_KIT, //@@MP (Release 7-1)
+            CANDLES_BOX, //@@MP (Release 7-1)
+            FLARES_KIT, //@@MP (Release 7-1)
+            GLOWSTICKS_BOX, //@@MP (Release 7-1)
+            LIQUOR_AMBER,
+            LIQUOR_CLEAR,
 
             ARMOR_ARMY_BODYARMOR,
             ARMOR_CHAR_LIGHT_BODYARMOR,
@@ -81,6 +105,7 @@ namespace djack.RogueSurvivor.Gameplay
             ARMOR_POLICE_JACKET,
             ARMOR_POLICE_RIOT,
             ARMOR_HUNTER_VEST,
+            ARMOR_FIRE_HAZARD_SUIT, //@@MP (Release 7-1)
 
             TRACKER_BLACKOPS,
             TRACKER_CELL_PHONE,
@@ -96,9 +121,13 @@ namespace djack.RogueSurvivor.Gameplay
 
             LIGHT_FLASHLIGHT,
             LIGHT_BIG_FLASHLIGHT,
-            //@@MP - one version per gender to suit the different inherent body pixel sizes (Release 6-3)
-            LIGHT_NIGHT_VISION_FEMALE,
-            LIGHT_NIGHT_VISION_MALE,
+            //@@MP - one version per gender to suit the different inherent body pixel sizes
+            LIGHT_NIGHT_VISION_FEMALE, //@@MP (Release 6-3)
+            LIGHT_NIGHT_VISION_MALE, //@@MP (Release 6-3)
+            LIGHT_BINOCULARS_FEMALE, //@@MP (Release 7-1)
+            LIGHT_BINOCULARS_MALE, //@@MP (Release 7-1)
+            LIGHT_FLARE, //@@MP (Release 7-1)
+            LIGHT_GLOWSTICK, //@@MP (Release 7-1)
 
             AMMO_LIGHT_PISTOL,
             AMMO_HEAVY_PISTOL,
@@ -108,6 +137,7 @@ namespace djack.RogueSurvivor.Gameplay
             AMMO_BOLTS,
             AMMO_NAILS, //@@MP (Release 5-1)
             AMMO_PRECISION_RIFLE, //@@MP (Release 6-6)
+            AMMO_FUEL, //@@MP (Release 7-1)
 
             TRAP_EMPTY_CAN,
             TRAP_BEAR_TRAP,
@@ -123,9 +153,7 @@ namespace djack.RogueSurvivor.Gameplay
             UNIQUE_ROGUEDJACK_KEYBOARD,
             UNIQUE_SANTAMAN_SHOTGUN,
             UNIQUE_HANS_VON_HANZ_PISTOL,
-            VEGETABLE_SEEDS, //@@MP (Release 5-3), (Release 5-5)
-            //@@MP (Release 6-3)
-            UNIQUE_ARMY_ACCESS_BADGE,
+            UNIQUE_ARMY_ACCESS_BADGE, //@@MP (Release 6-3)
 
             //@@MP (Release 3)
             UNIQUE_CHAR_DOCUMENT1,
@@ -134,14 +162,6 @@ namespace djack.RogueSurvivor.Gameplay
             UNIQUE_CHAR_DOCUMENT4,
             UNIQUE_CHAR_DOCUMENT5,
             UNIQUE_CHAR_DOCUMENT6,
-
-            //@@MP (Release 3)
-            MELEE_TENNIS_RACKET,
-            MELEE_HOCKEY_STICK,
-            MELEE_MACHETE,
-            MELEE_STANDARD_AXE,
-            MELEE_PICKAXE,
-            MELEE_PIPE_WRENCH,
 
             _COUNT
         }
@@ -220,12 +240,11 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemMedicineModel ALCOHOL_BEER_CAN_BLUE { get { return this[IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE] as ItemMedicineModel; } }
         MedecineData DATA_MEDICINE_ALCOHOL_BEER_CAN_RED;
         public ItemMedicineModel ALCOHOL_BEER_CAN_RED { get { return this[IDs.MEDICINE_ALCOHOL_BEER_CAN_RED] as ItemMedicineModel; } }
-        MedecineData DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER;
-        public ItemMedicineModel ALCOHOL_LIQUOR_AMBER { get { return this[IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER] as ItemMedicineModel; } }
-        MedecineData DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR;
-        public ItemMedicineModel ALCOHOL_LIQUOR_CLEAR { get { return this[IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR] as ItemMedicineModel; } }
         MedecineData DATA_MEDICINE_CIGARETTES;
         public ItemMedicineModel CIGARETTES { get { return this[IDs.MEDICINE_CIGARETTES] as ItemMedicineModel; } }
+        //@@MP (Release 7-1)
+        MedecineData DATA_MEDICINE_ENERGY_DRINK;
+        public ItemMedicineModel ENERGY_DRINK { get { return this[IDs.MEDICINE_ENERGY_DRINK] as ItemMedicineModel; } }
         #endregion
 
         #region Food
@@ -264,6 +283,8 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemFoodModel WILD_BERRIES { get { return this[IDs.FOOD_WILD_BERRIES] as ItemFoodModel; } }
         FoodData DATA_FOOD_VEGETABLES; //@MP (Release 5-3), (Release 5-5)
         public ItemFoodModel VEGETABLES { get { return this[IDs.FOOD_VEGETABLES] as ItemFoodModel; } }
+        FoodData DATA_FOOD_SNACK_BAR; //@MP (Release 7-1)
+        public ItemFoodModel SNACK_BAR { get { return this[IDs.FOOD_SNACK_BAR] as ItemFoodModel; } }
         #endregion
 
         #region Melee weapons
@@ -347,6 +368,9 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemMeleeWeaponModel PICKAXE { get { return this[IDs.MELEE_PICKAXE] as ItemMeleeWeaponModel; } }
         MeleeWeaponData DATA_MELEE_PIPE_WRENCH;
         public ItemMeleeWeaponModel PIPE_WRENCH { get { return this[IDs.MELEE_PIPE_WRENCH] as ItemMeleeWeaponModel; } }
+        //@@MP (Release 7-1)
+        MeleeWeaponData DATA_MELEE_CHAINSAW;
+        public ItemMeleeWeaponModel CHAINSAW { get { return this[IDs.MELEE_CHAINSAW] as ItemMeleeWeaponModel; } }
         #endregion
 
         #region Ranged weapons
@@ -401,9 +425,10 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemRangedWeaponModel UNIQUE_SANTAMAN_SHOTGUN { get { return this[IDs.UNIQUE_SANTAMAN_SHOTGUN] as ItemRangedWeaponModel; } }
         RangedWeaponData DATA_UNIQUE_HANS_VON_HANZ_PISTOL;
         public ItemRangedWeaponModel UNIQUE_HANS_VON_HANZ_PISTOL { get { return this[IDs.UNIQUE_HANS_VON_HANZ_PISTOL] as ItemRangedWeaponModel; } }
-        //@@MP (Release 5-1)
-        RangedWeaponData DATA_RANGED_NAIL_GUN;
+        RangedWeaponData DATA_RANGED_NAIL_GUN; //@@MP (Release 5-1)
         public ItemRangedWeaponModel NAIL_GUN { get { return this[IDs.RANGED_NAIL_GUN] as ItemRangedWeaponModel; } }
+        RangedWeaponData DATA_RANGED_FLAMETHROWER; //@@MP (Release 7-1)
+        public ItemRangedWeaponModel FLAMETHROWER { get { return this[IDs.RANGED_FLAMETHROWER] as ItemRangedWeaponModel; } }
         #endregion
 
         #region Ammos
@@ -415,6 +440,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemAmmoModel AMMO_BOLTS { get { return this[IDs.AMMO_BOLTS] as ItemAmmoModel; } }
         public ItemAmmoModel AMMO_NAILS { get { return this[IDs.AMMO_NAILS] as ItemAmmoModel; } } //@@MP (Release 5-1)
         public ItemAmmoModel AMMO_PRECISION_RIFLE { get { return this[IDs.AMMO_PRECISION_RIFLE] as ItemAmmoModel; } } //@@MP (Release 6-6)
+        public ItemAmmoModel AMMO_FUEL { get { return this[IDs.AMMO_FUEL] as ItemAmmoModel; } } //@@MP (Release 7-1)
         #endregion
 
         #region Explosives
@@ -467,6 +493,16 @@ namespace djack.RogueSurvivor.Gameplay
         ExplosiveData DATA_EXPLOSIVE_C4;
         public ItemGrenadeModel C4 { get { return this[IDs.EXPLOSIVE_C4] as ItemGrenadeModel; } }
         public ItemGrenadePrimedModel C4_PRIMED { get { return this[IDs.EXPLOSIVE_C4_PRIMED] as ItemGrenadePrimedModel; } }
+        //@@MP (Release 7-1)
+        ExplosiveData DATA_EXPLOSIVE_MATCHES;
+        public ItemGrenadeModel MATCHES { get { return this[IDs.EXPLOSIVE_MATCHES] as ItemGrenadeModel; } }
+        public ItemGrenadePrimedModel MATCHES_PRIMED { get { return this[IDs.EXPLOSIVE_MATCHES_PRIMED] as ItemGrenadePrimedModel; } }
+        ExplosiveData DATA_EXPLOSIVE_FUEL_CAN;
+        public ItemGrenadeModel FUEL_CAN { get { return this[IDs.EXPLOSIVE_FUEL_CAN] as ItemGrenadeModel; } }
+        public ItemGrenadePrimedModel FUEL_CAN_PRIMED { get { return this[IDs.EXPLOSIVE_FUEL_CAN_PRIMED] as ItemGrenadePrimedModel; } }
+        ExplosiveData DATA_EXPLOSIVE_FUEL_PUMP;
+        public ItemGrenadeModel FUEL_PUMP { get { return this[IDs.EXPLOSIVE_FUEL_PUMP] as ItemGrenadeModel; } }
+        public ItemGrenadePrimedModel FUEL_PUMP_PRIMED { get { return this[IDs.EXPLOSIVE_FUEL_PUMP_PRIMED] as ItemGrenadePrimedModel; } }
         #endregion
 
         #region Barricades
@@ -500,7 +536,7 @@ namespace djack.RogueSurvivor.Gameplay
         #region Body Armors
         struct ArmorData
         {
-            public const int COUNT_FIELDS = 8;
+            public const int COUNT_FIELDS = 9;
 
             public string NAME { get; set; }
             public string PLURAL { get; set; }
@@ -508,6 +544,7 @@ namespace djack.RogueSurvivor.Gameplay
             public int PRO_SHOT { get; set; }
             public int ENC { get; set; }
             public int WEIGHT { get; set; }
+            public int FIRE_RESIST { get; set; } //@@MP (Release 7-1)
             public string FLAVOR { get; set; }
 
             public static ArmorData FromCSVLine(CSVLine line)
@@ -520,7 +557,8 @@ namespace djack.RogueSurvivor.Gameplay
                     PRO_SHOT = line[4].ParseInt(),
                     ENC = line[5].ParseInt(),
                     WEIGHT = line[6].ParseInt(),
-                    FLAVOR = line[7].ParseText()
+                    FIRE_RESIST = line[7].ParseInt(), //@@MP (Release 7-1)
+                    FLAVOR = line[8].ParseText()
                 };
             }
         }
@@ -539,6 +577,8 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemBodyArmorModel POLICE_RIOT { get { return this[IDs.ARMOR_POLICE_RIOT] as ItemBodyArmorModel; } }
         ArmorData DATA_ARMOR_HUNTER_VEST;
         public ItemBodyArmorModel HUNTER_VEST { get { return this[IDs.ARMOR_HUNTER_VEST] as ItemBodyArmorModel; } }
+        ArmorData DATA_ARMOR_FIRE_HAZARD_SUIT; //@@MP (Release 7-1)
+        public ItemBodyArmorModel FIRE_HAZARD_SUIT { get { return this[IDs.ARMOR_FIRE_HAZARD_SUIT] as ItemBodyArmorModel; } }
         #endregion
 
         #region Trackers
@@ -640,6 +680,15 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemLightModel NIGHT_VISION_FEMALE { get { return this[IDs.LIGHT_NIGHT_VISION_FEMALE] as ItemLightModel; } }
         LightData DATA_LIGHT_NIGHT_VISION_MALE;
         public ItemLightModel NIGHT_VISION_MALE { get { return this[IDs.LIGHT_NIGHT_VISION_MALE] as ItemLightModel; } }
+        //@@MP (Release 7-1)
+        LightData DATA_LIGHT_BINOCULARS_FEMALE;
+        public ItemLightModel BINOCULARS_FEMALE { get { return this[IDs.LIGHT_BINOCULARS_FEMALE] as ItemLightModel; } }
+        LightData DATA_LIGHT_BINOCULARS_MALE;
+        public ItemLightModel BINOCULARS_MALE { get { return this[IDs.LIGHT_BINOCULARS_MALE] as ItemLightModel; } }
+        LightData DATA_LIGHT_FLARE;
+        public ItemLightModel LIGHT_FLARE { get { return this[IDs.LIGHT_FLARE] as ItemLightModel; } }
+        LightData DATA_LIGHT_GLOWSTICK;
+        public ItemLightModel LIGHT_GLOWSTICK { get { return this[IDs.LIGHT_GLOWSTICK] as ItemLightModel; } }
         #endregion
 
         #region Scent Sprays
@@ -766,10 +815,18 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemModel UNIQUE_CHAR_DOCUMENT4 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT4]; } }
         public ItemModel UNIQUE_CHAR_DOCUMENT5 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT5]; } }
         public ItemModel UNIQUE_CHAR_DOCUMENT6 { get { return this[IDs.UNIQUE_CHAR_DOCUMENT6]; } }
-        public ItemModel VEGETABLE_SEEDS { get { return this[IDs.VEGETABLE_SEEDS]; } } //@MP (Release 5-5)
         public ItemModel UNIQUE_ARMY_ACCESS_BADGE { get { return this[IDs.UNIQUE_ARMY_ACCESS_BADGE]; } } //@MP (Release 6-3)
         #endregion
 
+        #region Miscellaneous
+        public ItemModel VEGETABLE_SEEDS { get { return this[IDs.VEGETABLE_SEEDS]; } } //@MP (Release 5-5)
+        public ItemModel SIPHON_KIT { get { return this[IDs.SIPHON_KIT]; } } //@MP (Release 7-1)
+        public ItemModel CANDLES_BOX { get { return this[IDs.CANDLES_BOX]; } } //@MP (Release 7-1)
+        public ItemModel FLARES_KIT { get { return this[IDs.FLARES_KIT]; } } //@MP (Release 7-1)
+        public ItemModel GLOWSTICKS_BOX { get { return this[IDs.GLOWSTICKS_BOX]; } } //@MP (Release 7-1)
+        public ItemModel LIQUOR_AMBER { get { return this[IDs.LIQUOR_AMBER]; } } //@MP (Release 7-1)
+        public ItemModel LIQUOR_CLEAR { get { return this[IDs.LIQUOR_CLEAR]; } } //@MP (Release 7-1)
+        #endregion
         #endregion
 
         #region Init
@@ -885,24 +942,6 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = DATA_MEDICINE_ALCOHOL_BEER_CAN_RED.FLAVOR,
                 IsRecreational = true //@@MP (Release 5-7)
             };
-            this[IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.NAME, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.PLURAL, GameImages.ITEM_LIQUOR_BOTTLE_AMBER,
-                DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.HEALING, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.STAMINABOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.SANITYCURE)
-            {
-                IsPlural = true,
-                IsStackable = true,
-                StackingLimit = DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.STACKINGLIMIT,
-                FlavorDescription = DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER.FLAVOR,
-                IsRecreational = true //@@MP (Release 5-7)
-            };
-            this[IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR] = new ItemMedicineModel(DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.NAME, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.PLURAL, GameImages.ITEM_LIQUOR_BOTTLE_CLEAR,
-                DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.HEALING, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.STAMINABOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.SLEEPBOOST, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.INFECTIONCURE, DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.SANITYCURE)
-            {
-                IsPlural = true,
-                IsStackable = true,
-                StackingLimit = DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.STACKINGLIMIT,
-                FlavorDescription = DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR.FLAVOR,
-                IsRecreational = true //@@MP (Release 5-7)
-            };
             this[IDs.MEDICINE_CIGARETTES] = new ItemMedicineModel(DATA_MEDICINE_CIGARETTES.NAME, DATA_MEDICINE_CIGARETTES.PLURAL, GameImages.ITEM_CIGARETTES,
                 DATA_MEDICINE_CIGARETTES.HEALING, DATA_MEDICINE_CIGARETTES.STAMINABOOST, DATA_MEDICINE_CIGARETTES.SLEEPBOOST, DATA_MEDICINE_CIGARETTES.INFECTIONCURE, DATA_MEDICINE_CIGARETTES.SANITYCURE)
             {
@@ -911,6 +950,15 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = DATA_MEDICINE_CIGARETTES.STACKINGLIMIT,
                 FlavorDescription = DATA_MEDICINE_CIGARETTES.FLAVOR,
                 IsRecreational = true //@@MP (Release 5-7)
+            };
+            //@@MP (Release 7-1)
+            this[IDs.MEDICINE_ENERGY_DRINK] = new ItemMedicineModel(DATA_MEDICINE_ENERGY_DRINK.NAME, DATA_MEDICINE_ENERGY_DRINK.PLURAL, GameImages.ITEM_ENERGY_DRINK,
+                DATA_MEDICINE_ENERGY_DRINK.HEALING, DATA_MEDICINE_ENERGY_DRINK.STAMINABOOST, DATA_MEDICINE_ENERGY_DRINK.SLEEPBOOST, DATA_MEDICINE_ENERGY_DRINK.INFECTIONCURE, DATA_MEDICINE_ENERGY_DRINK.SANITYCURE)
+            {
+                IsPlural = true,
+                IsStackable = true,
+                StackingLimit = DATA_MEDICINE_ENERGY_DRINK.STACKINGLIMIT,
+                FlavorDescription = DATA_MEDICINE_ENERGY_DRINK.FLAVOR
             };
             #endregion
 
@@ -955,6 +1003,14 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = DATA_FOOD_VEGETABLES.STACKINGLIMIT,
                 IsStackable = true,
                 FlavorDescription = DATA_FOOD_VEGETABLES.FLAVOR
+            };
+            this[IDs.FOOD_SNACK_BAR] = new ItemFoodModel(DATA_FOOD_SNACK_BAR.NAME, DATA_FOOD_SNACK_BAR.PLURAL, GameImages.ITEM_SNACK_BAR, DATA_FOOD_SNACK_BAR.NUTRITION, DATA_FOOD_SNACK_BAR.BESTBEFORE)
+            { //@MP (Release 7-1)
+                IsAn = StartsWithVowel(DATA_FOOD_SNACK_BAR.NAME),
+                IsPlural = CheckPlural(DATA_FOOD_SNACK_BAR.NAME, DATA_FOOD_SNACK_BAR.PLURAL),
+                StackingLimit = DATA_FOOD_SNACK_BAR.STACKINGLIMIT,
+                IsStackable = true,
+                FlavorDescription = DATA_FOOD_SNACK_BAR.FLAVOR
             };
             #endregion
 
@@ -1244,6 +1300,20 @@ namespace djack.RogueSurvivor.Gameplay
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
                 ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
             };
+
+            //@@MP (Release 7-1)
+            mwdata = DATA_MELEE_CHAINSAW;
+            this[IDs.MELEE_CHAINSAW] = new ItemMeleeWeaponModel(mwdata.NAME, mwdata.PLURAL, GameImages.ITEM_CHAINSAW,
+                Attack.MeleeAttack(new Verb("cut", "cuts"), mwdata.ATK, mwdata.DMG, mwdata.STA, mwdata.DISARM))
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = mwdata.FLAVOR,
+                IsStackable = (mwdata.STACKINGLIMIT > 1),
+                StackingLimit = mwdata.STACKINGLIMIT,
+                IsFragile = mwdata.ISFRAGILE,
+                ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+            };
             #endregion
 
             #region Ranged weapons
@@ -1355,6 +1425,16 @@ namespace djack.RogueSurvivor.Gameplay
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR
             };
+
+            rwp = DATA_RANGED_FLAMETHROWER; //@@MP (Release 5-1)
+            this[IDs.RANGED_FLAMETHROWER] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_FLAMETHROWER,
+                Attack.RangedAttack(AttackKind.OTHER, new Verb("incinerate"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
+                    rwp.MAXAMMO, AmmoType.FUEL, true)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = rwp.FLAVOR,
+                IsFlameWeapon = true
+            };
             #endregion
 
             #region Ammos
@@ -1410,7 +1490,15 @@ namespace djack.RogueSurvivor.Gameplay
 
             //@@MP (Release 6-6)
             this[IDs.AMMO_PRECISION_RIFLE] = new ItemAmmoModel("precision rifle bullets", "precision rifle bullets", GameImages.ITEM_AMMO_PRECISION_RIFLE,
-                AmmoType.PRECISION_RIFLE, 99)
+                AmmoType.PRECISION_RIFLE, 20)
+            {
+                IsPlural = true,
+                FlavorDescription = ""
+            };
+
+            //@@MP (Release 7-1)
+            this[IDs.AMMO_FUEL] = new ItemAmmoModel("fuel", "fuel", GameImages.ITEM_AMMO_FUEL,
+                AmmoType.FUEL, 20)
             {
                 IsPlural = true,
                 FlavorDescription = ""
@@ -1480,7 +1568,7 @@ namespace djack.RogueSurvivor.Gameplay
                 EquipmentPart = DollPart.RIGHT_HAND
             };
 
-            //@@MP - DYNAMITE (Release 6-3)
+            //@@MP - C4 (Release 6-3)
             exData = DATA_EXPLOSIVE_C4;
             exArray = new int[exData.RADIUS + 1];
             for (int i = 0; i < exData.RADIUS + 1; i++)
@@ -1497,6 +1585,67 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.EXPLOSIVE_C4_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_C4_PRIMED, this[IDs.EXPLOSIVE_C4] as ItemGrenadeModel)
             {
                 EquipmentPart = DollPart.RIGHT_HAND
+            };
+
+            //@@MP - MATCHES (Release 7-1)
+            exData = DATA_EXPLOSIVE_MATCHES;
+            exArray = new int[exData.RADIUS + 1];
+            for (int i = 0; i < exData.RADIUS + 1; i++)
+                exArray[i] = exData.DMG[i];
+            this[IDs.EXPLOSIVE_MATCHES] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_MATCHES,
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsStackable = true,
+                StackingLimit = exData.STACKLINGLIMIT,
+                FlavorDescription = exData.FLAVOR
+            };
+
+            this[IDs.EXPLOSIVE_MATCHES_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_MATCHES_PRIMED, this[IDs.EXPLOSIVE_MATCHES] as ItemGrenadeModel)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND
+            };
+
+            //@@MP - FUEL CANS (Release 7-1)
+            exData = DATA_EXPLOSIVE_FUEL_CAN;
+            exArray = new int[exData.RADIUS + 1];
+            for (int i = 0; i < exData.RADIUS + 1; i++)
+                exArray[i] = exData.DMG[i];
+            this[IDs.EXPLOSIVE_FUEL_CAN] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_AMMO_FUEL,
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsStackable = true,
+                StackingLimit = exData.STACKLINGLIMIT,
+                FlavorDescription = exData.FLAVOR,
+                IsFlameWeapon = true
+            };
+
+            this[IDs.EXPLOSIVE_FUEL_CAN_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_AMMO_FUEL, this[IDs.EXPLOSIVE_FUEL_CAN] as ItemGrenadeModel)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsFlameWeapon = true
+            };
+
+            //@@MP - FUEL PUMPS (Release 7-1)
+            exData = DATA_EXPLOSIVE_FUEL_PUMP;
+            exArray = new int[exData.RADIUS + 1];
+            for (int i = 0; i < exData.RADIUS + 1; i++)
+                exArray[i] = exData.DMG[i];
+            this[IDs.EXPLOSIVE_FUEL_PUMP] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.OBJ_FUEL_PUMP,
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsStackable = true,
+                StackingLimit = exData.STACKLINGLIMIT,
+                FlavorDescription = exData.FLAVOR,
+                IsFlameWeapon = true
+            };
+
+            this[IDs.EXPLOSIVE_FUEL_PUMP_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.OBJ_FUEL_PUMP, this[IDs.EXPLOSIVE_FUEL_PUMP] as ItemGrenadeModel)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsFlameWeapon = true
             };
             #endregion
 
@@ -1516,7 +1665,7 @@ namespace djack.RogueSurvivor.Gameplay
             ArmorData armData;
 
             armData = DATA_ARMOR_ARMY;
-            this[IDs.ARMOR_ARMY_BODYARMOR] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_ARMY_BODYARMOR, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT)
+            this[IDs.ARMOR_ARMY_BODYARMOR] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_ARMY_BODYARMOR, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT, armData.FIRE_RESIST)
             {
                 EquipmentPart = DollPart.TORSO,
                 FlavorDescription = armData.FLAVOR,
@@ -1524,7 +1673,7 @@ namespace djack.RogueSurvivor.Gameplay
             };
 
             armData = DATA_ARMOR_CHAR;
-            this[IDs.ARMOR_CHAR_LIGHT_BODYARMOR] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_CHAR_LIGHT_BODYARMOR, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT)
+            this[IDs.ARMOR_CHAR_LIGHT_BODYARMOR] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_CHAR_LIGHT_BODYARMOR, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT, armData.FIRE_RESIST)
             {
                 EquipmentPart = DollPart.TORSO,
                 FlavorDescription = armData.FLAVOR,
@@ -1532,7 +1681,7 @@ namespace djack.RogueSurvivor.Gameplay
             };
 
             armData = DATA_ARMOR_HELLS_SOULS_JACKET;
-            this[IDs.ARMOR_HELLS_SOULS_JACKET] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_HELLS_SOULS_JACKET, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT)
+            this[IDs.ARMOR_HELLS_SOULS_JACKET] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_HELLS_SOULS_JACKET, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT, armData.FIRE_RESIST)
             {
                 EquipmentPart = DollPart.TORSO,
                 FlavorDescription = armData.FLAVOR,
@@ -1540,7 +1689,7 @@ namespace djack.RogueSurvivor.Gameplay
             };
 
             armData = DATA_ARMOR_FREE_ANGELS_JACKET;
-            this[IDs.ARMOR_FREE_ANGELS_JACKET] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_FREE_ANGELS_JACKET, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT)
+            this[IDs.ARMOR_FREE_ANGELS_JACKET] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_FREE_ANGELS_JACKET, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT, armData.FIRE_RESIST)
             {
                 EquipmentPart = DollPart.TORSO,
                 FlavorDescription = armData.FLAVOR,
@@ -1548,7 +1697,7 @@ namespace djack.RogueSurvivor.Gameplay
             };
 
             armData = DATA_ARMOR_POLICE_JACKET;
-            this[IDs.ARMOR_POLICE_JACKET] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_POLICE_JACKET, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT)
+            this[IDs.ARMOR_POLICE_JACKET] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_POLICE_JACKET, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT, armData.FIRE_RESIST)
             {
                 EquipmentPart = DollPart.TORSO,
                 FlavorDescription = armData.FLAVOR,
@@ -1556,7 +1705,7 @@ namespace djack.RogueSurvivor.Gameplay
             };
 
             armData = DATA_ARMOR_POLICE_RIOT;
-            this[IDs.ARMOR_POLICE_RIOT] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_POLICE_RIOT_ARMOR, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT)
+            this[IDs.ARMOR_POLICE_RIOT] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_POLICE_RIOT_ARMOR, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT, armData.FIRE_RESIST)
             {
                 EquipmentPart = DollPart.TORSO,
                 FlavorDescription = armData.FLAVOR,
@@ -1564,14 +1713,20 @@ namespace djack.RogueSurvivor.Gameplay
             };
 
             armData = DATA_ARMOR_HUNTER_VEST;
-            this[IDs.ARMOR_HUNTER_VEST] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_HUNTER_VEST, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT)
+            this[IDs.ARMOR_HUNTER_VEST] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_HUNTER_VEST, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT, armData.FIRE_RESIST)
             {
                 EquipmentPart = DollPart.TORSO,
                 FlavorDescription = armData.FLAVOR,
                 IsAn = StartsWithVowel(armData.NAME)
             };
 
-
+            armData = DATA_ARMOR_FIRE_HAZARD_SUIT; //@@MP (Release 7-1)
+            this[IDs.ARMOR_FIRE_HAZARD_SUIT] = new ItemBodyArmorModel(armData.NAME, armData.PLURAL, GameImages.ITEM_FIRE_HAZARD_SUIT, armData.PRO_HIT, armData.PRO_SHOT, armData.ENC, armData.WEIGHT, armData.FIRE_RESIST)
+            {
+                EquipmentPart = DollPart.TORSO,
+                FlavorDescription = armData.FLAVOR,
+                IsAn = StartsWithVowel(armData.NAME)
+            };
             #endregion
 
             #region Trackers
@@ -1658,28 +1813,66 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.LIGHT_FLASHLIGHT] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_FLASHLIGHT, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_FLASHLIGHT_OUT)
             {
                 EquipmentPart = DollPart.LEFT_HAND,
-                FlavorDescription = ltData.FLAVOR
+                FlavorDescription = ltData.FLAVOR,
+                IsBatteryPowered = true
             };
 
             ltData = DATA_LIGHT_BIG_FLASHLIGHT;
             this[IDs.LIGHT_BIG_FLASHLIGHT] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_BIG_FLASHLIGHT, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_BIG_FLASHLIGHT_OUT)
             {
                 EquipmentPart = DollPart.LEFT_HAND,
-                FlavorDescription = ltData.FLAVOR
+                FlavorDescription = ltData.FLAVOR,
+                IsBatteryPowered = true
             };
 
             ltData = DATA_LIGHT_NIGHT_VISION_FEMALE;
             this[IDs.LIGHT_NIGHT_VISION_FEMALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_FEMALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_FEMALE)
             {
                 EquipmentPart = DollPart.EYES,
-                FlavorDescription = ltData.FLAVOR
+                FlavorDescription = ltData.FLAVOR,
+                IsBatteryPowered = true
             };
 
             ltData = DATA_LIGHT_NIGHT_VISION_MALE;
             this[IDs.LIGHT_NIGHT_VISION_MALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_MALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_MALE)
             {
                 EquipmentPart = DollPart.EYES,
-                FlavorDescription = ltData.FLAVOR
+                FlavorDescription = ltData.FLAVOR,
+                IsBatteryPowered = true
+            };
+
+            ltData = DATA_LIGHT_BINOCULARS_FEMALE; //@@MP (Release 7-1)
+            this[IDs.LIGHT_BINOCULARS_FEMALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_BINOCULARS_FEMALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_BINOCULARS_FEMALE)
+            {
+                EquipmentPart = DollPart.EYES,
+                FlavorDescription = ltData.FLAVOR,
+                IsBatteryPowered = false
+            };
+
+            ltData = DATA_LIGHT_BINOCULARS_MALE; //@@MP (Release 7-1)
+            this[IDs.LIGHT_BINOCULARS_MALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_BINOCULARS_MALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_BINOCULARS_MALE)
+            {
+                EquipmentPart = DollPart.EYES,
+                FlavorDescription = ltData.FLAVOR,
+                IsBatteryPowered = false
+            };
+
+            ltData = DATA_LIGHT_FLARE; //@@MP (Release 7-1)
+            this[IDs.LIGHT_FLARE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_LIT_FLARE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_LIT_FLARE)
+            {
+                EquipmentPart = DollPart.LEFT_HAND,
+                FlavorDescription = ltData.FLAVOR,
+                IsThrowable = true,
+                IsBatteryPowered = false
+            };
+
+            ltData = DATA_LIGHT_GLOWSTICK; //@@MP (Release 7-1)
+            this[IDs.LIGHT_GLOWSTICK] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_LIT_GLOWSTICK, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_LIT_GLOWSTICK)
+            {
+                EquipmentPart = DollPart.LEFT_HAND,
+                FlavorDescription = ltData.FLAVOR,
+                IsThrowable = true,
+                IsBatteryPowered = false
             };
             #endregion
 
@@ -1793,14 +1986,6 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = "A memo regarding using generators to power to the facility in an emergency."
             };
 
-            //@@MP (Release 5-3), (Release 5-5)
-            this[IDs.VEGETABLE_SEEDS] = new ItemModel("bunch of vegie seeds", "bunch of vegie seeds", GameImages.ITEM_VEGETABLE_SEEDS)
-            {
-                FlavorDescription = @"""Cultivate the soil then plant these seeds. Return in the morning to harvest.""",
-                IsStackable = true,
-                StackingLimit = 9,
-            };
-
             //@@MP (Release 6-3)
             this[IDs.UNIQUE_ARMY_ACCESS_BADGE] = new ItemModel("Army office pass", "Army office pass", GameImages.ITEM_SUBWAY_BADGE)
             {
@@ -1810,11 +1995,64 @@ namespace djack.RogueSurvivor.Gameplay
             };
             #endregion
 
+            #region Miscellaneous
+            //@@MP (Release 5-3), (Release 5-5)
+            this[IDs.VEGETABLE_SEEDS] = new ItemModel("bunch of vegie seeds", "bunch of vegie seeds", GameImages.ITEM_VEGETABLE_SEEDS)
+            {
+                FlavorDescription = @"Cultivate the soil then plant these seeds. Return later to harvest.",
+                IsStackable = true,
+                StackingLimit = 9
+            };
+
+            //@@MP (Release 7-1)
+            this[IDs.SIPHON_KIT] = new ItemModel("siphon kit", "siphon kits", GameImages.ITEM_SIPHON_KIT)
+            {
+                FlavorDescription = @"Siphon fuel from cars for chainsaws and flamethrowers.",
+                IsStackable = false
+            };
+
+            this[IDs.CANDLES_BOX] = new ItemModel("candles box", "candles box", GameImages.ITEM_CANDLES_BOX)
+            {
+                FlavorDescription = @"Place candles for long-lasting light.",
+                IsStackable = true,
+                StackingLimit = 40
+            };
+
+            this[IDs.FLARES_KIT] = new ItemModel("flares kit", "flares kit", GameImages.ITEM_FLARES_KIT)
+            {
+                FlavorDescription = @"Use flares for bright, throwable light.",
+                IsStackable = true,
+                StackingLimit = 40
+            };
+
+            this[IDs.GLOWSTICKS_BOX] = new ItemModel("glowsticks box", "glowsticks box", GameImages.ITEM_GLOWSTICKS_BOX)
+            {
+                FlavorDescription = @"Use glowsticks for long-lasting, throwable light.",
+                IsStackable = true,
+                StackingLimit = 60
+            };
+
+            this[IDs.LIQUOR_AMBER] = new ItemModel("liquor", "liquor", GameImages.ITEM_LIQUOR_BOTTLE_AMBER)
+            {
+                FlavorDescription = @"Use them to make molotovs.",
+                IsStackable = true,
+                StackingLimit = 3
+            };
+
+            this[IDs.LIQUOR_CLEAR] = new ItemModel("liquor", "liquor", GameImages.ITEM_LIQUOR_BOTTLE_CLEAR)
+            {
+                FlavorDescription = @"Use them to make molotovs.",
+                IsStackable = true,
+                StackingLimit = 3
+            };
+            #endregion
+
             #region Fixes/Post processing
             //for (int i = (int)IDs._FIRST; i < (int)IDs._COUNT; i++)
             for (int i = 0; i < (int)IDs._COUNT; i++) //@@MP - took _FIRST out because for some reason it became totally bugged (Release 4)
             {
                 ItemModel model = this[i];
+                //Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating model " + model.SingleName); //for troubleshooting
 
                 // grammar.
                 model.IsAn = StartsWithVowel(model.SingleName);
@@ -1924,9 +2162,10 @@ namespace djack.RogueSurvivor.Gameplay
             MedecineData[] data;
 
             LoadDataFromCSV<MedecineData>(ui, path, "medicine items", MedecineData.COUNT_FIELDS, MedecineData.FromCSVLine,
-                new IDs[] { IDs.MEDICINE_BANDAGES, IDs.MEDICINE_MEDIKIT, IDs.MEDICINE_PILLS_SLP, IDs.MEDICINE_PILLS_STA,  IDs.MEDICINE_PILLS_SAN,
-                            IDs.MEDICINE_PILLS_ANTIVIRAL, IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN, IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN, IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE,
-                            IDs.MEDICINE_ALCOHOL_BEER_CAN_RED, IDs.MEDICINE_ALCOHOL_LIQUOR_AMBER, IDs.MEDICINE_ALCOHOL_LIQUOR_CLEAR, IDs.MEDICINE_CIGARETTES },
+                new IDs[] { IDs.MEDICINE_BANDAGES, IDs.MEDICINE_MEDIKIT, IDs.MEDICINE_PILLS_SLP, IDs.MEDICINE_PILLS_STA,
+                            IDs.MEDICINE_PILLS_SAN, IDs.MEDICINE_PILLS_ANTIVIRAL, IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_BROWN,
+                            IDs.MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN, IDs.MEDICINE_ALCOHOL_BEER_CAN_BLUE,
+                            IDs.MEDICINE_ALCOHOL_BEER_CAN_RED, IDs.MEDICINE_CIGARETTES, IDs.MEDICINE_ENERGY_DRINK },
                 out data);
 
             DATA_MEDICINE_BANDAGE = data[0];
@@ -1940,9 +2179,8 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_MEDICINE_ALCOHOL_BEER_BOTTLE_GREEN = data[7];
             DATA_MEDICINE_ALCOHOL_BEER_CAN_BLUE = data[8];
             DATA_MEDICINE_ALCOHOL_BEER_CAN_RED = data[9];
-            DATA_MEDICINE_ALCOHOL_LIQUOR_AMBER = data[10];
-            DATA_MEDICINE_ALCOHOL_LIQUOR_CLEAR = data[11];
-            DATA_MEDICINE_CIGARETTES = data[12];
+            DATA_MEDICINE_CIGARETTES = data[10];
+            DATA_MEDICINE_ENERGY_DRINK = data[11]; //@@MP (Release 7-1)
 
             return true;
         }
@@ -1954,7 +2192,7 @@ namespace djack.RogueSurvivor.Gameplay
             FoodData[] data;
 
             LoadDataFromCSV<FoodData>(ui, path, "food items", FoodData.COUNT_FIELDS, FoodData.FromCSVLine,
-                new IDs[] { IDs.FOOD_ARMY_RATION, IDs.FOOD_CANNED_FOOD, IDs.FOOD_GROCERIES, IDs.FOOD_WILD_BERRIES, IDs.FOOD_VEGETABLES, }, //MP (Release 4), (Release 5-3), (Release 5-5)
+                new IDs[] { IDs.FOOD_ARMY_RATION, IDs.FOOD_CANNED_FOOD, IDs.FOOD_GROCERIES, IDs.FOOD_WILD_BERRIES, IDs.FOOD_VEGETABLES, IDs.FOOD_SNACK_BAR},
                 out data);
 
             DATA_FOOD_ARMY_RATION = data[0];
@@ -1962,6 +2200,7 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_FOOD_GROCERIES = data[2];
             DATA_FOOD_WILD_BERRIES = data[3]; //MP (Release 4)
             DATA_FOOD_VEGETABLES = data[4]; //MP (Release 5-5)
+            DATA_FOOD_SNACK_BAR = data[5]; //MP (Release 7-1)
 
             return true;
         }
@@ -1977,7 +2216,8 @@ namespace djack.RogueSurvivor.Gameplay
                             IDs.MELEE_SHOVEL, IDs.MELEE_SHORT_SHOVEL, IDs.MELEE_TRUNCHEON, IDs.UNIQUE_JASON_MYERS_AXE,
                             IDs.MELEE_IMPROVISED_CLUB, IDs.MELEE_IMPROVISED_SPEAR, IDs.MELEE_SMALL_HAMMER, 
                             IDs.UNIQUE_FAMU_FATARU_KATANA, IDs.UNIQUE_BIGBEAR_BAT, IDs.UNIQUE_ROGUEDJACK_KEYBOARD,
-                            IDs.MELEE_TENNIS_RACKET, IDs.MELEE_HOCKEY_STICK, IDs.MELEE_MACHETE, IDs.MELEE_STANDARD_AXE, IDs.MELEE_PICKAXE, IDs.MELEE_PIPE_WRENCH }, //@@MP (Release 3)
+                            IDs.MELEE_TENNIS_RACKET, IDs.MELEE_HOCKEY_STICK, IDs.MELEE_MACHETE, IDs.MELEE_STANDARD_AXE, IDs.MELEE_PICKAXE, IDs.MELEE_PIPE_WRENCH,
+                            IDs.MELEE_CHAINSAW},
                 out data);
 
             DATA_MELEE_BASEBALLBAT = data[0];
@@ -2003,6 +2243,8 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_MELEE_STANDARD_AXE = data[19];
             DATA_MELEE_PICKAXE = data[20];
             DATA_MELEE_PIPE_WRENCH = data[21];
+            //@@MP (Release 3)
+            DATA_MELEE_CHAINSAW = data[22];
 
             return true;
         }
@@ -2014,8 +2256,8 @@ namespace djack.RogueSurvivor.Gameplay
             RangedWeaponData[] data;
 
             LoadDataFromCSV<RangedWeaponData>(ui, path, "ranged weapons items", RangedWeaponData.COUNT_FIELDS, RangedWeaponData.FromCSVLine,
-                new IDs[] { IDs.RANGED_ARMY_PISTOL, IDs.RANGED_ARMY_RIFLE, IDs.RANGED_HUNTING_CROSSBOW, IDs.RANGED_HUNTING_RIFLE, IDs.RANGED_KOLT_REVOLVER, IDs.RANGED_PISTOL, IDs.RANGED_PRECISION_RIFLE, IDs.RANGED_SHOTGUN,
-                            IDs.UNIQUE_SANTAMAN_SHOTGUN, IDs.UNIQUE_HANS_VON_HANZ_PISTOL, IDs.RANGED_NAIL_GUN }, //@@MP - added nail gun (Release 5-1)
+                new IDs[] { IDs.RANGED_ARMY_PISTOL, IDs.RANGED_ARMY_RIFLE, IDs.RANGED_HUNTING_CROSSBOW, IDs.RANGED_HUNTING_RIFLE, IDs.RANGED_KOLT_REVOLVER, IDs.RANGED_PISTOL,
+                            IDs.RANGED_PRECISION_RIFLE, IDs.RANGED_SHOTGUN, IDs.UNIQUE_SANTAMAN_SHOTGUN, IDs.UNIQUE_HANS_VON_HANZ_PISTOL, IDs.RANGED_NAIL_GUN, IDs.RANGED_FLAMETHROWER },
                 out data);
 
             DATA_RANGED_ARMY_PISTOL = data[0];
@@ -2029,6 +2271,7 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_UNIQUE_SANTAMAN_SHOTGUN = data[8];
             DATA_UNIQUE_HANS_VON_HANZ_PISTOL = data[9];
             DATA_RANGED_NAIL_GUN = data[10]; //@@MP (Release 5-1)
+            DATA_RANGED_FLAMETHROWER = data[11]; //@@MP (Release 7-1)
 
             return true;
         }
@@ -2040,7 +2283,7 @@ namespace djack.RogueSurvivor.Gameplay
             ExplosiveData[] data;
 
             LoadDataFromCSV<ExplosiveData>(ui, path, "explosives items", ExplosiveData.COUNT_FIELDS, ExplosiveData.FromCSVLine,
-                new IDs[] { IDs.EXPLOSIVE_GRENADE, IDs.EXPLOSIVE_MOLOTOV, IDs.EXPLOSIVE_DYNAMITE, IDs.EXPLOSIVE_C4 }, //@@MP (Release 4)
+                new IDs[] { IDs.EXPLOSIVE_GRENADE, IDs.EXPLOSIVE_MOLOTOV, IDs.EXPLOSIVE_DYNAMITE, IDs.EXPLOSIVE_C4, IDs.EXPLOSIVE_MATCHES, IDs.EXPLOSIVE_FUEL_CAN, IDs.EXPLOSIVE_FUEL_PUMP },
                 out data);
 
             DATA_EXPLOSIVE_GRENADE = data[0];
@@ -2048,6 +2291,9 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_EXPLOSIVE_MOLOTOV = data[1];
             DATA_EXPLOSIVE_DYNAMITE = data[2];
             DATA_EXPLOSIVE_C4 = data[3]; //@@MP (Release 6-3)
+            DATA_EXPLOSIVE_MATCHES = data[4]; //@@MP (Release 7-1)
+            DATA_EXPLOSIVE_FUEL_CAN = data[5]; //@@MP (Release 7-1)
+            DATA_EXPLOSIVE_FUEL_PUMP = data[6]; //@@MP (Release 7-1)
 
             return true;
         }
@@ -2077,7 +2323,7 @@ namespace djack.RogueSurvivor.Gameplay
                 new IDs[] { IDs.ARMOR_ARMY_BODYARMOR,IDs.ARMOR_CHAR_LIGHT_BODYARMOR, 
                             IDs.ARMOR_HELLS_SOULS_JACKET, IDs.ARMOR_FREE_ANGELS_JACKET, 
                             IDs.ARMOR_POLICE_JACKET, IDs.ARMOR_POLICE_RIOT, 
-                            IDs.ARMOR_HUNTER_VEST },
+                            IDs.ARMOR_HUNTER_VEST, IDs.ARMOR_FIRE_HAZARD_SUIT },
                 out data);
 
             DATA_ARMOR_ARMY = data[0];
@@ -2087,6 +2333,7 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_ARMOR_POLICE_JACKET = data[4];
             DATA_ARMOR_POLICE_RIOT = data[5];
             DATA_ARMOR_HUNTER_VEST = data[6];
+            DATA_ARMOR_FIRE_HAZARD_SUIT = data[7]; //@@MP (Release 7-1)
 
             return true;
         }
@@ -2134,13 +2381,18 @@ namespace djack.RogueSurvivor.Gameplay
             LightData[] data;
 
             LoadDataFromCSV<LightData>(ui, path, "lights items", LightData.COUNT_FIELDS, LightData.FromCSVLine,
-                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT, IDs.LIGHT_NIGHT_VISION_FEMALE, IDs.LIGHT_NIGHT_VISION_MALE },
+                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT, IDs.LIGHT_NIGHT_VISION_FEMALE, IDs.LIGHT_NIGHT_VISION_MALE,
+                     IDs.LIGHT_BINOCULARS_FEMALE, IDs.LIGHT_BINOCULARS_MALE, IDs.LIGHT_FLARE, IDs.LIGHT_GLOWSTICK },
                 out data);
 
             DATA_LIGHT_FLASHLIGHT = data[0];
             DATA_LIGHT_BIG_FLASHLIGHT = data[1];
             DATA_LIGHT_NIGHT_VISION_FEMALE = data[2]; //@@MP (Release 6-3)
             DATA_LIGHT_NIGHT_VISION_MALE = data[3]; //@@MP (Release 6-3)
+            DATA_LIGHT_BINOCULARS_FEMALE = data[4]; //@@MP (Release 7-1)
+            DATA_LIGHT_BINOCULARS_MALE = data[5]; //@@MP (Release 7-1)
+            DATA_LIGHT_FLARE = data[6]; //@@MP (Release 7-1)
+            DATA_LIGHT_GLOWSTICK = data[7]; //@@MP (Release 7-1)
 
             return true;
         }
