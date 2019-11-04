@@ -86,12 +86,12 @@ namespace djack.RogueSurvivor.Gameplay
             LIGHT_SLEEPER,
 
             /// <summary>
-            /// Better unarmed fighting.
+            /// Better unarmed and shielded fighting.
             /// </summary>
             MARTIAL_ARTS,
 
             /// <summary>
-            /// Bonus to medecine effects.
+            /// Bonus to medicine effects.
             /// </summary>
             MEDIC,
 
@@ -375,6 +375,7 @@ namespace djack.RogueSurvivor.Gameplay
             Rules.SKILL_MARTIAL_ARTS_ATK_BONUS = (int)s.VALUE1;
             Rules.SKILL_MARTIAL_ARTS_DMG_BONUS = (int)s.VALUE2;
             Rules.SKILL_MARTIAL_ARTS_DISARM_BONUS = (int)s.VALUE3; // alpha 10
+            Rules.SKILL_MARTIAL_ARTS_SHIELD_BONUS = (int)s.VALUE4; //@@MP - 5% boost to shields (Release 7-2)
 
             s = data[(int)IDs.MEDIC];
             Rules.SKILL_MEDIC_BONUS = s.VALUE1;

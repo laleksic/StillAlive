@@ -12,6 +12,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string NIGHTMARE = "nightmare";
         public const string NIGHTMARE_FILE = PATH + "sfx - nightmare";
 
+        #region ranged weapons
         #region Player
         //@@MP (Release 2), added rapid-fire (Release 6-6)
         public const string PISTOL_SINGLE_SHOT_PLAYER = "player fires pistol";
@@ -78,6 +79,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ARMY_RIFLE_SINGLE_SHOT_FAR_FILE = PATH + "army_rifle_single-shot_far";
         public const string ARMY_RIFLE_RAPID_FIRE_FAR = "army rifle burst somewhere";
         public const string ARMY_RIFLE_RAPID_FIRE_FAR_FILE = PATH + "army_rifle_rapid-fire_far";
+        #endregion
         #endregion
 
         public const string MELEE_ATTACK_PLAYER = "player does melee attack";
@@ -332,5 +334,17 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string EQUIP = "equips";
         public const string EQUIP_FILE = PATH + "equip";
+
+        //@@MP (Release 7-2)
+        public const string SHIELD_BLOCK_PLAYER = "player uses shield";
+        public const string SHIELD_BLOCK_PLAYER_FILE = PATH + "shield_block_player";
+        public const string SHIELD_BLOCK_NEARBY = "shield used nearby";
+        public const string SHIELD_BLOCK_NEARBY_FILE = PATH + "shield_block_nearby";
+        public const string SMOKE_GRENADE = "smoke grenade burst";
+        public const string SMOKE_GRENADE_FILE = PATH + "smoke_grenade";
+        public const string STUN_GUN_PLAYER = "player fires stun gun";
+        public const string STUN_GUN_PLAYER_FILE = PATH + "stun_gun_player";
+        public const string STUN_GUN_NEARBY = "stun gun fired nearby";
+        public const string STUN_GUN_NEARBY_FILE = PATH + "stun_gun_nearby";
     }
 }

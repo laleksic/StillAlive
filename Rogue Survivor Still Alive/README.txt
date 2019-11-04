@@ -1,5 +1,5 @@
 Rogue Survivor is a free, open-source zombie survival roguelike sandbox game with unique features and (limited) modding support.
-Rogue Survivor: 'Staying Alive' is a modification of the original Rogue Survivor Alpha 9a source code from 2012, released as open source under GNU GPL v3.
+Rogue Survivor: 'Still Alive' is a modification of the original Rogue Survivor Alpha 9a source code from 2012, released as open source under GNU GPL v3.
 
 The game takes place in a town famous for being the headquarters of the powerful CHAR Corporation. You wake up amidst the chaos and you must find ways to survive. 
 

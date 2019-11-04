@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using djack.RogueSurvivor.Data;
 
@@ -25,6 +22,11 @@ namespace djack.RogueSurvivor.Engine.Items
         public AmmoType AmmoType
         {
             get { return m_AmmoType; }
+        }
+
+        public bool IsOneHanded //@@MP (Release 7-2)
+        {
+            get { return (this.Model as ItemRangedWeaponModel).IsOneHanded; }
         }
         #endregion
 

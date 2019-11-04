@@ -561,6 +561,7 @@ Helps you staying awake longer. Increases your maximum SLP points and your SLP r
 
 > BOWS & EXPLOSIVES
 Improve your proficiency with bows and explosives. Increases the Atk and Dmg value when shooting bows and throwing explosives.
+Allows the use of fuel cans to make flaming bolts (an alternative fire mode, default M when targeting).
 
 
 > CARPENTRY

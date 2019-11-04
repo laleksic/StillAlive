@@ -1,5 +1,33 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
+STILL ALIVE 2.5.3.11 (aka Release 7-2, 4/11/2019) [Author: MP]
+---------------------
+
+Features:
+-Added warning for when an thrown explosive might provoke non-enemies in the blast radius.
+-Added police riot shields, which have a chance to block incoming melee attacks.
+-Added 5% per level chance for shield to block to Martial Arts skill.
+-Added flamethrowers, smoke grenades, flashbangs and stun guns.
+-Bows can now shoot flaming bolts as an alternative fire mode.
+
+Fixes:
+-Chainsaw now properly coded for hits and misses.
+-Chainsaw sound effect now fires only when relevant.
+-Removed invincibility when reincarnating as an unsighted unique NPC. [credit to taberone]
+-Melee attack accuracy less affected by drunkeness.
+-Fixed molotovs hint. [credit to salsacookies]
+-Fixed AI lack of interest in fuel (ammo) for chainsaws.
+-Improved night vision screen effect application.
+-Fixed binoculars causing a crash in GDI+.
+-Added handler for left-clicking on a candles box.
+-Prevented binoculars disappearing when dropped.
+-Fixed duplication of night vision goggles and binoculars.
+
+Development:
+-Added FLAMING FireMode for bows.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.5.0.9 (aka Release 7-1, 26/08/2019) [Author: MP]
 ---------------------
 

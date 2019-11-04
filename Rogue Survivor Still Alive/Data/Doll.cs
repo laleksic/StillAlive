@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
 
 namespace djack.RogueSurvivor.Data
 {
@@ -21,6 +18,7 @@ namespace djack.RogueSurvivor.Data
         FEET,
         SKIN,
         EYES,
+        LEFT_ARM, //@@MP - for shields (Release 7-2)
 
         _COUNT
     }

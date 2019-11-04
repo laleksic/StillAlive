@@ -448,7 +448,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         /// <returns></returns>
         protected static Car MakeObjWreckedCar(DiceRoller roller) //@@MP - made static (Release 5-7), made a Car object (Release 7-1)
         {
-            return MakeObjWreckedCar(CARS[roller.Roll(0, CARS.Length)], roller.Roll(0,99));  //@@MP - added random fuel level (Release 7-1)
+            return MakeObjWreckedCar(CARS[roller.Roll(0, CARS.Length)], roller.Roll(0,30));  //@@MP - added random fuel level (Release 7-1)
         }
 
         /// <summary>
@@ -940,13 +940,23 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        //@@MP (Release 7-1)
-        protected static MapObject MakeObjFuelPump(string fuelPumpImageID)
+        protected static MapObject MakeObjFuelPump(string fuelPumpImageID) //@@MP (Release 7-1)
         {
             return new MapObject("fuel pump", fuelPumpImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
                 IsMaterialTransparent = true,
                 IsMetal = true
+            };
+        }
+
+        //@@MP (Release 7-2)
+        public MapObject MakeObjSmokeScreen(string smokeScreenImageID)
+        {
+            return new MapObject("smoke cloud", smokeScreenImageID)
+            {
+                IsMaterialTransparent = false,
+                IsWalkable = true,
+                IsMovable = false
             };
         }
         #endregion
@@ -1444,7 +1454,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         //@@MP (Release 6-3)
         public Item MakeItemNightVisionGoggles()
         {
-            return new ItemLight(m_Game.GameItems.NIGHT_VISION_FEMALE); //code under DoTakeItem() will switch to male type if required
+            return new ItemLight(m_Game.GameItems.NIGHT_VISION); //code under DoTakeItem() will switch to male type if required
         }
 
         public Item MakeItemC4Explosive()
@@ -1487,7 +1497,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeItemBinoculars()
         {
-            return new ItemLight(m_Game.GameItems.BINOCULARS_FEMALE); //code under DoTakeItem() will switch to male type if required
+            return new ItemLight(m_Game.GameItems.BINOCULARS); //code under DoTakeItem() will switch to male type if required
         }
 
         public Item MakeItemSiphonKit()
@@ -1513,7 +1523,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeItemFlamethrower()
         {
-            return new ItemRangedWeapon(m_Game.GameItems.FLAMETHROWER);
+            return new ItemRangedWeapon(m_Game.GameItems.FLAMETHROWER)
+            {
+                Ammo = 0
+            };
         }
 
         public Item MakeItemCandlesBox()
@@ -1591,6 +1604,33 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     Quantity = alcoholType.Quantity
                 };
             }
+        }
+
+        //@@MP (Release 7-2)
+        public Item MakeItemPoliceRiotShield()
+        {
+            return new Item(m_Game.GameItems.POLICE_RIOT_SHIELD);
+        }
+
+        public Item MakeItemSmokeGrenade()
+        {
+            return new ItemGrenade(m_Game.GameItems.SMOKE_GRENADE, m_Game.GameItems.SMOKE_GRENADE_PRIMED)
+            {
+                Quantity = m_Rules.Roll(1, m_Game.GameItems.SMOKE_GRENADE.StackingLimit)
+            };
+        }
+
+        public Item MakeItemFlashbang()
+        {
+            return new ItemGrenade(m_Game.GameItems.FLASHBANG, m_Game.GameItems.FLASHBANG_PRIMED)
+            {
+                Quantity = m_Game.GameItems.FLASHBANG.StackingLimit
+            };
+        }
+
+        public Item MakeItemStunGun()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.STUN_GUN);
         }
         #endregion
 

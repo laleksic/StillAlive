@@ -1404,6 +1404,20 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return null;
         }
 
+        protected ActorAction BehaviorEquipShield(RogueGame game) //@@MP (Release 7-2)
+        {
+            if (m_Actor.Inventory == null || m_Actor.Inventory.IsEmpty)
+                return null;
+
+            foreach (Item item in m_Actor.Inventory.Items)
+            {
+                if (item.Model.EquipmentPart == DollPart.LEFT_ARM) //assume shield
+                    return new ActionEquipItem(m_Actor, game, item);
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Get action to perform to manage the best ranged weapon we have.
         /// - equip a new best ranged weapon
@@ -1475,6 +1489,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (best.Ammo == 0 && GetCompatibleAmmoItem(game, best, false) == null)
                 return null;
 
+            // unequip shield if equipped  //@@MP (Release 7-2)
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipBestRangedWeapon() unequip shield";
+#endif
+            Item shield = m_Actor.GetEquippedShield();
+            if (shield != null)
+                return new ActionUnequipItem(m_Actor, game, shield);
+
             // replace current weapon with best one
 #if DEBUGAILOOPING
             if (m_Actor.IsLooping)
@@ -1491,6 +1514,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return null;
             if (best.IsEquipped)
                 return null;
+
+            // unequip shield if equipped and best weapon is two-handed //@@MP (Release 7-2)
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorEquipBestRangedWeapon() unequip shield";
+#endif
+            Item shield = m_Actor.GetEquippedShield();
+            if (shield != null && !(best as ItemMeleeWeapon).IsOneHanded)
+                return new ActionUnequipItem(m_Actor, game, shield);
 
 #if DEBUGAILOOPING
             if (m_Actor.IsLooping)
@@ -1651,12 +1683,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
         {
             ActorAction action;
 
-            // keep in mind which equipment slots are reserved by other behaviors and dont mess with them
-            bool canUseTorso = !IsEquipmentSlotTaboo(DollPart.TORSO);
-            bool canUseRightHand = !IsEquipmentSlotTaboo(DollPart.RIGHT_HAND);
-            bool canUseLeftHand = !IsEquipmentSlotTaboo(DollPart.LEFT_HAND);
-
             // armor
+            #region
+            bool canUseTorso = !IsEquipmentSlotTaboo(DollPart.TORSO); // keep in mind which equipment slots are reserved by other behaviors and dont mess with them
             if (canUseTorso)
             {
 #if DEBUGAILOOPING
@@ -1668,8 +1697,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (action != null)
                     return action;
             }
+            #endregion
 
             // right hand weapons, prefering ranged weapon over melee in most cases.
+            #region
+            bool canUseRightHand = !IsEquipmentSlotTaboo(DollPart.RIGHT_HAND); // keep in mind which equipment slots are reserved by other behaviors and dont mess with them
             if (canUseRightHand)
             {
 #if DEBUGAILOOPING
@@ -1705,8 +1737,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return new ActionUnequipItem(m_Actor, game, equippedMw);
                 }
             }
+            #endregion
 
             // left-hand items
+            #region
+            bool canUseLeftHand = !IsEquipmentSlotTaboo(DollPart.LEFT_HAND); // keep in mind which equipment slots are reserved by other behaviors and dont mess with them
             if (canUseLeftHand)
             {
 #if DEBUGAILOOPING
@@ -1762,11 +1797,32 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
+            #endregion
+
+            // left-arm items (shields)  //@@MP (Release 7-2)
+            #region
+            bool canUseLeftArm = !IsEquipmentSlotTaboo(DollPart.LEFT_ARM);  // keep in mind which equipment slots are reserved by other behaviors and dont mess with them
+            if (canUseLeftArm)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorEquipBestItems() left arm item check";
+#endif
+
+                // equip shield only if no two-handed weapon equipped
+                if (!HasEquipedTwoHandedWeapon(m_Actor) && m_Actor.GetEquippedShield() == null)
+                {
+                    action = BehaviorEquipShield(game);
+                    if (action != null)
+                        return action;
+                }
+            }
+            #endregion
 
             // no equipment action to do
 #if DEBUGAILOOPING
             if (m_Actor.IsLooping)
-                m_Actor.ActivityInProgress = "BehaviorEquipBestItems() no relevant action";
+            m_Actor.ActivityInProgress = "BehaviorEquipBestItems() no relevant action";
 #endif
             return null;
         }
@@ -2014,7 +2070,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // alpha10 ammo with no compatible ranged weapon and inventory full
                 else if (isInvFull && it is ItemAmmo)
                 {
-                    if (GetCompatibleRangedWeapon(it as ItemAmmo) == null)
+                    ItemAmmo ammo = it as ItemAmmo;
+                    if (GetCompatibleRangedWeapon(ammo) == null && GetCompatibleMeleeWeapon(ammo) == null)
                         dropIt = true;
                 }
                 // alpha10 duplicate ranged weapon with no ammo if inventory 50% full
@@ -5433,7 +5490,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // n2 Ammo for ranged weapon if not enough.
                 ItemAmmo itAmmo = it as ItemAmmo;
                 ItemRangedWeapon rWp = GetCompatibleRangedWeapon(itAmmo);
-                if (rWp != null)
+                ItemMeleeWeapon mWp = GetCompatibleMeleeWeapon(itAmmo); //@@MP (Release 7-2)
+                if (rWp != null || mWp != null)
                 {
                     // we want 2 full stacks of ammo
                     if (CountFullAmmoStacksInInventoryFor(rWp) < 2)
@@ -5452,6 +5510,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                 // ai not interested in rw
                 if (m_Actor.Model.Abilities.AI_NotInterestedInRangedWeapons)
+                    return ItemRating.JUNK;
+
+                // stun guns not useful enough   //@@MP (Release 7-2)
+                if (it.Model.ID == (int)GameItems.IDs.RANGED_STUN_GUN)
                     return ItemRating.JUNK;
 
                 // no ammo for it
@@ -5526,7 +5588,18 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // Spray paint (AI never use it).
             if (it is ItemSprayPaint)
                 return ItemRating.JUNK;
-            
+
+            // Shield    //@@MP (Release 7-2)
+            if (it.Model.EquipmentPart == DollPart.LEFT_ARM) //assume shield
+            {
+                if (HasEquipedTwoHandedWeapon(m_Actor)) //has two-handed wep, so shield is not useful
+                    return ItemRating.JUNK;
+                else if (m_Actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MARTIAL_ARTS) > 0) //skilled so 'prefers' to use it
+                    return ItemRating.OKAY;
+                else //'prefers' not to use it
+                    return ItemRating.JUNK;
+            }
+
             // (Unprimed) Explosive if none.
             if (it is ItemExplosive)
             {
@@ -5812,14 +5885,25 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     TradeRating.MAYBE;
             }
 
-            if (oIt is ItemPrimedExplosive) // also ItemGrenadePrimed
+            if (oIt is ItemTracker) //@@MP (Release 7-1)
             {
-                // refuse any primed explosive
                 return TradeRating.REFUSE;
             }
 
-            if (oIt is ItemTracker) //@@MP (Release 7-1)
+            // Shield    //@@MP (Release 7-2)
+            if (oIt.Model.EquipmentPart == DollPart.LEFT_ARM) //assume shield
             {
+                if (HasEquipedTwoHandedWeapon(m_Actor)) //has two-handed wep, so shield is not useful
+                    return TradeRating.REFUSE;
+                else if (m_Actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MARTIAL_ARTS) > 0) //skilled so 'prefers' to use it
+                    return TradeRating.MAYBE;
+                else //'prefers' not to use it
+                    return TradeRating.REFUSE;
+            }
+
+            if (oIt is ItemPrimedExplosive) // also ItemGrenadePrimed
+            {
+                // refuse any primed explosive
                 return TradeRating.REFUSE;
             }
 
@@ -6591,6 +6675,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return actor.Location.Map.GetTileAt(actor.Location.Position.X, actor.Location.Position.Y).IsInside;
         }
 
+        protected static bool HasEquipedTwoHandedWeapon(Actor actor) //@@MP (Release 7-2)
+        {
+            ItemRangedWeapon ranged = actor.GetEquippedRangedWeapon();
+            if (ranged != null && !ranged.IsOneHanded)
+                return true;
+
+            ItemMeleeWeapon melee = actor.GetEquippedMeleeWeapon();
+            if (melee != null && !melee.IsOneHanded)
+                return true;
+
+            return false;
+        }
+
         protected static bool HasEquipedRangedWeapon(Actor actor) //@@MP - made static (Release 5-7)
         {
             return (actor.GetEquippedWeapon() as ItemRangedWeapon) != null;
@@ -6628,6 +6725,25 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     continue;
                 if (rangedIt.AmmoType == am.AmmoType)
                     return rangedIt;
+            }
+
+            // failed.
+            return null;
+        }
+
+        protected ItemMeleeWeapon GetCompatibleMeleeWeapon(ItemAmmo am) //@@MP - chainsaw uses fuel cans as ammo (Release 7-2)
+        {
+            if (m_Actor.Inventory == null)
+                return null;
+
+            // get first compatible ammo item.
+            foreach (Item it in m_Actor.Inventory.Items)
+            {
+                ItemMeleeWeapon meleeIt = it as ItemMeleeWeapon;
+                if (meleeIt == null)
+                    continue;
+                if (meleeIt.Model.ID == (int)GameItems.IDs.MELEE_CHAINSAW && am.Model.ID == (int)GameItems.IDs.AMMO_FUEL)
+                    return meleeIt;
             }
 
             // failed.
@@ -6703,7 +6819,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return false;
 
             // 4. Yes : actor is weaker.
-            if (weakerOne == actor) //@@MP - believe m_Actor was a mistake(Release 6-1)
+            if (weakerOne == actor) //@@MP - believe m_Actor was a mistake (Release 6-1)
                 return true;
 
             // 5. Unclear cases, utimately decide on courage.
@@ -6714,7 +6830,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// Get which of the two actor can be considered as a weaker one in a melee fight.
         /// </summary>
         /// <returns>weaker actor, null if they are equal.</returns>
-        protected static Actor FindWeakerInMelee(Actor a, Actor b) //alpha 10 //@@MP made static (Release 6-1)
+        protected static Actor FindWeakerInMelee(Actor a, Actor b) //alpha 10  //@@MP made static (Release 6-1)
         {
             // alpha10 count how many hits it would take to kill each other
             // the actor that dies faster is the weaker one

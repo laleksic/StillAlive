@@ -27,6 +27,7 @@ namespace djack.RogueSurvivor.Gameplay
             "you can try to revive people using the Medic skill.",
             "reviving a living completely restores one's sanity.",
             "some guns can be used in Rapid Fire mode, shooting twice in one turn.",
+            "crossbows can use the flaming bolts fire mode that set undead alight",
             // misc rules
         	"scents decay faster in the rain. undead track by scent.",
         	"firearms are more likely to jam in the rain.",

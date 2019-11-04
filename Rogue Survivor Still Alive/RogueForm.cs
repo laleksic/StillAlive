@@ -389,9 +389,9 @@ namespace djack.RogueSurvivor
             m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy, tint);
         }
 
-        public void UI_DrawImageTransform(string imageID, int gx, int gy, float rotation, float scale)
+        public void UI_DrawImageTransform(string imageID, int gx, int gy, Color tint, float rotation, float scale) //@@MP - added tint (Release 7-2)
         {
-            m_GameCanvas.AddImageTransform(GameImages.Get(imageID), gx, gy, rotation, scale);
+            m_GameCanvas.AddImageTransform(GameImages.Get(imageID), gx, gy, tint, rotation, scale);
         }
 
         public void UI_DrawGrayLevelImage(string imageID, int gx, int gy, string grayLevelType) //@@MP - added parameter to allow graylevels for different times of day/location (Release 6-2)

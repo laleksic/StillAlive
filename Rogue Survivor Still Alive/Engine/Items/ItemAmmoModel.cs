@@ -17,6 +17,7 @@ namespace djack.RogueSurvivor.Engine.Items
         NAIL, //@@MP (Release 5-1)
         PRECISION_RIFLE, //@@MP (Release 6-6)
         FUEL, //@@MP (Release 7-1)
+        CHARGE, //@@MP (Release 7-2)
 
         _COUNT
     }

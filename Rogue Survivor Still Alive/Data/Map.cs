@@ -1052,17 +1052,17 @@ namespace djack.RogueSurvivor.Data
         #endregion
 
         #region Odors
-        public int GetScentByOdorAt(Odor odor, Point position)
+        public int GetScentStrengthByOdorAt(Odor odor, Point position)
         {
             if (!IsInBounds(position))
                 return 0;
 
-            OdorScent scent = GetScentByOdor(odor, position);
+            OdorScent scent = GetScentByOdorAt(odor, position);
 
             return scent == null ? 0 : scent.Strength;
         }
 
-        OdorScent GetScentByOdor(Odor odor, Point p)
+        public OdorScent GetScentByOdorAt(Odor odor, Point p)
         {
             List<OdorScent> scentsThere;
             if (m_aux_ScentsByPosition.TryGetValue(p, out scentsThere))
@@ -1107,7 +1107,7 @@ namespace djack.RogueSurvivor.Data
             if (!IsInBounds(position))
                 throw new ArgumentOutOfRangeException("position");
 
-            OdorScent oldScent = GetScentByOdor(odor, position);
+            OdorScent oldScent = GetScentByOdorAt(odor, position);
             if (oldScent == null)
             {
                 // new odor there.
@@ -1133,7 +1133,7 @@ namespace djack.RogueSurvivor.Data
             if (!IsInBounds(position))
                 throw new ArgumentOutOfRangeException(String.Format("position; ({0},{1}) map {2} odor {3}", position.X, position.Y, this.m_Name, odor.ToString()));
 
-            OdorScent oldScent = GetScentByOdor(odor, position);
+            OdorScent oldScent = GetScentByOdorAt(odor, position);
             if (oldScent == null)
             {
                 // new odor there.

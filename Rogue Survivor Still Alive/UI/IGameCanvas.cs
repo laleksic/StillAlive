@@ -25,7 +25,7 @@ namespace djack.RogueSurvivor.UI
 
         void AddImage(Image img, int x, int y);
         void AddImage(Image img, int x, int y, Color tint);
-        void AddImageTransform(Image img, int x, int y, float rotation, float scale);
+        void AddImageTransform(Image img, int x, int y, Color tint, float rotation, float scale); //@@MP - added tint (Release 7-2)
         void AddTransparentImage(float alpha, Image img, int x, int y);
 
         void AddPoint(Color color, int x, int y);

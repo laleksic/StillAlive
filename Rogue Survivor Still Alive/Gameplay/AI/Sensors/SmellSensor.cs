@@ -69,7 +69,7 @@ namespace djack.RogueSurvivor.Gameplay.AI.Sensors
                 for (int y = ymin; y <= ymax; y++)
                 {
                     pt.Y = y;
-                    int strength = actor.Location.Map.GetScentByOdorAt(m_OdorToSmell, pt);
+                    int strength = actor.Location.Map.GetScentStrengthByOdorAt(m_OdorToSmell, pt);
                     if (strength >= 0 && strength >= minStrength)
                         m_List.Add(new Percept(new AIScent(m_OdorToSmell, strength), turnCounter, new Location(actor.Location.Map, pt)));
                 }

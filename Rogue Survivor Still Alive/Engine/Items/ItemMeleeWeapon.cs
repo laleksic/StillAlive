@@ -13,6 +13,11 @@ namespace djack.RogueSurvivor.Engine.Items
             get { return (this.Model as ItemMeleeWeaponModel).IsFragile; }
         }
 
+        public bool IsOneHanded //@@MP (Release 7-2)
+        {
+            get { return (this.Model as ItemMeleeWeaponModel).IsOneHanded; }
+        }
+
         // alpha10
         public int ToolBashDamageBonus
         {

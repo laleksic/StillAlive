@@ -66,6 +66,9 @@ namespace djack.RogueSurvivor.Data
         int m_previousSanity;
         int m_BloodAlcohol; //@@MP (Release 7-1)
         int m_previousBloodAlcohol; //@@MP (Release 7-1)
+        int m_StunnedTurns; //@@MP (Release 7-2)
+        int m_FlashbangedTurns; //@@MP (Release 7-2)
+        int m_IncapacitatedTurns; //@@MP (Release 7-2)
         Location m_Location;
         int m_ActionPoints;
         int m_LastActionTurn;
@@ -252,6 +255,27 @@ namespace djack.RogueSurvivor.Data
             set { SetFlag(Flags.IS_INWATER, value); }
         }
 
+        /// <summary>
+        /// Caused by stun guns, but not flashbangs
+        /// </summary>
+        public bool IsStunned //@@MP (Release 7-2)
+        {
+            get { return m_StunnedTurns > 0; }
+        }
+
+        public bool IsFlashbanged //@@MP (Release 7-2)
+        {
+            get { return m_FlashbangedTurns > 0; }
+        }
+
+        /// <summary>
+        /// If the actor is stunned and/or flashbanged
+        /// </summary>
+        public bool IsIncapacitated //@@MP (Release 7-2)
+        {
+            get { return m_StunnedTurns > 0 || m_FlashbangedTurns > 0; }
+        }
+
         public bool IsFleeing //@@MP (Release 6-6)
         {
             get { return m_Activity == Activity.FLEEING || m_Activity == Activity.FLEEING_FROM_EXPLOSIVE; }
@@ -262,13 +286,19 @@ namespace djack.RogueSurvivor.Data
             get { return m_Activity == Activity.FLEEING || m_Activity == Activity.FLEEING_FROM_EXPLOSIVE || m_Activity == Activity.FIGHTING || m_Activity == Activity.CHASING; }
         }
 
-        public bool IsLooping //@@MP - for debugging only using DEBUGIAILOOPING directive (Release 6-6)
+        /// <summary>
+        /// for debugging only using DEBUGIAILOOPING directive
+        /// </summary>
+        public bool IsLooping //@@MP (Release 6-6)
         {
             get { return m_IsLooping; }
             set { m_IsLooping = value; }
         }
 
-        public string ActivityInProgress //@@MP - for debugging only using DEBUGIAILOOPING directive (Release 6-6)
+        /// <summary>
+        /// for debugging only using DEBUGIAILOOPING directive
+        /// </summary>
+        public string ActivityInProgress //@@MP (Release 6-6)
         {
             get { return m_ActivityInProgress; }
             set { m_ActivityInProgress = value; }
@@ -375,6 +405,30 @@ namespace djack.RogueSurvivor.Data
         {
             get { return m_previousBloodAlcohol; }
             set { m_previousBloodAlcohol = value; }
+        }
+
+        /// <summary>
+        /// Caused by stun guns, but not flashbangs
+        /// </summary>
+        public int StunnedTurns //@@MP (Release 7-2)
+        {
+            get { return m_StunnedTurns; }
+            set { m_StunnedTurns = Math.Min(value, Rules.MAXIMUM_INCAPACITATED_TURNS); }
+        }
+
+        public int FlashbangedTurns //@@MP (Release 7-2)
+        {
+            get { return m_FlashbangedTurns; }
+            set { m_FlashbangedTurns = Math.Min(value, Rules.MAXIMUM_INCAPACITATED_TURNS); }
+        }
+
+        /// <summary>
+        /// If the actor is stunned and/or flashbanged
+        /// </summary>
+        public int IncapacitatedTurns //@@MP (Release 7-2)
+        {
+            get { return m_IncapacitatedTurns; }
+            set { m_IncapacitatedTurns = Math.Max(m_StunnedTurns, m_FlashbangedTurns); }
         }
 
         public ActorSheet Sheet
@@ -1042,7 +1096,6 @@ namespace djack.RogueSurvivor.Data
         /// <summary>
         /// Assumed to be equiped at Right hand.
         /// </summary>
-        /// <returns></returns>
         public Item GetEquippedWeapon()
         {
             return GetEquippedItem(DollPart.RIGHT_HAND);
@@ -1052,7 +1105,6 @@ namespace djack.RogueSurvivor.Data
         /// <summary>
         /// Assumed to be equiped at Right hand.
         /// </summary>
-        /// <returns></returns>
         public ItemMeleeWeapon GetEquippedMeleeWeapon()
         {
             return GetEquippedItem(DollPart.RIGHT_HAND) as ItemMeleeWeapon;
@@ -1062,10 +1114,17 @@ namespace djack.RogueSurvivor.Data
         /// <summary>
         /// Assumed to be equiped at Right hand.
         /// </summary>
-        /// <returns></returns>
         public ItemRangedWeapon GetEquippedRangedWeapon()
         {
             return GetEquippedItem(DollPart.RIGHT_HAND) as ItemRangedWeapon;
+        }
+
+        /// <summary>
+        /// Assumed to be equiped on Left Arm.
+        /// </summary>
+        public Item GetEquippedShield() //@@MP (Release 7-2)
+        {
+            return GetEquippedItem(DollPart.LEFT_ARM);
         }
         #endregion
 

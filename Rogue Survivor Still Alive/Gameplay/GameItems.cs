@@ -70,6 +70,7 @@ namespace djack.RogueSurvivor.Gameplay
             RANGED_SHOTGUN,
             RANGED_NAIL_GUN, //@@MP (Release 5-1)
             RANGED_FLAMETHROWER, //@@MP (Release 7-1)
+            RANGED_STUN_GUN, //@@MP (Release 7-2)
 
             EXPLOSIVE_GRENADE,
             EXPLOSIVE_GRENADE_PRIMED,
@@ -88,6 +89,11 @@ namespace djack.RogueSurvivor.Gameplay
             EXPLOSIVE_FUEL_CAN_PRIMED,
             EXPLOSIVE_FUEL_PUMP,
             EXPLOSIVE_FUEL_PUMP_PRIMED,
+            //@@MP (Release 7-2)
+            EXPLOSIVE_SMOKE_GRENADE,
+            EXPLOSIVE_SMOKE_GRENADE_PRIMED,
+            EXPLOSIVE_FLASHBANG,
+            EXPLOSIVE_FLASHBANG_PRIMED,
 
             BAR_WOODEN_PLANK,
             VEGETABLE_SEEDS, //@@MP (Release 5-3), (Release 5-5)
@@ -97,6 +103,7 @@ namespace djack.RogueSurvivor.Gameplay
             GLOWSTICKS_BOX, //@@MP (Release 7-1)
             LIQUOR_AMBER,
             LIQUOR_CLEAR,
+            POLICE_RIOT_SHIELD, //@@MP (Release 7-2)
 
             ARMOR_ARMY_BODYARMOR,
             ARMOR_CHAR_LIGHT_BODYARMOR,
@@ -121,11 +128,8 @@ namespace djack.RogueSurvivor.Gameplay
 
             LIGHT_FLASHLIGHT,
             LIGHT_BIG_FLASHLIGHT,
-            //@@MP - one version per gender to suit the different inherent body pixel sizes
-            LIGHT_NIGHT_VISION_FEMALE, //@@MP (Release 6-3)
-            LIGHT_NIGHT_VISION_MALE, //@@MP (Release 6-3)
-            LIGHT_BINOCULARS_FEMALE, //@@MP (Release 7-1)
-            LIGHT_BINOCULARS_MALE, //@@MP (Release 7-1)
+            LIGHT_NIGHT_VISION, //@@MP (Release 6-3)
+            LIGHT_BINOCULARS, //@@MP (Release 7-1)
             LIGHT_FLARE, //@@MP (Release 7-1)
             LIGHT_GLOWSTICK, //@@MP (Release 7-1)
 
@@ -429,6 +433,8 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemRangedWeaponModel NAIL_GUN { get { return this[IDs.RANGED_NAIL_GUN] as ItemRangedWeaponModel; } }
         RangedWeaponData DATA_RANGED_FLAMETHROWER; //@@MP (Release 7-1)
         public ItemRangedWeaponModel FLAMETHROWER { get { return this[IDs.RANGED_FLAMETHROWER] as ItemRangedWeaponModel; } }
+        RangedWeaponData DATA_RANGED_STUN_GUN; //@@MP (Release 7-2)
+        public ItemRangedWeaponModel STUN_GUN { get { return this[IDs.RANGED_STUN_GUN] as ItemRangedWeaponModel; } }
         #endregion
 
         #region Ammos
@@ -503,6 +509,13 @@ namespace djack.RogueSurvivor.Gameplay
         ExplosiveData DATA_EXPLOSIVE_FUEL_PUMP;
         public ItemGrenadeModel FUEL_PUMP { get { return this[IDs.EXPLOSIVE_FUEL_PUMP] as ItemGrenadeModel; } }
         public ItemGrenadePrimedModel FUEL_PUMP_PRIMED { get { return this[IDs.EXPLOSIVE_FUEL_PUMP_PRIMED] as ItemGrenadePrimedModel; } }
+        //@@MP (Release 7-2)
+        ExplosiveData DATA_EXPLOSIVE_SMOKE_GRENADE;
+        public ItemGrenadeModel SMOKE_GRENADE { get { return this[IDs.EXPLOSIVE_SMOKE_GRENADE] as ItemGrenadeModel; } }
+        public ItemGrenadePrimedModel SMOKE_GRENADE_PRIMED { get { return this[IDs.EXPLOSIVE_SMOKE_GRENADE_PRIMED] as ItemGrenadePrimedModel; } }
+        ExplosiveData DATA_EXPLOSIVE_FLASHBANG;
+        public ItemGrenadeModel FLASHBANG { get { return this[IDs.EXPLOSIVE_FLASHBANG] as ItemGrenadeModel; } }
+        public ItemGrenadePrimedModel FLASHBANG_PRIMED { get { return this[IDs.EXPLOSIVE_FLASHBANG_PRIMED] as ItemGrenadePrimedModel; } }
         #endregion
 
         #region Barricades
@@ -675,16 +688,11 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemLightModel FLASHLIGHT { get { return this[IDs.LIGHT_FLASHLIGHT] as ItemLightModel; } }
         LightData DATA_LIGHT_BIG_FLASHLIGHT;
         public ItemLightModel BIG_FLASHLIGHT { get { return this[IDs.LIGHT_BIG_FLASHLIGHT] as ItemLightModel; } }
-        //@@MP (Release 6-3)
-        LightData DATA_LIGHT_NIGHT_VISION_FEMALE;
-        public ItemLightModel NIGHT_VISION_FEMALE { get { return this[IDs.LIGHT_NIGHT_VISION_FEMALE] as ItemLightModel; } }
-        LightData DATA_LIGHT_NIGHT_VISION_MALE;
-        public ItemLightModel NIGHT_VISION_MALE { get { return this[IDs.LIGHT_NIGHT_VISION_MALE] as ItemLightModel; } }
+        LightData DATA_LIGHT_NIGHT_VISION; //@@MP (Release 6-3)
+        public ItemLightModel NIGHT_VISION { get { return this[IDs.LIGHT_NIGHT_VISION] as ItemLightModel; } }
         //@@MP (Release 7-1)
-        LightData DATA_LIGHT_BINOCULARS_FEMALE;
-        public ItemLightModel BINOCULARS_FEMALE { get { return this[IDs.LIGHT_BINOCULARS_FEMALE] as ItemLightModel; } }
-        LightData DATA_LIGHT_BINOCULARS_MALE;
-        public ItemLightModel BINOCULARS_MALE { get { return this[IDs.LIGHT_BINOCULARS_MALE] as ItemLightModel; } }
+        LightData DATA_LIGHT_BINOCULARS;
+        public ItemLightModel BINOCULARS { get { return this[IDs.LIGHT_BINOCULARS] as ItemLightModel; } }
         LightData DATA_LIGHT_FLARE;
         public ItemLightModel LIGHT_FLARE { get { return this[IDs.LIGHT_FLARE] as ItemLightModel; } }
         LightData DATA_LIGHT_GLOWSTICK;
@@ -826,6 +834,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemModel GLOWSTICKS_BOX { get { return this[IDs.GLOWSTICKS_BOX]; } } //@MP (Release 7-1)
         public ItemModel LIQUOR_AMBER { get { return this[IDs.LIQUOR_AMBER]; } } //@MP (Release 7-1)
         public ItemModel LIQUOR_CLEAR { get { return this[IDs.LIQUOR_CLEAR]; } } //@MP (Release 7-1)
+        public ItemModel POLICE_RIOT_SHIELD { get { return this[IDs.POLICE_RIOT_SHIELD]; } } //@MP (Release 7-2)
         #endregion
         #endregion
 
@@ -1028,7 +1037,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_COMBAT_KNIFE;
@@ -1041,7 +1051,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = true //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_CROWBAR;
@@ -1054,7 +1065,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = true //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_UNIQUE_JASON_MYERS_AXE;
@@ -1066,7 +1078,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsUnbreakable = true,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_GOLFCLUB;
@@ -1079,7 +1092,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_IRON_GOLFCLUB;
@@ -1092,7 +1106,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_HUGE_HAMMER;
@@ -1105,7 +1120,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_SHOVEL;
@@ -1118,7 +1134,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_SHORT_SHOVEL;
@@ -1131,7 +1148,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = true //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_TRUNCHEON;
@@ -1144,7 +1162,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = true //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_IMPROVISED_CLUB;
@@ -1157,7 +1176,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = true //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_IMPROVISED_SPEAR;
@@ -1170,7 +1190,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_SMALL_HAMMER;
@@ -1183,7 +1204,8 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = mwdata.FLAVOR,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = true //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_UNIQUE_FAMU_FATARU_KATANA;
@@ -1195,7 +1217,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsProper = true,
                 IsUnbreakable = true,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_UNIQUE_BIGBEAR_BAT;
@@ -1207,7 +1230,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsProper = true,
                 IsUnbreakable = true,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_UNIQUE_ROGUEDJACK_KEYBOARD;
@@ -1219,7 +1243,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsProper = true,
                 IsUnbreakable = true,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             //@@MP (Release 3)
@@ -1233,7 +1258,8 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = mwdata.STACKINGLIMIT,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = true //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_HOCKEY_STICK;
@@ -1246,7 +1272,8 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = mwdata.STACKINGLIMIT,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_MACHETE;
@@ -1259,7 +1286,8 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = mwdata.STACKINGLIMIT,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = true //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_STANDARD_AXE;
@@ -1272,7 +1300,8 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = mwdata.STACKINGLIMIT,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_PICKAXE;
@@ -1285,7 +1314,8 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = mwdata.STACKINGLIMIT,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
 
             mwdata = DATA_MELEE_PIPE_WRENCH;
@@ -1298,7 +1328,8 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = mwdata.STACKINGLIMIT,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = true //@@MP (Release 7-2)
             };
 
             //@@MP (Release 7-1)
@@ -1312,7 +1343,8 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = mwdata.STACKINGLIMIT,
                 IsFragile = mwdata.ISFRAGILE,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
-                ToolBuildBonus = mwdata.TOOLBUILDBONUS  // alpha10
+                ToolBuildBonus = mwdata.TOOLBUILDBONUS,  // alpha10
+                IsOneHanded = false //@@MP (Release 7-2)
             };
             #endregion
 
@@ -1324,7 +1356,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_ARMY_PISTOL;
             this[IDs.RANGED_ARMY_PISTOL] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_ARMY_PISTOL,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.HEAVY_PISTOL, false)
+                    rwp.MAXAMMO, AmmoType.HEAVY_PISTOL, false, true)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR,
@@ -1334,7 +1366,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_ARMY_RIFLE;
             this[IDs.RANGED_ARMY_RIFLE] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_ARMY_RIFLE,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("fire a salvo at", "fires a salvo at"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                     rwp.MAXAMMO, AmmoType.HEAVY_RIFLE, false) 
+                     rwp.MAXAMMO, AmmoType.HEAVY_RIFLE, false, false)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR,
@@ -1344,7 +1376,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_HUNTING_CROSSBOW;
             this[IDs.RANGED_HUNTING_CROSSBOW] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_HUNTING_CROSSBOW,
                 Attack.RangedAttack(AttackKind.BOW, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.BOLT, true)
+                    rwp.MAXAMMO, AmmoType.BOLT, true, false)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR
@@ -1353,7 +1385,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_HUNTING_RIFLE;
             this[IDs.RANGED_HUNTING_RIFLE] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_HUNTING_RIFLE,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.LIGHT_RIFLE, true)
+                    rwp.MAXAMMO, AmmoType.LIGHT_RIFLE, true, false)
                 {
                     EquipmentPart = DollPart.RIGHT_HAND,
                     FlavorDescription = rwp.FLAVOR
@@ -1362,7 +1394,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_PISTOL;
             this[IDs.RANGED_PISTOL] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_PISTOL,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false)
+                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false, true)
                 {
                     EquipmentPart = DollPart.RIGHT_HAND,
                     FlavorDescription =rwp.FLAVOR
@@ -1371,7 +1403,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_KOLT_REVOLVER;
             this[IDs.RANGED_KOLT_REVOLVER] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_KOLT_REVOLVER,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false)
+                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false, true)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR
@@ -1380,7 +1412,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_PRECISION_RIFLE;
             this[IDs.RANGED_PRECISION_RIFLE] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_PRECISION_RIFLE,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.PRECISION_RIFLE, true) //@@MP - new ammo type for precision rifles (Release 6-6)
+                    rwp.MAXAMMO, AmmoType.PRECISION_RIFLE, true, false) //@@MP - new ammo type for precision rifles (Release 6-6)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR
@@ -1389,7 +1421,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_SHOTGUN;
             this[IDs.RANGED_SHOTGUN] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_SHOTGUN,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.SHOTGUN, true)
+                    rwp.MAXAMMO, AmmoType.SHOTGUN, true, false)
                 {
                     EquipmentPart = DollPart.RIGHT_HAND,
                     FlavorDescription = rwp.FLAVOR
@@ -1398,7 +1430,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_UNIQUE_SANTAMAN_SHOTGUN;
             this[IDs.UNIQUE_SANTAMAN_SHOTGUN] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_SANTAMAN_SHOTGUN,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.SHOTGUN, true)
+                    rwp.MAXAMMO, AmmoType.SHOTGUN, true, false)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR,
@@ -1409,7 +1441,7 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_UNIQUE_HANS_VON_HANZ_PISTOL;
             this[IDs.UNIQUE_HANS_VON_HANZ_PISTOL] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_HANS_VON_HANZ_PISTOL,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false)
+                    rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false, true)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR,
@@ -1420,20 +1452,30 @@ namespace djack.RogueSurvivor.Gameplay
             rwp = DATA_RANGED_NAIL_GUN; //@@MP (Release 5-1)
             this[IDs.RANGED_NAIL_GUN] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_NAIL_GUN,
                 Attack.RangedAttack(AttackKind.OTHER, new Verb("nail"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE), //@@MP - was AttackKind.FIREARM (Release 6-6)
-                    rwp.MAXAMMO, AmmoType.NAIL, true)
+                    rwp.MAXAMMO, AmmoType.NAIL, true, true)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR
             };
 
-            rwp = DATA_RANGED_FLAMETHROWER; //@@MP (Release 5-1)
+            rwp = DATA_RANGED_FLAMETHROWER; //@@MP (Release 7-2)
             this[IDs.RANGED_FLAMETHROWER] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_FLAMETHROWER,
-                Attack.RangedAttack(AttackKind.OTHER, new Verb("incinerate"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.FUEL, true)
+                Attack.RangedAttack(AttackKind.OTHER, new Verb("burn"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
+                    rwp.MAXAMMO, AmmoType.FUEL, true, false)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 FlavorDescription = rwp.FLAVOR,
                 IsFlameWeapon = true
+            };
+
+            rwp = DATA_RANGED_STUN_GUN; //@@MP (Release 7-2)
+            this[IDs.RANGED_STUN_GUN] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_STUN_GUN,
+                Attack.RangedAttack(AttackKind.OTHER, new Verb("paralyze"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
+                    rwp.MAXAMMO, AmmoType.CHARGE, true, true)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                FlavorDescription = rwp.FLAVOR,
+                IsBatteryPowered = true
             };
             #endregion
 
@@ -1515,7 +1557,7 @@ namespace djack.RogueSurvivor.Gameplay
             for (int i = 0; i < exData.RADIUS + 1; i++)
                 exArray[i] = exData.DMG[i];
             this[IDs.EXPLOSIVE_GRENADE] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_GRENADE,
-                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, false), GameImages.ICON_BLAST, exData.MAXTHROW)
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, false, true), GameImages.ICON_BLAST, exData.MAXTHROW)
                 {
                     EquipmentPart = DollPart.RIGHT_HAND,
                     IsStackable = true,
@@ -1534,7 +1576,7 @@ namespace djack.RogueSurvivor.Gameplay
             for (int i = 0; i < exData.RADIUS + 1; i++)
                 exArray[i] = exData.DMG[i];
             this[IDs.EXPLOSIVE_MOLOTOV] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_MOLOTOV,
-                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, false, false), GameImages.ICON_BLAST, exData.MAXTHROW)
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, false, false, true), GameImages.ICON_BLAST, exData.MAXTHROW)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 IsStackable = true,
@@ -1555,7 +1597,7 @@ namespace djack.RogueSurvivor.Gameplay
             for (int i = 0; i < exData.RADIUS + 1; i++)
                 exArray[i] = exData.DMG[i];
             this[IDs.EXPLOSIVE_DYNAMITE] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_DYNAMITE,
-                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 IsStackable = true,
@@ -1574,7 +1616,7 @@ namespace djack.RogueSurvivor.Gameplay
             for (int i = 0; i < exData.RADIUS + 1; i++)
                 exArray[i] = exData.DMG[i];
             this[IDs.EXPLOSIVE_C4] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_C4,
-                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 IsStackable = true,
@@ -1593,7 +1635,7 @@ namespace djack.RogueSurvivor.Gameplay
             for (int i = 0; i < exData.RADIUS + 1; i++)
                 exArray[i] = exData.DMG[i];
             this[IDs.EXPLOSIVE_MATCHES] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_MATCHES,
-                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 IsStackable = true,
@@ -1612,7 +1654,7 @@ namespace djack.RogueSurvivor.Gameplay
             for (int i = 0; i < exData.RADIUS + 1; i++)
                 exArray[i] = exData.DMG[i];
             this[IDs.EXPLOSIVE_FUEL_CAN] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_AMMO_FUEL,
-                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 IsStackable = true,
@@ -1627,13 +1669,13 @@ namespace djack.RogueSurvivor.Gameplay
                 IsFlameWeapon = true
             };
 
-            //@@MP - FUEL PUMPS (Release 7-1)
+            //@@MP - FUEL PUMPS (trickery in code) (Release 7-1)
             exData = DATA_EXPLOSIVE_FUEL_PUMP;
             exArray = new int[exData.RADIUS + 1];
             for (int i = 0; i < exData.RADIUS + 1; i++)
                 exArray[i] = exData.DMG[i];
             this[IDs.EXPLOSIVE_FUEL_PUMP] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.OBJ_FUEL_PUMP,
-                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 IsStackable = true,
@@ -1646,6 +1688,44 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
                 IsFlameWeapon = true
+            };
+
+            //@@MP - SMOKE GRENADE (Release 7-2)
+            exData = DATA_EXPLOSIVE_SMOKE_GRENADE;
+            exArray = new int[exData.RADIUS + 1];
+            for (int i = 0; i < exData.RADIUS + 1; i++)
+                exArray[i] = exData.DMG[i];
+            this[IDs.EXPLOSIVE_SMOKE_GRENADE] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_SMOKE_GRENADE,
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, false, false, false), GameImages.ICON_BLAST, exData.MAXTHROW)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsStackable = true,
+                StackingLimit = exData.STACKLINGLIMIT,
+                FlavorDescription = exData.FLAVOR
+            };
+
+            this[IDs.EXPLOSIVE_SMOKE_GRENADE_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_SMOKE_GRENADE_PRIMED, this[IDs.EXPLOSIVE_SMOKE_GRENADE] as ItemGrenadeModel)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND
+            };
+
+            //@@MP - FLASHBANG (Release 7-2)
+            exData = DATA_EXPLOSIVE_FLASHBANG;
+            exArray = new int[exData.RADIUS + 1];
+            for (int i = 0; i < exData.RADIUS + 1; i++)
+                exArray[i] = exData.DMG[i];
+            this[IDs.EXPLOSIVE_FLASHBANG] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.ITEM_FLASHBANG,
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, false, false, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND,
+                IsStackable = true,
+                StackingLimit = exData.STACKLINGLIMIT,
+                FlavorDescription = exData.FLAVOR
+            };
+
+            this[IDs.EXPLOSIVE_FLASHBANG_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.ITEM_FLASHBANG_PRIMED, this[IDs.EXPLOSIVE_FLASHBANG] as ItemGrenadeModel)
+            {
+                EquipmentPart = DollPart.RIGHT_HAND
             };
             #endregion
 
@@ -1825,32 +1905,16 @@ namespace djack.RogueSurvivor.Gameplay
                 IsBatteryPowered = true
             };
 
-            ltData = DATA_LIGHT_NIGHT_VISION_FEMALE;
-            this[IDs.LIGHT_NIGHT_VISION_FEMALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_FEMALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_FEMALE)
+            ltData = DATA_LIGHT_NIGHT_VISION; //@@MP (Release 6-3)
+            this[IDs.LIGHT_NIGHT_VISION] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION)
             {
                 EquipmentPart = DollPart.EYES,
                 FlavorDescription = ltData.FLAVOR,
                 IsBatteryPowered = true
             };
 
-            ltData = DATA_LIGHT_NIGHT_VISION_MALE;
-            this[IDs.LIGHT_NIGHT_VISION_MALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_NIGHT_VISION_MALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_NIGHT_VISION_MALE)
-            {
-                EquipmentPart = DollPart.EYES,
-                FlavorDescription = ltData.FLAVOR,
-                IsBatteryPowered = true
-            };
-
-            ltData = DATA_LIGHT_BINOCULARS_FEMALE; //@@MP (Release 7-1)
-            this[IDs.LIGHT_BINOCULARS_FEMALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_BINOCULARS_FEMALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_BINOCULARS_FEMALE)
-            {
-                EquipmentPart = DollPart.EYES,
-                FlavorDescription = ltData.FLAVOR,
-                IsBatteryPowered = false
-            };
-
-            ltData = DATA_LIGHT_BINOCULARS_MALE; //@@MP (Release 7-1)
-            this[IDs.LIGHT_BINOCULARS_MALE] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_BINOCULARS_MALE, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_BINOCULARS_MALE)
+            ltData = DATA_LIGHT_BINOCULARS; //@@MP (Release 7-1)
+            this[IDs.LIGHT_BINOCULARS] = new ItemLightModel(ltData.NAME, ltData.PLURAL, GameImages.ITEM_BINOCULARS, ltData.FOV, ltData.BATTERIES * WorldTime.TURNS_PER_HOUR, GameImages.ITEM_BINOCULARS)
             {
                 EquipmentPart = DollPart.EYES,
                 FlavorDescription = ltData.FLAVOR,
@@ -2044,6 +2108,14 @@ namespace djack.RogueSurvivor.Gameplay
                 FlavorDescription = @"Use them to make molotovs.",
                 IsStackable = true,
                 StackingLimit = 3
+            };
+
+            //@@MP (Release 7-2)
+            this[IDs.POLICE_RIOT_SHIELD] = new ItemModel("police riot shield", "police riot shield", GameImages.ITEM_POLICE_RIOT_SHIELD)
+            {
+                FlavorDescription = Rules.SHIELD_BASE_BLOCK_CHANCE.ToString() + "% base chance to block melee attacks.",
+                IsStackable = false,
+                EquipmentPart = DollPart.LEFT_ARM
             };
             #endregion
 
@@ -2257,7 +2329,8 @@ namespace djack.RogueSurvivor.Gameplay
 
             LoadDataFromCSV<RangedWeaponData>(ui, path, "ranged weapons items", RangedWeaponData.COUNT_FIELDS, RangedWeaponData.FromCSVLine,
                 new IDs[] { IDs.RANGED_ARMY_PISTOL, IDs.RANGED_ARMY_RIFLE, IDs.RANGED_HUNTING_CROSSBOW, IDs.RANGED_HUNTING_RIFLE, IDs.RANGED_KOLT_REVOLVER, IDs.RANGED_PISTOL,
-                            IDs.RANGED_PRECISION_RIFLE, IDs.RANGED_SHOTGUN, IDs.UNIQUE_SANTAMAN_SHOTGUN, IDs.UNIQUE_HANS_VON_HANZ_PISTOL, IDs.RANGED_NAIL_GUN, IDs.RANGED_FLAMETHROWER },
+                            IDs.RANGED_PRECISION_RIFLE, IDs.RANGED_SHOTGUN, IDs.UNIQUE_SANTAMAN_SHOTGUN, IDs.UNIQUE_HANS_VON_HANZ_PISTOL, IDs.RANGED_NAIL_GUN,
+                            IDs.RANGED_FLAMETHROWER, IDs.RANGED_STUN_GUN },
                 out data);
 
             DATA_RANGED_ARMY_PISTOL = data[0];
@@ -2272,6 +2345,7 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_UNIQUE_HANS_VON_HANZ_PISTOL = data[9];
             DATA_RANGED_NAIL_GUN = data[10]; //@@MP (Release 5-1)
             DATA_RANGED_FLAMETHROWER = data[11]; //@@MP (Release 7-1)
+            DATA_RANGED_STUN_GUN = data[12]; //@@MP (Release 5-1)
 
             return true;
         }
@@ -2283,7 +2357,8 @@ namespace djack.RogueSurvivor.Gameplay
             ExplosiveData[] data;
 
             LoadDataFromCSV<ExplosiveData>(ui, path, "explosives items", ExplosiveData.COUNT_FIELDS, ExplosiveData.FromCSVLine,
-                new IDs[] { IDs.EXPLOSIVE_GRENADE, IDs.EXPLOSIVE_MOLOTOV, IDs.EXPLOSIVE_DYNAMITE, IDs.EXPLOSIVE_C4, IDs.EXPLOSIVE_MATCHES, IDs.EXPLOSIVE_FUEL_CAN, IDs.EXPLOSIVE_FUEL_PUMP },
+                new IDs[] { IDs.EXPLOSIVE_GRENADE, IDs.EXPLOSIVE_MOLOTOV, IDs.EXPLOSIVE_DYNAMITE, IDs.EXPLOSIVE_C4,
+                    IDs.EXPLOSIVE_MATCHES, IDs.EXPLOSIVE_FUEL_CAN, IDs.EXPLOSIVE_FUEL_PUMP, IDs.EXPLOSIVE_SMOKE_GRENADE, IDs.EXPLOSIVE_FLASHBANG },
                 out data);
 
             DATA_EXPLOSIVE_GRENADE = data[0];
@@ -2294,6 +2369,8 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_EXPLOSIVE_MATCHES = data[4]; //@@MP (Release 7-1)
             DATA_EXPLOSIVE_FUEL_CAN = data[5]; //@@MP (Release 7-1)
             DATA_EXPLOSIVE_FUEL_PUMP = data[6]; //@@MP (Release 7-1)
+            DATA_EXPLOSIVE_SMOKE_GRENADE = data[7]; //@@MP (Release 7-2)
+            DATA_EXPLOSIVE_FLASHBANG = data[8]; //@@MP (Release 7-2)
 
             return true;
         }
@@ -2381,18 +2458,15 @@ namespace djack.RogueSurvivor.Gameplay
             LightData[] data;
 
             LoadDataFromCSV<LightData>(ui, path, "lights items", LightData.COUNT_FIELDS, LightData.FromCSVLine,
-                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT, IDs.LIGHT_NIGHT_VISION_FEMALE, IDs.LIGHT_NIGHT_VISION_MALE,
-                     IDs.LIGHT_BINOCULARS_FEMALE, IDs.LIGHT_BINOCULARS_MALE, IDs.LIGHT_FLARE, IDs.LIGHT_GLOWSTICK },
+                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT, IDs.LIGHT_NIGHT_VISION, IDs.LIGHT_BINOCULARS, IDs.LIGHT_BINOCULARS, IDs.LIGHT_FLARE, IDs.LIGHT_GLOWSTICK },
                 out data);
 
             DATA_LIGHT_FLASHLIGHT = data[0];
             DATA_LIGHT_BIG_FLASHLIGHT = data[1];
-            DATA_LIGHT_NIGHT_VISION_FEMALE = data[2]; //@@MP (Release 6-3)
-            DATA_LIGHT_NIGHT_VISION_MALE = data[3]; //@@MP (Release 6-3)
-            DATA_LIGHT_BINOCULARS_FEMALE = data[4]; //@@MP (Release 7-1)
-            DATA_LIGHT_BINOCULARS_MALE = data[5]; //@@MP (Release 7-1)
-            DATA_LIGHT_FLARE = data[6]; //@@MP (Release 7-1)
-            DATA_LIGHT_GLOWSTICK = data[7]; //@@MP (Release 7-1)
+            DATA_LIGHT_NIGHT_VISION = data[2]; //@@MP (Release 6-3)
+            DATA_LIGHT_BINOCULARS = data[3]; //@@MP (Release 7-1)
+            DATA_LIGHT_FLARE = data[4]; //@@MP (Release 7-1)
+            DATA_LIGHT_GLOWSTICK = data[5]; //@@MP (Release 7-1)
 
             return true;
         }

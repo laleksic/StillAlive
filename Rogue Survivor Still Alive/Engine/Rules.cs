@@ -104,6 +104,8 @@ namespace djack.RogueSurvivor.Engine
         public const int MELEE_WEAPON_BREAK_CHANCE = 1;
         public const int MELEE_WEAPON_FRAGILE_BREAK_CHANCE = 25; //@@MP - upped from 3 to make fragility realistic (Release 4)
         public const int MELEE_DISARM_BASE_CHANCE = 5;  // alpha10
+        const float MELEE_WITH_SHIELD = 0.8f; //-20% accuracy   //@@MP (Release 7-2)
+        public const int IMPROVED_WEAPONS_FROM_BROKEN_WOOD_CHANCE = 25;
         /*public const int FIREARM_JAM_CHANCE_NO_RAIN = 1; //@@MP - removed (Release 6-6)
         public const int FIREARM_JAM_CHANCE_RAIN = 3; //@@MP - removed (Release 6-6)*/
         //const int FIRE_DISTANCE_VS_RANGE_MODIFIER = 2; // alpha 10 removed
@@ -117,10 +119,14 @@ namespace djack.RogueSurvivor.Engine
         const float FIRING_WHEN_HAMMERED = 0.66f; // -33%
         const float FIRING_WHEN_DRUNK = 0.75f; // -25%
         const float FIRING_WHEN_TIPSY = 0.95f; // -5%
+        const double FIRING_WITH_SHIELD = 0.60; //-40% accuracy   //@@MP (Release 7-2)
         #endregion
 
-        #region Body armors
+        #region Armors
         public const int BODY_ARMOR_BREAK_CHANCE = 2;
+        //@@MP (Release 7-2)
+        public const int SHIELD_BASE_BLOCK_CHANCE = 25;
+        const float SHIELD_ENCUMBERANCE_PENALTY = 0.75f;
         #endregion
 
         #region Hunger/Rot & Sleep & Sanity
@@ -156,6 +162,9 @@ namespace djack.RogueSurvivor.Engine
 
         public const int ALCOHOL_STANDARD_UNIT = WorldTime.TURNS_PER_HOUR; //@@MP (Release 7-1)
         public const int BLACKOUT_DRUNK_LEVEL = 5 * WorldTime.TURNS_PER_HOUR; //@@MP (Release 7-1)
+
+        public const int VOMIT_WHILE_SIPHONING_CHANCE = 25; //@@MP (Release 7-1)
+        public const int MAXIMUM_INCAPACITATED_TURNS = 5; //@@MP (Release 7-2)
 
         /// <summary>
         /// When starving, chance of dying from starvation each turn.
@@ -220,11 +229,6 @@ namespace djack.RogueSurvivor.Engine
         #region Victims dropping items.
         public const int VICTIM_DROP_GENERIC_ITEM_CHANCE = 100; //@@MP vanilla = 50, Staying Alive = 100
         public const int VICTIM_DROP_AMMOFOOD_ITEM_CHANCE = 100;
-        #endregion
-
-        #region Improvised weapons
-        public const int IMPROVED_WEAPONS_FROM_BROKEN_WOOD_CHANCE = 25;
-        public const int VOMIT_WHILE_SIPHONING_CHANCE = 25; //@@MP (Release 7-1)
         #endregion
 
         /* alpha10 replaced with rapid fire attacks property of ranged weapons
@@ -361,6 +365,7 @@ namespace djack.RogueSurvivor.Engine
         public static int SKILL_MARTIAL_ARTS_ATK_BONUS = 6;
         public static int SKILL_MARTIAL_ARTS_DMG_BONUS = 2;
         public static int SKILL_MARTIAL_ARTS_DISARM_BONUS = 10;  // alpha10
+        public static int SKILL_MARTIAL_ARTS_SHIELD_BONUS = 5; //@@MP - 5% boost to shields (Release 7-2)
 
         public static float SKILL_MEDIC_BONUS = 0.30f;
         public static int SKILL_MEDIC_REVIVE_BONUS = 10;
@@ -755,7 +760,7 @@ namespace djack.RogueSurvivor.Engine
             bool isNight = actor.Location.Map.LocalTime.IsNight;
             // 4a. too bright for NVGs
             /*
-             * aloow NVGs, as otherwise the player couldn't recharge them in Lit or outdoor daytime areas (Release 7-1)
+             * allow NVGs, as otherwise the player couldn't recharge them in Lit or outdoor daytime areas (Release 7-1)
              * 
             bool outsideDuringDay = (canSeeSky && !isNight);
             if (IsItemNightVision(it) && (actor.Location.Map.Lighting == Lighting.LIT || outsideDuringDay)) //@@MP (Release 6-3)
@@ -1050,6 +1055,7 @@ namespace djack.RogueSurvivor.Engine
             // 1. Actor cant use items.
             // 2. Item not equipped by actor.
             // 3. Not a battery powered item.
+            // 4. Already fully charged.
             //////////////////////////////////////////////////
 
             // 1. Actor cant use items.
@@ -1059,7 +1065,7 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            /*// 2. Item not equipped.            
+            /*// 2. Item not equipped.
             if (!it.IsEquipped || !actor.Inventory.Contains(it))
             {
                 reason = "item not equipped";
@@ -1070,6 +1076,13 @@ namespace djack.RogueSurvivor.Engine
             if (!IsItemBatteryPowered(it))
             {
                 reason = "not a battery-powered item";
+                return false;
+            }
+
+            // 4. Already fully charged.  //@@MP (Release 7-2)
+            if (IsItemBatteryFull(it))
+            {
+                reason = "already fully charged";
                 return false;
             }
 
@@ -1084,7 +1097,7 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             else if (!it.Model.IsBatteryPowered) //@@MP (Release 7-1)
                 return false;
-            return (it is ItemLight || it is ItemTracker);
+            return true; //return (it is ItemLight || it is ItemTracker);  //@MP - the property is the decider now that stun guns are in (Release 7-2)
         }
 
         public bool IsItemBatteryFull(Item it)
@@ -1094,14 +1107,14 @@ namespace djack.RogueSurvivor.Engine
             if (light != null && light.IsFullyCharged) return true;
             ItemTracker tracker = it as ItemTracker;
             if (tracker != null && tracker.IsFullyCharged) return true;
+            ItemRangedWeapon ranged = it as ItemRangedWeapon; //@@MP - eg stun guns (Release 7-2)
+            if (ranged != null && ranged.Ammo == (ranged.Model as ItemRangedWeaponModel).MaxAmmo) return true;
             return false;
         }
 
         public bool IsItemNightVision(Item item) //@@MP (Release 6-3)
         {
-            if (item.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_FEMALE)
-                return true;
-            else if (item.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION_MALE)
+            if (item.Model.ID == (int)GameItems.IDs.LIGHT_NIGHT_VISION)
                 return true;
             else
                 return false;
@@ -1109,9 +1122,7 @@ namespace djack.RogueSurvivor.Engine
 
         public bool IsItemBinoculars(Item item) //@@MP (Release 7-1)
         {
-            if (item.Model.ID == (int)GameItems.IDs.LIGHT_BINOCULARS_MALE)
-                return true;
-            else if (item.Model.ID == (int)GameItems.IDs.LIGHT_BINOCULARS_FEMALE)
+            if (item.Model.ID == (int)GameItems.IDs.LIGHT_BINOCULARS)
                 return true;
             else
                 return false;
@@ -1587,12 +1598,12 @@ namespace djack.RogueSurvivor.Engine
                         // Recharge battery powered item?
                         if (powGen.IsOn)
                         {
+                            Item rightItem = actor.GetEquippedItem(DollPart.RIGHT_HAND); //@@MP - moved to top. weapons must have priority, because on lights/trackers lose charge each turn, meaning they are infinitely recharged
+                            if (rightItem != null && CanActorRechargeItemBattery(actor, rightItem, out reason))
+                                return new ActionRechargeItemBattery(actor, game, rightItem);
                             Item leftItem = actor.GetEquippedItem(DollPart.LEFT_HAND);
                             if (leftItem != null && CanActorRechargeItemBattery(actor, leftItem, out reason))
                                 return new ActionRechargeItemBattery(actor, game, leftItem);
-                            Item rightItem = actor.GetEquippedItem(DollPart.RIGHT_HAND);
-                            if (rightItem != null && CanActorRechargeItemBattery(actor, rightItem, out reason))
-                                return new ActionRechargeItemBattery(actor, game, rightItem);
                             Item eyesItem = actor.GetEquippedItem(DollPart.EYES); //@@MP (Release 6-3)
                             if (eyesItem != null && CanActorRechargeItemBattery(actor, eyesItem, out reason))
                                 return new ActionRechargeItemBattery(actor, game, eyesItem);
@@ -3836,24 +3847,33 @@ namespace djack.RogueSurvivor.Engine
         {
             float speed = actor.Doll.Body.Speed;
 
-            // stamina.
-            if (IsActorTired(actor))
-                speed *= 2f / 3f;
+            if (actor.IsIncapacitated) //@@MP - handles incapacitated status (Release 7-2)
+                speed = 0f;
+            else
+            {
+                // stamina.
+                if (IsActorTired(actor))
+                    speed *= 2f / 3f;
 
-            // sleep.
-            if (IsActorExhausted(actor))
-                speed /= 2f;
-            else if (IsActorSleepy(actor))
-                speed *= 2f / 3f;
+                // sleep.
+                if (IsActorExhausted(actor))
+                    speed /= 2f;
+                else if (IsActorSleepy(actor))
+                    speed *= 2f / 3f;
 
-            // wearing armor.
-            ItemBodyArmor armor = actor.GetEquippedItem(DollPart.TORSO) as ItemBodyArmor;
-            if (armor != null)
-                speed -= armor.Weight;
+                // wearing armor.
+                ItemBodyArmor armor = actor.GetEquippedItem(DollPart.TORSO) as ItemBodyArmor;
+                if (armor != null)
+                    speed -= armor.Weight;
 
-            // dragging corpses.
-            if (actor.DraggedCorpse != null)
-                speed /= 2f;
+                // carrying shield.  //@@MP (Release 7-2)
+                if (actor.GetEquippedShield() != null)
+                    speed *= SHIELD_ENCUMBERANCE_PENALTY;
+
+                // dragging corpses.
+                if (actor.DraggedCorpse != null)
+                    speed /= 2f;
+            }
 
             // done, speed must be >= 0.
             return Math.Max((int)speed, 0);
@@ -3940,6 +3960,12 @@ namespace djack.RogueSurvivor.Engine
             return SKILL_NECROLOGY_UNDEAD_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.NECROLOGY);
         }
 
+        public int ActorShieldChanceToBlock(Actor actor) //@@MP (Release 7-2)
+        {
+            int actorSkillModifier = SKILL_MARTIAL_ARTS_SHIELD_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MARTIAL_ARTS);
+            return Rules.SHIELD_BASE_BLOCK_CHANCE + actorSkillModifier;
+        }
+
         public Attack ActorMeleeAttack(Actor actor, Attack baseAttack, Actor target, MapObject objToBreak = null) // alpha10 added mapobject param
         {
             float hit = baseAttack.HitValue;
@@ -4002,7 +4028,14 @@ namespace djack.RogueSurvivor.Engine
             //drunk penalty  //@@MP (Release 7-1)
             if (actor.IsDrunk)
             {
-                hit *= FIRING_WHEN_BLACKOUT_DRUNK;
+                hit *= FIRING_WHEN_DRUNK;
+                disarmChance *= 3f / 4f;
+            }
+
+            //shield penalty  //@@MP (Release 7-2)
+            if (actor.GetEquippedShield() != null)
+            {
+                hit *= MELEE_WITH_SHIELD;
                 disarmChance *= 3f / 4f;
             }
 
@@ -4136,6 +4169,10 @@ namespace djack.RogueSurvivor.Engine
             }
 
             int percent = (100 * hits) / ROLLS;
+
+            if (actor.GetEquippedShield() != null)
+                percent = Convert.ToInt16(percent * FIRING_WITH_SHIELD); //@@MP - equipped shield hurts accuracy (Release 7-2)
+
             return percent;
         }
 
@@ -4171,6 +4208,9 @@ namespace djack.RogueSurvivor.Engine
             //  now remove the penalty as a factor of the percent chance after distance has already been factored in
             percent = Convert.ToInt16(penalty * percent);
 
+            if (actor.GetEquippedShield() != null)
+                percent = Convert.ToInt16(percent * FIRING_WITH_SHIELD); //@@MP - equipped shield hurts accuracy (Release 7-2)
+
             return percent;
         }
 
@@ -4193,7 +4233,7 @@ namespace djack.RogueSurvivor.Engine
             float def = baseDefence.Value + defBonus;
 
             // Sleepy effect.
-            if (IsActorExhausted(actor))
+            if (IsActorExhausted(actor) || actor.IsIncapacitated) //@@MP - added incapacitated (Release 7-2)
                 def /= 2f;
             else if (IsActorSleepy(actor))
                 def *= 3f / 4f;

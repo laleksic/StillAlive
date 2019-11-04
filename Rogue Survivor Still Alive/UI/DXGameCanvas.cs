@@ -400,9 +400,9 @@ namespace djack.RogueSurvivor.UI
             m_NeedRedraw = true;
         }
 
-        public void AddImageTransform(Image img, int x, int y, float rotation, float scale)
+        public void AddImageTransform(Image img, int x, int y, Color tint, float rotation, float scale) //@@MP - forced tint to be supplied (Release 7-2)
         {
-            m_Gfxs.Add(new GfxSpriteTransform(rotation, scale, m_Sprite, new SizeF(img.Width, img.Height), img.Width, img.Height, GetTexture(img), Color.White, x, y));
+            m_Gfxs.Add(new GfxSpriteTransform(rotation, scale, m_Sprite, new SizeF(img.Width, img.Height), img.Width, img.Height, GetTexture(img), tint, x, y));
         }
 
         public void AddTransparentImage(float alpha, Image img, int x, int y)

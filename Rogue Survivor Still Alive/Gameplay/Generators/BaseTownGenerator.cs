@@ -6677,40 +6677,50 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                             // weaponry/armor/radios.
                             Item it = null;
-                            int roll = m_DiceRoller.Roll(0, 10);
+                            int roll = m_DiceRoller.Roll(0, 20);
                             switch(roll)
                             {
-                                    // 20% armors
+                                // 20% armors
                                 case 0:
                                 case 1:
-                                    it = m_DiceRoller.RollChance(50) ? MakeItemPoliceJacket() : MakeItemPoliceRiotArmor();
-                                    break;
-
-                                    // 20% light/radio
                                 case 2:
                                 case 3:
-                                    it = m_DiceRoller.RollChance(50) ? (m_DiceRoller.RollChance(50) ? MakeItemFlashlight() : MakeItemBigFlashlight()) : MakeItemPoliceRadio();
-                                    break;
+                                    it = m_DiceRoller.RollChance(50) ? MakeItemPoliceJacket() : MakeItemPoliceRiotArmor(); break;
 
-                                    // 10% truncheon
+                                // 10% smoke grenade
                                 case 4:
-                                    it = MakeItemTruncheon();
-                                    break;
-
-                                    // 20% pistol/ammo - 30% pistol 70% ammo
                                 case 5:
+                                    it = MakeItemSmokeGrenade(); break; //@@MP (Release 7-2)
+
+                                // 10% light/radio
                                 case 6:
-                                    it = m_DiceRoller.RollChance(30) ? MakeItemPistol() : MakeItemLightPistolAmmo();
-                                    break;
-
-                                    // 20% shotgun/ammo - 30% shotgun 70% ammo
                                 case 7:
-                                case 8:
-                                    it = m_DiceRoller.RollChance(30) ? MakeItemShotgun() : MakeItemShotgunAmmo();
-                                    break;
+                                    it = m_DiceRoller.RollChance(50) ? (m_DiceRoller.RollChance(50) ? MakeItemFlashlight() : MakeItemBigFlashlight()) : MakeItemPoliceRadio(); break;
 
-                                    // 10% flares kit
-                                case 9: it = MakeItemFlaresKit(); break;//@@MP (Release 7-1)
+                                // 20% pistol/ammo - 30% pistol 70% ammo
+                                case 8:
+                                case 9:
+                                case 10:
+                                case 11:
+                                    it = m_DiceRoller.RollChance(30) ? MakeItemPistol() : MakeItemLightPistolAmmo(); break;
+
+                                // 20% shotgun/ammo - 30% shotgun 70% ammo
+                                case 12:
+                                case 13:
+                                case 14:
+                                case 15:
+                                    it = m_DiceRoller.RollChance(30) ? MakeItemShotgun() : MakeItemShotgunAmmo(); break;
+
+                                // 10% flares kit
+                                case 16:
+                                case 17:
+                                    it = MakeItemFlaresKit(); break; //@@MP (Release 7-1)
+
+                                // 5% riot shield
+                                case 18: it = MakeItemPoliceRiotShield(); break; //@@MP (Release 7-2)
+
+                                // 5% truncheon/stun gun - 30% truncheon, 70% stun gun
+                                case 19: it = m_DiceRoller.RollChance(30) ? MakeItemTruncheon() : MakeItemStunGun(); break; //@@MP (Release 7-2)
 
                                 default:
                                     throw new InvalidOperationException("unhandled roll");
@@ -7808,7 +7818,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             #endregion
 
             // 6. Populate.
-            // don't block exits!
             #region
             // leveled up undeads!
             int nbZombies = underground.Width;  // 100 for 100.
@@ -7822,16 +7831,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         break;
                     undead.Model = m_Game.GameActors[upID];
                 }
-                ActorPlace(m_DiceRoller, underground.Width * underground.Height, underground, undead, (pt) => underground.GetExitAt(pt) == null);
+                ActorPlace(m_DiceRoller, underground.Width * underground.Height, underground, undead, (pt) => underground.GetExitAt(pt) == null); // don't block exits!
             }
-
-            /*// CHAR Guards.
-            int nbGuards = underground.Width / 10; // 10 for 100.
-            for (int i = 0; i < nbGuards; i++)
-            {
-                Actor guard = CreateNewCHARGuard(0);
-                ActorPlace(m_DiceRoller, underground.Width * underground.Height, underground, guard, (pt) => underground.GetExitAt(pt) == null);
-            }*/
             #endregion
 
             // 7. Add uniques.
@@ -7862,7 +7863,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                     // table + tracker/armor/weapon.
                     Item it;
-                    int randomItem = m_DiceRoller.Roll(0, 24);
+                    int randomItem = m_DiceRoller.Roll(0, 26);
                     switch (randomItem)
                     {
                         case 0: it = MakeItemArmyRifle(); break;
@@ -7887,8 +7888,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                         case 19: it = MakeItemC4Explosive(); break;
                         case 20: it = MakeItemFlamethrower(); break;//@@MP (Release 7-1)
                         case 21: it = MakeItemFuelAmmo(); break;//@@MP (Release 7-1)
-                        case 22:
-                        case 23:
+                        case 22: it = MakeItemSmokeGrenade(); break;//@@MP (Release 7-2)
+                        case 23: it = MakeItemFlashbang(); break;//@@MP (Release 7-2)
+                        case 24:
+                        case 25:
                             if (m_DiceRoller.RollChance(50))//@@MP (Release 7-1)
                                 it = MakeItemFlaresKit();
                             else
@@ -8296,6 +8299,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             base.GiveRandomSkillsToActor(m_DiceRoller, newCop, 1);
             base.GiveStartingSkillToActor(newCop, Skills.IDs.FIREARMS);
             base.GiveStartingSkillToActor(newCop, Skills.IDs.LEADERSHIP);
+            base.GiveStartingSkillToActor(newCop, Skills.IDs.HAULER); //@@MP (Release 7-2)
+            base.GiveStartingSkillToActor(newCop, Skills.IDs.HAULER); //@@MP (Release 7-2)
             //newCop.Controller = new CivilianAI(); // alpha10.1 defined by model like other actors
 
             // give items.
@@ -8304,12 +8309,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 // pistol
                 newCop.Inventory.AddAll(MakeItemPistol());
                 newCop.Inventory.AddAll(MakeItemLightPistolAmmo());
+                newCop.Inventory.AddAll(MakeItemLightPistolAmmo());//@@MP (Release 7-2)
             }
             else
             {
-                // shoty
+                // shotgun
                 newCop.Inventory.AddAll(MakeItemShotgun());
                 newCop.Inventory.AddAll(MakeItemShotgunAmmo());
+                newCop.Inventory.AddAll(MakeItemShotgunAmmo());//@@MP (Release 7-2)
             }
             newCop.Inventory.AddAll(MakeItemTruncheon());
             newCop.Inventory.AddAll(MakeItemFlashlight());
@@ -8321,6 +8328,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 else
                     newCop.Inventory.AddAll(MakeItemPoliceRiotArmor());
             }
+            newCop.Inventory.AddAll(MakeItemStunGun()); //@@MP (Release 7-2)
 
             // done.
             return newCop;
@@ -8445,7 +8453,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // give items.
             newGuard.Inventory.AddAll(MakeItemShotgun());
             newGuard.Inventory.AddAll(MakeItemShotgunAmmo());
+            newGuard.Inventory.AddAll(MakeItemShotgunAmmo()); //@@MP (Release 7-2)
+            newGuard.Inventory.AddAll(MakeItemShotgunAmmo()); //@@MP (Release 7-2)
             newGuard.Inventory.AddAll(MakeItemCHARLightBodyArmor());
+            newGuard.Inventory.AddAll(MakeItemFlashlight()); //@@MP (Release 7-2)
+            if (RogueGame.Options.VTGAntiviralPills) //@@MP (Release 7-2)
+                newGuard.Inventory.AddAll(MakeItemPillsAntiviral());
+            else
+                newGuard.Inventory.AddAll(MakeItemMedikit());
 
             // done.
             return newGuard;
@@ -8464,25 +8479,34 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             base.GiveNameToActor(m_DiceRoller, newNat);
             newNat.Name = rankName + " " + newNat.Name;
 
-            // give items 6/7.
+            // starting skills
+            GiveStartingSkillToActor(newNat, Skills.IDs.CARPENTRY); //carpentry for building small barricades.
+            GiveStartingSkillToActor(newNat, Skills.IDs.FIREARMS); //alpha 10
+            GiveStartingSkillToActor(newNat, Skills.IDs.FIREARMS); //@@MP (Release 7-2)
+            GiveStartingSkillToActor(newNat, Skills.IDs.MEDIC); //@@MP (Release 7-2)
+            GiveStartingSkillToActor(newNat, Skills.IDs.HAULER); //@@MP (Release 7-2)
+            GiveStartingSkillToActor(newNat, Skills.IDs.HAULER); //@@MP (Release 7-2)
+            GiveStartingSkillToActor(newNat, Skills.IDs.HAULER); //@@MP (Release 7-2)
+
+            // give skills : 1 per day after min arrival date.
+            int nbSkills = new WorldTime(spawnTime).Day - RogueGame.NATGUARD_DAY;
+            if (nbSkills > 0)
+                base.GiveRandomSkillsToActor(m_DiceRoller, newNat, nbSkills);
+
+            // give items.
             newNat.Inventory.AddAll(MakeItemArmyRifle());
             newNat.Inventory.AddAll(MakeItemHeavyRifleAmmo());
+            newNat.Inventory.AddAll(MakeItemHeavyRifleAmmo()); //@@MP (Release 7-2)
             newNat.Inventory.AddAll(MakeItemArmyPistol());
             newNat.Inventory.AddAll(MakeItemHeavyPistolAmmo());
             newNat.Inventory.AddAll(MakeItemArmyBodyArmor());
             ItemBarricadeMaterial planks = MakeItemWoodenPlank();
             planks.Quantity = m_Game.GameItems.WOODENPLANK.StackingLimit;
             newNat.Inventory.AddAll(planks);
+            newNat.Inventory.AddAll(MakeItemArmyRation()); //@@MP (Release 7-2)
+            newNat.Inventory.AddAll(MakeItemArmyRation()); //@@MP (Release 7-2)
+            newNat.Inventory.AddAll(MakeItemMedikit()); //@@MP (Release 7-2)
 
-            // starting skills
-            GiveStartingSkillToActor(newNat, Skills.IDs.CARPENTRY); //carpentry for building small barricades.
-            GiveStartingSkillToActor(newNat, Skills.IDs.FIREARMS); //alpha 10
-
-            // give skills : 1 per day after min arrival date.
-            int nbSkills = new WorldTime(spawnTime).Day - RogueGame.NATGUARD_DAY;
-            if (nbSkills > 0)
-                base.GiveRandomSkillsToActor(m_DiceRoller, newNat, nbSkills);
-    
             // done.
             return newNat;
         }
@@ -8504,6 +8528,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // give items.
             newBiker.Inventory.AddAll(m_DiceRoller.RollChance(50) ? MakeItemCrowbar() : MakeItemBaseballBat());
             newBiker.Inventory.AddAll(MakeItemBikerGangJacket(gangId));
+            newBiker.Inventory.AddAll(MakeItemAlcohol()); //@@MP (Release 7-2)
+            newBiker.Inventory.AddAll(MakeItemCigarettes()); //@@MP (Release 7-2)
+            newBiker.Inventory.AddAll(MakeItemBigFlashlight()); //@@MP (Release 7-2)
+            newBiker.Inventory.AddAll(MakeItemFuelAmmo()); //@@MP (Release 7-2)
+            newBiker.Inventory.AddAll(MakeItemSiphonKit()); //@@MP (Release 7-2)
 
             // give skills : 1 per day after min arrival date.
             int nbSkills = new WorldTime(spawnTime).Day - RogueGame.BIKERS_RAID_DAY;
@@ -8530,7 +8559,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // give items.
             newGangsta.Inventory.AddAll(m_DiceRoller.RollChance(50) ? MakeItemRandomPistol() : MakeItemBaseballBat());
-
+            newGangsta.Inventory.AddAll(MakeItemAlcohol()); //@@MP (Release 7-2)
+            newGangsta.Inventory.AddAll(MakeItemCigarettes()); //@@MP (Release 7-2)
+            newGangsta.Inventory.AddAll(MakeItemBigFlashlight()); //@@MP (Release 7-2)
+            newGangsta.Inventory.AddAll(MakeItemPillsSTA()); //@@MP (Release 7-2)
+            newGangsta.Inventory.AddAll(MakeItemSnackBar()); //@@MP (Release 7-2)
+            newGangsta.Inventory.AddAll(MakeItemSprayPaint()); //@@MP (Release 7-2)
 
             // give skills : 1 per day after min arrival date.
             int nbSkills = new WorldTime(spawnTime).Day - RogueGame.GANGSTAS_RAID_DAY;
@@ -8554,13 +8588,34 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             base.GiveNameToActor(m_DiceRoller, newBO);
             newBO.Name = rankName + " " + newBO.Name;
 
+            // starting skills    //@@MP (Release 7-2)
+            GiveStartingSkillToActor(newBO, Skills.IDs.AGILE);
+            GiveStartingSkillToActor(newBO, Skills.IDs.AWAKE);
+            GiveStartingSkillToActor(newBO, Skills.IDs.AWAKE);
+            GiveStartingSkillToActor(newBO, Skills.IDs.FIREARMS);
+            GiveStartingSkillToActor(newBO, Skills.IDs.FIREARMS);
+            GiveStartingSkillToActor(newBO, Skills.IDs.FIREARMS);
+            GiveStartingSkillToActor(newBO, Skills.IDs.BOWS_EXPLOSIVES);
+            GiveStartingSkillToActor(newBO, Skills.IDs.HAULER);
+            GiveStartingSkillToActor(newBO, Skills.IDs.HIGH_STAMINA);
+            GiveStartingSkillToActor(newBO, Skills.IDs.LIGHT_FEET);
+            GiveStartingSkillToActor(newBO, Skills.IDs.LIGHT_FEET);
+            GiveStartingSkillToActor(newBO, Skills.IDs.LIGHT_SLEEPER);
+            GiveStartingSkillToActor(newBO, Skills.IDs.MARTIAL_ARTS);
+            GiveStartingSkillToActor(newBO, Skills.IDs.MEDIC);
+            GiveStartingSkillToActor(newBO, Skills.IDs.STRONG_PSYCHE);
+            GiveStartingSkillToActor(newBO, Skills.IDs.STRONG_PSYCHE);
+            GiveStartingSkillToActor(newBO, Skills.IDs.NECROLOGY);
+
             // give items.
             newBO.Inventory.AddAll(MakeItemPrecisionRifle());
             newBO.Inventory.AddAll(MakeItemPrecisionRifleAmmo()); //@@MP (Release 6-6)
-            newBO.Inventory.AddAll(MakeItemHeavyRifleAmmo());
+            newBO.Inventory.AddAll(MakeItemPrecisionRifleAmmo());
             newBO.Inventory.AddAll(MakeItemArmyPistol());
             newBO.Inventory.AddAll(MakeItemHeavyPistolAmmo());
             newBO.Inventory.AddAll(MakeItemBlackOpsGPS());
+            newBO.Inventory.AddAll(MakeItemMedikit()); //@@MP (Release 7-2)
+            newBO.Inventory.AddAll(MakeItemNightVisionGoggles()); //@@MP (Release 7-2)
 
             // done.
             return newBO;

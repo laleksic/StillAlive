@@ -6,3 +6,5 @@
 "EXPLOSIVE_MATCHES","match","matches",0,1,20,0,0,0,0,0,0,0,"Strike a light"
 "EXPLOSIVE_FUEL_CAN","fuel can","fuel cans",0,0,1,1,1,1,0,0,0,0,"FOR IN-CODE USE ONLY"
 "EXPLOSIVE_FUEL_PUMP","fuel pump","fuel pumps",0,0,1,5,200,100,50,25,15,5,"FOR IN-CODE USE ONLY"
+"EXPLOSIVE_SMOKE_GRENADE","smoke grenade","smoke grenades",0,4,6,2,0,0,0,0,0,0,"Up in smoke"
+"EXPLOSIVE_FLASHBANG","flashbang","flashbangs",0,4,6,3,0,0,0,0,0,0,"Blinded by the light"

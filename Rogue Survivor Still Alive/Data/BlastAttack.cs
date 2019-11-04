@@ -12,8 +12,9 @@ namespace djack.RogueSurvivor.Data
         public int[] Damage { get; private set; }
         public bool CanDamageObjects { get; private set; }
         public bool CanDestroyWalls { get; private set; }
+        public bool IsProvocative { get; private set; } //@@MP (Release 7-2)
 
-        public BlastAttack(int radius, int[] damage, bool canDamageObjects, bool canDestroyWalls)
+        public BlastAttack(int radius, int[] damage, bool canDamageObjects, bool canDestroyWalls, bool isProvocative)
             : this()
         {
             if (damage.Length != radius + 1)
@@ -23,6 +24,7 @@ namespace djack.RogueSurvivor.Data
             this.Damage = damage;
             this.CanDamageObjects = canDamageObjects;
             this.CanDestroyWalls = canDestroyWalls;
+            this.IsProvocative = isProvocative;
         }
     }
 }

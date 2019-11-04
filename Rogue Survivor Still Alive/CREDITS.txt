@@ -99,6 +99,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 	snap : https://freesound.org/people/herraportti/sounds/436652/ by herraportti
 	shake : https://freesound.org/people/deleted_user_4966198/sounds/264194/ by deleted_user_4966198
 -Binoculars : https://freesound.org/people/RoganDerrick/sounds/260437/ by RoganDerrick
+-Shield block : https://freesound.org/people/Noisehag/sounds/110548/ by Noisehag
 
 
 ** IMAGE CREDITS **

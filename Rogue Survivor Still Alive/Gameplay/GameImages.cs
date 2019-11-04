@@ -10,7 +10,7 @@ namespace djack.RogueSurvivor.Gameplay
     {
         #region Constants
         //@@MP - tiles visited but not within current FOV are now darker (Release 6-2)
-        const float GRAYLEVEL_DIM_FACTOR_DAYTIME = 0.40f; //@@MP this was the one and only prior to R6-2
+        const float GRAYLEVEL_DIM_FACTOR_DAYTIME = 0.40f; //@@MP this was the one and only in vanilla
         const float GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLEAR = 0.20f;
         const float GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLOUDED = 0.15f;
         const float GRAYLEVEL_DIM_FACTOR_UNDERGROUND_LITTORCH = 0.20f;
@@ -43,6 +43,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ICON_FOOD_HUNGRY = @"Icons\food_hungry";
         public const string ICON_FOOD_STARVING = @"Icons\food_starving";
         public const string ICON_HEALING = @"Icons\healing";
+        public const string ICON_INCAPACITATED = @"Icons\incapacitated"; //@@MP (Release 7-1)
         public const string ICON_IS_TARGET = @"Icons\is_target";
         public const string ICON_IS_TARGETTED = @"Icons\is_targetted";
         public const string ICON_IS_TARGETING = @"Icons\is_targeting";  // alpha10
@@ -520,8 +521,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_BIGBEAR_BAT = @"Items\item_bigbear_bat";
         public const string ITEM_BIG_FLASHLIGHT = @"Items\item_big_flashlight";
         public const string ITEM_BIG_FLASHLIGHT_OUT = @"Items\item_big_flashlight_out";
-        public const string ITEM_BINOCULARS_FEMALE = @"Items\item_binoculars_female"; //@MP (Release 7-1)
-        public const string ITEM_BINOCULARS_MALE = @"Items\item_binoculars_male"; //@MP (Release 7-1)
+        public const string ITEM_BINOCULARS = @"Items\item_binoculars"; //@MP (Release 7-1)
         public const string ITEM_BOOK = @"Items\item_book";
         public const string ITEM_BLACKOPS_GPS = @"Items\item_blackops_gps";
         public const string ITEM_C4 = @"Items\item_c4"; //@@MP (Release 6-3)
@@ -544,6 +544,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_FIRE_HAZARD_SUIT = @"Items\item_fire_hazard_suit"; //@@MP (Release 7-1)
         public const string ITEM_FLAMETHROWER = @"Items\item_flamethrower"; //@@MP (Release 7-1)
         public const string ITEM_FLARES_KIT = @"Items\item_flares_kit"; //@@MP (Release 7-1)
+        public const string ITEM_FLASHBANG = @"Items\item_flashbang"; //@@MP (Release 7-2)
+        public const string ITEM_FLASHBANG_PRIMED = @"Items\item_flashbang_primed"; //@@MP (Release 7-2)
         public const string ITEM_FLASHLIGHT = @"Items\item_flashlight";
         public const string ITEM_FLASHLIGHT_OUT = @"Items\item_flashlight_out";
         public const string ITEM_FREE_ANGELS_JACKET = @"Items\item_free_angels_jacket";
@@ -576,8 +578,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_MOLOTOV = @"Items\item_molotov"; //@@MP (Release 4)
         public const string ITEM_MOLOTOV_PRIMED = @"Items\item_molotov_primed"; //@@MP (Release 4)
         public const string ITEM_NAIL_GUN = @"Items\item_nail_gun"; //@@MP (Release 5-1)
-        public const string ITEM_NIGHT_VISION_FEMALE = @"Items\item_night_vision_female"; //@MP (Release 6-3)
-        public const string ITEM_NIGHT_VISION_MALE = @"Items\item_night_vision_male"; //@MP (Release 6-3)
+        public const string ITEM_NIGHT_VISION = @"Items\item_night_vision"; //@MP (Release 6-3)
         public const string ITEM_PICKAXE = @"Items\item_pickaxe"; //@@MP (Release 3)
         public const string ITEM_PILLS_ANTIVIRAL = @"Items\item_pills_antiviral";
         public const string ITEM_PILLS_BLUE = @"Items\item_pills_blue";
@@ -588,6 +589,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_POLICE_JACKET = @"Items\item_police_jacket";
         public const string ITEM_POLICE_RADIO = @"Items\item_police_radio";
         public const string ITEM_POLICE_RIOT_ARMOR = @"Items\item_police_riot_armor";
+        public const string ITEM_POLICE_RIOT_SHIELD = @"Items\item_police_riot_shield"; //@@MP (Release 7-2)
         public const string ITEM_PRECISION_RIFLE = @"Items\item_precision_rifle";
         public const string ITEM_ROGUEDJACK_KEYBOARD = @"Items\item_roguedjack_keyboard";
         public const string ITEM_SANTAMAN_SHOTGUN = @"Items\item_santaman_shotgun";
@@ -596,6 +598,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_SHOVEL = @"Items\item_shovel";
         public const string ITEM_SIPHON_KIT = @"Items\item_siphon_kit"; //@@MP (Release 7-1)
         public const string ITEM_SMALL_HAMMER = @"Items\item_small_hammer";
+        public const string ITEM_SMOKE_GRENADE = @"Items\item_smoke_grenade"; //@@MP (Release 7-2)
+        public const string ITEM_SMOKE_GRENADE_PRIMED = @"Items\item_smoke_grenade_primed"; //@@MP (Release 7-2)
         public const string ITEM_SNACK_BAR = @"Items\item_snack_bar"; //@@MP (Release 7-1)
         public const string ITEM_SPIKES = @"Items\item_spikes";
         public const string ITEM_SPRAYPAINT = @"Items\item_spraypaint";
@@ -604,6 +608,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_SPRAYPAINT4 = @"Items\item_spraypaint4";
         public const string ITEM_STANDARD_AXE = @"Items\item_standard_axe"; //@@MP (Release 3)
         public const string ITEM_STENCH_KILLER = @"Items\item_stench_killer";
+        public const string ITEM_STUN_GUN = @"Items\item_stun_gun"; //@@MP (Release 7-2)
         public const string ITEM_SUBWAY_BADGE = @"Items\item_subway_badge";
         public const string ITEM_TENNIS_RACKET = @"Items\item_tennis_racket"; //@@MP (Release 3)
         public const string ITEM_TRUNCHEON = @"Items\item_truncheon";
@@ -627,9 +632,16 @@ namespace djack.RogueSurvivor.Gameplay
         public const string EFFECT_ROT4_2 = @"Effects\rot4_2";
         public const string EFFECT_ROT5_1 = @"Effects\rot5_1";
         public const string EFFECT_ROT5_2 = @"Effects\rot5_2";
+        public const string EFFECT_FLASHBANG_020 = @"Effects\flashbang_effect_020"; //@@MP (Release 7-2)
+        public const string EFFECT_FLASHBANG_040 = @"Effects\flashbang_effect_040"; //@@MP (Release 7-2)
+        public const string EFFECT_FLASHBANG_060 = @"Effects\flashbang_effect_060"; //@@MP (Release 7-2)
+        public const string EFFECT_FLASHBANG_080 = @"Effects\flashbang_effect_080"; //@@MP (Release 7-2)
+        public const string EFFECT_FLASHBANG_100 = @"Effects\flashbang_effect_100"; //@@MP (Release 7-2)
         public const string EFFECT_LIGHT_TINT_CANDLE = @"Effects\light_tint_candle"; //@@MP (Release 7-1)
         public const string EFFECT_LIGHT_TINT_FLARE = @"Effects\light_tint_flare"; //@@MP (Release 7-1)
         public const string EFFECT_LIGHT_TINT_GLOWSTICK = @"Effects\light_tint_glowstick"; //@@MP (Release 7-1)
+        public const string EFFECT_NIGHTVISION = @"Effects\nightvision_effect"; //@@MP (Release 7-2)
+        public const string EFFECT_SMOKE_SCREEN = @"Effects\smoke_screen"; //@@MP (Release 7-2)
         public const string EFFECT_WEATHER_RAIN1 = @"Effects\weather_rain1";
         public const string EFFECT_WEATHER_RAIN2 = @"Effects\weather_rain2";
         public const string EFFECT_WEATHER_HEAVY_RAIN1 = @"Effects\weather_heavy_rain1";
@@ -715,6 +727,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ICON_LINE_CLEAR);
             Load(ICON_BLAST);
             Load(ICON_HEALING);
+            Load(ICON_INCAPACITATED); //@@MP (Release 7-2)
             Load(ICON_IS_TARGET);
             Load(ICON_IS_TARGETTED);
             Load(ICON_IS_TARGETING); // alpha10
@@ -1183,8 +1196,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_BIGBEAR_BAT);
             Load(ITEM_BIG_FLASHLIGHT);
             Load(ITEM_BIG_FLASHLIGHT_OUT);
-            Load(ITEM_BINOCULARS_FEMALE); //@@MP (Release 7-1)
-            Load(ITEM_BINOCULARS_MALE); //@@MP (Release 7-1)
+            Load(ITEM_BINOCULARS); //@@MP (Release 7-1)
             Load(ITEM_BLACKOPS_GPS);
             Load(ITEM_BOOK);
             Load(ITEM_C4); //@@MP (Release 6-3)
@@ -1207,6 +1219,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_FIRE_HAZARD_SUIT); //@@MP (Release 7-1)
             Load(ITEM_FLAMETHROWER); //@@MP (Release 7-1)
             Load(ITEM_FLARES_KIT); //@@MP (Release 7-1)
+            Load(ITEM_FLASHBANG); //@@MP (Release 7-2)
+            Load(ITEM_FLASHBANG_PRIMED); //@@MP (Release 7-2)
             Load(ITEM_FLASHLIGHT);
             Load(ITEM_FLASHLIGHT_OUT);
             Load(ITEM_FREE_ANGELS_JACKET);
@@ -1238,8 +1252,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_MOLOTOV); //@@MP (Release 4)
             Load(ITEM_MOLOTOV_PRIMED); //@@MP (Release 4)
             Load(ITEM_NAIL_GUN); //@@MP (Release 5-1)
-            Load(ITEM_NIGHT_VISION_FEMALE); //@@MP (Release 6-3)
-            Load(ITEM_NIGHT_VISION_MALE); //@@MP (Release 6-3)
+            Load(ITEM_NIGHT_VISION); //@@MP (Release 6-3)
             Load(ITEM_PICKAXE); //@@MP (Release 3)
             Load(ITEM_PILLS_ANTIVIRAL);
             Load(ITEM_PILLS_BLUE);
@@ -1250,6 +1263,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_POLICE_JACKET);
             Load(ITEM_POLICE_RADIO);
             Load(ITEM_POLICE_RIOT_ARMOR);
+            Load(ITEM_POLICE_RIOT_SHIELD); //@@MP (Release 7-2)
             Load(ITEM_PRECISION_RIFLE);
             Load(ITEM_ROGUEDJACK_KEYBOARD);
             Load(ITEM_SANTAMAN_SHOTGUN);
@@ -1258,6 +1272,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_SHOVEL);
             Load(ITEM_SIPHON_KIT); //@@MP (Release 7-1)
             Load(ITEM_SMALL_HAMMER);
+            Load(ITEM_SMOKE_GRENADE); //@@MP (Release 7-2)
+            Load(ITEM_SMOKE_GRENADE_PRIMED); //@@MP (Release 7-2)
             Load(ITEM_SNACK_BAR); //@@MP (Release 7-1)
             Load(ITEM_SPIKES);
             Load(ITEM_SPRAYPAINT);
@@ -1266,6 +1282,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_SPRAYPAINT4);
             Load(ITEM_STANDARD_AXE); //@@MP (Release 3)
             Load(ITEM_STENCH_KILLER);
+            Load(ITEM_STUN_GUN); //@@MP (Release 7-2)
             Load(ITEM_SUBWAY_BADGE);
             Load(ITEM_TENNIS_RACKET); //@@MP (Release 3)
             Load(ITEM_TRUNCHEON);
@@ -1291,9 +1308,16 @@ namespace djack.RogueSurvivor.Gameplay
             Load(EFFECT_ROT4_2);
             Load(EFFECT_ROT5_1);
             Load(EFFECT_ROT5_2);
+            Load(EFFECT_FLASHBANG_020); //@@MP (Release 7-2)
+            Load(EFFECT_FLASHBANG_040); //@@MP (Release 7-2)
+            Load(EFFECT_FLASHBANG_060); //@@MP (Release 7-2)
+            Load(EFFECT_FLASHBANG_080); //@@MP (Release 7-2)
+            Load(EFFECT_FLASHBANG_100); //@@MP (Release 7-2)
             Load(EFFECT_LIGHT_TINT_CANDLE); //@@MP (Release 7-1)
             Load(EFFECT_LIGHT_TINT_FLARE); //@@MP (Release 7-1)
             Load(EFFECT_LIGHT_TINT_GLOWSTICK); //@@MP (Release 7-1)
+            Load(EFFECT_NIGHTVISION); //@@MP (Release 7-2)
+            Load(EFFECT_SMOKE_SCREEN); //@@MP (Release 7-2)
             Load(EFFECT_WEATHER_RAIN1);
             Load(EFFECT_WEATHER_RAIN2);
             Load(EFFECT_WEATHER_HEAVY_RAIN1);
@@ -1338,7 +1362,7 @@ namespace djack.RogueSurvivor.Gameplay
                 imgFixed = new Bitmap(img);
 
                 s_Images.Add(id, imgFixed);
-                //s_GrayLevelImages.Add(id, MakeGrayLevel(imgFixed)); //@@MP this was the one and only prior to R6-2 (Release 6-2)
+                //s_GrayLevelImages.Add(id, MakeGrayLevel(imgFixed)); //@@MP this was the one and only in vanilla (Release 6-2)
                 s_GrayLevelImages_Daytime.Add(id, MakeGrayLevel(imgFixed, "daytime"));
                 s_GrayLevelImages_NighttimeClear.Add(id, MakeGrayLevel(imgFixed, "nighttime_clear"));
                 s_GrayLevelImages_NighttimeClouded.Add(id, MakeGrayLevel(imgFixed, "nighttime_clouded"));
@@ -1433,11 +1457,6 @@ namespace djack.RogueSurvivor.Gameplay
                         return img;
                     else
                         return s_GrayLevelImages_UndergroundLitTorch[UNDEF];
-                case "nightvision_nighttime": //@@MP (Release 6-3)
-                    if (s_GrayLevelImages_Daytime.TryGetValue(imageID, out img))
-                        return img;
-                    else
-                        return s_GrayLevelImages_Daytime[UNDEF];
                 default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
             }
         }

@@ -11,6 +11,7 @@ namespace djack.RogueSurvivor.Engine.Items
     {
         #region Properties
         public bool IsFragile { get; set; }
+        public bool IsOneHanded { get; set; } //@@MP (Release 7-2)
         // alpha10
         public int ToolBashDamageBonus { get; set; }
         public float ToolBuildBonus { get; set; }

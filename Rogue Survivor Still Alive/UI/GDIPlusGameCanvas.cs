@@ -225,9 +225,16 @@ namespace djack.RogueSurvivor.UI
             AddImage(img, x, y);
         }
 
-        public void AddImageTransform(Image img, int x, int y, float rotation, float scale)
+        /// <summary>
+        /// GDI implemention ignore the color parameter.
+        /// </summary>
+        /// <param name="img"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="color">not used in GDI implementation</param>
+        public void AddImageTransform(Image img, int x, int y, Color tint, float rotation, float scale) //@@MP - forced tint to be supplied [not implemented in GDI, only DX] (Release 7-2)
         {
-            m_Gfxs.Add(new GfxImageTransform(img, rotation, scale, x, y));
+            m_Gfxs.Add(new GfxImageTransform(img, rotation, scale, tint, x, y));
             m_NeedRedraw = true;
         }
 
@@ -375,14 +382,14 @@ namespace djack.RogueSurvivor.UI
             readonly int m_X;
             readonly int m_Y;
 
-            public GfxImageTransform(Image img, float rotation, float scale, int x, int y)
+            public GfxImageTransform(Image img, float rotation, float scale, Color tint, int x, int y) //@@MP - added tint (Release 7-2)
             {
                 m_Img = img;
                 m_Matrix = new Matrix();
                 m_X = x;
                 m_Y = y;
                 m_Matrix.RotateAt(rotation, new PointF(x + img.Width / 2, y + img.Height / 2));
-                m_Matrix.Scale(scale, scale);                
+                m_Matrix.Scale(scale, scale);
             }
 
             public void Draw(Graphics g)

@@ -39,7 +39,18 @@ TROUBLESHOOTING
 	The game will deploy it's own content files whenever their last modified date is more recent than that of any file using the same name.
 	To ensure your files are used instead, change their last modified date to be today. NirSoft's BulkFileChanger or Romain Petges' Attribute Changer 9 make this easy.
 
--(general information)
+FAQ
+
+-what is the difference between Managed DirectX (MDX) and GDI+?
+For Still Alive the noticable differences are how certain things are rendered. You will notice that text font appears slightly differently, and that in-game tint from things such as sunset
+are not applied to everything in GDI+.
+You may find that GDI is slightly slower, but as it's available natively you don't need any extra drivers installed to run the game.
+
+-what is the difference between SMFL and MDX?
+SMFL is more adept at handling multiple audio played simultaneously. With MDX you may notice sounds are cut off or don't play at all if many are playing at once.
+
+
+MORE INFO
 	Forums : http://roguesurvivor.proboards.com/
 	GitLab : https://gitlab.com/RogueSurvivor-StillAlive/StillAlive
 	Wiki : http://roguesurvivor.wikia.com/wiki/Main_Page

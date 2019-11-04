@@ -19,6 +19,7 @@ namespace djack.RogueSurvivor.Data
     {
         DEFAULT = 0,
         RAPID,
+        FLAMING, //@@MP (Release 7-2)
         _COUNT
     }
 

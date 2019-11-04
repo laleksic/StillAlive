@@ -318,6 +318,16 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         TRAPS,
 
+        /// <summary>
+        /// Smoke grenade blocks FoV
+        /// </summary>
+        SMOKE_GRENADE, //@@MP (Release 7-2)
+
+        /// <summary>
+        /// Weapon effect of stunning victims
+        /// </summary>
+        INCAPACITATION, //@@MP (Release 7-2)
+
         _COUNT
     }
 
