@@ -43,6 +43,12 @@ namespace djack.RogueSurvivor.Engine
         public bool HasEnded(string musicname) { return true; }
 
         public void PlayRandom(IEnumerable<string> playlist, int priority) { } //@@MP (Release 6-1)
+
+        public void Pause(string musicname) { } //@@MP (Release 7-3)
+
+        public void PauseAll() { } //@@MP (Release 7-3)
+
+        public void ResumeAll() { } //@@MP (Release 7-3)
         #endregion
 
         #region IDisposable

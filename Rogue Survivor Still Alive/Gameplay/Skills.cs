@@ -41,7 +41,7 @@ namespace djack.RogueSurvivor.Gameplay
             CARPENTRY,
 
             /// <summary>
-            /// Bonus to trust gain.
+            /// Bonus to trust gain. Dogs like you.
             /// </summary>
             CHARISMATIC,
 

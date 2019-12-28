@@ -1416,7 +1416,7 @@ namespace djack.RogueSurvivor.Data
         }
 
         /// <summary>
-        /// Apply a fonction on each adjacent tiles in map.
+        /// Apply a function on each adjacent tiles in map.
         /// </summary>
         /// <param name="position"></param>
         /// <param name="fn"></param>
@@ -1425,6 +1425,30 @@ namespace djack.RogueSurvivor.Data
             if (!IsInBounds(position))
                 return;
 
+            Point next;
+            foreach (Direction d in Direction.COMPASS)
+            {
+                next = position + d;
+
+                if (IsInBounds(next))
+                    fn(next);
+            }
+        }
+
+        /// <summary>
+        /// Apply a function on each adjacent tile and the center tile.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="fn"></param>
+        public void ForEachAdjacentAndCenterInMap(Point position, Action<Point> fn) //@@MP (Release 7-3)
+        {
+            if (!IsInBounds(position))
+                return;
+
+            //first apply to the center point
+            fn(position);
+
+            //now the adjacents
             Point next;
             foreach (Direction d in Direction.COMPASS)
             {
@@ -1468,7 +1492,7 @@ namespace djack.RogueSurvivor.Data
 
                 MapObject mapObj = GetMapObjectAt(position);
                 DoorWindow door = mapObj as DoorWindow;
-                if (door != null)// && mapObj is DoorWindow) //@@MP - redundancy fixed (Release 5-7)
+                if (door != null)
                 {
                     if (door.IsClosed)
                         return true;
@@ -1487,7 +1511,7 @@ namespace djack.RogueSurvivor.Data
         public bool IsClosestIronGateClosed(Point position) //@@MP - created solely as a dodgy way to check the cell door of The Prisoner (Release 5-6)
         {
             Point next;
-            foreach (Direction d in Direction.COMPASS_4) //made it only NSEW because the door will always be S (Release 6-1)
+            foreach (Direction d in Direction.COMPASS_NESW) //made it only NSEW because the door will always be S (Release 6-1)
             {
                 next = position + d;
 
@@ -1503,6 +1527,21 @@ namespace djack.RogueSurvivor.Data
                         return true;
                 }
 
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Used when checking if we'll allow a wall to be destructed (don't if OOB eg basement)
+        /// </summary>
+        public bool AnyAdjacentOutOfBounds(Point position) //@@MP (Release 7-3)
+        {
+            Point next;
+            foreach (Direction d in Direction.COMPASS)
+            {
+                next = position + d;
+                if (!IsInBounds(next))
+                    return true;
             }
             return false;
         }

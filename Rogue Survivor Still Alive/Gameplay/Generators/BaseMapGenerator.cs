@@ -44,7 +44,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         static readonly string[] CHARGUARD_HEADS = new string[] { GameImages.CHARGUARD_HAIR };
         static readonly string[] CHARGUARD_LEGS = new string[] { GameImages.CHARGUARD_PANTS };
 
-        static readonly string[] DOG_SKINS = new string[] { GameImages.DOG_SKIN1, GameImages.DOG_SKIN2, GameImages.DOG_SKIN3 };
+        static readonly string[] DOG_SKINS = new string[] { GameImages.DOG_SKIN1_EAST, GameImages.DOG_SKIN2_EAST, GameImages.DOG_SKIN3_EAST, GameImages.DOG_SKIN1_WEST, GameImages.DOG_SKIN2_WEST, GameImages.DOG_SKIN3_WEST };
 
         public void DressCivilian(DiceRoller roller, Actor actor)
         {
@@ -430,6 +430,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
+        public static string[] PARK_TREES = { GameImages.OBJ_TREE1, GameImages.OBJ_TREE2, GameImages.OBJ_TREE3, GameImages.OBJ_TREE4 }; //@@MP (Release 7-3)
+
+        protected static MapObject MakeObjParkTree(DiceRoller roller) //@@MP (Release 7-3)
+        {
+            return MakeObjTree(PARK_TREES[roller.Roll(0, PARK_TREES.Length)]);
+        }
+
         protected static MapObject MakeObjTree(string treeImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("tree", treeImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 20) //@@MP - made unbreakable (Release 6-2)
@@ -442,25 +449,20 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         /// <summary>
         /// Makes a new wrecked car of a random model.
-        /// <see>MakeWreckedCar(string)</see>
         /// </summary>
-        /// <param name="roller"></param>
-        /// <returns></returns>
         protected static Car MakeObjWreckedCar(DiceRoller roller) //@@MP - made static (Release 5-7), made a Car object (Release 7-1)
         {
-            return MakeObjWreckedCar(CARS[roller.Roll(0, CARS.Length)], roller.Roll(0,30));  //@@MP - added random fuel level (Release 7-1)
+            return MakeObjCar(CARS[roller.Roll(0, CARS.Length)], "wrecked car", MapObject.Break.BROKEN, roller.Roll(0,30));  //@@MP - added random fuel level (Release 7-1)
         }
 
         /// <summary>
-        /// Makes a new wrecked car : transparent, not walkable but jumpable, movable.
+        /// Makes a new car : transparent, not walkable but jumpable, movable.
         /// </summary>
-        /// <param name="carImageID"></param>
-        /// <returns></returns>
-        protected static Car MakeObjWreckedCar(string carImageID, int fuelUnits) //@@MP - made static (Release 5-7), made a Car object (Release 7-1)
+        protected static Car MakeObjCar(string carImageID, string name, MapObject.Break breakState, int fuelUnits) //@@MP - made static (Release 5-7), made a Car object (Release 7-1), made generic (not necessarily wrecked) (Release 7-3)
         {
-            return new Car("wrecked car", carImageID, fuelUnits)  //@@MP - added random fuel level (Release 7-1)
+            return new Car(name, carImageID, breakState, fuelUnits)  //@@MP - added random fuel level (Release 7-1), added breakstate (Release 7-3)
             {
-                BreakState = MapObject.Break.BROKEN,
+                BreakState = breakState,
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
                 IsMovable = true,
@@ -468,6 +470,22 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 StandOnFovBonus = true,
                 IsMetal = true //@@MP (Release 5-4)
             };
+        }
+
+        /// <summary>
+        /// Makes a new non-wrecked car of a random model for a dealership.
+        /// </summary>
+        protected static Car MakeObjDisplayCar(DiceRoller roller)
+        {
+            return MakeObjCar(CARS[roller.Roll(0, CARS.Length)], "display car", MapObject.Break.UNBREAKABLE, 0);
+        }
+
+        /// <summary>
+        /// Makes a new non-wrecked car of a random model for a car park.
+        /// </summary>
+        protected static Car MakeObjAbandonedCar(DiceRoller roller)
+        {
+            return MakeObjCar(CARS[roller.Roll(0, CARS.Length)], "abandoned car", MapObject.Break.UNBREAKABLE, roller.Roll(30, 98));
         }
 
         protected static MapObject MakeObjShelf(string shelfImageID) //@@MP - made static (Release 5-7)
@@ -638,9 +656,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected static MapObject MakeObjCHARdesktop(string CHARdesktopImageID) //@@MP - made static (Release 5-7)
+        protected static MapObject MakeObjWorkstation(string CHARdesktopImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("CHAR desktop", CHARdesktopImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
+            return new MapObject("workstation", CHARdesktopImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
@@ -776,19 +794,25 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected static MapObject MakeObjBarCounter(string barCounterImageID) //@@MP (Release 5-3), made static (Release 5-7)
+        /// <summary>
+        /// Generic counter useful for bars, shops, etc
+        /// </summary>
+        /// <param name="barCounterImageID"></param>
+        /// <returns></returns>
+        protected static MapObject MakeObjCounter(string counterImageID) //@@MP (Release 5-3), made static (Release 5-7)
         {
-            return new MapObject("counter", barCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 4)
+            return new MapObject("counter", counterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
                 JumpLevel = 1,
                 IsMaterialTransparent = true,
-                GivesWood = true
+                GivesWood = true,
+                StandOnFovBonus = true
             };
         }
 
-        protected static MapObject MakeObjCashRegister(string cashRegisterImageID) //@@MP - made static (Release 5-7)
+        protected static MapObject MakeObjCheckout(string checkoutImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("cash register", cashRegisterImageID)
+            return new MapObject("checkout", checkoutImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
                 IsMaterialTransparent = true,
                 IsContainer = true, //@@MP (Release 5-3)
@@ -855,15 +879,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected static MapObject MakeObjBerryBush(string berrybushImageID) //@@MP - made static (Release 5-7)
-        {
-            return new MapObject("berry bush", berrybushImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS / 20)
-            {
-                IsMaterialTransparent = true,
-                IsContainer = true
-            };
-        }
-
         protected static MapObject MakeObjReceptionDesk(string receptiondeskImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("reception desk", receptiondeskImageID)
@@ -895,17 +910,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         }
 
         //@@MP (Release 6-3)
-        protected static MapObject MakeObjArmyComputerStation(string armyDesktopImageID)
-        {
-            return new MapObject("Army workstation", armyDesktopImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
-            {
-                IsMaterialTransparent = true,
-                JumpLevel = 1,
-                GivesWood = true,
-                IsMovable = true,
-            };
-        }
-
         protected static MapObject MakeObjArmyRadioCupboard(string armyRadioCupboardImageID)
         {
             return new MapObject("radio equipment", armyRadioCupboardImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
@@ -929,12 +933,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public MapObject MakeObjHelicopter(string vatImageID) //@@MP (Release 6-4)
+        public MapObject MakeObjHelicopter(string heliImageID) //@@MP (Release 6-4), made smaller (Release 7-3)
         {
-            //A 64x128 pixel image, dissected into 8 pieces and then arranged as:
-            //  1234
-            //  5678
-            return new MapObject("helicopter", vatImageID)
+            //A 96x32 pixel image, dissected into 3 pieces and then arranged as:  1-2-3
+            return new MapObject("helicopter", heliImageID)
             {
                 IsMetal = true
             };
@@ -942,9 +944,16 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjFuelPump(string fuelPumpImageID) //@@MP (Release 7-1)
         {
-            return new MapObject("fuel pump", fuelPumpImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 4)
+            return new MapObject("fuel pump", fuelPumpImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 20)
             {
-                IsMaterialTransparent = true,
+                IsMetal = true
+            };
+        }
+
+        public MapObject MakeObjFuelPumpBroken(string fuelPumpBrokenImageID) //@@MP (Release 7-3)
+        {
+            return new MapObject("exploded fuel pump", fuelPumpBrokenImageID)
+            {
                 IsMetal = true
             };
         }
@@ -958,6 +967,128 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsWalkable = true,
                 IsMovable = false
             };
+        }
+
+        //@@MP (Release 7-3)
+        public MapObject MakeObjFireTruck(string fireTruckImageID)
+        {
+            //For EW a 32x64 pixel image, dissected into 2 pieces and then arranged as:
+            //  1-2
+            //For NS a 64x32 pixel image, dissected into 2 pieces and then arranged as:
+            //  1
+            //  2
+            return new MapObject("fire truck", fireTruckImageID)
+            {
+                JumpLevel = 1,
+                StandOnFovBonus = true,
+                IsMetal = true,
+                IsMovable = false
+            };
+        }
+
+        /// <summary>
+        /// Generic plant to be used as a container for fruit or veggies
+        /// </summary>
+        /// <param name="name">name of the plant</param>
+        /// <param name="plantImageID">can be any plant image</param>
+        /// <returns></returns>
+        protected static MapObject MakeObjFarmPlant(string name, string plantImageID)
+        {
+            return new MapObject(name, plantImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS / 20)
+            {
+                IsMaterialTransparent = true,
+                IsContainer = true,
+                IsWalkable = true
+            };
+        }
+
+        public MapObject MakeObjTractor(string tractorImageID)
+        {
+            return new MapObject("tractor", tractorImageID)
+            {
+                JumpLevel = 1,
+                StandOnFovBonus = true,
+                IsMetal = true,
+                IsMovable = false
+            };
+        }
+
+        public DoorWindow MakeObjChainFenceGate(int state) //@@MP - made public (Release 6-3)
+        {
+            return new DoorWindow("chainlink gate", GameImages.OBJ_CHAINWIRE_GATE_CLOSED, GameImages.OBJ_CHAINWIRE_GATE_OPEN, GameImages.OBJ_CHAINWIRE_GATE_BROKEN, 2 * DoorWindow.BASE_HITPOINTS, state)
+            {
+                IsMaterialTransparent = true,
+                IsMetal = true
+            };
+        }
+
+        public MapObject MakeObjBasketballRing(string ringImageID)
+        {
+            return new MapObject("basketball ring", ringImageID)
+            {
+                IsMaterialTransparent = true,
+                IsWalkable = true,
+                IsMetal = true
+            };
+        }
+
+        protected static Car MakeObjVan(string vanImageID, int fuelUnits)
+        {
+            return new Car("van", vanImageID, MapObject.Break.BROKEN, fuelUnits)
+            {
+                BreakState = MapObject.Break.BROKEN,
+                JumpLevel = 1,
+                IsMovable = true,
+                Weight = 300,
+                StandOnFovBonus = true,
+                IsMetal = true
+            };
+        }
+
+        protected static MapObject MakeObjBathroomBasin(string basinImageID)
+        {
+            return new MapObject("basin", basinImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 2)
+            {
+                IsMaterialTransparent = true,
+                IsContainer = true
+            };
+        }
+
+        protected static MapObject MakeObjToilet(string toiletImageID)
+        {
+            return new MapObject("toilet", toiletImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                StandOnFovBonus = true
+            };
+        }
+
+        protected static MapObject MakeObjHouseholdMachine(string machineImageID, string name)
+        {
+            return new MapObject(name, machineImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 6)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                StandOnFovBonus = true,
+                IsMetal = true
+            };
+        }
+
+        protected static MapObject MakeObjSeat(string seatImageID)
+        {
+            return new MapObject("seat", seatImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
+            {
+                IsMaterialTransparent = true,
+                GivesWood = true,
+                StandOnFovBonus = true,
+                JumpLevel = 1,
+            };
+        }
+
+        protected static MapObject MakeObjCinemaScreen(string screenImageID)
+        {
+            return new MapObject("screen", screenImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS);
         }
         #endregion
 
@@ -1631,6 +1762,20 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         public Item MakeItemStunGun()
         {
             return new ItemRangedWeapon(m_Game.GameItems.STUN_GUN);
+        }
+
+        //@@MP (Release 7-3)
+        public Item MakeItemFuelPumpExplosive()
+        {
+            return new ItemExplosive(m_Game.GameItems.FUEL_PUMP, m_Game.GameItems.FUEL_PUMP_PRIMED);
+        }
+
+        public Item MakeItemSleepingBag()
+        {
+            return new Item(m_Game.GameItems.SLEEPING_BAG)
+            {
+                IsForbiddenToAI = true //TODO in the future?
+            };
         }
         #endregion
 

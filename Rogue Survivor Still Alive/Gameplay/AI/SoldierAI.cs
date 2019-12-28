@@ -151,7 +151,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (!game.Rules.CanActorSeeSky(m_Actor)) //if underground find nearest exit
                 {
                     //if already on exit, leave
-                    determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
+                    determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES | UseExitFlags.DONT_BACKTRACK);
                     if (determinedAction != null)
                     {
                         m_Actor.Activity = Activity.FINDING_EXIT;

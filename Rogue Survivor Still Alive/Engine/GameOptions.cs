@@ -31,6 +31,7 @@ namespace djack.RogueSurvivor.Engine
             GAME_MAX_DOGS,
             GAME_MAX_UNDEADS,
             GAME_SIMULATE_DISTRICTS,
+            GAME_TURNS_SIM_CAP, //@@MP (Release 7-3)
             GAME_SIMULATE_SLEEP,
             GAME_SIM_THREAD,
             GAME_SPAWN_SKELETON_CHANCE,
@@ -43,7 +44,7 @@ namespace djack.RogueSurvivor.Engine
             GAME_ALLOW_UNDEADS_EVOLUTION,
             GAME_DAY_ZERO_UNDEADS_PERCENT,
             GAME_ZOMBIE_INVASION_DAILY_INCREASE,
-            GAME_STARVED_ZOMBIFICATION_CHANCE,
+            GAME_STARVED_ZOMBIFICATION,  //@@MP - changed from a % chance to bool (Release 7-3)
             GAME_SANITY, //@@MP (Release 1)
             //GAME_REINCARNATE_AS_RAT, //@@MP (Release 5-7)
             //GAME_REINCARNATE_TO_SEWERS, //@@MP (Release 5-7)
@@ -90,6 +91,19 @@ namespace djack.RogueSurvivor.Engine
             FULL,
             _COUNT
         }
+
+        public enum SimCap //@@MP (Release 7-3)
+        {
+            //assumes 30 turns per hour
+            _FIRST = 0, //4 hours
+            LOW = _FIRST,
+            LOW_MED, //8 hours
+            MED, //12 hours
+            MED_HIGH, //18 hours
+            HIGH, //24 hours
+            MAX, //48 hours
+            _COUNT
+        }
         #endregion
 
         #region Reincarnation mode
@@ -110,17 +124,18 @@ namespace djack.RogueSurvivor.Engine
         #region Default values
         public const int DEFAULT_DISTRICT_SIZE = 50;
         public const int DEFAULT_MAX_CIVILIANS = 25;
-        public const int DEFAULT_MAX_DOGS = 0;// 5;
+        public const int DEFAULT_MAX_DOGS = 8; //@@MP (Release 7-3)
         public const int DEFAULT_MAX_UNDEADS = 100;
         public const int DEFAULT_SPAWN_SKELETON_CHANCE = 60;
         public const int DEFAULT_SPAWN_ZOMBIE_CHANCE = 30;
         public const int DEFAULT_SPAWN_ZOMBIE_MASTER_CHANCE = 10;
-        public const int DEFAULT_CITY_SIZE = 5;
+        public const int DEFAULT_CITY_SIZE = 7; //@@MP (Release 7-3)
         public const SimRatio DEFAULT_SIM_DISTRICTS = SimRatio.FULL;
+        public const SimCap DEFAULT_DISTRCT_SIM_CAP = SimCap.MED; //@@MP (Release 7-3)
         public const int DEFAULT_ZOMBIFICATION_CHANCE = 100;
         public const int DEFAULT_DAY_ZERO_UNDEADS_PERCENT = 30;
         public const int DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE = 5;
-        public const int DEFAULT_STARVED_ZOMBIFICATION_CHANCE = 0; //@@MP - vanilla = 50 (Release 3)
+        public const bool DEFAULT_STARVED_ZOMBIFICATION = false; //@@MP - changed from % chance to bool (Release 7-3)
         public const int DEFAULT_MAX_REINCARNATIONS = 7; //@@MP - upped after I forgot when removing the max reinc option (Release 6-6)
         public const int DEFAULT_NATGUARD_FACTOR = 100;
         public const int DEFAULT_SUPPLIESDROP_FACTOR = 100;
@@ -145,6 +160,7 @@ namespace djack.RogueSurvivor.Engine
         bool m_CombatAssistant;
         SimRatio m_SimulateDistricts;
         float m_cachedSimRatioFloat;
+        SimCap m_SimTurnsCap;  //@@MP (Release 7-3)
         bool m_SimulateWhenSleeping;
         bool m_SimThread;
         int m_SpawnSkeletonChance;
@@ -157,7 +173,7 @@ namespace djack.RogueSurvivor.Engine
         bool m_AllowUndeadsEvolution;
         int m_DayZeroUndeadsPercent;
         int m_ZombieInvasionDailyIncrease;
-        int m_StarvedZombificationChance;
+        bool m_StarvedZombification;
         bool m_Sanity; //@@MP (Release 1)
         int m_MaxReincarnations;
         //bool m_CanReincarnateAsRat; //@@MP (Release 5-7)
@@ -282,7 +298,7 @@ namespace djack.RogueSurvivor.Engine
             get { return m_CitySize; }
             set
             {
-                if (value < 3) value = 3;
+                if (value < 5) value = 5; //@@MP - was 3 (Release 7-3)
                 if (value > 7) value = 7;
                 m_CitySize = value;
             }
@@ -369,6 +385,12 @@ namespace djack.RogueSurvivor.Engine
             get { return m_cachedSimRatioFloat; }
         }
 
+        public SimCap SimTurnsCap //@@MP (Release 7-3)
+        {
+            get { return m_SimTurnsCap; }
+            set { m_SimTurnsCap = value; }
+        }
+
         public bool SimulateWhenSleeping
         {
             get { return m_SimulateWhenSleeping; }
@@ -391,7 +413,7 @@ namespace djack.RogueSurvivor.Engine
             get { return m_DistrictSize; }
             set
             {
-                if (value < 30) value = 30;
+                if (value < 50) value = 50; //@@MP - was 30 (Release 7-3)
                 if (value > RogueGame.MAP_MAX_HEIGHT || value > RogueGame.MAP_MAX_WIDTH) value = Math.Min(RogueGame.MAP_MAX_WIDTH, RogueGame.MAP_MAX_HEIGHT);
                 m_DistrictSize = value;
             }
@@ -448,15 +470,10 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        public int StarvedZombificationChance
+        public bool StarvedZombification
         {
-            get { return m_StarvedZombificationChance; }
-            set
-            {
-                if (value < 0) value = 0;
-                if (value > 100) value = 100;
-                m_StarvedZombificationChance = value;
-            }
+            get { return m_StarvedZombification; }
+            set { m_StarvedZombification = value; }
         }
 
         public int MaxReincarnations
@@ -602,6 +619,7 @@ namespace djack.RogueSurvivor.Engine
             m_EnabledAdvisor = true;
             m_CombatAssistant = false;
             this.SimulateDistricts = DEFAULT_SIM_DISTRICTS;
+            m_SimTurnsCap = SimCap.MED; //@@MP (Release 7-3)
             m_SimulateWhenSleeping = false;
             m_SimThread = true;
             m_SpawnSkeletonChance = DEFAULT_SPAWN_SKELETON_CHANCE;
@@ -614,7 +632,7 @@ namespace djack.RogueSurvivor.Engine
             m_AllowUndeadsEvolution = true;
             m_DayZeroUndeadsPercent = DEFAULT_DAY_ZERO_UNDEADS_PERCENT;
             m_ZombieInvasionDailyIncrease = DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE;
-            m_StarvedZombificationChance = DEFAULT_STARVED_ZOMBIFICATION_CHANCE;
+            m_StarvedZombification = DEFAULT_STARVED_ZOMBIFICATION;
             m_MaxReincarnations = DEFAULT_MAX_REINCARNATIONS;
             m_Sanity = true;
             m_Autosaving = true; //@@MP (Release 6-1)
@@ -666,12 +684,13 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_SHAMBLERS_UPGRADE:                return "(Undead) Shamblers Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
                 case IDs.GAME_SKELETONS_UPGRADE:                return "(Undead) Skeletons Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2)
                 case IDs.GAME_SIMULATE_DISTRICTS:               return "   (Sim) Districts Simulation";
+                case IDs.GAME_TURNS_SIM_CAP:                    return "   (Sim) Simulation Turns Cap"; //@@MP (Release 7-3)
                 case IDs.GAME_SIM_THREAD:                       return "   (Sim) > Synchronous Simulation <";
                 case IDs.GAME_SIMULATE_SLEEP:                   return "   (Sim) < Simulate when Sleeping >";
                 case IDs.GAME_SPAWN_SKELETON_CHANCE:            return "(Undead) Spawn Skeleton chance";
                 case IDs.GAME_SPAWN_ZOMBIE_CHANCE:              return "(Undead) Spawn Zombie chance";
                 case IDs.GAME_SPAWN_ZOMBIE_MASTER_CHANCE:       return "(Undead) Spawn Zombie Master chance";
-                case IDs.GAME_STARVED_ZOMBIFICATION_CHANCE:     return "(Living) Zombify if Starved Chance (STD)";
+                case IDs.GAME_STARVED_ZOMBIFICATION:            return "(Living) Starvation Will Zombify (STD)";
                 case IDs.GAME_SUPPLIESDROP_FACTOR:              return " (Event) Supplies Drop";
                 case IDs.GAME_UNDEADS_UPGRADE_DAYS:             return "(Undead) Undeads Skills Upgrade Days";
                 case IDs.GAME_VTG_ANTIVIRAL_PILLS:              return "(Living) Antiviral Pills (VTG)"; //@@MP (Release 5-2)
@@ -710,11 +729,11 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_DAY_ZERO_UNDEADS_PERCENT:
                     return "Percentage of the maximum undeads cap spawned when the game starts.";
                 case IDs.GAME_DEATH_SCREENSHOT:
-                    return "Automatically saves a screenshot when you die (to \\My Documents\\Rogue Survivor\\Still Alive\\Config\\Screenshots folder).";
+                    return "Automatically saves a screenshot when you die (to \\Documents\\Rogue Survivor\\Still Alive\\Config\\Screenshots folder).";
                 case IDs.GAME_DISTRICT_SIZE:
-                    return "How large are the districts in terms of tiles. Larger districts are more fun but increase game saves size, loading and processing time.";
+                    return "How large are the districts in terms of tiles. Larger districts drastically increase saving/loading and turn processing time!";
                 case IDs.GAME_MAX_CIVILIANS:
-                    return "Maximum number of civilians on a map. More civilians makes the game easier for livings, but slows the game down.";
+                    return "Maximum number of civilians on a map. More civilians makes the game more fun, but slows turn processing down.";
                 case IDs.GAME_MAX_DOGS:
                     return "OPTION IS UNUSED. YOU SHOULDNT BE READING THIS :)";
                 case IDs.GAME_MAX_UNDEADS:
@@ -741,18 +760,20 @@ namespace djack.RogueSurvivor.Engine
                     return "ALWAYS OFF IN VTG-VINTAGE MODE.\nCan Skeletons type of undeads upgrade their skills like other undeads.";
                 case IDs.GAME_SIMULATE_DISTRICTS:
                     return "The game simulates what is happening in districts around you. You should keep this option maxed for better gameplay.\nWhen the simulation happens depends on other sim options.";
+                case IDs.GAME_TURNS_SIM_CAP: //@@MP (Release 7-3)
+                    return "The maximum number of turns to simulate when changing to a different district.\nFewer turns will speed up loading time, but reduce how much the world feels 'alive'.";
                 case IDs.GAME_SIM_THREAD:
-                    return "Performs simulation in a separate thread while you are playing. Recommended unless the game is unstable.\nWhen enabled, Simulate When Sleeping is not applicable and therefore disabled.";
+                    return "Simulates activity in other districts in a separate thread while you are playing.\nWhen enabled (recommended), Simulate When Sleeping is not applicable and therefore disabled.\nDisabling Synchronous simulation may help with individual turn performance, but could lead to longer district loading times.";
                 case IDs.GAME_SIMULATE_SLEEP:
-                    return "Performs simulation when you are sleeping. Recommended if Synchronous Simulation is off.\nOnly applicable when Synchronous Simulation is disabled.";
+                    return "Simulates activity in other districts only whilst you're sleeping.\nOnly applicable when Synchronous Simulation is disabled.\nRecommended if Synchronous Simulation is off, to help a little with district load times.";
                 case IDs.GAME_SPAWN_SKELETON_CHANCE:
                     return "YOU SHOULDNT BE READING THIS :)";
                 case IDs.GAME_SPAWN_ZOMBIE_CHANCE:
                     return "YOU SHOULDNT BE READING THIS :)";
                 case IDs.GAME_SPAWN_ZOMBIE_MASTER_CHANCE:
                     return "YOU SHOULDNT BE READING THIS :)";
-                case IDs.GAME_STARVED_ZOMBIFICATION_CHANCE:
-                    return "ONLY APPLIES TO STD-STANDARD MODE.\nIf NPCs can starve to death, chances of turning into a zombie.";
+                case IDs.GAME_STARVED_ZOMBIFICATION:
+                    return "ONLY APPLIES TO STD-STANDARD MODE.\nIf NPCs who starve to death will turn into a zombie.";
                 case IDs.GAME_SUPPLIESDROP_FACTOR:
                     return "Affects how likely the Supplies Drop event happens.\n100 is default, 0 to disable.";
                 case IDs.GAME_UNDEADS_UPGRADE_DAYS:
@@ -825,7 +846,6 @@ namespace djack.RogueSurvivor.Engine
                 default:
                     throw new ArgumentOutOfRangeException("ratio","unhandled simRatio");
             }
-
         }
 
         public static float SimRatioToFloat(SimRatio ratio)
@@ -841,6 +861,36 @@ namespace djack.RogueSurvivor.Engine
                 case SimRatio.FULL: return 1f;
                 default:
                     throw new ArgumentOutOfRangeException("ratio","unhandled simRatio");
+            }
+        }
+
+        public static string Name(SimCap simCap) //@@MP (Release 7-3)
+        {
+            switch (simCap)
+            {
+                case SimCap.LOW: return "60";
+                case SimCap.LOW_MED: return "120";
+                case SimCap.MED: return "240";
+                case SimCap.MED_HIGH: return "360";
+                case SimCap.HIGH: return "540";
+                case SimCap.MAX: return "720";
+                default:
+                    throw new ArgumentOutOfRangeException("simCap", "unhandled simCap");
+            }
+        }
+
+        public static int SimCapToTurns(SimCap simCap) //@@MP (Release 7-3)
+        {
+            switch (simCap)
+            {
+                case SimCap.LOW: return 60; //2 hours
+                case SimCap.LOW_MED: return 120; //4 hours
+                case SimCap.MED: return 240; //8 hours
+                case SimCap.MED_HIGH: return 360; //12 hours
+                case SimCap.HIGH: return 540; //18 hours
+                case SimCap.MAX: return 720; //24 hours
+                default:
+                    throw new ArgumentOutOfRangeException("simCap", "unhandled simCap");
             }
         }
 
@@ -936,12 +986,14 @@ namespace djack.RogueSurvivor.Engine
                         return SkeletonsUpgrade ? "YES   (default NO)" : "NO    (default NO)";
                 case IDs.GAME_SIMULATE_DISTRICTS:
                     return String.Format("{0,-4}* (default {1})", GameOptions.Name(SimulateDistricts), GameOptions.Name(GameOptions.DEFAULT_SIM_DISTRICTS));
+                case IDs.GAME_TURNS_SIM_CAP: //@@MP (Release 7-3)
+                    return String.Format("{0,-4}* (default {1})", GameOptions.Name(SimTurnsCap), GameOptions.Name(GameOptions.DEFAULT_DISTRCT_SIM_CAP));
                 case IDs.GAME_SIM_THREAD:
                     return SimThread ? "YES*  (default YES)" : "NO*   (default YES)";
                 case IDs.GAME_SIMULATE_SLEEP:
                     return SimulateWhenSleeping ? "YES*  (default NO)" : "NO*   (default NO)";
-                case IDs.GAME_STARVED_ZOMBIFICATION_CHANCE:
-                    return String.Format("{0:D3}%  (default {1:D3}%)", StarvedZombificationChance, GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE);
+                case IDs.GAME_STARVED_ZOMBIFICATION:
+                    return StarvedZombification ? "ON    (default OFF)" : "OFF   (default OFF)";
                 case IDs.GAME_SUPPLIESDROP_FACTOR:
                     return String.Format("{0:D3}%  (default {1:D3}%)", SuppliesDropFactor, GameOptions.DEFAULT_SUPPLIESDROP_FACTOR);
                 case IDs.GAME_UNDEADS_UPGRADE_DAYS:

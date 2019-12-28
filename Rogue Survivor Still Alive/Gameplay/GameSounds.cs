@@ -346,5 +346,23 @@ namespace djack.RogueSurvivor.Gameplay
         public const string STUN_GUN_PLAYER_FILE = PATH + "stun_gun_player";
         public const string STUN_GUN_NEARBY = "stun gun fired nearby";
         public const string STUN_GUN_NEARBY_FILE = PATH + "stun_gun_nearby";
+
+        //@@MP (Release 7-2)
+        public const string DOG_BARK_NEARBY = "dog barks nearby";
+        public const string DOG_BARK_NEARBY_FILE = PATH + "dog_bark_nearby";
+        public const string DOG_BARK_FAR = "dog barks somewhere";
+        public const string DOG_BARK_FAR_FILE = PATH + "dog_bark_far";
+        public const string DOG_FLEE = "dog flees";
+        public const string DOG_FLEE_FILE = PATH + "dog_yips";
+        public const string DOG_GROWL = "dog growls";
+        public const string DOG_GROWL_FILE = PATH + "dog_growl";
+        public const string SKELETON_CREAKS = "skeleton creaks";
+        public const string SKELETON_CREAKS_FILE = PATH + "skeleton_creak";
+        public const string SHAMBLER_GROWL = "shambler growls";
+        public const string SHAMBLER_GROWL_FILE = PATH + "shambler_growl";
+        public const string ZOMBIE_MASTER_SCREECH = "zombie master screeches";
+        public const string ZOMBIE_MASTER_SCREECH_FILE = PATH + "zombie_master_screech";
+        public const string ZOMBIFIED_GROAN = "zombified groans";
+        public const string ZOMBIFIED_GROAN_FILE = PATH + "zombified_groan";
     }
 }

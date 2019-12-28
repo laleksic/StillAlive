@@ -184,7 +184,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (!game.Rules.CanActorSeeSky(m_Actor)) //if underground find nearest exit
                 {
                     //if already on exit, leave
-                    determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
+                    determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES | UseExitFlags.DONT_BACKTRACK);
                     if (determinedAction != null)
                     {
                         m_Actor.Activity = Activity.FINDING_EXIT;
@@ -375,7 +375,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
                 if (game.Rules.IsActorStarving(m_Actor) || game.Rules.IsActorInsane(m_Actor))
                 {
-                    eatAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
+                    eatAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts), out int x, out int y); //@@MP - unused parameter (Release 5-7)
                     if (eatAction != null)
                     {
                         m_Actor.Activity = Activity.EATING;

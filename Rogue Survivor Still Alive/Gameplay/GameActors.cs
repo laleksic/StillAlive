@@ -930,7 +930,6 @@ namespace djack.RogueSurvivor.Gameplay
                          HasInventory = true,
                          HasToEat = true,
                          HasToSleep = true,
-                         CanJump = true,
                          CanTire = true,
                          CanRun = true,
                          AI_CanUseAIExits = true
@@ -1141,6 +1140,11 @@ namespace djack.RogueSurvivor.Gameplay
         public bool IsRatBranch(ActorModel m)
         {
             return m == RatZombie;
+        }
+
+        public bool IsDog(ActorModel m) //@@MP (Release 7-3)
+        {
+            return m == FeralDog;
         }
         #endregion
     }

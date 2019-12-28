@@ -239,6 +239,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 4 fight/flee/shout
             // 5 use medicine
             // 6 rest if tired
+            // 7 head towards the rescue helicopter
             // alpha10 obsolete and redundant with rule 4! 7 charge enemy if courageous
             // 8 eat when hungry (also eat corpses)
             // 9 sleep when almost sleepy and safe.
@@ -327,7 +328,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (!game.Rules.CanActorSeeSky(m_Actor)) //if underground find nearest exit
                 {
                     //if already on exit, leave
-                    determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES);
+                    determinedAction = BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES | UseExitFlags.DONT_BACKTRACK);
                     if (determinedAction != null)
                     {
                         return determinedAction; //@@MP - forgot to actually have them use it (Release 6-5)
@@ -535,7 +536,30 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            //// 7 charge enemy if courageous  // alpha10 obsolete and redundant with rule 4!
+            // 7 head towards the rescue helicopter
+            #region
+            //check if the heli is here first
+            if (map == game.Session.ArmyHelicopterRescue_Map && map.LocalTime.Day == game.Session.ArmyHelicopterRescue_Day && !map.LocalTime.IsNight)
+            {
+                //do something else if near it already. hopefully they will help defend it from undead
+                if (game.Rules.StdDistance(m_Actor.Location.Position, game.Session.ArmyHelicopterRescue_Coordinates) >= 8)
+                {
+                    //only move to it if they can hear it
+                    if (game.Rules.StdDistance(m_Actor.Location.Position, game.Session.ArmyHelicopterRescue_Coordinates) <= m_Actor.AudioRange)
+                    {
+                        ActorAction getToTheChopper = BehaviorIntelligentBumpToward(game, game.Session.ArmyHelicopterRescue_Coordinates, true, false);
+                        if (getToTheChopper != null)
+                        {
+                            m_Actor.IsRunning = false;
+                            m_Actor.Activity = Activity.EXPLORING;
+                            return getToTheChopper;
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            //// OLD 7 charge enemy if courageous  // alpha10 obsolete and redundant with rule 4!
             #region
             //if (hasEnemies && isCourageous)
             //{
@@ -562,7 +586,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 }
                 if (game.Rules.IsActorStarving(m_Actor) || game.Rules.IsActorInsane(m_Actor))
                 {
-                    determinedAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
+                    determinedAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts), out int x, out int y); //@@MP - x y only relevant for FeralDogAI (Release 7-3)
                     if (determinedAction != null)
                     {
                         m_Actor.Activity = Activity.EATING;

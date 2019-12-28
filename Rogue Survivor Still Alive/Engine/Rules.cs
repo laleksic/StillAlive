@@ -3847,10 +3847,10 @@ namespace djack.RogueSurvivor.Engine
         {
             float speed = actor.Doll.Body.Speed;
 
-            if (actor.IsIncapacitated) //@@MP - handles incapacitated status (Release 7-2)
+            /*if (actor.IsIncapacitated) //@@MP - makes incapacitated turns roll by automatically. rejected as it was confusing for the player (Release 7-3)
                 speed = 0f;
             else
-            {
+            {*/
                 // stamina.
                 if (IsActorTired(actor))
                     speed *= 2f / 3f;
@@ -3873,7 +3873,7 @@ namespace djack.RogueSurvivor.Engine
                 // dragging corpses.
                 if (actor.DraggedCorpse != null)
                     speed /= 2f;
-            }
+            //}
 
             // done, speed must be >= 0.
             return Math.Max((int)speed, 0);

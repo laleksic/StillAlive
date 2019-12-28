@@ -103,11 +103,120 @@ namespace djack.RogueSurvivor.Gameplay
         public const string TILE_FLOOR_SEWER_WATER_COVER = @"Tiles\floor_sewer_water_cover";
         public const string TILE_FLOOR_TILES = @"Tiles\floor_tiles";
         public const string TILE_FLOOR_WALKWAY = @"Tiles\floor_walkway";
+        public const string TILE_FLOOR_WHITE_TILE = @"Tiles\floor_white_tile";
         //@@MP (Release 4)
         public const string TILE_FLOOR_RED_CARPET = @"Tiles\floor_red_carpet";
         public const string TILE_FLOOR_BLUE_CARPET = @"Tiles\floor_blue_carpet";
         public const string TILE_FLOOR_DIRT = @"Tiles\floor_dirt";
 
+        //@@MP (Release 7-3)
+        public const string TILE_FLOOR_FOOD_COURT_POOL = @"Tiles\floor_food_court_pool";
+        public const string TILE_FLOOR_POOL_WATER_COVER = @"Tiles\floor_pool_water_cover";
+        #region -Tennis court
+        public const string TILE_FLOOR_TENNIS_COURT_OUTER = @"Tiles\tennis_court\floor_tennis_court_outer";
+        public const string TILE_FLOOR_TENNIS_COURT_10 = @"Tiles\tennis_court\floor_tennis_court_10";
+        public const string TILE_FLOOR_TENNIS_COURT_11 = @"Tiles\tennis_court\floor_tennis_court_11";
+        public const string TILE_FLOOR_TENNIS_COURT_12 = @"Tiles\tennis_court\floor_tennis_court_12";
+        public const string TILE_FLOOR_TENNIS_COURT_13 = @"Tiles\tennis_court\floor_tennis_court_13";
+        public const string TILE_FLOOR_TENNIS_COURT_14 = @"Tiles\tennis_court\floor_tennis_court_14";
+        public const string TILE_FLOOR_TENNIS_COURT_15 = @"Tiles\tennis_court\floor_tennis_court_15";
+        public const string TILE_FLOOR_TENNIS_COURT_18 = @"Tiles\tennis_court\floor_tennis_court_18";
+        public const string TILE_FLOOR_TENNIS_COURT_19 = @"Tiles\tennis_court\floor_tennis_court_19";
+        public const string TILE_FLOOR_TENNIS_COURT_20 = @"Tiles\tennis_court\floor_tennis_court_20";
+        public const string TILE_FLOOR_TENNIS_COURT_21 = @"Tiles\tennis_court\floor_tennis_court_21";
+        public const string TILE_FLOOR_TENNIS_COURT_22 = @"Tiles\tennis_court\floor_tennis_court_22";
+        public const string TILE_FLOOR_TENNIS_COURT_23 = @"Tiles\tennis_court\floor_tennis_court_23";
+        public const string TILE_FLOOR_TENNIS_COURT_26 = @"Tiles\tennis_court\floor_tennis_court_26";
+        public const string TILE_FLOOR_TENNIS_COURT_27 = @"Tiles\tennis_court\floor_tennis_court_27";
+        public const string TILE_FLOOR_TENNIS_COURT_28 = @"Tiles\tennis_court\floor_tennis_court_28";
+        public const string TILE_FLOOR_TENNIS_COURT_29 = @"Tiles\tennis_court\floor_tennis_court_29";
+        public const string TILE_FLOOR_TENNIS_COURT_30 = @"Tiles\tennis_court\floor_tennis_court_30";
+        public const string TILE_FLOOR_TENNIS_COURT_31 = @"Tiles\tennis_court\floor_tennis_court_31";
+        public const string TILE_FLOOR_TENNIS_COURT_34 = @"Tiles\tennis_court\floor_tennis_court_34";
+        public const string TILE_FLOOR_TENNIS_COURT_35 = @"Tiles\tennis_court\floor_tennis_court_35";
+        public const string TILE_FLOOR_TENNIS_COURT_36 = @"Tiles\tennis_court\floor_tennis_court_36";
+        public const string TILE_FLOOR_TENNIS_COURT_37 = @"Tiles\tennis_court\floor_tennis_court_37";
+        public const string TILE_FLOOR_TENNIS_COURT_38 = @"Tiles\tennis_court\floor_tennis_court_38";
+        public const string TILE_FLOOR_TENNIS_COURT_39 = @"Tiles\tennis_court\floor_tennis_court_39";
+        public const string TILE_FLOOR_TENNIS_COURT_42 = @"Tiles\tennis_court\floor_tennis_court_42";
+        public const string TILE_FLOOR_TENNIS_COURT_43 = @"Tiles\tennis_court\floor_tennis_court_43";
+        public const string TILE_FLOOR_TENNIS_COURT_44 = @"Tiles\tennis_court\floor_tennis_court_44";
+        public const string TILE_FLOOR_TENNIS_COURT_45 = @"Tiles\tennis_court\floor_tennis_court_45";
+        public const string TILE_FLOOR_TENNIS_COURT_46 = @"Tiles\tennis_court\floor_tennis_court_46";
+        public const string TILE_FLOOR_TENNIS_COURT_47 = @"Tiles\tennis_court\floor_tennis_court_47";
+        public const string TILE_FLOOR_TENNIS_COURT_50 = @"Tiles\tennis_court\floor_tennis_court_50";
+        public const string TILE_FLOOR_TENNIS_COURT_51 = @"Tiles\tennis_court\floor_tennis_court_51";
+        public const string TILE_FLOOR_TENNIS_COURT_52 = @"Tiles\tennis_court\floor_tennis_court_52";
+        public const string TILE_FLOOR_TENNIS_COURT_53 = @"Tiles\tennis_court\floor_tennis_court_53";
+        public const string TILE_FLOOR_TENNIS_COURT_54 = @"Tiles\tennis_court\floor_tennis_court_54";
+        public const string TILE_FLOOR_TENNIS_COURT_55 = @"Tiles\tennis_court\floor_tennis_court_55";
+        public const string TILE_FLOOR_TENNIS_COURT_58 = @"Tiles\tennis_court\floor_tennis_court_58";
+        public const string TILE_FLOOR_TENNIS_COURT_59 = @"Tiles\tennis_court\floor_tennis_court_59";
+        public const string TILE_FLOOR_TENNIS_COURT_60 = @"Tiles\tennis_court\floor_tennis_court_60";
+        public const string TILE_FLOOR_TENNIS_COURT_61 = @"Tiles\tennis_court\floor_tennis_court_61";
+        public const string TILE_FLOOR_TENNIS_COURT_62 = @"Tiles\tennis_court\floor_tennis_court_62";
+        public const string TILE_FLOOR_TENNIS_COURT_63 = @"Tiles\tennis_court\floor_tennis_court_63";
+        public const string TILE_FLOOR_TENNIS_COURT_66 = @"Tiles\tennis_court\floor_tennis_court_66";
+        public const string TILE_FLOOR_TENNIS_COURT_67 = @"Tiles\tennis_court\floor_tennis_court_67";
+        public const string TILE_FLOOR_TENNIS_COURT_68 = @"Tiles\tennis_court\floor_tennis_court_68";
+        public const string TILE_FLOOR_TENNIS_COURT_69 = @"Tiles\tennis_court\floor_tennis_court_69";
+        public const string TILE_FLOOR_TENNIS_COURT_70 = @"Tiles\tennis_court\floor_tennis_court_70";
+        public const string TILE_FLOOR_TENNIS_COURT_71 = @"Tiles\tennis_court\floor_tennis_court_71";
+        #endregion
+        #region -Basketball court
+        public const string TILE_FLOOR_BASKETBALL_COURT_OUTER = @"Tiles\basketball_court\floor_basketball_court_outer";
+        public const string TILE_FLOOR_BASKETBALL_COURT_18 = @"Tiles\basketball_court\floor_basketball_court_18";
+        public const string TILE_FLOOR_BASKETBALL_COURT_19 = @"Tiles\basketball_court\floor_basketball_court_19";
+        public const string TILE_FLOOR_BASKETBALL_COURT_20 = @"Tiles\basketball_court\floor_basketball_court_20";
+        public const string TILE_FLOOR_BASKETBALL_COURT_21 = @"Tiles\basketball_court\floor_basketball_court_21";
+        public const string TILE_FLOOR_BASKETBALL_COURT_22 = @"Tiles\basketball_court\floor_basketball_court_22";
+        public const string TILE_FLOOR_BASKETBALL_COURT_23 = @"Tiles\basketball_court\floor_basketball_court_23";
+        public const string TILE_FLOOR_BASKETBALL_COURT_24 = @"Tiles\basketball_court\floor_basketball_court_24";
+        public const string TILE_FLOOR_BASKETBALL_COURT_25 = @"Tiles\basketball_court\floor_basketball_court_25";
+        public const string TILE_FLOOR_BASKETBALL_COURT_27 = @"Tiles\basketball_court\floor_basketball_court_27";
+        public const string TILE_FLOOR_BASKETBALL_COURT_28 = @"Tiles\basketball_court\floor_basketball_court_28";
+        public const string TILE_FLOOR_BASKETBALL_COURT_29 = @"Tiles\basketball_court\floor_basketball_court_29";
+        public const string TILE_FLOOR_BASKETBALL_COURT_30 = @"Tiles\basketball_court\floor_basketball_court_30";
+        public const string TILE_FLOOR_BASKETBALL_COURT_31 = @"Tiles\basketball_court\floor_basketball_court_31";
+        public const string TILE_FLOOR_BASKETBALL_COURT_32 = @"Tiles\basketball_court\floor_basketball_court_32";
+        public const string TILE_FLOOR_BASKETBALL_COURT_33 = @"Tiles\basketball_court\floor_basketball_court_33";
+        public const string TILE_FLOOR_BASKETBALL_COURT_34 = @"Tiles\basketball_court\floor_basketball_court_34";
+        public const string TILE_FLOOR_BASKETBALL_COURT_36 = @"Tiles\basketball_court\floor_basketball_court_36";
+        public const string TILE_FLOOR_BASKETBALL_COURT_37 = @"Tiles\basketball_court\floor_basketball_court_37";
+        public const string TILE_FLOOR_BASKETBALL_COURT_38 = @"Tiles\basketball_court\floor_basketball_court_38";
+        public const string TILE_FLOOR_BASKETBALL_COURT_39 = @"Tiles\basketball_court\floor_basketball_court_39";
+        public const string TILE_FLOOR_BASKETBALL_COURT_40 = @"Tiles\basketball_court\floor_basketball_court_40";
+        public const string TILE_FLOOR_BASKETBALL_COURT_41 = @"Tiles\basketball_court\floor_basketball_court_41";
+        public const string TILE_FLOOR_BASKETBALL_COURT_42 = @"Tiles\basketball_court\floor_basketball_court_42";
+        public const string TILE_FLOOR_BASKETBALL_COURT_43 = @"Tiles\basketball_court\floor_basketball_court_43";
+        public const string TILE_FLOOR_BASKETBALL_COURT_45 = @"Tiles\basketball_court\floor_basketball_court_45";
+        public const string TILE_FLOOR_BASKETBALL_COURT_46 = @"Tiles\basketball_court\floor_basketball_court_46";
+        public const string TILE_FLOOR_BASKETBALL_COURT_47 = @"Tiles\basketball_court\floor_basketball_court_47";
+        public const string TILE_FLOOR_BASKETBALL_COURT_48 = @"Tiles\basketball_court\floor_basketball_court_48";
+        public const string TILE_FLOOR_BASKETBALL_COURT_49 = @"Tiles\basketball_court\floor_basketball_court_49";
+        public const string TILE_FLOOR_BASKETBALL_COURT_50 = @"Tiles\basketball_court\floor_basketball_court_50";
+        public const string TILE_FLOOR_BASKETBALL_COURT_51 = @"Tiles\basketball_court\floor_basketball_court_51";
+        public const string TILE_FLOOR_BASKETBALL_COURT_52 = @"Tiles\basketball_court\floor_basketball_court_52";
+        public const string TILE_FLOOR_BASKETBALL_COURT_54 = @"Tiles\basketball_court\floor_basketball_court_54";
+        public const string TILE_FLOOR_BASKETBALL_COURT_55 = @"Tiles\basketball_court\floor_basketball_court_55";
+        public const string TILE_FLOOR_BASKETBALL_COURT_56 = @"Tiles\basketball_court\floor_basketball_court_56";
+        public const string TILE_FLOOR_BASKETBALL_COURT_57 = @"Tiles\basketball_court\floor_basketball_court_57";
+        public const string TILE_FLOOR_BASKETBALL_COURT_58 = @"Tiles\basketball_court\floor_basketball_court_58";
+        public const string TILE_FLOOR_BASKETBALL_COURT_59 = @"Tiles\basketball_court\floor_basketball_court_59";
+        public const string TILE_FLOOR_BASKETBALL_COURT_60 = @"Tiles\basketball_court\floor_basketball_court_60";
+        public const string TILE_FLOOR_BASKETBALL_COURT_61 = @"Tiles\basketball_court\floor_basketball_court_61";
+        public const string TILE_FLOOR_BASKETBALL_COURT_63 = @"Tiles\basketball_court\floor_basketball_court_63";
+        public const string TILE_FLOOR_BASKETBALL_COURT_64 = @"Tiles\basketball_court\floor_basketball_court_64";
+        public const string TILE_FLOOR_BASKETBALL_COURT_65 = @"Tiles\basketball_court\floor_basketball_court_65";
+        public const string TILE_FLOOR_BASKETBALL_COURT_66 = @"Tiles\basketball_court\floor_basketball_court_66";
+        public const string TILE_FLOOR_BASKETBALL_COURT_67 = @"Tiles\basketball_court\floor_basketball_court_67";
+        public const string TILE_FLOOR_BASKETBALL_COURT_68 = @"Tiles\basketball_court\floor_basketball_court_68";
+        public const string TILE_FLOOR_BASKETBALL_COURT_69 = @"Tiles\basketball_court\floor_basketball_court_69";
+        public const string TILE_FLOOR_BASKETBALL_COURT_70 = @"Tiles\basketball_court\floor_basketball_court_70";
+        #endregion
+
+        public const string TILE_PARKING_ASPHALT_NS = @"Tiles\parking_asphalt_ns";//@@MP (Release 7-3)
+        public const string TILE_PARKING_ASPHALT_EW = @"Tiles\parking_asphalt_ew";//@@MP (Release 7-3)
         public const string TILE_ROAD_ASPHALT_NS = @"Tiles\road_asphalt_ns";
         public const string TILE_ROAD_ASPHALT_EW = @"Tiles\road_asphalt_ew";
         public const string TILE_RAIL_ES = @"Tiles\rail_ew";
@@ -119,6 +228,12 @@ namespace djack.RogueSurvivor.Gameplay
         public const string TILE_WALL_STONE = @"Tiles\wall_stone";
         public const string TILE_WALL_LIGHT_BROWN = @"Tiles\wall_light_brown"; //@@MP (Release 4)
         public const string TILE_WALL_ARMY_BASE = @"Tiles\wall_army_base"; //@@MP (Release 6-3)
+        public const string TILE_WALL_FUEL_STATION = @"Tiles\wall_fuel_station"; //@@MP (Release 7-3)
+        public const string TILE_WALL_WOOD_PLANKS = @"Tiles\wall_wood_planks"; //@@MP (Release 7-3)
+        public const string TILE_WALL_CONCRETE = @"Tiles\wall_concrete"; //@@MP (Release 7-3)
+        public const string TILE_WALL_PILLAR_CONCRETE = @"Tiles\wall_pillar_concrete"; //@@MP (Release 7-3)
+        public const string TILE_WALL_MALL = @"Tiles\wall_mall"; //@@MP (Release 7-3)
+        public const string TILE_WALL_RED_CURTAINS = @"Tiles\wall_red_curtains"; //@@MP (Release 7-3)
 
         //@MP (Release 6-1)
         public const string TILE_FLOOR_POND_CENTER = @"Tiles\floor_pond_center";
@@ -161,6 +276,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_SHOP_SPORTSWEAR = @"Tiles\Decoration\shop_sportswear";
         public const string DECO_SHOP_HUNTING = @"Tiles\Decoration\shop_hunting";
         public const string DECO_SHOP_LIQUOR = @"Tiles\Decoration\shop_liquor";//@@MP (Release 4)
+        public const string DECO_SHOP_FUEL_STATION = @"Tiles\Decoration\shop_fuel_station";//@@MP (Release 7-3)
 
         public const string DECO_CHAR_OFFICE = @"Tiles\Decoration\char_office";
         public const string DECO_CHAR_FLOOR_LOGO = @"Tiles\Decoration\char_floor_logo";
@@ -196,7 +312,11 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_POWER_SIGN_BIG = @"Tiles\Decoration\power_sign_big";
         public const string DECO_POLICE_STATION = @"Tiles\Decoration\police_station";
         public const string DECO_HOSPITAL = @"Tiles\Decoration\hospital";
-        
+        public const string DECO_FIRE_STATION = @"Tiles\Decoration\fire_station";//@@MP (Release 7-3)
+        public const string DECO_ANIMAL_SHELTER = @"Tiles\Decoration\animal_shelter_sign";//@@MP (Release 7-3)
+        public const string DECO_MALL_SIGN_THE = @"Tiles\Decoration\mall_sign_the";//@@MP (Release 7-3)
+        public const string DECO_MALL_SIGN_MALL = @"Tiles\Decoration\mall_sign_mall";//@@MP (Release 7-3)
+
         //@@MP (Release 4)
         public const string DECO_CHURCH = @"Tiles\Decoration\church_sign";
         public const string DECO_LIBRARY = @"Tiles\Decoration\shop_library";
@@ -222,12 +342,36 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_WALL_STONE_DAMAGED = @"Tiles\Decoration\wall_stone_damaged";
         public const string DECO_WALL_LIGHT_BROWN_DAMAGED = @"Tiles\Decoration\wall_light_brown_damaged"; //@@MP (Release 4)
         public const string DECO_WALL_ARMY_BASE_DAMAGED = @"Tiles\Decoration\wall_army_base_damaged"; //@@MP (Release 6-3)
+        public const string DECO_WALL_FUEL_STATION_DAMAGED = @"Tiles\Decoration\wall_fuel_station_damaged"; //@@MP (Release 7-3)
+        public const string DECO_WALL_MALL_DAMAGED = @"Tiles\Decoration\wall_mall_damaged"; //@@MP (Release 7-3)
 
         public const string DECO_LIT_CANDLE = @"Tiles\Decoration\lit_candle"; //@@MP (Release 7-1)
+        public const string DECO_KENNEL = @"Tiles\Decoration\kennel"; //@@MP (Release 7-3)
+
+        //@@MP (Release 7-3)
+        public const string DECO_FOOD_COURT_PRICEBOARD1 = @"Tiles\Decoration\food_court_priceboard1";
+        public const string DECO_FOOD_COURT_PRICEBOARD2 = @"Tiles\Decoration\food_court_priceboard2";
+        public const string DECO_FOOD_COURT_PRICEBOARD3 = @"Tiles\Decoration\food_court_priceboard3";
+        public const string DECO_FOOD_COURT_PRICEBOARD4 = @"Tiles\Decoration\food_court_priceboard4";
+        public const string DECO_FOOD_COURT_PRICEBOARD5 = @"Tiles\Decoration\food_court_priceboard5";
+        public const string DECO_SHOP_BOOKSTORE = @"Tiles\Decoration\shop_bookstore";
+        public const string DECO_SHOP_DEALERSHIP = @"Tiles\Decoration\shop_dealership";
+        public const string DECO_SHOP_MOBILES = @"Tiles\Decoration\shop_mobiles";
+        public const string DECO_SHOP_ELECTRONICS = @"Tiles\Decoration\shop_electronics";
+        public const string DECO_SHOP_CLOTHES_STORE = @"Tiles\Decoration\shop_clothes_store";
+        public const string DECO_CINEMA_SIGN = @"Tiles\Decoration\cinema_sign";
+        public const string DECO_CINEMA1 = @"Tiles\Decoration\cinema1";
+        public const string DECO_CINEMA2 = @"Tiles\Decoration\cinema2";
+        public const string DECO_GENERIC_OFFICE = @"Tiles\Decoration\generic_offices";
         #endregion
 
         #region Map objects
         public const string OBJ_TREE = @"MapObjects\tree";
+        public const string OBJ_TREE1 = @"MapObjects\tree1";
+        public const string OBJ_TREE2 = @"MapObjects\tree2";
+        public const string OBJ_TREE3 = @"MapObjects\tree3";
+        public const string OBJ_TREE4 = @"MapObjects\tree4";
+
         //@@MP (Release 4)
         public const string OBJ_PLAIN_TOMBSTONE = @"MapObjects\plain_tombstone";
         public const string OBJ_CROSS_TOMBSTONE = @"MapObjects\cross_tombstone";
@@ -253,9 +397,19 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_ROLLER_DOOR_OPEN = @"MapObjects\roller_door_open";
         public const string OBJ_ROLLER_DOOR_BROKEN = @"MapObjects\roller_door_broken";
 
-        public const string OBJ_PICKET_FENCE = @"MapObjects\picket_fence"; //@@MP - based on alpha 10 (Release 6-1)
-        public const string OBJ_BENCH = @"MapObjects\bench";
-        public const string OBJ_FENCE = @"MapObjects\fence";
+        public const string OBJ_PICKET_FENCE_EW = @"MapObjects\picket_fence_EW"; //@@MP - based on alpha 10 (Release 6-1)
+        public const string OBJ_PICKET_FENCE_NS_RIGHT = @"MapObjects\picket_fence_NS_right"; //@@MP (Release 7-3)
+        public const string OBJ_PICKET_FENCE_NS_LEFT = @"MapObjects\picket_fence_NS_left"; //@@MP (Release 7-3)
+        
+        public const string OBJ_CHAINWIRE_FENCE = @"MapObjects\chainwire_fence";
+        public const string OBJ_CHAINWIRE_GATE_OPEN = @"MapObjects\chainwire_gate_open"; //@@MP (Release 7-3)
+        public const string OBJ_CHAINWIRE_GATE_CLOSED = @"MapObjects\chainwire_gate_closed"; //@@MP (Release 7-3)
+        public const string OBJ_CHAINWIRE_GATE_BROKEN = @"MapObjects\chainwire_gate_broken"; //@@MP (Release 7-3)
+
+        public const string OBJ_FARM_FENCE_EW = @"MapObjects\farm_fence_EW"; //@@MP (Release 7-3)
+        public const string OBJ_FARM_FENCE_NS_RIGHT = @"MapObjects\farm_fence_NS_right"; //@@MP (Release 7-3)
+        public const string OBJ_FARM_FENCE_NS_LEFT = @"MapObjects\farm_fence_NS_left"; //@@MP (Release 7-3)
+
         //@@MP (Release 4)
         public const string OBJ_GRAVEYARD_FENCE = @"MapObjects\graveyard_fence";
         public const string OBJ_CHURCH_PEW = @"MapObjects\church_pew";
@@ -275,16 +429,18 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_CAR2 = @"MapObjects\car2";
         public const string OBJ_CAR3 = @"MapObjects\car3";
         public const string OBJ_CAR4 = @"MapObjects\car4";
+        public const string OBJ_VAN = @"MapObjects\van";//@@MP (Release 7-3)
 
         //@@MP (Release 6-4)
         public const string OBJ_HELICOPTER1 = @"MapObjects\helicopter1";
         public const string OBJ_HELICOPTER2 = @"MapObjects\helicopter2";
         public const string OBJ_HELICOPTER3 = @"MapObjects\helicopter3";
-        public const string OBJ_HELICOPTER4 = @"MapObjects\helicopter4";
-        public const string OBJ_HELICOPTER5 = @"MapObjects\helicopter5";
-        public const string OBJ_HELICOPTER6 = @"MapObjects\helicopter6";
-        public const string OBJ_HELICOPTER7 = @"MapObjects\helicopter7";
-        public const string OBJ_HELICOPTER8 = @"MapObjects\helicopter8";
+
+        //@@MP (Release 7-3)
+        public const string OBJ_FIRE_TRUCK_EW_BACK = @"MapObjects\fire_truck_EW_back";
+        public const string OBJ_FIRE_TRUCK_EW_FRONT = @"MapObjects\fire_truck_EW_front";
+        public const string OBJ_FIRE_TRUCK_NS_BACK = @"MapObjects\fire_truck_NS_back";
+        public const string OBJ_FIRE_TRUCK_NS_FRONT = @"MapObjects\fire_truck_NS_front";
 
         public const string OBJ_SHOP_SHELF = @"MapObjects\shop_shelf";
         public const string OBJ_BED = @"MapObjects\bed";
@@ -319,6 +475,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_IRON_DOOR_BROKEN = @"MapObjects\iron_door_broken";
         public const string OBJ_IRON_FENCE = @"MapObjects\iron_fence";
 
+        public const string OBJ_BENCH = @"MapObjects\bench";
         public const string OBJ_BARRELS = @"MapObjects\barrels";
         public const string OBJ_JUNK = @"MapObjects\junk";
         public const string OBJ_BOARD = @"MapObjects\announcement_board";
@@ -328,7 +485,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_POWERGEN_OFF = @"MapObjects\power_generator_off";
         public const string OBJ_POWERGEN_ON = @"MapObjects\power_generator_on";
         public const string OBJ_FIRE_EXTINGUISHER_REFILLER = @"MapObjects\fire_extinguisher_refiller"; //@@MP (Release 7-1)
-        public const string OBJ_FUEL_PUMP = @"MapObjects\fuel_pump"; //@@MP (Release 7-1)
 
         public const string OBJ_GATE_CLOSED = @"MapObjects\gate_closed";
         public const string OBJ_GATE_OPEN = @"MapObjects\gate_open";      
@@ -341,17 +497,50 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_HOSPITAL_DOOR_CLOSED = @"MapObjects\hospital_door_closed";
         public const string OBJ_HOSPITAL_DOOR_BROKEN = @"MapObjects\hospital_door_broken";
 
-        //@@MP - (Release 6-3)
+        //@@MP (Release 6-3)
         public const string OBJ_ARMY_RADIO_CUPBOARD = @"MapObjects\army_radio_cupboard";
         public const string OBJ_ARMY_COMPUTER_STATION = @"MapObjects\army_computer_station";
         public const string OBJ_ARMY_BUNK_BED = @"MapObjects\army_bunk_bed";
         public const string OBJ_ARMY_FOOTLOCKER = @"MapObjects\army_footlocker";
         public const string OBJ_ARMY_TABLE = @"MapObjects\army_table";
 
-        //@@MP - (Release 6-5)
+        //@@MP (Release 6-5)
         public const string OBJ_BANK_SAFE_CLOSED = @"MapObjects\bank_safe_closed";
         public const string OBJ_BANK_SAFE_OPEN = @"MapObjects\bank_safe_open";
         public const string OBJ_BANK_SAFE_OPEN_OWNED = @"MapObjects\bank_safe_open_owned";
+
+        //@@MP (Release 7-3)
+        public const string OBJ_FUEL_PRICE_BOARD = @"MapObjects\fuel_price_board";
+        public const string OBJ_PEANUT_PLANT = @"MapObjects\peanut_plant";
+        public const string OBJ_GRAPE_VINE = @"MapObjects\grape_vine";
+        public const string OBJ_TRACTOR = @"MapObjects\tractor";
+        public const string OBJ_BASKETBALL_RING = @"MapObjects\basketball_ring";
+        public const string OBJ_FUEL_PUMP = @"MapObjects\fuel_pump";
+        public const string OBJ_FUEL_PUMP_BROKEN = @"MapObjects\fuel_pump_broken";
+        public const string OBJ_TOILET = @"MapObjects\toilet";
+        public const string OBJ_BATHROOM_BASIN = @"MapObjects\bathroom_basin";
+        public const string OBJ_CLOTHES_WALL1 = @"MapObjects\clothes_wall1";
+        public const string OBJ_CLOTHES_WALL2 = @"MapObjects\clothes_wall2";
+        public const string OBJ_SHOES_WALL = @"MapObjects\shoes_wall";
+        public const string OBJ_MOBILES_TABLE = @"MapObjects\mobiles_table";
+        public const string OBJ_LAPTOPS_TABLE = @"MapObjects\laptops_table";
+        public const string OBJ_DISHWASHER = @"MapObjects\dishwasher";
+        public const string OBJ_WASHING_MACHINE = @"MapObjects\washing_machine";
+        public const string OBJ_DRYER = @"MapObjects\dryer";
+        public const string OBJ_CINEMA_SEAT = @"MapObjects\cinema_seat";
+        public const string OBJ_FOOD_COURT_TABLE = @"MapObjects\food_court_table";
+        public const string OBJ_FOOD_COURT_CHAIR = @"MapObjects\food_court_chair";
+        public const string OBJ_FOOD_COURT_PALM_TREE = @"MapObjects\food_court_palm_tree";
+        public const string OBJ_SUPERMARKET_CHECKOUT = @"MapObjects\supermarket_checkout";
+        public const string OBJ_CINEMA_SCREEN = @"MapObjects\cinema_screen";
+        public const string OBJ_RAILING = @"MapObjects\railing";
+        public const string OBJ_DESKTOP_COMPUTER = @"MapObjects\desktop_computer";
+
+        public const string OBJ_FOOD_COURT_COUNTER1 = @"MapObjects\food_court_counter1";
+        public const string OBJ_FOOD_COURT_COUNTER2 = @"MapObjects\food_court_counter2";
+        public const string OBJ_FOOD_COURT_COUNTER3 = @"MapObjects\food_court_counter3";
+        public const string OBJ_FOOD_COURT_COUNTER4 = @"MapObjects\food_court_counter4";
+        public const string OBJ_FOOD_COURT_COUNTER5 = @"MapObjects\food_court_counter5";
         #endregion
 
         #region Actors
@@ -487,9 +676,13 @@ namespace djack.RogueSurvivor.Gameplay
         public const string SURVIVOR_MALE_BANDANA = @"Actors\Decoration\survivor_male_bandana";
         public const string SURVIVOR_FEMALE_BANDANA = @"Actors\Decoration\survivor_female_bandana";
 
-        public const string DOG_SKIN1 = @"Actors\Decoration\dog_skin1";
-        public const string DOG_SKIN2 = @"Actors\Decoration\dog_skin2";
-        public const string DOG_SKIN3 = @"Actors\Decoration\dog_skin3";
+        //@@MP (Release 7-3)
+        public const string DOG_SKIN1_EAST = @"Actors\Decoration\dog_skin1_east";
+        public const string DOG_SKIN2_EAST = @"Actors\Decoration\dog_skin2_east";
+        public const string DOG_SKIN3_EAST = @"Actors\Decoration\dog_skin3_east";
+        public const string DOG_SKIN1_WEST = @"Actors\Decoration\dog_skin1_west";
+        public const string DOG_SKIN2_WEST = @"Actors\Decoration\dog_skin2_west";
+        public const string DOG_SKIN3_WEST = @"Actors\Decoration\dog_skin3_west";
         #endregion
 
         #region Items
@@ -551,6 +744,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_FREE_ANGELS_JACKET = @"Items\item_free_angels_jacket";
         public const string ITEM_GLOWSTICKS_BOX = @"Items\item_glowsticks_box"; //@@MP (Release 7-1)
         public const string ITEM_GOLF_CLUB = @"Items\item_golfclub";
+        public const string ITEM_GRAPES = @"Items\item_grapes"; //@@MP (Release 7-3)
         public const string ITEM_GRENADE = @"Items\item_grenade";
         public const string ITEM_GRENADE_PRIMED = @"Items\item_grenade_primed";
         public const string ITEM_GROCERIES = @"Items\item_groceries";
@@ -579,6 +773,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_MOLOTOV_PRIMED = @"Items\item_molotov_primed"; //@@MP (Release 4)
         public const string ITEM_NAIL_GUN = @"Items\item_nail_gun"; //@@MP (Release 5-1)
         public const string ITEM_NIGHT_VISION = @"Items\item_night_vision"; //@MP (Release 6-3)
+        public const string ITEM_PEANUTS = @"Items\item_peanuts"; //@@MP (Release 7-3)
         public const string ITEM_PICKAXE = @"Items\item_pickaxe"; //@@MP (Release 3)
         public const string ITEM_PILLS_ANTIVIRAL = @"Items\item_pills_antiviral";
         public const string ITEM_PILLS_BLUE = @"Items\item_pills_blue";
@@ -597,6 +792,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_SHOTGUN = @"Items\item_shotgun";
         public const string ITEM_SHOVEL = @"Items\item_shovel";
         public const string ITEM_SIPHON_KIT = @"Items\item_siphon_kit"; //@@MP (Release 7-1)
+        public const string ITEM_SLEEPING_BAG = @"Items\item_sleeping_bag"; //@@MP (Release 7-3)
         public const string ITEM_SMALL_HAMMER = @"Items\item_small_hammer";
         public const string ITEM_SMOKE_GRENADE = @"Items\item_smoke_grenade"; //@@MP (Release 7-2)
         public const string ITEM_SMOKE_GRENADE_PRIMED = @"Items\item_smoke_grenade_primed"; //@@MP (Release 7-2)
@@ -646,6 +842,12 @@ namespace djack.RogueSurvivor.Gameplay
         public const string EFFECT_WEATHER_RAIN2 = @"Effects\weather_rain2";
         public const string EFFECT_WEATHER_HEAVY_RAIN1 = @"Effects\weather_heavy_rain1";
         public const string EFFECT_WEATHER_HEAVY_RAIN2 = @"Effects\weather_heavy_rain2";
+        public const string EFFECT_DISTURBED_LOW = @"Effects\disturbed_effect_low"; //@@MP (Release 7-3)
+        public const string EFFECT_DISTURBED_MED = @"Effects\disturbed_effect_med"; //@@MP (Release 7-3)
+        public const string EFFECT_DISTURBED_HIGH = @"Effects\disturbed_effect_high"; //@@MP (Release 7-3)
+        public const string EFFECT_TIPSY = @"Effects\drunk_effect_tipsy"; //@@MP (Release 7-3)
+        public const string EFFECT_DRUNK = @"Effects\drunk_effect_drunk"; //@@MP (Release 7-3)
+        public const string EFFECT_HAMMERED = @"Effects\drunk_effect_hammered"; //@@MP (Release 7-3)
         #endregion
 
         #region Misc
@@ -772,6 +974,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(TILE_FLOOR_SEWER_WATER_COVER);
             Load(TILE_FLOOR_TILES);
             Load(TILE_FLOOR_WALKWAY);
+            Load(TILE_FLOOR_WHITE_TILE); //@@MP (Release 7-3)
             //@@MP (Release 4)
             Load(TILE_FLOOR_RED_CARPET);
             Load(TILE_FLOOR_BLUE_CARPET);
@@ -787,7 +990,114 @@ namespace djack.RogueSurvivor.Gameplay
             Load(TILE_FLOOR_POND_W_EDGE);
             Load(TILE_FLOOR_POND_NW_CORNER);
             Load(TILE_FLOOR_POND_WATER_COVER);
+            //@@MP (Release 7-3)
+            Load(TILE_FLOOR_FOOD_COURT_POOL);
+            Load(TILE_FLOOR_POOL_WATER_COVER);
+            #region -Tennis court
+            Load(TILE_FLOOR_TENNIS_COURT_OUTER);
+            Load(TILE_FLOOR_TENNIS_COURT_10);
+            Load(TILE_FLOOR_TENNIS_COURT_11);
+            Load(TILE_FLOOR_TENNIS_COURT_12);
+            Load(TILE_FLOOR_TENNIS_COURT_13);
+            Load(TILE_FLOOR_TENNIS_COURT_14);
+            Load(TILE_FLOOR_TENNIS_COURT_15);
+            Load(TILE_FLOOR_TENNIS_COURT_18);
+            Load(TILE_FLOOR_TENNIS_COURT_19);
+            Load(TILE_FLOOR_TENNIS_COURT_20);
+            Load(TILE_FLOOR_TENNIS_COURT_21);
+            Load(TILE_FLOOR_TENNIS_COURT_22);
+            Load(TILE_FLOOR_TENNIS_COURT_23);
+            Load(TILE_FLOOR_TENNIS_COURT_26);
+            Load(TILE_FLOOR_TENNIS_COURT_27);
+            Load(TILE_FLOOR_TENNIS_COURT_28);
+            Load(TILE_FLOOR_TENNIS_COURT_29);
+            Load(TILE_FLOOR_TENNIS_COURT_30);
+            Load(TILE_FLOOR_TENNIS_COURT_31);
+            Load(TILE_FLOOR_TENNIS_COURT_34);
+            Load(TILE_FLOOR_TENNIS_COURT_35);
+            Load(TILE_FLOOR_TENNIS_COURT_36);
+            Load(TILE_FLOOR_TENNIS_COURT_37);
+            Load(TILE_FLOOR_TENNIS_COURT_38);
+            Load(TILE_FLOOR_TENNIS_COURT_39);
+            Load(TILE_FLOOR_TENNIS_COURT_42);
+            Load(TILE_FLOOR_TENNIS_COURT_43);
+            Load(TILE_FLOOR_TENNIS_COURT_44);
+            Load(TILE_FLOOR_TENNIS_COURT_45);
+            Load(TILE_FLOOR_TENNIS_COURT_46);
+            Load(TILE_FLOOR_TENNIS_COURT_47);
+            Load(TILE_FLOOR_TENNIS_COURT_50);
+            Load(TILE_FLOOR_TENNIS_COURT_51);
+            Load(TILE_FLOOR_TENNIS_COURT_52);
+            Load(TILE_FLOOR_TENNIS_COURT_53);
+            Load(TILE_FLOOR_TENNIS_COURT_54);
+            Load(TILE_FLOOR_TENNIS_COURT_55);
+            Load(TILE_FLOOR_TENNIS_COURT_58);
+            Load(TILE_FLOOR_TENNIS_COURT_59);
+            Load(TILE_FLOOR_TENNIS_COURT_60);
+            Load(TILE_FLOOR_TENNIS_COURT_61);
+            Load(TILE_FLOOR_TENNIS_COURT_62);
+            Load(TILE_FLOOR_TENNIS_COURT_63);
+            Load(TILE_FLOOR_TENNIS_COURT_66);
+            Load(TILE_FLOOR_TENNIS_COURT_67);
+            Load(TILE_FLOOR_TENNIS_COURT_68);
+            Load(TILE_FLOOR_TENNIS_COURT_69);
+            Load(TILE_FLOOR_TENNIS_COURT_70);
+            Load(TILE_FLOOR_TENNIS_COURT_71);
+            #endregion
+            #region -Basketball court
+            Load(TILE_FLOOR_BASKETBALL_COURT_OUTER);
+            Load(TILE_FLOOR_BASKETBALL_COURT_18);
+            Load(TILE_FLOOR_BASKETBALL_COURT_19);
+            Load(TILE_FLOOR_BASKETBALL_COURT_20);
+            Load(TILE_FLOOR_BASKETBALL_COURT_21);
+            Load(TILE_FLOOR_BASKETBALL_COURT_22);
+            Load(TILE_FLOOR_BASKETBALL_COURT_23);
+            Load(TILE_FLOOR_BASKETBALL_COURT_24);
+            Load(TILE_FLOOR_BASKETBALL_COURT_25);
+            Load(TILE_FLOOR_BASKETBALL_COURT_27);
+            Load(TILE_FLOOR_BASKETBALL_COURT_28);
+            Load(TILE_FLOOR_BASKETBALL_COURT_29);
+            Load(TILE_FLOOR_BASKETBALL_COURT_30);
+            Load(TILE_FLOOR_BASKETBALL_COURT_31);
+            Load(TILE_FLOOR_BASKETBALL_COURT_32);
+            Load(TILE_FLOOR_BASKETBALL_COURT_33);
+            Load(TILE_FLOOR_BASKETBALL_COURT_34);
+            Load(TILE_FLOOR_BASKETBALL_COURT_36);
+            Load(TILE_FLOOR_BASKETBALL_COURT_37);
+            Load(TILE_FLOOR_BASKETBALL_COURT_38);
+            Load(TILE_FLOOR_BASKETBALL_COURT_39);
+            Load(TILE_FLOOR_BASKETBALL_COURT_40);
+            Load(TILE_FLOOR_BASKETBALL_COURT_41);
+            Load(TILE_FLOOR_BASKETBALL_COURT_42);
+            Load(TILE_FLOOR_BASKETBALL_COURT_43);
+            Load(TILE_FLOOR_BASKETBALL_COURT_45);
+            Load(TILE_FLOOR_BASKETBALL_COURT_46);
+            Load(TILE_FLOOR_BASKETBALL_COURT_47);
+            Load(TILE_FLOOR_BASKETBALL_COURT_48);
+            Load(TILE_FLOOR_BASKETBALL_COURT_49);
+            Load(TILE_FLOOR_BASKETBALL_COURT_50);
+            Load(TILE_FLOOR_BASKETBALL_COURT_51);
+            Load(TILE_FLOOR_BASKETBALL_COURT_52);
+            Load(TILE_FLOOR_BASKETBALL_COURT_54);
+            Load(TILE_FLOOR_BASKETBALL_COURT_55);
+            Load(TILE_FLOOR_BASKETBALL_COURT_56);
+            Load(TILE_FLOOR_BASKETBALL_COURT_57);
+            Load(TILE_FLOOR_BASKETBALL_COURT_58);
+            Load(TILE_FLOOR_BASKETBALL_COURT_59);
+            Load(TILE_FLOOR_BASKETBALL_COURT_60);
+            Load(TILE_FLOOR_BASKETBALL_COURT_61);
+            Load(TILE_FLOOR_BASKETBALL_COURT_63);
+            Load(TILE_FLOOR_BASKETBALL_COURT_64);
+            Load(TILE_FLOOR_BASKETBALL_COURT_65);
+            Load(TILE_FLOOR_BASKETBALL_COURT_66);
+            Load(TILE_FLOOR_BASKETBALL_COURT_67);
+            Load(TILE_FLOOR_BASKETBALL_COURT_68);
+            Load(TILE_FLOOR_BASKETBALL_COURT_69);
+            Load(TILE_FLOOR_BASKETBALL_COURT_70);
+            #endregion
 
+            Load(TILE_PARKING_ASPHALT_NS);//@@MP (Release 7-3)
+            Load(TILE_PARKING_ASPHALT_EW);//@@MP (Release 7-3)
             Load(TILE_ROAD_ASPHALT_NS);
             Load(TILE_ROAD_ASPHALT_EW);
             Load(TILE_RAIL_ES);
@@ -799,7 +1109,12 @@ namespace djack.RogueSurvivor.Gameplay
             Load(TILE_WALL_STONE);
             Load(TILE_WALL_LIGHT_BROWN); //@@MP (Release 4)
             Load(TILE_WALL_ARMY_BASE); //@@MP (Release 6-3)
-
+            Load(TILE_WALL_FUEL_STATION); //@@MP (Release 7-3)
+            Load(TILE_WALL_WOOD_PLANKS); //@@MP (Release 7-3)
+            Load(TILE_WALL_CONCRETE); //@@MP (Release 7-3)
+            Load(TILE_WALL_PILLAR_CONCRETE); //@@MP (Release 7-3)
+            Load(TILE_WALL_MALL); //@@MP (Release 7-3)
+            Load(TILE_WALL_RED_CURTAINS); //@@MP (Release 7-3)
             #endregion
 
             #region Tile decorations
@@ -831,6 +1146,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_SHOP_SPORTSWEAR);
             Load(DECO_SHOP_HUNTING);
             Load(DECO_SHOP_LIQUOR); //@@MP (Release 4)
+            Load(DECO_SHOP_FUEL_STATION); //@@MP (Release 7-3)
 
             Load(DECO_CHAR_OFFICE);
             Load(DECO_CHAR_FLOOR_LOGO);
@@ -868,6 +1184,10 @@ namespace djack.RogueSurvivor.Gameplay
 
             Load(DECO_POLICE_STATION);
             Load(DECO_HOSPITAL);
+            Load(DECO_FIRE_STATION); //@@MP (Release 7-3)
+            Load(DECO_ANIMAL_SHELTER); //@@MP (Release 7-3)
+            Load(DECO_MALL_SIGN_THE); //@@MP (Release 7-3)
+            Load(DECO_MALL_SIGN_MALL); //@@MP (Release 7-3)
             //@@MP (Release 4)
             Load(DECO_CHURCH);
             Load(DECO_MECHANIC);
@@ -893,13 +1213,36 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_WALL_STONE_DAMAGED);
             Load(DECO_WALL_LIGHT_BROWN_DAMAGED); //@@MP (Release 4)
             Load(DECO_WALL_ARMY_BASE_DAMAGED); //@@MP (Release 6-3)
+            Load(DECO_WALL_FUEL_STATION_DAMAGED); //@@MP (Release 7-3)
+            Load(DECO_WALL_MALL_DAMAGED); //@@MP (Release 7-3)
 
             Load(DECO_LIT_CANDLE); //@@MP (Release 7-1)
+            Load(DECO_KENNEL); //@@MP (Release 7-3)
+
+            //@@MP (Release 7-3)
+            Load(DECO_FOOD_COURT_PRICEBOARD1);
+            Load(DECO_FOOD_COURT_PRICEBOARD2);
+            Load(DECO_FOOD_COURT_PRICEBOARD3);
+            Load(DECO_FOOD_COURT_PRICEBOARD4);
+            Load(DECO_FOOD_COURT_PRICEBOARD5);
+            Load(DECO_SHOP_BOOKSTORE);
+            Load(DECO_SHOP_MOBILES);
+            Load(DECO_SHOP_DEALERSHIP);
+            Load(DECO_SHOP_ELECTRONICS);
+            Load(DECO_SHOP_CLOTHES_STORE);
+            Load(DECO_CINEMA_SIGN);
+            Load(DECO_CINEMA1);
+            Load(DECO_CINEMA2);
+            Load(DECO_GENERIC_OFFICE);
             #endregion
 
             #region Map objects
             Notify(ui, "map objects...");
             Load(OBJ_TREE);
+            Load(OBJ_TREE1);
+            Load(OBJ_TREE2);
+            Load(OBJ_TREE3);
+            Load(OBJ_TREE4);
             //@@MP (Release 4)
             Load(OBJ_PLAIN_TOMBSTONE);
             Load(OBJ_CROSS_TOMBSTONE);
@@ -925,9 +1268,17 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_ROLLER_DOOR_OPEN);
             Load(OBJ_ROLLER_DOOR_BROKEN);
 
-            Load(OBJ_PICKET_FENCE); //@@MP alpha10 (Release 6-1)
+            Load(OBJ_PICKET_FENCE_EW); //@@MP - based on alpha10 (Release 6-1)
+            Load(OBJ_PICKET_FENCE_NS_RIGHT); //@@MP (Release 7-3)
+            Load(OBJ_PICKET_FENCE_NS_LEFT); //@@MP (Release 7-3)
             Load(OBJ_BENCH);
-            Load(OBJ_FENCE);
+            Load(OBJ_CHAINWIRE_FENCE);
+            Load(OBJ_CHAINWIRE_GATE_OPEN); //@@MP (Release 7-3)
+            Load(OBJ_CHAINWIRE_GATE_CLOSED); //@@MP (Release 7-3)
+            Load(OBJ_CHAINWIRE_GATE_BROKEN); //@@MP (Release 7-3)
+            Load(OBJ_FARM_FENCE_EW); //@@MP (Release 7-3)
+            Load(OBJ_FARM_FENCE_NS_LEFT); //@@MP (Release 7-3)
+            Load(OBJ_FARM_FENCE_NS_RIGHT); //@@MP (Release 7-3)
             //@@MP (Release 4)
             Load(OBJ_GRAVEYARD_FENCE);
             Load(OBJ_CHURCH_PEW);
@@ -947,16 +1298,18 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_CAR2);
             Load(OBJ_CAR3);
             Load(OBJ_CAR4);
+            Load(OBJ_VAN); //@@MP (Release 7-3)
 
             //@@MP (Release 6-4)
             Load(OBJ_HELICOPTER1);
             Load(OBJ_HELICOPTER2);
             Load(OBJ_HELICOPTER3);
-            Load(OBJ_HELICOPTER4);
-            Load(OBJ_HELICOPTER5);
-            Load(OBJ_HELICOPTER6);
-            Load(OBJ_HELICOPTER7);
-            Load(OBJ_HELICOPTER8);
+
+            //@@MP (Release 7-3)
+            Load(OBJ_FIRE_TRUCK_EW_BACK);
+            Load(OBJ_FIRE_TRUCK_EW_FRONT);
+            Load(OBJ_FIRE_TRUCK_NS_BACK);
+            Load(OBJ_FIRE_TRUCK_NS_FRONT);
 
             Load(OBJ_SHOP_SHELF);
             Load(OBJ_BED);
@@ -1000,7 +1353,6 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_POWERGEN_OFF);
             Load(OBJ_POWERGEN_ON);
             Load(OBJ_FIRE_EXTINGUISHER_REFILLER); //@@MP (Release 7-1)
-            Load(OBJ_FUEL_PUMP); //@@MP (Release 7-1)
 
             Load(OBJ_GATE_CLOSED);
             Load(OBJ_GATE_OPEN);
@@ -1024,6 +1376,39 @@ namespace djack.RogueSurvivor.Gameplay
             Load(OBJ_BANK_SAFE_CLOSED);
             Load(OBJ_BANK_SAFE_OPEN);
             Load(OBJ_BANK_SAFE_OPEN_OWNED);
+
+            //@@MP (Release 7-3)
+            Load(OBJ_FUEL_PRICE_BOARD);
+            Load(OBJ_PEANUT_PLANT);
+            Load(OBJ_GRAPE_VINE);
+            Load(OBJ_TRACTOR);
+            Load(OBJ_BASKETBALL_RING);
+            Load(OBJ_FUEL_PUMP);
+            Load(OBJ_FUEL_PUMP_BROKEN);
+            Load(OBJ_TOILET);
+            Load(OBJ_BATHROOM_BASIN);
+            Load(OBJ_CLOTHES_WALL1);
+            Load(OBJ_CLOTHES_WALL2);
+            Load(OBJ_SHOES_WALL);
+            Load(OBJ_MOBILES_TABLE);
+            Load(OBJ_LAPTOPS_TABLE);
+            Load(OBJ_DISHWASHER);
+            Load(OBJ_WASHING_MACHINE);
+            Load(OBJ_DRYER);
+            Load(OBJ_CINEMA_SEAT);
+            Load(OBJ_FOOD_COURT_CHAIR);
+            Load(OBJ_FOOD_COURT_TABLE);
+            Load(OBJ_FOOD_COURT_PALM_TREE);
+            Load(OBJ_SUPERMARKET_CHECKOUT);
+            Load(OBJ_CINEMA_SCREEN);
+            Load(OBJ_RAILING);
+            Load(OBJ_DESKTOP_COMPUTER);
+
+            Load(OBJ_FOOD_COURT_COUNTER1);
+            Load(OBJ_FOOD_COURT_COUNTER2);
+            Load(OBJ_FOOD_COURT_COUNTER3);
+            Load(OBJ_FOOD_COURT_COUNTER4);
+            Load(OBJ_FOOD_COURT_COUNTER5);
             #endregion
 
             #region Actors
@@ -1162,9 +1547,12 @@ namespace djack.RogueSurvivor.Gameplay
             Load(SURVIVOR_FEMALE_BANDANA);
             Load(SURVIVOR_MALE_BANDANA);
 
-            Load(DOG_SKIN1);
-            Load(DOG_SKIN2);
-            Load(DOG_SKIN3);
+            Load(DOG_SKIN1_EAST);
+            Load(DOG_SKIN2_EAST);
+            Load(DOG_SKIN3_EAST);
+            Load(DOG_SKIN1_WEST);
+            Load(DOG_SKIN2_WEST);
+            Load(DOG_SKIN3_WEST);
             #endregion
 
             #region Items
@@ -1226,6 +1614,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_FREE_ANGELS_JACKET);
             Load(ITEM_GLOWSTICKS_BOX); //@@MP (Release 7-1)
             Load(ITEM_GOLF_CLUB);
+            Load(ITEM_GRAPES); //@@MP (Release 7-3)
             Load(ITEM_GRENADE);
             Load(ITEM_GRENADE_PRIMED);
             Load(ITEM_GROCERIES);
@@ -1253,6 +1642,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_MOLOTOV_PRIMED); //@@MP (Release 4)
             Load(ITEM_NAIL_GUN); //@@MP (Release 5-1)
             Load(ITEM_NIGHT_VISION); //@@MP (Release 6-3)
+            Load(ITEM_PEANUTS); //@@MP (Release 7-3)
             Load(ITEM_PICKAXE); //@@MP (Release 3)
             Load(ITEM_PILLS_ANTIVIRAL);
             Load(ITEM_PILLS_BLUE);
@@ -1271,6 +1661,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_SHOTGUN);
             Load(ITEM_SHOVEL);
             Load(ITEM_SIPHON_KIT); //@@MP (Release 7-1)
+            Load(ITEM_SLEEPING_BAG); //@@MP (Release 7-3)
             Load(ITEM_SMALL_HAMMER);
             Load(ITEM_SMOKE_GRENADE); //@@MP (Release 7-2)
             Load(ITEM_SMOKE_GRENADE_PRIMED); //@@MP (Release 7-2)
@@ -1322,6 +1713,12 @@ namespace djack.RogueSurvivor.Gameplay
             Load(EFFECT_WEATHER_RAIN2);
             Load(EFFECT_WEATHER_HEAVY_RAIN1);
             Load(EFFECT_WEATHER_HEAVY_RAIN2);
+            Load(EFFECT_DISTURBED_LOW); //@@MP (Release 7-3)
+            Load(EFFECT_DISTURBED_MED); //@@MP (Release 7-3)
+            Load(EFFECT_DISTURBED_HIGH); //@@MP (Release 7-3)
+            Load(EFFECT_TIPSY); //@@MP (Release 7-3)
+            Load(EFFECT_DRUNK); //@@MP (Release 7-3)
+            Load(EFFECT_HAMMERED); //@@MP (Release 7-3)
             #endregion
 
             #region Misc

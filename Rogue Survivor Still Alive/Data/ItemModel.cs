@@ -22,6 +22,7 @@ namespace djack.RogueSurvivor.Data
         bool m_IsFlameWeapon; //@@MP (Release 5-7)
         bool m_IsThrowable; //@@MP (Release 7-1)
         bool m_IsBatteryPowered; //@@MP (Release 7-1)
+        bool m_CausesFires; //@@MP (Release 7-3)
         #endregion
 
         #region Properties
@@ -109,12 +110,21 @@ namespace djack.RogueSurvivor.Data
         }
 
         /// <summary>
-        /// Chance to set target on fire
+        /// Chance to set target on fire for direct attacks (eg flamethrower)
         /// </summary>
         public bool IsFlameWeapon //@@MP (Release 5-2)
         {
             get { return m_IsFlameWeapon; } //@@MP - removed the hard-coded model IDs (Release 5-7)
             set { m_IsFlameWeapon = value; }
+        }
+
+        /// <summary>
+        /// Chance to set tile on fire with explosions (eg fuel pumps)
+        /// </summary>
+        public bool CausesFires //@@MP (Release 7-3)
+        {
+            get { return m_CausesFires; }
+            set { m_CausesFires = value; }
         }
 
         /// <summary>

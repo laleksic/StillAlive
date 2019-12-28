@@ -65,12 +65,27 @@ namespace djack.RogueSurvivor.Data
         {
             N, NE, E, SE, S, SW, W, NW
         };
+
+        public static readonly List<Direction> COMPASS_WESTERLY = new List<Direction>() //@@MP (Release 7-3)
+        {
+            SW, W, NW
+        };
+
+        public static readonly List<Direction> COMPASS_EASTERLY = new List<Direction>() //@@MP (Release 7-3)
+        {
+            SE, E, NE
+        };
         #endregion
 
         #region 4 directions compass
-        public static readonly Direction[] COMPASS_4 = new Direction[4]
+        public static readonly Direction[] COMPASS_NESW = new Direction[4] //@@MP - vanilla. renamed to more meaningful (Release 7-3)
         {
             N, E, S, W
+        };
+
+        public static readonly Direction[] COMPASS_NSEW = new Direction[4] //@@MP (Release 7-3)
+        {
+            N, S, E, W
         };
         #endregion
 

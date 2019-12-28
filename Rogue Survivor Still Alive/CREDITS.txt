@@ -100,6 +100,10 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 	shake : https://freesound.org/people/deleted_user_4966198/sounds/264194/ by deleted_user_4966198
 -Binoculars : https://freesound.org/people/RoganDerrick/sounds/260437/ by RoganDerrick
 -Shield block : https://freesound.org/people/Noisehag/sounds/110548/ by Noisehag
+-Dog
+	growl : https://freesound.org/people/TobiasKosmos/sounds/163276/ by TobiasKosmos 
+	bark : https://freesound.org/people/Mrthenoronha/sounds/420449/ by Mrthenoronha
+	yips : https://freesound.org/people/Mrthenoronha/sounds/420452/ by Mrthenoronha
 
 
 ** IMAGE CREDITS **
@@ -118,7 +122,10 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Tombstones : https://opengameart.org/content/roguelike-dungeonworld-tiles by Joe Williamson (Twitter= @JoeCreates)
 -Church wall hangings : https://opengameart.org/content/2d-castle-platformer-assets-2 by pudman
 -Bush : https://opengameart.org/content/bushes-2 by SpiderDave
--Helicopter : https://opengameart.org/content/fall-to-the-earth by Gamelves.com
+-Helicopter : https://opengameart.org/content/helicopter-3 by knik1985
+-Tractor : https://opengameart.org/content/tractor-png by jcrown41
+-Trees : https://opengameart.org/content/lpc-plant-repack by Liberated Pixel Cup participants (http://opengameart.org/lpc-art-entries)
+-Mobile shop signage https://opengameart.org/content/box-symbols by mold
 
 
 ** MUSIC CREDITS *
@@ -129,3 +136,6 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Black Ops : https://opengameart.org/content/commando-team-action-loop-cut by Grégoire Lourme
 	> Copyright 2012 "Commando Team (Action)" Grégoire Lourme <http://www.jamendo.com/en/artist/560/gregoire-lourme> Copyright 2012 Iwan Gabovitch "Commando Team (Action) [loop cut]" (editing to make it loop)
 -Victory : https://opengameart.org/content/victory-theme-for-rpg by cynicmusic & https://opengameart.org/content/feel-good-summer-tune by skrjablin
+-Shopping mall : https://opengameart.org/content/bossa-nova by Joth
+-Options music volume preview : https://freesound.org/people/Scrampunk/sounds/424416/ by Scrampunk
+-Options ambients volume preview : https://freesound.org/people/DWOBoyle/sounds/136691/ by DWOBoyle

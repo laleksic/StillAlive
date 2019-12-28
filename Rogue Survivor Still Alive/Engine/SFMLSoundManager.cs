@@ -14,7 +14,7 @@ namespace djack.RogueSurvivor.Engine
         bool m_IsAudioEnabled; //@@MP renamed (Release 2)
         int m_Volume;
         Dictionary<string, SFMLSound> m_Sounds;
-        SFMLSound m_CurrentSFX; // alpha10
+        SFMLSound m_CurrentSFX; // alpha10    //@@MP - redundant: designed for Music (Release 2)
         #endregion
 
         #region Properties
@@ -158,6 +158,31 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
+        public void Pause(string soundname) //@@MP (Release 7-3)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            SFMLSound sound;
+            if (m_Sounds.TryGetValue(soundname, out sound))
+            {
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("pausing sound {0}.", soundname));
+                Pause(sound);
+            }
+        }
+
+        public void PauseAll() //@@MP (Release 7-3)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            foreach (SFMLSound sound in m_Sounds.Values)
+            {
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("pausing all sounds"));
+                Pause(sound);
+            }
+        }
+
         public void ResumeLooping(string soundname)
         {
             if (!m_IsAudioEnabled)
@@ -195,6 +220,19 @@ namespace djack.RogueSurvivor.Engine
             m_CurrentSFX = null; //alpha 10
         }
 
+        public void ResumeAll() //@@MP (Release 7-3)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            foreach (SFMLSound sound in m_Sounds.Values)
+            {
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming all paused sounds"));
+                if (IsPaused(sound))
+                    Resume(sound);
+            }
+        }
+
         public bool IsPlaying(string soundname)
         {
             SFMLSound sound;
@@ -226,6 +264,24 @@ namespace djack.RogueSurvivor.Engine
             }
             else
                 return false;
+        }
+
+        /// <summary>
+        /// Give me a list of track names and I'll pick one at random to play
+        /// </summary>
+        public void PlayRandom(IEnumerable<string> playlist, int priority) //@@MP (Release 6-1)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            if (!playlist.Any()) //the list is empty
+            {
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("empty playlist provided to Music.PlayRandom"));
+                return;
+            }
+
+            string trackName = playlist.ElementAt(new Random(DateTime.Now.Millisecond).Next(playlist.Count())); // https://stackoverflow.com/questions/2019417/access-random-item-in-list
+            PlayIfNotAlreadyPlaying(trackName, priority);
         }
 
         void Stop(SFMLSound audio)
@@ -261,22 +317,9 @@ namespace djack.RogueSurvivor.Engine
             return audio.Status == SoundStatus.Stopped;// || audio.PlayingOffset >= audio.Duration; //@@MP - Duration is an SFML:Music property only (Release 5-3)
         }
 
-        /// <summary>
-        /// Give me a list of track names and I'll pick one at random to play
-        /// </summary>
-        public void PlayRandom(IEnumerable<string> playlist, int priority) //@@MP (Release 6-1)
+        static void Pause(SFMLSound audio) //@@MP (Release 7-3)
         {
-            if (!m_IsAudioEnabled)
-                return;
-
-            if (!playlist.Any()) //the list is empty
-            {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("empty playlist provided to Music.PlayRandom"));
-                return;
-            }
-
-            string trackName = playlist.ElementAt(new Random(DateTime.Now.Millisecond).Next(playlist.Count())); // https://stackoverflow.com/questions/2019417/access-random-item-in-list
-            PlayIfNotAlreadyPlaying(trackName, priority);
+            audio.Pause();
         }
         #endregion
 

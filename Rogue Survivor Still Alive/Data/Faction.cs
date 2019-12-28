@@ -60,7 +60,8 @@ namespace djack.RogueSurvivor.Data
         #region Relations
         public void AddEnemy(Faction other)
         {
-            m_Enemies.Add(other);
+            if (!m_Enemies.Contains(other)) //@@MP - added check to avoid duplication (Release 7-3)
+                m_Enemies.Add(other);
         }
 
         public virtual bool IsEnemyOf(Faction other)

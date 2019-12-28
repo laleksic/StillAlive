@@ -40,5 +40,9 @@ namespace djack.RogueSurvivor.Gameplay
         public const string CHURCH_BELLS_WITHIN_MAP_FILE = PATH + "church_bells_within_map";
         public const string CHURCH_BELLS_OUTSIDE_MAP = "hearing church bells far off";
         public const string CHURCH_BELLS_OUTSIDE_MAP_FILE = PATH + "church_bells_outside_map";
+
+        //@@MP (Release 7-3)
+        public const string TEST_AMBIENT = "test_ambient";
+        public const string TEST_AMBIENT_FILE = PATH + "test_ambient";
     }
 }

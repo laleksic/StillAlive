@@ -1,5 +1,39 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
+STILL ALIVE 2.5.7.6 (aka Release 7-3, 29/12/2019) [Author: MP]
+---------------------
+
+Features:
+-Added fuel stations, farms, animal shelters, fire stations, shopping mall, and basketball and tennis courts.
+-Increased default city size to 7x7, minimum city size to 5x5, and minimum district size to 50x50.
+-Added dogs.
+-Added effects to vision when drunk or going insane.
+-Sleeping survivors now appear as lying down.
+-Added sleeping bags, which offer SLP restoration but not healing.
+-Simplified zombification on starvation from a % chance to an on/off choice.
+-Increased the number of items that civilians spawn with.
+-You can now set how many catch-up turns to simulate when moving into another district.
+--Lower numbers mean faster district transitions.
+--Higher numbers may help to make the world to feel more 'alive'.
+-Options menu now previews new volume on music, SFX and ambients adjustments (volume normalisation due in next release).
+-Sanity loss now only occurs when awake.
+
+Fixes:
+-Improved the orientation of picket fences.
+-Messages now actually display when hearing or seeing an explosion.
+-Removed confusing flashbanged turn skipping for a notification each turn.
+-Improved the helicopter.
+-National Guard units arrival now has a relationship to the expected rescue day.
+-Eliminated some of the repetitive use of exits caused by AI backtracking.
+-Eliminated AI looping caused by illegally trying to use certain items in complete darkness.
+-Eliminated duplication of factions as enemies.
+
+Development:
+-F10 can be used to warp to given locations in debug mode.
+-Added ability to pause audio playback.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.5.3.11 (aka Release 7-2, 4/11/2019) [Author: MP]
 ---------------------
 
@@ -55,7 +89,7 @@ Fixes:
 -Fixed night vision goggles use outside during daytime.
 -Fixed crash caused by AI trying to trade cell phones or trackers.
 -Various corrections regarding game modes.
--Fix prompts being cleared under incorrect circumstances.
+-Fixed prompts being cleared under incorrect circumstances.
 -Starvation was at zero food points. Fixed to be 1/4 food points. [credit to taberone]
 -Fixed unique actors invincibility. [credit to taberone & zaimoni]
 

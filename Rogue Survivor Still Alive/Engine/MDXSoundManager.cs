@@ -167,6 +167,31 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
+        public void Pause(string musicname) //@@MP (Release 7-3)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            Audio music;
+            if (m_Musics.TryGetValue(musicname, out music))
+            {
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("pausing music {0}.", musicname));
+                Pause(music);
+            }
+        }
+
+        public void PauseAll() //@@MP (Release 7-3)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            foreach (Audio music in m_Musics.Values)
+            {
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("pausing all musics"));
+                Pause(music);
+            }
+        }
+
         public void ResumeLooping(string musicname)
         {
             if (!m_IsAudioEnabled)
@@ -209,6 +234,19 @@ namespace djack.RogueSurvivor.Engine
             this.Priority = AudioPriority.PRIORITY_NULL;
         }
 
+        public void ResumeAll() //@@MP (Release 7-3)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            foreach (Audio music in m_Musics.Values)
+            {
+                //Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("resuming all paused musics"));
+                if (IsPaused(music))
+                    Resume(music);
+            }
+        }
+
         public bool IsPlaying(string musicname)
         {
             Audio music;
@@ -240,6 +278,21 @@ namespace djack.RogueSurvivor.Engine
             }
             else
                 return false;
+        }
+
+        public void PlayRandom(IEnumerable<string> playlist, int priority) //@@MP (Release 6-1)
+        {
+            if (!m_IsAudioEnabled)
+                return;
+
+            if (!playlist.Any()) //the list is empty
+            {
+                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("empty playlist provided to Audio.PlayRandom"));
+                return;
+            }
+
+            string trackName = playlist.ElementAt(new Random(DateTime.Now.Millisecond).Next(playlist.Count())); // https://stackoverflow.com/questions/2019417/access-random-item-in-list
+            PlayIfNotAlreadyPlaying(trackName, priority);
         }
 
         void Stop(Audio audio)
@@ -280,19 +333,9 @@ namespace djack.RogueSurvivor.Engine
             return audio.CurrentPosition >= audio.Duration;
         }
 
-        public void PlayRandom(IEnumerable<string> playlist, int priority) //@@MP (Release 6-1)
+        static void Pause(Audio audio) //@@MP (Release 7-3)
         {
-            if (!m_IsAudioEnabled)
-                return;
-
-            if (!playlist.Any()) //the list is empty
-            {
-                Logger.WriteLine(Logger.Stage.RUN_SOUND, String.Format("empty playlist provided to Audio.PlayRandom"));
-                return;
-            }
-
-            string trackName = playlist.ElementAt(new Random(DateTime.Now.Millisecond).Next(playlist.Count())); // https://stackoverflow.com/questions/2019417/access-random-item-in-list
-            PlayIfNotAlreadyPlaying(trackName, priority);
+            audio.Pause();
         }
         #endregion
 

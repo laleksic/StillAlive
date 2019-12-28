@@ -480,7 +480,7 @@ namespace djack.RogueSurvivor.Engine
             ///////////////////
             // Constant factors.
             // Harder:
-            // /////- Don't reveal starting map : +10% //@@MP - removed option (Release 6-1)
+            ////- Don't reveal starting map : +10% //@@MP - removed option (Release 6-1)
             // Survivor Easier/Undead Harder:
             // - Disable NPC starvation    : -10%/+10%
             // Harder/Easier:
@@ -578,10 +578,13 @@ namespace djack.RogueSurvivor.Engine
             float kDefaultCivZombification = (float)GameOptions.DEFAULT_MAX_CIVILIANS * (float)GameOptions.DEFAULT_ZOMBIFICATION_CHANCE;
             float kCivZombification = (float)(options.MaxCivilians * options.ZombificationChance - kDefaultCivZombification) / kDefaultCivZombification;
 
-            float kDefaultCivStarvation = (float)GameOptions.DEFAULT_MAX_CIVILIANS * (float)GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE;
-            float kCivStarvation = (float)(options.MaxCivilians * options.StarvedZombificationChance - kDefaultCivStarvation) / kDefaultCivStarvation;
+            //TODO: improve this method //@@MP
+            float kCivStarvation = (float)(options.MaxCivilians / GameOptions.DEFAULT_MAX_CIVILIANS); //@@MP - starvation zombification now bool rather than % chance (Release 7-3)
 
-            if (!options.NPCCanStarveToDeath || (GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE == 0)) //@@MP - added the check for starved chance as I made that 0 by default (Release 3)
+            if (!options.NPCCanStarveToDeath)
+                kCivStarvation = -1;
+
+            if (!options.StarvedZombification) //@@MP - starvation zombification disabled by default
                 kCivStarvation = -1;
 
             if (side == DifficultySide.FOR_SURVIVOR)
@@ -598,7 +601,7 @@ namespace djack.RogueSurvivor.Engine
             // - Enable permadeath          : x2
             // - Disable Sanity             : x0.5 / x0.95 //@@MP (Release 1)
             // - Aggressive Hungry Civs     : x0.5 / x2
-            // - Rats Upgrade               : x1.10 / x0.90 //@@MP - removed this option (Release 5-7)
+            //// - Rats Upgrade               : x1.10 / x0.90 //@@MP - removed this option (Release 5-7)
             // - Skeletons Upgrade          : x1.20 / x0.80
             // - Shamblers Upgrade          : x1.25 / x0.75
             ////////////

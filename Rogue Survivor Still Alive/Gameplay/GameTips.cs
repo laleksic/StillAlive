@@ -13,7 +13,7 @@ namespace djack.RogueSurvivor.Gameplay
             "seeing a living die in a fire is bad for one's sanity.",
             "livings will usually wake others if a fire breaks out nearby.",
             // undeads
-        	"undeads can smell scents left by livings. Some sprays can cover your scent.", //@@MP - this is the maximum characters that should be used!
+        	"undeads can smell scents left by livings. Some sprays can cover your scent.", //@@MP - this example is the maximum characters that should be used!
             "some undeads are smart and will avoid traps and fires.",
             "seeing an undead kill a living is bad for one's sanity.",
             // doing stuff
@@ -27,7 +27,7 @@ namespace djack.RogueSurvivor.Gameplay
             "you can try to revive people using the Medic skill.",
             "reviving a living completely restores one's sanity.",
             "some guns can be used in Rapid Fire mode, shooting twice in one turn.",
-            "crossbows can use the flaming bolts fire mode that set undead alight",
+            "crossbows can use the flaming bolts fire mode, which set undead alight",
             // misc rules
         	"scents decay faster in the rain. undead track by scent.",
         	"firearms are more likely to jam in the rain.",
@@ -40,6 +40,7 @@ namespace djack.RogueSurvivor.Gameplay
             "followers can guard you while you sleep.",
             "followers can guard your place while you are away.",
             // misc
+            "if the game is too laggy try changing the simulation options.",
             "nowhere is truly safe, but barricades and fortifications can help.",
             "you can plant vegie seeds with a shovel and a clear patch of ground.",
             "most walls and doors can be demolished with C4 and dynamite.",

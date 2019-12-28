@@ -1,7 +1,7 @@
 ﻿REQUIREMENTS
 
 Minimum resolution: 800*600
-Disk space: 120mb
+Disk space: 300mb
 .NET Framework: 3.5
 
 
@@ -11,6 +11,9 @@ TROUBLESHOOTING
 	If it's a 'file not found' error you may need to install DirectX 9.0c. You can get it here: https://www.microsoft.com/en-au/download/details.aspx?id=8109
 	If you installed DirectX 9.0c and it still crashes, try right-clicking RogueGame.exe and select 'Run as administrator'.
 	Please report the issue on the forums if it still doesn't work.
+
+-(crashes) Crashes during gameplay.
+	The menu is fine but you experience crashes during play. Try disabling the minimap from the Options menu.
 
 -(crashes) Random game crashes
 	Run the game configuration utility (RSConfig.exe) and try other the video and audio engines.	
@@ -26,7 +29,7 @@ TROUBLESHOOTING
 	This is due to technical limitations, but may be addressed in future versions.
 
 -(interface) Sometimes the controls stop responding / I'm prompted do something without seeing any pop-up text.
-	This is a known issue and will be addressed in a future version. Trying pressing Escape, Enter or N (for No) to get around it.
+	This bug was addressed but instances may still exist. Trying pressing Escape, Enter or N (for No) to get around it.
 
 -(interface) The game text is blurry
 	If you have an Intel onboard GPU (ie no dedicated graphics card), open the Intel control panel and set "3Dtexture" to "Quality".
@@ -35,18 +38,25 @@ TROUBLESHOOTING
 -(ffdshow) ffdshow spams instances in the task bar
 	Open ffdshow configuration, go to DirectShow and set "Multiple ffdshow instances" to "none".
 
+-(Linux/MacOS) Issues running that game in non-Windows
+	Run the configuration utility (RSConfig.exe) and try the game in GDI+ video mode.
+
 -(modding) I've changed one of the game's image, sound or Excel files but it was overwritten.
 	The game will deploy it's own content files whenever their last modified date is more recent than that of any file using the same name.
 	To ensure your files are used instead, change their last modified date to be today. NirSoft's BulkFileChanger or Romain Petges' Attribute Changer 9 make this easy.
 
+
 FAQ
 
--what is the difference between Managed DirectX (MDX) and GDI+?
-For Still Alive the noticable differences are how certain things are rendered. You will notice that text font appears slightly differently, and that in-game tint from things such as sunset
+-How do I change to windowed mode?
+Run the game configuration utility (RSConfing.exe) from the game's folder.
+
+-What is the difference between Managed DirectX (MDX) and GDI+?
+For Still Alive, the noticable differences are how certain things are rendered. You will notice that text font appears slightly differently, and that in-game tint from things such as sunset
 are not applied to everything in GDI+.
 You may find that GDI is slightly slower, but as it's available natively you don't need any extra drivers installed to run the game.
 
--what is the difference between SMFL and MDX?
+-What is the difference between SMFL and MDX?
 SMFL is more adept at handling multiple audio played simultaneously. With MDX you may notice sounds are cut off or don't play at all if many are playing at once.
 
 

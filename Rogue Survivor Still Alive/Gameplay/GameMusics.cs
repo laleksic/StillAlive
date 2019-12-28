@@ -71,6 +71,9 @@ namespace djack.RogueSurvivor.Gameplay
         public const string SLEEP = "sleep";
         public const string SLEEP_FILE = PATH + "RS - Sleep - Loop";
 
+        public const string SHOPPING_MALL = "Shopping Mall"; //@@MP (Release 7-3)
+        public const string SHOPPING_MALL_FILE = PATH + "Shopping Mall"; //@@MP (Release 7-3)
+
         public const string SUBWAY = "subway";
         public const string SUBWAY_FILE = PATH + "RS - Subway";
 
@@ -79,5 +82,8 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string SURVIVORS = "survivors";
         public const string SURVIVORS_FILE = PATH + "RS - Survivors";
+
+        public const string TEST_MUSIC = "test_music"; //@@MP (Release 7-3)
+        public const string TEST_MUSIC_FILE = PATH + "test_music";
     }
 }

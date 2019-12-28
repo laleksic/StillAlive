@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using djack.RogueSurvivor.Data;
 
@@ -22,8 +20,8 @@ namespace djack.RogueSurvivor.Engine.MapObjects
         #endregion
 
             #region Init
-        public Car(string name, string imageID, int fuelUnits)
-            : base(name, imageID, Break.BROKEN, Fire.UNINFLAMMABLE, 0)
+        public Car(string name, string imageID, MapObject.Break breakState, int fuelUnits)
+            : base(name, imageID, breakState, Fire.UNINFLAMMABLE, 0)
         {
             m_FuelUnits = fuelUnits;
         }

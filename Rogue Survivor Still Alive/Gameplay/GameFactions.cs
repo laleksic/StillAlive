@@ -172,7 +172,7 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 foreach (Faction fe in f.Enemies)
                 {
-                    if (!fe.IsEnemyOf(fe))
+                    if (!fe.IsEnemyOf(f)) //@@MP - fixed bug, was fe (Release 7-3)
                         fe.AddEnemy(f);
                 }
             }

@@ -35,7 +35,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 else
                 {
                     // create civilian with 1 skill.
-                    Actor civilian = CreateNewCivilian(0, 0, 1);
+                    Actor civilian = CreateNewCivilian(0, 5, 1); //@@MP - upped items to 5 (Release 7-3)
                     // civilian starts inside.
                     base.ActorPlace(m_DiceRoller, maxTries, map, civilian, (pt) => map.GetTileAt(pt.X, pt.Y).IsInside);
                 }

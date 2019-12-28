@@ -355,7 +355,8 @@ Closes an adjacent door or window.
 
 
 > SLEEPING  (default Z)
-You can sleep anywhere but sleeping on a couch or bed recovers your SLP points faster and will slowly heal you.
+You can sleep anywhere, but sleeping on a couch or bed recovers your SLP points faster and will slowly heal you.
+A sleeping bag recovers your SLP points faster but won't heal you.
 You cannot sleep while Hungry. You will wake up when your SLP points are fully restored or when you become hungry.
 While sleeping you are vulnerable to attacks. An attack will wake you up immediately.
 Loud noises within a close distance have a chance to wake you up. The closer the noise the higher the chances.

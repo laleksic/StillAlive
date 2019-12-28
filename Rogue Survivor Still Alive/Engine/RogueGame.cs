@@ -147,7 +147,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region -EVENTS
-        const int SPAWN_DISTANCE_TO_PLAYER = 10;
+        const int SPAWN_DISTANCE_TO_PLAYER = 12; //@@MP - upped because of max FoV (Release 7-3)
 
         #region Zombie invasion
 
@@ -174,8 +174,7 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// How many random items each new refugee will carry.
         /// </summary>
-        const int REFUGEES_WAVE_ITEMS = 3;
-
+        const int REFUGEES_WAVE_ITEMS = 5; //@@MP - upped items to 5 (Release 7-3)
 
         /// <summary>
         /// Chance to spawn on the surface vs sewers/subway.
@@ -1024,7 +1023,7 @@ namespace djack.RogueSurvivor.Engine
             return MakeMessage(actor, doWhat, OTHER_ACTION_COLOR);
         }
 
-        Message MakeMessage(Actor actor, string doWhat, Color color)
+        Message MakeMessage(Actor actor, string doWhat, Color color) //@@MP - removed default rather than force a color if IsPlayer (Release 7-3)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(ActorVisibleIdentity(actor));
@@ -1032,10 +1031,7 @@ namespace djack.RogueSurvivor.Engine
             sb.Append(doWhat);
 
             Message msg = new Message(sb.ToString(), m_Session.WorldTime.TurnCounter);
-            if (actor.IsPlayer)
-                msg.Color = PLAYER_ACTION_COLOR;
-            else
-                msg.Color = color;
+            msg.Color = color;
 
             return msg;
         }
@@ -1389,6 +1385,8 @@ namespace djack.RogueSurvivor.Engine
                 DrawMenuOrOptions(selected, Color.White, menuEntries, Color.White, null, gx, ref gy);
                 gy += 3 * BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.LightSkyBlue, "Please note that Rogue Survivor: Still Alive is currently in alpha. There will be bugs.", 0, gy);
+                gy += 2 * BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.LightSkyBlue, "To change audio and video modes use RSConfig.exe from the game directory.", 0, gy);
                 gy += 3 * BOLD_LINE_SPACING;
                 DrawGameTips(gx, gy); //@@MP (Release 6-6)
                 DrawFootnote(Color.White, "cursor to move, ENTER to select");
@@ -1476,26 +1474,20 @@ namespace djack.RogueSurvivor.Engine
         {
             //GameOptions prevOptions = s_Options; //@@MP - obsolete (Release 6-1)
 
-            #region
+            #region Order
             GameOptions.IDs[] list = new GameOptions.IDs[]  //@@MP provides the order in which they appear in the menu
             {
-                    // sounds
-                   GameOptions.IDs.UI_MUSIC,
-                   GameOptions.IDs.UI_MUSIC_VOLUME,
-                   GameOptions.IDs.UI_SFXS, //@@MP (Release 2)
-                   GameOptions.IDs.UI_SFXS_VOLUME, //@@MP (Release 2)
-                   GameOptions.IDs.UI_AMBIENTSFXS, //@@MP (Release 6-1)
-                   GameOptions.IDs.UI_AMBIENTSFXS_VOLUME, //@@MP (Release 6-1)
-                   GameOptions.IDs.UI_ANIM_DELAY,
                    // helpers
                    GameOptions.IDs.UI_AUTOSAVE, //@MP (Release 6-1)
                    GameOptions.IDs.UI_ADVISOR,
                    GameOptions.IDs.UI_COMBAT_ASSISTANT,
-                   GameOptions.IDs.UI_SHOW_MINIMAP,
                    GameOptions.IDs.UI_SHOW_PLAYER_TARGETS,
                    GameOptions.IDs.UI_SHOW_TARGETS,
+                   GameOptions.IDs.UI_ANIM_DELAY,
+                   GameOptions.IDs.UI_SHOW_MINIMAP,
                    // sim
                    GameOptions.IDs.GAME_SIMULATE_DISTRICTS,
+                   GameOptions.IDs.GAME_TURNS_SIM_CAP, //@@MP (Release 7-3)
                    GameOptions.IDs.GAME_SIM_THREAD,
                    GameOptions.IDs.GAME_SIMULATE_SLEEP,
                    // death
@@ -1511,7 +1503,7 @@ namespace djack.RogueSurvivor.Engine
                    GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE,
                    GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS,
                    GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH,
-                   GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE,
+                   GameOptions.IDs.GAME_STARVED_ZOMBIFICATION,
                    GameOptions.IDs.GAME_SANITY, //@@MP (Release 1)
                    GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS, //@@MP (Release 5-2)
                    // undeads
@@ -1530,6 +1522,13 @@ namespace djack.RogueSurvivor.Engine
                    //GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED, //@@MP (Release 5-7)
                    //GameOptions.IDs.GAME_REINCARNATE_AS_RAT, //@@MP (Release 5-7)
                    //GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS //@@MP (Release 5-7)
+                   // sounds
+                   GameOptions.IDs.UI_MUSIC,
+                   GameOptions.IDs.UI_MUSIC_VOLUME,
+                   GameOptions.IDs.UI_SFXS, //@@MP (Release 2)
+                   GameOptions.IDs.UI_SFXS_VOLUME, //@@MP (Release 2)
+                   GameOptions.IDs.UI_AMBIENTSFXS, //@@MP (Release 6-1)
+                   GameOptions.IDs.UI_AMBIENTSFXS_VOLUME, //@@MP (Release 6-1)
             };
             #endregion
 
@@ -1610,12 +1609,14 @@ namespace djack.RogueSurvivor.Engine
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
                         else selected = menuEntries.Length - 1;
+                        OptionsMenuAudioAdjustment((GameOptions.IDs)list[selected]); //@@MP - preview volume on relevant options (Release 7-3)
                         break;
                     case Keys.Down:     // move down
                         selected = (selected + 1) % menuEntries.Length;
+                        OptionsMenuAudioAdjustment((GameOptions.IDs)list[selected]); //@@MP - preview volume on relevant options (Release 7-3)
                         break;
 
-                    case Keys.R:        // restore previous.
+                    case Keys.R:        // restore defaults.
                         s_Options.ResetToDefaultValues(); //prevOptions; //@@MP - used to restore changes in this session, now resets defaults (Release 6-1)
                         ApplyOptions();
                         SaveOptions();
@@ -1623,6 +1624,7 @@ namespace djack.RogueSurvivor.Engine
 
                     case Keys.Escape:   // validate and leave
                         loop = false;
+                        OptionsMenuAudioAdjustment(GameOptions.IDs.UI_ADVISOR); //@@MP - just use a dummy one to stop any playing volume preview audio (Release 7-3)
                         break;
 
                     case Keys.Left:
@@ -1632,7 +1634,7 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.UI_MUSIC: s_Options.PlayMusic = !s_Options.PlayMusic; break;
                             case GameOptions.IDs.UI_MUSIC_VOLUME: s_Options.MusicVolume -= 5; break;
                             case GameOptions.IDs.UI_SFXS: s_Options.PlaySFXs = !s_Options.PlaySFXs; break; //@@MP (Release 2)
-                            case GameOptions.IDs.UI_SFXS_VOLUME: s_Options.SFXVolume -= 5; break; //@@MP (Release 2)
+                            case GameOptions.IDs.UI_SFXS_VOLUME: s_Options.SFXVolume -= 5; OptionsMenuAudioAdjustment((GameOptions.IDs)list[selected]); break; //@@MP - added (Release 2), added preview of volume (Release 7-3)
                             case GameOptions.IDs.UI_AMBIENTSFXS: s_Options.PlayAmbientSFXs = !s_Options.PlayAmbientSFXs; break; //@@MP (Release 6-1)
                             case GameOptions.IDs.UI_AMBIENTSFXS_VOLUME: s_Options.AmbientSFXVolume -= 5; break; //@@MP (Release 6-1)
                             case GameOptions.IDs.UI_ANIM_DELAY: s_Options.IsAnimDelayOn = !s_Options.IsAnimDelayOn; break;
@@ -1649,10 +1651,14 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE: --s_Options.ZombieInvasionDailyIncrease; break;
                             case GameOptions.IDs.GAME_CITY_SIZE: s_Options.CitySize -= 1; break;
                             case GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH: s_Options.NPCCanStarveToDeath = !s_Options.NPCCanStarveToDeath; break;
-                            case GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE: s_Options.StarvedZombificationChance -= 5; break;
+                            case GameOptions.IDs.GAME_STARVED_ZOMBIFICATION: s_Options.StarvedZombification = !s_Options.StarvedZombification; break;
                             case GameOptions.IDs.GAME_SIMULATE_DISTRICTS:
                                 if (s_Options.SimulateDistricts != GameOptions.SimRatio.OFF)
                                     s_Options.SimulateDistricts = (GameOptions.SimRatio)(s_Options.SimulateDistricts - 1);
+                                break;
+                            case GameOptions.IDs.GAME_TURNS_SIM_CAP: //@@MP (Release 7-3)
+                                if (s_Options.SimTurnsCap != GameOptions.SimCap._FIRST)
+                                    s_Options.SimTurnsCap = (GameOptions.SimCap)(s_Options.SimTurnsCap - 1);
                                 break;
                             case GameOptions.IDs.GAME_SIMULATE_SLEEP: s_Options.SimulateWhenSleeping = !s_Options.SimulateWhenSleeping; break;
                             case GameOptions.IDs.GAME_SIM_THREAD: s_Options.SimThread = !s_Options.SimThread; break;
@@ -1677,13 +1683,7 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
                             case GameOptions.IDs.GAME_NATGUARD_FACTOR: s_Options.NatGuardFactor -= 10; break;
                             case GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor -= 10; break;
-                            case GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)
-                                                                                                                                              //case GameOptions.IDs.GAME_RATS_UPGRADE: //@@MP (Release 5-7)
-                                                                                                                                              /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                                                                                                                                                   s_Options.RatsUpgrade = false;
-                                                                                                                                              else*/
-                                                                                                                                              /*s_Options.RatsUpgrade = !s_Options.RatsUpgrade; 
-                                                                                                                                         break;*/
+                            case GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)                                                                                                            break;*/
                             case GameOptions.IDs.GAME_SHAMBLERS_UPGRADE:
                                 /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.ShamblersUpgrade = false;
@@ -1705,7 +1705,7 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.UI_MUSIC: s_Options.PlayMusic = !s_Options.PlayMusic; break;
                             case GameOptions.IDs.UI_MUSIC_VOLUME: s_Options.MusicVolume += 5; break;
                             case GameOptions.IDs.UI_SFXS: s_Options.PlaySFXs = !s_Options.PlaySFXs; break; //@@MP (Release 2)
-                            case GameOptions.IDs.UI_SFXS_VOLUME: s_Options.SFXVolume += 5; break; //@@MP (Release 2)
+                            case GameOptions.IDs.UI_SFXS_VOLUME: s_Options.SFXVolume += 5; OptionsMenuAudioAdjustment((GameOptions.IDs)list[selected]); break; //@@MP - added (Release 2), added preview of volume (Release 7-3)
                             case GameOptions.IDs.UI_AMBIENTSFXS: s_Options.PlayAmbientSFXs = !s_Options.PlayAmbientSFXs; break; //@@MP (Release 6-1)
                             case GameOptions.IDs.UI_AMBIENTSFXS_VOLUME: s_Options.AmbientSFXVolume += 5; break; //@@MP (Release 6-1)
                             case GameOptions.IDs.UI_ANIM_DELAY: s_Options.IsAnimDelayOn = !s_Options.IsAnimDelayOn; break;
@@ -1722,12 +1722,14 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE: ++s_Options.ZombieInvasionDailyIncrease; break;
                             case GameOptions.IDs.GAME_CITY_SIZE: s_Options.CitySize += 1; break;
                             case GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH: s_Options.NPCCanStarveToDeath = !s_Options.NPCCanStarveToDeath; break;
-                            case GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE: s_Options.StarvedZombificationChance += 5; break;
+                            case GameOptions.IDs.GAME_STARVED_ZOMBIFICATION: s_Options.StarvedZombification = !s_Options.StarvedZombification; break;
                             case GameOptions.IDs.GAME_SIMULATE_DISTRICTS:
                                 if (s_Options.SimulateDistricts != GameOptions.SimRatio.FULL)
-                                {
                                     s_Options.SimulateDistricts = (GameOptions.SimRatio)(s_Options.SimulateDistricts + 1);
-                                }
+                                break;
+                            case GameOptions.IDs.GAME_TURNS_SIM_CAP: //@@MP (Release 7-3)
+                                if (s_Options.SimTurnsCap != GameOptions.SimCap.MAX)
+                                    s_Options.SimTurnsCap = (GameOptions.SimCap)(s_Options.SimTurnsCap + 1);
                                 break;
                             case GameOptions.IDs.GAME_SIMULATE_SLEEP: s_Options.SimulateWhenSleeping = !s_Options.SimulateWhenSleeping; break;
                             case GameOptions.IDs.GAME_SIM_THREAD: s_Options.SimThread = !s_Options.SimThread; break;
@@ -1752,13 +1754,7 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
                             case GameOptions.IDs.GAME_NATGUARD_FACTOR: s_Options.NatGuardFactor += 10; break;
                             case GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor += 10; break;
-                            case GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)
-                                                                                                                                              //case GameOptions.IDs.GAME_RATS_UPGRADE: //@@MP (Release 5-7)
-                                                                                                                                              /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                                                                                                                                                  s_Options.RatsUpgrade = false;
-                                                                                                                                              else*/
-                                                                                                                                              /*s_Options.RatsUpgrade = !s_Options.RatsUpgrade; 
-                                                                                                                                              break;*/
+                            case GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)                                                                                                         break;*/
                             case GameOptions.IDs.GAME_SHAMBLERS_UPGRADE:
                                 /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
                                     s_Options.ShamblersUpgrade = false;
@@ -2132,15 +2128,61 @@ namespace djack.RogueSurvivor.Engine
             gy += BOLD_LINE_SPACING;
             m_UI.UI_DrawString(Color.White, @"Grab the whole set: http://roguesurvivor.proboards.com/thread/264/alpha-9-deonapocalypse", 0, gy);
             gy += 2 * BOLD_LINE_SPACING;
-            m_UI.UI_DrawString(Color.White, @"Incorporates images from https://opengameart.org. For full list of images and their authors please see CREDITS.txt in the game directory", 0, gy);
+            m_UI.UI_DrawString(Color.White, @"Incorporates images from https://opengameart.org", 0, gy);
             gy += BOLD_LINE_SPACING;
-            m_UI.UI_DrawString(Color.White, @"Incorporates sounds from https://freesound.org. For full list of sounds and their authors please see CREDITS.txt in the game directory", 0, gy);
+            m_UI.UI_DrawString(Color.White, @"Incorporates sounds from https://freesound.org", 0, gy);
+            gy += BOLD_LINE_SPACING;
+            m_UI.UI_DrawString(Color.White, @"For the full list of images and sounds please see CREDITS.txt in the game directory", 0, gy);
             gy += 2 * BOLD_LINE_SPACING;
             m_UI.UI_DrawString(Color.White, @"Discuss the mod: http://roguesurvivor.proboards.com/thread/377/", 0, gy);
 
             DrawFootnote(Color.White, "ESC to leave");
             m_UI.UI_Repaint();
             WaitEscape();
+        }
+
+        /// <summary>
+        /// Plays a track when cursor on one of the volume adjustment options. For choosing the level that suits you
+        /// </summary>
+        /// <param name="optionID">Only applies to long-running types ie music and ambients</param>
+        void OptionsMenuAudioAdjustment(GameOptions.IDs optionID) //@@MP (Release 7-3)
+        {
+            switch ((GameOptions.IDs)optionID)
+            {
+                case GameOptions.IDs.UI_MUSIC_VOLUME:
+                    m_AmbientSFXManager.Stop(GameAmbients.TEST_AMBIENT); //just in case
+                    m_MusicManager.PauseAll(); //pause any music for the moment
+                    m_AmbientSFXManager.PauseAll(); //pause any ambients for the moment
+                    m_MusicManager.PlayIfNotAlreadyPlaying(GameMusics.TEST_MUSIC,AudioPriority.PRIORITY_EVENT, true);
+                    break;
+                case GameOptions.IDs.UI_AMBIENTSFXS_VOLUME:
+                    m_MusicManager.Stop(GameMusics.TEST_MUSIC); //just in case
+                    m_AmbientSFXManager.PauseAll(); //pause any ambients for the moment
+                    m_MusicManager.PauseAll(); //pause any music for the moment
+                    m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.TEST_AMBIENT, AudioPriority.PRIORITY_EVENT, true);
+                    break;
+                case GameOptions.IDs.UI_SFXS_VOLUME:
+                    m_AmbientSFXManager.Stop(GameAmbients.TEST_AMBIENT); //just in case
+                    m_MusicManager.Stop(GameMusics.TEST_MUSIC); //just in case
+                    m_AmbientSFXManager.PauseAll(); //pause any ambients for the moment
+                    m_MusicManager.PauseAll(); //pause any music for the moment
+                    m_SFXManager.Play(GameSounds.MELEE_ATTACK_MISS_PLAYER, AudioPriority.PRIORITY_EVENT);
+                    break;
+                case GameOptions.IDs.UI_MUSIC:
+                case GameOptions.IDs.UI_AMBIENTSFXS:
+                case GameOptions.IDs.UI_SFXS:
+                    m_MusicManager.Stop(GameMusics.TEST_MUSIC); //just in case
+                    m_AmbientSFXManager.Stop(GameAmbients.TEST_AMBIENT); //just in case
+                    m_MusicManager.PauseAll(); //pause any music for the moment
+                    m_AmbientSFXManager.PauseAll(); //pause any ambients for the moment
+                    break;
+                default:
+                    m_MusicManager.Stop(GameMusics.TEST_MUSIC);
+                    m_AmbientSFXManager.Stop(GameAmbients.TEST_AMBIENT);
+                    m_MusicManager.ResumeAll();
+                    m_AmbientSFXManager.ResumeAll();
+                    break;
+            }
         }
 
         #region -Drawing headers & footnotes
@@ -2757,22 +2799,23 @@ namespace djack.RogueSurvivor.Engine
                 string[] descMode = { };
                 switch (selected)
                 {
-                    case 0:
+                    case 0: //STD
                         descMode = new string[] {
-                            "This is the standard game setting:",
+                            "This is the standard game mode:",
                             "- All the various types of undeads.",
                             "- Undeads can evolve and gain abilities.",
                             "- Undeads will not infect livings when hurting them.",
+                            "- Some undeads will zombify their victim upon death.",
                             "- If enabled, livings may zombify instantly if starved to death,",
-                            "otherwise - and by default - corpses will not rise again.",
+                            "otherwise (and by default) corpses will not rise again.",
                             "> Suited to beginners or those looking for a different take on undeads.",
                             "",
                             "Note: Undead evolution and starvation-zombification can be disabled from the Options."
                         };
                         break;
-                    case 1:
+                    case 1: //CORP & INF
                         descMode = new string[] {
-                            "This is the standard game setting plus infection: ",
+                            "This is the standard game mode plus infection: ",
                             "- All the various types of undeads.",
                             "- Undeads can gain abilities and evolve to stronger forms.",
                             "- Some undeads can infect livings when hurting them.",
@@ -2784,9 +2827,9 @@ namespace djack.RogueSurvivor.Engine
                             "Note: Undead evolution can be disabled from the Options."
                         };
                         break;
-                    case 2:
+                    case 2: //VTG
                         descMode = new string[] {
-                            "This is the setting for classic zombie fans: ",
+                            "This is the mode for classic zombie fans: ",
                             "- Undeads are only zombified men and women.",
                             "- Undeads don't evolve nor gain abilities.",
                             "- Undeads can infect livings when hurting them.",
@@ -3750,7 +3793,7 @@ namespace djack.RogueSurvivor.Engine
                 chosenDay = Convert.ToInt32(enteredNumerals);
             else if (enteredNumerals == "0" || enteredNumerals == "00")
             {
-                string difficulty = "TODO in Rel 6-5";
+                string difficulty = "TODO in Rel 7-4";
                 switch (difficulty)
                 {
                     case "beginner": chosenDay = new Random().Next(07, 28); break;
@@ -3781,9 +3824,9 @@ namespace djack.RogueSurvivor.Engine
             CheckAmbientSFX(m_Player.Location.Map); //@@MP (Release 5-3)
 
 #if DEBUG
-            Item nvg = new ItemLight(GameItems.NIGHT_VISION_MALE);
+            Item nvg = new ItemLight(GameItems.NIGHT_VISION);
             m_Player.Inventory.AddAll(nvg);
-            Item binoc = new ItemLight(GameItems.BINOCULARS_MALE);
+            Item binoc = new ItemLight(GameItems.BINOCULARS);
             m_Player.Inventory.AddAll(binoc);
             /*Item gun = new ItemRangedWeapon(GameItems.FLAMETHROWER);
             m_Player.Inventory.AddAll(gun);*/
@@ -3930,11 +3973,14 @@ namespace djack.RogueSurvivor.Engine
             Point hospitalDistrictPos = noSpecialDistricts[m_Rules.Roll(0, noSpecialDistricts.Count)];
             noSpecialDistricts.Remove(hospitalDistrictPos);
 
+            Point mallDistrictPos = noSpecialDistricts[m_Rules.Roll(0, noSpecialDistricts.Count)];  //@@MP (Release 7-3)
+            noSpecialDistricts.Remove(mallDistrictPos);
+
             /////////////////////////
             // Create districts maps
             /////////////////////////
             // Surface, Sewers and Subways.
-#region
+            #region
             for (int x = 0; x < world.Size; x++)
             {
                 for (int y = 0; y < world.Size; y++)
@@ -3951,7 +3997,7 @@ namespace djack.RogueSurvivor.Engine
                     world[x, y] = district;
 
                     // create the entry map.
-                    district.EntryMap = GenerateDistrictEntryMap(world, district, policeStationDistrictPos, hospitalDistrictPos);
+                    district.EntryMap = GenerateDistrictEntryMap(world, district, policeStationDistrictPos, hospitalDistrictPos, mallDistrictPos);
                     district.Name = district.EntryMap.Name;
 
                     // create other maps.
@@ -4206,23 +4252,23 @@ namespace djack.RogueSurvivor.Engine
             // 2. Pick one green district at random.
             if (goodDistricts == null)
             {
+#if DEBUG
+                throw new InvalidOperationException("world generation failure: no green district spot for helicopter landing");
+#else
                 Logger.WriteLine(Logger.Stage.RUN_MAIN, "world generation failure: no green district spot for helicopter landing");
                 return false;
-                //throw new InvalidOperationException("world generation failure: no green district spot for helicopter landing");
+#endif                
             }
-            //District chosenDistrict = goodDistricts[m_Rules.Roll(0, goodDistricts.Count)];
 
-            // 3. Find a spot with a 4x2 rectangle of object-free grass tiles.
+            // 3. Find a spot with a 3x1 rectangle of object-free grass tiles.
             bool foundSpot = false;
             District chosenDistrict = null;
             Random r = new Random();
             foreach (int i in Enumerable.Range(0, goodDistricts.Count).OrderBy(x => r.Next()))
             {
-                /*Map heliRescueMap = chosenDistrict.EntryMap;
-                foreach (Zone z in chosenDistrict.EntryMap.Zones)*/
                 foreach (Zone z in goodDistricts[i].EntryMap.Zones)
                 {
-                    if (z.Name.Contains("Park"))
+                    if (z.Name.Contains("Park") || z.Name.Contains("Graveyard") || z.Name.Contains("court"))
                     {
                         Map heliRescueMap = goodDistricts[i].EntryMap;
 
@@ -4231,31 +4277,16 @@ namespace djack.RogueSurvivor.Engine
                         {
                             for (int y = z.Bounds.Top; y < z.Bounds.Bottom; y++)
                             {
-                                if ((heliRescueMap.GetTileAt(x, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x, y) != null))
+                                if (!TileIsGoodForHelicopter(heliRescueMap, new Point(x, y)) || (heliRescueMap.GetMapObjectAt(x, y) != null))
+                                    continue;
+                                
+                                if (!TileIsGoodForHelicopter(heliRescueMap, new Point(x + 1, y)) || (heliRescueMap.GetMapObjectAt(x + 1, y) != null))
                                     continue;
 
-                                if ((heliRescueMap.GetTileAt(x + 1, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 1, y) != null))
+                                if (!TileIsGoodForHelicopter(heliRescueMap, new Point(x + 2, y)) || (heliRescueMap.GetMapObjectAt(x + 2, y) != null))
                                     continue;
 
-                                if ((heliRescueMap.GetTileAt(x + 2, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 2, y) != null))
-                                    continue;
-
-                                if ((heliRescueMap.GetTileAt(x + 3, y).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 3, y) != null))
-                                    continue;
-
-                                if ((heliRescueMap.GetTileAt(x, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x, y + 1) != null))
-                                    continue;
-
-                                if ((heliRescueMap.GetTileAt(x + 1, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 1, y + 1) != null))
-                                    continue;
-
-                                if ((heliRescueMap.GetTileAt(x + 2, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 2, y + 1) != null))
-                                    continue;
-
-                                if ((heliRescueMap.GetTileAt(x + 3, y + 1).Model != GameTiles.FLOOR_GRASS) || (heliRescueMap.GetMapObjectAt(x + 3, y + 1) != null))
-                                    continue;
-
-                                //if we've made it this far, we have found a suitable 4*2 rectangle of tiles where the chopper can 'land'
+                                //if we've made it this far, we have found a suitable 3*1 rectangle of tiles where the chopper can 'land'
                                 foundSpot = true;
                                 chosenDistrict = goodDistricts[i];
                                 m_Session.ArmyHelicopterRescue_DistrictRef = World.CoordToString(chosenDistrict.WorldPosition.X, chosenDistrict.WorldPosition.Y);
@@ -4351,6 +4382,16 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_DrawStringBold(Color.White, "Generating game world... done!", 0, 0);
                 m_UI.UI_Repaint();
             }
+            return true;
+        }
+
+        private bool TileIsGoodForHelicopter(Map map, Point pt) //@@MP (Release 7-3)
+        {
+            // good tiles
+            if (map.GetTileAt(pt).Model == GameTiles.FLOOR_GRASS || GameTiles.IsSportsCourtTile(map.GetTileAt(pt).Model))
+                return true;
+
+            // bad spot.
             return true;
         }
 
@@ -4926,7 +4967,7 @@ namespace djack.RogueSurvivor.Engine
                 return (DistrictKind)m_Rules.Roll((int)DistrictKind._FIRST, (int)DistrictKind._COUNT);
         }
 
-        Map GenerateDistrictEntryMap(World world, District district, Point policeStationDistrictPos, Point hospitalDistrictPos)
+        Map GenerateDistrictEntryMap(World world, District district, Point policeStationDistrictPos, Point hospitalDistrictPos, Point mallDistrictPos)
         {
             int gridX = district.WorldPosition.X;
             int gridY = district.WorldPosition.Y;
@@ -4988,7 +5029,8 @@ namespace djack.RogueSurvivor.Engine
             // Special params.
             genParams.GeneratePoliceStation = (district.WorldPosition == policeStationDistrictPos);
             genParams.GenerateHospital = (district.WorldPosition == hospitalDistrictPos);
-#endregion
+            genParams.GenerateShoppingMall = (district.WorldPosition == mallDistrictPos); //@@MP (Release 7-3)
+            #endregion
 
             // 4. Generate map.
             BaseTownGenerator.Parameters prevParams = m_TownGenerator.Params;
@@ -5240,9 +5282,11 @@ namespace djack.RogueSurvivor.Engine
             m_MusicManager.Load(GameMusics.ROGUEDJACK_THEME_SONG, GameMusics.ROGUEDJACK_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.SANTAMAN_THEME_SONG, GameMusics.SANTAMAN_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.SEWERS, GameMusics.SEWERS_FILE);
+            m_MusicManager.Load(GameMusics.SHOPPING_MALL, GameMusics.SHOPPING_MALL_FILE);
             m_MusicManager.Load(GameMusics.SLEEP, GameMusics.SLEEP_FILE);
             m_MusicManager.Load(GameMusics.SUBWAY, GameMusics.SUBWAY_FILE);
             m_MusicManager.Load(GameMusics.SURVIVORS, GameMusics.SURVIVORS_FILE);
+            m_MusicManager.Load(GameMusics.TEST_MUSIC, GameMusics.TEST_MUSIC_FILE);
             #endregion
 
             #region BACKGROUND MUSIC
@@ -5400,6 +5444,16 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.SMOKE_GRENADE, GameSounds.SMOKE_GRENADE_FILE);
             m_SFXManager.Load(GameSounds.STUN_GUN_PLAYER, GameSounds.STUN_GUN_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.STUN_GUN_NEARBY, GameSounds.STUN_GUN_NEARBY_FILE);
+            /*
+            m_SFXManager.Load(GameSounds.DOG_BARK_NEARBY, GameSounds.DOG_BARK_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.DOG_BARK_FAR, GameSounds.DOG_BARK_FAR_FILE);
+            m_SFXManager.Load(GameSounds.DOG_FLEE, GameSounds.DOG_FLEE_FILE);
+            m_SFXManager.Load(GameSounds.DOG_GROWL, GameSounds.DOG_GROWL_FILE);
+            m_SFXManager.Load(GameSounds.SKELETON_CREAKS, GameSounds.SKELETON_CREAKS_FILE);
+            m_SFXManager.Load(GameSounds.SHAMBLER_GROWL, GameSounds.SHAMBLER_GROWL_FILE);
+            m_SFXManager.Load(GameSounds.ZOMBIE_MASTER_SCREECH, GameSounds.ZOMBIE_MASTER_SCREECH_FILE);
+            m_SFXManager.Load(GameSounds.ZOMBIFIED_GROAN, GameSounds.ZOMBIFIED_GROAN);
+            */
             #endregion
 
             #region AMBIENT SOUND
@@ -5415,6 +5469,7 @@ namespace djack.RogueSurvivor.Engine
             m_AmbientSFXManager.Load(GameAmbients.NIGHT_ANIMALS, GameAmbients.NIGHT_ANIMALS_FILE);
             m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_WITHIN_MAP, GameAmbients.CHURCH_BELLS_WITHIN_MAP_FILE);
             m_AmbientSFXManager.Load(GameAmbients.CHURCH_BELLS_OUTSIDE_MAP, GameAmbients.CHURCH_BELLS_OUTSIDE_MAP_FILE);
+            m_AmbientSFXManager.Load(GameAmbients.TEST_AMBIENT, GameAmbients.TEST_AMBIENT_FILE);
             #endregion
 
             m_UI.UI_Clear(Color.Black);
@@ -5533,8 +5588,7 @@ namespace djack.RogueSurvivor.Engine
                         OnNewDay();
                         foreach (Map map in district.Maps) //@@MP (Release 5-5)
                         {
-                            if (m_Session.WorldTime.Day % 2 == 0) //@@MP - now only happens every 2nd day (Release 6-1)
-                                CheckIfPlantsFruit(map);
+                            CheckIfPlantsFruit(map);
                         }
                     }
                     else if (!wasNight && isNight)
@@ -5831,6 +5885,12 @@ namespace djack.RogueSurvivor.Engine
                         // zombify?
                         if (!Rules.HasImmediateZombification(m_Session.GameMode) && m_Rules.RollChance(m_Rules.CorpseZombifyChance(c, map.LocalTime))) //@@MP - added game mode check now that all modes have corpses (Release 7-1)
                         {
+                            //dogs won't zombify     //@@MP (Release 7-3)
+                            //TODO? make a zombified version?
+                            //FIXME: make a property for this: ActorModel?   
+                            if (GameActors.IsDog(c.DeadGuy.Model))
+                                continue;
+
                             // zombify this one.
                             tryZombifyCorpses.Add(c);
                             continue;
@@ -6187,8 +6247,14 @@ namespace djack.RogueSurvivor.Engine
                         KillActor(null, actor, "starvation");
 
                         // zombify?
-                        if (!actor.Model.Abilities.IsUndead && Rules.HasImmediateZombification(m_Session.GameMode) && m_Rules.RollChance(s_Options.StarvedZombificationChance))
+                        if (!actor.Model.Abilities.IsUndead && Rules.HasImmediateZombification(m_Session.GameMode) && s_Options.StarvedZombification) //@@MP - remove % chance to zombify (Release 7-3)
                         {
+                            //dogs won't zombify     //@@MP (Release 7-3)
+                            //TODO? make a zombified version?
+                            //FIXME: make a property for this: ActorModel?
+                            if (GameActors.IsDog(actor.Model))
+                                continue;
+
                             // remove corpse
                             //map.TryRemoveCorpseOf(actor); //@@MP - Zombify now handles corpse removal (Release 5-6)
 
@@ -6251,7 +6317,11 @@ namespace djack.RogueSurvivor.Engine
 
                                 // regen sleep pts.
                                 bool isOnCouch = m_Rules.IsOnCouch(actor); //IsCouch is a flag on mapobjects, indicating they can be slept on
-                                int sleepRegen = m_Rules.ActorSleepRegen(actor, isOnCouch);
+                                Inventory groundInv = map.GetItemsAt(actor.Location.Position);  //@MP - added sleeping bags (Release 7-3)
+                                bool isOnSleepingBag = false;
+                                if (groundInv != null)
+                                    isOnSleepingBag = groundInv.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.SLEEPING_BAG);
+                                int sleepRegen = m_Rules.ActorSleepRegen(actor, isOnCouch || isOnSleepingBag); //@MP - added sleeping bags (Release 7-3)
                                 actor.SleepPoints += sleepRegen;
                                 actor.SleepPoints = Math.Min(actor.SleepPoints, m_Rules.ActorMaxSleep(actor));
 
@@ -6301,7 +6371,7 @@ namespace djack.RogueSurvivor.Engine
 #region
                     //regen AP
                     if (!actor.IsSleeping)
-                        actor.ActionPoints += m_Rules.ActorSpeed(actor);
+                        actor.ActionPoints = Math.Min(actor.Doll.Body.Speed, actor.ActionPoints += m_Rules.ActorSpeed(actor)); //@@MP - force stop them going "hyperactive" (Release 7-3)
 
                     //regen STA
                     if (actor.StaminaPoints < m_Rules.ActorMaxSTA(actor))
@@ -6353,7 +6423,7 @@ namespace djack.RogueSurvivor.Engine
 #region
                     // sanity loss.
 #region
-                    if (actor.Model.Abilities.HasSanity && s_Options.IsSanityEnabled) //@@MP - this is where the each-turn sanity loss happens (Release 1)
+                    if (actor.Model.Abilities.HasSanity && s_Options.IsSanityEnabled && !actor.IsSleeping) //@@MP - this is where the each-turn sanity loss happens (Release 1), only when awake (Release 7-3)
                         if (--actor.Sanity <= 0) actor.Sanity = 0;
 #endregion
 
@@ -6441,7 +6511,6 @@ namespace djack.RogueSurvivor.Engine
                     // 3.3.6 Intoxication and incapacitation
 #region
                     if (--actor.BloodAlcohol < 0) actor.BloodAlcohol = 0; //@@MP (Release 7-1)
-
                     if (actor.IsStunned) --actor.StunnedTurns;  //@@MP (Release 7-2)
                     if (actor.IsFlashbanged) --actor.FlashbangedTurns;  //@@MP (Release 7-2)
                     #endregion
@@ -7472,7 +7541,7 @@ namespace djack.RogueSurvivor.Engine
             //if (!s_Options.NPCCanStarveToDeath)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH), s_Options.NPCCanStarveToDeath ? "yes" : "no"));
             //if(s_Options.StarvedZombificationChance != GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE), s_Options.StarvedZombificationChance));
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_STARVED_ZOMBIFICATION), s_Options.StarvedZombification ? "yes" : "no"));
             //if (s_Options.ZombificationChance != GameOptions.DEFAULT_ZOMBIFICATION_CHANCE)
             graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE), s_Options.ZombificationChance));
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS), s_Options.IsAggressiveHungryCiviliansOn ? "yes" : "no")); //@@MP (Release 5-2)
@@ -7608,7 +7677,7 @@ namespace djack.RogueSurvivor.Engine
 #region Summary
             graveyard.Append(String.Format("{0} was {1} and {2}.", name, AorAn(m_Player.Model.Name), AorAn(m_Player.Faction.MemberName)));
             graveyard.Append(String.Format("{0} was rescued on {1}.", heOrShe, rescueTime.ToString()));
-            graveyard.Append(String.Format("{0}'s spirit guided {1} for {2}.", name, himOrHer, realTimeString));
+            graveyard.Append(String.Format("{0}'s run took {1}.", name, realTimeString));
             if (m_Session.Scoring.ReincarnationNumber > 0)
                 graveyard.Append(String.Format("{0} was reincarnation {1}.", heOrShe, m_Session.Scoring.ReincarnationNumber));
             graveyard.Append(" ");
@@ -7641,7 +7710,7 @@ namespace djack.RogueSurvivor.Engine
 
             graveyard.Append("> RESCUE");
 #region
-            graveyard.Append(String.Format("{0} in {1}.", m_Session.Scoring.DeathReason, m_Session.Scoring.DeathPlace));
+            graveyard.Append(String.Format("{0} from {1}.", m_Session.Scoring.DeathReason, m_Session.Scoring.DeathPlace));
             graveyard.Append(" ");
 #endregion
 
@@ -7822,7 +7891,7 @@ namespace djack.RogueSurvivor.Engine
             //if (!s_Options.NPCCanStarveToDeath)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH), s_Options.NPCCanStarveToDeath ? "yes" : "no"));
             //if(s_Options.StarvedZombificationChance != GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE), s_Options.StarvedZombificationChance));
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_STARVED_ZOMBIFICATION), s_Options.StarvedZombification ? "yes" : "no"));
             //if (s_Options.ZombificationChance != GameOptions.DEFAULT_ZOMBIFICATION_CHANCE)
             graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE), s_Options.ZombificationChance));
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS), s_Options.IsAggressiveHungryCiviliansOn ? "yes" : "no")); //@@MP (Release 5-2)
@@ -8446,6 +8515,10 @@ namespace djack.RogueSurvivor.Engine
             if (a.Location.Map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap || a.Location.Map == m_Session.UniqueMaps.ArmyBase.TheMap) //@@MP - added army base (Release 6-3)
                 return false;
 
+            // forbid dogs   //@@MP (Release 7-3)
+            if (a.Faction == GameFactions.TheFerals)
+                return false;
+
             // forbid some special actors.
             if (a == m_Session.UniqueActors.PoliceStationPrisonner.TheActor)
                 return false;
@@ -8691,7 +8764,6 @@ namespace djack.RogueSurvivor.Engine
 
             //////////////////////////////
             // New day achievements.
-            // 1. Reached day X (living only)
             //////////////////////////////
             // 1. Reached day X (living only)
             if (!m_Player.Model.Abilities.IsUndead)
@@ -8730,7 +8802,7 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
 
-            //----- Spawn helicopter if it's rescue day @@MP (Release 6-4)
+            //----- Spawn helicopter if it's rescue day  //@@MP (Release 6-4)
             if (m_Session.WorldTime.Day == m_Session.ArmyHelicopterRescue_Day)
             {
                 Map helicopterMap = m_Session.ArmyHelicopterRescue_Map;
@@ -8744,16 +8816,24 @@ namespace djack.RogueSurvivor.Engine
                 return;
 
 #region Fruit edible plants.
+            //mapobject-based
             foreach (MapObject mapObj in map.MapObjects)
             {
                 int x = mapObj.Location.Position.X;
                 int y = mapObj.Location.Position.Y;
-                if (mapObj != null && mapObj.AName == "a berry bush")
+                if (mapObj != null)
                 {
-                    GrowFoodItems(map, x, y, "wild berries");
+                    switch (mapObj.AName) //@@MP - added peanuts and grapes (Release 7-3)
+                    {
+                        //regrow each day, as their nutrition is so low
+                        case "a berry bush": GrowFoodItems(map, x, y, "wild berries"); break;
+                        case "a peanut plant": GrowFoodItems(map, x, y, "peanuts"); break;
+                        case "a grape vine": GrowFoodItems(map, x, y, "grapes"); break;
+                    }
                 }
             }
 
+            //tile-based
             for (int x = 0; x < map.Width; x++)
             {
                 for (int y = 0; y < map.Height; y++)
@@ -8761,7 +8841,8 @@ namespace djack.RogueSurvivor.Engine
                     Tile tile = map.GetTileAt(x, y);
                     if (tile != null && tile.Model == GameTiles.FLOOR_PLANTED)
                     {
-                        GrowFoodItems(map, x, y, "vegetables"); //regrow each day
+                        if (m_Session.WorldTime.Day % 2 == 0) //@@MP - now only happens every 2nd day (Release 6-1)
+                            GrowFoodItems(map, x, y, "vegetables"); //their nutrition is high, and the player should plant more of these as often as possible
                     }
                 }
             }
@@ -8780,7 +8861,15 @@ namespace djack.RogueSurvivor.Engine
             {
                 case "wild berries":
                     freshUntil = m_Session.WorldTime.TurnCounter + (WorldTime.TURNS_PER_DAY * GameItems.WILD_BERRIES.BestBeforeDays);
-                    food = new ItemFood(GameItems.WILD_BERRIES, freshUntil) { Quantity = 2 };
+                    food = new ItemFood(GameItems.WILD_BERRIES, freshUntil) { Quantity = 1 };
+                    break;
+                case "peanuts":
+                    freshUntil = m_Session.WorldTime.TurnCounter + (WorldTime.TURNS_PER_DAY * GameItems.PEANUTS.BestBeforeDays);
+                    food = new ItemFood(GameItems.PEANUTS, freshUntil) { Quantity = 1 };
+                    break;
+                case "grapes":
+                    freshUntil = m_Session.WorldTime.TurnCounter + (WorldTime.TURNS_PER_DAY * GameItems.GRAPES.BestBeforeDays);
+                    food = new ItemFood(GameItems.GRAPES, freshUntil) { Quantity = 1 };
                     break;
                 case "vegetables":
                     freshUntil = m_Session.WorldTime.TurnCounter + (WorldTime.TURNS_PER_DAY * GameItems.VEGETABLES.BestBeforeDays);
@@ -8962,6 +9051,8 @@ namespace djack.RogueSurvivor.Engine
                 // not undeads!
                 if (a.Model.Abilities.IsUndead)
                     continue;
+                // not dogs     //@@MP (Release 7-3)
+                if (GameActors.IsDog(a.Model))
 
                 // do it!
                 HandleNPCSkillUpgrade(a);  // alpha10.1
@@ -11789,9 +11880,9 @@ namespace djack.RogueSurvivor.Engine
                     else
                         modeDesc = string.Format("Normal fire mode average hit chance {0}%", m_Rules.ComputeChancesRangedHit(player, currentActorTarget, 0));
                 }
-                else if (fuelCanTargets > 0 && iCurrentTarget <= totalTargetsByIndex) //@@MP - now any fuel cans (Release 7-1)
+                else if ((fuelCanTargets > 0) && (iCurrentTarget < (actorTargets + fuelCanTargets))) //@@MP - now any fuel cans (Release 7-1), fixed (Release 7-3)
                 {
-                    int indexAdjustedForActorsCount = (actorTargets > 0) ? (iCurrentTarget - actorTargets) : (iCurrentTarget);
+                    int indexAdjustedForActorsCount = (actorTargets > 0) ? 0 : (iCurrentTarget);
 
                     targetType = "Item";
                     currentFuelCanTarget = potentialFuelCanTargets[indexAdjustedForActorsCount].Key;
@@ -12439,6 +12530,8 @@ namespace djack.RogueSurvivor.Engine
             // Check for adjacent cars
             bool refuelled = false;
             bool fueledCar = false;
+            bool pumpAdjacent = false; //@@MP (Release 7-3)
+            
             m_Player.Location.Map.ForEachAdjacentInMap(m_Player.Location.Position,
                 (pt) =>
                 {
@@ -12474,14 +12567,23 @@ namespace djack.RogueSurvivor.Engine
                                 }
                             }
                         }
+                        else if (mapObj.ImageID == GameImages.OBJ_FUEL_PUMP) //@@MP - fuel pumps added (Release 7-3)
+                        {
+                            pumpAdjacent = true;
+                        }
                     }
                 });
 
             if (refuelled)
                 return true;
+            else if (pumpAdjacent) //@@MP (Release 7-3)
+            {
+                AddMessage(new Message("Fuel pumps need power. It's not possible to siphon from them.", m_Session.WorldTime.TurnCounter, Color.Red));
+                return false;
+            }
             else if (!fueledCar)
             {
-                AddMessage(new Message("Not adjacent to any cars with fuel.", m_Session.WorldTime.TurnCounter, Color.Red));
+                AddMessage(new Message("Not adjacent to any cars with fuel left.", m_Session.WorldTime.TurnCounter, Color.Red));
                 return false;
             }
             else if (m_Player.Inventory.IsFull)
@@ -12915,6 +13017,26 @@ namespace djack.RogueSurvivor.Engine
 
             // return if we did an action.
             return actionDone;
+        }
+
+        bool HandlePlayerUseSleepingBag(Actor player, Item it) //@@MP (Release 7-3)
+        {
+            if (!Rules.CanActorSleep(player, out string reason))
+            {
+                AddMessage(MakeErrorMessage(String.Format("Can't sleep : {0}.", reason)));
+                return false;
+            }
+
+            MapObject mapObj = player.Location.Map.GetMapObjectAt(player.Location.Position);
+            if (mapObj != null)
+            {
+                AddMessage(MakeErrorMessage(String.Format("Can't place sleeping bag : {0} in the way.", mapObj.AName)));
+                return false;
+            }
+            
+            //now do it
+            DoDropItem(player, it);
+            return HandlePlayerSleep(player);
         }
 
         bool HandlePlayerUseSpray(Actor player)
@@ -14362,7 +14484,7 @@ namespace djack.RogueSurvivor.Engine
             // get entry map.
             Map entryMap = district.EntryMap;
 
-            // get when we left the district.
+            // the last turn that we simulated for this district (could also be when we last left the district, but unlikely as we're going into it now).
             int lastTime = entryMap.LocalTime.TurnCounter;
 
             // if option set, simulate to catch current turn.
@@ -14371,105 +14493,133 @@ namespace djack.RogueSurvivor.Engine
             if (s_Options.IsSimON)
             {
                 int catchupTo = m_Session.WorldTime.TurnCounter;  // alpha10
-                int turnsToCatchup = catchupTo - entryMap.LocalTime.TurnCounter; // alpha10
+                int turnsToCatchup = (catchupTo - entryMap.LocalTime.TurnCounter); // alpha10
+                int cappedTurnsToCatchup = Math.Min(GameOptions.SimCapToTurns(s_Options.SimTurnsCap), (int)turnsToCatchup);  //@@MP - added an optional cap (Release 7-3)
+
+                // move each map forward in time if were only simulating a capped amount of turns   //@@MP (Release 7-3)
+                foreach (Map map in district.Maps)
+                    map.LocalTime.TurnCounter = m_Session.WorldTime.TurnCounter - cappedTurnsToCatchup;
 
                 StopSimThread(false);  // alpha10
 
-                if (turnsToCatchup > 0)
+                if (cappedTurnsToCatchup > 0)
                 {
                     // music.
                     m_MusicManager.StopAll();
                     m_MusicManager.Play(GameMusics.INTERLUDE, AudioPriority.PRIORITY_EVENT);
 
-                // force player view to darkness (so he gets no messages).
-                if (m_Player != null)
-                {
-                    m_Player.Location.Map.ClearView();
-                    entryMap.ClearView();
-                }
+                    // force player view to darkness (so he gets no messages).
+                    if (m_Player != null)
+                    {
+                        m_Player.Location.Map.ClearView();
+                        entryMap.ClearView();
+                    }
 
-                // alpha10 nope not here 
-                /*// stop simulation thread & get mutex.
-                StopSimThread();
-                Monitor.Enter(m_SimMutex);*/
+                    // alpha10 nope not here 
+                    /*// stop simulation thread & get mutex.
+                    StopSimThread();
+                    Monitor.Enter(m_SimMutex);*/
 
-                // simulate loop.
+                    // simulate loop.
 #region
-                double timerStart = DateTime.UtcNow.TimeOfDay.TotalMilliseconds;
-                double lastRedraw = 0;
-                bool aborted = false;
+                    int turnsDone = 0;
+                    double timerStart = DateTime.UtcNow.TimeOfDay.TotalMilliseconds;
+                    double lastRedraw = 0;
+                    bool aborted = false;
                     while (entryMap.LocalTime.TurnCounter < catchupTo) // alpha10 changed from <= to <
                     {
-                    double timerNow = DateTime.UtcNow.TimeOfDay.TotalMilliseconds;
+                        double timerNow = DateTime.UtcNow.TimeOfDay.TotalMilliseconds;
 
-                    // time to redraw?
-                    bool doRedraw = (entryMap.LocalTime.TurnCounter == m_Session.WorldTime.TurnCounter) ||      // show last turn
-                        entryMap.LocalTime.TurnCounter == lastTime ||                                           // show 1st turn
-                        timerNow >= lastRedraw + 1000;                                                          // show every seconds
+                        // time to redraw?
+                        bool doRedraw = (turnsDone == 0 || timerNow >= lastRedraw + 1000);  // show on 1st turn & show at every elapsed second
 
-                    // redraw?
-#region
-                    if (doRedraw)
-                    {
-                        // remember we redrawed.
-                        lastRedraw = timerNow;
-
-                        // show.
-                        ClearMessages();
-                        AddMessage(new Message(String.Format("Simulating district, please wait {0}/{1}...", entryMap.LocalTime.TurnCounter, m_Session.WorldTime.TurnCounter), m_Session.WorldTime.TurnCounter, Color.White));
-                        AddMessage(new Message("(this is an option you can tune)", m_Session.WorldTime.TurnCounter, Color.White));
-
-                        // estimate turns per seconds and time left.
-                        int turnsDone = entryMap.LocalTime.TurnCounter - lastTime;
-                        if (turnsDone > 1)
+                        // redraw?
+                        #region
+                        if (doRedraw)
                         {
-                            int turnsLeft = m_Session.WorldTime.TurnCounter - entryMap.LocalTime.TurnCounter;
-                            double turnsPerSecs = 1000.0f * (float)turnsDone / (1 + timerNow - timerStart);
-                            AddMessage(new Message(String.Format("Turns per second    : {0:F2}.", turnsPerSecs), m_Session.WorldTime.TurnCounter, Color.White));
+                            // remember we redrawed.
+                            lastRedraw = timerNow;
 
-                            int secsLeft = (int)(turnsLeft / turnsPerSecs);
-                            int mins = secsLeft / 60;
-                            int secs = secsLeft % 60;
-                            string etaFormat = (mins > 0 ? String.Format("{0} min {1:D2} secs", mins, secs) : String.Format("{0} secs", secs));
-                            AddMessage(new Message(String.Format("Estimated time left : {0}.", etaFormat), m_Session.WorldTime.TurnCounter, Color.White));
+                            // show.
+                            ClearMessages();
+                            AddMessage(new Message(String.Format("Simulating district, please wait {0}/{1}...", turnsDone, cappedTurnsToCatchup), m_Session.WorldTime.TurnCounter, Color.White));
+                            AddMessage(new Message("(this is an option you can tune)", m_Session.WorldTime.TurnCounter, Color.White));
+
+                            // estimate turns per seconds and time left.
+                            if (turnsDone > 1)
+                            {
+                                int turnsLeft = m_Session.WorldTime.TurnCounter - entryMap.LocalTime.TurnCounter;
+                                double turnsPerSecs = 1000.0f * (float)turnsDone / (1 + timerNow - timerStart);
+                                AddMessage(new Message(String.Format("Turns per second    : {0:F2}", turnsPerSecs), m_Session.WorldTime.TurnCounter, Color.White));
+
+                                int secsLeft = (int)(turnsLeft / turnsPerSecs);
+                                int mins = secsLeft / 60;
+                                int secs = secsLeft % 60;
+                                string etaFormat = (mins > 0 ? String.Format("{0} min {1:D2} secs", mins, secs) : String.Format("{0} secs", secs));
+                                AddMessage(new Message(String.Format("Estimated time left : {0}", etaFormat), m_Session.WorldTime.TurnCounter, Color.White));
+                            }
+                            if (aborted)
+                                AddMessage(new Message("Simulation aborted!", m_Session.WorldTime.TurnCounter, Color.Red));
+                            else
+                                AddMessage(new Message("<keep ESC pressed to abort the simulation>", m_Session.WorldTime.TurnCounter, Color.Yellow));
+                            RedrawPlayScreen();
+
+                            /*// keep looping music. //alpha 10, not necessary
+                            if (!m_MusicManager.IsPlaying(GameMusics.INTERLUDE))
+                                m_MusicManager.Play(GameMusics.INTERLUDE);*/
                         }
+#endregion
+
+                        // aborted?
                         if (aborted)
-                            AddMessage(new Message("Simulation aborted!", m_Session.WorldTime.TurnCounter, Color.Red));
-                        else
-                            AddMessage(new Message("<keep ESC pressed to abort the simulation>", m_Session.WorldTime.TurnCounter, Color.Yellow));
-                        RedrawPlayScreen();
+                            break;
 
-                        /*// keep looping music. //alpha 10, not necessary
-                        if (!m_MusicManager.IsPlaying(GameMusics.INTERLUDE))
-                            m_MusicManager.Play(GameMusics.INTERLUDE);*/
-                    }
-#endregion
-
-                    // aborted?
-                    if (aborted)
-                        break;
-
-                    // check for abort.
+                        // check for abort.
 #region
-                    KeyEventArgs key = m_UI.UI_PeekKey();
-                    if (key != null && key.KeyCode == Keys.Escape)
-                    {
-                        // jump in time for each map.
-                        foreach (Map map in district.Maps)
-                            map.LocalTime.TurnCounter = m_Session.WorldTime.TurnCounter;
-                        // abort!
-                        aborted = true;
-                    }
+                        KeyEventArgs key = m_UI.UI_PeekKey();
+                        if (key != null && key.KeyCode == Keys.Escape)
+                        {
+                            // jump in time for each map.
+                            foreach (Map map in district.Maps)
+                                map.LocalTime.TurnCounter = m_Session.WorldTime.TurnCounter;
+                            // abort!
+                            aborted = true;
+                        }
 #endregion
 
-                    // if not aborted, simulate the district.
+                        // if not aborted, simulate the district.
+                        if (!aborted)
+                        {
+                            // sim the district.
+                            var bla = entryMap.LocalTime.TurnCounter;
+                            SimulateDistrict(district);
+                            ++turnsDone;
+                            var bla2 = entryMap.LocalTime.TurnCounter;
+                        }
+                    }
+
+                    // show final result of sim    //@@MP (Release 7-3)
                     if (!aborted)
                     {
-                        // sim the district.
-                        SimulateDistrict(district);
+                        double timerComplete = DateTime.UtcNow.TimeOfDay.TotalMilliseconds;
+                        ClearMessages();
+                        AddMessage(new Message(String.Format("Simulating district complete ({0} turns)", cappedTurnsToCatchup), m_Session.WorldTime.TurnCounter, Color.White));
+
+                        double turnsPerSecs = 1000.0f * (float)turnsDone / (1 + timerComplete - timerStart);
+                        AddMessage(new Message(String.Format("Turns per second :  {0:F2}", turnsPerSecs), m_Session.WorldTime.TurnCounter, Color.White));
+
+                        TimeSpan timeElapsed = new TimeSpan((long)(timerComplete - timerStart));
+                        string formattedElapsed = "< 1 second";
+                        if (timeElapsed.Seconds > 0)
+                            formattedElapsed = String.Format("{0:00}m:{1:00}s.{2:0000}ms", (int)timeElapsed.Minutes, timeElapsed.Seconds, timeElapsed.Milliseconds);
+                        AddMessage(new Message(String.Format("Time elasped :  {0}", formattedElapsed), m_Session.WorldTime.TurnCounter, Color.White));
                     }
-                }
-#endregion
+                    else
+                    {
+                        RemoveLastMessage(); // remove "ESC" message.
+                        AddMessage(new Message("Simulation aborted!", m_Session.WorldTime.TurnCounter, Color.Yellow));
+                    }
+                    #endregion
 
                     // alpha10 obsolete and fix
                     //// release mutex and restart sim thread.
@@ -14477,21 +14627,18 @@ namespace djack.RogueSurvivor.Engine
                     //RestartSimThread();  // alpha10 no no no! restart AFTER chaging the player district duh!
 
                     // Sim ends - either aborted or normal end.
-#region
-                    // remove "ESC" message.
-                    RemoveLastMessage();
+                    #region
+                    // since sim arbitrary messes with actor APs, we're not quite sure were they are now.
+                    // so force them back to zero to have a clean start.
+                    foreach (Map map in district.Maps)
+                        foreach (Actor a in map.Actors)
+                            if (!a.IsSleeping)
+                                a.ActionPoints = 0;
 
-                // since sim arbitrary messes with actor APs, we're not quite sure were they are now.
-                // so force them back to zero to have a clean start.
-                foreach (Map map in district.Maps)
-                    foreach (Actor a in map.Actors)
-                        if (!a.IsSleeping)
-                            a.ActionPoints = 0;
-
-                // stop music.
-                m_MusicManager.StopAll();
+                    // stop music.
+                    m_MusicManager.StopAll();
 #endregion
-                }  // sim has catchup to do
+                }  // sim has catch-up to do
             } // sim on
             else
             {
@@ -14979,6 +15126,18 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
 
+                        // Shopping mall   //@@MP (Release 7-3)
+                        if (map == m_Session.UniqueMaps.ShoppingMall_GroundFloor.TheMap.District.EntryMap)
+                        {
+                            m_UI.UI_DrawStringBold(Color.White, String.Format(" at {0} : Shopping mall", World.CoordToString(x, y)), gx, gy);
+                            gy += BOLD_LINE_SPACING;
+                            if (gy >= CANVAS_HEIGHT - 2 * BOLD_LINE_SPACING)
+                            {
+                                gy = buildingsY;
+                                gx += 25 * BOLD_LINE_SPACING;
+                            }
+                        }
+
                         // Secrets
                         // - CHAR Underground Facility?
                         if (m_Session.PlayerKnows_CHARUndergroundFacilityLocation && map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap.District.EntryMap)
@@ -15034,7 +15193,7 @@ namespace djack.RogueSurvivor.Engine
                 // Tag locations  //@@MP (Release 6-6)
                 /////////////////
                 #region
-                gx = 350;
+                gx = 380;
                 gy = 2 * BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.White, "> YOUR TAG LOCATIONS", gx, gy);
                 gy += BOLD_LINE_SPACING;
@@ -15293,16 +15452,17 @@ namespace djack.RogueSurvivor.Engine
                 // show.
                 if (IsAudibleToPlayer(newLocation, Rules.QUIET_NOISE_RADIUS)) //@@MP - switched to IsVisible (Release 2), changed it back to audible now that it can be supplied a range (Release 5-4)
                 {
-                    if (mapObj.TheName == "the chain wire fence") //@@MP - allows for other jumped on sounds added as elseifs. order them by most common descending
+                    //@@MP - order them by most common descending
+                    if (mapObj.TheName == "the chain wire fence")
                     {
                         if (actor.IsPlayer)
                             m_SFXManager.Play(GameSounds.CLIMB_FENCE_PLAYER, AudioPriority.PRIORITY_BGM);
                         else
                             m_SFXManager.Play(GameSounds.CLIMB_FENCE_NEARBY, AudioPriority.PRIORITY_BGM);
                     }
-                    else if (mapObj.TheName == "the wrecked car")
+                    else if (mapObj is Car) //@@MP - use Car type (Release 7-3)
                     {
-                        if (actor.IsPlayer)    
+                        if (actor.IsPlayer)
                             m_SFXManager.Play(GameSounds.CLIMB_CAR_PLAYER, AudioPriority.PRIORITY_BGM);
                         else
                             m_SFXManager.Play(GameSounds.CLIMB_CAR_NEARBY, AudioPriority.PRIORITY_BGM);
@@ -16610,7 +16770,7 @@ namespace djack.RogueSurvivor.Engine
                 Point defpt = new Point(defender.Location.Position.X, defender.Location.Position.Y);
 
                 // set on fire by flaming crossbow bolt?  //@@MP (Release 7-2)
-                if (attacker.IsPlayer && m_Session.Player_CurrentFireMode == FireMode.FLAMING && defender.Model.Abilities.IsUndead && !defender.IsSkeletonType)
+                if (attacker.IsPlayer && m_Session.Player_CurrentFireMode == FireMode.FLAMING && defender.Model.Abilities.IsUndead && !GameActors.IsSkeletonBranch(defender.Model))
                 {
                     if (m_Rules.RollChance(CATCH_ONFIRE_FROM_FLAMING_SHOT_CHANCE))
                         SetActorOnFire(defender);
@@ -16621,7 +16781,7 @@ namespace djack.RogueSurvivor.Engine
                 if (rm.IsFlameWeapon)  // fires caused by flame weapons  //@@MP (Release 7-2)
                 {
                     //special damage cases
-                    if (defender.IsSkeletonType)
+                    if (GameActors.IsSkeletonBranch(defender.Model))
                         dmgRoll = 0;  //flames can't hurt skeletons
                     else
                     {
@@ -16816,25 +16976,33 @@ namespace djack.RogueSurvivor.Engine
                     mapObj.BreakState != MapObject.Break.BROKEN &&      // not if already broken.
                     !mapObj.IsWalkable)                                 // not if not blocking.
                 {
-                    // message.
-                    bool isAttVisible = IsVisibleToPlayer(attacker);
-                    bool isObjVisible = IsVisibleToPlayer(mapObj);
-                    if (isAttVisible || isObjVisible)
+                    if (rm.Attack.DamageValue > 0) //checkfirethru not applicable for zero-damage weapons eg stun guns  //@@MP (Release 7-3)
                     {
-                        if (isAttVisible)
+                        // message.
+                        bool isAttVisible = IsVisibleToPlayer(attacker);
+                        bool isObjVisible = IsVisibleToPlayer(mapObj);
+                        if (isAttVisible || isObjVisible)
                         {
-                            AddOverlay(new OverlayRect(Color.Yellow, new Rectangle(MapToScreen(attacker.Location.Position), new Size(TILE_SIZE, TILE_SIZE))));
-                            AddOverlay(new OverlayImage(MapToScreen(attacker.Location.Position), GameImages.ICON_RANGED_ATTACK));
-                        }
-                        if (isObjVisible)
-                            AddOverlay(new OverlayRect(Color.Red, new Rectangle(MapToScreen(pt), new Size(TILE_SIZE, TILE_SIZE))));
-                      
-                        AnimDelay(DELAY_SHORT, false);
-                    }
+                            if (isAttVisible)
+                            {
+                                AddOverlay(new OverlayRect(Color.Yellow, new Rectangle(MapToScreen(attacker.Location.Position), new Size(TILE_SIZE, TILE_SIZE))));
+                                AddOverlay(new OverlayImage(MapToScreen(attacker.Location.Position), GameImages.ICON_RANGED_ATTACK));
+                            }
+                            if (isObjVisible)
+                                AddOverlay(new OverlayRect(Color.Red, new Rectangle(MapToScreen(pt), new Size(TILE_SIZE, TILE_SIZE))));
 
-                    // destroy that object.
-                    if (rm.Attack.DamageValue > 0) //checkfirethru not applicable for zero-damage weapons eg stun guns  //@@MP (Release 7-2)
-                        DoDestroyObject(mapObj);
+                            AnimDelay(DELAY_SHORT, false);
+                        }
+
+                        // special cases first   //@@MP (Release 7-3)
+                        if (mapObj.ImageID == GameImages.OBJ_FUEL_PUMP)
+                        {
+                            if (rm.IsFireArm || rm.IsFlameWeapon)
+                                ExplodeFuelPump(mapObj.Location);
+                        }
+                        else // destroy that object.
+                            DoDestroyObject(mapObj);
+                    }
 
                     // fire intercepted.
                     return true;
@@ -17098,7 +17266,7 @@ namespace djack.RogueSurvivor.Engine
 
             // Hit vs Missed
             #region
-            DiceRoller roller = new DiceRoller(); ItemPrimedExplosive fuelThing = null;
+            DiceRoller roller = new DiceRoller();
             if (roller.RollChance(hitChance)) //hit
             {
                 if (isItem)
@@ -17109,21 +17277,23 @@ namespace djack.RogueSurvivor.Engine
                         if (it.Model == item.Model) //get rid of all instances of the fuel cans
                             attacker.Location.Map.RemoveItemAt(it, fuelThingPos);
                     }
-                    fuelThing = new ItemPrimedExplosive(GameItems.FUEL_CAN_PRIMED);
+                    ItemPrimedExplosive fuelThing = new ItemPrimedExplosive(GameItems.FUEL_CAN_PRIMED);
+                    DoBlast(new Location(attacker.Location.Map, fuelThingPos), (fuelThing.Model as ItemExplosiveModel).BlastAttack, fuelThing.Model, attacker);
                 }
                 else if (isMapObject)
                 {
-                    attacker.Location.Map.RemoveMapObjectAt(fuelThingPos.X, fuelThingPos.Y);
-                    fuelThing = new ItemPrimedExplosive(GameItems.FUEL_PUMP_PRIMED);
+                    ExplodeFuelPump(attacker.Location);
                 }
-                DoBlast(new Location(attacker.Location.Map, fuelThingPos), (fuelThing.Model as ItemExplosiveModel).BlastAttack, fuelThing.Model, attacker);
             }
             else // miss
             {
                 // show
                 if (isFuelThingVisible)
                 {
-                    AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_MISS), item));
+                    if (isItem) //@@MP - originally only handled items (Release 7-3)
+                        AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_MISS), item));
+                    else if (isMapObject)
+                        AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_MISS), mapObj));
                     AddOverlay(new OverlayImage(MapToScreen(fuelThingPos), GameImages.ICON_RANGED_MISS));
                     RedrawPlayScreen();
                     AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT, false);
@@ -17359,7 +17529,7 @@ namespace djack.RogueSurvivor.Engine
             AddOverlay(new OverlayText(screenPos, Color.Red, damage.ToString(), Color.Black));
         }
 
-        void DoBlast(Location location, BlastAttack blastAttack, ItemModel itemModel, Actor thrower) //@@MP - added itemExplosiveModel to determine the relevant sfx (Release 4), added thrower (Release 6-6)
+        void DoBlast(Location location, BlastAttack blastAttack, ItemModel itemModel, Actor thrower = null) //@@MP - added itemExplosiveModel to determine the relevant sfx (Release 4), added thrower (Release 6-6), thrower optional (Release 7-3)
         {
             // noise.
             OnLoudNoise(location.Map, location.Position, "An EXPLOSION");
@@ -17367,19 +17537,11 @@ namespace djack.RogueSurvivor.Engine
             // blast icon vs audio.
             bool hugeExplosion = false; bool playerHearsExplosion = false; //@@MP (Release 7-1)
             bool isVisible = IsVisibleToPlayer(location);
+
+            #region SFX
             if (isVisible || IsAudibleToPlayer(location, Rules.LOUD_NOISE_RADIUS)) //@@MP - changed from isVisible to also IsAudible with a range (Release 5-4), was LOUD radius (Release 6-4)
             {
                 playerHearsExplosion = true;
-
-                if (blastAttack.Damage[0] > 0) //@@MP - >0 caters for non-damaging blasts like smoke grenades (Release 7-2)
-                    ShowBlastImage(MapToScreen(location.Position), blastAttack, blastAttack.Damage[0]);
-                else if (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_SMOKE_GRENADE_PRIMED)
-                    DeploySmokeScreen(location.Map, location.Position);
-                else if (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_FLASHBANG_PRIMED)
-                    DetonateFlashbang(location.Map, location.Position);
-                RedrawPlayScreen();
-
-                #region
                 switch (itemModel.ID) //@@MP - play the appropriate sfx for the explosive type (Release 4)
                 {
                     case (int)GameItems.IDs.EXPLOSIVE_FUEL_CAN_PRIMED: //@@MP (Release 7-1)
@@ -17471,13 +17633,19 @@ namespace djack.RogueSurvivor.Engine
             #endregion
 
             // broader handling for messaging //@@MP (Release 7-1)
-            string soundModifier = "an";
-            if (hugeExplosion) soundModifier = "a huge";
-
+            string soundModifier = (hugeExplosion) ? "a huge" : "an";
             if (isVisible)
-                MakePlayerCentricMessage("You see " + soundModifier + " explosion!", location.Position);
+                AddMessage(MakeMessage(m_Player, MakePlayerCentricMessage("sees " + soundModifier + " EXPLOSION", location.Position).Text, Color.Yellow));
             else if (playerHearsExplosion)
-                MakePlayerCentricMessage("You hear " + soundModifier + " explosion!", location.Position);
+                AddMessage(MakeMessage(m_Player, MakePlayerCentricMessage("hears " + soundModifier + " EXPLOSION", location.Position).Text, Color.Yellow));
+
+            // special cases
+            if (isVisible && blastAttack.Damage[0] > 0) //@@MP - >0 caters for non-damaging blasts like smoke grenades and flashbangs (Release 7-2)
+                ShowBlastImage(MapToScreen(location.Position), blastAttack, blastAttack.Damage[0]);
+            else if (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_SMOKE_GRENADE_PRIMED)
+                DeploySmokeScreen(location.Map, location.Position);
+            else if (itemModel.ID == (int)GameItems.IDs.EXPLOSIVE_FLASHBANG_PRIMED)
+                DetonateFlashbang(location.Map, location.Position);
 
             if (location.Map == m_Player.Location.Map)
                 RedrawPlayScreen();
@@ -17602,7 +17770,7 @@ namespace djack.RogueSurvivor.Engine
             return false;
         }
 
-        int ApplyExplosionDamage(Location location, int distanceFromBlast, BlastAttack blast, ItemModel itemModel, Actor thrower) //@@MP - added ItemModel argument (Release 4), added thrower (Release 6-6)
+        int ApplyExplosionDamage(Location location, int distanceFromBlast, BlastAttack blast, ItemModel itemModel, Actor attacker = null) //@@MP - added ItemModel argument (Release 4), added attacker (Release 6-6), attacker now optional (Release 7-3)
         {
             Map map = location.Map;
 
@@ -17626,8 +17794,8 @@ namespace djack.RogueSurvivor.Engine
 
                 // damage.
                 #region
-                if (thrower != null) //@@MP - added bonus from skill (Release 6-6)
-                    modifiedDamage += (Rules.SKILL_EXPLOSIVES_DMG_BONUS * thrower.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.BOWS_EXPLOSIVES));
+                if (attacker != null) //@@MP - added bonus from skill (Release 6-6)
+                    modifiedDamage += (Rules.SKILL_EXPLOSIVES_DMG_BONUS * attacker.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.BOWS_EXPLOSIVES));
 
                 int dmgToVicitim = modifiedDamage;
                 bool fireCausedIt = false;
@@ -17684,7 +17852,7 @@ namespace djack.RogueSurvivor.Engine
             if (groundInv != null)
             {
                 // ground explosives chain reaction.
-                ExplosionChainReaction(groundInv, location);
+                ExplosionChainReactionInventory(groundInv, location);
 
                 // pick items to destroy - don't destroy explosives ready to go, we need them for the chain reaction.
 #region
@@ -17701,7 +17869,7 @@ namespace djack.RogueSurvivor.Engine
                     itemExplosive = it as ItemPrimedExplosive;
                     if (itemExplosive != null)
                     {
-                        if (itemExplosive.FuseTimeLeft <= 0)//((it as ItemPrimedExplosive).FuseTimeLeft <= 0)
+                        if (itemExplosive.FuseTimeLeft <= 0)
                         {
                             itemExplosive = null;
                             continue;
@@ -17741,13 +17909,17 @@ namespace djack.RogueSurvivor.Engine
                             door.BarricadePoints -= barricadeDamage;
                             damageToObject -= barricadeDamage;
                         }
-
+                        
                         // then directly damage the object.
                         if (damageToObject >= 0)
                         {
                             obj.HitPoints -= damageToObject;
                             if (obj.HitPoints <= 0)
-                                DoDestroyObject(obj);
+                            {
+                                if (!ExplosionChainReactionMapObjects(location))  //because ExplosionChainReaction may have swapped a Breakable fuel pump for an Unbreakable damaged fuel pump
+                                    DoDestroyObject(obj);
+                            }
+                                
                         }
                     }
                 }
@@ -17770,7 +17942,7 @@ namespace djack.RogueSurvivor.Engine
             if (blast.CanDestroyWalls)
             {
                 //@@MP (Release 3)
-                if (map.IsDestructibleWallAt(this, location))
+                if (map.IsDestructibleWallAt(this, location) && !map.AnyAdjacentOutOfBounds(location.Position)) //@@MP - don't destroy if next to out of bounds (Release 7-3)
                 {
                     ReplaceDestroyedWall(location);
                     wallDestroyed = true;
@@ -17782,19 +17954,19 @@ namespace djack.RogueSurvivor.Engine
 #endregion
 
             // flame weapons start fires  //@@MP (Release 4)
-            if (itemModel.IsFlameWeapon) //@@MP - switched to the new property (Release 5-2)
+            if (itemModel.IsFlameWeapon || itemModel.CausesFires) //@@MP - switched to the new IsFlameWeapon property (Release 5-2), added CausesFires for explosion fires (Release 7-3)
                 SetTileOnFire(map, location.Position.X, location.Position.Y);
 
             // return damage done.
             return modifiedDamage;
         }
 
-        void ExplosionChainReaction(Inventory inv, Location location)
+        void ExplosionChainReactionInventory(Inventory inv, Location location)
         {
             if (inv == null || inv.IsEmpty)
                 return;
 
-            // convert fuel cans into explosives to make them explode //@@MP (Release 7-1)
+            // convert fuel cans into explosives to make them explode   //@@MP (Release 7-1)
             foreach (Item it in inv.Items.ToList())
             {
                 ItemAmmo ammo = it as ItemAmmo;
@@ -17856,6 +18028,27 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
+        private bool ExplosionChainReactionMapObjects(Location location) //@@MP - added (Release 7-3)
+        {
+            // convert fuel pumps into explosives to make them explode   //@@MP (Release 7-3)
+            MapObject mapObj = location.Map.GetMapObjectAt(location.Position);
+            if (mapObj != null && mapObj.ImageID == GameImages.OBJ_FUEL_PUMP)
+            {
+                ExplodeFuelPump(location);
+                return true;
+            }
+
+            return false;
+        }
+
+        private void ExplodeFuelPump(Location location) //@@MP (Release 7-3)
+        {
+            location.Map.RemoveMapObjectAt(location.Position.X, location.Position.Y); //get rid of the intact pump
+            ItemPrimedExplosive fuelPumpPrimed = new ItemPrimedExplosive(GameItems.FUEL_PUMP_PRIMED); //make the hidden explosive so we can cause a big boom
+            DoBlast(new Location(location.Map, location.Position), (fuelPumpPrimed.Model as ItemExplosiveModel).BlastAttack, fuelPumpPrimed.Model, null);
+            location.Map.PlaceMapObjectAt(m_TownGenerator.MakeObjFuelPumpBroken(GameImages.OBJ_FUEL_PUMP_BROKEN), location.Position); //what happens to the pump after it goes boom
+        }
+
         /// <summary>
         /// Replaces the wall tile with the appropriate type of floor tile and damaged wall section
         /// </summary>
@@ -17889,6 +18082,18 @@ namespace djack.RogueSurvivor.Engine
                     break;
                 case @"Tiles\wall_army_base": //@@MP (Release 6-3)
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_ARMY_BASE_DAMAGED);
+                    break;
+                case @"Tiles\wall_wood_planks": //@@MP (Release 7-3)
+                    map.DropItemAt(m_TownGenerator.MakeItemWoodenPlank(), location.Position.X, location.Position.Y);
+                    break;
+                case @"Tiles\wall_fuel_station": //@@MP (Release 7-3)
+                    map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_FUEL_STATION_DAMAGED);
+                    break;
+                case @"Tiles\wall_mall": //@@MP (Release 7-3)
+                    map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_MALL_DAMAGED);
+                    break;
+                case @"Tiles\wall_red_curtains": //@@MP (Release 7-3)
+                    //leaves a whole gap
                     break;
                 default:
                     throw new NotSupportedException("unexpected ImageID for TileModel of given wall");
@@ -17927,6 +18132,12 @@ namespace djack.RogueSurvivor.Engine
                     break;
                 case @"Tiles\floor_planks":
                     map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_PLANKS);
+                    break;
+                case @"Tiles\floor_food_court_pool":
+                    map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_FOOD_COURT_POOL);
+                    break;
+                case @"Tiles\floor_white_tile":
+                    map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_WHITE_TILE);
                     break;
                 case @"Tiles\floor_sewer_water":
                 case @"Tiles\floor_sewer_water_anim1":
@@ -18275,6 +18486,9 @@ namespace djack.RogueSurvivor.Engine
                     RedrawPlayScreen();
                 }
             }
+
+            //audio
+            PlayVocalAudio(speaker, text); //@@MP (Release 7-3)
         }
 
         /// <summary>
@@ -18318,7 +18532,10 @@ namespace djack.RogueSurvivor.Engine
         public void DoEmote(Actor actor, string text, bool isDanger = false) //alpha 10 isDanger
         {
             if (IsVisibleToPlayer(actor))
+            {
                 AddMessage(new Message(String.Format("{0} : {1}", actor.Name, text), actor.Location.Map.LocalTime.TurnCounter, isDanger ? SAYOREMOTE_DANGER_COLOR : SAYOREMOTE_NORMAL_COLOR));
+            }
+            PlayVocalAudio(actor, text); //@@MP (Release 7-3)
         }
 
         /// <summary>
@@ -18362,6 +18579,51 @@ namespace djack.RogueSurvivor.Engine
                 }
                 AddMessageIfAudibleForPlayer(actor.Location, MakePlayerCentricMessage("You hear screams of terror", actor.Location.Position)); //@@MP - originally was either audio or message (Release 5-4)
             }
+        }
+
+        /// <summary>
+        /// Will only play if within appropriate range
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="fightEmotes">used for some some actor types</param>
+        public void PlayVocalAudio(Actor actor, string fightEmotes = "") //@@MP (Release 7-3)
+        {/*
+            if (IsAudibleToPlayer((actor.Location), Rules.QUIET_NOISE_RADIUS)) //close nearby sounds
+            {
+                if (GameActors.IsDog(actor.Model))
+                {
+                    if (fightEmotes == FeralDogAI.FIGHT_EMOTES[0]) //flee
+                        m_SFXManager.Play(GameSounds.DOG_FLEE, AudioPriority.PRIORITY_BGM);
+                    else if (fightEmotes == FeralDogAI.FIGHT_EMOTES[1]) //trapped
+                        m_SFXManager.Play(GameSounds.DOG_GROWL, AudioPriority.PRIORITY_BGM);
+                    else //fight
+                        m_SFXManager.Play(GameSounds.DOG_BARK_NEARBY, AudioPriority.PRIORITY_BGM);
+                }
+                else if (GameActors.IsSkeletonBranch(actor.Model))
+                {
+                    m_SFXManager.Play(GameSounds.SKELETON_CREAKS, AudioPriority.PRIORITY_BGM);
+                }
+                else if (GameActors.IsShamblerBranch(actor.Model))
+                {
+                    m_SFXManager.Play(GameSounds.SHAMBLER_GROWL, AudioPriority.PRIORITY_BGM);
+                }
+                else if (GameActors.IsZMBranch(actor.Model))
+                {
+                    m_SFXManager.Play(GameSounds.ZOMBIE_MASTER_SCREECH, AudioPriority.PRIORITY_BGM);
+                }
+                else if (GameActors.IsZombifiedBranch(actor.Model))
+                {
+                    m_SFXManager.Play(GameSounds.ZOMBIFIED_GROAN, AudioPriority.PRIORITY_BGM);
+                }
+            }
+            else if (IsAudibleToPlayer((actor.Location), Rules.LOUD_NOISE_RADIUS))  //louder sounds
+            {
+                if (GameActors.IsDog(actor.Model))
+                {
+                    if (fightEmotes == FeralDogAI.FIGHT_EMOTES[2]) //fight
+                        m_SFXManager.Play(GameSounds.DOG_BARK_FAR, AudioPriority.PRIORITY_BGM);
+                }
+            }*/
         }
 #endregion
 
@@ -18936,7 +19198,7 @@ namespace djack.RogueSurvivor.Engine
                 DoUseShieldItem(actor, it);
             /*else if (it is ItemSprayScent) // alpha10 new way to use spray scent
                 DoUseSprayScentItem(actor, it as ItemSprayScent);*/
-            //@@MP - complex item additions
+            //@@MP - complex items
             else if (m_Rules.IsItemLiquorForMolotov(it))
                 DoMakeMolotov(actor, it);
             else if (actor.IsPlayer && !actor.IsBotPlayer)
@@ -18951,6 +19213,8 @@ namespace djack.RogueSurvivor.Engine
                     HandlePlayerPlantSeeds(); //TODO: allow AI to plant seeds?
                 else if (it.Model == GameItems.CANDLES_BOX) //@@MP (Release 7-2)
                     DoDropItem(actor, it);
+                else if (it.Model == GameItems.SLEEPING_BAG) //@@MP (Release 7-3)
+                    HandlePlayerUseSleepingBag(actor, it);
             }
 
             // alpha10 defrag ai inventories
@@ -19119,6 +19383,22 @@ namespace djack.RogueSurvivor.Engine
                 ItemTrap emptyCan = new ItemTrap(GameItems.EMPTY_CAN);// alpha10 { IsActivated = true };
                 emptyCan.Activate(actor);  // alpha10
                 actor.Location.Map.DropItemAt(emptyCan, actor.Location.Position);
+            }
+            // smoking near fuel pumps will blow them up   //@MP (Release 7-3)
+            else if (med.Model == GameItems.CIGARETTES)
+            {
+                bool oopsalready = false;
+                actor.Location.Map.ForEachAdjacentAndCenterInMap(actor.Location.Position, (adj) =>
+                {
+                    MapObject mapObj = actor.Location.Map.GetMapObjectAt(adj);
+                    if (mapObj != null && mapObj.ImageID == GameImages.OBJ_FUEL_PUMP)
+                    {
+                        if (!oopsalready)
+                            AddMessage(MakeMessage(actor, String.Format("lit a cigarette next to a fuel pump...")));
+                        ExplodeFuelPump(mapObj.Location);
+                    }
+                });
+                
             }
 
             // message.
@@ -19588,8 +19868,10 @@ namespace djack.RogueSurvivor.Engine
                 bool isBroken = false;
                 if (mapObj.HitPoints <= 0)
                 {
-                    // breaks.
-                    DoDestroyObject(mapObj);
+                    if (mapObj.ImageID == GameImages.OBJ_FUEL_PUMP) //@@MP - special cases first (Release 7-3)
+                        ExplodeFuelPump(mapObj.Location);
+                    else // breaks.
+                        DoDestroyObject(mapObj);
                     isBroken = true;
                 }
 
@@ -19645,13 +19927,13 @@ namespace djack.RogueSurvivor.Engine
                     if (isBroken)
                     { //@@MP - sound effect for this can be found in DoDestroyObject()
                         if (IsAudibleToPlayer(mapObj.Location, Rules.LOUD_NOISE_RADIUS)) //(m_Rules.RollChance(PLAYER_HEAR_BREAK_CHANCE)) //@@MP - have built the checks in individually below instead (Release 5-3)
-                            AddMessageIfAudibleForPlayer(mapObj.Location, MakePlayerCentricMessage("You hear someone breaking furniture", mapObj.Location.Position));
+                            AddMessageIfAudibleForPlayer(mapObj.Location, MakePlayerCentricMessage("You hear someone breaking something", mapObj.Location.Position));
                     }
                     else
                     {
                         PlayBashOrBreakSFX(mapObj, isBroken); //@@MP - play the appropriate sfx (Release 3), moved/copied from the very start of the method (Release 5-3), refactored (Release 5-4)
                         if (m_Rules.RollChance(PLAYER_HEAR_BASH_CHANCE))
-                            AddMessageIfAudibleForPlayer(mapObj.Location, MakePlayerCentricMessage("You hear someone bashing furniture", mapObj.Location.Position));
+                            AddMessageIfAudibleForPlayer(mapObj.Location, MakePlayerCentricMessage("You hear someone bashing something", mapObj.Location.Position));
                     }
                 }
             }
@@ -20416,7 +20698,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // HP.
-            if (fireCausedIt && actor.IsSkeletonType) //@@MP - flame weapons don't hurt skeletons (Release 7-2)
+            if (fireCausedIt && GameActors.IsSkeletonBranch(actor.Model)) //@@MP - flame weapons don't hurt skeletons (Release 7-2)
                 ;//skip
             else
                 actor.HitPoints -= dmg;
@@ -20852,7 +21134,7 @@ namespace djack.RogueSurvivor.Engine
         /// <returns></returns>
         bool TryPlayerIncapacitated() //@@MP (Release 7-2)
         {
-            if (!m_Player.IsStunned && !m_Player.IsFlashbanged)
+            if (!m_Player.IsIncapacitated)
                 return false;
 
             ActorAction incapactitatedAction = GenerateIncapacitatedAction(m_Player);
@@ -21278,6 +21560,14 @@ namespace djack.RogueSurvivor.Engine
                 targetTile.IsOnFire = true;
                 targetTile.AddDecoration(GameImages.EFFECT_ONFIRE);
                 targetTile.IsScorched = true; //indicates that it has been burnt, so there is no fuel to burn it again
+
+                //@@MP - fires blow up adjacent fuel pumps (Release 7-3)
+                map.ForEachAdjacentAndCenterInMap(pt, (adj) =>
+                {
+                    MapObject mapObj = map.GetMapObjectAt(adj);
+                    if (mapObj != null && mapObj.ImageID == GameImages.OBJ_FUEL_PUMP)
+                        ExplodeFuelPump(mapObj.Location);
+                });
             }
         }
 
@@ -21333,7 +21623,7 @@ namespace djack.RogueSurvivor.Engine
 
             //damage actor if present
             Actor actor = map.GetActorAt(point);
-            if (actor != null && !actor.IsSkeletonType && actor.HitPoints > 0) //skeletons are invulnerable to fire // added hitpoints check (Release 6-1)
+            if (actor != null && !GameActors.IsSkeletonBranch(actor.Model) && actor.HitPoints > 0) //skeletons are invulnerable to fire // added hitpoints check (Release 6-1)
             {
                 if (!exemptFromTileFireDMGThisTurn.Contains(actor)) //@@MP - they're exempt, probably because they already took fire damage this turn from actually being on fire (Release 6-6)
                 {
@@ -21374,7 +21664,7 @@ namespace djack.RogueSurvivor.Engine
 
         private void SetActorOnFire(Actor actor) //@@MP (Release 5-7)
         {
-            if (actor != null && !actor.IsSkeletonType && !actor.IsInWater) //@@MP - added water check (Release 6-1)
+            if (actor != null && !GameActors.IsSkeletonBranch(actor.Model) && !actor.IsInWater) //@@MP - added water check (Release 6-1)
             {
                 actor.IsOnFire = true;
                 Item torsoItem = actor.GetEquippedItem(DollPart.TORSO);
@@ -21570,14 +21860,17 @@ namespace djack.RogueSurvivor.Engine
                 case 3:
                     return new ActionBump(actor, this, m_Rules.RollDirection());
 
-                // random unequip-drop
+                // random unequip/drop
                 case 4:
                     Inventory inv = actor.Inventory;
                     if (inv == null || inv.CountItems == 0) return null;
                     Item it = inv[m_Rules.Roll(0, inv.CountItems)];
                     if (it.IsEquipped)
                         return new ActionUnequipItem(actor, this, it);
-                    return new ActionDropItem(actor, this, it);
+                    else if (it.Model != GameItems.GLOWSTICKS_BOX && it.Model != GameItems.FLARES_KIT && it.Model != GameItems.GLOWSTICKS_BOX) //these prompt to drop one or all
+                        return new ActionDropItem(actor, this, it);
+                    else
+                        return new ActionShout(actor, this, "DAMN IT!!!");
 
                 // random aggression.
                 case 5:
@@ -21615,15 +21908,17 @@ namespace djack.RogueSurvivor.Engine
             switch (roll)
             {
                 // shout
-                case 0: return new ActionShout(actor, this, "OWWWWW!!!");
+                case 0: return new ActionShout(actor, this, "GAAHHH!!!");
 
                 // random bash.
                 case 1:
-                    Direction d = m_Rules.RollDirection();
-                    MapObject mobj = actor.Location.Map.GetMapObjectAt(actor.Location.Position + d);
-                    if (mobj == null)
-                        return new ActionShout(actor, this, "GAAHHH!!!");
-                    return new ActionBreak(actor, this, mobj);
+                    foreach (Direction d in Direction.COMPASS)
+                    {
+                        MapObject mobj = actor.Location.Map.GetMapObjectAt(actor.Location.Position + d);
+                        if (mobj != null)
+                            return new ActionBreak(actor, this, mobj);
+                    }
+                    return new ActionShout(actor, this, "OWWWWW!!!");
 
                 // random unequip-drop
                 case 2:
@@ -21632,7 +21927,10 @@ namespace djack.RogueSurvivor.Engine
                     Item it = inv[m_Rules.Roll(0, inv.CountItems)];
                     if (it.IsEquipped)
                         return new ActionUnequipItem(actor, this, it);
-                    return new ActionDropItem(actor, this, it);
+                    else if (it.Model != GameItems.GLOWSTICKS_BOX && it.Model != GameItems.FLARES_KIT && it.Model != GameItems.GLOWSTICKS_BOX) //these prompt to drop one or all
+                        return new ActionDropItem(actor, this, it);
+                    else
+                        return new ActionShout(actor, this, "DAMN IT!!!");
 
                 default:
                     return new ActionShout(actor, this, "DAMN IT!!!");
@@ -22090,6 +22388,28 @@ namespace djack.RogueSurvivor.Engine
                                 default: throw new InvalidOperationException("unexpected FlashbangedTurns value (probably 6+)");
                             }
                         }
+                        else if (m_Player.Model.Abilities.HasSanity && m_Rules.IsActorDisturbed(m_Player)) //@@MP (Release 7-3)
+                        {
+                            //warning colour as you get really low on sanity
+                            if (m_Player.Sanity < 50) //very disturbed
+                                m_UI.UI_DrawImage(GameImages.EFFECT_DISTURBED_HIGH, toScreen.X, toScreen.Y);
+                            else if (m_Player.Sanity < 100) //quite disturbed
+                                m_UI.UI_DrawImage(GameImages.EFFECT_DISTURBED_MED, toScreen.X, toScreen.Y);
+                            else if (m_Player.Sanity < 150) //a little bit disturbed
+                                m_UI.UI_DrawImage(GameImages.EFFECT_DISTURBED_LOW, toScreen.X, toScreen.Y);
+                        }
+                        else if (m_Player.IsDrunk) //@@MP (Release 7-3)
+                        {
+                            switch (m_Player.GetIntoxicationDescription())
+                            {
+                                case "tipsy": //40-59%
+                                    m_UI.UI_DrawImage(GameImages.EFFECT_TIPSY, toScreen.X, toScreen.Y); break;
+                                case "drunk": //60-79%
+                                    m_UI.UI_DrawImage(GameImages.EFFECT_DRUNK, toScreen.X, toScreen.Y); break;
+                                case "hammered": //80-99%
+                                    m_UI.UI_DrawImage(GameImages.EFFECT_HAMMERED, toScreen.X, toScreen.Y); break;
+                            }
+                        }
                         else //wearing NVGs?
                         {
                             ItemLight eyesLight = m_Player.GetEquippedItem(DollPart.EYES) as ItemLight; //@@MP (Release 6-3)
@@ -22259,11 +22579,13 @@ namespace djack.RogueSurvivor.Engine
             gx += ACTOR_OFFSET;
             gy += ACTOR_OFFSET;
 
-            //incapacitation rotation  //@@MP (Release 7-2)
+            // rotation for various states //@@MP (Release 7-2)
             float rotation = 0;
             float scale = 1.0f;
-            if (actor.IsIncapacitated)
-                rotation = 45; //degrees
+            if (actor.IsSleeping)  //@@MP (Release 7-3)
+                rotation = 90;  //degrees
+            else if (actor.IsIncapacitated) //@@MP (Release 7-2)
+                rotation = 45;
 
             // model
             if (actor.Model.ImageID != null)
@@ -23714,7 +24036,7 @@ namespace djack.RogueSurvivor.Engine
             }
 #endregion
 
-            // 5. Army base //@@MP (Release 6-3)
+            // 5. Army base     //@@MP (Release 6-3)
 #region
             if (map == m_Session.UniqueMaps.ArmyBase.TheMap)
             {
@@ -23810,7 +24132,55 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
-#endregion
+            #endregion
+
+            // 6. Shopping mall    //@@MP (Release 7-3)
+            #region
+            if (map == m_Session.UniqueMaps.ShoppingMall_Parking.TheMap)
+            {
+                lock (m_Session) // thread safe
+                {
+                    // check all power generators are on.
+                    bool allAreOn = m_Rules.ComputeMapPowerRatio(map) >= 1.0f;
+
+                    // open/close cells.
+                    if (allAreOn)
+                    {
+                        // message.
+                        if (m_Player.Location.Map == map)
+                        {
+                            ClearMessages();
+                            AddMessage(new Message("The lights turn on in parts of the mall.", map.LocalTime.TurnCounter, Color.Green));
+                            RedrawPlayScreen();
+                            WarnAboutNightVision();
+                        }
+
+                        // turn power on.
+                        //m_Session.UniqueMaps.ShoppingMall_GroundFloor.TheMap.Lighting = Lighting.LIT;
+                        m_Session.UniqueMaps.ShoppingMall_Parking.TheMap.Lighting = Lighting.LIT;
+                        m_Session.UniqueMaps.ShoppingMall_UpperLevel.TheMap.Lighting = Lighting.LIT;
+                    }
+                    else
+                    {
+                        if (map.Lighting != Lighting.DARKNESS)
+                        {
+                            // message.
+                            if (m_Player.Location.Map == map)
+                            {
+                                ClearMessages();
+                                AddMessage(new Message("The lights turn off in parts of the mall.", map.LocalTime.TurnCounter, Color.Green));
+                                RedrawPlayScreen();
+                            }
+
+                            // turn power off.
+                            //m_Session.UniqueMaps.ShoppingMall_GroundFloor.TheMap.Lighting = Lighting.OUTSIDE;  //@@MP - doesn't work, makes the sky not visible even when outside for some reason...
+                            m_Session.UniqueMaps.ShoppingMall_Parking.TheMap.Lighting = Lighting.DARKNESS;
+                            m_Session.UniqueMaps.ShoppingMall_UpperLevel.TheMap.Lighting = Lighting.DARKNESS;
+                        }
+                    }
+                }
+            }
+            #endregion
         }
 
         static void DoOpenSubwayGates(Map map) //@@MP - made static (Release 5-7)
@@ -23973,7 +24343,7 @@ namespace djack.RogueSurvivor.Engine
             if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
             {
                 // message.
-                AddMessage(new Message("It's midnight! More undead are invading!", m_Session.WorldTime.TurnCounter, Color.Crimson));
+                AddMessage(new Message("The number of undead seems to be increasing!", m_Session.WorldTime.TurnCounter, Color.Crimson));
                 RedrawPlayScreen();
             }
 
@@ -24093,7 +24463,7 @@ namespace djack.RogueSurvivor.Engine
             if (district == m_Player.Location.Map.District && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
             {
                 // message.
-                AddMessage(new Message("A new wave of refugees has arrived!", m_Session.WorldTime.TurnCounter, Color.Pink));
+                AddMessage(new Message("A wave of refugees has arrived!", m_Session.WorldTime.TurnCounter, Color.Pink));
                 RedrawPlayScreen();
             }
 
@@ -24117,6 +24487,15 @@ namespace djack.RogueSurvivor.Engine
                 }
                 // do it.
                 SpawnNewRefugee(spawnMap);
+            }
+
+            //spawn feral dogs    //@@MP (Release 7-3)
+            int dogs = district.EntryMap.CountActorsBasedOn((a) => a.Faction == GameFactions.TheFerals);
+            int dogsToSpawn = s_Options.MaxDogs - dogs; //just top up to the max
+            for (int i = 0; i < dogsToSpawn; i++)
+            {
+                // dogs only spawn on the surface.
+                SpawnNewFeralDog(district.EntryMap);
             }
 
             // check for uniques, always in surface.
@@ -24206,9 +24585,49 @@ namespace djack.RogueSurvivor.Engine
                     RemoveOverlay(highlightOverlay);
             }
         }
-#endregion
+        #endregion
 
-#region --National guard
+        #region --Helicopter arrival actors wave
+        //@@MP - to add a bunch of people attracted by the noise of the rescue helicopter (Release 7-3)
+
+        void FireEvent_RescueWave(District district)
+        {
+            // announce.
+            if (district == m_Player.Location.Map.District && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
+            {
+                // message.
+                AddMessage(new Message("A surge of people are rushing about excitedly!", m_Session.WorldTime.TurnCounter, Color.Pink));
+                AddMessage(new Message("The number of undead seems to be increasing!", m_Session.WorldTime.TurnCounter, Color.Crimson));
+                RedrawPlayScreen();
+            }
+
+            // Spawn most on the surface and a small number in sewers and subway.
+            int civilians = district.EntryMap.CountActorsBasedOn((a) => a.Faction == GameFactions.TheCivilians || a.Faction == GameFactions.ThePolice);
+            int civiliansToSpawn = s_Options.MaxCivilians - civilians;
+            for (int i = 0; i < civiliansToSpawn; i++)
+            {
+                // only on surface
+                SpawnNewRefugee(district.EntryMap);
+            }
+
+            //spawn feral dogs
+            int dogs = district.EntryMap.CountActorsBasedOn((a) => a.Faction == GameFactions.TheFerals);
+            int dogsToSpawn = s_Options.MaxDogs - dogs; //just top up to the max
+            for (int i = 0; i < dogsToSpawn; i++)
+            {
+                // dogs only spawn on the surface.
+                SpawnNewFeralDog(district.EntryMap);
+            }
+
+            // spawn undeads
+            int undeads = district.EntryMap.CountUndeads();
+            int undeadsToSpawn = s_Options.MaxUndeads - undeads;
+            for (int i = 0; i < undeadsToSpawn; i++)
+                SpawnNewUndead(district.EntryMap, district.EntryMap.LocalTime.Day);
+        }
+        #endregion
+
+        #region --National guard
         bool CheckForEvent_NationalGuard(Map map)
         {
             // if option zeroed, don't bother.
@@ -24222,7 +24641,7 @@ namespace djack.RogueSurvivor.Engine
             // date.
             if (map.LocalTime.Day < NATGUARD_DAY)
                 return false;
-            if (map.LocalTime.Day >= NATGUARD_END_DAY)
+            if (map.LocalTime.Day >= Math.Max(NATGUARD_END_DAY, m_Session.ArmyHelicopterRescue_Day - 3)) //@@MP - accounted for longer expected surival times than vanilla (Release 7-3)
                 return false;
 
             // check chance.
@@ -24734,7 +25153,7 @@ namespace djack.RogueSurvivor.Engine
             // scoring event.
             if (map == m_Player.Location.Map)
             {
-                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "A Band of Survivors entered the district.");
+                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "A band of survivors entered the district.");
             }
         }
 #endregion
@@ -24759,13 +25178,8 @@ namespace djack.RogueSurvivor.Engine
             Point heli1 = m_Session.ArmyHelicopterRescue_Coordinates;
             Point heli2 = new Point(heli1.X + 1, heli1.Y);
             Point heli3 = new Point(heli1.X + 2, heli1.Y);
-            Point heli4 = new Point(heli1.X + 3, heli1.Y);
-            Point heli5 = new Point(heli1.X, heli1.Y + 1);
-            Point heli6 = new Point(heli1.X + 1, heli1.Y + 1);
-            Point heli7 = new Point(heli1.X + 2, heli1.Y + 1);
-            Point heli8 = new Point(heli1.X + 3, heli1.Y + 1);
 
-            List<Point> heliPoints = new List<Point>() { heli1, heli2, heli3, heli4, heli5, heli6, heli7, heli8 };
+            List<Point> heliPoints = new List<Point>() { heli1, heli2, heli3 };
             foreach (Point heliPoint in heliPoints)
             {
                 //remove objects in the way
@@ -24820,11 +25234,6 @@ namespace djack.RogueSurvivor.Engine
             map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER1), heli1);
             map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER2), heli2);
             map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER3), heli3);
-            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER4), heli4);
-            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER5), heli5);
-            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER6), heli6);
-            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER7), heli7);
-            map.PlaceMapObjectAt(m_TownGenerator.MakeObjHelicopter(GameImages.OBJ_HELICOPTER8), heli8);
 
             //audio
             CheckLandedHelicopterSFX(map); //play the ambient helicopter sound if required
@@ -24834,6 +25243,9 @@ namespace djack.RogueSurvivor.Engine
             {
                 m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.HELICOPTER_FLYOVER, AudioPriority.PRIORITY_EVENT);
             }
+
+            //rescue helicopter attracts attention   //@@MP (Release 7-3)
+            FireEvent_RescueWave(map.District);
         }
 
         private static Point FindNonHelicopterSpotToMovePlayer(Map map, Point source, List<Point> heliPoints)
@@ -24884,13 +25296,8 @@ namespace djack.RogueSurvivor.Engine
             Point heli1 = m_Session.ArmyHelicopterRescue_Coordinates;
             Point heli2 = new Point(heli1.X + 1, heli1.Y);
             Point heli3 = new Point(heli1.X + 2, heli1.Y);
-            Point heli4 = new Point(heli1.X + 3, heli1.Y);
-            Point heli5 = new Point(heli1.X, heli1.Y - 1);
-            Point heli6 = new Point(heli1.X + 1, heli1.Y - 1);
-            Point heli7 = new Point(heli1.X + 2, heli1.Y - 1);
-            Point heli8 = new Point(heli1.X + 3, heli1.Y - 1);
 
-            List<Point> heliPoints = new List<Point>() { heli1, heli2, heli3, heli4, heli5, heli6, heli7, heli8 };
+            List<Point> heliPoints = new List<Point>() { heli1, heli2, heli3 };
             foreach (Point heliPoint in heliPoints)
             {
                 //remove objects in the way
@@ -25323,6 +25730,22 @@ namespace djack.RogueSurvivor.Engine
 
             // done.
             return spawned ? newBO : null;
+        }
+
+        Actor SpawnNewFeralDog(Map map) //@@MP (Release 7-3)
+        {
+            ////////////////
+            // Create actor.
+            ////////////////
+            Actor newDog = m_TownGenerator.CreateNewFeralDog(map.LocalTime.TurnCounter);
+
+            ///////////////////
+            // Try to spawn it.
+            ///////////////////
+            if (SpawnActorOnMapBorder(map, newDog, SPAWN_DISTANCE_TO_PLAYER, true))
+                return newDog;
+            else
+                return null;
         }
 #endregion
 #endregion
@@ -26298,7 +26721,8 @@ namespace djack.RogueSurvivor.Engine
                     body = new string[] {
                             "You are SLEEPY.",
                             "There are penalties if you don't find a place to sleep.",
-                            "Beds and couches are good places to sleep.",
+                            "Beds and couches will boost SLP and slowly heal you.",
+                            "Sleeping bags will boost SLP but won't heal you.", //@@MP (Release 7-3)
                             String.Format("To SLEEP : <{0}>.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.SLEEP).ToString()),
                             "Read the manual for more explanations on sleep."
                         };
@@ -28096,7 +28520,7 @@ namespace djack.RogueSurvivor.Engine
                 case Skills.IDs.CARPENTRY:
                     return String.Format("build, -{0} mat. at lvl 3, +{1}% barricading", Rules.SKILL_CARPENTRY_LEVEL3_BUILD_BONUS, (int)(100 * Rules.SKILL_CARPENTRY_BARRICADING_BONUS));
                 case Skills.IDs.CHARISMATIC:
-                    return String.Format("+{0} trust per turn, +{1}% trade offers", Rules.SKILL_CHARISMATIC_TRUST_BONUS, Rules.SKILL_CHARISMATIC_TRADE_BONUS);
+                    return String.Format("+{0} trust per turn, +{1}% trade offers. dogs like you", Rules.SKILL_CHARISMATIC_TRUST_BONUS, Rules.SKILL_CHARISMATIC_TRADE_BONUS);
                 case Skills.IDs.FIREARMS:
                     return String.Format("firearms +{0} ATK, +{1} DMG", Rules.SKILL_FIREARMS_ATK_BONUS, Rules.SKILL_FIREARMS_DMG_BONUS);
                 case Skills.IDs.HARDY:

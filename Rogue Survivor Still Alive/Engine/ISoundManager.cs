@@ -66,6 +66,12 @@ namespace djack.RogueSurvivor.Engine
 
         bool IsPaused(string musicname);
 
+        void Pause(string musicname); //@@MP (Release 7-3)
+
+        void PauseAll(); //@@MP (Release 7-3)
+
+        void ResumeAll(); //@@MP (Release 7-3)
+
         bool HasEnded(string musicname);
 
         /// <summary>

@@ -177,7 +177,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             List<Percept> corpses = FilterCorpses(mapPercepts); //@@MP - unused parameter (Release 5-7)
             if (corpses != null)
             {
-                ActorAction eatCorpses = BehaviorGoEatCorpse(game, corpses);
+                ActorAction eatCorpses = BehaviorGoEatCorpse(game, corpses, out int x, out int y);
                 if (eatCorpses != null)
                 {
                     m_Actor.Activity = Activity.EATING;

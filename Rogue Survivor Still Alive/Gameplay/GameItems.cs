@@ -36,6 +36,8 @@ namespace djack.RogueSurvivor.Gameplay
             FOOD_WILD_BERRIES, //@@MP (Release 4)
             FOOD_VEGETABLES, //@@MP (Release 5-3), (Release 5-5)
             FOOD_SNACK_BAR, //@@MP (Release 7-1)
+            FOOD_PEANUTS, //@@MP (Release 7-3)
+            FOOD_GRAPES, //@@MP (Release 7-3)
 
             MELEE_BASEBALLBAT,
             MELEE_COMBAT_KNIFE,
@@ -104,6 +106,7 @@ namespace djack.RogueSurvivor.Gameplay
             LIQUOR_AMBER,
             LIQUOR_CLEAR,
             POLICE_RIOT_SHIELD, //@@MP (Release 7-2)
+            SLEEPING_BAG, //@@MP (Release 7-3)
 
             ARMOR_ARMY_BODYARMOR,
             ARMOR_CHAR_LIGHT_BODYARMOR,
@@ -289,6 +292,10 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemFoodModel VEGETABLES { get { return this[IDs.FOOD_VEGETABLES] as ItemFoodModel; } }
         FoodData DATA_FOOD_SNACK_BAR; //@MP (Release 7-1)
         public ItemFoodModel SNACK_BAR { get { return this[IDs.FOOD_SNACK_BAR] as ItemFoodModel; } }
+        FoodData DATA_FOOD_PEANUTS; //@MP (Release 7-3)
+        public ItemFoodModel PEANUTS { get { return this[IDs.FOOD_PEANUTS] as ItemFoodModel; } }
+        FoodData DATA_FOOD_GRAPES; //@MP (Release 7-3)
+        public ItemFoodModel GRAPES { get { return this[IDs.FOOD_GRAPES] as ItemFoodModel; } }
         #endregion
 
         #region Melee weapons
@@ -835,6 +842,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemModel LIQUOR_AMBER { get { return this[IDs.LIQUOR_AMBER]; } } //@MP (Release 7-1)
         public ItemModel LIQUOR_CLEAR { get { return this[IDs.LIQUOR_CLEAR]; } } //@MP (Release 7-1)
         public ItemModel POLICE_RIOT_SHIELD { get { return this[IDs.POLICE_RIOT_SHIELD]; } } //@MP (Release 7-2)
+        public ItemModel SLEEPING_BAG { get { return this[IDs.SLEEPING_BAG]; } } //@MP (Release 7-3)
         #endregion
         #endregion
 
@@ -1020,6 +1028,22 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = DATA_FOOD_SNACK_BAR.STACKINGLIMIT,
                 IsStackable = true,
                 FlavorDescription = DATA_FOOD_SNACK_BAR.FLAVOR
+            };
+            this[IDs.FOOD_PEANUTS] = new ItemFoodModel(DATA_FOOD_PEANUTS.NAME, DATA_FOOD_PEANUTS.PLURAL, GameImages.ITEM_PEANUTS, DATA_FOOD_PEANUTS.NUTRITION, DATA_FOOD_PEANUTS.BESTBEFORE)
+            {  //@MP (Release 7-3)
+                IsAn = StartsWithVowel(DATA_FOOD_PEANUTS.NAME),
+                IsPlural = CheckPlural(DATA_FOOD_PEANUTS.NAME, DATA_FOOD_PEANUTS.PLURAL),
+                StackingLimit = DATA_FOOD_PEANUTS.STACKINGLIMIT,
+                IsStackable = true,
+                FlavorDescription = DATA_FOOD_PEANUTS.FLAVOR
+            };
+            this[IDs.FOOD_GRAPES] = new ItemFoodModel(DATA_FOOD_GRAPES.NAME, DATA_FOOD_GRAPES.PLURAL, GameImages.ITEM_GRAPES, DATA_FOOD_GRAPES.NUTRITION, DATA_FOOD_GRAPES.BESTBEFORE)
+            {  //@MP (Release 7-3)
+                IsAn = StartsWithVowel(DATA_FOOD_GRAPES.NAME),
+                IsPlural = CheckPlural(DATA_FOOD_GRAPES.NAME, DATA_FOOD_GRAPES.PLURAL),
+                StackingLimit = DATA_FOOD_GRAPES.STACKINGLIMIT,
+                IsStackable = true,
+                FlavorDescription = DATA_FOOD_GRAPES.FLAVOR
             };
             #endregion
 
@@ -1669,25 +1693,25 @@ namespace djack.RogueSurvivor.Gameplay
                 IsFlameWeapon = true
             };
 
-            //@@MP - FUEL PUMPS (trickery in code) (Release 7-1)
+            //@@MP - FUEL PUMPS (trickery in code) (Release 7-3)
             exData = DATA_EXPLOSIVE_FUEL_PUMP;
             exArray = new int[exData.RADIUS + 1];
             for (int i = 0; i < exData.RADIUS + 1; i++)
                 exArray[i] = exData.DMG[i];
             this[IDs.EXPLOSIVE_FUEL_PUMP] = new ItemGrenadeModel(exData.NAME, exData.PLURAL, GameImages.OBJ_FUEL_PUMP,
-                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true, true), GameImages.ICON_BLAST, exData.MAXTHROW)
+                exData.FUSE, new BlastAttack(exData.RADIUS, exArray, true, true, false), GameImages.ICON_BLAST, exData.MAXTHROW)
             {
-                EquipmentPart = DollPart.RIGHT_HAND,
+                EquipmentPart = DollPart.NONE,
                 IsStackable = true,
                 StackingLimit = exData.STACKLINGLIMIT,
                 FlavorDescription = exData.FLAVOR,
-                IsFlameWeapon = true
+                CausesFires = true
             };
 
             this[IDs.EXPLOSIVE_FUEL_PUMP_PRIMED] = new ItemGrenadePrimedModel("primed " + exData.NAME, "primed " + exData.PLURAL, GameImages.OBJ_FUEL_PUMP, this[IDs.EXPLOSIVE_FUEL_PUMP] as ItemGrenadeModel)
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
-                IsFlameWeapon = true
+                CausesFires = true
             };
 
             //@@MP - SMOKE GRENADE (Release 7-2)
@@ -2075,21 +2099,21 @@ namespace djack.RogueSurvivor.Gameplay
                 IsStackable = false
             };
 
-            this[IDs.CANDLES_BOX] = new ItemModel("candles box", "candles box", GameImages.ITEM_CANDLES_BOX)
+            this[IDs.CANDLES_BOX] = new ItemModel("candles box", "candles boxes", GameImages.ITEM_CANDLES_BOX)
             {
                 FlavorDescription = @"Place candles for long-lasting light.",
                 IsStackable = true,
                 StackingLimit = 40
             };
 
-            this[IDs.FLARES_KIT] = new ItemModel("flares kit", "flares kit", GameImages.ITEM_FLARES_KIT)
+            this[IDs.FLARES_KIT] = new ItemModel("flares kit", "flares kits", GameImages.ITEM_FLARES_KIT)
             {
                 FlavorDescription = @"Use flares for bright, throwable light.",
                 IsStackable = true,
                 StackingLimit = 40
             };
 
-            this[IDs.GLOWSTICKS_BOX] = new ItemModel("glowsticks box", "glowsticks box", GameImages.ITEM_GLOWSTICKS_BOX)
+            this[IDs.GLOWSTICKS_BOX] = new ItemModel("glowsticks box", "glowsticks boxes", GameImages.ITEM_GLOWSTICKS_BOX)
             {
                 FlavorDescription = @"Use glowsticks for long-lasting, throwable light.",
                 IsStackable = true,
@@ -2110,12 +2134,17 @@ namespace djack.RogueSurvivor.Gameplay
                 StackingLimit = 3
             };
 
-            //@@MP (Release 7-2)
-            this[IDs.POLICE_RIOT_SHIELD] = new ItemModel("police riot shield", "police riot shield", GameImages.ITEM_POLICE_RIOT_SHIELD)
+            this[IDs.POLICE_RIOT_SHIELD] = new ItemModel("police riot shield", "police riot shields", GameImages.ITEM_POLICE_RIOT_SHIELD) //@@MP (Release 7-2)
             {
                 FlavorDescription = Rules.SHIELD_BASE_BLOCK_CHANCE.ToString() + "% base chance to block melee attacks.",
                 IsStackable = false,
                 EquipmentPart = DollPart.LEFT_ARM
+            };
+
+            this[IDs.SLEEPING_BAG] = new ItemModel("sleeping bag", "sleeping bags", GameImages.ITEM_SLEEPING_BAG) //@@MP (Release 7-3)
+            {
+                FlavorDescription = "drop it on the ground for a somewhat comfortable sleep.",
+                IsStackable = false
             };
             #endregion
 
@@ -2264,7 +2293,7 @@ namespace djack.RogueSurvivor.Gameplay
             FoodData[] data;
 
             LoadDataFromCSV<FoodData>(ui, path, "food items", FoodData.COUNT_FIELDS, FoodData.FromCSVLine,
-                new IDs[] { IDs.FOOD_ARMY_RATION, IDs.FOOD_CANNED_FOOD, IDs.FOOD_GROCERIES, IDs.FOOD_WILD_BERRIES, IDs.FOOD_VEGETABLES, IDs.FOOD_SNACK_BAR},
+                new IDs[] { IDs.FOOD_ARMY_RATION, IDs.FOOD_CANNED_FOOD, IDs.FOOD_GROCERIES, IDs.FOOD_WILD_BERRIES, IDs.FOOD_VEGETABLES, IDs.FOOD_SNACK_BAR, IDs.FOOD_PEANUTS, IDs.FOOD_GRAPES},
                 out data);
 
             DATA_FOOD_ARMY_RATION = data[0];
@@ -2273,6 +2302,8 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_FOOD_WILD_BERRIES = data[3]; //MP (Release 4)
             DATA_FOOD_VEGETABLES = data[4]; //MP (Release 5-5)
             DATA_FOOD_SNACK_BAR = data[5]; //MP (Release 7-1)
+            DATA_FOOD_PEANUTS = data[6]; //MP (Release 7-3)
+            DATA_FOOD_GRAPES = data[7]; //MP (Release 7-3)
 
             return true;
         }

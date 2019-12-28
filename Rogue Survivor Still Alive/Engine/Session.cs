@@ -396,6 +396,9 @@ namespace djack.RogueSurvivor.Engine
         public UniqueMap Hospital_Storage { get; set; }
         public UniqueMap Hospital_Power { get; set; }
         public UniqueMap ArmyBase { get; set; } //@@MP (Release 6-3)
+        public UniqueMap ShoppingMall_GroundFloor { get; set; } //@@MP (Release 7-3)
+        public UniqueMap ShoppingMall_UpperLevel { get; set; } //@@MP (Release 7-3)
+        public UniqueMap ShoppingMall_Parking { get; set; } //@@MP (Release 7-3)
     }
 
     /// <summary>

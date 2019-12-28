@@ -220,6 +220,30 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return list;
         }
 
+        protected List<Percept> FilterSurvivors(RogueGame game, List<Percept> percepts) //@@MP (Release 7-3)
+        {
+            if (percepts == null || percepts.Count == 0)
+                return null;
+
+            List<Percept> list = null;
+
+            foreach (Percept p in percepts)
+            {
+                Actor other = p.Percepted as Actor;
+                if (other != null && other != m_Actor)
+                {
+                    if (!other.Model.Abilities.IsUndead && !game.GameActors.IsDog(other.Model))
+                    {
+                        if (list == null)
+                            list = new List<Percept>(percepts.Count);
+                        list.Add(p);
+                    }
+                }
+            }
+
+            return list;
+        }
+
         protected List<Percept> FilterCurrent(List<Percept> percepts) //@@MP - unused parameter (Release 5-7)
         {
             if (percepts == null || percepts.Count == 0)
@@ -847,6 +871,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             return BehaviorWalkAwayFrom(game, new List<Percept>(1) { goal });
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="goals"></param>
+        /// <param name="walkTo">Used to face the sprite of dogs the correct direction</param>
+        /// <returns></returns>
         protected ActorAction BehaviorWalkAwayFrom(RogueGame game, List<Percept> goals)
         {
             // stuff to avoid stepping into leader LoF.
@@ -2190,6 +2221,21 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     {
                         nearestDist = dist;
                         couchPos = p;
+                        continue; //@@MP (Release 7-3)
+                    }
+                }
+
+                Inventory groundInv = map.GetItemsAt(p); //@@MP (Release 7-3)
+                if (mapObj == null && groundInv != null)
+                {
+                    if (groundInv.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.SLEEPING_BAG))
+                    {
+                        float dist = game.Rules.StdDistance(m_Actor.Location.Position, p);
+                        if (dist < nearestDist)
+                        {
+                            nearestDist = dist;
+                            couchPos = p;
+                        }
                     }
                 }
             }
@@ -2680,7 +2726,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #region Healing & Entertainment
         protected ActorAction BehaviorUseMedicine(RogueGame game, int factorHealing, int factorStamina, int factorSleep, int factorCure, int factorSan)
         {
-            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of medicine this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
+            // can't use medicines in total darkness
+            if (game.Rules.ActorFOV(m_Actor, m_Actor.Location.Map.LocalTime, game.Session.World.Weather) == 0) //@@MP (Release 7-3)
                 return null;
 
             // if no items, don't bother.
@@ -2738,6 +2788,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
         protected ActorAction BehaviorUseEntertainment(RogueGame game)
         {
             if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+                return null;
+
+            // can't use entertainment in total darkness
+            if (game.Rules.ActorFOV(m_Actor, m_Actor.Location.Map.LocalTime, game.Session.World.Weather) == 0) //@@MP (Release 7-3)
                 return null;
 
             Inventory inv = m_Actor.Inventory;
@@ -2916,7 +2970,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (m_Actor.IsLooping)
                         m_Actor.ActivityInProgress = "BehaviorTrackScent() use exit " + exitThere.ToPosition.ToString();
 #endif
-                    return BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES | UseExitFlags.BREAK_BLOCKING_OBJECTS);
+                    return BehaviorUseExit(game, UseExitFlags.ATTACK_BLOCKING_ENEMIES | UseExitFlags.BREAK_BLOCKING_OBJECTS | UseExitFlags.DONT_BACKTRACK);
                 }
                 else
                 {
@@ -3116,9 +3170,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <param name="courage"></param>
         /// <param name="emotes">0 = flee; 1 = trapped; 2 = charge</param>
         /// <returns></returns>
-        protected ActorAction BehaviorFightOrFlee(RogueGame game, List<Percept> enemies, bool isLeaderFighting, ActorCourage courage, //@@MP - unused parameter (Release 5-7)
-            string[] emotes,
-            RouteFinder.SpecialActions allowedChargeActions) //alpha 10 added RouteFinder
+        protected ActorAction BehaviorFightOrFlee(RogueGame game, List<Percept> enemies, bool isLeaderFighting, ActorCourage courage, string[] emotes,
+            RouteFinder.SpecialActions allowedChargeActions) //alpha 10 added RouteFinder,  //@@MP - unused parameter (Release 5-7)
         {
             // alpha10 filter out unreachables if no ranged weapon equipped (we shouldnt be here anyway if we have a ranged weapon)
             if (m_Actor.GetEquippedRangedWeapon() == null)
@@ -3245,11 +3298,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // Improve STA management a bit.  // alpha10
-            // -Cancel running if this would make us tired and we don't have equipped a ranged weapon so keeping
+            // -Cancel running if this would make us tired and he doesn't have equipped a ranged weapon
             // -TODO -- consider other cases were running would be a waste of STA.
-            if (doRun && WillTireAfterRunning(m_Actor))
+            if (doRun && WillTireAfterRunning(m_Actor)) //@@MP - fixed what seemed to be broken/unfinished logic? (Release 7-3)
             {
-                if (!HasEquipedRangedWeapon(m_Actor))
+                if (!HasEquipedRangedWeapon(enemy))
                     doRun = false;
             }
 
@@ -4183,7 +4236,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         {
                             if (model.IsFlameWeapon)
                             {   
-                                if (otherActor.IsSkeletonType || otherActor.IsOnFire) //@@MP - check if invulnerable to fire or would be wasted (Release 5-7)
+                                if (game.GameActors.IsSkeletonBranch(otherActor.Model) || otherActor.IsOnFire) //@@MP - check if invulnerable to fire or would be wasted (Release 5-7)
                                     score = -2;
 
                                 if (otherActor.Location.Map.GetTileAt(otherActor.Location.Position).Model.IsWater) //@MP - check if water tile (Release 6-1)
@@ -4569,9 +4622,19 @@ namespace djack.RogueSurvivor.Gameplay.AI
         }
         #endregion
 
-        #region Animals
-        protected ActorAction BehaviorGoEatFoodOnGround(RogueGame game, List<Percept> stacksPercepts)
+        #region Animals behaviours
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="stacksPercepts"></param>
+        /// <param name="foodptX">for use by FeralDogAI. 0 for irrelevant outcome</param>
+        /// <param name="foodptY">for use by FeralDogAI. 0 for irrelevant outcome</param>
+        /// <returns></returns>
+        protected ActorAction BehaviorGoEatFoodOnGround(RogueGame game, List<Percept> stacksPercepts, out int foodptX, out int foodptY) //@@MP (Release 7-3)
         {
+            foodptX = foodptY = 0; //@@MP - 0 means that FeralDogAI doesn't need to adjust the sprite direction (Release 7-3)
+
             // nope if no percepts.
             if (stacksPercepts == null)
                 return null;
@@ -4603,6 +4666,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (m_Actor.IsLooping)
                         m_Actor.ActivityInProgress = "BehaviorGoEatFoodOnGround() eat " + eatIt.TheName;
 #endif
+                    foodptX = m_Actor.Location.Position.X; //@@MP (Release 7-3)
+                    foodptY = m_Actor.Location.Position.Y; //@@MP (Release 7-3)
                     return new ActionEatFoodOnGround(m_Actor, game, eatIt);
                 }
             }
@@ -4623,15 +4688,437 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (m_Actor.IsLooping)
                     m_Actor.ActivityInProgress = "BehaviorGoEatFoodOnGround() go get food @ " + nearest.Location.Position.ToString();
 #endif
+                foodptX = m_Actor.Location.Position.X; //@@MP (Release 7-3)
+                foodptY = m_Actor.Location.Position.Y; //@@MP (Release 7-3)
                 return BehaviorStupidBumpToward(game, nearest.Location.Position, false, false);
             }
             
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="enemies"></param>
+        /// <param name="isLeaderVisible"></param>
+        /// <param name="isLeaderFighting"></param>
+        /// <param name="courage"></param>
+        /// <param name="emotes">0 = flee; 1 = trapped; 2 = charge</param>
+        /// <param name="allowedChargeActions"></param>
+        /// <param name="dirptX">for use by FeralDogAI. 0 for irrelevant outcome</param>
+        /// <param name="dirptY">for use by FeralDogAI. 0 for irrelevant outcome</param>
+        /// <returns></returns>
+        protected ActorAction BehaviorAnimalFightOrFlee(RogueGame game, List<Percept> enemies, bool isLeaderVisible, bool isLeaderFighting, ActorCourage courage, string[] emotes, RouteFinder.SpecialActions allowedChargeActions, out int dirptX, out int dirptY) //@@MP (Release 7-3)
+        {
+            dirptX = dirptY = 0; //@@MP - 0 means that FeralDogAI doesn't need to adjust the sprite direction (Release 7-3)
+
+            FilterOutUnreachablePercepts(game, ref enemies, allowedChargeActions);
+            if (enemies.Count == 0)
+                return null;
+
+            Percept nearestEnemy = FilterNearest(game, enemies);
+
+            bool decideToFlee;
+            bool doRun = false;  // don't run by default.
+
+            Actor enemy = nearestEnemy.Percepted as Actor;
+            Attack enemyAttack = GetActorAttack(enemy); // get enemy attack  // alpha10
+
+            // get safe range from enemy, just out of his reach.
+            int safeRange = Math.Max(2, enemyAttack.Range + 1);  // melee attack range is 0 not 1!
+            int distToEnemy = game.Rules.GridDistance(m_Actor.Location.Position, enemy.Location.Position);
+            bool inSafeRange = distToEnemy >= safeRange;
+
+            // Cases that are a no-brainer, in this order:
+            // 1. 
+            // 2. Always fight if he has a ranged weapon.
+            // 3. Always flee melee if tired.
+
+            // 1. Always flee undead
+            if (enemy.Model.Abilities.IsUndead)
+                decideToFlee = true;
+            // 2. Always fight if enemy has ranged weapon.
+            if (HasEquipedRangedWeapon(enemy))
+                decideToFlee = false;
+            // 3. Always flee melee if tired.
+            else if (game.Rules.IsActorTired(m_Actor) && !inSafeRange) //@@MP - switched from a plain distance check to an attack range (Release 6-6)
+                decideToFlee = true;
+            // Case need more analysis.
+            else
+            {
+                if (m_Actor.Leader != null)
+                {
+                    //////////////////////////
+                    // Fighting with a leader.
+                    //////////////////////////
+                    #region
+                    switch (courage)
+                    {
+                        case ActorCourage.COWARD:
+                            // always flee and run.
+                            decideToFlee = true;
+                            doRun = true;
+                            break;
+
+                        case ActorCourage.CAUTIOUS:
+                            // fight if leader is fighting.
+                            // otherwise kite.
+                            if (isLeaderFighting)
+                                decideToFlee = false;
+                            else
+                            {
+                                decideToFlee = WantToEvadeMelee(game, m_Actor, courage, enemy);
+                                doRun = !HasSpeedAdvantage(game, m_Actor, enemy);
+                            }
+                            break;
+
+                        case ActorCourage.COURAGEOUS:
+                            // always fight
+                            decideToFlee = false;
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException("courage", "unhandled courage");
+                    }
+                    #endregion
+                }
+                else
+                {
+                    ////////////////////////
+                    // Leaderless fighting.
+                    ////////////////////////
+                    #region
+                    switch (courage)
+                    {
+                        case ActorCourage.COWARD:
+                            // always flee and run.
+                            decideToFlee = true;
+                            doRun = true;
+                            break;
+
+                        case ActorCourage.CAUTIOUS:
+                            // always flee and run.
+                            decideToFlee = true;
+                            doRun = !HasSpeedAdvantage(game, m_Actor, enemy);
+                            break;
+
+                        case ActorCourage.COURAGEOUS:
+                            // kite.
+                            decideToFlee = WantToEvadeMelee(game, m_Actor, courage, enemy);
+                            doRun = !HasSpeedAdvantage(game, m_Actor, enemy);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("courage", "unhandled courage");
+                    }
+                    #endregion
+                }
+            }
+
+            // alpha10 
+            // If target is unreachable, no point charging him as we can't get into melee contact.
+            // Flee if enemy has equipped a ranged weapon and do nothing if not.
+            if (!decideToFlee)
+            {
+                // check route
+                if (!CanReachSimple(game, enemy.Location.Position, allowedChargeActions))
+                {
+                    ItemRangedWeapon enemyWpn = enemy.GetEquippedWeapon() as ItemRangedWeapon;
+                    if (enemyWpn != null)
+                    {
+                        // even if out of ammo assumes he will reload or find ammo, better to be safe.
+                        decideToFlee = true;
+                    }
+                    else
+                    {
+                        // enemy has no ranged weapon and unreachable, possibly no threat to us
+                        // do something else instead.
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorAnimalFightOrFlee() enemy no threat: " + enemy.Name;
+#endif
+                        return null;
+                    }
+                }
+            }
+
+            // flee or fight?
+            if (decideToFlee)
+            {
+                #region Flee
+                ////////////////////////////////////////////////////////////////////////////////////////
+                // Try to:
+                // 1. Use exit?
+                // 2. Rest if tired and at safe distance  // alpha10
+                // 3. Walk/run away.
+                // 4. Blocked, turn to fight.
+                ////////////////////////////////////////////////////////////////////////////////////////
+
+                m_Actor.Activity = Activity.FLEEING;
+
+                // emote?
+                if (m_Actor.Model.Abilities.CanTalk && game.Rules.RollChance(EMOTE_FLEE_CHANCE))
+                    game.DoEmote(m_Actor, String.Format("{0} {1}!", emotes[0], enemy.Name));
+
+                // 1. Use exit?
+                #region
+                if (m_Actor.Model.Abilities.AI_CanUseAIExits &&
+                    game.Rules.RollChance(FLEE_THROUGH_EXIT_CHANCE))
+                {
+                    ActorAction useExit = BehaviorUseExit(game, UseExitFlags.NONE);
+                    if (useExit != null)
+                    {
+                        bool doUseExit = true;
+
+                        // Exception : if follower use exit only if leading to our leader.
+                        // we don't want to leave our leader behind (mostly annoying for the player).
+                        if (m_Actor.HasLeader)
+                        {
+                            Exit exitThere = m_Actor.Location.Map.GetExitAt(m_Actor.Location.Position);
+                            if (exitThere != null) // well. who knows?
+                                doUseExit = (m_Actor.Leader.Location.Map == exitThere.ToMap);
+                        }
+
+                        // do it?
+                        if (doUseExit)
+                        {
+                            // emote?
+                            if (m_Actor.Model.Abilities.CanTalk && game.Rules.RollChance(EMOTE_FLEE_CHANCE))
+                                game.DoEmote(m_Actor, emotes[0], true);
+
+#if DEBUGAILOOPING
+                            if (m_Actor.IsLooping)
+                                m_Actor.ActivityInProgress = "BehaviorFightOrFlee() use exit: " + enemy.Name;
+#endif
+                            m_Actor.Activity = Activity.FLEEING;
+                            return useExit;
+                        }
+                    }
+                }
+                #endregion
+
+                // 2. Rest if tired and at safe distance // alpha10
+                #region
+                if (game.Rules.IsActorTired(m_Actor))
+                {
+                    if (game.Rules.GridDistance(m_Actor.Location.Position, enemy.Location.Position) >= safeRange)
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorFightOrFlee() rest when safe: " + enemy.Name;
+#endif
+                        m_Actor.Activity = Activity.FLEEING;
+                        return new ActionWait(m_Actor, game);
+                    }
+                }
+                #endregion
+
+                // 3. Walk/run away.
+                #region
+                ActorAction bumpAction = BehaviorAnimalWalkAwayFrom(game, enemies, out Direction walkTo);
+                if (bumpAction != null)
+                {
+                    if (doRun)
+                        RunIfPossible(game.Rules);
+
+                    // emote?
+                    if (m_Actor.Model.Abilities.CanTalk && game.Rules.RollChance(EMOTE_FLEE_CHANCE))
+                        game.DoEmote(m_Actor, emotes[0], true);
+
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorFightOrFlee() get away from " + enemy.Name;
+#endif
+                    Point walkToPt = m_Actor.Location.Position + walkTo; //we're walking away, so get the point in that direction. //@@MP (Release 7-3)
+                    dirptX = walkToPt.X;
+                    dirptY = walkToPt.Y;
+                    m_Actor.Activity = Activity.FLEEING;
+                    return bumpAction;
+                }
+                #endregion
+
+                // 4. Blocked, turn to fight.
+                #region
+                if (bumpAction == null)
+                {
+                    // fight!
+                    if (IsAdjacentToEnemy(game, enemy))
+                    {
+                        // emote?
+                        if (m_Actor.Model.Abilities.CanTalk && game.Rules.RollChance(EMOTE_FLEE_TRAPPED_CHANCE))
+                            game.DoEmote(m_Actor, emotes[1], true);
+
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorFightOrFlee() can't flee; fight " + enemy.Name;
+#endif
+                        dirptX = enemy.Location.Position.X; //@@MP (Release 7-3)
+                        dirptY = enemy.Location.Position.Y; //@@MP (Release 7-3)
+                        return BehaviorMeleeAttack(game, nearestEnemy);
+                    }
+                }
+                #endregion
+
+                #endregion
+            }
+            else
+            {
+                #region Fight
+                ActorAction attackAction = BehaviorChargeEnemy(game, nearestEnemy, true, true);
+                if (attackAction != null)
+                {
+                    // emote?
+                    if (m_Actor.Model.Abilities.CanTalk && game.Rules.RollChance(EMOTE_CHARGE_CHANCE))
+                        game.DoEmote(m_Actor, String.Format("{0} {1}!", emotes[2], enemy.Name), true);
+
+                    // chaaarge!
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorFightOrFlee() charge " + enemy.Name;
+#endif
+                    dirptX = enemy.Location.Position.X; //@@MP (Release 7-3)
+                    dirptY = enemy.Location.Position.Y; //@@MP (Release 7-3)
+                    m_Actor.Activity = Activity.CHASING;
+                    m_Actor.TargetActor = nearestEnemy.Percepted as Actor;
+                    return attackAction;
+                }
+                #endregion
+            }
+
+            // nope.
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorAnimalFightOrFlee() nope";
+#endif
+            return null;
+        }
+
+        protected ActorAction BehaviorAnimalWalkAwayFrom(RogueGame game, Percept goal, out Direction walkTo)
+        {
+            return BehaviorAnimalWalkAwayFrom(game, new List<Percept>(1) { goal }, out walkTo);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="goals"></param>
+        /// <param name="walkTo">Used to face the sprite of dogs the correct direction</param>
+        /// <returns></returns>
+        protected ActorAction BehaviorAnimalWalkAwayFrom(RogueGame game, List<Percept> goals, out Direction walkTo) //@@MP (Release 7-3)
+        {
+            walkTo = null; //default. means that FeralDogAI doesn't need to adjust the sprite direction
+
+            ChoiceEval<Direction> bestAwayDir = Choose<Direction>(game,
+                Direction.COMPASS_LIST,
+                (dir) =>
+                {
+                    Location next = m_Actor.Location + dir;
+                    ActorAction bumpAction = game.Rules.IsBumpableFor(m_Actor, game, next);
+                    return IsValidFleeingAction(bumpAction);
+                },
+                (dir) =>
+                {
+                    Location next = m_Actor.Location + dir;
+                    // Heuristic value:
+                    // - Safety from dangers.
+                    // - If follower, stay close to leader.
+                    int safetyValue = SafetyFrom(game, next.Position, goals);
+                    if (m_Actor.HasLeader)
+                    {
+                        // stay close to leader.
+                        safetyValue -= 100 * game.Rules.GridDistance(next.Position, m_Actor.Leader.Location.Position);
+                    }
+
+                    return safetyValue;
+                },
+                (a, b) => a > b);
+
+            if (bestAwayDir != null)// && bestAwayDir.Value > notMovingValue) nope, moving is always better than not moving
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWalkAwayFrom() bestAwayDir: " + bestAwayDir.Choice.ToString();
+#endif
+                walkTo = bestAwayDir.Choice; //dog sprite will face this way
+                return new ActionBump(m_Actor, game, bestAwayDir.Choice);
+            }
+            else
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWalkAwayFrom() no bestAwayDir";
+#endif
+                return null;
+            }
+        }
+
+        protected List<Percept> FilterNonEnemyDogs(RogueGame game, List<Percept> percepts) //@@MP (Release 7-3)
+        {
+            if (percepts == null || percepts.Count == 0)
+                return null;
+
+            List<Percept> list = null;
+
+            foreach (Percept p in percepts)
+            {
+                Actor other = p.Percepted as Actor;
+                if (other != null && other != m_Actor)
+                {
+                    if (!game.Rules.AreEnemies(m_Actor, other) && game.GameActors.IsDog(other.Model))
+                    {
+                        if (list == null)
+                            list = new List<Percept>(percepts.Count);
+                        list.Add(p);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        protected List<Percept> FilterEnemyAlphaDogs(RogueGame game, List<Percept> percepts) //@@MP (Release 7-3)
+        {
+            if (percepts == null || percepts.Count == 0)
+                return null;
+
+            List<Percept> list = null;
+
+            foreach (Percept p in percepts)
+            {
+                Actor other = p.Percepted as Actor;
+                if (other != null && other != m_Actor)
+                {
+                    if (game.Rules.AreEnemies(m_Actor, other) && game.GameActors.IsDog(other.Model))
+                    {
+                        ActorDirective enemyDirectives = (other.Controller as AIController).Directives;
+                        if (enemyDirectives.Courage == ActorCourage.COURAGEOUS)
+                        {
+
+                            if (list == null)
+                                list = new List<Percept>(percepts.Count);
+                            list.Add(p);
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
         #endregion
 
         #region Corpses & Revival
-        protected ActorAction BehaviorGoEatCorpse(RogueGame game, List<Percept> corpsesPercepts)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="corpsesPercepts"></param>
+        /// <param name="foodptX">for use by FeralDogAI. 0 for irrelevant outcome</param>
+        /// <param name="foodptY">for use by FeralDogAI. 0 for irrelevant outcome</param>
+        /// <returns></returns>
+        protected ActorAction BehaviorGoEatCorpse(RogueGame game, List<Percept> corpsesPercepts, out int foodptX, out int foodptY)
         {
+            foodptX = foodptY = 0; //@@MP - 0 means that FeralDogAI doesn't need to adjust the sprite direction (Release 7-3)
+
             // nope if no percepts.
             if (corpsesPercepts == null)
                 return null;
@@ -4654,6 +5141,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     if (m_Actor.IsLooping)
                         m_Actor.ActivityInProgress = "BehaviorGoEatCorpse() eat corpse @ " + eatIt.Position.ToString();
 #endif
+                    foodptX = m_Actor.Location.Position.X; //@@MP (Release 7-3)
+                    foodptY = m_Actor.Location.Position.Y; //@@MP (Release 7-3)
                     return new ActionEatCorpse(m_Actor, game, eatIt);
                 }
             }
@@ -4663,6 +5152,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.IsLooping)
                 m_Actor.ActivityInProgress = "BehaviorGoEatCorpse() go to corpse @ " + nearest.Location.Position.ToString();
 #endif
+            foodptX = nearest.Location.Position.X; //@@MP (Release 7-3)
+            foodptY = nearest.Location.Position.Y; //@@MP (Release 7-3)
             return m_Actor.Model.Abilities.IsIntelligent ? 
                     BehaviorIntelligentBumpToward(game, nearest.Location.Position, true, true) : 
                     BehaviorStupidBumpToward(game, nearest.Location.Position, true, true);
@@ -6600,16 +7091,16 @@ namespace djack.RogueSurvivor.Gameplay.AI
         /// <param name="a"></param>
         /// <returns></returns>
         protected bool IsValidWanderAction(RogueGame game, ActorAction a)
-        { //@@MP - re-ordered from most to least likely, for best performance (Release 5-7)
+        {
             return a != null && 
                 (a is ActionMoveStep ||
                 (a is ActionGetFromContainer && IsInterestingItemToOwn(game, (a as ActionGetFromContainer).Item, ItemSource.GROUND_STACK)) ||
                 a is ActionOpenDoor ||
+                a is ActionPush || 
                 a is ActionBashDoor ||
                 a is ActionSwitchPlace ||
                 (a is ActionChat && (this.Directives.CanTrade || (a as ActionChat).Target == m_Actor.Leader)) ||
-                a is ActionBarricadeDoor ||
-                a is ActionPush);
+                a is ActionBarricadeDoor);
         }
 
         /// <summary>

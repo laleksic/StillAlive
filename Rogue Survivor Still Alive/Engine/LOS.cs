@@ -515,7 +515,7 @@ namespace djack.RogueSurvivor.Engine
 
                                         visibleSet.Add(spot);
 
-                                        foreach (Direction d in Direction.COMPASS_4)
+                                        foreach (Direction d in Direction.COMPASS_NESW)
                                         {
                                             //lights up the tiles around it
                                             Point next = spot + d;

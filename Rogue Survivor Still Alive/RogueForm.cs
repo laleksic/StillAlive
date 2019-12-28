@@ -239,14 +239,66 @@ namespace djack.RogueSurvivor
                 m_Game.Session.PlayerKnows_CHARUndergroundFacilityLocation = true;
                 m_Game.Session.CHARUndergroundFacility_Activated = true;
                 m_Game.Session.UniqueMaps.CHARUndergroundFacility.TheMap.IsSecret = false;
-                //@@MP (Release 6-3)
                 m_Game.Session.PlayerKnows_ArmyBaseLocation = true;
                 m_Game.Session.ArmyBaseUnderground_Activated = true;
                 m_Game.Session.UniqueMaps.ArmyBase.TheMap.IsSecret = false;
                 m_Game.Session.PlayerKnows_HelicopterArrivalDetails = true;
                 //m_Game.Player.Inventory.AddAsMuchAsPossible(new Item(m_Game.GameItems.UNIQUE_ARMY_ACCESS_BADGE), out int blah);
 
+                //trigger a special event
                 //m_Game.FireEvent_ArmySupplies(m_Game.Player.Location.Map.District.EntryMap);
+
+
+                //warp to target map/zone
+                #region
+                /*
+                bool targetFound = false;
+                //-districts
+                for (int y = 0; y < m_Game.Session.World.Size; y++)
+                {
+                    if (targetFound)
+                        break;
+                    for (int x = 0; x < m_Game.Session.World.Size; x++)
+                    {
+                        if (targetFound)
+                            break;
+
+                        District d = m_Game.Session.World[x, y];
+                        //if (d.Kind == DistrictKind.GREEN)
+                        //{
+                            //-maps
+                            for (int a = 0; a < d.EntryMap.Width; a++)
+                            {
+                                if (targetFound)
+                                    break;
+                                for (int b = 0; b < d.EntryMap.Height; b++)
+                                {
+                                    if (targetFound)
+                                        break;
+
+                                    //-zones
+                                    System.Collections.Generic.List<Zone> zones = d.EntryMap.GetZonesAt(a, b);
+                                    if (zones != null)
+                                    {
+                                        foreach (Zone z in zones)
+                                        {
+                                            if (z.Name.Contains("Mall"))
+                                            {
+                                                targetFound = true;
+                                                m_Game.Session.CurrentMap = d.EntryMap;
+                                                d.EntryMap.PlaceActorAt(m_Game.Player, new Point(a,b));
+                                                d.EntryMap.MoveActorToFirstPosition(m_Game.Player);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        //}
+                    }
+                }
+                */
+                #endregion
             }
 
             // F10 - DEV STATS - Show pop graph.
