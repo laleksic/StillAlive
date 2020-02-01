@@ -970,7 +970,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         }
 
         //@@MP (Release 7-3)
-        public MapObject MakeObjFireTruck(string fireTruckImageID)
+        protected static MapObject MakeObjFireTruck(string fireTruckImageID)
         {
             //For EW a 32x64 pixel image, dissected into 2 pieces and then arranged as:
             //  1-2
@@ -1002,7 +1002,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public MapObject MakeObjTractor(string tractorImageID)
+        protected static MapObject MakeObjTractor(string tractorImageID)
         {
             return new MapObject("tractor", tractorImageID)
             {
@@ -1013,7 +1013,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public DoorWindow MakeObjChainFenceGate(int state) //@@MP - made public (Release 6-3)
+        protected static DoorWindow MakeObjChainFenceGate(int state)
         {
             return new DoorWindow("chainlink gate", GameImages.OBJ_CHAINWIRE_GATE_CLOSED, GameImages.OBJ_CHAINWIRE_GATE_OPEN, GameImages.OBJ_CHAINWIRE_GATE_BROKEN, 2 * DoorWindow.BASE_HITPOINTS, state)
             {
@@ -1022,7 +1022,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public MapObject MakeObjBasketballRing(string ringImageID)
+        protected static MapObject MakeObjBasketballRing(string ringImageID)
         {
             return new MapObject("basketball ring", ringImageID)
             {
@@ -1610,7 +1610,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public Item MakeItemMatches()
+        public Item MakeItemMatches() //unused. reserved for future use
         {
             return new ItemExplosive(m_Game.GameItems.MATCHES, m_Game.GameItems.MATCHES_PRIMED)
             {

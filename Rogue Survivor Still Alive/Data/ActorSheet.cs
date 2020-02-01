@@ -13,6 +13,7 @@ namespace djack.RogueSurvivor.Data
         #endregion
 
         #region Blank sheet
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         [NonSerialized]
         public static readonly ActorSheet BLANK = new ActorSheet(0, 0, 0, 0, 0, Attack.BLANK, Defence.BLANK, 0, 0, 0, 0);
         #endregion

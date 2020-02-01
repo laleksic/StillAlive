@@ -219,9 +219,9 @@ namespace djack.RogueSurvivor.Engine
 
         #region Loud noises
         public const int BOOMING_NOISE_RADIUS = 23; //@@MP - loud ambients eg helicopters (Release 6-4)
-        public const int LOUD_NOISE_RADIUS = 14; //@@MP - eg firing a gun. can be used for Far sfxs (). Prior to R5-3 was 5 (Release 5-3), prior to R5-4 was 7 (Release 5-4)
-        public const int MODERATE_NOISE_RADIUS = 8; //@@MP - eg climbing on a car. can be used for Nearby sfxs (). (Release 5-4)
-        public const int QUIET_NOISE_RADIUS = 5; //@@MP - eg conversation. can be used for Player or Visible sfxs (). (Release 5-4)
+        public const int LOUD_NOISE_RADIUS = 14; //@@MP - eg firing a gun. can be used for Far sfxs. Prior to R5-3 was 5 (Release 5-3), prior to R5-4 was 7 (Release 5-4)
+        public const int MODERATE_NOISE_RADIUS = 8; //@@MP - eg climbing on a car. can be used for Nearby sfxs (Release 5-4)
+        public const int QUIET_NOISE_RADIUS = 5; //@@MP - eg conversation. can be used for Player or Visible sfxs (Release 5-4)
         const int LOUD_NOISE_BASE_WAKEUP_CHANCE = 10;
         const int LOUD_NOISE_DISTANCE_BONUS = 10;
         #endregion

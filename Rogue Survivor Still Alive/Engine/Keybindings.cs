@@ -52,6 +52,7 @@ namespace djack.RogueSurvivor.Engine
             Set(PlayerCommand.ADVISOR, Keys.H | Keys.Shift);
             Set(PlayerCommand.CITY_INFO, Keys.I);
             Set(PlayerCommand.EAT_CORPSE, Keys.E | Keys.Shift);
+            Set(PlayerCommand.ESC, Keys.Escape); //@@MP (Release 7-4)
             Set(PlayerCommand.GIVE_ITEM, Keys.G);
             Set(PlayerCommand.HINTS_SCREEN_MODE, Keys.H | Keys.Control);
             Set(PlayerCommand.ICONS_LEGEND, Keys.F1); //@@MP (Release 6-1)

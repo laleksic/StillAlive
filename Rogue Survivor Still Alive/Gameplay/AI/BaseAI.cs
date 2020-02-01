@@ -1013,12 +1013,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
         }
 
         /// <summary>
-        /// Move to a visible generator. Recharge a nominated light
+        /// <para>Move to a visible generator. Recharge a nominated light</para>
+        /// <para>Unused as it wasn't worth the processing. AI now get a free recharge on each turn</para>
         /// </summary>
         /// <param name="game"></param>
         /// <param name="FOV"></param>
         /// <param name="nominatedLight">Optional. A light you want to recharge</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         protected ActorAction BehaviorGoToVisibleGenerator(RogueGame game, HashSet<Point> FOV, ItemLight nominatedLight = null) //@@MP (Release 6-2)
         {
             Map map = m_Actor.Location.Map;
@@ -4730,7 +4732,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             bool inSafeRange = distToEnemy >= safeRange;
 
             // Cases that are a no-brainer, in this order:
-            // 1. 
+            // 1. Always flee undead
             // 2. Always fight if he has a ranged weapon.
             // 3. Always flee melee if tired.
 
@@ -5597,9 +5599,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 
             // alpha10.1 not interested in picking up safe traps from the ground : dont undo your or your friends traps!
-            if (itemSrc == ItemSource.GROUND_STACK && it is ItemTrap)
+            ItemTrap itTrap = it as ItemTrap;
+            if (itemSrc == ItemSource.GROUND_STACK && itTrap != null)
             {
-                ItemTrap itTrap = it as ItemTrap;
                 if (game.Rules.IsSafeFromTrap(itTrap, m_Actor))
                     return false;
             }
@@ -5783,7 +5785,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (inv == null)
                 return false;
 
-            bool owned = (inv == m_Actor.Inventory); //alpha 10
             foreach (Item it in inv.Items)
                 if (IsInterestingItemToOwn(game, it, inventorySrc))
                     return true;
@@ -5795,7 +5796,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (inv == null)
                 return null;
 
-            bool owned = (inv == m_Actor.Inventory); //alpha 10
             foreach (Item it in inv.Items)
                 if (IsInterestingItemToOwn(game, it, inventorySrc))
                     return it;
@@ -6212,9 +6212,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     TradeRating.MAYBE;
             }
 
-            if (oIt is ItemEntertainment)
+            ItemEntertainment oEnt = oIt as ItemEntertainment;
+            if (oEnt != null)
             {
-                ItemEntertainment oEnt = oIt as ItemEntertainment;
                 ItemEntertainment nEnt = nIt as ItemEntertainment;
 
                 // prefer non-boring ent first. if both are boring then maybe.
@@ -6233,9 +6233,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     TradeRating.MAYBE;
             }
 
-            if (oIt is ItemFood)
+            ItemFood oFood = oIt as ItemFood;
+            if (oFood != null)
             {
-                ItemFood oFood = oIt as ItemFood;
                 ItemFood nFood = nIt as ItemFood;
 
                 // prefer food with more nutrition
@@ -6247,9 +6247,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     TradeRating.MAYBE;
             }
 
-            if (oIt is ItemMedicine)
+            ItemMedicine oMed = oIt as ItemMedicine;
+            if (oMed != null)
             {
-                ItemMedicine oMed = oIt as ItemMedicine;
                 ItemMedicine nMed = nIt as ItemMedicine;
 
                 // first prefer med we need the most (basically re-use the med logic from item rating)
@@ -6269,9 +6269,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (game.Rules.IsItemLiquorForMolotov(oIt)) //@@MP (Release 7-1)
                 return TradeRating.MAYBE;
 
-            if (oIt is ItemMeleeWeapon)
+            ItemMeleeWeapon oMw = oIt as ItemMeleeWeapon;
+            if (oMw != null)
             {
-                ItemMeleeWeapon oMw = oIt as ItemMeleeWeapon;
                 ItemMeleeWeapon nMw = nIt as ItemMeleeWeapon;
 
                 // score
@@ -6283,9 +6283,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     TradeRating.MAYBE;
             }
 
-            if (oIt is ItemRangedWeapon)
+            ItemRangedWeapon oRw = oIt as ItemRangedWeapon;
+            if (oRw != null)
             {
-                ItemRangedWeapon oRw = oIt as ItemRangedWeapon;
                 ItemRangedWeapon nRw = nIt as ItemRangedWeapon;
 
                 // score
@@ -6297,9 +6297,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     TradeRating.MAYBE;
             }
 
-            if (oIt is ItemSprayScent)
+            ItemSprayScent oSp = oIt as ItemSprayScent;
+            if (oSp != null)
             {
-                ItemSprayScent oSp = oIt as ItemSprayScent;
                 ItemSprayScent nSp = nIt as ItemSprayScent;
 
                 // prefer spray scent with more spray left
@@ -6308,9 +6308,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     TradeRating.MAYBE;
             }
 
-            if (oIt is ItemTrap)
+            ItemTrap oTr = oIt as ItemTrap;
+            if (oTr != null)
             {
-                ItemTrap oTr = oIt as ItemTrap;
                 ItemTrap nTr = nIt as ItemTrap;
 
                 // prefer trap with more potential damage then blocking.
@@ -6326,9 +6326,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     TradeRating.MAYBE;
             }
 
-            if (oIt is ItemLight)
+            ItemLight oLt = oIt as ItemLight;
+            if (oLt != null)
             {
-                ItemLight oLt = oIt as ItemLight;
                 ItemLight nLt = nIt as ItemLight;
 
                 // score
@@ -6351,9 +6351,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                      TradeRating.MAYBE;
             }
 
-            if (oIt is ItemBodyArmor)
+            ItemBodyArmor oArm = oIt as ItemBodyArmor;
+            if (oArm != null)
             {
-                ItemBodyArmor oArm = oIt as ItemBodyArmor;
                 ItemBodyArmor nArm = nIt as ItemBodyArmor;
 
                 // prefer better overal protection
@@ -6365,14 +6365,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     TradeRating.MAYBE;
             }
 
-            if (oIt is ItemSprayPaint)
+            ItemSprayPaint oSpnt = oIt as ItemSprayPaint;
+            if (oSpnt != null)
             {
-                ItemSprayPaint oSp = oIt as ItemSprayPaint;
                 ItemSprayPaint nSp = nIt as ItemSprayPaint;
 
                 // useless items for ai, but prefer one with more spray left...
-                return nSp.PaintQuantity > oSp.PaintQuantity ? TradeRating.ACCEPT :
-                    nSp.PaintQuantity < oSp.PaintQuantity ? TradeRating.REFUSE :
+                return nSp.PaintQuantity > oSpnt.PaintQuantity ? TradeRating.ACCEPT :
+                    nSp.PaintQuantity < oSpnt.PaintQuantity ? TradeRating.REFUSE :
                     TradeRating.MAYBE;
             }
 

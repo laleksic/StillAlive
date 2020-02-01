@@ -1,14 +1,19 @@
 ﻿
 namespace djack.RogueSurvivor.Gameplay
 {
+    /// <summary>
+    /// TODO: Downmix sounds to mono to allow for spatialisation
+    /// </summary>
+    /// see https://www.sfml-dev.org/tutorials/2.5/audio-spatialization.php
+    /// Only relevant for SFX, not music nor ambients.
+    /// To keep better depth try MonoPlus for foobar https://hydrogenaud.io/index.php/topic,108037.0.html
     static class GameSounds
     {
         const string PATH = @"Resources\Sfx\";
 
+        //vanilla SFX
         public const string UNDEAD_EAT_PLAYER = "player undead eats"; //@@MP - added a NEARBY (Release 3)
         public const string UNDEAD_EAT_PLAYER_FILE = PATH + "sfx - undead eat player";
-        public const string UNDEAD_RISE_PLAYER = "player undead rises"; //@@MP - added a NEARBY (Release 3)
-        public const string UNDEAD_RISE_PLAYER_FILE = PATH + "sfx - undead rise player";
         public const string NIGHTMARE = "nightmare";
         public const string NIGHTMARE_FILE = PATH + "sfx - nightmare";
 
@@ -140,8 +145,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string SCREAM_NEARBY_04_FILE = PATH + "scream_nearby_04";
         public const string SCREAM_NEARBY_05 = "scream nearby 05";
         public const string SCREAM_NEARBY_05_FILE = PATH + "scream_nearby_05";
-        public const string SCREAM_NEARBY_06 = "scream nearby 06";
-        public const string SCREAM_NEARBY_06_FILE = PATH + "scream_nearby_06";
+        //06 was removed. too low quality //@@MP (Release 7-4)
         public const string SCREAM_NEARBY_07 = "scream nearby 07";
         public const string SCREAM_NEARBY_07_FILE = PATH + "scream_nearby_07";
 
@@ -155,8 +159,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string SCREAM_FAR_04_FILE = PATH + "scream_far_04";
         public const string SCREAM_FAR_05 = "scream far 05";
         public const string SCREAM_FAR_05_FILE = PATH + "scream_far_05";
-        public const string SCREAM_FAR_06 = "scream far 06";
-        public const string SCREAM_FAR_06_FILE = PATH + "scream_far_06";
+        //06 was removed. too low quality //@@MP (Release 7-4)
         public const string SCREAM_FAR_07 = "scream far 07";
         public const string SCREAM_FAR_07_FILE = PATH + "scream_far_07";
 
@@ -171,8 +174,6 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string UNDEAD_EAT_NEARBY = "nearby undead eats";
         public const string UNDEAD_EAT_NEARBY_FILE = PATH + "sfx - undead eat nearby";
-        public const string UNDEAD_RISE_NEARBY = "nearby undead rises";
-        public const string UNDEAD_RISE_NEARBY_FILE = PATH + "sfx - undead rise nearby";
 
         public const string VOMIT_NEARBY = "vomits nearby";
         public const string VOMIT_NEARBY_FILE = PATH + "vomit_nearby";
@@ -187,8 +188,10 @@ namespace djack.RogueSurvivor.Gameplay
         public const string PUSH_METAL_OBJECT_AUDIBLE = "pushes audible metal object";
         public const string PUSH_METAL_OBJECT_AUDIBLE_FILE = PATH + "push_metal_object_audible";
 
-        public const string BUILDING = "barricade repair fortify";
-        public const string BUILDING_FILE = PATH + "building";
+        public const string BUILDING_PLAYER = "player constructs something";
+        public const string BUILDING_PLAYER_FILE = PATH + "building_player";
+        public const string BUILDING_NEARBY = "nearby construction"; //@@MP (Release 7-4)
+        public const string BUILDING_NEARBY_FILE = PATH + "building_nearby";
 
         public const string CAN_TRAP_PLAYER = "player steps on can";
         public const string CAN_TRAP_PLAYER_FILE = PATH + "can_trap_player";
@@ -356,13 +359,33 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DOG_FLEE_FILE = PATH + "dog_yips";
         public const string DOG_GROWL = "dog growls";
         public const string DOG_GROWL_FILE = PATH + "dog_growl";
-        public const string SKELETON_CREAKS = "skeleton creaks";
-        public const string SKELETON_CREAKS_FILE = PATH + "skeleton_creak";
+        public const string RAT_SCREECH = "rat screeches";
+        public const string RAT_SCREECH_FILE = PATH + "rat_screech";
+        public const string SEWERS_THING_GROWL = "sewers thing growl";
+        public const string SEWERS_THING_GROWL_FILE = PATH + "sewers_thing_growl";
+        public const string SKELETON_GROWL = "skeleton growls";
+        public const string SKELETON_GROWL_FILE = PATH + "skeleton_growl";
         public const string SHAMBLER_GROWL = "shambler growls";
         public const string SHAMBLER_GROWL_FILE = PATH + "shambler_growl";
-        public const string ZOMBIE_MASTER_SCREECH = "zombie master screeches";
-        public const string ZOMBIE_MASTER_SCREECH_FILE = PATH + "zombie_master_screech";
+        public const string ZOMBIE_MASTER_GROWL = "zombie master growls";
+        public const string ZOMBIE_MASTER_GROWL_FILE = PATH + "zombie_master_growl";
         public const string ZOMBIFIED_GROAN = "zombified groans";
         public const string ZOMBIFIED_GROAN_FILE = PATH + "zombified_groan";
+        public const string PSST_WHISPER = "whisper";
+        public const string PSST_WHISPER_FILE = PATH + "psst2";
+        public const string MALE_SHOUT_PLAYER = "male player shouts";
+        public const string MALE_SHOUT_PLAYER_FILE = PATH + "male_shout_player";
+        public const string MALE_SHOUT_NEARBY = "man nearby shouts";
+        public const string MALE_SHOUT_NEARBY_FILE = PATH + "male_shout_nearby";
+        public const string FEMALE_SHOUT_PLAYER = "female player shouts";
+        public const string FEMALE_SHOUT_PLAYER_FILE = PATH + "female_shout_player";
+        public const string FEMALE_SHOUT_NEARBY = "woman nearby shouts";
+        public const string FEMALE_SHOUT_NEARBY_FILE = PATH + "female_shout_nearby";
+
+        //@@MP (Release 7-4)
+        public const string METAL_DOOR_OPEN = "opening metal door";
+        public const string METAL_DOOR_OPEN_FILE = PATH + "metal_door_open";
+        public const string METAL_DOOR_CLOSE = "closing metal door";
+        public const string METAL_DOOR_CLOSE_FILE = PATH + "metal_door_close";
     }
 }

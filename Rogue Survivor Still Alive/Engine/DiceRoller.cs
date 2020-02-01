@@ -45,7 +45,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 r = m_Rng.Next(min, max);
             }
-            // FIX awfull bug, in some very rare cases .NET Random returns max instead of max-1 (wtf?!)
+            // FIX awful bug, in some very rare cases .NET Random returns max instead of max-1 (wtf?!)
             if (r >= max) r = max - 1;
 
             return r;

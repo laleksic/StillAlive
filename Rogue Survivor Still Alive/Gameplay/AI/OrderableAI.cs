@@ -529,12 +529,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             string raidDesc;
             switch (raid)
             {
-                case RaidType.ARMY_SUPLLIES: raidDesc = "a chopper hovering"; break;
+                case RaidType.ARMY_SUPLLIES: raidDesc = "a chopper flying over"; break;
                 case RaidType.BIKERS: raidDesc = "motorcycles coming"; break;
                 case RaidType.BLACKOPS: raidDesc = "a chopper hovering"; break;
                 case RaidType.GANGSTA: raidDesc = "cars coming"; break;
                 case RaidType.NATGUARD: raidDesc = "the army coming"; break;
                 case RaidType.SURVIVORS: raidDesc = "honking coming"; break;
+                case RaidType.HELICOPTER_RESCUE: raidDesc = "a chopper landing"; break; //@@MP (Release 7-4)
                 default:
                     throw new ArgumentOutOfRangeException(String.Format("unhandled raidtype {0}", raid.ToString()));
             }

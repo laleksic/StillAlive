@@ -473,9 +473,13 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="side">side the difficulty is computed for.</param>
         /// <param name="reincarnationNumber">0 for the first life</param>
         /// <returns>[0..1+]</returns>
-        public static float ComputeDifficultyRating(GameOptions options, DifficultySide side, int reincarnationNumber)
+        public static float ComputeDifficultyRating(GameOptions options, DifficultySide side, int reincarnationNumber, GameMode gameMode) //@@MP - added gameMode (Release 7-4)
         {
-            float rating = 1.0f;
+            float rating = 1.0f; //@@MP - was 1.0f. lazy tweak to balance scoring scale (Release 7-4)
+            if (side == DifficultySide.FOR_SURVIVOR)
+                rating = 0.7f;
+            else
+                rating = 0.20f;
 
             ///////////////////
             // Constant factors.
@@ -489,6 +493,7 @@ namespace djack.RogueSurvivor.Engine
             // - Zombifieds UpDay 
             //////////////////
             #region
+
             /*  //@@MP -removed option (Release 6-1)
             // - Don't reveal starting map: +10%
             if (!options.RevealStartingDistrict)
@@ -503,24 +508,24 @@ namespace djack.RogueSurvivor.Engine
                     rating += 0.10f;
             }
 
-            // - Nat Guards                : -50% -> +50%
+            // - Nat Guards                : -5% -> +5%
             if (options.NatGuardFactor != GameOptions.DEFAULT_NATGUARD_FACTOR)
             {
                 float k = (options.NatGuardFactor - GameOptions.DEFAULT_NATGUARD_FACTOR) / (float)GameOptions.DEFAULT_NATGUARD_FACTOR;
                 if (side == DifficultySide.FOR_SURVIVOR)
-                    rating -= 0.50f * k;
+                    rating -= 0.25f * k;
                 else
-                    rating += 0.50f * k;
+                    rating += 0.25f * k;
             }
 
-            // - Supplies                  : -50% -> +50%
+            // - Supplies                  : -1% -> +1%
             if (options.SuppliesDropFactor != GameOptions.DEFAULT_SUPPLIESDROP_FACTOR)
             {
                 float k = (options.SuppliesDropFactor - GameOptions.DEFAULT_SUPPLIESDROP_FACTOR) / (float)GameOptions.DEFAULT_SUPPLIESDROP_FACTOR;
                 if (side == DifficultySide.FOR_SURVIVOR)
-                    rating -= 0.50f * k;
+                    rating -= 0.05f * k;
                 else
-                    rating += 0.50f * k;
+                    rating += 0.05f * k;
             }
 
             // - Zombifieds UpDay
@@ -590,9 +595,8 @@ namespace djack.RogueSurvivor.Engine
             if (side == DifficultySide.FOR_SURVIVOR)
                 rating += 0.30f * kCivZombification + 0.20f * kCivStarvation;
             else
-                rating -= 0.30f * kCivZombification + 0.20f * kCivStarvation;
+                rating -= 0.30f * kCivZombification + 0.30f * kCivStarvation;
             #endregion
-
 
             /////////////
             // Scaling factors.
@@ -604,6 +608,8 @@ namespace djack.RogueSurvivor.Engine
             //// - Rats Upgrade               : x1.10 / x0.90 //@@MP - removed this option (Release 5-7)
             // - Skeletons Upgrade          : x1.20 / x0.80
             // - Shamblers Upgrade          : x1.25 / x0.75
+            // - Resources Availability     : x1.5 / x 0.5      //@@MP (Release 7-4)
+            // - VTG Anti-viral pills       : x1.5 / x 0.5      //@@MP (Release 7-4)
             ////////////
             #region
             // - Disable undeads evolution: x0.5 / x2
@@ -662,6 +668,36 @@ namespace djack.RogueSurvivor.Engine
                 else
                     rating *= 0.75f;
             }
+
+            // - Resources availability   //@@MP (Release 7-4)
+            if (side == DifficultySide.FOR_SURVIVOR)
+            {
+                if (options.ResourcesAvailability == GameOptions.Resources.LOW)
+                    rating *= 2f;
+                else if (options.ResourcesAvailability == GameOptions.Resources.HIGH)
+                    rating *= 0.5f;
+            }
+
+            // - VTG Anti-viral pills   //@@MP (Release 7-4)
+            if (gameMode == Engine.GameMode.GM_VINTAGE)
+            {
+                if (options.VTGAntiviralPills && side == DifficultySide.FOR_SURVIVOR)
+                    rating *= 0.2f;  //survivor, pills on = easier
+                else if (!options.VTGAntiviralPills && side == DifficultySide.FOR_UNDEAD)
+                    rating *= 0.2f;  //undead, pills off = easier
+            }
+
+            // - Undeads damage     //@@MP (Release 7-4)
+            if (side == DifficultySide.FOR_SURVIVOR)
+                rating *= (1.0f + ((float)options.UndeadDamagePercent / (float)100));
+            else
+                rating /= ((float)options.UndeadDamagePercent / (float)100);
+
+            // - Livings damage     //@@MP (Release 7-4)
+            if (side == DifficultySide.FOR_SURVIVOR)
+                rating /= ((float)options.LivingDamagePercent / (float)100);
+            else
+                rating *= (1.0f + ((float)options.LivingDamagePercent / (float)100));
             #endregion
 
             /////////////////////////////

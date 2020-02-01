@@ -48,7 +48,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
-            HashSet<Point> fov = m_LOSSensor.FOV;
+            //HashSet<Point> fov = m_LOSSensor.FOV;  //unused so far
             List<Percept> mapPercepts = FilterSameMap(percepts);
             RouteFinder.SpecialActions allowedChargeActions = RouteFinder.SpecialActions.JUMP; // alpha10
 

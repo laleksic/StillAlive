@@ -19,6 +19,7 @@ namespace djack.RogueSurvivor.Engine
         SAVE_GAME,
         LOAD_GAME,
         ABANDON_GAME,
+        ESC, //@@MP (Release 7-4)
 
         MOVE_N,
         MOVE_NE,

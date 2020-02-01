@@ -1,6 +1,6 @@
 "ID","NAME","PLURAL","FOV bonus","BATTERIES in hours","FLAVOR"
-"LIGHT_FLASHLIGHT","flashlight","flashlights",3,36,"Let There Be Light!"
-"LIGHT_BIG_FLASHLIGHT","big flashlight","big flashlights",4,18,"Let There Be MORE Light!"
+"LIGHT_FLASHLIGHT","flashlight","flashlights",3,48,"Let There Be Light!"
+"LIGHT_BIG_FLASHLIGHT","big flashlight","big flashlights",4,24,"Let There Be MORE Light!"
 "LIGHT_NIGHT_VISION","night vision","night vision",5,18,"It's all so green"
 "LIGHT_BINOCULARS","binoculars","binoculars",50,0,"Look yonder"
 "LIGHT_FLARE","flare","flares",2,6,"Face downwind before lighting"

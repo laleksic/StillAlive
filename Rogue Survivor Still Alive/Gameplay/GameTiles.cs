@@ -172,7 +172,6 @@ namespace djack.RogueSurvivor.Gameplay
 
         #region Custom Colors
         static readonly Color DRK_RED = Color.FromArgb(128, 0, 0);
-        static readonly Color LIT_GRAY = Color.FromArgb(230, 230, 230);
         #endregion
 
         #region Fields

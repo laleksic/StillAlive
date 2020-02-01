@@ -1,5 +1,34 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
+STILL ALIVE 2.5.11.7 (aka Release 7-4, 1/2/2020) [Author: MP]
+---------------------
+
+Features:
+-Added a Resources Availability difficulty option, which influences:
+--the number of items spawned in the CHAR and army undergrounds at world generation.
+--the player's starting inventory.
+--the number of days before plants will fruit again.
+--the availability of dynamite.
+-Moved difficulty-related options to the character creation process.
+-Difficulty options cannot be changed mid-game (prevents score manipulation).
+-Tweaks to rescue day (including minimum of day #7).
+-Exempted dogs from all causes of zombification.
+-Added additional sound effects to humans, undead and dogs.
+-Added option to increase or decrease the damage done by undeads and/or livings.
+
+Fixes:
+-Resetting default options no longer changes audio volumes.
+-Removed music from shop and housing basements.
+-Corrected playback of location-specific background music.
+-Added missing sound effects (eg stench killer, nearby construction).
+-Audio balancing right across the board.
+-Fixed armor bug relating to actor set on fire chance.
+-Fires now draw in front of objects (eg benches).
+-Districts containing the CHAR Underground or Army Base now experience normal district performance.
+-CHAR Underground and Army Base maps are now made to the same district size as the player chooses (for turn performance).
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.5.7.6 (aka Release 7-3, 29/12/2019) [Author: MP]
 ---------------------
 

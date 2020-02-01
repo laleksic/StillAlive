@@ -27,6 +27,7 @@ namespace djack.RogueSurvivor.Data
     class DollBody
     {
         #region Blank doll body
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         [NonSerialized]
         public static readonly DollBody UNDEF = new DollBody(true, 0);
         #endregion

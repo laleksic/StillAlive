@@ -562,6 +562,8 @@ namespace djack.RogueSurvivor.Engine
 
         static string GetTintForItemLight(RogueGame game, Item light) //@@MP (Release 7-1)
         {
+            //unused, as the effect wasn't quite right in practice. left in as it may be revisited
+
             if (light.Model == game.GameItems.LIGHT_FLARE)
                 return Gameplay.GameImages.EFFECT_LIGHT_TINT_FLARE;
             else if (light.Model == game.GameItems.LIGHT_GLOWSTICK)
@@ -572,6 +574,8 @@ namespace djack.RogueSurvivor.Engine
 
         static void AddTintToTile(Map map, Point pt, string tintImage) //@@MP (Release 7-1)
         {
+            //unused, as the effect wasn't quite right in practice. left in as it may be revisited
+
             if (tintImage != null && !map.GetTileAt(pt).HasDecoration(tintImage))
                 map.GetTileAt(pt).AddDecoration(tintImage); //add tint
         }

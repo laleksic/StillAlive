@@ -1,7 +1,9 @@
-﻿ ** SOUND CREDITS **
-
-Each file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links below.
+﻿The following are the third party media files used by this game. Where an attribution doesn't exist, the media was originally created by the game's authors or contributors.
+Each and every file attributed below has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links.
 All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
+
+ 
+** SOUND CREDITS **
 
 -Melee attack : https://freesound.org/people/Pinball_Wiz/sounds/394874/ by Pinball_Wiz
 -Melee attack miss : https://freesound.org/people/timmy_h123/sounds/160500/ by timmy_h123
@@ -18,6 +20,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Girl Scream : https://freesound.org/people/benjaminharveydesign/sounds/315827/ by benjaminharveydesign
 -Woman Scream : https://freesound.org/people/ritola27/sounds/220646/ by ritola27
 -Woman Scream AAA : https://freesound.org/people/thanvannispen/sounds/9429/ by thanvannispen
+-Lady scream : https://freesound.org/people/SGAK/sounds/467829/ by SGAK
 -Chain link fence : https://freesound.org/people/RHumphries/sounds/7150/ by RHumphries
 -Zipper : https://freesound.org/people/Q.K./sounds/56274/ by Q.K.
 -Bash on wooden object : https://freesound.org/people/qubodup/sounds/151624/ by qubodup
@@ -104,12 +107,19 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 	growl : https://freesound.org/people/TobiasKosmos/sounds/163276/ by TobiasKosmos 
 	bark : https://freesound.org/people/Mrthenoronha/sounds/420449/ by Mrthenoronha
 	yips : https://freesound.org/people/Mrthenoronha/sounds/420452/ by Mrthenoronha
+-Shambler growl : https://opengameart.org/content/hungry-ghoul by Darsycho
+-Zombified groan : https://opengameart.org/content/25-spooky-sound-effects by bart
+-Skeleton growl : https://opengameart.org/content/retro-monster-roar by greg300
+-Rat : https://opengameart.org/content/squeaky-rat by qubodup
+-Sewers thing : https://opengameart.org/content/15-monster-gruntpaindeath-sounds by Michel Baradari
+-Zombie master : https://opengameart.org/content/15-monster-gruntpaindeath-sounds by Michel Baradari
+-Man shouts "hey" : https://freesound.org/people/jukkis111/sounds/45605/ by jukkis111
+-Female shouts "hey" : https://www.sounddogs.com/sound-effects/yell-female-hey-11092618 (purchased, https://www.sounddogs.com/sound-effects-eula)
+-Metal door close : https://freesound.org/people/Q.K./sounds/56257/ by Q.K.
+-Metal door open : https://freesound.org/people/MaxDemianAGL/sounds/183605/ by MaxDemianAGL
 
 
 ** IMAGE CREDITS **
-
-Each and every file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links below.
-All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
 
 -Vat : https://opengameart.org/content/potion-phial by TCRChi3ftan / Jao247
 -Computer : https://opengameart.org/content/object-icons-approx-20px by qubodup
@@ -128,10 +138,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Mobile shop signage https://opengameart.org/content/box-symbols by mold
 
 
-** MUSIC CREDITS *
-
-Each and every file attributed has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links below.
-All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
+** MUSIC CREDITS **
 
 -Black Ops : https://opengameart.org/content/commando-team-action-loop-cut by Grégoire Lourme
 	> Copyright 2012 "Commando Team (Action)" Grégoire Lourme <http://www.jamendo.com/en/artist/560/gregoire-lourme> Copyright 2012 Iwan Gabovitch "Commando Team (Action) [loop cut]" (editing to make it loop)

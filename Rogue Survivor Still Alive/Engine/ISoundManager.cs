@@ -42,17 +42,17 @@ namespace djack.RogueSurvivor.Engine
 
         #region Playing music
         /// <summary>
-        /// Restart playing a music from the beginning if music is enabled.
+        /// Restart playing an audio track from the beginning if that audio category is enabled.
         /// </summary>
         void Play(string musicname, int priority);
 
         /// <summary>
-        /// Start playing a music from the beginning if not already playing and if music is enabled.
+        /// Start playing an audio track from the beginning if not already playing and if that audio category is enabled.
         /// </summary>
         void PlayIfNotAlreadyPlaying(string musicname, int priority, bool looping = false); //@@MP - added looping parameter (Release 6-4)
 
         /// <summary>
-        /// Restart playing in a loop a music from the beginning if music is enabled.
+        /// Restart playing in a loop an audio track from the beginning if that audio category is enabled.
         /// </summary>
         void PlayLooping(string musicname, int priority);
 

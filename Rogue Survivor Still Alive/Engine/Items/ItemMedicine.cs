@@ -24,7 +24,7 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             ItemMedicineModel m = model as ItemMedicineModel;
             if (m == null)
-                throw new ArgumentException("model is not a MedecineModel");
+                throw new ArgumentException("model is not a MedicineModel");
 
             this.Healing = m.Healing;
             this.StaminaBoost = m.StaminaBoost;

@@ -9,6 +9,7 @@ namespace djack.RogueSurvivor.Data
     class Abilities
     {
         #region Blank abilities
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         [NonSerialized]
         public static readonly Abilities NONE = new Abilities();
         #endregion

@@ -382,6 +382,7 @@ namespace djack.RogueSurvivor.UI
             readonly int m_X;
             readonly int m_Y;
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "tint")]
             public GfxImageTransform(Image img, float rotation, float scale, Color tint, int x, int y) //@@MP - added tint (Release 7-2)
             {
                 m_Img = img;

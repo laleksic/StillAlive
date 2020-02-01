@@ -14,7 +14,9 @@ namespace djack.RogueSurvivor.Engine
         bool m_IsAudioEnabled; //@@MP renamed (Release 2)
         int m_Volume;
         Dictionary<string, SFMLSound> m_Sounds;
+#pragma warning disable CS0414 // The field 'SFMLSoundManager.m_CurrentSFX' is assigned but its value is never used
         SFMLSound m_CurrentSFX; // alpha10    //@@MP - redundant: designed for Music (Release 2)
+#pragma warning restore CS0414 // The field 'SFMLSoundManager.m_CurrentSFX' is assigned but its value is never used
         #endregion
 
         #region Properties

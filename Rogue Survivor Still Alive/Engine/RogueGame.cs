@@ -856,7 +856,7 @@ namespace djack.RogueSurvivor.Engine
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating options, keys, and hints");
             s_Options = new GameOptions();
-            s_Options.ResetToDefaultValues();
+            s_Options.ResetToDefaultValues(GameOptions.OptionsCategory.ALL);
             s_KeyBindings = new Keybindings();
             s_KeyBindings.ResetToDefaults();
             s_Hints = new GameHintsStatus();
@@ -1477,58 +1477,64 @@ namespace djack.RogueSurvivor.Engine
             #region Order
             GameOptions.IDs[] list = new GameOptions.IDs[]  //@@MP provides the order in which they appear in the menu
             {
-                   // helpers
-                   GameOptions.IDs.UI_AUTOSAVE, //@MP (Release 6-1)
-                   GameOptions.IDs.UI_ADVISOR,
-                   GameOptions.IDs.UI_COMBAT_ASSISTANT,
-                   GameOptions.IDs.UI_SHOW_PLAYER_TARGETS,
-                   GameOptions.IDs.UI_SHOW_TARGETS,
-                   GameOptions.IDs.UI_ANIM_DELAY,
-                   GameOptions.IDs.UI_SHOW_MINIMAP,
-                   // sim
-                   GameOptions.IDs.GAME_SIMULATE_DISTRICTS,
-                   GameOptions.IDs.GAME_TURNS_SIM_CAP, //@@MP (Release 7-3)
-                   GameOptions.IDs.GAME_SIM_THREAD,
-                   GameOptions.IDs.GAME_SIMULATE_SLEEP,
-                   // death
-                   GameOptions.IDs.GAME_DEATH_SCREENSHOT,
-                   GameOptions.IDs.GAME_PERMADEATH,
-                   // maps
-                   GameOptions.IDs.GAME_CITY_SIZE,
-                   GameOptions.IDs.GAME_DISTRICT_SIZE,
-                   //GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT, //@@MP (Release 6-1)
-                   // living
-                   GameOptions.IDs.GAME_MAX_CIVILIANS,
-                   // GameOptions.IDs.GAME_MAX_DOGS,
-                   GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE,
-                   GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS,
-                   GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH,
-                   GameOptions.IDs.GAME_STARVED_ZOMBIFICATION,
-                   GameOptions.IDs.GAME_SANITY, //@@MP (Release 1)
-                   GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS, //@@MP (Release 5-2)
-                   // undeads
-                   GameOptions.IDs.GAME_MAX_UNDEADS,
-                   GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION,
-                   GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT,
-                   GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE,
-                   GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS,
-                   GameOptions.IDs.GAME_SHAMBLERS_UPGRADE,
-                   GameOptions.IDs.GAME_SKELETONS_UPGRADE,
-                   //GameOptions.IDs.GAME_RATS_UPGRADE, //@@MP (Release 5-7)
-                   // events
-                   GameOptions.IDs.GAME_NATGUARD_FACTOR,
-                   GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR,
-                   // reinc
-                   //GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED, //@@MP (Release 5-7)
-                   //GameOptions.IDs.GAME_REINCARNATE_AS_RAT, //@@MP (Release 5-7)
-                   //GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS //@@MP (Release 5-7)
-                   // sounds
-                   GameOptions.IDs.UI_MUSIC,
-                   GameOptions.IDs.UI_MUSIC_VOLUME,
-                   GameOptions.IDs.UI_SFXS, //@@MP (Release 2)
-                   GameOptions.IDs.UI_SFXS_VOLUME, //@@MP (Release 2)
-                   GameOptions.IDs.UI_AMBIENTSFXS, //@@MP (Release 6-1)
-                   GameOptions.IDs.UI_AMBIENTSFXS_VOLUME, //@@MP (Release 6-1)
+                // helpers
+                GameOptions.IDs.UI_AUTOSAVE, //@MP (Release 6-1)
+                GameOptions.IDs.UI_ADVISOR,
+                GameOptions.IDs.UI_COMBAT_ASSISTANT,
+                GameOptions.IDs.UI_SHOW_PLAYER_TARGETS,
+                GameOptions.IDs.UI_SHOW_TARGETS,
+                GameOptions.IDs.UI_ANIM_DELAY,
+                GameOptions.IDs.UI_SHOW_MINIMAP,
+                // sim
+                GameOptions.IDs.GAME_SIMULATE_DISTRICTS,
+                GameOptions.IDs.GAME_TURNS_SIM_CAP, //@@MP (Release 7-3)
+                GameOptions.IDs.GAME_SIM_THREAD,
+                GameOptions.IDs.GAME_SIMULATE_SLEEP,
+                // death
+                GameOptions.IDs.GAME_DEATH_SCREENSHOT,
+                GameOptions.IDs.GAME_PERMADEATH,
+                // maps
+                GameOptions.IDs.GAME_CITY_SIZE,
+                GameOptions.IDs.GAME_DISTRICT_SIZE,
+                GameOptions.IDs.GAME_MAX_DOGS, //@@MP (Release 7-3)
+                //GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT, //@@MP (Release 6-1)
+                // reinc
+                //GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED, //@@MP (Release 5-7)
+                //GameOptions.IDs.GAME_REINCARNATE_AS_RAT, //@@MP (Release 5-7)
+                //GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS //@@MP (Release 5-7)
+                // sounds
+                GameOptions.IDs.UI_MUSIC,
+                GameOptions.IDs.UI_MUSIC_VOLUME,
+                GameOptions.IDs.UI_SFXS, //@@MP (Release 2)
+                GameOptions.IDs.UI_SFXS_VOLUME, //@@MP (Release 2)
+                GameOptions.IDs.UI_AMBIENTSFXS, //@@MP (Release 6-1)
+                GameOptions.IDs.UI_AMBIENTSFXS_VOLUME //@@MP (Release 6-1)
+
+                #region //MOVED TO CHARACTER CREATION   //@@MP (Release 7-4)
+                /*
+                // living
+                GameOptions.IDs.GAME_MAX_CIVILIANS,
+                GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE,
+                GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS,
+                GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH,
+                GameOptions.IDs.GAME_STARVED_ZOMBIFICATION,
+                GameOptions.IDs.GAME_SANITY, //@@MP (Release 1)
+                GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS, //@@MP (Release 5-2)
+                GameOptions.IDs.GAME_RESOURCES_AVAILABILITY, //@@MP (Release 7-4)
+                // undeads
+                GameOptions.IDs.GAME_MAX_UNDEADS,
+                GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION,
+                GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT,
+                GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE,
+                GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS,
+                GameOptions.IDs.GAME_SHAMBLERS_UPGRADE,
+                GameOptions.IDs.GAME_SKELETONS_UPGRADE,
+                //GameOptions.IDs.GAME_RATS_UPGRADE, //@@MP (Release 5-7)
+                // events
+                GameOptions.IDs.GAME_NATGUARD_FACTOR,
+                GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR,
+                */
+                #endregion
             };
             #endregion
 
@@ -1537,15 +1543,6 @@ namespace djack.RogueSurvivor.Engine
             for (int i = 0; i < list.Length; i++)
             {
                 menuEntries[i] = GameOptions.Name(list[i]);
-                /*// alpha10 special mode notes
-                GameOptions.IDs id = list[i];
-                if (id == GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION ||
-                    id == GameOptions.IDs.GAME_SKELETONS_UPGRADE ||
-                    id == GameOptions.IDs.GAME_SHAMBLERS_UPGRADE) //id == GameOptions.IDs.GAME_RATS_UPGRADE || //@@MP - release 5 removed rats upgrades
-                    menuEntries[i] += " -V";
-                else if (id == GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE ||
-                    id == GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE)
-                    menuEntries[i] += " =S";*/
             }
 
             bool loop = true;
@@ -1582,20 +1579,6 @@ namespace djack.RogueSurvivor.Engine
                 gy += BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.Red, "* Caution : increasing these values can make the game run slower and saving/loading longer.", gx, gy);
                 gy += BOLD_LINE_SPACING;
-                /*// legend //alpha 10
-                m_UI.UI_DrawStringBold(Color.White, "-V : option always OFF when playing Vintage (VTG) mode", gx, gy);
-                gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.White, "=S : option used only when playing Standard (STD) mode", gx, gy);
-                gy += BOLD_LINE_SPACING;*/
-
-                // difficulty rating.
-                gy += BOLD_LINE_SPACING;
-                int diffForSurvivor = (int)(100 * Scoring.ComputeDifficultyRating(s_Options, DifficultySide.FOR_SURVIVOR, 0));
-                int diffforUndead = (int)(100 * Scoring.ComputeDifficultyRating(s_Options, DifficultySide.FOR_UNDEAD, 0));
-                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("Difficulty Rating : {0}% as survivor / {1}% as undead.", diffForSurvivor, diffforUndead), gx, gy);
-                gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.White, "Scoring multiplier decreases with each reincarnation.", gx, gy);
-                gy += 2 * BOLD_LINE_SPACING;
 
                 // footnote.
                 DrawFootnote(Color.White, "Move cursor then left/right to change values, R to restore defaults, ESC to save and leave");
@@ -1617,7 +1600,7 @@ namespace djack.RogueSurvivor.Engine
                         break;
 
                     case Keys.R:        // restore defaults.
-                        s_Options.ResetToDefaultValues(); //prevOptions; //@@MP - used to restore changes in this session, now resets defaults (Release 6-1)
+                        s_Options.ResetToDefaultValues(GameOptions.OptionsCategory.GENERAL); //prevOptions; //@@MP - used to restore changes in this session, now resets defaults (Release 6-1)
                         ApplyOptions();
                         SaveOptions();
                         break;
@@ -1644,14 +1627,8 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.UI_SHOW_TARGETS: s_Options.ShowTargets = !s_Options.ShowTargets; break;
                             case GameOptions.IDs.UI_SHOW_PLAYER_TARGETS: s_Options.ShowPlayerTargets = !s_Options.ShowPlayerTargets; break;
                             case GameOptions.IDs.UI_AUTOSAVE: s_Options.Autosaving = !s_Options.Autosaving; break; //@@MP (Release 6-1)
-                            case GameOptions.IDs.GAME_MAX_CIVILIANS: s_Options.MaxCivilians -= 5; break;
-                            case GameOptions.IDs.GAME_MAX_DOGS: --s_Options.MaxDogs; break;
-                            case GameOptions.IDs.GAME_MAX_UNDEADS: s_Options.MaxUndeads -= 10; break;
-                            case GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT: s_Options.DayZeroUndeadsPercent -= 5; break;
-                            case GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE: --s_Options.ZombieInvasionDailyIncrease; break;
                             case GameOptions.IDs.GAME_CITY_SIZE: s_Options.CitySize -= 1; break;
-                            case GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH: s_Options.NPCCanStarveToDeath = !s_Options.NPCCanStarveToDeath; break;
-                            case GameOptions.IDs.GAME_STARVED_ZOMBIFICATION: s_Options.StarvedZombification = !s_Options.StarvedZombification; break;
+                            case GameOptions.IDs.GAME_MAX_DOGS: --s_Options.MaxDogs; break; //@@MP (Release 7-3)
                             case GameOptions.IDs.GAME_SIMULATE_DISTRICTS:
                                 if (s_Options.SimulateDistricts != GameOptions.SimRatio.OFF)
                                     s_Options.SimulateDistricts = (GameOptions.SimRatio)(s_Options.SimulateDistricts - 1);
@@ -1662,40 +1639,11 @@ namespace djack.RogueSurvivor.Engine
                                 break;
                             case GameOptions.IDs.GAME_SIMULATE_SLEEP: s_Options.SimulateWhenSleeping = !s_Options.SimulateWhenSleeping; break;
                             case GameOptions.IDs.GAME_SIM_THREAD: s_Options.SimThread = !s_Options.SimThread; break;
-                            case GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE: s_Options.ZombificationChance -= 5; break;
-                            //case GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT: s_Options.RevealStartingDistrict = !s_Options.RevealStartingDistrict; break; //@@MP (Release 6-1)
-                            case GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION:
-                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE)//@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                                    s_Options.AllowUndeadsEvolution = false;
-                                else*/
-                                s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution;
-                                break;
-                            case GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS:
-                                if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._FIRST)
-                                    s_Options.ZombifiedsUpgradeDays = (GameOptions.ZupDays)(s_Options.ZombifiedsUpgradeDays - 1);
-                                break;
                             //case GameOptions.IDs.GAME_REINCARNATE_AS_RAT: s_Options.CanReincarnateAsRat = !s_Options.CanReincarnateAsRat; break; //@@MP (Release 5-7)
                             //case GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS: s_Options.CanReincarnateToSewers = !s_Options.CanReincarnateToSewers; break; //@@MP (Release 5-7)
                             //case GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED: s_Options.IsLivingReincRestricted = !s_Options.IsLivingReincRestricted; break; //@@MP (Release 5-7)
                             case GameOptions.IDs.GAME_PERMADEATH: s_Options.IsPermadeathOn = !s_Options.IsPermadeathOn; break;
-                            case GameOptions.IDs.GAME_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break; //@@MP (Release 1)
                             case GameOptions.IDs.GAME_DEATH_SCREENSHOT: s_Options.IsDeathScreenshotOn = !s_Options.IsDeathScreenshotOn; break;
-                            case GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
-                            case GameOptions.IDs.GAME_NATGUARD_FACTOR: s_Options.NatGuardFactor -= 10; break;
-                            case GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor -= 10; break;
-                            case GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)                                                                                                            break;*/
-                            case GameOptions.IDs.GAME_SHAMBLERS_UPGRADE:
-                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                                    s_Options.ShamblersUpgrade = false;
-                                else*/
-                                s_Options.ShamblersUpgrade = !s_Options.ShamblersUpgrade;
-                                break;
-                            case GameOptions.IDs.GAME_SKELETONS_UPGRADE:
-                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                                    s_Options.SkeletonsUpgrade = false;
-                                else*/
-                                s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade;
-                                break;
                         }
                         break;
                     case Keys.Right:
@@ -1715,14 +1663,8 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.UI_SHOW_TARGETS: s_Options.ShowTargets = !s_Options.ShowTargets; break;
                             case GameOptions.IDs.UI_SHOW_PLAYER_TARGETS: s_Options.ShowPlayerTargets = !s_Options.ShowPlayerTargets; break;
                             case GameOptions.IDs.UI_AUTOSAVE: s_Options.Autosaving = !s_Options.Autosaving; break; //@@MP (Release 6-1)
-                            case GameOptions.IDs.GAME_MAX_CIVILIANS: s_Options.MaxCivilians += 5; break;
-                            case GameOptions.IDs.GAME_MAX_DOGS: ++s_Options.MaxDogs; break;
-                            case GameOptions.IDs.GAME_MAX_UNDEADS: s_Options.MaxUndeads += 10; break;
-                            case GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT: s_Options.DayZeroUndeadsPercent += 5; break;
-                            case GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE: ++s_Options.ZombieInvasionDailyIncrease; break;
                             case GameOptions.IDs.GAME_CITY_SIZE: s_Options.CitySize += 1; break;
-                            case GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH: s_Options.NPCCanStarveToDeath = !s_Options.NPCCanStarveToDeath; break;
-                            case GameOptions.IDs.GAME_STARVED_ZOMBIFICATION: s_Options.StarvedZombification = !s_Options.StarvedZombification; break;
+                            case GameOptions.IDs.GAME_MAX_DOGS: ++s_Options.MaxDogs; break; //@@MP (Release 7-3)
                             case GameOptions.IDs.GAME_SIMULATE_DISTRICTS:
                                 if (s_Options.SimulateDistricts != GameOptions.SimRatio.FULL)
                                     s_Options.SimulateDistricts = (GameOptions.SimRatio)(s_Options.SimulateDistricts + 1);
@@ -1733,40 +1675,11 @@ namespace djack.RogueSurvivor.Engine
                                 break;
                             case GameOptions.IDs.GAME_SIMULATE_SLEEP: s_Options.SimulateWhenSleeping = !s_Options.SimulateWhenSleeping; break;
                             case GameOptions.IDs.GAME_SIM_THREAD: s_Options.SimThread = !s_Options.SimThread; break;
-                            case GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE: s_Options.ZombificationChance += 5; break;
-                            //case GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT: s_Options.RevealStartingDistrict = !s_Options.RevealStartingDistrict; break; //@@MP (Release 6-1)
-                            case GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION:
-                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                                    s_Options.AllowUndeadsEvolution = false;
-                                else*/
-                                s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution;
-                                break;
-                            case GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS:
-                                if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._COUNT - 1)
-                                    s_Options.ZombifiedsUpgradeDays = (GameOptions.ZupDays)(s_Options.ZombifiedsUpgradeDays + 1);
-                                break;
                             //case GameOptions.IDs.GAME_REINCARNATE_AS_RAT: s_Options.CanReincarnateAsRat = !s_Options.CanReincarnateAsRat; break; //@@MP (Release 5-7)
                             //case GameOptions.IDs.GAME_REINCARNATE_TO_SEWERS: s_Options.CanReincarnateToSewers = !s_Options.CanReincarnateToSewers; break; //@@MP (Release 5-7)
                             //case GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED: s_Options.IsLivingReincRestricted = !s_Options.IsLivingReincRestricted; break; //@@MP (Release 5-7)
                             case GameOptions.IDs.GAME_PERMADEATH: s_Options.IsPermadeathOn = !s_Options.IsPermadeathOn; break;
-                            case GameOptions.IDs.GAME_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break; //@@MP (Release 1)
                             case GameOptions.IDs.GAME_DEATH_SCREENSHOT: s_Options.IsDeathScreenshotOn = !s_Options.IsDeathScreenshotOn; break;
-                            case GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
-                            case GameOptions.IDs.GAME_NATGUARD_FACTOR: s_Options.NatGuardFactor += 10; break;
-                            case GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor += 10; break;
-                            case GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)                                                                                                         break;*/
-                            case GameOptions.IDs.GAME_SHAMBLERS_UPGRADE:
-                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                                    s_Options.ShamblersUpgrade = false;
-                                else*/
-                                s_Options.ShamblersUpgrade = !s_Options.ShamblersUpgrade;
-                                break;
-                            case GameOptions.IDs.GAME_SKELETONS_UPGRADE:
-                                /*if (m_Session.GameMode == GameMode.GM_VINTAGE) //@@MP - disabled as this will now be handled in-code rather than forcing options which is messy (Release 5-2)
-                                    s_Options.SkeletonsUpgrade = false;
-                                else*/
-                                s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade;
-                                break;
                         }
                         break;
                 }
@@ -2418,11 +2331,6 @@ namespace djack.RogueSurvivor.Engine
             return GetUserSavesPath() + "save.dat";
         }
 
-        public static string GetUserDocsPath()
-        {
-            return GetUserBasePath() + @"Docs\";
-        }
-
         public static string GetUserGraveyardPath()
         {
             return GetUserBasePath() + @"Graveyard\";
@@ -2583,7 +2491,7 @@ namespace djack.RogueSurvivor.Engine
             if (m_Session != null && m_Session.Scoring != null)
             {
                 m_Session.Scoring.Side = (m_Player == null || !m_Player.Model.Abilities.IsUndead) ? DifficultySide.FOR_SURVIVOR : DifficultySide.FOR_UNDEAD;
-                m_Session.Scoring.DifficultyRating = Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber);
+                m_Session.Scoring.DifficultyRating = Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber, m_Session.GameMode);
             }
 
             if (!m_MusicManager.IsAudioEnabled)
@@ -2753,15 +2661,12 @@ namespace djack.RogueSurvivor.Engine
             }
 
             /////////////////////////////
-            // Choose helicopter arrival day  //@@MP (Release 6-3)
+            // Choose difficulty inc helicopter arrival day  //@@MP (Release 6-3), (Release 7-4)
             /////////////////////////////
-            int chosenDay = 28;
-            if (!HandleNewGameHeliDay(out chosenDay))
+            int chosenDay = s_Options.HiddenRescueDay; //default
+            if (!HandleNewCharacterDifficulty(out chosenDay))
                 return false;
-            else
-            {
-                m_Session.ArmyHelicopterRescue_Day = chosenDay;
-            }
+            m_Session.ArmyHelicopterRescue_Day = chosenDay;
 
             // done
             return true;
@@ -3654,157 +3559,247 @@ namespace djack.RogueSurvivor.Engine
             return choiceDone;
         }
 
-        bool HandleNewGameHeliDay(out int chosenDay) //@@MP (Release 6-3)
+        /// <summary>
+        /// Allows tweaking any difficulty-related options, including heli rescue day
+        /// </summary>
+        bool HandleNewCharacterDifficulty(out int chosenDay) //@@MP (Release 7-4)
         {
-            bool loop = true;
             bool choiceDone = false;
-            string enteredNumerals = "";
-            int maxDays = 99;
-            int maxCharactersAllowed = 2;
 
+            #region Order
+            GameOptions.IDs[] list = new GameOptions.IDs[]  //@@MP provides the order in which they appear in the menu
+            {
+                // living
+                GameOptions.IDs.DIFFICULTY_RESCUE_DAY, //@@MP (Release 6-3)
+                GameOptions.IDs.DIFFICULTY_RESOURCES_AVAILABILITY, //@@MP (Release 7-4)
+                GameOptions.IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT, //@@MP (Release 7-4)
+                GameOptions.IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS,
+                GameOptions.IDs.DIFFICULTY_SANITY, //@@MP (Release 1)
+                GameOptions.IDs.DIFFICULTY_VTG_ANTIVIRAL_PILLS, //@@MP (Release 5-2)
+                GameOptions.IDs.DIFFICULTY_ZOMBIFICATION_CHANCE,
+                GameOptions.IDs.DIFFICULTY_NPC_CAN_STARVE_TO_DEATH,
+                GameOptions.IDs.DIFFICULTY_STARVED_ZOMBIFICATION,
+                GameOptions.IDs.DIFFICULTY_MAX_CIVILIANS,
+                // undeads
+                GameOptions.IDs.DIFFICULTY_MAX_UNDEADS,
+                GameOptions.IDs.DIFFICULTY_UNDEAD_DAMAGE_PERCENT, //@@MP (Release 7-4)
+                GameOptions.IDs.DIFFICULTY_DAY_ZERO_UNDEADS_PERCENT,
+                GameOptions.IDs.DIFFICULTY_UNDEADS_UPGRADE_DAYS,
+                GameOptions.IDs.DIFFICULTY_ALLOW_UNDEADS_EVOLUTION,
+                GameOptions.IDs.DIFFICULTY_ZOMBIE_INVASION_DAILY_INCREASE,
+                GameOptions.IDs.DIFFICULTY_SHAMBLERS_UPGRADE,
+                GameOptions.IDs.DIFFICULTY_SKELETONS_UPGRADE,
+                /*GameOptions.IDs.DIFFICULTY_SPAWN_SKELETON_CHANCE,
+                GameOptions.IDs.DIFFICULTY_SPAWN_ZOMBIE_CHANCE,
+                GameOptions.IDs.DIFFICULTY_SPAWN_ZOMBIE_MASTER_CHANCE,*/
+                //GameOptions.IDs.DIFFICULTY_RATS_UPGRADE, //@@MP (Release 5-7)
+                // events
+                GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR,
+                GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR
+            };
+            #endregion
+
+            //choices
+            string[] menuEntries = new string[list.Length];
+            string[] values = new string[list.Length];
+            for (int i = 0; i < list.Length; i++)
+            {
+                menuEntries[i] = GameOptions.Name(list[i]);
+                /*// alpha10 special mode notes
+                GameOptions.IDs id = list[i];
+                if (id == GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION ||
+                    id == GameOptions.IDs.GAME_SKELETONS_UPGRADE ||
+                    id == GameOptions.IDs.GAME_SHAMBLERS_UPGRADE) //id == GameOptions.IDs.GAME_RATS_UPGRADE || //@@MP - release 5 removed rats upgrades
+                    menuEntries[i] += " -V";
+                else if (id == GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE ||
+                    id == GameOptions.IDs.GAME_STARVED_ZOMBIFICATION_CHANCE)
+                    menuEntries[i] += " =S";*/
+            }
+
+            bool loop = true;
+            int selected = 0;
+            char[] newlines = { '\n' };  // alpha10
+            char[] spaces = { ' ' }; // alpha10
             do
             {
-                //display
-                m_UI.UI_Clear(Color.Black);
+                for (int i = 0; i < list.Length; i++)
+                    values[i] = s_Options.DescribeValue(list[i]); //@@MP - unused parameter (Release 5-7)
+
                 int gx, gy;
+                //heading
                 gx = gy = 0;
-                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] Choose Helicopter Arrival Day #", Session.DescGameMode(m_Session.GameMode)), gx, gy);
-                gy += 2 * BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.White, String.Format("--->  {0}     [Max:{1}, Default:28]", enteredNumerals, maxDays.ToString()), gx, gy);
+                m_UI.UI_Clear(Color.Black);
+                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("[{0}] Set Difficulty Options", Session.DescGameMode(m_Session.GameMode)), gx, gy);
+
+                //intro
                 gy += 2 * BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.White, String.Format("The army have established a safe zone and are evacuating towns all around the region."), gx, gy);
                 gy += BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.White, String.Format("You must find a way to survive until helicopter rescue arrives on this day."), gx, gy);
+                m_UI.UI_DrawStringBold(Color.White, String.Format("You must find a way to survive until helicopter rescue arrives (choose the day below)."), gx, gy);
                 gy += BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.White, String.Format("You don't have to make it to the helicopter, but after that point you'll be on your own..."), gx, gy);
-                DrawFootnote(Color.White, "Type a day number, leave it blank for the default, or type 0 for a random day, ENTER to proceed, ESC to cancel");
+
+                //the options
+                gy += 2 * BOLD_LINE_SPACING;
+                DrawMenuOrOptions(selected, Color.White, menuEntries, Color.LightGreen, values, gx, ref gy, false, 400);
+
+                // describe current option.    // alpha10
+                gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, menuEntries[selected].TrimStart(spaces), gx, gy);
+                gy += BOLD_LINE_SPACING;
+                string desc = GameOptions.Describe(list[selected]);
+                string[] descLines = desc.Split(newlines);
+                foreach (string d in descLines)
+                {
+                    m_UI.UI_DrawString(Color.White, "  " + d, gx, gy);
+                    gy += BOLD_LINE_SPACING;
+                }
+
+                // difficulty rating.
+                gy += BOLD_LINE_SPACING;
+                int diffForSurvivor = (int)(100 * Scoring.ComputeDifficultyRating(s_Options, DifficultySide.FOR_SURVIVOR, 0, m_Session.GameMode));
+                int diffforUndead = (int)(100 * Scoring.ComputeDifficultyRating(s_Options, DifficultySide.FOR_UNDEAD, 0, m_Session.GameMode));
+                m_UI.UI_DrawStringBold(Color.Yellow, String.Format("Difficulty Rating : {0}% as survivor / {1}% as undead.", diffForSurvivor, diffforUndead), gx, gy);
+                gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, "Note: your game score decreases with each reincarnation.", gx, gy);
+
+                // caution.
+                gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.Red, "* Caution : increasing these values can make the game run slower and saving/loading longer.", gx, gy);
+                gy += BOLD_LINE_SPACING;
+                /*// legend //alpha 10
+                m_UI.UI_DrawStringBold(Color.White, "-V : option always OFF when playing Vintage (VTG) mode", gx, gy);
+                gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, "=S : option used only when playing Standard (STD) mode", gx, gy);
+                gy += BOLD_LINE_SPACING;*/
+
+                // footnote.
+                DrawFootnote(Color.White, "Move cursor then left/right to change values, R to restore defaults, ENTER to proceed, ESC to cancel");
+
+                //redraw
                 m_UI.UI_Repaint();
 
+                // handle
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
                 switch (key.KeyCode)
                 {
-                    #region the character keys
-                    case Keys.NumPad0:
-                        enteredNumerals += "0";
+                    case Keys.Up:       // move up
+                        if (selected > 0) --selected;
+                        else selected = menuEntries.Length - 1;
+                        break;
+                    case Keys.Down:     // move down
+                        selected = (selected + 1) % menuEntries.Length;
                         break;
 
-                    case Keys.D0:
-                        enteredNumerals += "0";
+                    case Keys.R:        // restore defaults.
+                        s_Options.ResetToDefaultValues(GameOptions.OptionsCategory.DIFFICULTY); //prevOptions; //@@MP - used to restore changes in this session, now resets defaults (Release 6-1)
                         break;
 
-                    case Keys.NumPad1:
-                        enteredNumerals += "1";
-                        break;
-
-                    case Keys.D1:
-                        enteredNumerals += "1";
-                        break;
-
-                    case Keys.NumPad2:
-                        enteredNumerals += "2";
-                        break;
-
-                    case Keys.D2:
-                        enteredNumerals += "2";
-                        break;
-
-                    case Keys.NumPad3:
-                        enteredNumerals += "3";
-                        break;
-
-                    case Keys.D3:
-                        enteredNumerals += "3";
-                        break;
-
-                    case Keys.NumPad4:
-                        enteredNumerals += "4";
-                        break;
-
-                    case Keys.D4:
-                        enteredNumerals += "4";
-                        break;
-
-                    case Keys.NumPad5:
-                        enteredNumerals += "5";
-                        break;
-
-                    case Keys.D5:
-                        enteredNumerals += "5";
-                        break;
-
-                    case Keys.NumPad6:
-                        enteredNumerals += "6";
-                        break;
-
-                    case Keys.D6:
-                        enteredNumerals += "6";
-                        break;
-
-                    case Keys.NumPad7:
-                        enteredNumerals += "7";
-                        break;
-
-                    case Keys.D7:
-                        enteredNumerals += "7";
-                        break;
-
-                    case Keys.NumPad8:
-                        enteredNumerals += "8";
-                        break;
-
-                    case Keys.D8:
-                        enteredNumerals += "8";
-                        break;
-
-                    case Keys.NumPad9:
-                        enteredNumerals += "9";
-                        break;
-
-                    case Keys.D9:
-                        enteredNumerals += "9";
-                        break;
-
-                    #endregion
-
-                    case Keys.Back: //backspace
-                        if (enteredNumerals.Length > 0)
-                            enteredNumerals = enteredNumerals.Remove(enteredNumerals.Length - 1);
-                        break;
-
-                    case Keys.Escape: //cancelled
+                    case Keys.Escape:   // validate and leave
+                        loop = false;
                         choiceDone = false;
-                        loop = false;
                         break;
 
-                    case Keys.Enter: //name entered or gimme a random
-                        choiceDone = true;
+                    case Keys.Enter:
                         loop = false;
+                        choiceDone = true;
+                        break;
+
+                    case Keys.Left:
+                        switch ((GameOptions.IDs)list[selected])
+                        {
+                            case GameOptions.IDs.DIFFICULTY_RESCUE_DAY: s_Options.VisibleRescueDay -= 1; break;
+                            case GameOptions.IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT: s_Options.LivingDamagePercent -= 25; break;
+                            case GameOptions.IDs.DIFFICULTY_UNDEAD_DAMAGE_PERCENT: s_Options.UndeadDamagePercent -= 25; break;
+                            case GameOptions.IDs.DIFFICULTY_MAX_CIVILIANS: s_Options.MaxCivilians -= 5; break;
+                            case GameOptions.IDs.DIFFICULTY_MAX_UNDEADS: s_Options.MaxUndeads -= 10; break;
+                            case GameOptions.IDs.DIFFICULTY_DAY_ZERO_UNDEADS_PERCENT: s_Options.DayZeroUndeadsPercent -= 5; break;
+                            case GameOptions.IDs.DIFFICULTY_ZOMBIE_INVASION_DAILY_INCREASE: --s_Options.ZombieInvasionDailyIncrease; break;
+                            case GameOptions.IDs.DIFFICULTY_NPC_CAN_STARVE_TO_DEATH: s_Options.NPCCanStarveToDeath = !s_Options.NPCCanStarveToDeath; break;
+                            case GameOptions.IDs.DIFFICULTY_STARVED_ZOMBIFICATION: s_Options.StarvedZombification = !s_Options.StarvedZombification; break;
+                            case GameOptions.IDs.DIFFICULTY_ZOMBIFICATION_CHANCE: s_Options.ZombificationChance -= 5; break;
+                            case GameOptions.IDs.DIFFICULTY_ALLOW_UNDEADS_EVOLUTION:
+                                s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution;
+                                break;
+                            case GameOptions.IDs.DIFFICULTY_UNDEADS_UPGRADE_DAYS:
+                                if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._FIRST)
+                                    s_Options.ZombifiedsUpgradeDays = (GameOptions.ZupDays)(s_Options.ZombifiedsUpgradeDays - 1);
+                                break;
+                            case GameOptions.IDs.DIFFICULTY_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break; //@@MP (Release 1)
+                            case GameOptions.IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
+                            case GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR: s_Options.NatGuardFactor -= 10; break;
+                            case GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor -= 10; break;
+                            case GameOptions.IDs.DIFFICULTY_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)
+                            case GameOptions.IDs.DIFFICULTY_RESOURCES_AVAILABILITY: //@@MP (Release 7-4)
+                                if (s_Options.ResourcesAvailability != GameOptions.Resources.LOW)
+                                    s_Options.ResourcesAvailability = (GameOptions.Resources)(s_Options.ResourcesAvailability - 1);
+                                break;
+                            case GameOptions.IDs.DIFFICULTY_SHAMBLERS_UPGRADE:
+                                s_Options.ShamblersUpgrade = !s_Options.ShamblersUpgrade;
+                                break;
+                            case GameOptions.IDs.DIFFICULTY_SKELETONS_UPGRADE:
+                                s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade;
+                                break;
+                        }
+                        break;
+                    case Keys.Right:
+                        switch ((GameOptions.IDs)list[selected])
+                        {
+                            case GameOptions.IDs.DIFFICULTY_RESCUE_DAY: s_Options.VisibleRescueDay += 1; break;
+                            case GameOptions.IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT: s_Options.LivingDamagePercent += 25; break;
+                            case GameOptions.IDs.DIFFICULTY_UNDEAD_DAMAGE_PERCENT: s_Options.UndeadDamagePercent += 25; break;
+                            case GameOptions.IDs.DIFFICULTY_MAX_CIVILIANS: s_Options.MaxCivilians += 5; break;
+                            case GameOptions.IDs.DIFFICULTY_MAX_UNDEADS: s_Options.MaxUndeads += 10; break;
+                            case GameOptions.IDs.DIFFICULTY_DAY_ZERO_UNDEADS_PERCENT: s_Options.DayZeroUndeadsPercent += 5; break;
+                            case GameOptions.IDs.DIFFICULTY_ZOMBIE_INVASION_DAILY_INCREASE: ++s_Options.ZombieInvasionDailyIncrease; break;
+                            case GameOptions.IDs.DIFFICULTY_NPC_CAN_STARVE_TO_DEATH: s_Options.NPCCanStarveToDeath = !s_Options.NPCCanStarveToDeath; break;
+                            case GameOptions.IDs.DIFFICULTY_STARVED_ZOMBIFICATION: s_Options.StarvedZombification = !s_Options.StarvedZombification; break;
+                            case GameOptions.IDs.DIFFICULTY_ZOMBIFICATION_CHANCE: s_Options.ZombificationChance += 5; break;
+                            case GameOptions.IDs.DIFFICULTY_ALLOW_UNDEADS_EVOLUTION:
+                                s_Options.AllowUndeadsEvolution = !s_Options.AllowUndeadsEvolution;
+                                break;
+                            case GameOptions.IDs.DIFFICULTY_UNDEADS_UPGRADE_DAYS:
+                                if (s_Options.ZombifiedsUpgradeDays != GameOptions.ZupDays._COUNT - 1)
+                                    s_Options.ZombifiedsUpgradeDays = (GameOptions.ZupDays)(s_Options.ZombifiedsUpgradeDays + 1);
+                                break;
+                            case GameOptions.IDs.DIFFICULTY_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break; //@@MP (Release 1)
+                            case GameOptions.IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
+                            case GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR: s_Options.NatGuardFactor += 10; break;
+                            case GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor += 10; break;
+                            case GameOptions.IDs.DIFFICULTY_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)
+                            case GameOptions.IDs.DIFFICULTY_RESOURCES_AVAILABILITY: //@@MP (Release 7-4)
+                                if (s_Options.ResourcesAvailability != GameOptions.Resources.HIGH)
+                                    s_Options.ResourcesAvailability = (GameOptions.Resources)(s_Options.ResourcesAvailability + 1);
+                                break;
+                            case GameOptions.IDs.DIFFICULTY_SHAMBLERS_UPGRADE:
+                                s_Options.ShamblersUpgrade = !s_Options.ShamblersUpgrade;
+                                break;
+                            case GameOptions.IDs.DIFFICULTY_SKELETONS_UPGRADE:
+                                s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade;
+                                break;
+                        }
                         break;
                 }
-
-                if (enteredNumerals.Length > maxCharactersAllowed) //trim it back to the character cap
-                    enteredNumerals = enteredNumerals.Remove(enteredNumerals.Length - 1);
             }
             while (loop);
 
-            // done.
-            if (!String.IsNullOrEmpty(enteredNumerals))
-                chosenDay = Convert.ToInt32(enteredNumerals);
-            else if (enteredNumerals == "0" || enteredNumerals == "00")
+            // apply options.
+            if (choiceDone)
             {
-                string difficulty = "TODO in Rel 7-4";
-                switch (difficulty)
-                {
-                    case "beginner": chosenDay = new Random().Next(07, 28); break;
-                    case "experienced": chosenDay = new Random().Next(14, 28); break;
-                    case "journeyman": chosenDay = new Random().Next(21, 50); break;
-                    case "master": chosenDay = new Random().Next(28, 50); break;
-                    default: chosenDay = new Random().Next(21, 28); break;
-                }
+                //lock in the rescue day according to what the player chose
+                if (s_Options.VisibleRescueDay == 6) //user chose for a random day
+                    s_Options.HiddenRescueDay = new Random().Next(14, 28);
+                else
+                    s_Options.HiddenRescueDay = s_Options.VisibleRescueDay; //save
+
+                ApplyOptions();
+                SaveOptions();
             }
             else
-                chosenDay = 28; //user didn't pick a day
+                LoadOptions(); //has the effect of dropping any changes to the settings. this ensure we can't tweak difficulty then load into a saved game that was started with different settings (ie cheat)
+
+            chosenDay = s_Options.HiddenRescueDay;
             return choiceDone;
         }
         #endregion
@@ -3858,6 +3853,24 @@ namespace djack.RogueSurvivor.Engine
             /*Item meds = new ItemMedicine(GameItems.ENERGY_DRINK);
             m_Player.Inventory.AddAll(meds);*/
             //m_TownGenerator.GiveStartingSkillToActor(m_Player, Skills.IDs.CARPENTRY);
+#else
+            // grant some starting items based on difficulty  //@@MP (Release 7-4)
+            switch (s_Options.ResourcesAvailability)
+            {
+                case GameOptions.Resources.HIGH:
+                    Item groceries = new ItemFood(GameItems.GROCERIES);
+                    m_Player.Inventory.AddAll(groceries);
+                    Item melee = new ItemMeleeWeapon(GameItems.TENNIS_RACKET);
+                    break;
+                case GameOptions.Resources.MED:
+                    Item snack = new ItemFood(GameItems.SNACK_BAR);
+                    snack.Quantity = 2;
+                    m_Player.Inventory.AddAll(snack);
+                    break;
+                case GameOptions.Resources.LOW:
+                    //nothing
+                    break;
+            }
 #endif
 
             // scoring : hello there.
@@ -4887,7 +4900,7 @@ namespace djack.RogueSurvivor.Engine
             }
             Zone chosenOffice = offices[m_Rules.Roll(0, offices.Count)];
             Point baseEntryPos;  // alpha10
-            Map map = m_TownGenerator.GenerateUniqueMap_CHARUnderground(chosenDistrict.EntryMap, chosenOffice, out baseEntryPos);
+            Map map = m_TownGenerator.GenerateUniqueMap_CHARUnderground(chosenDistrict.EntryMap, chosenOffice, s_Options.DistrictSize, out baseEntryPos);
             map.District = chosenDistrict;
             map.Name = String.Format("CHAR Underground Facility @{0}-{1}", baseEntryPos.X, baseEntryPos.Y); // alpha10
             chosenDistrict.AddUniqueMap(map);
@@ -4948,7 +4961,7 @@ namespace djack.RogueSurvivor.Engine
             }
             Zone chosenOffice = offices[m_Rules.Roll(0, offices.Count)];
             Point baseEntryPos;  // alpha10
-            Map map = m_TownGenerator.GenerateUniqueMap_ArmyBase(chosenDistrict.EntryMap, chosenOffice, out baseEntryPos);
+            Map map = m_TownGenerator.GenerateUniqueMap_ArmyBase(chosenDistrict.EntryMap, chosenOffice, s_Options.DistrictSize, out baseEntryPos);
             map.District = chosenDistrict;
             map.Name = String.Format("Army Base @{0}-{1}", baseEntryPos.X, baseEntryPos.Y);
             chosenDistrict.AddUniqueMap(map);
@@ -5307,7 +5320,6 @@ namespace djack.RogueSurvivor.Engine
 
             #region SOUND EFFECTS
             m_SFXManager.Load(GameSounds.UNDEAD_EAT_PLAYER, GameSounds.UNDEAD_EAT_PLAYER_FILE);
-            m_SFXManager.Load(GameSounds.UNDEAD_RISE_PLAYER, GameSounds.UNDEAD_RISE_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.NIGHTMARE, GameSounds.NIGHTMARE_FILE);
             m_SFXManager.Load(GameSounds.MELEE_ATTACK_PLAYER, GameSounds.MELEE_ATTACK_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.MELEE_ATTACK_NEARBY, GameSounds.MELEE_ATTACK_NEARBY_FILE);
@@ -5363,26 +5375,24 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.SCREAM_NEARBY_03, GameSounds.SCREAM_NEARBY_03_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_NEARBY_04, GameSounds.SCREAM_NEARBY_04_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_NEARBY_05, GameSounds.SCREAM_NEARBY_05_FILE);
-            m_SFXManager.Load(GameSounds.SCREAM_NEARBY_06, GameSounds.SCREAM_NEARBY_06_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_NEARBY_07, GameSounds.SCREAM_NEARBY_07_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_01, GameSounds.SCREAM_FAR_01_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_02, GameSounds.SCREAM_FAR_02_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_03, GameSounds.SCREAM_FAR_03_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_04, GameSounds.SCREAM_FAR_04_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_05, GameSounds.SCREAM_FAR_05_FILE);
-            m_SFXManager.Load(GameSounds.SCREAM_FAR_06, GameSounds.SCREAM_FAR_06_FILE);
             m_SFXManager.Load(GameSounds.SCREAM_FAR_07, GameSounds.SCREAM_FAR_07_FILE);
             m_SFXManager.Load(GameSounds.BASH_WOOD_PLAYER, GameSounds.BASH_WOOD_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.BASH_WOOD_NEARBY, GameSounds.BASH_WOOD_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.TURN_PAGE, GameSounds.TURN_PAGE_FILE);
             m_SFXManager.Load(GameSounds.UNDEAD_EAT_NEARBY, GameSounds.UNDEAD_EAT_NEARBY_FILE);
-            m_SFXManager.Load(GameSounds.UNDEAD_RISE_NEARBY, GameSounds.UNDEAD_RISE_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.VOMIT_NEARBY, GameSounds.VOMIT_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.SHOVE_PLAYER, GameSounds.SHOVE_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.SHOVE_NEARBY, GameSounds.SHOVE_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.PUSH_METAL_OBJECT_VISIBLE, GameSounds.PUSH_METAL_OBJECT_VISIBLE_FILE);
             m_SFXManager.Load(GameSounds.PUSH_METAL_OBJECT_AUDIBLE, GameSounds.PUSH_METAL_OBJECT_AUDIBLE_FILE);
-            m_SFXManager.Load(GameSounds.BUILDING, GameSounds.BUILDING_FILE);
+            m_SFXManager.Load(GameSounds.BUILDING_PLAYER, GameSounds.BUILDING_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.BUILDING_NEARBY, GameSounds.BUILDING_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.CAN_TRAP_PLAYER, GameSounds.CAN_TRAP_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.BEAR_TRAP_PLAYER, GameSounds.BEAR_TRAP_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.SPIKE_TRAP, GameSounds.SPIKE_TRAP_FILE);
@@ -5444,16 +5454,23 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.SMOKE_GRENADE, GameSounds.SMOKE_GRENADE_FILE);
             m_SFXManager.Load(GameSounds.STUN_GUN_PLAYER, GameSounds.STUN_GUN_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.STUN_GUN_NEARBY, GameSounds.STUN_GUN_NEARBY_FILE);
-            /*
             m_SFXManager.Load(GameSounds.DOG_BARK_NEARBY, GameSounds.DOG_BARK_NEARBY_FILE);
             m_SFXManager.Load(GameSounds.DOG_BARK_FAR, GameSounds.DOG_BARK_FAR_FILE);
             m_SFXManager.Load(GameSounds.DOG_FLEE, GameSounds.DOG_FLEE_FILE);
             m_SFXManager.Load(GameSounds.DOG_GROWL, GameSounds.DOG_GROWL_FILE);
-            m_SFXManager.Load(GameSounds.SKELETON_CREAKS, GameSounds.SKELETON_CREAKS_FILE);
+            m_SFXManager.Load(GameSounds.RAT_SCREECH, GameSounds.RAT_SCREECH_FILE);
+            m_SFXManager.Load(GameSounds.SEWERS_THING_GROWL, GameSounds.SEWERS_THING_GROWL_FILE);
+            m_SFXManager.Load(GameSounds.SKELETON_GROWL, GameSounds.SKELETON_GROWL_FILE);
             m_SFXManager.Load(GameSounds.SHAMBLER_GROWL, GameSounds.SHAMBLER_GROWL_FILE);
-            m_SFXManager.Load(GameSounds.ZOMBIE_MASTER_SCREECH, GameSounds.ZOMBIE_MASTER_SCREECH_FILE);
-            m_SFXManager.Load(GameSounds.ZOMBIFIED_GROAN, GameSounds.ZOMBIFIED_GROAN);
-            */
+            m_SFXManager.Load(GameSounds.ZOMBIE_MASTER_GROWL, GameSounds.ZOMBIE_MASTER_GROWL_FILE);
+            m_SFXManager.Load(GameSounds.ZOMBIFIED_GROAN, GameSounds.ZOMBIFIED_GROAN_FILE);
+            m_SFXManager.Load(GameSounds.PSST_WHISPER, GameSounds.PSST_WHISPER_FILE);
+            m_SFXManager.Load(GameSounds.MALE_SHOUT_PLAYER, GameSounds.MALE_SHOUT_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.FEMALE_SHOUT_PLAYER, GameSounds.FEMALE_SHOUT_PLAYER_FILE);
+            m_SFXManager.Load(GameSounds.MALE_SHOUT_NEARBY, GameSounds.MALE_SHOUT_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.FEMALE_SHOUT_NEARBY, GameSounds.FEMALE_SHOUT_NEARBY_FILE);
+            m_SFXManager.Load(GameSounds.METAL_DOOR_OPEN, GameSounds.METAL_DOOR_OPEN_FILE);
+            m_SFXManager.Load(GameSounds.METAL_DOOR_CLOSE, GameSounds.METAL_DOOR_CLOSE_FILE);
             #endregion
 
             #region AMBIENT SOUND
@@ -5554,6 +5571,20 @@ namespace djack.RogueSurvivor.Engine
 #region
                 foreach (Map map in district.Maps)
                 {
+                    //a workaround for terrible performance caused by simulating both the nearby districts, the entry map, and the CHAR underground. CHAR Ug is 100x100,
+                    //so we're always simulating at least 150x150. even just 50x50 will push low-spec systems, so this would be a show-stopper otherwise.
+                    if (map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap || map == m_Session.UniqueMaps.ArmyBase.TheMap) //@@MP (Release 7-4)
+                    {
+                        if (m_Player.Location.Map != map)
+                            continue; //don't simulate below ground
+                    }
+                    else
+                    {
+                        if (m_Player.Location.Map == m_Session.UniqueMaps.CHARUndergroundFacility.TheMap || m_Player.Location.Map == m_Session.UniqueMaps.ArmyBase.TheMap)
+                            continue; //don't simulate above ground
+                    }
+
+                    // clear to proceed
                     int prevLocalTurn = map.LocalTime.TurnCounter;
                     do
                     {
@@ -5912,19 +5943,19 @@ namespace djack.RogueSurvivor.Engine
                             // only one actor per tile!
                             if (map.GetActorAt(c.Position) == null)
                             {
+                                if (GameActors.IsDog(c.DeadGuy.Model)) //@@MP - not dogs (Release 7-4)
+                                    continue;
+
                                 //float corpseState = (float)c.HitPoints / (float)c.MaxHitPoints; //@@MP - unused (Release 5-7)
                                 //int zombifiedHP = (int)(corpseState * m_Rules.ActorMaxHPs(c.DeadGuy)); //@@MP - unused (Release 5-7)
                                 zombifiedCorpses.Add(c);
-                                Actor zombified = Zombify(null, c.DeadGuy, false);
+                                Zombify(null, c.DeadGuy, false);
 
                                 if (IsVisibleToPlayer(map, c.Position))
-                                {
                                     AddMessage(new Message(String.Format("The corpse of {0} rises again!!", c.DeadGuy.Name), map.LocalTime.TurnCounter, Color.Red));
-                                    if (zombified.IsPlayer) //@@MP (Release 3)
-                                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_RISE_PLAYER, AudioPriority.PRIORITY_BGM);
-                                    else
-                                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_RISE_NEARBY, AudioPriority.PRIORITY_BGM);
-                                }
+
+                                if (IsAudibleToPlayer(new Location(map, c.Position), Rules.QUIET_NOISE_RADIUS))
+                                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ZOMBIFIED_GROAN, AudioPriority.PRIORITY_BGM);
                             }
                         }
                         /*foreach (Corpse c in zombifiedCorpses) //@@MP - commented out because Zombify() handles corpse removal (Release 5-6)
@@ -6322,8 +6353,7 @@ namespace djack.RogueSurvivor.Engine
                                 if (groundInv != null)
                                     isOnSleepingBag = groundInv.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.SLEEPING_BAG);
                                 int sleepRegen = m_Rules.ActorSleepRegen(actor, isOnCouch || isOnSleepingBag); //@MP - added sleeping bags (Release 7-3)
-                                actor.SleepPoints += sleepRegen;
-                                actor.SleepPoints = Math.Min(actor.SleepPoints, m_Rules.ActorMaxSleep(actor));
+                                RegenActorSleep(actor, sleepRegen); //@@MP - switched to using the pre-existing method that was made for it (Release 7-4)
 
                                 // heal?
                                 if (actor.HitPoints < m_Rules.ActorMaxHPs(actor))
@@ -7301,7 +7331,7 @@ namespace djack.RogueSurvivor.Engine
             TimeSpan rt = m_Session.Scoring.RealLifePlayingTime;
             string realTimeString = TimeSpanToString(rt);
             m_Session.Scoring.Side = m_Player.Model.Abilities.IsUndead ? DifficultySide.FOR_UNDEAD : DifficultySide.FOR_SURVIVOR;
-            m_Session.Scoring.DifficultyRating = Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber);
+            m_Session.Scoring.DifficultyRating = Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber, m_Session.GameMode);
 
             ////////////////////////////////////
             // Format scoring into a text file.
@@ -7506,48 +7536,49 @@ namespace djack.RogueSurvivor.Engine
             graveyard.Append("> CUSTOM OPTIONS");
 #region
             //@@MP - want the graveyard to lists all modifiers, rather than just those changed from default (Release 4)
-            graveyard.Append(String.Format("- difficulty rating of {0}%.", (int)(100 * m_Session.Scoring.DifficultyRating)));
+            graveyard.Append(String.Format("- difficulty rating of {0}%", (int)(100 * m_Session.Scoring.DifficultyRating)));
             //if (s_Options.IsPermadeathOn)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_PERMADEATH), s_Options.IsPermadeathOn ? "yes" : "no")); //@@MP - actually shows yes or no now (Release 5-7)
-            //if (s_Options.IsSanityEnabled)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SANITY), s_Options.IsSanityEnabled ? "on" : "off"));
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.GAME_PERMADEATH), s_Options.IsPermadeathOn ? "yes" : "no")); //@@MP - actually shows yes or no now (Release 5-7)
             //if (s_Options.CitySize != GameOptions.DEFAULT_CITY_SIZE)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_CITY_SIZE), s_Options.CitySize));
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.GAME_CITY_SIZE), s_Options.CitySize));
             //if (s_Options.DistrictSize != GameOptions.DEFAULT_DISTRICT_SIZE)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_DISTRICT_SIZE), s_Options.DistrictSize));
-            //if (!s_Options.RevealStartingDistrict)
-            //graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT), s_Options.RevealStartingDistrict ? "yes" : "no")); //@@MP (Release 6-1)
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.GAME_DISTRICT_SIZE), s_Options.DistrictSize));
             //if (s_Options.MaxCivilians != GameOptions.DEFAULT_MAX_CIVILIANS)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_CIVILIANS), s_Options.MaxCivilians));
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_MAX_CIVILIANS), s_Options.MaxCivilians));
             //if (s_Options.MaxUndeads != GameOptions.DEFAULT_MAX_UNDEADS)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_UNDEADS), s_Options.MaxUndeads));
-            //if (s_Options.DayZeroUndeadsPercent != GameOptions.DEFAULT_DAY_ZERO_UNDEADS_PERCENT)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT), s_Options.DayZeroUndeadsPercent));
-            //if (s_Options.ZombieInvasionDailyIncrease != GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE), s_Options.ZombieInvasionDailyIncrease));
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_MAX_UNDEADS), s_Options.MaxUndeads));
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_RESCUE_DAY), s_Options.HiddenRescueDay)); //@@MP (Release 7-4)
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_RESOURCES_AVAILABILITY), s_Options.ResourcesAvailability)); //@@MP (Release 7-4)
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT), s_Options.LivingDamagePercent)); //@@MP (Release 7-4)
+            //if (s_Options.IsSanityEnabled)
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SANITY), s_Options.IsSanityEnabled ? "on" : "off"));
+            //if (!s_Options.NPCCanStarveToDeath)
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_NPC_CAN_STARVE_TO_DEATH), s_Options.NPCCanStarveToDeath ? "yes" : "no"));
+            //if(s_Options.StarvedZombificationChance != GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE)
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_STARVED_ZOMBIFICATION), s_Options.StarvedZombification ? "yes" : "no"));
+            //if (s_Options.ZombificationChance != GameOptions.DEFAULT_ZOMBIFICATION_CHANCE)
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_ZOMBIFICATION_CHANCE), s_Options.ZombificationChance));
+            graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS), s_Options.IsAggressiveHungryCiviliansOn ? "yes" : "no")); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_UNDEAD_DAMAGE_PERCENT), s_Options.UndeadDamagePercent)); //@@MP (Release 7-4)
             if (Rules.HasEvolution(m_Session.GameMode)) //@@MP (Release 5-2)
             {
                 //if(!s_Options.AllowUndeadsEvolution)
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION), s_Options.AllowUndeadsEvolution ? "yes" : "no"));
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SKELETONS_UPGRADE), s_Options.SkeletonsUpgrade ? "yes" : "no"));
-                //graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_RATS_UPGRADE), s_Options.RatsUpgrade ? "yes" : "no")); //@@MP (Release 5-7)
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SHAMBLERS_UPGRADE), s_Options.ShamblersUpgrade ? "yes" : "no"));
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS), s_Options.ZombifiedsUpgradeDays));
+                graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_ALLOW_UNDEADS_EVOLUTION), s_Options.AllowUndeadsEvolution ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SKELETONS_UPGRADE), s_Options.SkeletonsUpgrade ? "yes" : "no"));
+                //graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_RATS_UPGRADE), s_Options.RatsUpgrade ? "yes" : "no")); //@@MP (Release 5-7)
+                graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SHAMBLERS_UPGRADE), s_Options.ShamblersUpgrade ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_UNDEADS_UPGRADE_DAYS), s_Options.ZombifiedsUpgradeDays));
             }
             else
             {
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS), s_Options.VTGAntiviralPills ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}", GameOptions.Name(GameOptions.IDs.DIFFICULTY_VTG_ANTIVIRAL_PILLS), s_Options.VTGAntiviralPills ? "yes" : "no"));
             }
-            //if (!s_Options.NPCCanStarveToDeath)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH), s_Options.NPCCanStarveToDeath ? "yes" : "no"));
-            //if(s_Options.StarvedZombificationChance != GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_STARVED_ZOMBIFICATION), s_Options.StarvedZombification ? "yes" : "no"));
-            //if (s_Options.ZombificationChance != GameOptions.DEFAULT_ZOMBIFICATION_CHANCE)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE), s_Options.ZombificationChance));
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS), s_Options.IsAggressiveHungryCiviliansOn ? "yes" : "no")); //@@MP (Release 5-2)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_NATGUARD_FACTOR), s_Options.NatGuardFactor)); //@@MP (Release 5-2)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR), s_Options.SuppliesDropFactor)); //@@MP (Release 5-2)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.UI_COMBAT_ASSISTANT), s_Options.IsCombatAssistantOn ? "on" : "off")); //@@MP (Release 5-2)
+            //if (s_Options.DayZeroUndeadsPercent != GameOptions.DEFAULT_DAY_ZERO_UNDEADS_PERCENT)
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_DAY_ZERO_UNDEADS_PERCENT), s_Options.DayZeroUndeadsPercent));
+            //if (s_Options.ZombieInvasionDailyIncrease != GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE)
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_ZOMBIE_INVASION_DAILY_INCREASE), s_Options.ZombieInvasionDailyIncrease));
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR), s_Options.NatGuardFactor)); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR), s_Options.SuppliesDropFactor)); //@@MP (Release 5-2)
             /*if (s_Options.IsLivingReincRestricted) //if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS) //@@MP (Release 5-2), disabled IsLivingReincRestricted (Release 5-7)
                 graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED), s_Options.IsLivingReincRestricted ? "on" : "off"));*/
             graveyard.Append(" ");
@@ -7658,13 +7689,13 @@ namespace djack.RogueSurvivor.Engine
             rescueTime.TurnCounter = m_Session.Scoring.TurnsSurvived;
             bool isMale = m_Player.Model.DollBody.IsMale;
             string heOrShe = isMale ? "He" : "She";
-            //string hisOrHer = HisOrHer(m_Player); //@@MP - unused (Release 5-7)
-            string himOrHer = isMale ? "him" : "her";
+            //string hisOrHer = HisOrHer(m_Player); //unused
+            //string himOrHer = isMale ? "him" : "her"; //unused
             string name = m_Player.Name.Replace("(YOU) ", "");
             TimeSpan rt = m_Session.Scoring.RealLifePlayingTime;
             string realTimeString = TimeSpanToString(rt);
             m_Session.Scoring.Side = m_Player.Model.Abilities.IsUndead ? DifficultySide.FOR_UNDEAD : DifficultySide.FOR_SURVIVOR;
-            m_Session.Scoring.DifficultyRating = Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber);
+            m_Session.Scoring.DifficultyRating = Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber, m_Session.GameMode);
 
             ////////////////////////////////////
             // Format scoring into a text file.
@@ -7859,45 +7890,46 @@ namespace djack.RogueSurvivor.Engine
             graveyard.Append(String.Format("- difficulty rating of {0}%.", (int)(100 * m_Session.Scoring.DifficultyRating)));
             //if (s_Options.IsPermadeathOn)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_PERMADEATH), s_Options.IsPermadeathOn ? "yes" : "no")); //@@MP - actually shows yes or no now (Release 5-7)
-            //if (s_Options.IsSanityEnabled)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SANITY), s_Options.IsSanityEnabled ? "on" : "off"));
             //if (s_Options.CitySize != GameOptions.DEFAULT_CITY_SIZE)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_CITY_SIZE), s_Options.CitySize));
             //if (s_Options.DistrictSize != GameOptions.DEFAULT_DISTRICT_SIZE)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_DISTRICT_SIZE), s_Options.DistrictSize));
-            //if (!s_Options.RevealStartingDistrict)
-            //graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REVEAL_STARTING_DISTRICT), s_Options.RevealStartingDistrict ? "yes" : "no")); //@@MP (Release 6-1)
             //if (s_Options.MaxCivilians != GameOptions.DEFAULT_MAX_CIVILIANS)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_CIVILIANS), s_Options.MaxCivilians));
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_MAX_CIVILIANS), s_Options.MaxCivilians));
             //if (s_Options.MaxUndeads != GameOptions.DEFAULT_MAX_UNDEADS)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_MAX_UNDEADS), s_Options.MaxUndeads));
-            //if (s_Options.DayZeroUndeadsPercent != GameOptions.DEFAULT_DAY_ZERO_UNDEADS_PERCENT)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_DAY_ZERO_UNDEADS_PERCENT), s_Options.DayZeroUndeadsPercent));
-            //if (s_Options.ZombieInvasionDailyIncrease != GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIE_INVASION_DAILY_INCREASE), s_Options.ZombieInvasionDailyIncrease));
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_MAX_UNDEADS), s_Options.MaxUndeads));
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_RESCUE_DAY), s_Options.HiddenRescueDay)); //@@MP (Release 7-4)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_RESOURCES_AVAILABILITY), s_Options.ResourcesAvailability)); //@@MP (Release 7-4)
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT), s_Options.LivingDamagePercent)); //@@MP (Release 7-4)
+            //if (s_Options.IsSanityEnabled)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SANITY), s_Options.IsSanityEnabled ? "on" : "off"));
+            //if (!s_Options.NPCCanStarveToDeath)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_NPC_CAN_STARVE_TO_DEATH), s_Options.NPCCanStarveToDeath ? "yes" : "no"));
+            //if(s_Options.StarvedZombificationChance != GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE)
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_STARVED_ZOMBIFICATION), s_Options.StarvedZombification ? "yes" : "no"));
+            //if (s_Options.ZombificationChance != GameOptions.DEFAULT_ZOMBIFICATION_CHANCE)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_ZOMBIFICATION_CHANCE), s_Options.ZombificationChance));
+            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS), s_Options.IsAggressiveHungryCiviliansOn ? "yes" : "no")); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_UNDEAD_DAMAGE_PERCENT), s_Options.UndeadDamagePercent)); //@@MP (Release 7-4)
             if (Rules.HasEvolution(m_Session.GameMode)) //@@MP (Release 5-2)
             {
                 //if(!s_Options.AllowUndeadsEvolution)
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_ALLOW_UNDEADS_EVOLUTION), s_Options.AllowUndeadsEvolution ? "yes" : "no"));
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SKELETONS_UPGRADE), s_Options.SkeletonsUpgrade ? "yes" : "no"));
-                //graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_RATS_UPGRADE), s_Options.RatsUpgrade ? "yes" : "no")); //@@MP (Release 5-7)
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_SHAMBLERS_UPGRADE), s_Options.ShamblersUpgrade ? "yes" : "no"));
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_UNDEADS_UPGRADE_DAYS), s_Options.ZombifiedsUpgradeDays));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_ALLOW_UNDEADS_EVOLUTION), s_Options.AllowUndeadsEvolution ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SKELETONS_UPGRADE), s_Options.SkeletonsUpgrade ? "yes" : "no"));
+                //graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_RATS_UPGRADE), s_Options.RatsUpgrade ? "yes" : "no")); //@@MP (Release 5-7)
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SHAMBLERS_UPGRADE), s_Options.ShamblersUpgrade ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_UNDEADS_UPGRADE_DAYS), s_Options.ZombifiedsUpgradeDays));
             }
             else
             {
-                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_VTG_ANTIVIRAL_PILLS), s_Options.VTGAntiviralPills ? "yes" : "no"));
+                graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_VTG_ANTIVIRAL_PILLS), s_Options.VTGAntiviralPills ? "yes" : "no"));
             }
-            //if (!s_Options.NPCCanStarveToDeath)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_NPC_CAN_STARVE_TO_DEATH), s_Options.NPCCanStarveToDeath ? "yes" : "no"));
-            //if(s_Options.StarvedZombificationChance != GameOptions.DEFAULT_STARVED_ZOMBIFICATION_CHANCE)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_STARVED_ZOMBIFICATION), s_Options.StarvedZombification ? "yes" : "no"));
-            //if (s_Options.ZombificationChance != GameOptions.DEFAULT_ZOMBIFICATION_CHANCE)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_ZOMBIFICATION_CHANCE), s_Options.ZombificationChance));
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_AGGRESSIVE_HUNGRY_CIVILIANS), s_Options.IsAggressiveHungryCiviliansOn ? "yes" : "no")); //@@MP (Release 5-2)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_NATGUARD_FACTOR), s_Options.NatGuardFactor)); //@@MP (Release 5-2)
-            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.GAME_SUPPLIESDROP_FACTOR), s_Options.SuppliesDropFactor)); //@@MP (Release 5-2)
-            graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.UI_COMBAT_ASSISTANT), s_Options.IsCombatAssistantOn ? "on" : "off")); //@@MP (Release 5-2)
+            //if (s_Options.DayZeroUndeadsPercent != GameOptions.DEFAULT_DAY_ZERO_UNDEADS_PERCENT)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_DAY_ZERO_UNDEADS_PERCENT), s_Options.DayZeroUndeadsPercent));
+            //if (s_Options.ZombieInvasionDailyIncrease != GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_ZOMBIE_INVASION_DAILY_INCREASE), s_Options.ZombieInvasionDailyIncrease));
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR), s_Options.NatGuardFactor)); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR), s_Options.SuppliesDropFactor)); //@@MP (Release 5-2)
             /*if (s_Options.IsLivingReincRestricted) //if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS) //@@MP (Release 5-2), disabled IsLivingReincRestricted (Release 5-7)
                 graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED), s_Options.IsLivingReincRestricted ? "on" : "off"));*/
             graveyard.Append(" ");
@@ -8405,7 +8437,7 @@ namespace djack.RogueSurvivor.Engine
             m_Session.Scoring.StartNewLife(m_Session.WorldTime.TurnCounter);
             m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, String.Format("(reincarnation {0})", m_Session.Scoring.ReincarnationNumber));
             m_Session.Scoring.Side = m_Player.Model.Abilities.IsUndead ? DifficultySide.FOR_UNDEAD : DifficultySide.FOR_SURVIVOR;
-            m_Session.Scoring.DifficultyRating = Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber);
+            m_Session.Scoring.DifficultyRating = Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber, m_Session.GameMode);
             /// forget all maps memory.
             for (int dx = 0; dx < m_Session.World.Size; dx++)
                 for (int dy = 0; dy < m_Session.World.Size; dy++)
@@ -8490,6 +8522,10 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_DrawStringBold(Color.White, "Leave?", gx, gy);
                 gy += BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.White, "Live?", gx, gy);
+
+                gy += 2 * BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.White, "WARNING: your high score multiplier decreases with each reincarnation!", gx, gy); //@@MP - added (Release 7-4)
+                gy += 2 * BOLD_LINE_SPACING;
 
                 gy += 2 * BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.Yellow, "Reincarnate? Y to confirm, N to cancel.", gx, gy);
@@ -8815,38 +8851,45 @@ namespace djack.RogueSurvivor.Engine
             if (map == null)
                 return;
 
-#region Fruit edible plants.
-            //mapobject-based
-            foreach (MapObject mapObj in map.MapObjects)
+            int fruitingDays; //regrow only every n days
+            switch (s_Options.ResourcesAvailability)
             {
-                int x = mapObj.Location.Position.X;
-                int y = mapObj.Location.Position.Y;
-                if (mapObj != null)
-                {
-                    switch (mapObj.AName) //@@MP - added peanuts and grapes (Release 7-3)
-                    {
-                        //regrow each day, as their nutrition is so low
-                        case "a berry bush": GrowFoodItems(map, x, y, "wild berries"); break;
-                        case "a peanut plant": GrowFoodItems(map, x, y, "peanuts"); break;
-                        case "a grape vine": GrowFoodItems(map, x, y, "grapes"); break;
-                    }
-                }
+                case GameOptions.Resources.LOW: fruitingDays = 3; break;
+                case GameOptions.Resources.MED: fruitingDays = 2; break;
+                case GameOptions.Resources.HIGH: fruitingDays = 1; break;
+                default: throw new InvalidOperationException("unhandled ResourcesAvailability");
             }
 
-            //tile-based
-            for (int x = 0; x < map.Width; x++)
+            if (m_Session.WorldTime.Day % fruitingDays == 0) //@@MP - growth schedule now tied to an option (Release 7-4)
             {
-                for (int y = 0; y < map.Height; y++)
+                //mapobject-based
+                foreach (MapObject mapObj in map.MapObjects)
                 {
-                    Tile tile = map.GetTileAt(x, y);
-                    if (tile != null && tile.Model == GameTiles.FLOOR_PLANTED)
+                    int x = mapObj.Location.Position.X;
+                    int y = mapObj.Location.Position.Y;
+                    if (mapObj != null)
                     {
-                        if (m_Session.WorldTime.Day % 2 == 0) //@@MP - now only happens every 2nd day (Release 6-1)
-                            GrowFoodItems(map, x, y, "vegetables"); //their nutrition is high, and the player should plant more of these as often as possible
+                        switch (mapObj.AName) //@@MP - added peanuts and grapes (Release 7-3)
+                        {
+                            //their nutrition is low, so it doesn't matter that there may be many farms in the world
+                            case "a berry bush": GrowFoodItems(map, x, y, "wild berries"); break;
+                            case "a peanut plant": GrowFoodItems(map, x, y, "peanuts"); break;
+                            case "a grape vine": GrowFoodItems(map, x, y, "grapes"); break;
+                        }
+                    }
+                }
+
+                //tile-based
+                for (int x = 0; x < map.Width; x++)
+                {
+                    for (int y = 0; y < map.Height; y++)
+                    {
+                        Tile tile = map.GetTileAt(x, y);
+                        if (tile != null && tile.Model == GameTiles.FLOOR_PLANTED)
+                            GrowFoodItems(map, x, y, "vegetables"); //their nutrition is high, but they must be planted from seeds by the player
                     }
                 }
             }
-#endregion
         }
 
         void GrowFoodItems(Map map, int x, int y, string m_theNames) //@@MP (Release 5-5)
@@ -9810,7 +9853,11 @@ namespace djack.RogueSurvivor.Engine
                     {
                         switch (command)
                         {
-#region options, menu etc...
+                            #region options, menu etc...
+                            case PlayerCommand.ESC:  //@@MP (Release 7-4)
+                                HandleHelpMode();
+                                break;
+
                             case PlayerCommand.ABANDON_GAME:
                                 if (HandleAbandonGame())
                                 {
@@ -10185,6 +10232,10 @@ namespace djack.RogueSurvivor.Engine
             {
                 if (desiredAction.IsLegal())
                 {
+                    //@@MP - added random SFX for undead
+                    if ((aiActor.Model.Abilities.IsUndead || GameActors.IsDog(aiActor.Model)) && m_Rules.RollChance(20))
+                        PlayNonHumanVocalAudio(aiActor);
+
                     desiredAction.Perform();
 #if DEBUG && FALSE
                     //troubleshooting cop AI 'looping' in first two turns //@@MP (Release 6-5)
@@ -10653,13 +10704,13 @@ namespace djack.RogueSurvivor.Engine
 
             // msg.
             if (isVisible)
-            {
                 AddMessage(MakeMessage(a, String.Format("{0} {1} corpse.", Conjugate(a, VERB_FEAST_ON), c.DeadGuy.Name)));//dmg))); //@@MP - removed unused argument (Release 5-5)
-                if (a.IsPlayer) //@@MP (Release 3)
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_PLAYER, AudioPriority.PRIORITY_EVENT);
-                else
-                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_NEARBY, AudioPriority.PRIORITY_EVENT);
-            }
+
+            // sound effect
+            if (a.IsPlayer) //@@MP (Release 3)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_PLAYER, AudioPriority.PRIORITY_EVENT);
+            if (IsAudibleToPlayer(a.Location, Rules.QUIET_NOISE_RADIUS))  //@@MP (Release 7-4)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_NEARBY, AudioPriority.PRIORITY_BGM);
 
             // dmh corpse.
             InflictDamageToCorpse(c, dmg);
@@ -13270,7 +13321,6 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-
             ClearOverlays();
             AddOverlay(new OverlayPopup(TAG_MODE_TEXT, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, new Point(0, 0)));
             do
@@ -14484,8 +14534,8 @@ namespace djack.RogueSurvivor.Engine
             // get entry map.
             Map entryMap = district.EntryMap;
 
-            // the last turn that we simulated for this district (could also be when we last left the district, but unlikely as we're going into it now).
-            int lastTime = entryMap.LocalTime.TurnCounter;
+            //@@MP the last turn that we simulated for this district (could also be when we last left the district, but unlikely as we're going into it now).
+            //int lastTime = entryMap.LocalTime.TurnCounter;  //@@MP - unused (Release 7-2)
 
             // if option set, simulate to catch current turn.
             // otherwise just jump int time.
@@ -14591,10 +14641,8 @@ namespace djack.RogueSurvivor.Engine
                         if (!aborted)
                         {
                             // sim the district.
-                            var bla = entryMap.LocalTime.TurnCounter;
                             SimulateDistrict(district);
                             ++turnsDone;
-                            var bla2 = entryMap.LocalTime.TurnCounter;
                         }
                     }
 
@@ -14722,7 +14770,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 m_UI.UI_Clear(Color.Black);
                 int gy = 0;
-                m_UI.UI_DrawStringBold(Color.Red, "Game manual not available ingame.", 0, gy);
+                m_UI.UI_DrawStringBold(Color.Red, "Game manual not available (file missing?).", 0, gy);
                 gy += BOLD_LINE_SPACING;
                 DrawFootnote(Color.White, "press ENTER");
                 m_UI.UI_Repaint();
@@ -16397,7 +16445,6 @@ namespace djack.RogueSurvivor.Engine
             bool isDefVisible = IsVisibleToPlayer(defender);
             bool isAttVisible = IsVisibleToPlayer(attacker);
             bool isPlayer = attacker.IsPlayer || defender.IsPlayer;
-            bool isBot = attacker.IsBotPlayer || defender.IsBotPlayer;  // alpha10.1 handle bot
 
             //if (!isDefVisible && !isAttVisible && !isPlayer && m_Rules.RollChance(PLAYER_HEAR_FIGHT_CHANCE)) //@@MP (Release 2)
             if (IsAudibleToPlayer(attacker.Location, Rules.QUIET_NOISE_RADIUS))//(isDefVisible || isAttVisible) //@MP (Release 5-4)
@@ -16444,7 +16491,7 @@ namespace djack.RogueSurvivor.Engine
 
                 if (attacker.Model.Abilities.CanDisarm && m_Rules.RollChance(attack.DisarmChance))
                 {
-                    Item disarmIt = Disarm(attacker, defender);
+                    Disarm(attacker, defender);
                 }
             }
             // now the actual attack resolution
@@ -16473,7 +16520,7 @@ namespace djack.RogueSurvivor.Engine
                     // roll for attacker disarming defender  // alpha10
                     if (attacker.Model.Abilities.CanDisarm && m_Rules.RollChance(attack.DisarmChance))
                     {
-                        Item disarmIt = Disarm(attacker, defender);
+                        Disarm(attacker, defender);
                     }
 
                     // roll damage - double potential if def is sleeping.
@@ -16482,7 +16529,7 @@ namespace djack.RogueSurvivor.Engine
                     if (dmgRoll > 0)
                     {
                         // inflict dmg.
-                        InflictDamage(defender, dmgRoll, true, false);
+                        InflictDamage(defender, dmgRoll, true, false, attacker); //@@MP - attacker param (Release 7-4)
 
                         // regen HP/Rot and infection?
                         if (attacker.Model.Abilities.CanZombifyKilled && !defender.Model.Abilities.IsUndead)
@@ -16521,7 +16568,7 @@ namespace djack.RogueSurvivor.Engine
                             if (Rules.HasImmediateZombification(m_Session.GameMode) || defender == m_Player)
                             {
                                 // turn player into zombie now if killed by a zombifier?
-                                if (attacker.Model.Abilities.CanZombifyKilled && !defender.Model.Abilities.IsUndead && m_Rules.RollChance(s_Options.ZombificationChance))
+                                if (attacker.Model.Abilities.CanZombifyKilled && !defender.Model.Abilities.IsUndead && !GameActors.IsDog(defender.Model) && m_Rules.RollChance(s_Options.ZombificationChance)) //@@MP - not dogs (Release 7-4)
                                 {
                                     /*if (defender.IsPlayer)  //@@MP - commented out because Zombify handles corpse removal (Release 6-6)
                                     {
@@ -16822,7 +16869,7 @@ namespace djack.RogueSurvivor.Engine
                 if (dmgRoll > 0)
                 {
                     // inflict dmg.
-                    InflictDamage(defender, dmgRoll, true, rm.IsFlameWeapon);
+                    InflictDamage(defender, dmgRoll, true, rm.IsFlameWeapon, attacker); //@@MP - attacker param (Release 7-4)
 
                     // if crossbow shot, chance to retrieve a bolt //@@MP - make bows more useful (Release 2)
                     if (rm.IsBow)
@@ -17213,7 +17260,6 @@ namespace djack.RogueSurvivor.Engine
             attacker.Activity = Activity.DESTROYING;
 
             // get attack & defence.
-            int targetDistance = m_Rules.GridDistance(attacker.Location.Position, fuelThingPos);
             Attack attack = attacker.CurrentRangedAttack;
 
             // spend AP and STA.
@@ -17252,8 +17298,6 @@ namespace djack.RogueSurvivor.Engine
                 return;
 
             // resolve attack.
-            int hitValue = (shotsFired == 0 ? attack.HitValue : shotsFired == 1 ? attack.Hit2Value : attack.Hit3Value);
-            int hitRoll = m_Rules.RollSkill(hitValue);
             int hitChance = 100;
             if (mode == FireMode.RAPID)
             {
@@ -18218,6 +18262,11 @@ namespace djack.RogueSurvivor.Engine
             {
                 DoTrade(speaker, target);
             }
+            else //SFX also played in DoTrade, so don't double up
+            {
+                if (speaker.IsPlayer || target.IsPlayer) //@@MP (Release 7-4)
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PSST_WHISPER, AudioPriority.PRIORITY_BGM);
+            }
         }
 
         // alpha10 "fast" trade uses new trade mechanic of rating items and trades.
@@ -18226,6 +18275,9 @@ namespace djack.RogueSurvivor.Engine
         // for the player should try to mimick most of trade results obtained by player negociating trade but not mandatory.
         public void DoTrade(Actor speaker, Actor target)
         {
+            if (speaker.IsPlayer || target.IsPlayer) //@@MP (Release 7-4)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PSST_WHISPER, AudioPriority.PRIORITY_BGM);
+
             // clean up activities
             speaker.Activity = Activity.TRADING;
             target.Activity = Activity.TRADING;
@@ -18488,7 +18540,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             //audio
-            PlayVocalAudio(speaker, text); //@@MP (Release 7-3)
+            PlayNonHumanVocalAudio(speaker, text); //@@MP (Release 7-3)
         }
 
         /// <summary>
@@ -18498,6 +18550,15 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="text">can be null</param>
         public void DoShout(Actor speaker, string text)
         {
+            //@@MP (Release 7-4)
+            if (!speaker.Model.Abilities.IsUndead) //just in case
+            {
+                if (speaker.IsPlayer)
+                    m_SFXManager.PlayIfNotAlreadyPlaying(speaker.Doll.Body.IsMale ? GameSounds.MALE_SHOUT_PLAYER : GameSounds.FEMALE_SHOUT_PLAYER, AudioPriority.PRIORITY_NULL);
+                else if (IsAudibleToPlayer(speaker.Location, Rules.QUIET_NOISE_RADIUS))
+                    m_SFXManager.PlayIfNotAlreadyPlaying(speaker.Doll.Body.IsMale ? GameSounds.MALE_SHOUT_NEARBY : GameSounds.FEMALE_SHOUT_NEARBY, AudioPriority.PRIORITY_NULL);
+            }
+
             // spend APs.
             SpendActorActionPoints(speaker, Rules.BASE_ACTION_COST);
 
@@ -18535,7 +18596,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 AddMessage(new Message(String.Format("{0} : {1}", actor.Name, text), actor.Location.Map.LocalTime.TurnCounter, isDanger ? SAYOREMOTE_DANGER_COLOR : SAYOREMOTE_NORMAL_COLOR));
             }
-            PlayVocalAudio(actor, text); //@@MP (Release 7-3)
+            PlayNonHumanVocalAudio(actor, text); //@@MP (Release 7-3)
         }
 
         /// <summary>
@@ -18547,7 +18608,7 @@ namespace djack.RogueSurvivor.Engine
         {
             DiceRoller roller = new DiceRoller();
             int screamSelected = roller.Roll(0, 6); //@@MP - there are multiple screams, this will randomise which one is heard
-            if (range == "near" || (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && IsAudibleToPlayer(actor.Location, Rules.QUIET_NOISE_RADIUS))) //@@MP (Release 2), changed it to audible now that it can be supplied a range (Release 5-4)
+            if (range == "near" || (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && IsAudibleToPlayer(actor.Location, Rules.QUIET_NOISE_RADIUS))) //@@MP (Release 2), changed it to Audible now that it can be supplied a range (Release 5-4)
             {
                 switch (screamSelected)
                 {
@@ -18556,14 +18617,13 @@ namespace djack.RogueSurvivor.Engine
                     case 2: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_03, AudioPriority.PRIORITY_NULL); break;
                     case 3: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_04, AudioPriority.PRIORITY_NULL); break;
                     case 4: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_05, AudioPriority.PRIORITY_NULL); break;
-                    case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_06, AudioPriority.PRIORITY_NULL); break;
-                    case 6: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_07, AudioPriority.PRIORITY_NULL); break;
+                    case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_NEARBY_07, AudioPriority.PRIORITY_NULL); break;
                     default:
                         throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
                 }
                 AddMessageIfAudibleForPlayer(actor.Location, MakePlayerCentricMessage("You hear screams of terror", actor.Location.Position)); //@@MP - originally was either audio or message (Release 5-4)
             }
-            else if (range == "far" || (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && IsAudibleToPlayer(actor.Location, Rules.MODERATE_NOISE_RADIUS))) //@@MP - people scream a lot, so I can see why it only had a 10% chance (n/a). Changed it to audible now that it can be supplied a range (Release 5-4)
+            else if (range == "far" || (m_Rules.RollChance(PLAYER_HEAR_SCREAMS_CHANCE) && IsAudibleToPlayer(actor.Location, Rules.MODERATE_NOISE_RADIUS))) //@@MP - people scream a lot, so I can see why it only had a 10% chance (n/a). Changed it to Audible now that it can be supplied a range (Release 5-4)
             {
                 switch (screamSelected)
                 {
@@ -18572,8 +18632,7 @@ namespace djack.RogueSurvivor.Engine
                     case 2: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_03, AudioPriority.PRIORITY_NULL); break;
                     case 3: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_04, AudioPriority.PRIORITY_NULL); break;
                     case 4: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_05, AudioPriority.PRIORITY_NULL); break;
-                    case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_06, AudioPriority.PRIORITY_NULL); break;
-                    case 6: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_07, AudioPriority.PRIORITY_NULL); break;
+                    case 5: m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SCREAM_FAR_07, AudioPriority.PRIORITY_NULL); break;
                     default:
                         throw new ArgumentOutOfRangeException("unhandled nearby scream " + screamSelected);
                 }
@@ -18586,34 +18645,44 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         /// <param name="actor"></param>
         /// <param name="fightEmotes">used for some some actor types</param>
-        public void PlayVocalAudio(Actor actor, string fightEmotes = "") //@@MP (Release 7-3)
-        {/*
+        public void PlayNonHumanVocalAudio(Actor actor, string fightEmotes = "") //@@MP (Release 7-3)
+        {
             if (IsAudibleToPlayer((actor.Location), Rules.QUIET_NOISE_RADIUS)) //close nearby sounds
             {
                 if (GameActors.IsDog(actor.Model))
                 {
                     if (fightEmotes == FeralDogAI.FIGHT_EMOTES[0]) //flee
-                        m_SFXManager.Play(GameSounds.DOG_FLEE, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DOG_FLEE, AudioPriority.PRIORITY_BGM);
                     else if (fightEmotes == FeralDogAI.FIGHT_EMOTES[1]) //trapped
-                        m_SFXManager.Play(GameSounds.DOG_GROWL, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DOG_GROWL, AudioPriority.PRIORITY_BGM);
                     else //fight
-                        m_SFXManager.Play(GameSounds.DOG_BARK_NEARBY, AudioPriority.PRIORITY_BGM);
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.DOG_BARK_NEARBY, AudioPriority.PRIORITY_BGM);
                 }
                 else if (GameActors.IsSkeletonBranch(actor.Model))
                 {
-                    m_SFXManager.Play(GameSounds.SKELETON_CREAKS, AudioPriority.PRIORITY_BGM);
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SKELETON_GROWL, AudioPriority.PRIORITY_BGM);
                 }
                 else if (GameActors.IsShamblerBranch(actor.Model))
                 {
-                    m_SFXManager.Play(GameSounds.SHAMBLER_GROWL, AudioPriority.PRIORITY_BGM);
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SHAMBLER_GROWL, AudioPriority.PRIORITY_BGM);
                 }
                 else if (GameActors.IsZMBranch(actor.Model))
                 {
-                    m_SFXManager.Play(GameSounds.ZOMBIE_MASTER_SCREECH, AudioPriority.PRIORITY_BGM);
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ZOMBIE_MASTER_GROWL, AudioPriority.PRIORITY_BGM);
                 }
                 else if (GameActors.IsZombifiedBranch(actor.Model))
                 {
-                    m_SFXManager.Play(GameSounds.ZOMBIFIED_GROAN, AudioPriority.PRIORITY_BGM);
+                    //special case, as its much longer than the others and sounds silly when played too close together
+                    if (m_Rules.RollChance(40))
+                        m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ZOMBIFIED_GROAN, AudioPriority.PRIORITY_BGM);
+                }
+                else if (GameActors.IsRatBranch(actor.Model))
+                {
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.RAT_SCREECH, AudioPriority.PRIORITY_BGM);
+                }
+                else if (actor.Model == GameActors.SewersThing)
+                {
+                    m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.SEWERS_THING_GROWL, AudioPriority.PRIORITY_BGM);
                 }
             }
             else if (IsAudibleToPlayer((actor.Location), Rules.LOUD_NOISE_RADIUS))  //louder sounds
@@ -18623,7 +18692,7 @@ namespace djack.RogueSurvivor.Engine
                     if (fightEmotes == FeralDogAI.FIGHT_EMOTES[2]) //fight
                         m_SFXManager.Play(GameSounds.DOG_BARK_FAR, AudioPriority.PRIORITY_BGM);
                 }
-            }*/
+            }
         }
 #endregion
 
@@ -18709,6 +18778,9 @@ namespace djack.RogueSurvivor.Engine
 
         public void DoGiveItemTo(Actor actor, Actor target, Item gift)
         {
+            if (actor.IsPlayer || target.IsPlayer) //@@MP (Release 7-4)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PSST_WHISPER, AudioPriority.PRIORITY_BGM);
+
             // spend APs.
             SpendActorActionPoints(actor, Rules.BASE_ACTION_COST);
 
@@ -18983,7 +19055,9 @@ namespace djack.RogueSurvivor.Engine
                         return;
                     }
                     else if (inKey.KeyCode == Keys.A) //drop all
+#pragma warning disable CS0642 // Possible mistaken empty statement
                         ; //nothing extra required, continue with normal drop
+#pragma warning restore CS0642 // Possible mistaken empty statement
                     else
                     {
                         AddMessage(MakeErrorMessage("Unhandled key error when dropping fuel cans."));
@@ -19044,7 +19118,9 @@ namespace djack.RogueSurvivor.Engine
                         return;
                     }
                     else if (inKey.KeyCode == Keys.A) //drop all
+#pragma warning disable CS0642 // Possible mistaken empty statement
                         ; //nothing extra required, continue with normal drop
+#pragma warning restore CS0642 // Possible mistaken empty statement
                     else
                     {
                         AddMessage(MakeErrorMessage("Unhandled key error when dropping candles."));
@@ -19224,6 +19300,8 @@ namespace djack.RogueSurvivor.Engine
 
         public void DoEatFoodFromGround(Actor actor, Item it)
         {
+            bool isVisible = IsVisibleToPlayer(actor);
+
             ItemFood food = it as ItemFood;
 
             // spend APs.
@@ -19238,14 +19316,14 @@ namespace djack.RogueSurvivor.Engine
             inv.Consume(food);
 
             // message.
-            bool isVisible = IsVisibleToPlayer(actor);
-            if (actor.IsPlayer) //@@MP (Release 2)(Release 3)
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_PLAYER, AudioPriority.PRIORITY_EVENT); //@@MP reused the sound
-            else if (isVisible)
-            {
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_NEARBY, AudioPriority.PRIORITY_BGM); //@@MP reused the sound
+            if (isVisible)
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_EAT), food));
-            }
+
+            // sound effects
+            if (actor.IsPlayer) //@@MP (Release 2),(Release 3)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_PLAYER, AudioPriority.PRIORITY_EVENT); //@@MP reused the sound
+            else if (IsAudibleToPlayer(actor.Location, Rules.QUIET_NOISE_RADIUS))//@@MP (Release 7-4)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.UNDEAD_EAT_NEARBY, AudioPriority.PRIORITY_BGM); //@@MP reused the sound
 
             // vomit?
             if (m_Rules.IsFoodSpoiled(food, actor.Location.Map.LocalTime.TurnCounter))
@@ -19633,10 +19711,12 @@ namespace djack.RogueSurvivor.Engine
             door.SetState(DoorWindow.STATE_OPEN);
 
             // Message.
-            if (actor.IsPlayer || IsVisibleToPlayer(actor) || IsVisibleToPlayer(door))
+            if (actor.IsPlayer || IsAudibleToPlayer(door.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP - changed from visible to audible (Release 7-4)
             {
                 if (door.GivesWood)
                     m_SFXManager.Play(GameSounds.WOODEN_DOOR_OPEN, AudioPriority.PRIORITY_EVENT);
+                else if (door.IsMetal) //@@MP (Release 7-4)
+                    m_SFXManager.Play(GameSounds.METAL_DOOR_OPEN, AudioPriority.PRIORITY_EVENT);
                 else if (door.TheName == "the roller door") //@@MP (Release 4)
                     m_SFXManager.Play(GameSounds.ROLLER_DOOR, AudioPriority.PRIORITY_EVENT);
                 else
@@ -19660,10 +19740,12 @@ namespace djack.RogueSurvivor.Engine
             door.SetState(DoorWindow.STATE_CLOSED);
 
             // Message.
-            if (actor.IsPlayer || IsVisibleToPlayer(actor) || IsVisibleToPlayer(door))
+            if (actor.IsPlayer || IsAudibleToPlayer(door.Location, Rules.QUIET_NOISE_RADIUS)) //@@MP - changed from visible to audible (Release 7-4)
             {
                 if (door.GivesWood)
                     m_SFXManager.Play(GameSounds.WOODEN_DOOR_CLOSE, AudioPriority.PRIORITY_EVENT);
+                else if (door.IsMetal) //@@MP (Release 7-4)
+                    m_SFXManager.Play(GameSounds.METAL_DOOR_CLOSE, AudioPriority.PRIORITY_EVENT);
                 else if (door.TheName == "the roller door") //@@MP (Release 4)
                     m_SFXManager.Play(GameSounds.ROLLER_DOOR, AudioPriority.PRIORITY_EVENT);
                 else
@@ -19694,8 +19776,13 @@ namespace djack.RogueSurvivor.Engine
             bool isVisible = IsVisibleToPlayer(actor) || IsVisibleToPlayer(door);
             if (isVisible)
             {
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING, AudioPriority.PRIORITY_EVENT); //@@MP (Release 3)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING_PLAYER, AudioPriority.PRIORITY_EVENT); //@@MP (Release 3)
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_BARRICADE), door));
+            }
+            else if (IsAudibleToPlayer(door.Location, Rules.MODERATE_NOISE_RADIUS)) //@@MP (Release 7-4)
+            {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING_NEARBY, AudioPriority.PRIORITY_EVENT);
+                AddMessage(MakePlayerCentricMessage("You hear some sort of construction work", door.Location.Position));
             }
 
             // spend AP.
@@ -19725,8 +19812,13 @@ namespace djack.RogueSurvivor.Engine
             // message.
             if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(new Location(actor.Location.Map, buildPos)))
             {
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING, AudioPriority.PRIORITY_EVENT); //@@MP (Release 3)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING_PLAYER, AudioPriority.PRIORITY_EVENT); //@@MP (Release 3)
                 AddMessage(MakeMessage(actor, String.Format("{0} a {1} fortification.", Conjugate(actor, VERB_BUILD), isLarge ? "large" : "small")));
+            }
+            else if (IsAudibleToPlayer(new Location(actor.Location.Map, buildPos), Rules.MODERATE_NOISE_RADIUS)) //@@MP (Release 7-4)
+            {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING_NEARBY, AudioPriority.PRIORITY_EVENT);
+                AddMessage(MakePlayerCentricMessage("You hear some sort of construction work", buildPos));
             }
 
             // check traps.
@@ -19751,8 +19843,13 @@ namespace djack.RogueSurvivor.Engine
             // message.
             if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(fort))
             {
-                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING, AudioPriority.PRIORITY_EVENT); //@@MP (Release 3)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING_PLAYER, AudioPriority.PRIORITY_EVENT); //@@MP (Release 3)
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_REPAIR), fort));
+            }
+            else if (IsAudibleToPlayer(fort.Location, Rules.MODERATE_NOISE_RADIUS)) //@@MP (Release 7-4)
+            {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING_NEARBY, AudioPriority.PRIORITY_EVENT);
+                AddMessage(MakePlayerCentricMessage("You hear some sort of construction work", fort.Location.Position));
             }
         }
 #endregion
@@ -19881,7 +19978,6 @@ namespace djack.RogueSurvivor.Engine
                 // Message.
                 bool isActorVisible = IsVisibleToPlayer(actor);
                 bool isObjectVisible = IsVisibleToPlayer(mapObj); //@@MP - renamed from Door to Object to better represent whatever it could be (Release 6-2)
-                bool isPlayer = actor.IsPlayer;
 
                 if (isActorVisible || isObjectVisible)
                 {
@@ -20313,6 +20409,9 @@ namespace djack.RogueSurvivor.Engine
 #region -Ordering
         void DoGiveOrderTo(Actor master, Actor slave, ActorOrder order)
         {
+            if (master.IsPlayer || slave.IsPlayer) //@@MP (Release 7-4)
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.PSST_WHISPER, AudioPriority.PRIORITY_BGM);
+
             // master spend AP.
             SpendActorActionPoints(master, Rules.BASE_ACTION_COST);
 
@@ -20446,7 +20545,8 @@ namespace djack.RogueSurvivor.Engine
             {
                 if (IsInArmyOffice(lockedDoor.Location)) //@@MP - added check for army office pass card (Release 6-3)
                 {
-                    if (player.Inventory.HasItemMatching((it) => it.Model == GameItems.UNIQUE_ARMY_ACCESS_BADGE))
+                    //if (player.Inventory.HasItemMatching((it) => it.Model == GameItems.UNIQUE_ARMY_ACCESS_BADGE))
+                    if (player.Inventory.Contains(m_Session.UniqueItems.TheArmyOfficePass.TheItem))
                     {
                         Map map = lockedDoor.Location.Map;
                         Point pt = new Point(lockedDoor.Location.Position.X, lockedDoor.Location.Position.Y);
@@ -20602,7 +20702,7 @@ namespace djack.RogueSurvivor.Engine
             // message.
             if ((actor.IsPlayer) && (s_Options.PlaySFXs)) //@@MP (Release 2)
                 m_SFXManager.Play(GameSounds.SPRAY_TAG, AudioPriority.PRIORITY_EVENT);
-            else if (IsVisibleToPlayer(actor))
+            if (IsVisibleToPlayer(actor))
                 AddMessage(MakeMessage(actor, String.Format("{0} a tag.", Conjugate(actor, VERB_SPRAY))));
         }
 
@@ -20618,11 +20718,10 @@ namespace djack.RogueSurvivor.Engine
             sprayOn.OdorSuppressorCounter += suppressor.Strength;
 
             // message.
+            if ((actor.IsPlayer) && (s_Options.PlaySFXs)) //@@MP (Release 7-4)
+                m_SFXManager.Play(GameSounds.SPRAY_SCENT, AudioPriority.PRIORITY_EVENT);
             if (IsVisibleToPlayer(actor))
-            {
-                AddMessage(MakeMessage(actor, string.Format("{0} {1}.", Conjugate(actor, VERB_SPRAY),
-                    (sprayOn == actor ? HimselfOrHerself(actor) : sprayOn.Name))));
-            }
+                AddMessage(MakeMessage(actor, string.Format("{0} {1}.", Conjugate(actor, VERB_SPRAY), (sprayOn == actor ? HimselfOrHerself(actor) : sprayOn.Name))));
         }
 
         public void DoSwitchPowerGenerator(Actor actor, PowerGenerator powGen)
@@ -20646,65 +20745,81 @@ namespace djack.RogueSurvivor.Engine
             // check for special effects.
             OnMapPowerGeneratorSwitch(actor.Location); //@@MP - unused parameter (Release 5-7)
         }
-#endregion
-#endregion
+        #endregion
+        #endregion
 
-#region IMPARTED ON ACTORS
-#region -Damaging, Killing and Disarming actors **
+        #region IMPARTED ON ACTORS
+        #region -Damaging, Killing and Disarming actors **
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="actor"></param>
+        /// <param name="victim">the one receiving the damage</param>
         /// <param name="dmg"></param>
         /// <param name="splatterBlood">Should the damage splatter blood?</param>
         /// <param name="fireCaused">Was the damage caused by fire?</param>
-        void InflictDamage(Actor actor, int dmg, bool splatterBlood, bool fireCausedIt)
+        /// <param name="attacker"></param>
+        void InflictDamage(Actor victim, int dmg, bool splatterBlood, bool fireCausedIt, Actor attacker = null)
         {
             //@@MP - made blood splatter optional, for times where it doesn't make sense eg fires (Release 5-2)
             //@@MP - added flag to differentiate fire as the damage source (Release 7-1)
+            //@@MP - added Attacker for the new damage options (Release 7-4)
+
+            // Damage option modifier
+            double dmgTmp = dmg;
+            if (attacker != null) //it's damage directly caused by an attacker
+            {
+                dmgTmp = attacker.Model.Abilities.IsUndead ? dmgTmp * s_Options.UndeadDamagePercent : dmgTmp * s_Options.LivingDamagePercent;
+                dmg = (int)Math.Round(dmgTmp / 100, 0, MidpointRounding.AwayFromZero); //divide by 100 because its a percentage
+            }
 
             // Stamina.
-            if (actor.Model.Abilities.CanTire)
-                actor.StaminaPoints -= dmg;
+            if (victim.Model.Abilities.CanTire)
+                victim.StaminaPoints -= dmg;
 
             // Armor.
-            Item torsoItem = actor.GetEquippedItem(DollPart.TORSO);
-            if (torsoItem != null && torsoItem is ItemBodyArmor)
+            Item torsoItem = victim.GetEquippedItem(DollPart.TORSO);
+            if (torsoItem != null)
             {
-                //Is it fire resistant? //@@MP - added (Release 7-1)
-                if (fireCausedIt)
+                ItemBodyArmor armor = torsoItem as ItemBodyArmor;
+                if (armor != null)
                 {
-                    // wearing a fire hazard suit blocks fire damage
-                    ItemBodyArmor armor = torsoItem as ItemBodyArmor;
-                    dmg -= (dmg * (armor.Fire_Resistance / 100));
-                }
-
-                //Body armor breaks?
-                if (m_Rules.RollChance(Rules.BODY_ARMOR_BREAK_CHANCE))
-                {
-                    // do it.
-                    OnUnequipItem(actor, torsoItem);
-                    actor.Inventory.RemoveAllQuantity(torsoItem);
-
-                    // message.
-                    if (IsVisibleToPlayer(actor))
+                    //Is it fire resistant? //@@MP - added (Release 7-1)
+                    if (fireCausedIt)
                     {
-                        AddMessage(MakeMessage(actor, String.Format(": {0} breaks and is now useless!", torsoItem.TheName)));
-                        RedrawPlayScreen();
-                        if (actor.IsPlayer)
-                            AnimDelay(DELAY_NORMAL,true);
+                        // wearing a fire hazard suit blocks fire damage
+
+                        dmg -= (dmg * (armor.Fire_Resistance / 100));
+                    }
+
+                    //Body armor breaks?
+                    if (m_Rules.RollChance(Rules.BODY_ARMOR_BREAK_CHANCE))
+                    {
+                        // do it.
+                        OnUnequipItem(victim, torsoItem);
+                        victim.Inventory.RemoveAllQuantity(torsoItem);
+
+                        // message.
+                        if (IsVisibleToPlayer(victim))
+                        {
+                            AddMessage(MakeMessage(victim, String.Format(": {0} breaks and is now useless!", torsoItem.TheName)));
+                            RedrawPlayScreen();
+                            if (victim.IsPlayer)
+                                AnimDelay(DELAY_NORMAL, true);
+                        }
                     }
                 }
             }
 
             // HP.
-            if (fireCausedIt && GameActors.IsSkeletonBranch(actor.Model)) //@@MP - flame weapons don't hurt skeletons (Release 7-2)
+            if (fireCausedIt && GameActors.IsSkeletonBranch(victim.Model)) //@@MP - flame weapons don't hurt skeletons (Release 7-2)
+#pragma warning disable CS0642 // Possible mistaken empty statement
                 ;//skip
+#pragma warning restore CS0642 // Possible mistaken empty statement
             else
-                actor.HitPoints -= dmg;
+                victim.HitPoints -= dmg;
 
             //@@MP - splatter bood (Release 2)
-            if (splatterBlood && (!actor.Model.Abilities.IsUndead) && (actor.HitPoints > 0)) //@@MP - added check whether we even want to splatter blood (Release 5-2)
+            if (splatterBlood && (!victim.Model.Abilities.IsUndead) && (victim.HitPoints > 0)) //@@MP - added check whether we even want to splatter blood (Release 5-2)
             {
                 /*if (actor.Location.Map.District != m_Player.Location.Map.District)
                 {
@@ -20714,12 +20829,12 @@ namespace djack.RogueSurvivor.Engine
                 else
                 {*/
                 if (m_Rules.RollChance(30)) //30% chance to generate a splatter
-                    SplatterBlood(actor.Location.Map, actor.Location.Position, true);
+                    SplatterBlood(victim.Location.Map, victim.Location.Position, true);
             }
 
             // If sleeping, wake up dude!
-            if (actor.IsSleeping)
-                DoWakeUp(actor);
+            if (victim.IsSleeping)
+                DoWakeUp(victim);
         }
 
         public void KillActor(Actor killer, Actor deadGuy, string reason, bool canDropCorpse = true) // alpha10, drop corpse optional
@@ -21667,7 +21782,8 @@ namespace djack.RogueSurvivor.Engine
             if (actor != null && !GameActors.IsSkeletonBranch(actor.Model) && !actor.IsInWater) //@@MP - added water check (Release 6-1)
             {
                 actor.IsOnFire = true;
-                Item torsoItem = actor.GetEquippedItem(DollPart.TORSO);
+                
+                //undead
                 if (actor.Model.Abilities.IsUndead)
                 {
                     if (actor.Model == GameActors.Zombie || actor.Model == GameActors.DarkZombie || actor.Model == GameActors.DarkEyedZombie)
@@ -21680,14 +21796,21 @@ namespace djack.RogueSurvivor.Engine
                         if (actor.Doll.GetDecorations(DollPart.TORSO) == null || (!actor.Doll.GetDecorations(DollPart.TORSO).Contains(GameImages.OTHER_UNDEAD_ON_FIRE))) //@@MP - added check (Release 6-1)
                             actor.Doll.AddDecoration(DollPart.TORSO, GameImages.OTHER_UNDEAD_ON_FIRE);
                     }
+                    return;
                 }
-                else if (torsoItem != null && torsoItem is ItemBodyArmor) //@@MP - wearing a fire resistant armor? (Release 7-1)
+
+                //livings
+                Item torsoItem = actor.GetEquippedItem(DollPart.TORSO);
+                if (torsoItem != null)   //@@MP - wearing a fire resistant armor? (Release 7-1)
                 {
                     ItemBodyArmor armor = torsoItem as ItemBodyArmor;
-                    int chanceToIgnite = 100 - armor.Fire_Resistance;
-                    if (chanceToIgnite == 0 || !m_Rules.RollChance(chanceToIgnite))
-                        actor.IsOnFire = false;
+                    if (armor != null)
+                    {
+                        if (!m_Rules.RollChance(armor.Fire_Resistance))
+                            actor.IsOnFire = false;
+                    }
                 }
+                //they're definitely on fire, so draw the gener-appropriate effect
                 else if (actor.Model.DollBody.IsMale)
                 {
                     if (actor.Doll.GetDecorations(DollPart.TORSO) == null || (!actor.Doll.GetDecorations(DollPart.TORSO).Contains(GameImages.MALE_ON_FIRE))) //@@MP - added check (Release 6-1)
@@ -22027,7 +22150,7 @@ namespace djack.RogueSurvivor.Engine
                 // y4 <turn>       <scoring>@<difficulty> <mode>
                 // y5 <life>/<lives>   <murders>
                 const int X0 = LOCATIONPANEL_TEXT_X;
-                const int X1 = LOCATIONPANEL_TEXT_X + 128;
+                const int X1 = LOCATIONPANEL_TEXT_X + 100; //@@MP - moved inward to avoid Score running off the screen (Release 7-4)
                 const int Y0 = LOCATIONPANEL_TEXT_Y;
                 const int Y1 = Y0 + LINE_SPACING;
                 const int Y2 = Y1 + LINE_SPACING;
@@ -22101,14 +22224,14 @@ namespace djack.RogueSurvivor.Engine
                     m_UI.UI_DrawString(Color.Red, weatherOrLightingString, X1, Y3);
                 else
                     m_UI.UI_DrawString(Color.Gray, "[can't see the sky]", X1, Y3);
-                m_UI.UI_DrawString(Color.White, String.Format("Turn {0}", m_Session.WorldTime.TurnCounter), X0, Y4);
-                m_UI.UI_DrawString(Color.White, String.Format("Score   {0}@{1}% {2}", m_Session.Scoring.TotalPoints, (int)(100*Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber)), Session.DescShortGameMode(m_Session.GameMode)), X1, Y4);
-                m_UI.UI_DrawString(Color.White, String.Format("Reinc  {0}/{1}", (m_Session.Scoring.ReincarnationNumber), (s_Options.MaxReincarnations)), X0, Y5); //@@MP (Release 6-1)
-                m_UI.UI_DrawString(Color.White, String.Format("Murders {0}", m_Player.MurdersCounter), X1, Y5); //@@MP (Release 6-1)
-#endregion
+                m_UI.UI_DrawString(Color.White, String.Format("Reinc  {0}/{1}", (m_Session.Scoring.ReincarnationNumber), (s_Options.MaxReincarnations)), X0, Y4); //@@MP (Release 6-1)
+                m_UI.UI_DrawString(Color.White, String.Format("Murders {0}", m_Player.MurdersCounter), X0, Y5); //@@MP (Release 6-1)
+                m_UI.UI_DrawString(Color.White, String.Format("Score  {0} @{1}% {2}", m_Session.Scoring.TotalPoints, (int)(100*Scoring.ComputeDifficultyRating(s_Options, m_Session.Scoring.Side, m_Session.Scoring.ReincarnationNumber, m_Session.GameMode)), Session.DescShortGameMode(m_Session.GameMode)), X1, Y4);
+                m_UI.UI_DrawString(Color.White, String.Format("Turn  {0}", m_Session.WorldTime.TurnCounter), X1, Y5);
+                #endregion
 
                 //player status, inventory, ground and skills //@@MP
-#region
+                #region
                 // character status.
                 if (m_Player != null)
                     DrawActorStatus(m_Player, RIGHTPANEL_TEXT_X, RIGHTPANEL_TEXT_Y);
@@ -22245,10 +22368,12 @@ namespace djack.RogueSurvivor.Engine
             // 1. Tiles.
             // 2. Corpses.
             // 3. (Target statut), Map objects.
-            // 4. Scents.
-            // 5. Items, Actors (if visible).
-            // 6. Water cover.
-            // 7. Weather (if visible and not inside).
+            // 4. Fires (if visible)
+            // 5. Scents.
+            // 6. Items, Actors (if visible).
+            // 7. Water cover.
+            // 8. Weather (if visible and not inside).
+            // 9. Screen effects
             ///////////////////////////////////////////
             Point position = new Point();
             bool isUndead = m_Player.Model.Abilities.IsUndead;
@@ -22296,8 +22421,19 @@ namespace djack.RogueSurvivor.Engine
                         drawWater = true;
                     }
 
-                    // 4. Scents
-#region
+                    // 4. Fires (if visible)                     //@@MP - added (Release 7-4)
+                    // draw these after mapbojects to ensure they are brought to the front (avoid fires hiding behind say benches)
+                    if (map.IsInBounds(x, y) && tile.HasDecorations && isVisible)
+                    {
+                        foreach (string deco in tile.Decorations)
+                        {
+                            if (deco == @"Effects\onFire")
+                                m_UI.UI_DrawImage(deco, toScreen.X, toScreen.Y, tint);
+                        }
+                    }
+
+                    // 5. Scents
+                    #region
                     if (!m_Player.IsSleeping && map.IsInBounds(x, y) && m_Rules.GridDistance(m_Player.Location.Position, position) <= 1)
                     {
                         // scents alpha is low to be able to see objects behind them (eg: scent on a door)
@@ -22342,10 +22478,10 @@ namespace djack.RogueSurvivor.Engine
                     }
 #endregion
 
-                    // 5. Items, Actors (if visible)
+                    // 6. Items and Actors (if visible)
                     if (isVisible)
                     {
-                        // 4.2. Items
+                        // Items
                         Inventory inv = map.GetItemsAt(x, y);
                         if (inv != null)
                         {
@@ -22353,7 +22489,7 @@ namespace djack.RogueSurvivor.Engine
                             drawWater = true;
                         }
 
-                        // 4.3. Actors
+                        // Actors
                         Actor actor = map.GetActorAt(x, y);
                         if (actor != null)
                         {
@@ -22362,18 +22498,17 @@ namespace djack.RogueSurvivor.Engine
                         }
                     }
 
-                    // 6. Water cover.
+                    // 7. Water cover.
                     if (tile != null && tile.HasDecorations)
                         drawWater = true;
                     if (drawWater && tile.Model.IsWater)
                         DrawTileWaterCover(tile, toScreen, tint, grayLevelType); //@@MP - added parameter for grayLevelType (Release 6-2)
 
-
-                    // 7. Weather (if visible and not inside).
+                    // 8. Weather (if visible and not inside).
                     if (isVisible && weatherImage != null && tile != null && !tile.IsInside)
                         m_UI.UI_DrawImage(weatherImage, toScreen.X, toScreen.Y);
 
-                    // 8. screen effects (applied last because they must overlay everything else)   //@@MP (Release 7-2)
+                    // 9. screen effects (applied last because they must overlay everything else)   //@@MP (Release 7-2)
                     if (isVisible)
                     {
                         if (m_Player.IsFlashbanged) // flashbang-affected
@@ -22467,8 +22602,13 @@ namespace djack.RogueSurvivor.Engine
 
                 // decorations.
                 if (tile.HasDecorations)
+                {
                     foreach (string deco in tile.Decorations)
-                        m_UI.UI_DrawImage(deco, screen.X, screen.Y, tint);
+                    {
+                        if (deco != @"Effects\onFire") //@@MP - handled as a separate step in DrawMap() (Release 7-4)
+                            m_UI.UI_DrawImage(deco, screen.X, screen.Y, tint);
+                    }
+                }
             }
             else if (tile.IsVisited && !IsPlayerSleeping()) // memorized
             {
@@ -25219,7 +25359,7 @@ namespace djack.RogueSurvivor.Engine
                                 }
                             }
                             if (foundASpot == false)
-                                throw new InvalidOperationException("Could not find clear point to relocate player to (away from helicopter)");
+                                throw new InvalidOperationException("Could not find clear point to relocate player to (away from helicopter). Please reload your last save");
                         }
 
                         //now move them
@@ -25243,6 +25383,9 @@ namespace djack.RogueSurvivor.Engine
             {
                 m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.HELICOPTER_FLYOVER, AudioPriority.PRIORITY_EVENT);
             }
+
+            // notify AI.   //@@MP (Release 7-5)
+            NotifyOrderablesAI(map, RaidType.HELICOPTER_RESCUE, m_Session.ArmyHelicopterRescue_Coordinates);
 
             //rescue helicopter attracts attention   //@@MP (Release 7-3)
             FireEvent_RescueWave(map.District);
@@ -28672,8 +28815,13 @@ namespace djack.RogueSurvivor.Engine
             // check for current map music and play if not already playing something
             string mapMusic = m_Session.CurrentMap.BgMusic; //some maps, such as CHAR basement, have specific bg music. The surface doesn't though for eg
             if (string.IsNullOrEmpty(mapMusic)) //this is a level that doesn't have bgm
-                //m_MusicManager.PlayRandom(m_bgMusicPlaylist, AudioPriority.PRIORITY_BGM); //pick a random bgm to play
-                return; //@@MP - disabled in preference for ambient sound effects (Release 6-6)
+            {
+                List<string> bgMusics = new List<string>() { GameMusics.CHAR_UNDERGROUND_FACILITY, GameMusics.HOSPITAL, GameMusics.SHOPPING_MALL, GameMusics.SEWERS, GameMusics.SUBWAY, GameMusics.SURFACE }; //@@MP - stop any bgm that isn't relevant for this map (Release 7-4)
+                foreach (string music in bgMusics)
+                    m_MusicManager.Stop(music);
+                //m_MusicManager.PlayRandom(m_bgMusicPlaylist, AudioPriority.PRIORITY_BGM); //pick a random bgm to play   //@@MP - disabled in preference for ambient sound effects (Release 6-6)
+                return;
+            }
             else if (m_MusicManager.Track == mapMusic && m_MusicManager.IsPlaying(mapMusic))
                 return; //no need to do anything, it's already playing the appropriate bgm for this map
             else

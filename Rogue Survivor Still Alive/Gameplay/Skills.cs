@@ -143,6 +143,7 @@ namespace djack.RogueSurvivor.Gameplay
 
         static string[] s_Names = new string[(int)IDs._COUNT];
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static IDs[] UNDEAD_SKILLS = new IDs[]
         {
             IDs.Z_AGILE,

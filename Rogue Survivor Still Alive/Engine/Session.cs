@@ -49,6 +49,11 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         ARMY_SUPLLIES,
 
+        /// <summary>
+        /// Used for Rescue Day
+        /// </summary>
+        HELICOPTER_RESCUE, //@@MP (Release 7-4)
+
         _COUNT
     }
 
