@@ -18,13 +18,13 @@
 ICONS LEGEND : F1
 MOVE : Numpad 1-4,6-9           ITEM SLOTS : 1-10               RUN : R		
 SLEEP : Z                       WAIT 1 TURN : Numpad 5          WAIT 1 HOUR : W
-CITY INFO : I                   MESSAGES LOG : Shift + M        USE SPRAY : A
-FIRE : F                        MARK ENEMIES : Ctrl + E         INFO MODE : M (mouse alternative)
+MAP / CITY INFO : M             MESSAGES LOG : Shift + M        USE SPRAY : A
+FIRE : F                        MARK ENEMIES : Ctrl + E         INFO MODE : I (mouse alternative)
 CLOSE : C                       BREAK : K                       USE LADDER/STAIRS : X
 PUSH : P                        BUILD FORTIFICATION : N
 PULL : Ctrl + P                 BARRICADE : B
 INITIATE TRADE : E              GIVE : G                        SHOUT : S
-LEAD FOLLOWER : L               ORDER FOLLOWER : O              SWITCH PLACE : Ctrl + S
+RECRUIT FOLLOWER : T            ORDER FOLLOWER : O              SWITCH PLACE : Ctrl + S
 ABANDON GAME : Shift + A        QUIT GAME : Shift + Q           SAVE GAME : Shift + S
 OPTIONS : Shift + O             ADVISOR HINT : Shift + H        HELP : H
 REDEFINE KEYS : Shift + K       SCREENSHOT : Shift + N          LOAD GAME : Shift + L

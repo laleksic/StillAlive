@@ -1631,7 +1631,6 @@ namespace djack.RogueSurvivor.Engine
             // 4. No action possible?
             //reason = "blocked";
             return null;
-
         }
 
         public ActorAction IsBumpableFor(Actor actor, RogueGame game, Location location)
@@ -1643,6 +1642,66 @@ namespace djack.RogueSurvivor.Engine
         public ActorAction IsBumpableFor(Actor actor, RogueGame game, Location location, out string reason)
         {
             return IsBumpableFor(actor, game, location.Map, location.Position.X, location.Position.Y, out reason);
+        }
+
+        public bool IsSuitableForActorRelocate(Actor actor, Map map, int x, int y)  //@@MP (Release 7-5)
+        {
+            if (map == null)
+                throw new ArgumentNullException("map");
+            if (actor == null)
+                throw new ArgumentNullException("actor");
+
+            ////////////////////////////////
+            // Not walkable if any is true:
+            // 1. Out of map.
+            // 2. Tile not walkable.
+            // 3. Map object not passable.
+            // 4. An actor already there.
+            ////////////////////////////////
+            // 1. Out of map.
+            if (!map.IsInBounds(x, y))
+                return false;
+
+            // 2. Tile not walkable.
+            if (!map.GetTileAt(x, y).Model.IsWalkable)
+                return false;
+
+            // 3. Map object not passable.
+            MapObject mapObj = map.GetMapObjectAt(x, y);
+            if (mapObj != null)
+            {
+                DoorWindow door = mapObj as DoorWindow;
+
+                if (!mapObj.IsWalkable)
+                {
+                    // jump?
+                    if (mapObj.IsJumpable)
+                    {
+                        if (!HasActorJumpAbility(actor))
+                        {
+                            //reason = "cannot jump";
+                            return false;
+                        }
+                    }
+                    else if (door != null && door.IsClosed)
+                    {
+                        //reason = "cannot slip through closed door";
+                        return false;
+                    }
+                    else
+                    {
+                        // nope, blocking object.
+                        return false;
+                    }
+                }
+            }
+
+            // 4. An actor already there.
+            if (map.GetActorAt(x, y) != null)
+                return false;
+
+            // all checks clear.
+            return true;
         }
         #endregion
 
@@ -3244,11 +3303,16 @@ namespace djack.RogueSurvivor.Engine
             // 5. Tile occupied.
             if (map.GetMapObjectAt(pos) != null || map.GetActorAt(pos) != null)
             {
-                reason = "blocked";
+                reason = "blocked by an object/NPC";
                 return false;
             }
 
-
+            // 6. Exit.   //@@MP - may need to use this if forts on exits causes AI looping  (Release 7-5)
+            /*if (map.GetExitAt(pos) != null)
+            {
+                reason = "cannot build fortifications on exits";
+                return false;
+            }*/
                         
             // all clear.
             reason = "";
@@ -3762,7 +3826,7 @@ namespace djack.RogueSurvivor.Engine
             if (actorA == actorB)
                 return false;
 
-            // my leader enemies are my enemies.
+            // my leader's enemies are my enemies.
             // my mates enemies are my enemies.
             bool IsEnemyOfMyLeaderOrMates(Actor groupActor, Actor target)
             {
@@ -3774,7 +3838,7 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // my followers enemies are my enemies
+            // my followers' enemies are my enemies
             bool IsEnemyOfMyFollowers(Actor groupActor, Actor target)
             {
                 foreach (Actor follower in groupActor.Followers)
@@ -3810,6 +3874,10 @@ namespace djack.RogueSurvivor.Engine
 
             // killing an undead is never a murder, of course
             if (victim.Model.Abilities.IsUndead)
+                return false;
+
+            // killing a feral dog isn't murder    //@@MP (Release 7-5)
+            if (victim.Model.Abilities.IsLivingAnimal)
                 return false;
 
             // a law enforcer killing a murderer is not a murder.

@@ -4333,7 +4333,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         protected ActorAction BehaviorMakeMolotovs(RogueGame game) //@@MP (Release 7-1)
         {
-            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of entertainment this turn (avoids looping)  //@@MP (Release 7-1)
+            if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of AP-free actions this turn (avoids looping)  //@@MP (Release 7-1)
                 return null;
 
             // don't bother if no grenade in inventory.
@@ -4348,6 +4348,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 if (game.Rules.IsItemLiquorForMolotov(it))
                 {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorMakeMolotovs() use " + it.TheName;
+#endif
                     m_Actor.RepetitiveNoAPCostActionsThisTurnCount = Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT; //only allow once per turn
                     return new ActionUseItem(m_Actor, game, it);
                 }
@@ -5746,6 +5750,27 @@ namespace djack.RogueSurvivor.Gameplay.AI
 #endif
         }
 
+        protected bool AlreadyHasLiquorInInventory(Item it)  //@@MP (Release 7-5)
+        {
+            if (m_Actor.Inventory == null || m_Actor.Inventory.IsEmpty)
+                return false;
+
+            List<int> liquorList = new List<int>(new int[] { (int)GameItems.IDs.LIQUOR_AMBER, (int)GameItems.IDs.LIQUOR_CLEAR });
+
+            if (liquorList.Exists(x => x == it.Model.ID)) //it's a liquor bottle
+            {
+                foreach (Item invitem in m_Actor.Inventory.Items)
+                {
+                    for (int y = 0; y < liquorList.Count; y++)
+                    {
+                        if (invitem.Model.ID == (int)liquorList[y])
+                            return true; //already has a bottle of liquor. we dont want them to hog more
+                    }
+                }
+            }
+            return false;
+        }
+
         protected bool AlreadyHasEnoughAlcoholInInventory(Item it, int n) //@@MP (Release 4)
         {
             if (m_Actor.Inventory == null || m_Actor.Inventory.IsEmpty)
@@ -5832,7 +5857,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (it.IsForbiddenToAI)
                 return ItemRating.JUNK;
 
-            //@@MP - re-ordered for most to least likely (Release 6-1),(Release 6-2)
+            //@@MP - re-ordered for most to least likely to encounter (Release 6-1),(Release 6-2)
 
             // Melee weapons if martial arts or enough.
             if (it is ItemMeleeWeapon)
@@ -5888,6 +5913,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (CountItemsFullStacksOfSameType(typeof(ItemBarricadeMaterial), it) >= 1)
                     return ItemRating.JUNK;
             }
+
+            //@MP - prevent NPCs taking too many liquor bottles (Release 7-5)
+            if (AlreadyHasLiquorInInventory(it))
+                return ItemRating.JUNK;
 
             // Food if hungry or not enough food in inventory.
             if (it is ItemFood)

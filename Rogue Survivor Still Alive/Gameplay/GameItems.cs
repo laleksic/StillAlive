@@ -2489,7 +2489,7 @@ namespace djack.RogueSurvivor.Gameplay
             LightData[] data;
 
             LoadDataFromCSV<LightData>(ui, path, "lights items", LightData.COUNT_FIELDS, LightData.FromCSVLine,
-                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT, IDs.LIGHT_NIGHT_VISION, IDs.LIGHT_BINOCULARS, IDs.LIGHT_BINOCULARS, IDs.LIGHT_FLARE, IDs.LIGHT_GLOWSTICK },
+                new IDs[] { IDs.LIGHT_FLASHLIGHT, IDs.LIGHT_BIG_FLASHLIGHT, IDs.LIGHT_NIGHT_VISION, IDs.LIGHT_BINOCULARS, IDs.LIGHT_FLARE, IDs.LIGHT_GLOWSTICK },
                 out data);
 
             DATA_LIGHT_FLASHLIGHT = data[0];

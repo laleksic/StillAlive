@@ -1352,17 +1352,19 @@ namespace djack.RogueSurvivor.Engine
         {
             bool loop = true;
             bool isLoadEnabled = File.Exists(GetUserSave());
+            bool isBackupSave = File.Exists(String.Format("{0}backup.dat", GetUserSavesPath()));  //@@MP (Release 7-5)
 
             string[] menuEntries = new string[] {
                 "New Game",                                     // 0 
                 isLoadEnabled ?  "Load Saved Game" : "(no save found)",   // 1
-                "Redefine keys",                                // 2
-                "Options",                                      // 3
-                "Game Manual",                                  // 4
-                "Hints",                                        // 5
-                "High Scores",                                  // 6
-                "Credits",                                      // 7
-                "Quit Game" };                                  // 8
+                isBackupSave ?  "Load Backup Save" : "(no backup save found)",   // 2      //@@MP (Release 7-5)
+                "Redefine keys",                                // 3
+                "Options",                                      // 4
+                "Game Manual",                                  // 5
+                "Hints",                                        // 6
+                "High Scores",                                  // 7
+                "Credits",                                      // 8
+                "Quit Game" };                                  // 9
             int selected = 0;
             do
             {
@@ -1430,32 +1432,44 @@ namespace djack.RogueSurvivor.Engine
                                         StartSimThread();
                                     break;
 
-                                case 2:
-                                    HandleRedefineKeys();
+                                case 2:  //@@MP (Relese 7-5)
+                                    if (!isBackupSave)
+                                        break;
+                                    gy += 2 * BOLD_LINE_SPACING;
+                                    m_UI.UI_DrawStringBold(Color.Yellow, "Loading game, please wait...", gx, gy);
+                                    m_UI.UI_Repaint();
+                                    LoadGame(GetUserSavesPath() + "backup.dat");
+                                    loop = false;
+                                    if (s_Options.IsSimON && s_Options.SimThread) // alpha10
+                                        StartSimThread();
                                     break;
 
                                 case 3:
+                                    HandleRedefineKeys();
+                                    break;
+
+                                case 4:
                                     HandleOptions(); //@@MP - unused parameter (Release 5-7)
                                     ApplyOptions(); //@@MP - unused parameter (Release 5-7)
                                     break;
 
-                                case 4:
+                                case 5:
                                     HandleHelpMode();
                                     break;
 
-                                case 5:
+                                case 6:
                                     HandleHintsScreen();
                                     break;
 
-                                case 6:
+                                case 7:
                                     HandleHiScores(true);
                                     break;
 
-                                case 7:
+                                case 8:
                                     HandleCredits();
                                     break;
 
-                                case 8:
+                                case 9:
                                     m_IsGameRunning = false;
                                     loop = false;
                                     break;
@@ -2182,6 +2196,12 @@ namespace djack.RogueSurvivor.Engine
             // save session object.
             Session.Save(m_Session, saveName, Session.SaveFormat.FORMAT_BIN);
 
+            // backup. replace previous last known-good save file   //@@MP (Release 7-5)
+            // first delete the older one
+            Session.Delete(GetUserSavesPath() + "backup.dat");
+            // now duplicate the current save as the new backup
+            Session.Save(m_Session, GetUserSavesPath() + "backup.dat", Session.SaveFormat.FORMAT_BIN);
+
             AddMessage(new Message("SAVING DONE.", m_Session.WorldTime.TurnCounter, Color.Yellow));
             RedrawPlayScreen();
             m_UI.UI_Repaint();
@@ -2209,7 +2229,7 @@ namespace djack.RogueSurvivor.Engine
             if (Session.Delete(saveName))
             {
                 // tell.
-                AddMessage(new Message("PERMADEATH ENABLED : SAVE GAME DELETED!", m_Session.WorldTime.TurnCounter, Color.Red));
+                AddMessage(new Message("PERMADEATH IS ENABLED : SAVE GAME DELETED!", m_Session.WorldTime.TurnCounter, Color.Red));
             }
         }
 
@@ -4442,6 +4462,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Create Sewers Thing.
             ActorModel model = GameActors.SewersThing;
             Actor actor = model.CreateNamed(GameFactions.TheUndeads, "The Sewers Thing", false, 0);
+            actor.IsUnique = true;  //@@MP (Release 7-5)
 
             // 3. Spawn in sewers map.
             DiceRoller roller = new DiceRoller(map.Seed);
@@ -4467,6 +4488,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // done.
+            //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("sewer thing spawned at {0}", actor.Location.Map.District.Name));
             return new UniqueActor() { TheActor = actor, IsSpawned = true };
         }
 
@@ -6488,16 +6510,16 @@ namespace djack.RogueSurvivor.Engine
                         ItemLight NVGs = eyesItem as ItemLight;
                         if (NVGs != null)
                         {
-                            if (actor.IsPlayer && NVGs.Batteries > 0)
+                            if (actor.IsPlayer)  //@MP - fixed logic that caused infite batteries (Release 7-5)
                             {
-                                --NVGs.Batteries;
+                                if (NVGs.Batteries > 0)
+                                    --NVGs.Batteries;
+
                                 if (NVGs.Batteries <= 0)
                                 {
-                                    AddMessage(MakeMessage(actor, String.Format(": {0} ran out of battery.", NVGs.TheName)));
+                                    AddMessage(MakeMessage(actor, String.Format(": {0} ran out of battery charge.", NVGs.TheName)));
                                 }
                             }
-                            else
-                                NVGs.Batteries = NVGs.MaxBatteries; //@@MP - AIs now get infinite batteries (Release 6-4)
                         }
                     }
 
@@ -6508,32 +6530,32 @@ namespace djack.RogueSurvivor.Engine
                         ItemLight light = leftItem as ItemLight;
                         if (light != null)
                         {
-                            if (actor.IsPlayer && light.Batteries > 0)
+                            if (actor.IsPlayer)  //@MP - fixed logic that caused infite batteries (Release 7-5)
                             {
-                                --light.Batteries;
+                                if (light.Batteries > 0)
+                                    --light.Batteries;
+
                                 if (light.Batteries <= 0)
                                 {
-                                    AddMessage(MakeMessage(actor, String.Format(": {0} light goes off.", light.TheName)));
+                                    AddMessage(MakeMessage(actor, String.Format(": {0} ran out of battery charge.", light.TheName)));
                                 }
                             }
-                            else
-                                light.Batteries = light.MaxBatteries; //@@MP - AIs now get infinite batteries (Release 6-4)
                         }
 
                         // tracker?
                         ItemTracker tracker = leftItem as ItemTracker;
                         if (tracker != null)
                         {
-                            if (actor.IsPlayer && tracker.Batteries > 0)
+                            if (actor.IsPlayer)  //@MP - fixed logic that caused infite batteries (Release 7-5)
                             {
-                                --tracker.Batteries;
+                                if (tracker.Batteries > 0)
+                                    --tracker.Batteries;
+
                                 if (tracker.Batteries <= 0)
                                 {
-                                    AddMessage(MakeMessage(actor, String.Format(": {0} goes off.", tracker.TheName)));
+                                    AddMessage(MakeMessage(actor, String.Format(": {0} ran out of battery charge.", tracker.TheName)));
                                 }
                             }
-                            else
-                                tracker.Batteries = tracker.MaxBatteries; //@@MP - AIs now get infinite batteries (Release 6-4)
                         }
                     }
                     #endregion
@@ -7189,9 +7211,12 @@ namespace djack.RogueSurvivor.Engine
             else
                 AddMessage(new Message("You join the realm of the undeads... Game over!", m_Session.WorldTime.TurnCounter, Color.Red));
 
-            // if permadeath on delete save file.
+            // if permadeath on delete save files.
             if (s_Options.IsPermadeathOn)
+            {
                 DeleteSavedGame(GetUserSave());
+                DeleteSavedGame(GetUserSavesPath() + "backup.dat");  //@@MP (Release 7-5)
+            }
 
             // screenshot.
             if (s_Options.IsDeathScreenshotOn)
@@ -7270,10 +7295,6 @@ namespace djack.RogueSurvivor.Engine
             AddMessage(new Message("**** YOU WERE RESCUED! ****", m_Session.WorldTime.TurnCounter, Color.Red));
             AddMessage(new Message(String.Format("Congratulations. Survivng that dead city was no small feat."), m_Session.WorldTime.TurnCounter, Color.Red));
             AddMessage(new Message(String.Format("But could you have survived even longer...?"), m_Session.WorldTime.TurnCounter, Color.Red));
-
-            // if permadeath on delete save file.
-            if (s_Options.IsPermadeathOn)
-                DeleteSavedGame(GetUserSave());
 
             // screenshot.
             if (s_Options.IsDeathScreenshotOn)
@@ -11811,6 +11832,7 @@ namespace djack.RogueSurvivor.Engine
         {
             bool loop = true;
             bool actionDone = false;
+            bool hasFuelAmmo = false;    //@@MP (Release 7-5)
 
             // If grenade equipped, redirected to HandlePlayerThrowGrenade.
             ItemGrenade grenade = player.GetEquippedWeapon() as ItemGrenade;
@@ -11818,7 +11840,21 @@ namespace djack.RogueSurvivor.Engine
             if (grenade != null || primedGrenade != null)
                 return HandlePlayerThrowGrenade(player);
 
-            // Check if weapon to fire.
+            //check how much fuel ammo is in inventory   //@@MP (Release 7-5)
+            foreach (Item item in m_Player.Inventory.Items)
+            {
+                ItemAmmo fuelCan = item as ItemAmmo;
+                if (fuelCan != null)
+                {
+                    if (fuelCan.Model == GameItems.AMMO_FUEL && fuelCan.Quantity > 0)
+                    {
+                        hasFuelAmmo = true;
+                        break;
+                    }
+                }
+            }
+
+            // Check if weapon ready to fire.
             ItemRangedWeapon rangedWeapon = player.GetEquippedWeapon() as ItemRangedWeapon;
             if (rangedWeapon == null)
             {
@@ -11826,19 +11862,18 @@ namespace djack.RogueSurvivor.Engine
                 RedrawPlayScreen();
                 return false;
             }
-            else if (rangedWeapon.AmmoType == AmmoType.FUEL) //@@MP (Release 7-2)
+            else if (rangedWeapon.AmmoType == AmmoType.FUEL) //@@MP - flamethrowers (Release 7-2)
             {
-                ItemAmmo fuel = player.Inventory.GetFirstByModel(GameItems.AMMO_FUEL) as ItemAmmo; //if they have this then there is at least one 'ammo' unit
-                if (fuel == null)
+                if (rangedWeapon.Ammo <= 0 && !hasFuelAmmo)   //@@MP (Release 7-5)
                 {
-                    AddMessage(MakeErrorMessage("No fuel in inventory."));
+                    AddMessage(MakeErrorMessage("No fuel for ammo in inventory."));
                     RedrawPlayScreen();
                     return false;
                 }
             }
             else if (rangedWeapon.Ammo <= 0)
             {
-                AddMessage(MakeErrorMessage("No ammo left."));
+                AddMessage(MakeErrorMessage("No ammo loaded."));
                 RedrawPlayScreen();
                 return false;
             }
@@ -11892,8 +11927,9 @@ namespace djack.RogueSurvivor.Engine
             List<Point> LoF = new List<Point>(rangedAttack.Range);
             FireMode mode;
             bool singleShot = (rangedWeapon.Model as ItemRangedWeaponModel).IsSingleShot; //@@MP - some weapons are single-shot = can't rapid fire (Release 6-6)
-            if (rangedWeapon.AmmoType == AmmoType.BOLT && m_Player.Inventory.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.AMMO_FUEL)) //@@MP - bows can have flaming bolts, but only if carrying fuel (Release 7-2)
-                mode = m_Session.Player_CurrentFireMode;  // alpha10
+
+            if (rangedWeapon.AmmoType == AmmoType.BOLT && !hasFuelAmmo) //@@MP - bows can have flaming bolts, but only if carrying fuel (Release 7-2), fixed (Release 7-5)
+                mode = FireMode.DEFAULT;  // alpha10
             else if (!singleShot) //rapid fire-capable firearms
                 mode = m_Session.Player_CurrentFireMode;  // alpha10
             else
@@ -12012,7 +12048,7 @@ namespace djack.RogueSurvivor.Engine
                         {
                             if (m_Session.Player_CurrentFireMode == FireMode.DEFAULT) //switching to flaming
                             {
-                                if (m_Player.Inventory.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.AMMO_FUEL))
+                                if (hasFuelAmmo)  //@@MP - fixed (Release 7-5)
                                 {
                                     mode = FireMode.FLAMING; // save preference to session // alpha10
                                     switched = true;
@@ -16014,15 +16050,6 @@ namespace djack.RogueSurvivor.Engine
             /////////////////////////////////////
 
             // 1. If spot not available, cancel.
-            Actor other = exit.ToMap.GetActorAt(exit.ToPosition);
-            if (other != null)
-            {
-                if (isPlayer)
-                {
-                    AddMessage(MakeErrorMessage(String.Format("{0} is blocking your way.", other.Name)));
-                }
-                return true;
-            }
             MapObject blockingObj = exit.ToMap.GetMapObjectAt(exit.ToPosition);
             if (blockingObj != null)
             {
@@ -16033,8 +16060,76 @@ namespace djack.RogueSurvivor.Engine
                     if (isPlayer)
                     {
                         AddMessage(MakeErrorMessage(String.Format("{0} is blocking your way.", blockingObj.AName)));
+                        AddMessage(MakeErrorMessage(String.Format("Try using Break Mode (key: {0}) to demolish the {1}.", s_KeyBindings.GetFriendlyFormat(PlayerCommand.BREAK_MODE).ToString(), blockingObj.AName)));
                     }
-                    return true;
+                    return false;  //@@MP - this logic was wrong as of Release 6-5, because I prevented placing objects on exits. see Rules.CanPushObjectTo()    //@@MP (Release 7-5)
+                }
+            }
+            Actor other = exit.ToMap.GetActorAt(exit.ToPosition);
+            if (other != null)
+            {
+                //@@MP (Release 7-5)
+                //take the NPC and move them to the nearest empty square. works around an issue that confused a lot of players
+
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("moving actor from {0}", other.Location.Position));
+                bool spotFound = false;
+                Point moveToSpot = other.Location.Position; //placeholder
+
+                //check all the immediately adjacent squares
+                Point p = new Point(other.Location.Position.X, other.Location.Position.Y);
+                foreach (Direction d in Direction.COMPASS)
+                {
+                    Point adj = p + d;
+                    if (m_Rules.IsSuitableForActorRelocate(other, exit.ToMap, adj.X, adj.Y) && exit.ToMap.GetExitAt(adj) == null)
+                    {
+                        moveToSpot = adj;
+                        spotFound = true;
+                        break;
+                    }
+                }
+
+                //if no adjacent spots suitable, pick a spot at random. not ideal, because they could be warped a long way from their starting spot,
+                //or they could be placed inside a locked building. but i'm too lazy to do any better
+                if (!spotFound)
+                {
+                    // try <maxTries> times to find a walkable position.
+                    Point pos = new Point();
+                    int maxTries = 2500;
+                    for (int i = 0; i < maxTries; i++)
+                    {
+                        DiceRoller roller = new DiceRoller();
+                        int left = 0, top = 0; //0,0 coords are the top left square of the map
+                        pos.X = roller.Roll(left, left + exit.ToMap.Width);
+                        pos.Y = roller.Roll(top, top + exit.ToMap.Height);
+
+                        if (m_Rules.IsSuitableForActorRelocate(other, exit.ToMap, pos.X, pos.Y) && exit.ToMap.GetExitAt(pos) == null)
+                        {
+                            moveToSpot = pos;
+                            spotFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (spotFound == false)  //couldn't find a suitable spot
+                {
+                    if (isPlayer) //couldn't find a suitable spot to move the NPC, so the player will have to Break mode or wait a turn and try again
+                    {
+                        AddMessage(MakeErrorMessage(String.Format("{0} is blocking your way.", other.Name)));
+                        return false;
+                    }
+                }
+                else
+                {
+                    //now take the NPC from the exit square and put them on the empty square
+                    if (other.DraggedCorpse != null)
+                    {
+                        exit.ToMap.RemoveCorpse(other.DraggedCorpse);
+                        exit.ToMap.AddCorpseAt(other.DraggedCorpse, moveToSpot);
+                    }
+                    exit.ToMap.RemoveActor(other);
+                    exit.ToMap.PlaceActorAt(other, moveToSpot);
+                    exit.ToMap.MoveActorToFirstPosition(other);
                 }
             }
  
@@ -16276,7 +16371,12 @@ namespace djack.RogueSurvivor.Engine
 
             // if target is AI, awake and has not aggressor as enemy, emote.
             if (!target.IsPlayer && !target.IsSleeping && !alreadyEnemies) //@@MP - used existing bool instead of checking again (Release 5-7)
-                DoSay(target, aggressor, "BASTARD! TRAITOR!", Sayflags.IS_FREE_ACTION | Sayflags.IS_DANGER);
+            {
+                if (!target.Model.Abilities.IsLivingAnimal)
+                    DoSay(target, aggressor, "BASTARD! TRAITOR!", Sayflags.IS_FREE_ACTION | Sayflags.IS_DANGER);
+                else
+                    DoSay(target, aggressor, "GRRRRRR!", Sayflags.IS_FREE_ACTION | Sayflags.IS_DANGER);
+            }
 
             // aggressor and self-defence
             aggressor.MarkAsAgressorOf(target);
@@ -16889,7 +16989,7 @@ namespace djack.RogueSurvivor.Engine
                                     Item randomItem = defender.Inventory.RandomItem; //select random item
                                     if (!defender.Inventory.RandomItem.IsEquipped)
                                     {
-                                        DropItem(defender, randomItem); //drop an unequipped item from their inventory
+                                        DropItem(defender, randomItem, true); //drop an unequipped item from their inventory
                                         map.DropItemAt(crossbowBolt, defender.Location.Position); //create a bolt on the ground
                                         DoTakeItem(defender, defender.Location.Position, crossbowBolt); //now put it into the inventory space we just vacated
                                         break;
@@ -17199,7 +17299,7 @@ namespace djack.RogueSurvivor.Engine
         private void SpendFuelAmmo(Actor actor) //@@MP (Release 7-2)
         {
             ItemAmmo fuel = actor.Inventory.GetFirstByModel(GameItems.AMMO_FUEL) as ItemAmmo;
-            --fuel.Quantity; //expend one unit of fuel
+            actor.Inventory.Consume(fuel);  //@@MP - fixed (Release 7-5)
         }
 
         /// <summary>
@@ -17326,7 +17426,7 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else if (isMapObject)
                 {
-                    ExplodeFuelPump(attacker.Location);
+                    ExplodeFuelPump(new Location(attacker.Location.Map, fuelThingPos));  //@@MP - fixed (Release 7-5)
                 }
             }
             else // miss
@@ -18727,21 +18827,12 @@ namespace djack.RogueSurvivor.Engine
                 if (actor.IsPlayer && it.Model.IsThrowable) //@@MP - always enforce that burning flares or used glowsticks stay equipped (Release 7-1)
                     DoEquipItem(actor, it);
             }
-            else if (!actor.IsPlayer && m_Rules.IsItemLiquorForMolotov(it) && m_Rules.RollChance(10)) //@MP - 10%chance for livings to make molotovs (Release 5-1)
-            {
-                int liquorQuantity = it.Quantity;
-                map.RemoveItemAt(it, position); //remove the liquor and replace with molotovs
-                for (int i = 0; i != liquorQuantity; i++)
-                {
-                    Item molotov = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
-                    map.DropItemAt(molotov, position);
-                }
-            }
 
             // add to inventory.
             int quantityAdded;
             int quantityBefore = it.Quantity;
             actor.Inventory.AddAsMuchAsPossible(it, out quantityAdded);
+
             // if added all, remove from map.
             if (quantityAdded == quantityBefore)
             {
@@ -18767,9 +18858,7 @@ namespace djack.RogueSurvivor.Engine
 
             // message
             if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(new Location(map, position)))
-            {
                 AddMessage(MakeMessage(actor, Conjugate(actor, VERB_TAKE), it));
-            }
 
             // automatically equip item if flags set & possible, and not already equipped something.
             if (!it.Model.DontAutoEquip && m_Rules.CanActorEquipItem(actor, it) && actor.GetEquippedItem(it.Model.EquipmentPart) == null)
@@ -18805,21 +18894,19 @@ namespace djack.RogueSurvivor.Engine
             {
                 // emote.
                 DoSay(target, actor, "Well, here it is...", Sayflags.IS_FREE_ACTION);
- 
+
                 // update trust.
                 ModifyActorTrustInLeader(actor, Rules.TRUST_GIVE_ITEM_ORDER_PENALTY, true);
             }
 
-            // transfer item : drop then take (solves problem of partial quantities transfer).
-            DropItem(actor, gift);
-            DoTakeItem(target, actor.Location.Position, gift);
-            
+            // transfer item : drop then take (solves problem of partial quantities transfer). [quote from RS vanilla]
+            //@@MP - workaround for a logic bug relating to dropping stackable items if the ground there already has some of that same item (Release 7-5)
+            Point dropPos = DropItemForTransferBetweenActors(actor, gift);
+            DoTakeItem(target, dropPos, gift);
+
             // message.
             if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(target))
-            {
                 AddMessage(MakeMessage(actor, String.Format("{0} {1} to", Conjugate(actor, VERB_GIVE), gift.TheName), target));
-            }
-            
         }
 
         /// <summary>
@@ -18942,10 +19029,12 @@ namespace djack.RogueSurvivor.Engine
 #region Batteries
             else if (it.Model is ItemLightModel)
             {
-                ItemLight ltIt = it as ItemLight;
-                --ltIt.Batteries;
                 if (actor.IsPlayer) //@@MP (Release 2)
                 {
+                    //@@MP - NPCs get infinite batteries (Release 7-5)
+                    ItemLight ltIt = it as ItemLight;
+                    --ltIt.Batteries;
+
                     if (m_Rules.IsItemNightVision(it)) //@@MP (Release 6-3)
                         m_SFXManager.Play(GameSounds.NIGHT_VISION, AudioPriority.PRIORITY_BGM);
                     else if (m_Rules.IsItemBinoculars(it)) //@@MP (Release 7-1)
@@ -18959,8 +19048,11 @@ namespace djack.RogueSurvivor.Engine
             }
             else if (it.Model is ItemTrackerModel)
             {
-                ItemTracker trIt = it as ItemTracker;
-                --trIt.Batteries;
+                if (actor.IsPlayer) //@@MP - NPCs get infinite batteries (Release 7-5)
+                {
+                    ItemTracker trIt = it as ItemTracker;
+                    --trIt.Batteries;
+                }
             }
 #endregion
         }
@@ -19055,9 +19147,7 @@ namespace djack.RogueSurvivor.Engine
                         return;
                     }
                     else if (inKey.KeyCode == Keys.A) //drop all
-#pragma warning disable CS0642 // Possible mistaken empty statement
-                        ; //nothing extra required, continue with normal drop
-#pragma warning restore CS0642 // Possible mistaken empty statement
+                        RedrawPlayScreen(); //nothing extra required, continue with normal drop
                     else
                     {
                         AddMessage(MakeErrorMessage("Unhandled key error when dropping fuel cans."));
@@ -19118,9 +19208,7 @@ namespace djack.RogueSurvivor.Engine
                         return;
                     }
                     else if (inKey.KeyCode == Keys.A) //drop all
-#pragma warning disable CS0642 // Possible mistaken empty statement
-                        ; //nothing extra required, continue with normal drop
-#pragma warning restore CS0642 // Possible mistaken empty statement
+                        RedrawPlayScreen(); //nothing extra required, continue with normal drop
                     else
                     {
                         AddMessage(MakeErrorMessage("Unhandled key error when dropping candles."));
@@ -19180,47 +19268,107 @@ namespace djack.RogueSurvivor.Engine
             actor.Inventory.RemoveAllQuantity(it);
         }
 
-        void DropItem(Actor actor, Item it)
+        void DropItem(Actor actor, Item it, bool dropNearbyIfNeeded = false)
         {
             // remove from inventory.
             actor.Inventory.RemoveAllQuantity(it);
 
-            // add to ground.  //@@MP - if current spot is full, try adjacents (Release 6-2)
+            // add to ground.
             Map map = actor.Location.Map;
             Point position = actor.Location.Position;
-            Point next = position;
-            foreach (Direction d in Direction.COMPASS)
+            Point dropPos = position;
+
+            // try to drop it on the actor's spot first
+            Inventory itemsThere = map.GetItemsAt(position);
+            if (itemsThere != null && !itemsThere.IsFull)
+                dropNearbyIfNeeded = false;
+
+            //@@MP - if current spot is full, try adjacents (Release 6-2), made adjacent check optional (Release 7-5)
+            if (dropNearbyIfNeeded)
             {
-                if (map.IsWalkable(next))
+                foreach (Direction d in Direction.COMPASS)
                 {
-                    Inventory groundInv = map.GetItemsAt(next);
-                    if (groundInv == null || !groundInv.IsFull)
+                    dropPos = position + d;
+
+                    MapObject obj = map.GetMapObjectAt(dropPos);
+                    if (map.IsWalkable(dropPos) | (obj != null && obj.IsJumpable))  //if its walkable or has a jumpable object its ok to put the item there
                     {
-                        actor.Location.Map.DropItemAt(it, next);
-                        //@@MP - now 'lock' it if it's the player and an open bank safe (Release 6-5)
-                        if (actor.IsPlayer)
+                        Inventory groundInv = map.GetItemsAt(dropPos);
+                        if (groundInv == null || !groundInv.IsFull)
                         {
-                            MapObject openBankSafe = map.GetMapObjectAt(next);
-                            if (openBankSafe != null && (openBankSafe.ImageID == GameImages.OBJ_BANK_SAFE_OPEN))
+                            //@@MP - 'lock' it if it's the player and an open bank safe (Release 6-5)
+                            if (actor.IsPlayer)
                             {
-                                //it doesn't already belong to the player, so allocate it now
-                                //BaseAI.BehaviorGoGetInterestingItems() and BehaviorGoEatFoodOnGround() stops AI from taking items from this 'locked' safe
-                                Point safept = new Point(next.X, next.Y);
-                                map.RemoveMapObjectAt(safept.X, safept.Y); //remove the existing vault
-                                map.PlaceMapObjectAt(m_TownGenerator.MakeObjOwnedBankSafe(GameImages.OBJ_BANK_SAFE_OPEN_OWNED), safept); //replace it with one to flag it belonging to the player
-                                AddMessage(new Message(String.Format("You lock {0} away in the safe. No one else can get at it now", it.TheName), m_Session.WorldTime.TurnCounter, Color.Yellow));
+                                MapObject openBankSafe = map.GetMapObjectAt(dropPos);
+                                if (openBankSafe != null && (openBankSafe.ImageID == GameImages.OBJ_BANK_SAFE_OPEN))
+                                {
+                                    //it doesn't already belong to the player, so allocate it now
+                                    //BaseAI.BehaviorGoGetInterestingItems() and BehaviorGoEatFoodOnGround() stops AI from taking items from this 'locked' safe
+                                    Point safept = new Point(dropPos.X, dropPos.Y);
+                                    map.RemoveMapObjectAt(safept.X, safept.Y); //remove the existing vault
+                                    map.PlaceMapObjectAt(m_TownGenerator.MakeObjOwnedBankSafe(GameImages.OBJ_BANK_SAFE_OPEN_OWNED), safept); //replace it with one to flag it belonging to the player
+                                    AddMessage(new Message(String.Format("You lock {0} away in the safe. No one else can get at it now", it.TheName), m_Session.WorldTime.TurnCounter, Color.Yellow));
+                                }
                             }
+                            break;
                         }
-                        break;
                     }
                 }
-
-                next = position + d;
             }
+
+            // drop it
+            actor.Location.Map.DropItemAt(it, dropPos);
 
             // make sure it is unequipped.
             it.EquippedPart = DollPart.NONE;
         }
+
+        Point DropItemForTransferBetweenActors(Actor actor, Item it)  //@@MP (Release 7-5)
+        {
+            // remove from inventory.
+            actor.Inventory.RemoveAllQuantity(it);
+
+            // add to ground.
+            Map map = actor.Location.Map;
+            Point position = actor.Location.Position;
+            Point dropPos = position;
+            bool searchElsewhere = false;
+
+            // try to drop it on the actor's spot first
+            if (map.HasItemsAt(position))
+                searchElsewhere = true;
+
+            // if current position's ground inventory has items keep searching for an empty one
+            if (searchElsewhere)
+            {
+                // try <maxTries> times to find a walkable position.
+                Point pos = new Point();
+                int maxTries = 2500;
+                for (int i = 0; i < maxTries; i++)
+                {
+                    DiceRoller roller = new DiceRoller();
+                    int left = 0, top = 0; //0,0 coords are the top left square of the map
+                    pos.X = roller.Roll(left, left + map.Width);
+                    pos.Y = roller.Roll(top, top + map.Height);
+
+                    if (!map.HasItemsAt(pos))
+                    {
+                        //we've found a suitable spot
+                        dropPos = pos;
+                        break;
+                    }
+                }
+            }
+
+            // drop it
+            actor.Location.Map.DropItemAt(it, dropPos);
+
+            // make sure it is unequipped.
+            it.EquippedPart = DollPart.NONE;
+
+            return dropPos;
+        }
+
 
         static void DropCloneItem(Actor actor, Item it, Item clone) //@@MP - made static (Release 5-7)
         {
@@ -19687,12 +19835,27 @@ namespace djack.RogueSurvivor.Engine
         {
             if (m_Rules.IsItemLiquorForMolotov(it))
             {
+                actor.Inventory.RemoveAllQuantity(it); //remove the liquor
+                //add as many molotovs as possible to actor inventory
                 int liquorQuantity = it.Quantity;
-                m_Player.Inventory.RemoveAllQuantity(it); //remove the liquor
+                int molotovsAdded = 0;
                 for (int i = 0; i != liquorQuantity; i++)
                 {
                     Item molotov = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
-                    actor.Inventory.AddAll(molotov); //replace with molotovs
+                    int quantityAdded;
+                    actor.Inventory.AddAsMuchAsPossible(molotov, out quantityAdded);
+                    molotovsAdded += quantityAdded;     //@@MP (Release 7-5)
+                }
+                
+                //add any molotovs that couldn't fit in actor's inventory to the ground    //@@MP (Release 7-5)
+                int overflowMolotovs = liquorQuantity - molotovsAdded;
+                if (overflowMolotovs > 0)
+                {
+                    for (int i = 0; i != overflowMolotovs; i++)
+                    {
+                        Item molotov = new ItemGrenade(GameItems.MOLOTOV, GameItems.MOLOTOV_PRIMED);
+                        DropItem(actor, molotov, true);
+                    }
                 }
 
                 if (actor.IsPlayer)
@@ -20947,7 +21110,7 @@ namespace djack.RogueSurvivor.Engine
                     Item it = dropThem[i];
                     int chance = (it is ItemAmmo || it is ItemFood) ? Rules.VICTIM_DROP_AMMOFOOD_ITEM_CHANCE : Rules.VICTIM_DROP_GENERIC_ITEM_CHANCE;
                     if (it.Model.IsUnbreakable || it.IsUnique || m_Rules.RollChance(chance))
-                        DropItem(deadGuy, it);
+                        DropItem(deadGuy, it, true);
                 }
             }
 #endregion
@@ -21990,7 +22153,7 @@ namespace djack.RogueSurvivor.Engine
                     Item it = inv[m_Rules.Roll(0, inv.CountItems)];
                     if (it.IsEquipped)
                         return new ActionUnequipItem(actor, this, it);
-                    else if (it.Model != GameItems.GLOWSTICKS_BOX && it.Model != GameItems.FLARES_KIT && it.Model != GameItems.GLOWSTICKS_BOX) //these prompt to drop one or all
+                    else if (it.Model != GameItems.CANDLES_BOX && it.Model != GameItems.FLARES_KIT && it.Model != GameItems.GLOWSTICKS_BOX) //these prompt to drop one or all
                         return new ActionDropItem(actor, this, it);
                     else
                         return new ActionShout(actor, this, "DAMN IT!!!");
@@ -22050,7 +22213,7 @@ namespace djack.RogueSurvivor.Engine
                     Item it = inv[m_Rules.Roll(0, inv.CountItems)];
                     if (it.IsEquipped)
                         return new ActionUnequipItem(actor, this, it);
-                    else if (it.Model != GameItems.GLOWSTICKS_BOX && it.Model != GameItems.FLARES_KIT && it.Model != GameItems.GLOWSTICKS_BOX) //these prompt to drop one or all
+                    else if (it.Model != GameItems.CANDLES_BOX && it.Model != GameItems.FLARES_KIT && it.Model != GameItems.GLOWSTICKS_BOX) //these prompt to drop one or all
                         return new ActionDropItem(actor, this, it);
                     else
                         return new ActionShout(actor, this, "DAMN IT!!!");
@@ -25314,7 +25477,7 @@ namespace djack.RogueSurvivor.Engine
 
         private void SpawnArmyHelicopterOnMap(Map map)
         {
-            //the heli is a 4x2 tile, so clear its designated space of actors and objects
+            //the heli is a 3x1 tile, so clear its designated space of actors and objects
             Point heli1 = m_Session.ArmyHelicopterRescue_Coordinates;
             Point heli2 = new Point(heli1.X + 1, heli1.Y);
             Point heli3 = new Point(heli1.X + 2, heli1.Y);
@@ -25327,23 +25490,21 @@ namespace djack.RogueSurvivor.Engine
                     map.RemoveMapObjectAt(heliPoint.X, heliPoint.Y);
 
                 //remove items in the way
-                Inventory groundInventory = map.GetItemsAt(heliPoint);
-                if (groundInventory != null)
-                {
-                    foreach (Item it in groundInventory.Items)
-                        if (it != null) map.RemoveItemAt(it, heliPoint);
-                }
+                map.RemoveAllItemsAt(heliPoint);
 
                 //move actors in the way
                 Actor actor = map.GetActorAt(heliPoint);
                 if (actor != null)
                 {
-                    //just get rid of AI actors
+                    //kill AI actors
                     if (!actor.IsPlayer)
-                        map.RemoveActor(actor);
+                    {
+                        KillActor(actor, actor, "crushed by a helicopter"); //@@MP - previously they were just outright removed (Release 7-5)
+                        map.RemoveAllItemsAt(heliPoint); //get rid of their stuff they dropped
+                    }
                     else
                     {
-                        //find a suitable location to move the actor to
+                        //find a suitable location to move the player to
                         Point winningSpot = FindNonHelicopterSpotToMovePlayer(map, heliPoint, heliPoints);
                         //if we found absolutely no good spot, widen the search
                         if (winningSpot == Point.Empty)

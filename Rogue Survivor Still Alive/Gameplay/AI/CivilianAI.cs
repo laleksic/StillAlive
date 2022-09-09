@@ -638,7 +638,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             //// 10 recharge lights //@@MP - added (Release 6-2)
             #region
-            #if false //@@MP - simplified by making AI's batteries infinitely regenerating, making #10 redundant (Release 6-4)
+            #if false //@@MP - simplified by making AI's batteries never lose charge, making #10 redundant (Release 7-5)
             //ItemLight equippedLight = GetEquippedLight();
             //if (equippedLight != null && (equippedLight.Batteries <= ((equippedLight.Model as ItemLightModel).MaxBatteries) / 1.5))
             //ItemLight bestLight = HasItemOfType(typeof(ItemLight));

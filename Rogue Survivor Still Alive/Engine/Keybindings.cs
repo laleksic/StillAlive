@@ -50,7 +50,7 @@ namespace djack.RogueSurvivor.Engine
 
             Set(PlayerCommand.ABANDON_GAME, Keys.A | Keys.Shift);
             Set(PlayerCommand.ADVISOR, Keys.H | Keys.Shift);
-            Set(PlayerCommand.CITY_INFO, Keys.I);
+            Set(PlayerCommand.CITY_INFO, Keys.M);
             Set(PlayerCommand.EAT_CORPSE, Keys.E | Keys.Shift);
             Set(PlayerCommand.ESC, Keys.Escape); //@@MP (Release 7-4)
             Set(PlayerCommand.GIVE_ITEM, Keys.G);
@@ -58,7 +58,7 @@ namespace djack.RogueSurvivor.Engine
             Set(PlayerCommand.ICONS_LEGEND, Keys.F1); //@@MP (Release 6-1)
             Set(PlayerCommand.NEGOTIATE_TRADE, Keys.E);
             Set(PlayerCommand.LOAD_GAME, Keys.L | Keys.Shift);
-            Set(PlayerCommand.INSPECTION_MODE, Keys.M); //@@MP (Release 7-1)
+            Set(PlayerCommand.INSPECTION_MODE, Keys.I); //@@MP (Release 7-1)
             Set(PlayerCommand.MARK_ENEMIES_MODE, Keys.E | Keys.Control);
             Set(PlayerCommand.MESSAGE_LOG, Keys.M | Keys.Shift);
             Set(PlayerCommand.MOVE_E, Keys.NumPad6);

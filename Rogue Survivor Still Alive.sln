@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio Express 15 for Windows Desktop
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogue Survivor Still Alive", "Rogue Survivor Still Alive\Rogue Survivor Still Alive.csproj", "{6E39543E-3E7D-4BCD-B2BB-145744972C51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSConfig", "..\RS Config\RSConfig\RSConfig.csproj", "{81180764-4450-4C83-9838-860CBF169B88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSConfig", "..\RSConfig\RSConfig\RSConfig.csproj", "{81180764-4450-4C83-9838-860CBF169B88}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6E39543E-3E7D-4BCD-B2BB-145744972C51} = {6E39543E-3E7D-4BCD-B2BB-145744972C51}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

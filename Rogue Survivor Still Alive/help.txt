@@ -7,26 +7,32 @@ Disk space: 300mb
 
 TROUBLESHOOTING
 
+You can access the Options menu in-game using Shift+O.
+
 -(crashes) The game crashes on launch
 	If it's a 'file not found' error you may need to install DirectX 9.0c. You can get it here: https://www.microsoft.com/en-au/download/details.aspx?id=8109
 	If you installed DirectX 9.0c and it still crashes, try right-clicking RogueGame.exe and select 'Run as administrator'.
 	Please report the issue on the forums if it still doesn't work.
 
 -(crashes) Crashes during gameplay.
-	The menu is fine but you experience crashes during play. Try disabling the minimap from the Options menu.
+	If the menu is fine but you experience crashes during play, try disabling the minimap from the Options menu.
 
 -(crashes) Random game crashes
 	Run the game configuration utility (RSConfig.exe) and try other the video and audio engines.	
 
+-(lag / freezing)
+	Try disabling all sound outputs (music, sound effects, ambient sounds) from the Options menu.
+	Alternatively, if you have no active sound device in Windows, plug one in.
+
 -(sound) I can't hear any sounds or music
-	Run the game configuration utility (RSConfing.exe) and try other the video and audio engine (SFML/MDX).
 	Check the in-game options menu to ensure you haven't turned off sounds or music, or lowered their volume.
+	If still no sound, exit the game and run the game configuration utility (RSConfing.exe) and try other the video and audio engine (SFML/MDX).
 
 -(sound) A sound is stuck playing at the start of every turn
-	Save your progress (Shift+S) and then exit the game. The looping sound will be gone when you restart the game.
+	Save your progress (Shift+S) and then exit the game. The looping sound will be gone when you re-load/restart the game.
 
 -(sound) Some sounds don't always play when they should (eg gunshots).
-	This is due to technical limitations, but may be addressed in future versions.
+	This is due to technical limitations of the audio API, but may be addressed in future versions.
 
 -(interface) Sometimes the controls stop responding / I'm prompted do something without seeing any pop-up text.
 	This bug was addressed but instances may still exist. Trying pressing Escape, Enter or N (for No) to get around it.

@@ -354,3 +354,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "<Pending>", Scope = "member", Target = "~F:djack.RogueSurvivor.Engine.RogueGame.m_HintAvailableOverlay")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Scope = "member", Target = "djack.RogueSurvivor.Engine.RogueGame.#DescribeItemLong(djack.RogueSurvivor.Data.Item,System.Boolean,System.Int32)")]
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "<Pending>", Scope = "member", Target = "~F:djack.RogueSurvivor.Gameplay.GameActors.m_Models")]

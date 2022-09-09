@@ -1,5 +1,35 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
+STILL ALIVE 2.5.13.8 (aka Release 7-5, 7/9/2022) [Author: MP]
+---------------------
+
+Features:
+-Each successful manual or auto save will create a backup save. Backup saves can also be loaded from the main menu.
+-Only one backup save file will exist (in addition to the primary save file), but should always be known-good, even if the primary is corrupted.
+
+Fixes:
+-NPCs are now relocated if they're blocking the plater from using an exit (stairs, ladders, exits).
+-Fixed item duplication when giving an item to a follower.
+-Glowstick and flares boxes now give the correct items.
+-Allowed players to build fortifications on exits (stairs, ladders).
+-Items with batteries no longer recharge automatically when they run out.
+-Fixed The Sewers Thing invincibility bug.
+-Killing feral dogs no longer counts as murder.
+-Fixed bugs relating to the calculation of fuel ammo.
+-Changed the procedure for spawning the army helicopter, which will hopefully resolve related crashes.
+-Lowered the cap on the max amount of dogs in a district.
+-Inventory overflow when making molotovs now get placed on the ground rather than disappear.
+-Fuel pump explosions are no longer centered on the player. They now explode where they should.
+-Removed free battery recharge exploit.
+-Some map objects in animal shelters were the wrong object type.
+-Fuel cans are removed from inventory when their capacity reaches zero.
+
+Misc:
+-Swapped keybindings for City Info (map) and Info Mode.
+-Update the Help file to include a warning about having no audio output device enabled on the system.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.5.11.7 (aka Release 7-4, 1/2/2020) [Author: MP]
 ---------------------
 

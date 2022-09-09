@@ -4009,13 +4009,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
                 if (!tablePlaced) //just one
                 {
-                    map.PlaceMapObjectAt(MakeObjBarrels(GameImages.OBJ_TABLE), pt);
+                    map.PlaceMapObjectAt(MakeObjTable(GameImages.OBJ_TABLE), pt);
                     tablePlaced = true;
                     return;
                 }
                 else if (!chairPlaced) //just one
                 {
-                    map.PlaceMapObjectAt(MakeObjWorkbench(GameImages.OBJ_CHAIR), pt);
+                    map.PlaceMapObjectAt(MakeObjChair(GameImages.OBJ_CHAIR), pt);
                     chairPlaced = true;
                     return;
                 }
@@ -4023,7 +4023,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 // objects
                 if (m_DiceRoller.RollChance(50))
                 {
-                    map.PlaceMapObjectAt(MakeObjJunk(GameImages.OBJ_SHOP_SHELF), pt);
+                    map.PlaceMapObjectAt(MakeObjShelf(GameImages.OBJ_SHOP_SHELF), pt);
                     // item
                     Item it = null;
                     if (m_DiceRoller.RollChance(50))

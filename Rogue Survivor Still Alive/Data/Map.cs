@@ -813,8 +813,8 @@ namespace djack.RogueSurvivor.Data
                 throw new ArgumentOutOfRangeException("position","position out of map bounds");
             if (!GetTileAt(position.X, position.Y).Model.IsWalkable)
                 throw new InvalidOperationException("cannot place map objects on unwalkable tiles");
-            if (GetExitAt(position) != null) //@@MP (Release 6-5)
-                throw new InvalidOperationException("cannot place map objects on exits");
+            /*if (GetExitAt(position) != null) //@@MP (Release 6-5). allowed players (only) to build forts on exits (Release 7-5)
+                throw new InvalidOperationException("cannot place map objects on exits");*/
 
             if (HasMapObject(mapObj))
             {
@@ -840,6 +840,18 @@ namespace djack.RogueSurvivor.Data
         #endregion
 
         #region Items
+        public bool HasItemsAt(Point position)  //@@MP (Release 7-5)
+        {
+            if (!IsInBounds(position))
+                return false;
+
+            Inventory inv;
+            if (m_GroundItemsByPosition.TryGetValue(position, out inv))
+                return true;
+
+            return false;
+        }
+
         public Inventory GetItemsAt(Point position)
         {
             if (!IsInBounds(position))
@@ -903,9 +915,7 @@ namespace djack.RogueSurvivor.Data
                 {
                     invThere.AddAll(it);
                 }
-            }
-
-            
+            } 
         }
 
         public void DropItemAt(Item it, int x, int y)

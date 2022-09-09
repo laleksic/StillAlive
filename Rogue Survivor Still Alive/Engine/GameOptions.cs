@@ -152,7 +152,7 @@ namespace djack.RogueSurvivor.Engine
         #region Default values
         public const int DEFAULT_DISTRICT_SIZE = 50;
         public const int DEFAULT_MAX_CIVILIANS = 25;
-        public const int DEFAULT_MAX_DOGS = 8; //@@MP (Release 7-3)
+        public const int DEFAULT_MAX_DOGS = 5; //@@MP (Release 7-3)
         public const int DEFAULT_MAX_UNDEADS = 100;
         public const int DEFAULT_SPAWN_SKELETON_CHANCE = 60;
         public const int DEFAULT_SPAWN_ZOMBIE_CHANCE = 30;

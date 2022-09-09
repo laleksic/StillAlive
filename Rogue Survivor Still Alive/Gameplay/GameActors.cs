@@ -927,6 +927,7 @@ namespace djack.RogueSurvivor.Gameplay
                      new DollBody(true, data.SPD),
                      new Abilities()
                      {
+                         IsLivingAnimal = true,  //@@MP (Release 7-5)
                          HasInventory = true,
                          HasToEat = true,
                          HasToSleep = true,
