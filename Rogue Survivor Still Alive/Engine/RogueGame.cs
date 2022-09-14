@@ -5144,7 +5144,7 @@ namespace djack.RogueSurvivor.Engine
                             townGen.DressCivilian(roller, player);
                             townGen.GiveNameToActor(roller, player);
                             // Then zombify.
-                            player = Zombify(null, player, true);
+                            player = Zombify(null, player, player.Location.Map, player.Location.Position, true);
                             break;
                         }
 
@@ -5946,14 +5946,13 @@ namespace djack.RogueSurvivor.Engine
 
                             // zombify this one.
                             tryZombifyCorpses.Add(c);
-                            continue;
                         }
-                        // or rot away?
-                        InflictDamageToCorpse(c, Rules.CorpseDecayPerTurn()); //@@MP - unused parameter (Release 5-7)
-                        if (c.HitPoints <= 0)
+                        else
                         {
-                            rottenCorpses.Add(c);
-                            continue;
+                            // or rot away?
+                            InflictDamageToCorpse(c, Rules.CorpseDecayPerTurn()); //@@MP - unused parameter (Release 5-7)
+                            if (c.HitPoints <= 0)
+                                rottenCorpses.Add(c);
                         }
                     }
                     // zombify!
@@ -5971,7 +5970,7 @@ namespace djack.RogueSurvivor.Engine
                                 //float corpseState = (float)c.HitPoints / (float)c.MaxHitPoints; //@@MP - unused (Release 5-7)
                                 //int zombifiedHP = (int)(corpseState * m_Rules.ActorMaxHPs(c.DeadGuy)); //@@MP - unused (Release 5-7)
                                 zombifiedCorpses.Add(c);
-                                Zombify(null, c.DeadGuy, false);
+                                Zombify(null, c.DeadGuy, map, c.Position, false);
 
                                 if (IsVisibleToPlayer(map, c.Position))
                                     AddMessage(new Message(String.Format("The corpse of {0} rises again!!", c.DeadGuy.Name), map.LocalTime.TurnCounter, Color.Red));
@@ -5980,8 +5979,8 @@ namespace djack.RogueSurvivor.Engine
                                     m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.ZOMBIFIED_GROAN, AudioPriority.PRIORITY_BGM);
                             }
                         }
-                        /*foreach (Corpse c in zombifiedCorpses) //@@MP - commented out because Zombify() handles corpse removal (Release 5-6)
-                            DestroyCorpse(c, map);*/
+                        foreach (Corpse c in zombifiedCorpses)
+                            DestroyCorpse(c, map);
                     }
                     // rot!
                     if (m_Player != null && m_Player.Location.Map == map)
@@ -6110,10 +6109,10 @@ namespace djack.RogueSurvivor.Engine
                             if (a.IsPlayer)
                             {
                                 // remove player corpse!
-                                //map.TryRemoveCorpseOf(a); //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
+                                map.TryRemoveCorpseOf(a);
 
                                 // zombify player!
-                                Zombify(null, a, false);
+                                Zombify(null, a, a.Location.Map, a.Location.Position, false);
 
                                 // show
                                 AddMessage(MakeMessage(a, Conjugate(a, "turn") + " into a Zombie!"));
@@ -6309,10 +6308,10 @@ namespace djack.RogueSurvivor.Engine
                                 continue;
 
                             // remove corpse
-                            //map.TryRemoveCorpseOf(actor); //@@MP - Zombify now handles corpse removal (Release 5-6)
+                            map.TryRemoveCorpseOf(actor);
 
                             // zombify!
-                            Zombify(null, actor, false);
+                            Zombify(null, actor, actor.Location.Map, actor.Location.Position, false);
 
                             // show.
                             if (IsVisibleToPlayer(actor))
@@ -16670,14 +16669,14 @@ namespace djack.RogueSurvivor.Engine
                                 // turn player into zombie now if killed by a zombifier?
                                 if (attacker.Model.Abilities.CanZombifyKilled && !defender.Model.Abilities.IsUndead && !GameActors.IsDog(defender.Model) && m_Rules.RollChance(s_Options.ZombificationChance)) //@@MP - not dogs (Release 7-4)
                                 {
-                                    /*if (defender.IsPlayer)  //@@MP - commented out because Zombify handles corpse removal (Release 6-6)
+                                    if (defender.IsPlayer)
                                     {
                                         // remove player corpse.
                                         defender.Location.Map.TryRemoveCorpseOf(defender);
-                                    }*/
+                                    }
 
                                     // add new zombie.
-                                    Zombify(attacker, defender, false);
+                                    Zombify(attacker, defender, defender.Location.Map, defender.Location.Position, false);
 
                                     // show
                                     if (isDefVisible)
@@ -16691,10 +16690,10 @@ namespace djack.RogueSurvivor.Engine
                                 else if (defender == m_Player && !defender.Model.Abilities.IsUndead && defender.Infection > 0)
                                 {
                                     // remove player corpse.
-                                    //defender.Location.Map.TryRemoveCorpseOf(defender); //@@MP - commented out because Zombify handles corpse removal (Release 5-6)
+                                    defender.Location.Map.TryRemoveCorpseOf(defender);
 
                                     // zombify player!
-                                    Zombify(null, defender, false);
+                                    Zombify(null, defender, defender.Location.Map, defender.Location.Position, false);
 
                                     // show
                                     AddMessage(MakeMessage(defender, Conjugate(defender, "turn") + " into a Zombie!"));
@@ -21719,13 +21718,12 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Zombify an actor during the game or zombify the player at game start.
         /// </summary>
-        Actor Zombify(Actor zombifier, Actor deadVictim, bool isStartingGame)
+        Actor Zombify(Actor zombifier, Actor deadVictim, Map map, Point pos, bool isStartingGame)
         {
-            Actor newZombie = m_TownGenerator.MakeZombified(zombifier, deadVictim, isStartingGame ? 0 : deadVictim.Location.Map.LocalTime.TurnCounter);
+            //@@MP - added map and pos for fixing a bug when zombifying corpses on NextMapTurn() (Release 7-5)
+            //see: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/-/issues/56
 
-            // add to map.
-            if (!isStartingGame)
-                deadVictim.Location.Map.PlaceActorAt(newZombie, deadVictim.Location.Position);
+            Actor newZombie = m_TownGenerator.MakeZombified(zombifier, deadVictim, isStartingGame ? 0 : deadVictim.Location.Map.LocalTime.TurnCounter);
 
             // reset AP - dont act this turn.
             newZombie.ActionPoints = 0;
@@ -21751,28 +21749,14 @@ namespace djack.RogueSurvivor.Engine
                 }
                 m_TownGenerator.RecomputeActorStartingStats(newZombie);
             }
-
             
-            if (!isStartingGame)
+            if (!isStartingGame)  //when actors are spawned at game start, those functions handle their placement
             {
+                // add zombified to map.
+                map.PlaceActorAt(newZombie, pos);
+
                 // cause insanity if the actor sees a zombie rise
                 SeeingCauseInsanity(newZombie.Location, Rules.SANITY_HIT_ZOMBIFY, String.Format("{0} turning into a zombie", deadVictim.Name), newZombie); //@@MP - updated for the change to this method (Release 5-2)
-
-                //remove their corpse //@@MP (Release 5-5), moved within startofgame check (Release 5-6)
-                Map map = deadVictim.Location.Map;
-                map.TryRemoveCorpseOf(deadVictim);
-                //List<Corpse> corpses = map.GetCorpsesAt(deadVictim.Location.Position); //List<Corpse> corpses = map.GetCorpsesAt(newZombie.Location.Position);
-                //if (corpses != null && corpses.Count > 0)
-                //{
-                //    foreach (Corpse corpse in corpses)
-                //    {
-                //        if (corpse.DeadGuy.Name == deadVictim.Name)
-                //        {
-                //            map.RemoveCorpse(corpse);
-                //            break;
-                //        }
-                //    }
-                //}
             }
 
             // done.
@@ -27386,7 +27370,7 @@ namespace djack.RogueSurvivor.Engine
                                 // transformation.
                                 // - zombify.
                                 KillActor(null, prisoner, "transformation", false);  // alpha10 don't drop corpse!
-                                Actor monster = Zombify(null, prisoner, false);
+                                Actor monster = Zombify(null, prisoner, prisoner.Location.Map, prisoner.Location.Position, false);
                                 // - turn into a ZP.
                                 monster.Model = m_GameActors.ZombiePrince;
                                 // - zero AP so player don't get hit asap.

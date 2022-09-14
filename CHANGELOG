@@ -23,6 +23,8 @@ Fixes:
 -Removed free battery recharge exploit.
 -Some map objects in animal shelters were the wrong object type.
 -Fuel cans are removed from inventory when their capacity reaches zero.
+-Fixed crashes related to zombifying corpses.
+-Fixed corpses not being removed if they were dragged to a different map.
 
 Misc:
 -Swapped keybindings for City Info (map) and Info Mode.
