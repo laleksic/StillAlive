@@ -4444,10 +4444,21 @@ namespace djack.RogueSurvivor.Engine
             return minSmell;
         }
 
-        public bool HasLightOnEquipped(Actor actor) //@@MP - made public (Release 6-2)
+        public bool HasLightOnEquipped(Actor actor) //@@MP - made public (Release 6-2), revised for all relevant DollParts (Release 7-5)
         {
-            ItemLight light = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
-            return (light != null && light.Batteries > 0);
+            ItemLight lightLeft = actor.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight;
+            if (lightLeft != null && lightLeft.Batteries > 0)
+                return true;
+
+            ItemLight lightRight = actor.GetEquippedItem(DollPart.RIGHT_HAND) as ItemLight;
+            if (lightRight != null && lightRight.Batteries > 0)
+                return true;
+
+            ItemLight lightEyes = actor.GetEquippedItem(DollPart.EYES) as ItemLight;
+            if (lightEyes != null && lightEyes.Batteries > 0)
+                return true;
+
+            return false;
         }
 
         int GetLightBonusEquipped(Actor actor)

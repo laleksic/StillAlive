@@ -306,6 +306,9 @@ namespace djack.RogueSurvivor.Engine
             Point to = new Point();
             List<Point> wallsToFix = new List<Point>();
 
+            //reset tile tints   //@@MP (Release 7-5)
+            RemoveTintFromAllTilesOnMap(map);
+
             // 1st pass : trace line and remember walls that are not visible for 2nd pass.
             for (int x = xmin; x <= xmax; x++)
             {
@@ -344,7 +347,7 @@ namespace djack.RogueSurvivor.Engine
                         //Logger.WriteLine(Logger.Stage.RUN_MAIN, mapObj.Location.Position.ToString() + ". objMatTransparent= " + mapObj.IsMaterialTransparent + ". tileTransparent= " + tile.Model.IsTransparent.ToString() + ". mapTransparent= " + map.IsTransparent(x,y).ToString());
                         if (!tile.Model.IsWalkable && !tile.Model.IsTransparent) //@@MP - swapped the order of the two conditions, as currently all tile models are transparent (Release 6-5)
                             isFovWall = true;
-                        else if (mapObj != null && !mapObj.IsTransparent) //@@MP - added transparency check (Release 6-5)
+                        else if (mapObj != null && !mapObj.IsMaterialTransparent && !mapObj.IsTransparent) //@@MP - added transparency check (Release 6-5), fixed (Release 7-5)
                             isFovWall = true;
 
                         if (isFovWall)
@@ -414,11 +417,14 @@ namespace djack.RogueSurvivor.Engine
                             AddTintToTile(map, spot, tintImageOnPlayer);
                         *****************************************/
 
-                        //only consider spots that we actually have line of sight to
-                        HashSet<Point> spotSet = new HashSet<Point>();
-                        spotSet.Add(spot);
-                        if (!FOVSub(fromLocation, spot, 10, ref spotSet))
-                            continue; //this spot is not in LOS, skip it
+                        if (spot != actor.Location.Position)
+                        {
+                            //only consider spots that we actually have line of sight to
+                            HashSet<Point> spotSet = new HashSet<Point>();
+                            spotSet.Add(spot);
+                            if (!FOVSub(fromLocation, spot, 10, ref spotSet))
+                                continue; //this spot is not in LOS, skip it
+                        }
 
                         //MapObjects: car fires
                         MapObject mapObj = map.GetMapObjectAt(spot);
@@ -438,7 +444,7 @@ namespace djack.RogueSurvivor.Engine
                             continue; //already lit up this tile and adjacents, no need to chek for other light sources
                         }
                         //tile fires - check these first, as it may also be in adjacent tiles
-                        else if (map.IsAnyTileFireThere(map, spot))
+                        if (map.IsAnyTileFireThere(map, spot))
                         {
                             TileModel tileModel = map.GetTileAt(spot).Model; //@@MP - not on walls because it makes them transparent (Release 6-6)
                             if (!game.GameTiles.IsWallModel(tileModel))
@@ -458,7 +464,7 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                         //Actors: carrying ItemLights eg torches
-                        else if (map.GetActorAt(spot) != null)
+                        if (map.GetActorAt(spot) != null)
                         {
                             Actor act = map.GetActorAt(spot);
                             ItemLight heldLight = (act.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight);
@@ -483,7 +489,7 @@ namespace djack.RogueSurvivor.Engine
                             }
                         }
                         //Tile Decorations eg lit candles //@MP (Release 7-1)
-                        else if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.DECO_LIT_CANDLE))
+                        if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.DECO_LIT_CANDLE))
                         {
                             visibleSet.Add(spot);
 
@@ -499,23 +505,22 @@ namespace djack.RogueSurvivor.Engine
                             continue;
                         }
                         //ground inventory items  //@MP (Release 7-1)
-                        else
+                        Inventory inv = map.GetItemsAt(spot);
+                        if (inv != null)
                         {
-                            bool cont = false;
-                            Inventory inv = map.GetItemsAt(spot);
-                            if (inv != null)
+                            foreach (Item item in inv.Items)
                             {
-                                foreach (Item item in inv.Items)
+                                ItemLight light = item as ItemLight;
+                                if (light != null)
                                 {
-                                    ItemLight light = item as ItemLight;
-                                    if (light != null)
+                                    //we only want to check flares and candles (throwables), as torches should be off if not euqipped by an actor   //@@MP (Release 7-5)
+                                    if (light.Model.IsThrowable)
                                     {
+                                        visibleSet.Add(spot);
                                         //string tintImage = GetTintForItemLight(game, light);
                                         //AddTintToTile(map, spot, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
 
-                                        visibleSet.Add(spot);
-
-                                        foreach (Direction d in Direction.COMPASS_NESW)
+                                        foreach (Direction d in Direction.COMPASS)
                                         {
                                             //lights up the tiles around it
                                             Point next = spot + d;
@@ -525,34 +530,11 @@ namespace djack.RogueSurvivor.Engine
                                                 //AddTintToTile(map, next, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
                                             }
                                         }
-                                        cont = true;
-                                        break;
+                                        //break;
                                     }
                                 }
                             }
-                            if (cont) continue; //in case more types are added after groundinv
                         }
-                    }
-                }
-            }
-
-            //remove tint from tiles where there is no longer that light source //@@MP (Release 7-1)
-            for (int a = 0; a < map.Width; a++)
-            {
-                for (int b = 0; b < map.Height; b++)
-                {
-                    Point spot = new Point(a, b);
-                    if (!visibleSet.Contains(spot))
-                    {
-                        string tintImage;
-                        if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.EFFECT_LIGHT_TINT_FLARE))
-                            tintImage = Gameplay.GameImages.EFFECT_LIGHT_TINT_FLARE;
-                        else if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.EFFECT_LIGHT_TINT_GLOWSTICK))
-                            tintImage = Gameplay.GameImages.EFFECT_LIGHT_TINT_GLOWSTICK;
-                        else
-                            continue;
-
-                        map.GetTileAt(spot).RemoveDecoration(tintImage);
                     }
                 }
             }
@@ -578,6 +560,29 @@ namespace djack.RogueSurvivor.Engine
 
             if (tintImage != null && !map.GetTileAt(pt).HasDecoration(tintImage))
                 map.GetTileAt(pt).AddDecoration(tintImage); //add tint
+        }
+
+        static void RemoveTintFromAllTilesOnMap(Map map)  //@@MP (Release 7-1)(Release 7-5)
+        {
+            //unused, as the effect wasn't quite right in practice. left in as it may be revisited
+
+            //remove tint from tiles where there is no longer that light source
+            for (int a = 0; a < map.Width; a++)
+            {
+                for (int b = 0; b < map.Height; b++)
+                {
+                    Point spot = new Point(a, b);
+                    string tintImage;
+                    if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.EFFECT_LIGHT_TINT_FLARE))
+                        tintImage = Gameplay.GameImages.EFFECT_LIGHT_TINT_FLARE;
+                    else if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.EFFECT_LIGHT_TINT_GLOWSTICK))
+                        tintImage = Gameplay.GameImages.EFFECT_LIGHT_TINT_GLOWSTICK;
+                    else
+                        continue;
+
+                    map.GetTileAt(spot).RemoveDecoration(tintImage);
+                }
+            }
         }
 #endregion
     }

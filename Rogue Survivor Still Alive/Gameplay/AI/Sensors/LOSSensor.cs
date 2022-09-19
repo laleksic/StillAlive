@@ -61,7 +61,7 @@ namespace djack.RogueSurvivor.Gameplay.AI.Sensors
         public override List<Percept> Sense(RogueGame game, Actor actor)
         {
             // compute FOV
-            m_FOV = LOS.ComputeFOVFor(game, actor, actor.Location.Map.LocalTime, game.Session.World.Weather, false);
+            m_FOV = LOS.ComputeFOVFor(game, actor, actor.Location.Map.LocalTime, game.Session.World.Weather, true);   //@@MP - fixed to true (Release 7-5)
             int maxRange = game.Rules.ActorFOV(actor, actor.Location.Map.LocalTime, game.Session.World.Weather);
 
             // compute percepts.

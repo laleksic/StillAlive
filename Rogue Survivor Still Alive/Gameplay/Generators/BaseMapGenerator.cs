@@ -753,7 +753,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 IsMaterialTransparent = true,
                 IsContainer = true, //@@MP (Release 5-3)
-                //JumpLevel = 1, //@@MP (Release 5-3)
+                JumpLevel = 1,
                 GivesWood = true
             };
         }
@@ -788,7 +788,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new MapObject("counter", kitchenCounterImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 4)
             {
                 IsContainer = true,
-                //JumpLevel = 1, //@@MP (Release 5-3)
+                JumpLevel = 1,
                 IsMaterialTransparent = true,
                 GivesWood = true
             };

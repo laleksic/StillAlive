@@ -10315,10 +10315,21 @@ namespace djack.RogueSurvivor.Engine
                 if (description != null)
                 {
                     Point popupPos = new Point(tileScreenPos.X + TILE_SIZE, tileScreenPos.Y);
+                    Actor actorThere = m_Session.CurrentMap.GetActorAt(mouseMap);
+
+                    // prevent overlays being cut off at the bottom of the screen  //@@MP (Release 7-5)
+                    Inventory invThere = m_Session.CurrentMap.GetItemsAt(mouseMap);
+                    bool longInvList = (invThere != null && invThere.CountItems > 5);  //theres lots of items, which will make the popup large
+                    
+                    if (actorThere != null || longInvList)
+                    {
+                        if (tileScreenPos.Y > 400)
+                            popupPos.Y -= (6 * TILE_SIZE);
+                    }
+
                     AddOverlay(new OverlayPopup(description, Color.White, Color.White, POPUP_FILLCOLOR, popupPos));
                     if (s_Options.ShowTargets)
                     {
-                        Actor actorThere = m_Session.CurrentMap.GetActorAt(mouseMap);
                         if (actorThere != null)
                             DrawActorRelations(actorThere);
                     }
@@ -11879,7 +11890,7 @@ namespace djack.RogueSurvivor.Engine
 
             // Get targeting data.
             #region
-            HashSet<Point> fov = LOS.ComputeFOVFor(this, player, m_Session.WorldTime, m_Session.World.Weather, false);
+            HashSet<Point> fov = LOS.ComputeFOVFor(this, player, m_Session.WorldTime, m_Session.World.Weather, true);   //@@MP - fixed to true (Release 7-5)
             //-- Actors
             List<Actor> potentialActorTargets = m_Rules.GetEnemiesInFov(player, fov);
             //-- The ones only relevant for firearms (bows won't cause explosions) //@@MP (Release 7-1)
@@ -13407,7 +13418,7 @@ namespace djack.RogueSurvivor.Engine
             return actionDone;
         }
 
-        static bool CanTag(Map map, Point pos, out string reason) //@@MP - made static (Release 5-7)
+        bool CanTag(Map map, Point pos, out string reason)
         {
             ///////////////////////
             // Can't tag if:
@@ -13438,6 +13449,14 @@ namespace djack.RogueSurvivor.Engine
                 reason = "something there";
                 return false;
             }
+
+            // 4. Too dark?      //@@MP (Release 7-5)
+            if (!IsVisibleToPlayer(map, pos))
+            {
+                reason = "too dark, can't see.";
+                return false;
+            }
+
 
             reason = "";
             return true;
@@ -13602,7 +13621,7 @@ namespace djack.RogueSurvivor.Engine
             foreach (Actor fo in player.Followers)
             {
                 followers[iFo] = fo;
-                fovs[iFo] = LOS.ComputeFOVFor(this, fo, m_Session.WorldTime, m_Session.World.Weather, false);
+                fovs[iFo] = LOS.ComputeFOVFor(this, fo, m_Session.WorldTime, m_Session.World.Weather, true);   //@@MP - fixed to true (Release 7-5)
                 bool inView = fovs[iFo].Contains(player.Location.Position) && m_PlayerFOV.Contains(fo.Location.Position);
                 bool linkedByPhone = AreLinkedByPhone(player, fo);
                 hasLinkWith[iFo] = inView || linkedByPhone;
@@ -13800,7 +13819,7 @@ namespace djack.RogueSurvivor.Engine
             string desc = DescribePlayerFollowerStatus(follower);
 
             // compute follower fov.
-            HashSet<Point> followerFOV = LOS.ComputeFOVFor(this, follower, m_Session.WorldTime, m_Session.World.Weather, false);
+            HashSet<Point> followerFOV = LOS.ComputeFOVFor(this, follower, m_Session.WorldTime, m_Session.World.Weather, true);   //@@MP - fixed to true (Release 7-5)
 
             // loop.
             bool loop = true;
@@ -15423,10 +15442,21 @@ namespace djack.RogueSurvivor.Engine
                 if (description != null)
                 {
                     Point popupPos = new Point(tileScreenPos.X + TILE_SIZE, tileScreenPos.Y);
+                    Actor actorThere = m_Session.CurrentMap.GetActorAt(inspectPT);
+
+                    // prevent overlays being cut off at the bottom of the screen  //@@MP (Release 7-5)
+                    Inventory invThere = m_Session.CurrentMap.GetItemsAt(inspectPT);
+                    bool longInvList = (invThere != null && invThere.CountItems > 5);  //theres lots of items, which will make the popup large
+
+                    if (actorThere != null || longInvList)
+                    {
+                        if (tileScreenPos.Y > 400)
+                            popupPos.Y -= (6 * TILE_SIZE);
+                    }
+
                     AddOverlay(new OverlayPopup(description, Color.White, Color.White, POPUP_FILLCOLOR, popupPos));
                     if (s_Options.ShowTargets)
                     {
-                        Actor actorThere = m_Session.CurrentMap.GetActorAt(inspectPT);
                         if (actorThere != null)
                             DrawActorRelations(actorThere);
                     }
@@ -19088,8 +19118,7 @@ namespace djack.RogueSurvivor.Engine
 
         public void DoDropItem(Actor actor, Item it)
         {
-            // spend APs.
-            SpendActorActionPoints(actor, Rules.BASE_ACTION_COST);
+            bool spendAP = true; //@@MP (Release 7-5)
 
             // which item to drop (original or a clone)
             Item dropIt = it;
@@ -19116,6 +19145,11 @@ namespace djack.RogueSurvivor.Engine
 
                 // make sure source stack is deactivated (activate only activate the stack top item).
                 trap.Deactivate();
+            }
+            else if (it as ItemLight != null) //@@MP (Release 7-5)
+            {
+                if (actor.IsPlayer && it.Model.IsThrowable)
+                    spendAP = false;  ///avoid the double-turn hit
             }
             // special case for fuel cans  //@@MP (Release 7-1)
             else if (actor.IsPlayer && !actor.IsBotPlayer && it is ItemAmmo)
@@ -19256,6 +19290,10 @@ namespace djack.RogueSurvivor.Engine
                 if (IsVisibleToPlayer(actor))
                     AddMessage(MakeMessage(actor, Conjugate(actor, VERB_DROP), dropIt));
             }
+
+            // spend APs.
+            if (spendAP)   //@@MP - tweaked to stop picking up flares/glowsticks from consuming two turns (Release 7-5)
+                SpendActorActionPoints(actor, Rules.BASE_ACTION_COST);
         }
 
         static void DiscardItem(Actor actor, Item it) //@@MP - made static (Release 5-7)
@@ -19395,25 +19433,34 @@ namespace djack.RogueSurvivor.Engine
                 DoUseFoodItem(actor, it as ItemFood);
             else if (it is ItemMedicine)
             {
-                if (absoluteDarkness) //@@MP - too dark to use meds (Release 6-2)
+                bool standingInLight = true;
+                if (absoluteDarkness) //@@MP - it may be too dark to use meds (Release 6-2)
                 {
-                    if (actor.IsPlayer)
-                        AddMessage(new Message("You can't do that, it's too dark here.", m_Session.WorldTime.TurnCounter, Color.Red));
+                    standingInLight = false;
+                    if (it.Model != GameItems.CIGARETTES && !m_Rules.IsItemAlcoholForDrinking(it))  //@@MP - these are the only exceptions (Release 7-5)
+                        standingInLight = IsActorStandingInLight(actor); // check if next to any external light sources      //@@MP (Release 7-5)
                 }
-                else
+
+                if (standingInLight)
                     DoUseMedicineItem(actor, it as ItemMedicine);
+                else if (actor.IsPlayer)
+                    AddMessage(new Message("You can't do that, it's too dark here.", m_Session.WorldTime.TurnCounter, Color.Red));
             }
             else if (it is ItemAmmo)
                 DoUseAmmoItem(actor, it as ItemAmmo);
             else if (it is ItemEntertainment)
             {
-                if (absoluteDarkness) //@@MP - too dark to read (Release 6-2)
+                bool standingInLight = true;
+                if (absoluteDarkness) //@@MP - too dark to read? (Release 6-2), accounted for candles and such(Release 7-5)
                 {
-                    if (actor.IsPlayer)
-                        AddMessage(new Message("You can't do that, it's too dark here.", m_Session.WorldTime.TurnCounter, Color.Red));
+                    standingInLight = false;
+                    standingInLight = IsActorStandingInLight(actor); // check if next to any external light sources      //@@MP (Release 7-5)
                 }
-                else
+                
+                if (standingInLight)
                     DoUseEntertainmentItem(actor, it as ItemEntertainment);
+                else if (actor.IsPlayer)
+                    AddMessage(new Message("You can't do that, it's too dark here.", m_Session.WorldTime.TurnCounter, Color.Red));
             }
             else if (it is ItemTrap)
                 DoUseTrapItem(actor, it as ItemTrap);
@@ -23717,7 +23764,7 @@ namespace djack.RogueSurvivor.Engine
             // 5. Odor suppressor // alpha10
             gy += BOLD_LINE_SPACING;
             if (actor.OdorSuppressorCounter > 0)
-                m_UI.UI_DrawStringBold(Color.LightBlue, string.Format("Odor suppr : {0} -{1}", actor.OdorSuppressorCounter, m_Rules.OdorsDecay(actor.Location.Map, actor.Location.Position, m_Session.World.Weather)), gx, gy);
+                m_UI.UI_DrawStringBold(Color.LightBlue, string.Format("              Odor suppressor : {0} -{1}", actor.OdorSuppressorCounter, m_Rules.OdorsDecay(actor.Location.Map, actor.Location.Position, m_Session.World.Weather)), gx, gy);
         }
 
         public void DrawInventory(Inventory inventory, string title, bool drawSlotsNumbers, int slotsPerLine, int maxSlots, int gx, int gy)
@@ -29205,6 +29252,49 @@ namespace djack.RogueSurvivor.Engine
             else
                 return false;
         }
+
+        bool IsActorStandingInLight(Actor actor) //@@MP (Release 7-5)
+        {
+            // check if next to any non-equipped light sources (assumes that ambient lights from items/decorations are always only 3x3 tiles)
+            Map map = actor.Location.Map;
+            Point spot = actor.Location.Position;  //start by checking the actor's location, then adjacent
+            foreach (Direction d in Direction.COMPASS)
+            {
+                MapObject mapObj = map.GetMapObjectAt(spot);
+                if (mapObj != null && mapObj.IsOnFire)
+                    return true;
+
+                if (map.IsAnyTileFireThere(map, spot))
+                    return true;
+
+                if (map.GetActorAt(spot) != null)
+                {
+                    Actor act = map.GetActorAt(spot);
+                    ItemLight heldLight = (act.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight);
+                    if (heldLight != null && heldLight.Batteries > 0)
+                        return true;
+                }
+
+                if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.DECO_LIT_CANDLE))
+                    return true;
+
+                Inventory inv = map.GetItemsAt(spot);
+                if (inv != null)
+                {
+                    foreach (Item item in inv.Items)
+                    {
+                        ItemLight light = item as ItemLight;
+                        if (light != null)
+                            return true;
+                    }
+                }
+
+                spot = actor.Location.Position + d;
+            }
+
+            return false;
+        }
+
         #endregion
     }
 }

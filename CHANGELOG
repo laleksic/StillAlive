@@ -1,6 +1,6 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
-STILL ALIVE 2.5.13.8 (aka Release 7-5, 7/9/2022) [Author: MP]
+STILL ALIVE 2.5.13.18 (aka Release 7-5, 17/9/2022) [Author: MP]
 ---------------------
 
 Features:
@@ -25,10 +25,22 @@ Fixes:
 -Fuel cans are removed from inventory when their capacity reaches zero.
 -Fixed crashes related to zombifying corpses.
 -Fixed corpses not being removed if they were dragged to a different map.
+-Can no longer spray tag when it's too dark to see.
+-Can now drink beers and smoke cigarettes in the dark.
+-Fixed small/transparent/short objects blocking line of fire
+-Fixed not being able to target enemies when using only ambient light provided by glowsticks, flares and candles.
+-Dropping a flare or glowstick no longer consumes two turns.
+-Standing on the same spot as a flare or glowstick no longer blocks the light emitted from the item.
+-Equipping flares and glowsticks no longer causes the game to crash.
+-Odor suppressor status in player details no longer overlaps with inventory title.
+-Popups when hovering the mouse should no longer be cut off by the bottom of the screen.
 
 Misc:
 -Swapped keybindings for City Info (map) and Info Mode.
 -Update the Help file to include a warning about having no audio output device enabled on the system.
+
+Development:
+-Exception will be thrown if items are placed on a non-walkable tile such as walls (debug mode only)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -111,7 +111,7 @@ namespace djack.RogueSurvivor.Data
             List<Item> stackList = GetItemsStackableWith(it, out stackedQuantity);
 
             // If can stack all, do it and success.
-            if (stackedQuantity == it.Quantity)
+            if (stackedQuantity == it.Quantity && stackList != null)
             {
                 int quantityLeft = it.Quantity;
                 foreach (Item other in stackList)

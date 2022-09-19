@@ -885,6 +885,10 @@ namespace djack.RogueSurvivor.Data
                 throw new ArgumentNullException("it","item");
             if (!IsInBounds(position))
                 throw new ArgumentOutOfRangeException("position","position out of map bounds");
+#if DEBUG
+            if (!GetTileAt(position).Model.IsWalkable)    //@@MP (Release 7-5)
+                throw new ArgumentOutOfRangeException("position", "position not walkable");
+#endif
 
             Inventory invThere = GetItemsAt(position);
             if (invThere == null)
@@ -1305,7 +1309,7 @@ namespace djack.RogueSurvivor.Data
 
             // - Non transparent map object.
             MapObject mapObj = GetMapObjectAt(x, y);
-            if (mapObj != null && !mapObj.IsTransparent)
+            if (mapObj != null && !mapObj.IsTransparent && !mapObj.IsMaterialTransparent)  ///@@MP - fixed transparency (Release 7-5)
                 return true;
 
             // - Any actor.
