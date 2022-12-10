@@ -16900,7 +16900,7 @@ namespace djack.RogueSurvivor.Engine
 
             // spend ammo.
             --weapon.Ammo;
-            if (attacker.IsPlayer && m_Session.Player_CurrentFireMode == FireMode.FLAMING && rm.IsBow) //@@MP - flaming crossbow bolt Release 7-2)
+            if (attacker.IsPlayer && m_Session.Player_CurrentFireMode == FireMode.FLAMING && rm.IsBow) //@@MP - flaming crossbow bolt (Release 7-2)
                 SpendFuelAmmo(attacker);
 
             // show/hear.
@@ -17000,14 +17000,15 @@ namespace djack.RogueSurvivor.Engine
                     // inflict dmg.
                     InflictDamage(defender, dmgRoll, true, rm.IsFlameWeapon, attacker); //@@MP - attacker param (Release 7-4)
 
-                    // if crossbow shot, chance to retrieve a bolt //@@MP - make bows more useful (Release 2)
+                    //@@MP - make bows more useful (Release 2)
+                    // if crossbow shot, chance to dislodge an item from the living target (was chance to retrieve a bolt too prior to R7-5)
                     if (rm.IsBow)
                     {
                         Item crossbowBolt = new ItemAmmo(GameItems.AMMO_BOLTS);
                         crossbowBolt.Quantity = 1;
                         
-                        if ((defender.Model.Abilities.HasInventory) && (defender.Inventory.IsFull)) //undeads have no inventory
-                        { //their invetory is full, chance to force them to 'drop' an item and take on a bolt. this makes bows more powerful
+                        if ((defender.Model.Abilities.HasInventory) && (!defender.Inventory.IsEmpty)) //undeads have no inventory
+                        { //their invetory is not empty, chance to force them to 'drop' an item. this makes bows more powerful
                             int randomDropChance = m_Rules.Roll(0, 10);
                             if (randomDropChance <= 0) //10% chance to force the defender to drop an item
                             {
@@ -17019,27 +17020,29 @@ namespace djack.RogueSurvivor.Engine
                                     if (!defender.Inventory.RandomItem.IsEquipped)
                                     {
                                         DropItem(defender, randomItem, true); //drop an unequipped item from their inventory
-                                        map.DropItemAt(crossbowBolt, defender.Location.Position); //create a bolt on the ground
-                                        DoTakeItem(defender, defender.Location.Position, crossbowBolt); //now put it into the inventory space we just vacated
+                                        //@@MP - the following was disabled now that bows are more useful with the introduction of flaming shots (Release 7-5)
+                                        //map.DropItemAt(crossbowBolt, defender.Location.Position); //create a bolt on the ground
+                                        //DoTakeItem(defender, defender.Location.Position, crossbowBolt); //now put it into the inventory space we just vacated
                                         break;
                                     }
                                 } while (loops <= 10); //give up after 10, RNGesus is not kind to us
                             }
-                            else if (randomDropChance == 1) //10% chance for it to penetrate the defender, or they've pulled it out and dropped it
-                            {
-                                map.DropItemAt(crossbowBolt, defender.Location.Position);
-                            }
+                            //else if (randomDropChance == 1) //10% chance for it to penetrate the defender, or they've pulled it out and dropped it
+                            //{
+                            //    //@@MP - disabled due to the introduction of flaming arrows (Release 7-5)
+                            //    map.DropItemAt(crossbowBolt, defender.Location.Position);
+                            //}
                         }
-                        else
-                        {
-                            int randomRetrieveChance = m_Rules.Roll(0, 10);
-                            if (randomRetrieveChance <= 1) //20%
-                            {
-                                map.DropItemAt(crossbowBolt, defender.Location.Position);  //create a bolt on the ground
-                                if (defender.Model.Abilities.HasInventory) //the bolt will rip right through undead flesh, so only drop bolt on the ground. otherwise:
-                                    DoTakeItem(defender, defender.Location.Position, crossbowBolt); //add the bolt to their inventory, to simulate being stuck in their body
-                            }
-                        }
+                        //else   //@@MP - disabled due to the introduction of flaming arrows (Release 7-5)
+                        //{
+                        //    int randomRetrieveChance = m_Rules.Roll(0, 10);
+                        //    if (randomRetrieveChance <= 1) //20%
+                        //    {
+                        //        map.DropItemAt(crossbowBolt, defender.Location.Position);  //create a bolt on the ground
+                        //        if (defender.Model.Abilities.HasInventory) //the bolt will rip right through undead flesh, so only drop bolt on the ground. otherwise:
+                        //            DoTakeItem(defender, defender.Location.Position, crossbowBolt); //add the bolt to their inventory, to simulate being stuck in their body
+                        //    }
+                        //}
                     }
                     // fires caused by flame weapons  //@@MP (Release 7-2)
                     else if (rm.IsFlameWeapon)
@@ -17111,17 +17114,18 @@ namespace djack.RogueSurvivor.Engine
             }   // end of hit
             else // miss
             {
-                //if crossbow shot, chance to drop bolt on ground //@@MP - make bows more useful (Release 2)
-                if (rm.IsBow)
-                {
-                    int randomDropChance = m_Rules.Roll(0, 10);
-                    if (randomDropChance <= 1) //20% chance to drop bolt on ground, otherwise do nothing
-                    {
-                        Item crossbowBolt = new ItemAmmo(GameItems.AMMO_BOLTS);
-                        crossbowBolt.Quantity = 1;
-                        map.DropItemAt(crossbowBolt, defender.Location.Position);
-                    }
-                }
+                //@@MP - make bows more useful (Release 2), disabled due to the introduction of flaming arrows (Release 7-5)
+                ////if crossbow shot, chance to drop bolt on ground
+                //if (rm.IsBow)
+                //{
+                //    int randomDropChance = m_Rules.Roll(0, 10);
+                //    if (randomDropChance <= 1) //20% chance to drop bolt on ground, otherwise do nothing
+                //    {
+                //        Item crossbowBolt = new ItemAmmo(GameItems.AMMO_BOLTS);
+                //        crossbowBolt.Quantity = 1;
+                //        map.DropItemAt(crossbowBolt, defender.Location.Position);
+                //    }
+                //}
 
                 // show
                 if (isDefVisible)
@@ -17129,7 +17133,7 @@ namespace djack.RogueSurvivor.Engine
                     AddMessage(MakeMessage(attacker, Conjugate(attacker, VERB_MISS), defender));
                     AddOverlay(new OverlayImage(MapToScreen(defender.Location.Position), GameImages.ICON_RANGED_MISS));
                     RedrawPlayScreen();
-                    AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT,false);
+                    AnimDelay(isPlayer ? DELAY_NORMAL : DELAY_SHORT, false);
                 }
             }
             #endregion

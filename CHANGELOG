@@ -1,6 +1,6 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
-STILL ALIVE 2.5.13.18 (aka Release 7-5, 17/9/2022) [Author: MP]
+STILL ALIVE 2.5.14.0 (aka Release 7-5, 10/12/2022) [Author: MP]
 ---------------------
 
 Features:
@@ -38,6 +38,10 @@ Fixes:
 Misc:
 -Swapped keybindings for City Info (map) and Info Mode.
 -Update the Help file to include a warning about having no audio output device enabled on the system.
+-Removed the following crossbow bolts features introduced in R2, now that flaming arrows are possible (and to reduce late-game lag):
+|-chance for fired bolts to rip through an undead, ending up on the ground beside them.
+|-chance for fired bolts to land around the target on a miss.
+|-chance when a living is hit by a bolt that it may stick in them, and they may pull it out and drop it.
 
 Development:
 -Exception will be thrown if items are placed on a non-walkable tile such as walls (debug mode only)

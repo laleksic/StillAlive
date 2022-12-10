@@ -642,23 +642,23 @@ Increase the chances for a nearby law enforcer or gang member to ignore you.
 6. ITEMS
 --------
 
-- Ammo items         : use to reload.
-- Barricade material : reinforce doors and windows; use the barricade action.
-- Body armor         : reduces damage but can hinder your movements; has a chance to break; use to equip.
-- Food               : use to eat.
-- Liquor             : can be made into molotovs.
-- Flashlight         : see farther in the dark; use to equip. Recharge at power generators.
-- Night vision       : see farther in the dark; use to equip. Recharge at power generators.
-- Medicines          : use to heal or re-energize.
-- Melee weapon       : has a chance to break; use to equip.
-- Ranged weapon      : use to equip; fire action to fire.
-  - Firearms         : the best ranged weapons.
-  - Bows             : weaker and shorter range but ammunition is more available.
-- Seeds              : use a shovel to plant seeds on grassy ground and grow vegetables.
-- Explosives         : have a fuse that last x turns before exploding; fire action to throw. 
-- Spray paint        : tag places you want to remember; use the tag action.
-- Spray scent        : neutralize odors, typically to erase your tracks.
-- Tracker            : keep contact with your people; use to equip.
+- Ammo items         : Use to reload.
+- Barricade material : Reinforce doors and windows; use the barricade action.
+- Body armor         : Reduces damage but can hinder your movements; has a chance to break; use to equip.
+- Food               : Use to eat.
+- Liquor             : Can be made into molotovs.
+- Flashlight         : See farther in the dark; use to equip. Recharge at power generators.
+- Night vision       : See farther in the dark; use to equip. Recharge at power generators.
+- Medicines          : Use to heal or re-energize.
+- Melee weapon       : Has a chance to break; use to equip.
+- Ranged weapon      : Use to equip; fire action to fire.
+  - Firearms         : The best ranged weapons.
+  - Bows             : Weaker and shorter range but ammunition is more available; chance for target to drop an inventory item on hit.
+- Seeds              : Use a shovel to plant seeds on grassy ground and grow vegetables.
+- Explosives         : Have a fuse that last x turns before exploding; fire action to throw. 
+- Spray paint        : Tag places you want to remember; use the tag action.
+- Spray scent        : Neutralize odors, typically to erase your tracks.
+- Tracker            : Keep contact with your people; use to equip.
 
 
 
