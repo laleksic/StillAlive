@@ -7,6 +7,7 @@ Features:
 -Each successful manual or auto save will create a backup save. Backup saves can also be loaded from the main menu.
 -Only one backup save file will exist (in addition to the primary save file), but should always be known-good, even if the primary is corrupted.
 -Added option to disable Black Ops raids (reduces difficulty, reduces high score multiplier).
+-Increased the battery life of trackers and police radios to 18 hours.
 
 Fixes:
 -NPCs are now relocated if they're blocking the plater from using an exit (stairs, ladders, exits).
