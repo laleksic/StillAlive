@@ -1,6 +1,6 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
-STILL ALIVE 2.5.15.0 (aka Release 7-5, 10/12/2022) [Author: MP]
+STILL ALIVE 2.5.15.1 (aka Release 7-5, 10/12/2022) [Author: MP]
 ---------------------
 
 Features:
@@ -35,6 +35,7 @@ Fixes:
 -Equipping flares and glowsticks no longer causes the game to crash.
 -Odor suppressor status in player details no longer overlaps with inventory title.
 -Popups when hovering the mouse should no longer be cut off by the bottom of the screen.
+-Trackers, radios and phones can be recharged at power generators.
 
 Misc:
 -Swapped keybindings for City Info (map) and Info Mode.

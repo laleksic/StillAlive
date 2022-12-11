@@ -1844,7 +1844,8 @@ namespace djack.RogueSurvivor.Gameplay
                 traData.HASCLOCK)
             {
                 EquipmentPart = DollPart.LEFT_HAND,
-                FlavorDescription = traData.FLAVOR
+                FlavorDescription = traData.FLAVOR,
+                IsBatteryPowered = true
             };
 
             traData = DATA_TRACKER_ZTRACKER;
@@ -1853,9 +1854,10 @@ namespace djack.RogueSurvivor.Gameplay
                 traData.BATTERIES * WorldTime.TURNS_PER_HOUR,
                 traData.HASCLOCK)
             {
-                    EquipmentPart = DollPart.LEFT_HAND,
-                    FlavorDescription = traData.FLAVOR
-                };
+                EquipmentPart = DollPart.LEFT_HAND,
+                FlavorDescription = traData.FLAVOR,
+                IsBatteryPowered = true
+            };
 
             traData = DATA_TRACKER_BLACKOPS_GPS;
             this[IDs.TRACKER_BLACKOPS] = new ItemTrackerModel(traData.NAME, traData.PLURAL, GameImages.ITEM_BLACKOPS_GPS,
@@ -1864,7 +1866,8 @@ namespace djack.RogueSurvivor.Gameplay
                 traData.HASCLOCK)
             {
                 EquipmentPart = DollPart.LEFT_HAND,
-                FlavorDescription = traData.FLAVOR
+                FlavorDescription = traData.FLAVOR,
+                IsBatteryPowered = true
             };
 
             traData = DATA_TRACKER_POLICE_RADIO;
@@ -1874,7 +1877,8 @@ namespace djack.RogueSurvivor.Gameplay
                 traData.HASCLOCK)
             {
                 EquipmentPart = DollPart.LEFT_HAND,
-                FlavorDescription = traData.FLAVOR
+                FlavorDescription = traData.FLAVOR,
+                IsBatteryPowered = true
             };
             #endregion
 
