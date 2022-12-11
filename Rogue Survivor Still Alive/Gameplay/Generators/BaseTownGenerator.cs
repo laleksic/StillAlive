@@ -7062,7 +7062,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                             MapObjectPlaceInGoodPosition(map, insideRoom,
                                 (pt) => CountAdjWalls(map, pt.X, pt.Y) == 0 && !IsADoorNSEW(map, pt.X, pt.Y),
                                 m_DiceRoller,
-                                (pt) => MakeObjStandingLamp(GameImages.OBJ_PIANO));
+                                (pt) => MakeObjPiano(GameImages.OBJ_PIANO));
                         }
 
                         break;
