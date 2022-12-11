@@ -495,11 +495,11 @@ namespace djack.RogueSurvivor.Engine
             #region
 
             /*  //@@MP -removed option (Release 6-1)
-            // - Don't reveal starting map: +10%
+            // - Don't reveal starting map: +20%
             if (!options.RevealStartingDistrict)
                 rating += 0.10f;*/
 
-            // - Disable NPC starvation: -10%
+            // - Disable NPC starvation: -20%
             if (!options.NPCCanStarveToDeath)
             {
                 if (side == DifficultySide.FOR_SURVIVOR)
@@ -516,6 +516,13 @@ namespace djack.RogueSurvivor.Engine
                     rating -= 0.25f * k;
                 else
                     rating += 0.25f * k;
+            }
+
+            // - Black Ops raids            : -40%
+            //@@MP (Release 7-5)
+            if (!options.BlackOpsRaidsEnabled)
+            {
+                rating -= 0.20f;
             }
 
             // - Supplies                  : -1% -> +1%

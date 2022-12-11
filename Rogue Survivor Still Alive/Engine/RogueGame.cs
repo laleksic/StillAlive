@@ -3615,6 +3615,7 @@ namespace djack.RogueSurvivor.Engine
                 //GameOptions.IDs.DIFFICULTY_RATS_UPGRADE, //@@MP (Release 5-7)
                 // events
                 GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR,
+                GameOptions.IDs.DIFFICULTY_BLACKOPS_RAIDS, //@@MP (Release 7-5)
                 GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR
             };
             #endregion
@@ -3749,6 +3750,7 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.DIFFICULTY_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break; //@@MP (Release 1)
                             case GameOptions.IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
                             case GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR: s_Options.NatGuardFactor -= 10; break;
+                            case GameOptions.IDs.DIFFICULTY_BLACKOPS_RAIDS: s_Options.BlackOpsRaidsEnabled = !s_Options.BlackOpsRaidsEnabled; break; //@@MP (Release 7-5)
                             case GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor -= 10; break;
                             case GameOptions.IDs.DIFFICULTY_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)
                             case GameOptions.IDs.DIFFICULTY_RESOURCES_AVAILABILITY: //@@MP (Release 7-4)
@@ -3786,6 +3788,7 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.DIFFICULTY_SANITY: s_Options.IsSanityEnabled = !s_Options.IsSanityEnabled; break; //@@MP (Release 1)
                             case GameOptions.IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS: s_Options.IsAggressiveHungryCiviliansOn = !s_Options.IsAggressiveHungryCiviliansOn; break;
                             case GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR: s_Options.NatGuardFactor += 10; break;
+                            case GameOptions.IDs.DIFFICULTY_BLACKOPS_RAIDS: s_Options.BlackOpsRaidsEnabled = !s_Options.BlackOpsRaidsEnabled; break; //@@MP (Release 7-5)
                             case GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR: s_Options.SuppliesDropFactor += 10; break;
                             case GameOptions.IDs.DIFFICULTY_VTG_ANTIVIRAL_PILLS: s_Options.VTGAntiviralPills = !s_Options.VTGAntiviralPills; break; //@@MP (Release 5-2)
                             case GameOptions.IDs.DIFFICULTY_RESOURCES_AVAILABILITY: //@@MP (Release 7-4)
@@ -7598,6 +7601,7 @@ namespace djack.RogueSurvivor.Engine
             //if (s_Options.ZombieInvasionDailyIncrease != GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE)
             graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_ZOMBIE_INVASION_DAILY_INCREASE), s_Options.ZombieInvasionDailyIncrease));
             graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR), s_Options.NatGuardFactor)); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_BLACKOPS_RAIDS), s_Options.BlackOpsRaidsEnabled)); //@@MP (Release 7-5)
             graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR), s_Options.SuppliesDropFactor)); //@@MP (Release 5-2)
             /*if (s_Options.IsLivingReincRestricted) //if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS) //@@MP (Release 5-2), disabled IsLivingReincRestricted (Release 5-7)
                 graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED), s_Options.IsLivingReincRestricted ? "on" : "off"));*/
@@ -7920,7 +7924,7 @@ namespace djack.RogueSurvivor.Engine
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_MAX_UNDEADS), s_Options.MaxUndeads));
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_RESCUE_DAY), s_Options.HiddenRescueDay)); //@@MP (Release 7-4)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_RESOURCES_AVAILABILITY), s_Options.ResourcesAvailability)); //@@MP (Release 7-4)
-            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT), s_Options.LivingDamagePercent)); //@@MP (Release 7-4)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT), s_Options.LivingDamagePercent)); //@@MP (Release 7-4)
             //if (s_Options.IsSanityEnabled)
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SANITY), s_Options.IsSanityEnabled ? "on" : "off"));
             //if (!s_Options.NPCCanStarveToDeath)
@@ -7930,7 +7934,7 @@ namespace djack.RogueSurvivor.Engine
             //if (s_Options.ZombificationChance != GameOptions.DEFAULT_ZOMBIFICATION_CHANCE)
             graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_ZOMBIFICATION_CHANCE), s_Options.ZombificationChance));
             graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS), s_Options.IsAggressiveHungryCiviliansOn ? "yes" : "no")); //@@MP (Release 5-2)
-            graveyard.Append(String.Format("- {0} : {1}%", GameOptions.Name(GameOptions.IDs.DIFFICULTY_UNDEAD_DAMAGE_PERCENT), s_Options.UndeadDamagePercent)); //@@MP (Release 7-4)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_UNDEAD_DAMAGE_PERCENT), s_Options.UndeadDamagePercent)); //@@MP (Release 7-4)
             if (Rules.HasEvolution(m_Session.GameMode)) //@@MP (Release 5-2)
             {
                 //if(!s_Options.AllowUndeadsEvolution)
@@ -7949,6 +7953,7 @@ namespace djack.RogueSurvivor.Engine
             //if (s_Options.ZombieInvasionDailyIncrease != GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE)
             graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_ZOMBIE_INVASION_DAILY_INCREASE), s_Options.ZombieInvasionDailyIncrease));
             graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR), s_Options.NatGuardFactor)); //@@MP (Release 5-2)
+            graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_BLACKOPS_RAIDS), s_Options.BlackOpsRaidsEnabled)); //@@MP (Release 7-5)
             graveyard.Append(String.Format("- {0} : {1}%.", GameOptions.Name(GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR), s_Options.SuppliesDropFactor)); //@@MP (Release 5-2)
             /*if (s_Options.IsLivingReincRestricted) //if (s_Options.MaxReincarnations != GameOptions.DEFAULT_MAX_REINCARNATIONS) //@@MP (Release 5-2), disabled IsLivingReincRestricted (Release 5-7)
                 graveyard.Append(String.Format("- {0} : {1}.", GameOptions.Name(GameOptions.IDs.GAME_REINC_LIVING_RESTRICTED), s_Options.IsLivingReincRestricted ? "on" : "off"));*/
@@ -23547,7 +23552,7 @@ namespace djack.RogueSurvivor.Engine
 
                         // ...BlackOps?
 #region
-                        if (tracker.CanTrackBlackOps)
+                        if (tracker.CanTrackBlackOps && s_Options.BlackOpsRaidsEnabled == true) // if option disabled, don't bother.  //@@MP (Release 7-5)
                         {
                             foreach (Actor other in map.Actors)
                             {
@@ -25365,6 +25370,10 @@ namespace djack.RogueSurvivor.Engine
 #region --BlackOps raid
         bool CheckForEvent_BlackOpsRaid(Map map)
         {
+            // if option disabled, don't bother.  //@@MP (Release 7-5)
+            if (s_Options.BlackOpsRaidsEnabled == false)
+                return false;
+
             // date.
             if (map.LocalTime.Day < BLACKOPS_RAID_DAY)
                 return false;

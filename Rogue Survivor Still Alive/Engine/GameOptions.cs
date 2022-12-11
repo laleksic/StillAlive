@@ -54,6 +54,7 @@ namespace djack.RogueSurvivor.Engine
             DIFFICULTY_SANITY, //@@MP (Release 1)
             DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS,
             DIFFICULTY_NATGUARD_FACTOR,
+            DIFFICULTY_BLACKOPS_RAIDS, //@@MP (Release 7-5)
             DIFFICULTY_SUPPLIESDROP_FACTOR,
             DIFFICULTY_UNDEADS_UPGRADE_DAYS,
             //DIFFICULTY_RATS_UPGRADE, //@@MP (Release 5-7)
@@ -166,6 +167,7 @@ namespace djack.RogueSurvivor.Engine
         public const bool DEFAULT_STARVED_ZOMBIFICATION = false; //@@MP - changed from % chance to bool (Release 7-3)
         public const int DEFAULT_MAX_REINCARNATIONS = 7; //@@MP - upped after I forgot when removing the max reinc option (Release 6-6)
         public const int DEFAULT_NATGUARD_FACTOR = 100;
+        public const bool DEFAULT_BLACKOPS_RAIDS = true; //@@MP (Release 7-5)
         public const int DEFAULT_SUPPLIESDROP_FACTOR = 100;
         public const ZupDays DEFAULT_ZOMBIFIEDS_UPGRADE_DAYS = ZupDays.THREE;
         public const Resources DEFAULT_RESOURCES_AVAILABILITY = Resources.MED; //@@MP (Release 7-4)
@@ -215,6 +217,7 @@ namespace djack.RogueSurvivor.Engine
         bool m_DeathScreenshot;
         bool m_AggressiveHungryCivilians;
         int m_NatGuardFactor;
+        bool m_BlackOpsRaids; //@@MP (Release 7-5)
         int m_SuppliesDropFactor;
         bool m_ShowTargets;
         bool m_ShowPlayerTargets;
@@ -585,6 +588,12 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
+        public bool BlackOpsRaidsEnabled  //@@MP (Release 7-5)
+        {
+            get { return m_BlackOpsRaids; }
+            set { m_BlackOpsRaids = value; }
+        }
+
         public int SuppliesDropFactor
         {
             get { return m_SuppliesDropFactor; }
@@ -754,6 +763,7 @@ namespace djack.RogueSurvivor.Engine
                 m_Sanity = true;
                 m_AggressiveHungryCivilians = true;
                 m_NatGuardFactor = DEFAULT_NATGUARD_FACTOR;
+                m_BlackOpsRaids = DEFAULT_BLACKOPS_RAIDS;  //@@MP (Release 7-5)
                 m_SuppliesDropFactor = DEFAULT_SUPPLIESDROP_FACTOR;
                 m_ZupDays = DEFAULT_ZOMBIFIEDS_UPGRADE_DAYS;
                 //m_RatsUpgrade = false; //@@MP (Release 5-7)
@@ -783,6 +793,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.GAME_MAX_DOGS:                               return "   (Map) Maximum dogs Cap";
                 case IDs.DIFFICULTY_MAX_UNDEADS:                      return "   (Map) Maximum undeads cap";
                 case IDs.DIFFICULTY_NATGUARD_FACTOR:                  return " (Event) National Guard unit arrival";
+                case IDs.DIFFICULTY_BLACKOPS_RAIDS:                   return " (Event) Black Ops unit arrival";  //@@MP (Release 7-5)
                 case IDs.DIFFICULTY_NPC_CAN_STARVE_TO_DEATH:          return "(Living) NPCs can starve to death";
                 case IDs.GAME_PERMADEATH:                             return " (Death) Permadeath";
                 //case IDs.DIFFICULTY_RATS_UPGRADE:                     return "(Undead) Rats Skill Upgrade (non-VTG)"; //@@MP - added " (non-VTG)" (Release 5-2), removed (Release 5-6)
@@ -854,6 +865,8 @@ namespace djack.RogueSurvivor.Engine
                     return "Maximum number of undeads on a map. More undeads makes the game more challenging for livings, but slows the game down.";
                 case IDs.DIFFICULTY_NATGUARD_FACTOR:
                     return "Affects how likely the National Guard event happens.\n100 is default, 0 to disable.";
+                case IDs.DIFFICULTY_BLACKOPS_RAIDS: //@@MP (Release 7-5)
+                    return "Enable or disable late-game raids by black ops forces.\nEnabled is default, disabled lowers your score multiplier.";
                 case IDs.DIFFICULTY_NPC_CAN_STARVE_TO_DEATH:
                     return "When NPCs are starving they can die. When disabled, AI characters will never die from hunger.";
                 case IDs.GAME_PERMADEATH:
@@ -1106,6 +1119,8 @@ namespace djack.RogueSurvivor.Engine
                     return String.Format("{0:D3}*  (default {1:D3})", MaxUndeads, GameOptions.DEFAULT_MAX_UNDEADS);
                 case IDs.DIFFICULTY_NATGUARD_FACTOR:
                     return String.Format("{0:D3}%  (default {1:D3}%)", NatGuardFactor, GameOptions.DEFAULT_NATGUARD_FACTOR);
+                case IDs.DIFFICULTY_BLACKOPS_RAIDS:
+                    return BlackOpsRaidsEnabled ? "YES   (default YES)" : "NO    (default YES)";
                 case IDs.DIFFICULTY_NPC_CAN_STARVE_TO_DEATH:
                     return NPCCanStarveToDeath ? "YES   (default YES)" : "NO    (default YES)";
                 case IDs.GAME_PERMADEATH:
