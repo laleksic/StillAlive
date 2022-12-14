@@ -19415,7 +19415,6 @@ namespace djack.RogueSurvivor.Engine
             return dropPos;
         }
 
-
         static void DropCloneItem(Actor actor, Item it, Item clone) //@@MP - made static (Release 5-7)
         {
             // remove one quantity from inventory.
@@ -19860,7 +19859,7 @@ namespace djack.RogueSurvivor.Engine
         {
             // spend APs.
             SpendActorActionPoints(actor, Rules.BASE_ACTION_COST);
-
+            
             // recharge.
             if (it is ItemLight)
             {
@@ -20922,6 +20921,14 @@ namespace djack.RogueSurvivor.Engine
                 m_SFXManager.Play(GameSounds.SPRAY_TAG, AudioPriority.PRIORITY_EVENT);
             if (IsVisibleToPlayer(actor))
                 AddMessage(MakeMessage(actor, String.Format("{0} a tag.", Conjugate(actor, VERB_SPRAY))));
+
+            // discard empty spray   ///@@MP (Release 7-5)
+            if (spray.PaintQuantity <= 0)
+            {
+                DiscardItem(actor, spray);
+                if (actor.IsPlayer)
+                    AddMessage(new Message("Spray can is now empty and has been discarded.", map.LocalTime.TurnCounter));
+            }
         }
 
         public void DoSprayOdorSuppressor(Actor actor, ItemSprayScent suppressor, Actor sprayOn) // alpha10 new way to use spray scent
@@ -20940,6 +20947,14 @@ namespace djack.RogueSurvivor.Engine
                 m_SFXManager.Play(GameSounds.SPRAY_SCENT, AudioPriority.PRIORITY_EVENT);
             if (IsVisibleToPlayer(actor))
                 AddMessage(MakeMessage(actor, string.Format("{0} {1}.", Conjugate(actor, VERB_SPRAY), (sprayOn == actor ? HimselfOrHerself(actor) : sprayOn.Name))));
+
+            // discard empty spray   ///@@MP (Release 7-5)
+            if (suppressor.SprayQuantity <= 0)
+            {
+                DiscardItem(actor, suppressor);
+                if (actor.IsPlayer)
+                    AddMessage(new Message("Spray bottle is now empty and has been discarded.", actor.Location.Map.LocalTime.TurnCounter));
+            }
         }
 
         public void DoSwitchPowerGenerator(Actor actor, PowerGenerator powGen)
