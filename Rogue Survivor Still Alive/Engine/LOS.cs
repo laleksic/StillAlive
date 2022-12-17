@@ -386,7 +386,7 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // Other light sources, like fires or actors with torches, outside the regular player FoV //@@MP (Release 6-5)
-            if (checkForOtherLitTiles && actor.IsPlayer) //@@MP - filtered to player only (Release 7-1)
+            if (checkForOtherLitTiles && actor.IsPlayer) //@@MP - filtered to player only, otherwise the game runs like a slideshow (Release 7-1)
             {
                 /*****************************************
                  * * DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION

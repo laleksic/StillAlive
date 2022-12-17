@@ -4071,17 +4071,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     (pt) =>
                     {
                         if (pt.X == cellRoom.Left || pt.X == cellRoom.Right - 1 || pt.Y == cellRoom.Top || pt.Y == cellRoom.Bottom - 1)
-                            return MakeObjFence(GameImages.OBJ_CHAINWIRE_FENCE);
+                            return MakeObjKennelFence(GameImages.OBJ_CHAINWIRE_FENCE);
                         else
                             return null;
                     });
 
                 // deco and dog.
-                Point decoPos = new Point(x + 1, yCells + 1);
-                map.GetTileAt(decoPos).AddDecoration(GameImages.DECO_KENNEL);
+                Point kennelPos = new Point(x + 1, yCells + 1);
+                map.GetTileAt(kennelPos).AddDecoration(GameImages.DECO_KENNEL);
                 Actor dog = CreateNewFeralDog(0);
-                dog.Inventory.AddAll(MakeItemGroceries()); // give him some food.
-                map.PlaceActorAt(dog, new Point(x + 1, yCells + 1));
+                map.DropItemAt(MakeItemCannedFood(), kennelPos);  // give him some food.
+                map.PlaceActorAt(dog, kennelPos);
 
                 // gate.
                 Point gatePos = new Point(x + 1, yCells);

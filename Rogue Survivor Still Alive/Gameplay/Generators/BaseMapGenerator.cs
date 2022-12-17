@@ -377,6 +377,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
+        protected static MapObject MakeObjKennelFence(string fenceImageID) //@@MP (Release 7-5)
+        {
+            return new MapObject("chain wire fence", fenceImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 10)
+            {
+                IsMaterialTransparent = true,
+                IsMetal = true
+            };
+        }
+
         protected static MapObject MakeObjWoodenFence(string fenceImageID) //@@MP (Release 6-1)
         {
             return new MapObject("wooden fence", fenceImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)

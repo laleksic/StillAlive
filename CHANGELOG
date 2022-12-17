@@ -46,6 +46,7 @@ Misc:
 |-chance for fired bolts to rip through an undead, ending up on the ground beside them.
 |-chance for fired bolts to land around the target on a miss.
 |-chance when a living is hit by a bolt that it may stick in them, and they may pull it out and drop it.
+-Kennel fences in the animal pound lower level are no longer climbable.
 
 Development:
 -Exception will be thrown if items are placed on a non-walkable tile such as walls (debug mode only)
