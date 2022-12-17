@@ -10258,7 +10258,7 @@ namespace djack.RogueSurvivor.Engine
                 if (desiredAction.IsLegal())
                 {
                     //@@MP - added random SFX for undead
-                    if ((aiActor.Model.Abilities.IsUndead || GameActors.IsDog(aiActor.Model)) && m_Rules.RollChance(20))
+                    if ((aiActor.Model.Abilities.IsUndead || GameActors.IsDog(aiActor.Model)) && m_Rules.RollChance(50)) //@@MP - reduced the chance for dogs to bark (Release 7-5)
                         PlayNonHumanVocalAudio(aiActor);
 
                     desiredAction.Perform();
