@@ -83,7 +83,8 @@ namespace djack.RogueSurvivor.Engine
 
         #region FOV
         //@@MP - modified these numbers to offset the new BaseView FOV (Release 6-2)
-        const int MINIMAL_FOV = 0;//2; //@@MP - ensures basements and other places without natural light are truly *dark* (Release 6-2)
+        const int MINIMAL_FOV_PLAYER = 0;//2; //@@MP - ensures basements and other places without natural light are truly *dark* (Release 6-2)
+        const int MINIMAL_FOV_LIVINGACTORS = 1; //@@MP - NPC AI goes haywire if they can't see at all. it's just not possible to have total darkness for them (Release 7-5)
         #region -Day/Night and Weather effects
         public const int FOV_PENALTY_SUNSET = 4;
         public const int FOV_PENALTY_EVENING = 6;
@@ -4423,7 +4424,11 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // done.
-            FOV = Math.Max(MINIMAL_FOV, FOV);
+            if (actor.IsPlayer)
+                FOV = Math.Max(MINIMAL_FOV_PLAYER, FOV);
+            else
+                FOV = Math.Max(MINIMAL_FOV_LIVINGACTORS, FOV);
+
             return FOV;
         }
 
@@ -4641,8 +4646,10 @@ namespace djack.RogueSurvivor.Engine
         {
             if (actor.Model.Abilities.IsUndead)
                 return actor.Sheet.BaseViewRange;
-            else
-                return MINIMAL_FOV;
+            else if (actor.IsPlayer)
+                return MINIMAL_FOV_PLAYER;
+            else //NPC or animal
+                return MINIMAL_FOV_LIVINGACTORS; //@@MP (Release 7-5)
         }
 
         public int OdorsDecay(Map map, Point pos, Weather weather) //alpha 10
