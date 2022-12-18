@@ -1,6 +1,6 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
-STILL ALIVE 2.5.15.2 (aka Release 7-5, 17/12/2022) [Author: MP]
+STILL ALIVE 2.5.15.3 (aka Release 7-5, 18/12/2022) [Author: MP]
 ---------------------
 
 Features:
@@ -38,6 +38,7 @@ Fixes:
 -Popups when hovering the mouse should no longer be cut off by the bottom of the screen.
 -Trackers, radios and phones can be recharged at power generators.
 -Worked around multiple AI issues resulting from lack of FOV in darkness by hard-coding non-undead NPCs to have a floor of 1 FOV.
+-NPCs no longer get stuck in an endless loop of opening and closing the same cage door in animal shelters.
 
 Misc:
 -Swapped keybindings for City Info (map) and Info Mode.

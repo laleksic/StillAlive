@@ -3881,6 +3881,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
             DoorWindow prevDoor = previousLocation.Map.GetMapObjectAt(previousLocation.Position) as DoorWindow;
             if (prevDoor == null)
                 return null;
+
+            //@@MP (Release 7-5)
+            //lazy workaround for a bug that I could never trace whereby NPCs would sometimes become obsessed with endlessly opening and closing doors
+            //it was most likely to happen in the kennels level of an animal pound. bug tracker: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/-/issues/68
+            if (m_Actor.Location.Map.Name == "Animal shelter")
+                return null;
+
             if (game.Rules.IsClosableFor(m_Actor, prevDoor))
             {
 #if DEBUGAILOOPING
