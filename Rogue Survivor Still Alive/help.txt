@@ -9,50 +9,50 @@ TROUBLESHOOTING
 
 You can access the Options menu in-game using Shift+O.
 
--(crashes) The game crashes on launch
+-(crashes) The game crashes on launch:
 	If it's a 'file not found' error you may need to install DirectX 9.0c. You can get it here: https://www.microsoft.com/en-au/download/details.aspx?id=8109
 	If you installed DirectX 9.0c and it still crashes, try right-clicking RogueGame.exe and select 'Run as administrator'.
 	Please report the issue on the forums if it still doesn't work.
 
--(crashes) Crashes during gameplay.
+-(crashes) Crashes during gameplay:
 	If the menu is fine but you experience crashes during play, try disabling the minimap from the Options menu.
 
--(crashes) Random game crashes
-	Run the game configuration utility (RSConfig.exe) and try other the video and audio engines.	
+-(crashes) Random game crashes / alt-tab crashes:
+	Run the game configuration utility (RSConfig.exe) and try other the video and audio engines (ie. GDI, MDX, SMFL).	
 
--(lag / freezing)
+-(lag / freezing):
 	Try disabling all sound outputs (music, sound effects, ambient sounds) from the Options menu.
 	Alternatively, if you have no active sound device in Windows, plug one in.
 
--(sound) I can't hear any sounds or music
+-(sound) I can't hear any sounds or music:
 	Check the in-game options menu to ensure you haven't turned off sounds or music, or lowered their volume.
 	If still no sound, exit the game and run the game configuration utility (RSConfing.exe) and try other the video and audio engine (SFML/MDX).
 
--(sound) A sound is stuck playing at the start of every turn
+-(sound) A sound is stuck playing at the start of every turn:
 	Save your progress (Shift+S) and then exit the game. The looping sound will be gone when you re-load/restart the game.
 
--(sound) Some sounds don't always play when they should (eg gunshots).
+-(sound) Some sounds don't always play when they should (eg gunshots):
 	This is due to technical limitations of the audio API, but may be addressed in future versions.
 
--(interface) Sometimes the controls stop responding / I'm prompted do something without seeing any pop-up text.
+-(interface) Sometimes the controls stop responding / I'm prompted do something without seeing any pop-up text:
 	This bug was addressed but instances may still exist. Trying pressing Escape, Enter or N (for No) to get around it.
 
--(interface) The game text is blurry
+-(interface) The game text is blurry:
 	If you have an Intel onboard GPU (ie no dedicated graphics card), open the Intel control panel and set "3Dtexture" to "Quality".
 	Dedicated graphics cards provide similar configuration options that are forced at the driver level, and therefore apply to all games. Check the Control Panel for your flavour of grpahics card.
 
--(ffdshow) ffdshow spams instances in the task bar
+-(ffdshow) ffdshow spams instances in the task bar:
 	Open ffdshow configuration, go to DirectShow and set "Multiple ffdshow instances" to "none".
 
--(Linux/MacOS) Issues running that game in non-Windows
+-(Linux/MacOS) Issues running that game in non-Windows:
 	Run the configuration utility (RSConfig.exe) and try the game in GDI+ video mode.
 
--(modding) I've changed one of the game's image, sound or Excel files but it was overwritten.
+-(modding) I've changed one of the game's image, sound or Excel files but it was overwritten:
 	The game will deploy it's own content files whenever their last modified date is more recent than that of any file using the same name.
 	To ensure your files are used instead, change their last modified date to be today. NirSoft's BulkFileChanger or Romain Petges' Attribute Changer 9 make this easy.
 
 
-FAQ
+*** FAQ ***
 
 -How do I change to windowed mode?
 Run the game configuration utility (RSConfing.exe) from the game's folder.
@@ -67,7 +67,12 @@ SMFL is more adept at handling multiple audio played simultaneously. With MDX yo
 
 
 MORE INFO
-	Forums : http://roguesurvivor.proboards.com/
+	Rogue Survivor: Still Alive
+	Forums : http://roguesurvivor.proboards.com/thread/377/rs-alive
 	GitLab : https://gitlab.com/RogueSurvivor-StillAlive/StillAlive
+
+	vanilla Rogue Survivor
+	Website : https://roguesurvivor.blogspot.com
+	Forums : http://roguesurvivor.proboards.com/
 	Wiki : http://roguesurvivor.wikia.com/wiki/Main_Page
 	Discord : https://discord.gg/PPGHpDr

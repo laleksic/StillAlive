@@ -30,7 +30,8 @@ namespace djack.RogueSurvivor.Data
             IS_RUNNING = (1 << 4),
             IS_SLEEPING = (1 << 5),
             IS_ONFIRE = (1 << 6), //@@MP (Release 5-7)
-            IS_INWATER = (1 << 7) //@@MP (Release 6-1)
+            IS_INWATER = (1 << 7), //@@MP (Release 6-1)
+            IS_FOODPOISONED = (1 << 8) //@@MP (Release 7-6)
         }
         #endregion
 
@@ -94,6 +95,7 @@ namespace djack.RogueSurvivor.Data
         bool m_IsLooping; //@@MP (Release 6-6)
         string m_ActivityInProgress; //@@MP (Release 6-6)
         int m_RepetitiveNoAPCostActionsThisTurnCount; //@@MP (Release 7-1)
+        string m_CauseOfDeath; //@@MP (Release 7-6)
         #endregion
         #endregion
 
@@ -302,6 +304,12 @@ namespace djack.RogueSurvivor.Data
         public bool IsDrunk  //@@MP (Release 7-1)
         {
             get { return (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.6); }
+        }
+
+        public bool IsFoodPoisoned  //@@MP (Release 7-6)
+        {
+            get { return GetFlag(Flags.IS_FOODPOISONED); }
+            set { SetFlag(Flags.IS_FOODPOISONED, value); }
         }
 
         public Inventory Inventory
@@ -587,6 +595,12 @@ namespace djack.RogueSurvivor.Data
             set { m_RepetitiveNoAPCostActionsThisTurnCount = value; }
         }
 
+        public string CauseOfDeath //@@MP (Release 7-6)
+        {
+            get { return m_CauseOfDeath; }
+            set { m_CauseOfDeath = value; }
+        }
+
         // alpha 10 from here down
         public bool IsInvincible
         {
@@ -620,6 +634,7 @@ namespace djack.RogueSurvivor.Data
             this.IsPluralName = isPluralName;
             this.IsOnFire = false; //@@MP (Release 5-7)
             this.IsInWater = false; //@@MP (Release 6-1)
+            this.IsFoodPoisoned = false; //@@MP (Release 7-6)
             m_Location = new Location();
             m_SpawnTime = spawnTime;
             this.IsUnique = false;
@@ -1096,20 +1111,18 @@ namespace djack.RogueSurvivor.Data
             return GetEquippedItem(DollPart.RIGHT_HAND);
         }
 
-        // alpha10
         /// <summary>
         /// Assumed to be equiped at Right hand.
         /// </summary>
-        public ItemMeleeWeapon GetEquippedMeleeWeapon()
+        public ItemMeleeWeapon GetEquippedMeleeWeapon()  // alpha10
         {
             return GetEquippedItem(DollPart.RIGHT_HAND) as ItemMeleeWeapon;
         }
 
-        // alpha10
         /// <summary>
         /// Assumed to be equiped at Right hand.
         /// </summary>
-        public ItemRangedWeapon GetEquippedRangedWeapon()
+        public ItemRangedWeapon GetEquippedRangedWeapon()   // alpha10
         {
             return GetEquippedItem(DollPart.RIGHT_HAND) as ItemRangedWeapon;
         }
@@ -1121,15 +1134,23 @@ namespace djack.RogueSurvivor.Data
         {
             return GetEquippedItem(DollPart.LEFT_ARM);
         }
+
+        /// <summary>
+        /// Assumed to be equiped on the torso.
+        /// </summary>
+        public ItemBodyArmor GetEquippedArmor()  //@@MP (Release 7-6)
+        {
+            return GetEquippedItem(DollPart.TORSO) as ItemBodyArmor;
+        }
         #endregion
 
         #region BloodAlcohol helpers  //@@MP (Release 7-1)
         public string GetIntoxicationDescription()
         {
             if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL)
-                return "blacked out!"; //100%
+                return "uncon"; //100%
             else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.8)
-                return "hammered"; //80-99%
+                return "wasted"; //80-99%
             else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.6)
                 return "drunk"; //60-79%
             else if (m_BloodAlcohol >= Rules.BLACKOUT_DRUNK_LEVEL * 0.4)

@@ -120,7 +120,7 @@ namespace djack.RogueSurvivor.Engine
         const float FIRING_WHEN_HAMMERED = 0.66f; // -33%
         const float FIRING_WHEN_DRUNK = 0.75f; // -25%
         const float FIRING_WHEN_TIPSY = 0.95f; // -5%
-        const double FIRING_WITH_SHIELD = 0.60; //-40% accuracy   //@@MP (Release 7-2)
+        const double FIRING_WITH_SHIELD = 0.80; //-20% accuracy   //@@MP (Release 7-2), reduced from -40% for balance (Release 7-6)
         #endregion
 
         #region Armors
@@ -163,9 +163,13 @@ namespace djack.RogueSurvivor.Engine
 
         public const int ALCOHOL_STANDARD_UNIT = WorldTime.TURNS_PER_HOUR; //@@MP (Release 7-1)
         public const int BLACKOUT_DRUNK_LEVEL = 5 * WorldTime.TURNS_PER_HOUR; //@@MP (Release 7-1)
-
-        public const int VOMIT_WHILE_SIPHONING_CHANCE = 25; //@@MP (Release 7-1)
+        public const int VOMIT_WHILE_SIPHONING_CHANCE = 10; //@@MP (Release 7-1)
         public const int MAXIMUM_INCAPACITATED_TURNS = 5; //@@MP (Release 7-2)
+        public const int DRUNK_AFFECTED_ACTION_CHANCE = 5; //@@MP (Release 7-6)
+
+        public const int BASE_FOOD_POISONING_INFECTION_CHANCE = 20; //@@MP - percent chance to become poisoned before rotting is factored in (Release 7-6)
+        public const int BASE_FOOD_POISONING_RECOVERY_CHANCE = 1; //@@MP - percent chance to no longer be poisoned (Release 7-6)
+        public const int FOOD_POISONING_AFFECTED_ACTION_CHANCE = 5; //@@MP - percent chance to vomit (Release 7-6)
 
         /// <summary>
         /// When starving, chance of dying from starvation each turn.
@@ -270,9 +274,10 @@ namespace djack.RogueSurvivor.Engine
         public const int TRUST_GOOD_GIFT_INCREASE = 3 * WorldTime.TURNS_PER_HOUR;       // 3 trust-hours gained.
         public const int TRUST_MISC_GIFT_INCREASE = TRUST_BASE_INCREASE + TRUST_GOOD_GIFT_INCREASE / 10;
         public const int TRUST_GIVE_ITEM_ORDER_PENALTY = -WorldTime.TURNS_PER_HOUR;     // 1 trust-hours lost.
-        public const int TRUST_FRIENDLY_FIRE_PENALTY = 6 * -WorldTime.TURNS_PER_HOUR;   //@@MP - 6 trust-hours lost (Release 5-7)
+        public const int TRUST_FRIENDLY_FIRE_PENALTY = 6 * -WorldTime.TURNS_PER_HOUR;   // 6 trust-hours lost.      //@@MP (Release 5-7)
         public const int TRUST_LEADER_KILL_ENEMY = 3 * WorldTime.TURNS_PER_HOUR;        // 3 trust-hours gain.
         public const int TRUST_REVIVE_BONUS = 12 * WorldTime.TURNS_PER_HOUR;
+        public const int TRUST_DESPISED = 7 * -WorldTime.TURNS_PER_DAY;                 // lost a week of trust     //@@MP - added (Release 7-6)
         #endregion
 
         #region Murder
@@ -311,7 +316,7 @@ namespace djack.RogueSurvivor.Engine
 
         #region Refugees
         public const int GIVE_RARE_ITEM_DAY = 7;
-        public const int GIVE_RARE_ITEM_CHANCE = 5;
+        public const int GIVE_RARE_ITEM_CHANCE = 10; //@@MP - was 5 (Release 7-6)
         #endregion
 
         #region Traps // alpha10
@@ -349,6 +354,7 @@ namespace djack.RogueSurvivor.Engine
         public static int SKILL_FIREARMS_DMG_BONUS = 2;
 
         public static int SKILL_HARDY_HEAL_CHANCE_BONUS = 1;
+        public static int SKILL_HARDY_FOOD_POISONING_RECOVERY_CHANCE_BONUS = 1; //@@MP (Release 7-6)
 
         public static int SKILL_HAULER_INV_BONUS = 1;
 
@@ -359,7 +365,7 @@ namespace djack.RogueSurvivor.Engine
         public static float SKILL_LIGHT_EATER_FOOD_BONUS = 0.15f;
         public static float SKILL_LIGHT_EATER_MAXFOOD_BONUS = 0.10f;
 
-        public static int SKILL_LIGHT_FEET_TRAP_BONUS = 15; // alpha 10, was 5
+        public static int SKILL_LIGHT_FEET_TRAP_BONUS = 20; // alpha 10 made it 15, it was 5.    //@@MP - buffed it to 20 so that having all 5 levels = 100% immunity. it's the least useful skill (Release 7-6)
 
         public static int SKILL_LIGHT_SLEEPER_WAKEUP_CHANCE_BONUS = 20; // alpha 10, was 10
 
@@ -386,7 +392,8 @@ namespace djack.RogueSurvivor.Engine
 
         public static int SKILL_TOUGH_HP_BONUS = 6;
 
-        public static int SKILL_UNSUSPICIOUS_BONUS = 25;  // alpha 10 made it 20, but was 25 in-code, 15 Skills.csv
+        public static int SKILL_UNSUSPICIOUS_BONUS = 20;  // alpha 10 made it 20, but was 25 in-code, 15 Skills.csv
+        public static int SKILL_UNSUSPICIOUS_FISHING_BONUS = 1; //@@MP - increased chance to catch a fish, per turn (Release 7-6)
 
         public static int UNSUSPICIOUS_BAD_OUTFIT_PENALTY = 75;  // alpha10 ; prev was 50
         public static int UNSUSPICIOUS_GOOD_OUTFIT_BONUS = 75; // alpha10 ; prev was 50
@@ -684,6 +691,7 @@ namespace djack.RogueSurvivor.Engine
             // 1. Actor cannot take items.
             // 2. Inventory is full and cannot stack item
             // 3. Triggered trap.
+            // 4. Forbidden to AI.
             //////////////////////////////////////////////
 
             // 1. Actor cannot take items
@@ -694,15 +702,26 @@ namespace djack.RogueSurvivor.Engine
                 reason = "no inventory";
                 return false;
             }
+
+            // 2. Inventory is full and cannot stack item
             if (actor.Inventory.IsFull && !actor.Inventory.CanAddAtLeastOne(it))
             {
                 reason = "inventory is full";
                 return false;
             }
+
+            // 3. Triggered trap.
             ItemTrap trap = it as ItemTrap;
             if (trap != null && trap.IsTriggered)
             {
                 reason = "triggered trap";
+                return false;
+            }
+
+            // Forbidden to AI.
+            if (it.IsForbiddenToAI && !actor.IsPlayer) //@@MP - forgot to add this when IsForbiddenToAI was implemented (Release 7-6)
+            {
+                reason = "forbidden to AI";
                 return false;
             }
 
@@ -756,10 +775,18 @@ namespace djack.RogueSurvivor.Engine
             }
 #endif
 
-            // 4. special items //@@MP (Release 7-1)
-            bool canSeeSky = CanActorSeeSky(actor);
-            bool isNight = actor.Location.Map.LocalTime.IsNight;
-            // 4a. too bright for NVGs
+            // 4. special items     //@@MP (Release 7-1)
+            // 4a. items forbidden to the AI
+            if (!actor.IsPlayer && it.IsForbiddenToAI)   //@@MP (Release 7-6)
+            {
+                reason = "this item is not usable by NPCs";
+                return false;
+            }
+
+            //bool canSeeSky = CanActorSeeSky(actor);
+            //bool isNight = actor.Location.Map.LocalTime.IsNight;
+
+            // 4b. too bright for NVGs
             /*
              * allow NVGs, as otherwise the player couldn't recharge them in Lit or outdoor daytime areas (Release 7-1)
              * 
@@ -770,13 +797,12 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
             */
-            // 4b. too dark for binoculars
-            bool outsideAtNight = (canSeeSky && isNight);
-            if (IsItemBinoculars(it) && (actor.Location.Map.Lighting == Lighting.DARKNESS || outsideAtNight))
-            {
-                reason = "It's too dark to use binoculars";
-                return false;
-            }
+
+            // 4c. too dark for binoculars
+            //binoculars are IsForbiddenToAI, so no need to handle them here. moved to RogueGame.OnLMBItem() and RogueGame.DoPlayerItemSlotUse()
+                
+            // 4d. must be adjacent to water
+            //fishing rods are handled separately by Rules.CanActorEquipFishingRod()
 
             // all clear.
             reason = "";
@@ -880,6 +906,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Actor cant use this specific kind of items.
             // (unused 3. Actor cant use item in his present state.)
             // 4. Not in inventory.
+            // 5. Forbidden to AI.
             //////////////////////////////////////////////////
 
             // 1. Actor cant use items.
@@ -978,6 +1005,59 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
+            // 5. items forbidden to the AI
+            if (!actor.IsPlayer && it.IsForbiddenToAI)   //@@MP (Release 7-6)
+            {
+                reason = "this item is not usable by NPCs";
+                return false;
+            }
+
+            // all clear.
+            reason = "";
+            return true;
+        }
+
+        /// <summary>
+        /// Can only be equipped when adjacent to a water tile
+        /// </summary>
+        public bool CanActorEquipFishingRod(Actor actor, Item it, out string reason)  //@@MP (Release 7-6)
+        {
+            if (actor == null)
+                throw new ArgumentNullException("actor", "null actor");
+            if (it == null)
+                throw new ArgumentNullException("it", "null item");
+
+            bool waterAdacent = false;
+            if (it.Model.ID == (int)GameItems.IDs.FISHING_ROD)
+            {
+                //they need to be near water
+                Map map = actor.Location.Map;
+                Point actorPos = actor.Location.Position;
+                foreach (Direction d in Direction.COMPASS)
+                {
+                    Point pt = actorPos + d;
+                    if (!map.IsInBounds(pt))
+                        continue;
+
+                    Tile tile = map.GetTileAt(pt);
+                    if (tile != null && tile.Model.IsWater)
+                    {
+                        waterAdacent = true;
+                        continue;
+                    }
+                }
+                if (!waterAdacent)
+                {
+                    reason = "not next to a body of water";
+                    return false;
+                }
+            }
+            else
+            {
+                reason = "not a fishing rod";
+                return false;
+            }
+
             // all clear.
             reason = "";
             return true;
@@ -1009,6 +1089,68 @@ namespace djack.RogueSurvivor.Engine
             if (stackHere == null || !stackHere.Contains(it))
             {
                 reason = "item not here";
+                return false;
+            }
+
+            // ok
+            reason = "";
+            return true;
+        }
+
+        public bool CanActorCookFoodItem(Actor actor, Item it, out string reason) //@@MP (Release 7-6)
+        {
+            if (actor == null)
+                throw new ArgumentNullException("actor", "null actor");
+            if (it == null)
+                throw new ArgumentNullException("it", "null item");
+
+
+            ///////////////////////////////
+            // Can't if any is true:
+            // 1. Item not food.
+            // 2. Not a cookable food type.
+            // 3. Item not in actor inventory.
+            // 4. Not next to fire.
+            //////////////////////////////
+
+            ItemFood food = it as ItemFood;
+            // 1. Item not food.
+            if (food == null)
+            {
+                reason = "not food";
+                return false;
+            }
+            // 2. Not a cookable food type.
+            else if (!food.CanBeCooked)
+            {
+                reason = "no need to cook it";
+                return false;
+            }
+
+            // 3. Not in inventory.
+            Inventory inv = actor.Inventory;
+            if (inv == null || !inv.Contains(it))
+            {
+                reason = "not in inventory";
+                return false;
+            }
+
+            //4. Not next to fire.
+            bool fireAdjacent = false;
+            foreach (Direction dir in Direction.COMPASS)
+            {
+                // check mapobj in each dir for .IsOnFire
+                Point pt = actor.Location.Position + dir;
+                MapObject mapObj = actor.Location.Map.GetMapObjectAt(pt);
+                if (mapObj != null && mapObj.IsOnFire)
+                {
+                    fireAdjacent = true;
+                    continue;
+                }
+            }
+            if (!fireAdjacent)
+            {
+                reason = "must be next to a fire";
                 return false;
             }
 
@@ -1129,6 +1271,75 @@ namespace djack.RogueSurvivor.Engine
                 return false;
         }
 
+        public bool CanActorUnloadAmmoFromGun(Actor actor, Item it, out string reason) //@@MP (Release 7-6)
+        {
+            if (actor == null)
+                throw new ArgumentNullException("actor", "null actor");
+            if (it == null)
+                throw new ArgumentNullException("it", "item");
+
+            //////////////////////////////////////////////////
+            // Can't if any is true:
+            // 1. Actor cant use items.
+            // 2. Item not equipped.
+            // 3. Not a battery powered item.
+            // 4. Already fully charged.
+            //////////////////////////////////////////////////
+
+            // 1. Actor cant use items.
+            if (!(actor.Model.Abilities.CanUseItems))
+            {
+                reason = "no ability to use items";
+                return false;
+            }
+
+            // 2. Item not in inventory.
+            if (!it.IsEquipped || !actor.Inventory.Contains(it)) //must pick it up first in order to unload it
+            {
+                reason = "item not equipped";
+                return false;
+            }
+
+            // 3. Not a weapon that uses ammo.
+            ItemRangedWeapon ranged = it as ItemRangedWeapon;
+            if (ranged == null)
+            {
+                reason = "not an item with unloadable ammo";
+                return false;
+            }
+            else
+            {
+                switch (ranged.AmmoType)
+                {
+                    case AmmoType.BOLT: 
+                    case AmmoType.FUEL: 
+                    case AmmoType.GRENADES: 
+                    case AmmoType.HEAVY_PISTOL: 
+                    case AmmoType.HEAVY_RIFLE:
+                    case AmmoType.LIGHT_PISTOL: 
+                    case AmmoType.LIGHT_RIFLE: 
+                    case AmmoType.MINIGUN: 
+                    case AmmoType.NAIL: 
+                    case AmmoType.PRECISION_RIFLE: 
+                    case AmmoType.SHOTGUN: break;
+                    default:
+                        reason = "not an item with unloadable ammo";
+                        return false;
+                }
+            }
+
+            // 4. Already empty of ammo.  //@@MP (Release 7-2)
+            if (ranged.Ammo <= 0)
+            {
+                reason = "has no ammo loaded";
+                return false;
+            }
+
+            // all clear.
+            reason = "";
+            return true;
+        }
+
         public bool CanActorGiveItemTo(Actor actor, Actor target, Item gift, out string reason)
         {
             if (actor == null)
@@ -1239,6 +1450,52 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // all clear.
+            reason = "";
+            return true;
+        }
+
+        public bool CanTag(Actor actor, Point pos, Weather weather, out string reason) //@@MP - moved to Rules (Release 7-6)
+        {
+            Map map = actor.Location.Map;
+
+            ///////////////////////
+            // Can't tag if:
+            // 1. Out of bounds.
+            // 2. An actor there.
+            // 3. An object there.
+            // 4. Too dark to see.
+            ///////////////////////
+
+            // 1. Out of bounds.
+            if (!map.IsInBounds(pos))
+            {
+                reason = "out of map";
+                return false;
+            }
+
+            // 2. An actor there.
+            Actor other = map.GetActorAt(pos);
+            if (other != null)
+            {
+                reason = "someone there";
+                return false;
+            }
+
+            // 3. An object there.
+            MapObject mapObj = map.GetMapObjectAt(pos);
+            if (mapObj != null)
+            {
+                reason = "something there";
+                return false;
+            }
+
+            // 4. Too dark to see.      //@@MP (Release 7-5)
+            if (!IsVisibleToActor(actor, pos, weather))
+            {
+                reason = "too dark, can't see.";
+                return false;
+            }
+
             reason = "";
             return true;
         }
@@ -1706,7 +1963,7 @@ namespace djack.RogueSurvivor.Engine
         }
         #endregion
 
-        #region Switching Map Objects
+        #region Switching PowerGenerator Map Objects
         public bool IsSwitchableFor(Actor actor, PowerGenerator powGen, out string reason)
         {
             if (actor == null)
@@ -2196,6 +2453,7 @@ namespace djack.RogueSurvivor.Engine
             // 2. Actor is tired.
             // 3. Map object is not breakable.
             // 4. Another actor there.
+            // 5. Trees need the right tool
             //////////////////////////////////
 
             // 1. Actor cannot break.
@@ -2226,6 +2484,17 @@ namespace djack.RogueSurvivor.Engine
             {
                 reason = "someone is there";
                 return false;
+            }
+
+            // 5. Trees need the right tool
+            if (mapObj.AName == "a tree") //@@MP - added (Release 7-6)
+            {
+                ItemMeleeWeapon melWep = actor.GetEquippedMeleeWeapon();
+                if (melWep == null || !melWep.CanCutDownTrees)
+                {
+                    reason = "need a suitable weapon equipped to cut down a tree";
+                    return false;
+                }
             }
 
             // all clear.
@@ -3424,6 +3693,7 @@ namespace djack.RogueSurvivor.Engine
             // Can't if any is true:
             // 1. Actor tired.
             // 2. Corpse not in same tile as actor.
+            // 3. Need a suitable bladed melee weapon
             ////////////////////////////////////////
             // 1. Actor tired.
             if (IsActorTired(actor))
@@ -3436,6 +3706,17 @@ namespace djack.RogueSurvivor.Engine
             {
                 reason = "not in same location";
                 return false;
+            }
+            // 3. Need a suitable bladed melee weapon            //@@MP (Release 7-6)
+            //decided not to enforce this for NPCs, as having them prioritise bladed weapons seemed like too much of a faff. may be revisited
+            if (actor.IsPlayer)
+            {
+                ItemMeleeWeapon meleeWep = actor.GetEquippedMeleeWeapon();
+                if (meleeWep == null || !meleeWep.CanUseForButchering)
+                {
+                    reason = "need a bladed weapon equipped";
+                    return false;
+                }
             }
 
             // ok
@@ -3572,10 +3853,10 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // 4. No medikit.
-            if (!actor.Inventory.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.MEDICINE_MEDIKIT))
+            // 4. No large medikit.
+            if (!actor.Inventory.HasItemMatching((it) => it.Model.ID == (int)GameItems.IDs.MEDICINE_LARGE_MEDIKIT))
             {
-                reason = "no medikit";
+                reason = "no large medikit";
                 return false;
             }
 
@@ -3585,6 +3866,171 @@ namespace djack.RogueSurvivor.Engine
         }
         #endregion
 
+        #region Visibility & hearing
+        /// <summary>
+        /// If you want to check an Actor or MapObject's visiblity, pass their position as the 'pos' param
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="map"></param>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public bool IsVisibleToActor(Actor actor, Point pos, Weather weather)  //@@MP (Release 7-6)
+        {
+            Map map = actor.Location.Map;
+
+            if (!map.IsInBounds(pos.X, pos.Y))
+                return false;
+
+            int fov = ActorFOV(actor, map.LocalTime, weather);
+            if (!LOS.CanTraceViewLine(actor.Location, pos, fov)) //can't see the pos
+                return false;
+
+            return true;
+        }
+        #endregion
+
+        #region Flammable tiles, objects and actors
+        //MP: although flammable states were partially implemented in vanilla RS, it barely made it to a functional state.
+        //this section begins to fill out original idea, although still in quite a limited manner.
+        //it's a long, long way from fully embracing a proper fire/flammable/infammable/burnt system.
+
+        public bool CanStartCookingFire(Actor actor, Point pos, Weather weather, out string reason) //@@MP - added (Release 7-6)
+        {
+            Map map = actor.Location.Map;
+
+            ///////////////////////
+            // Can't start fire if:
+            // 1. Out of bounds.
+            // 2. Not walkable.
+            // 3. An actor there.
+            // 4. An object there...
+            // 5. Activated trap there.
+            // 6. No fires underwater.
+            // 7. Need wood in inventory.
+            // 8. Too dark to see.
+            ///////////////////////
+
+            // 1. Out of bounds.
+            if (!map.IsInBounds(pos))
+            {
+                reason = "out of map";
+                return false;
+            }
+
+            // 2. Not walkable.
+            if (!map.GetTileAt(pos).Model.IsWalkable)
+            {
+                reason = "not a valid spot";
+                return false;
+            }
+
+            // 3. An actor there.
+            Actor other = map.GetActorAt(pos);
+            if (other != null)
+            {
+                reason = String.Format("{0} is in the way", other.Name);
+                return false;
+            }
+
+            // 4. An object there.
+            MapObject mapObj = map.GetMapObjectAt(pos);
+            if (mapObj != null)
+            {
+                Barrel barrel = mapObj as Barrel;
+                Campfire campfire = mapObj as Campfire;
+
+                // 4.1. check if barrel & already alight
+                if (barrel != null)
+                {
+                    if (barrel.IsOnFire)
+                    {
+                        reason = "that fire barrel is already alight";
+                        return false;
+                    }
+                    else if (barrel.FuelUnits <= 0) //no fuel, need wood
+                    {
+                        if (!actor.Inventory.HasItemOfType(typeof(ItemBarricadeMaterial)))
+                        {
+                            reason = "you need wood for fuel";
+                            return false;
+                        }
+                    }
+                    else //there's already wood in the fire, so light it
+                    {
+                        reason = "";
+                        return true;
+                    }
+                }
+                // 4.2. campfire already there & alight?
+                else if (campfire != null)
+                {
+                    if (campfire.IsOnFire)
+                    {
+                        reason = "that campfire is already alight";
+                        return false;
+                    }
+                    else if (campfire.FuelUnits <= 0) //no fuel, need wood
+                    {
+                        if (!actor.Inventory.HasItemOfType(typeof(ItemBarricadeMaterial)))
+                        {
+                            reason = "you need wood for fuel";
+                            return false;
+                        }
+                    }
+                    else //there's already wood in the fire, so light it
+                    {
+                        reason = "";
+                        return true;
+                    }
+                }
+                // 4.3 some other object
+                else
+                {
+                    reason = String.Format("{0} is in the way", mapObj.TheName);
+                    return false;
+                }
+            }
+
+            // 5. Activated trap there
+            Inventory itemsThere = actor.Location.Map.GetItemsAt(pos);
+            if (itemsThere != null)
+            {
+                foreach (Item it in itemsThere.Items)
+                {
+                    ItemTrap trap = it as ItemTrap;
+                    if (trap != null && trap.IsActivated)
+                    {
+                        reason = String.Format("{0} is in the way", trap.AName);
+                        return false;
+                    }
+                }
+            }
+
+            // 6. no fires underwater
+            if (actor.Location.Map.GetTileAt(pos).Model.IsWater)
+            {
+                reason = "can't make fires in water";
+                return false;
+            }
+
+            // 7. making a campfire, need wood in inventory
+            if (!actor.Inventory.HasItemOfType(typeof(ItemBarricadeMaterial)))
+            {
+                reason = "you need wood for fuel";
+                return false;
+            }
+
+            // 8. Too dark to see.
+            if (!IsVisibleToActor(actor, pos, weather))
+            {
+                reason = "too dark, can't see";
+                return false;
+            }
+
+            reason = "";
+            return true;
+        }
+        #endregion
         #endregion
 
         #region Distances
@@ -3877,7 +4323,7 @@ namespace djack.RogueSurvivor.Engine
             if (victim.Model.Abilities.IsUndead)
                 return false;
 
-            // killing a feral dog isn't murder    //@@MP (Release 7-5)
+            // killing an animal isn't murder    //@@MP (Release 7-5)
             if (victim.Model.Abilities.IsLivingAnimal)
                 return false;
 
@@ -3896,13 +4342,27 @@ namespace djack.RogueSurvivor.Engine
             // indirect self defence
             if (killer.HasLeader)
             {
-                if (killer.Leader.IsSelfDefenceFrom(victim)) //@MP - killed the enemy of their leader
+                if (killer.Leader.IsSelfDefenceFrom(victim)) //@MP - killed an enemy of their leader
                     return false;
             }
             if (killer.CountFollowers > 0)
             {
-                foreach (Actor fo in killer.Followers)  //@MP - killed then enemy of their follower
+                foreach (Actor fo in killer.Followers)  //@MP - killed the enemy of a follower
                     if (fo.IsSelfDefenceFrom(victim))
+                        return false;
+            }
+            if (victim.HasLeader) //@@MP - added (Release 7-6)
+            {
+                if (killer.IsSelfDefenceFrom(victim.Leader)) //@MP - killed a follower of their enemy
+                    return false;
+                foreach (Actor fo in victim.Leader.Followers)  //@MP - killed a fellow follower of their enemy
+                    if (killer.IsSelfDefenceFrom(fo))
+                        return false;
+            }
+            if (victim.CountFollowers > 0) //@@MP - added (Release 7-6)
+            {
+                foreach (Actor fo in victim.Followers)  //@MP - killed the leader of their enemy
+                    if (killer.IsSelfDefenceFrom(fo))
                         return false;
             }
 
@@ -3938,6 +4398,25 @@ namespace djack.RogueSurvivor.Engine
                 // carrying shield.  //@@MP (Release 7-2)
                 if (actor.GetEquippedShield() != null)
                     speed *= SHIELD_ENCUMBERANCE_PENALTY;
+
+                // heavy weapons.  //@@MP (Release 7-6)
+                ItemWeapon weapon = actor.GetEquippedWeapon() as ItemWeapon;
+                if (weapon != null)
+                {
+                    ItemRangedWeaponModel ranged = weapon.Model as ItemRangedWeaponModel;
+                    if (ranged != null)
+                    {
+                        speed -= ranged.Weight;
+                    }
+                    else
+                    {
+                        ItemMeleeWeaponModel melee = weapon.Model as ItemMeleeWeaponModel;
+                        if (melee != null)
+                        {
+                            speed -= melee.Weight;
+                        }
+                    }   
+                }
 
                 // dragging corpses.
                 if (actor.DraggedCorpse != null)
@@ -4323,6 +4802,12 @@ namespace djack.RogueSurvivor.Engine
             return chanceBonus;
         }
 
+        public int ActorRecoverFromFoodPoisoningChanceBonus(Actor actor) //@@MP (Release 7-6)
+        {
+            int chanceBonus = SKILL_HARDY_FOOD_POISONING_RECOVERY_CHANCE_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.HARDY);
+            return chanceBonus;
+        }
+
         public int ActorBarricadingPoints(Actor actor, int baseBarricadingPoints)
         {
             int barBonus = 0;
@@ -4511,6 +4996,11 @@ namespace djack.RogueSurvivor.Engine
         public int ActorCharismaticTradeChance(Actor actor)
         {
             return SKILL_CHARISMATIC_TRADE_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.CHARISMATIC);
+        }
+
+        public int ActorFishingChanceFromUnsuspiciousSkill(Actor actor) //@@MP (Release 7-6)
+        {
+            return SKILL_UNSUSPICIOUS_FISHING_BONUS * actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.UNSUSPICIOUS);
         }
 
         public int ActorUnsuspicousChance(Actor observer, Actor actor)
@@ -5011,6 +5501,17 @@ namespace djack.RogueSurvivor.Engine
         public static bool HasEvolution(GameMode mode)
         {
             return mode != GameMode.GM_VINTAGE;
+        }
+
+        public static bool HasAntiviralPills(GameMode mode) //@@MP (Release 7-6)
+        {
+            if (mode == GameMode.GM_CORPSES_INFECTION)
+                return true;
+
+            if (mode == GameMode.GM_VINTAGE && RogueGame.Options.AntiviralPills)
+                return true;
+
+            return false;
         }
 
         public static bool HasAllZombies(GameMode mode)

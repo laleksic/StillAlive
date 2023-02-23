@@ -10,11 +10,12 @@ namespace djack.RogueSurvivor.Engine.Items
     class ItemBodyArmorModel : ItemModel
     {
         #region Fields
-        int m_Protection_Hit;
-        int m_Protection_Shot;
-        int m_Encumbrance;
-        int m_Weight;
-        int m_Fire_Resistance; //@@MP (Release 7-1)
+        readonly int m_Protection_Hit;
+        readonly int m_Protection_Shot;
+        readonly int m_Encumbrance;
+        readonly int m_Weight;
+        readonly int m_Fire_Resistance; //@@MP (Release 7-1)
+        readonly int m_Infection_Resistance; //@@MP (Release 7-6)
         #endregion
 
         #region Properties
@@ -38,10 +39,14 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             get { return m_Fire_Resistance; }
         }
+        public int Infection_Resistance //@@MP (Release 7-6)
+        {
+            get { return m_Infection_Resistance; }
+        }
         #endregion
 
         #region Init
-        public ItemBodyArmorModel(string aName, string theNames, string imageID, int protection_hit, int protection_shot, int encumbrance, int weight, int fire_resistance)
+        public ItemBodyArmorModel(string aName, string theNames, string imageID, int protection_hit, int protection_shot, int encumbrance, int weight, int fire_resistance, int infection_resistance)
             : base(aName, theNames, imageID)
         {
             m_Protection_Hit = protection_hit;
@@ -49,6 +54,7 @@ namespace djack.RogueSurvivor.Engine.Items
             m_Encumbrance = encumbrance;
             m_Weight = weight;
             m_Fire_Resistance = fire_resistance; //@@MP (Release 7-1)
+            m_Infection_Resistance = infection_resistance; //@@MP (Release 7-6)
         }
         #endregion
 

@@ -23,6 +23,7 @@ namespace djack.RogueSurvivor.Data
         int m_ModelID;
         Flags m_Flags;
         List<string> m_Decorations = null;
+        int m_DecayPhase; //@@MP (Release 7-6)
         #endregion
 
         #region Properties
@@ -50,16 +51,26 @@ namespace djack.RogueSurvivor.Data
             set { if (value) m_Flags |= Flags.IS_VISITED; else m_Flags &= ~Flags.IS_VISITED; }
         }
 
-        public bool IsOnFire //@MP (Release 6-1)
+        public bool IsOnFire //@@MP (Release 6-1)
         {
             get { return (m_Flags & Flags.IS_ON_FIRE) != 0; }
             set { if (value) m_Flags |= Flags.IS_ON_FIRE; else m_Flags &= ~Flags.IS_ON_FIRE; }
         }
 
         /// <summary>
+        /// Corresponds to what level of decay decoration has been applied to this tile.
+        /// 0 = none. 1 = light. 2 = moderate. 3 = heavy.
+        /// </summary>
+        public int DecayPhase //@@MP (Release 7-6)
+        {
+            get { return m_DecayPhase; }
+            set { m_DecayPhase = value; }
+        }
+
+        /// <summary>
         /// Is currently or has previously been on fire
         /// </summary>
-        public bool IsScorched //@MP (Release 6-1)
+        public bool IsScorched //@@MP (Release 6-1)
         {
             get { return (m_Flags & Flags.IS_SCORCHED) != 0; }
             set { if (value) m_Flags |= Flags.IS_SCORCHED; else m_Flags &= ~Flags.IS_SCORCHED; }
@@ -97,6 +108,20 @@ namespace djack.RogueSurvivor.Data
             if (m_Decorations.Contains(imageID))
                 return;
             m_Decorations.Add(imageID);
+        }
+
+        /// <summary>
+        /// Adds a decoration at a specified point in the index. Priority for position 0 should be given to world decay decorations
+        /// </summary>
+        /// <param name="imageID"></param>
+        /// <param name="position">index position to insert at in the List<></param>
+        public void InsertDecoration(string imageID, int position) //@@MP (Release 7-6)
+        {
+            if (m_Decorations == null)
+                m_Decorations = new List<string>(1);
+            if (m_Decorations.Contains(imageID))
+                return;
+            m_Decorations.Insert(position, imageID);
         }
 
         public bool HasDecoration(string imageID)

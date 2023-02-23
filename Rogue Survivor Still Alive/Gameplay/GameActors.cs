@@ -40,6 +40,8 @@ namespace djack.RogueSurvivor.Gameplay
             MALE_CIVILIAN,
             FEMALE_CIVILIAN,
             FERAL_DOG,
+            RABBIT, //@@MP (Release 7-6)
+            CHICKEN, //@@MP (Release 7-6)
 
             CHAR_GUARD,
 
@@ -110,6 +112,8 @@ namespace djack.RogueSurvivor.Gameplay
         public ActorModel MaleCivilian { get { return this[IDs.MALE_CIVILIAN]; } }
         public ActorModel FemaleCivilian { get { return this[IDs.FEMALE_CIVILIAN]; } }
         public ActorModel FeralDog { get { return this[IDs.FERAL_DOG]; } }
+        public ActorModel Rabbit { get { return this[IDs.RABBIT]; } }
+        public ActorModel Chicken { get { return this[IDs.CHICKEN]; } }
 
         public ActorModel CHARGuard { get { return this[IDs.CHAR_GUARD]; } }
 
@@ -211,7 +215,9 @@ namespace djack.RogueSurvivor.Gameplay
         
         ActorData DATA_MALE_CIVILIAN;
         ActorData DATA_FEMALE_CIVILIAN;
-        ActorData DATA_FERAL_DOG;       
+        ActorData DATA_FERAL_DOG;
+        ActorData DATA_RABBIT;
+        ActorData DATA_CHICKEN;
 
         ActorData DATA_POLICEMAN;
 
@@ -943,6 +949,60 @@ namespace djack.RogueSurvivor.Gameplay
             {
                 FlavorDescription = data.FLAVOR
             };
+
+            //@@MP (Release 7-6)
+            this[IDs.RABBIT] = new ActorModel(null,
+                     DATA_RABBIT.NAME, DATA_RABBIT.PLURAL,
+                     DATA_RABBIT.SCORE,
+                     new DollBody(true, DATA_RABBIT.SPD),
+                     new Abilities()
+                     {
+                         IsLivingAnimal = true,
+                         HasInventory = false,
+                         HasToEat = false,
+                         HasToSleep = false,
+                         CanTire = true,
+                         CanRun = true,
+                         CanJump = false,
+                         AI_CanUseAIExits = false,
+                         IsIntelligent = false,
+                         IsSmall = true
+                     },
+                     new ActorSheet(DATA_RABBIT.HP, DATA_RABBIT.STA, DOG_HUN, DOG_SLP, NO_SANITY,
+                         new Attack(AttackKind.PHYSICAL, new Verb("bite"), DATA_RABBIT.ATK, DATA_RABBIT.DMG),
+                         new Defence(DATA_RABBIT.DEF, DATA_RABBIT.PRO_HIT, DATA_RABBIT.PRO_SHOT),
+                         DATA_RABBIT.FOV, DATA_RABBIT.AUDIO, DATA_RABBIT.SMELL, 0),
+                    typeof(UnintelligentAnimalAI))
+            {
+                FlavorDescription = DATA_RABBIT.FLAVOR
+            };
+
+            //@@MP (Release 7-6)
+            this[IDs.CHICKEN] = new ActorModel(null,
+                     DATA_CHICKEN.NAME, DATA_CHICKEN.PLURAL,
+                     DATA_CHICKEN.SCORE,
+                     new DollBody(true, DATA_CHICKEN.SPD),
+                     new Abilities()
+                     {
+                         IsLivingAnimal = true,
+                         HasInventory = false,
+                         HasToEat = false,
+                         HasToSleep = false,
+                         CanTire = true,
+                         CanRun = true,
+                         CanJump = false,
+                         AI_CanUseAIExits = false,
+                         IsIntelligent = false,
+                         IsSmall = true
+                     },
+                     new ActorSheet(DATA_CHICKEN.HP, DATA_CHICKEN.STA, DOG_HUN, DOG_SLP, NO_SANITY,
+                         new Attack(AttackKind.PHYSICAL, new Verb("peck"), DATA_CHICKEN.ATK, DATA_CHICKEN.DMG),
+                         new Defence(DATA_CHICKEN.DEF, DATA_CHICKEN.PRO_HIT, DATA_CHICKEN.PRO_SHOT),
+                         DATA_CHICKEN.FOV, DATA_CHICKEN.AUDIO, DATA_CHICKEN.SMELL, 0),
+                    typeof(UnintelligentAnimalAI))
+            {
+                FlavorDescription = DATA_CHICKEN.FLAVOR
+            };
             #endregion
             #endregion
 
@@ -1013,7 +1073,8 @@ namespace djack.RogueSurvivor.Gameplay
             /////////////
             Notify(ui, "reading data...");
 
-            #region Undeads //@@MP - unused parameter (Release 5-7)
+            #region Undeads
+            //@@MP - unused parameter (Release 5-7)
             DATA_SKELETON = GetDataFromCSVTable(table, IDs.UNDEAD_SKELETON);
             DATA_RED_EYED_SKELETON = GetDataFromCSVTable(table, IDs.UNDEAD_RED_EYED_SKELETON);
             DATA_RED_SKELETON = GetDataFromCSVTable(table, IDs.UNDEAD_RED_SKELETON);
@@ -1038,10 +1099,13 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_SEWERS_THING = GetDataFromCSVTable(table, IDs.SEWERS_THING);
             #endregion
 
-            #region Livings //@@MP - unused parameter (Release 5-7)
+            #region Livings
+            //@@MP - unused parameter (Release 5-7)
             DATA_MALE_CIVILIAN = GetDataFromCSVTable(table, IDs.MALE_CIVILIAN);
             DATA_FEMALE_CIVILIAN = GetDataFromCSVTable(table, IDs.FEMALE_CIVILIAN);
             DATA_FERAL_DOG = GetDataFromCSVTable(table, IDs.FERAL_DOG);
+            DATA_RABBIT = GetDataFromCSVTable(table, IDs.RABBIT);
+            DATA_CHICKEN = GetDataFromCSVTable(table, IDs.CHICKEN);
 
             DATA_POLICEMAN = GetDataFromCSVTable(table, IDs.POLICEMAN);
 
@@ -1146,6 +1210,11 @@ namespace djack.RogueSurvivor.Gameplay
         public bool IsDog(ActorModel m) //@@MP (Release 7-3)
         {
             return m == FeralDog;
+        }
+
+        public bool IsUnintelligentAnimal(ActorModel m) //@@MP (Release 7-6)
+        {
+            return m == Rabbit || m == Chicken;
         }
         #endregion
     }

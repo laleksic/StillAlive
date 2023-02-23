@@ -9,6 +9,7 @@ namespace djack.RogueSurvivor.Engine.MapObjects
     {
         #region Fields
         int m_FuelUnits;
+        int m_MaxFuelUnits;
         #endregion
 
         #region Properties
@@ -17,13 +18,20 @@ namespace djack.RogueSurvivor.Engine.MapObjects
             get { return m_FuelUnits; }
             set { m_FuelUnits = value; }
         }
+
+        public int MaxFuelUnits
+        {
+            get { return m_MaxFuelUnits; }
+            set { m_MaxFuelUnits = value; }
+        }
         #endregion
 
-            #region Init
+        #region Init
         public Car(string name, string imageID, MapObject.Break breakState, int fuelUnits)
             : base(name, imageID, breakState, Fire.UNINFLAMMABLE, 0)
         {
             m_FuelUnits = fuelUnits;
+            m_MaxFuelUnits = 99;
         }
         #endregion
     }

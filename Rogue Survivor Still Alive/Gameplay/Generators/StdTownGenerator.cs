@@ -36,8 +36,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     // create civilian with 1 skill.
                     Actor civilian = CreateNewCivilian(0, 5, 1); //@@MP - upped items to 5 (Release 7-3)
-                    // civilian starts inside.
-                    base.ActorPlace(m_DiceRoller, maxTries, map, civilian, (pt) => map.GetTileAt(pt.X, pt.Y).IsInside);
+                    // civilian starts inside,
+                    // but not in army offices, as those are behind locked doors and the player could otherwise reincarnate as one of them          //@@MP (Release 7-6)
+                    // army offices are already populated enough thanks to BaseTownGenerator.PopulateArmyOfficeBuilding()
+                    base.ActorPlace(m_DiceRoller, maxTries, map, civilian, (pt) => (map.GetTileAt(pt.X, pt.Y).IsInside && !map.HasZonePartiallyNamedAt(new System.Drawing.Point (pt.X, pt.Y), ZoneAttributes.IS_ARMY_OFFICE)));
                 }
             }
 

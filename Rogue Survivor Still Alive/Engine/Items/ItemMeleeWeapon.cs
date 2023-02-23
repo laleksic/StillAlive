@@ -18,6 +18,27 @@ namespace djack.RogueSurvivor.Engine.Items
             get { return (this.Model as ItemMeleeWeaponModel).IsOneHanded; }
         }
 
+        //@@MP (Release 7-6)
+        public bool CanUseForDigging
+        {
+            get { return (this.Model as ItemMeleeWeaponModel).CanUseForDigging; }
+        }
+
+        public bool CanUseForButchering
+        {
+            get { return (this.Model as ItemMeleeWeaponModel).CanUseForButchering; }
+        }
+
+        public bool CanCutDownTrees
+        {
+            get { return (this.Model as ItemMeleeWeaponModel).CanCutDownTrees; }
+        }
+
+        public int Weight
+        {
+            get { return (this.Model as ItemMeleeWeaponModel).Weight; }
+        }
+
         // alpha10
         public int ToolBashDamageBonus
         {

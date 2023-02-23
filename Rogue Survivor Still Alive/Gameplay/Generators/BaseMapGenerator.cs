@@ -27,14 +27,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         static readonly string[] MALE_HEADS = new string[] { GameImages.MALE_HAIR1, GameImages.MALE_HAIR2, GameImages.MALE_HAIR3, GameImages.MALE_HAIR4, GameImages.MALE_HAIR5, GameImages.MALE_HAIR6, GameImages.MALE_HAIR7, GameImages.MALE_HAIR8 };
         static readonly string[] MALE_TORSOS = new string[] { GameImages.MALE_SHIRT1, GameImages.MALE_SHIRT2, GameImages.MALE_SHIRT3, GameImages.MALE_SHIRT4, GameImages.MALE_SHIRT5 };
         static readonly string[] MALE_LEGS = new string[] { GameImages.MALE_PANTS1, GameImages.MALE_PANTS2, GameImages.MALE_PANTS3, GameImages.MALE_PANTS4, GameImages.MALE_PANTS5 };
-        static readonly string[] MALE_SHOES = new string[] { GameImages.MALE_SHOES1, GameImages.MALE_SHOES2, GameImages.MALE_SHOES3 };
+        static readonly string[] MALE_SHOES = new string[] { GameImages.MALE_SHOES1, GameImages.MALE_SHOES2, GameImages.MALE_SHOES3, GameImages.MALE_SHOES4, GameImages.MALE_SHOES5 };
         static readonly string[] MALE_EYES = new string[] { GameImages.MALE_EYES1, GameImages.MALE_EYES2, GameImages.MALE_EYES3, GameImages.MALE_EYES4, GameImages.MALE_EYES5, GameImages.MALE_EYES6 };
 
         static readonly string[] FEMALE_SKINS = new string[] { GameImages.FEMALE_SKIN1, GameImages.FEMALE_SKIN2, GameImages.FEMALE_SKIN3, GameImages.FEMALE_SKIN4, GameImages.FEMALE_SKIN5 };
         static readonly string[] FEMALE_HEADS = new string[] { GameImages.FEMALE_HAIR1, GameImages.FEMALE_HAIR2, GameImages.FEMALE_HAIR3, GameImages.FEMALE_HAIR4, GameImages.FEMALE_HAIR5, GameImages.FEMALE_HAIR6, GameImages.FEMALE_HAIR7 };
-        static readonly string[] FEMALE_TORSOS = new string[] { GameImages.FEMALE_SHIRT1, GameImages.FEMALE_SHIRT2, GameImages.FEMALE_SHIRT3, GameImages.FEMALE_SHIRT4 };
+        static readonly string[] FEMALE_TORSOS = new string[] { GameImages.FEMALE_SHIRT1, GameImages.FEMALE_SHIRT2, GameImages.FEMALE_SHIRT3, GameImages.FEMALE_SHIRT4, GameImages.FEMALE_SHIRT5 };
         static readonly string[] FEMALE_LEGS = new string[] { GameImages.FEMALE_PANTS1, GameImages.FEMALE_PANTS2, GameImages.FEMALE_PANTS3, GameImages.FEMALE_PANTS4, GameImages.FEMALE_PANTS5 };
-        static readonly string[] FEMALE_SHOES = new string[] { GameImages.FEMALE_SHOES1, GameImages.FEMALE_SHOES2, GameImages.FEMALE_SHOES3 };
+        static readonly string[] FEMALE_SHOES = new string[] { GameImages.FEMALE_SHOES1, GameImages.FEMALE_SHOES2, GameImages.FEMALE_SHOES3, GameImages.FEMALE_SHOES4, GameImages.FEMALE_SHOES5 };
         static readonly string[] FEMALE_EYES = new string[] { GameImages.FEMALE_EYES1, GameImages.FEMALE_EYES2, GameImages.FEMALE_EYES3, GameImages.FEMALE_EYES4, GameImages.FEMALE_EYES5, GameImages.FEMALE_EYES6 };
 
         static readonly string[] BIKER_HEADS = new string[] { GameImages.BIKER_HAIR1, GameImages.BIKER_HAIR2, GameImages.BIKER_HAIR3 };
@@ -43,6 +43,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         static readonly string[] CHARGUARD_HEADS = new string[] { GameImages.CHARGUARD_HAIR };
         static readonly string[] CHARGUARD_LEGS = new string[] { GameImages.CHARGUARD_PANTS };
+
+        static readonly string[] PRISONER_TORSO = new string[] { GameImages.PRISONER_UNIFORM }; //@@MP (Release 7-6)
+        static readonly string[] PRISONER_LEGS = new string[] { GameImages.PRISONER_PANTS }; //@@MP (Release 7-6)
+        static readonly string[] PRISONER_SHOES = new string[] { GameImages.PRISONER_SHOES }; //@@MP (Release 7-6)
 
         static readonly string[] DOG_SKINS = new string[] { GameImages.DOG_SKIN1_EAST, GameImages.DOG_SKIN2_EAST, GameImages.DOG_SKIN3_EAST, GameImages.DOG_SKIN1_WEST, GameImages.DOG_SKIN2_WEST, GameImages.DOG_SKIN3_WEST };
 
@@ -109,6 +113,26 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.FEET, GameImages.POLICE_SHOES);
         }
 
+        public static void DressPrisoner(DiceRoller roller, Actor actor) //@@MP - added (Release 7-6)
+        {
+            actor.Doll.RemoveAllDecorations();
+            if (actor.Model.DollBody.IsMale)
+            {
+                actor.Doll.AddDecoration(DollPart.EYES, MALE_EYES[roller.Roll(0, MALE_EYES.Length)]);
+                actor.Doll.AddDecoration(DollPart.SKIN, MALE_SKINS[roller.Roll(0, MALE_SKINS.Length)]);
+                actor.Doll.AddDecoration(DollPart.HEAD, MALE_HEADS[roller.Roll(0, MALE_HEADS.Length)]);
+            }
+            else
+            {
+                actor.Doll.AddDecoration(DollPart.EYES, FEMALE_EYES[roller.Roll(0, FEMALE_EYES.Length)]);
+                actor.Doll.AddDecoration(DollPart.SKIN, FEMALE_SKINS[roller.Roll(0, FEMALE_SKINS.Length)]);
+                actor.Doll.AddDecoration(DollPart.HEAD, FEMALE_HEADS[roller.Roll(0, FEMALE_HEADS.Length)]);
+            }
+            actor.Doll.AddDecoration(DollPart.TORSO, GameImages.PRISONER_UNIFORM);
+            actor.Doll.AddDecoration(DollPart.LEGS, GameImages.PRISONER_PANTS);
+            actor.Doll.AddDecoration(DollPart.FEET, GameImages.PRISONER_SHOES);
+        }
+
         public static void DressBiker(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
         {
             actor.Doll.RemoveAllDecorations();
@@ -152,6 +176,42 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             string[] skins = isMale ? MALE_SKINS : FEMALE_SKINS;
             return skins[roller.Roll(0, skins.Length)];
+        }
+
+        public static void RandomiseTorsoClothing(DiceRoller roller, Actor actor) //@@MP - added (Release 7-6)
+        {
+            actor.Doll.RemoveDecoration(DollPart.TORSO);
+            if (actor.Doll.Body.IsMale) //not trying to be sexist, it's just that male and female base body sprites are shaped slightly differently and so the clothes must fit the sprite
+                actor.Doll.AddDecoration(DollPart.TORSO, MALE_TORSOS[roller.Roll(0, MALE_TORSOS.Length)]);
+            else
+                actor.Doll.AddDecoration(DollPart.TORSO, FEMALE_TORSOS[roller.Roll(0, FEMALE_TORSOS.Length)]);
+        }
+
+        public static void RandomiseLegsClothing(DiceRoller roller, Actor actor) //@@MP - added (Release 7-6)
+        {
+            actor.Doll.RemoveDecoration(DollPart.LEGS);
+            if (actor.Doll.Body.IsMale) //not trying to be sexist, it's just that male and female base body sprites are shaped slightly differently and so the clothes must fit the sprite
+                actor.Doll.AddDecoration(DollPart.LEGS, MALE_LEGS[roller.Roll(0, MALE_LEGS.Length)]);
+            else
+                actor.Doll.AddDecoration(DollPart.LEGS, FEMALE_LEGS[roller.Roll(0, FEMALE_LEGS.Length)]);
+        }
+
+        public static void RandomiseShoes(DiceRoller roller, Actor actor)   //@@MP (Release 7-6)
+        {
+            actor.Doll.RemoveDecoration(DollPart.FEET);
+            if (actor.Doll.Body.IsMale) //not trying to be sexist, it's just that male and female base body sprites are shaped slightly differently and so the shoes must fit the sprite
+                actor.Doll.AddDecoration(DollPart.FEET, MALE_SHOES[roller.Roll(0, MALE_SHOES.Length)]);
+            else
+                actor.Doll.AddDecoration(DollPart.FEET, FEMALE_SHOES[roller.Roll(0, FEMALE_SHOES.Length)]);
+        }
+
+        public static void RandomiseHair(DiceRoller roller, Actor actor)   //@@MP (Release 7-6)
+        {
+            actor.Doll.RemoveDecoration(DollPart.HEAD);
+            if (actor.Doll.Body.IsMale) //not trying to be sexist, it's just that male and female base body sprites are shaped slightly differently and so the hair must fit the sprite
+                actor.Doll.AddDecoration(DollPart.HEAD, MALE_HEADS[roller.Roll(0, MALE_HEADS.Length)]);
+            else
+                actor.Doll.AddDecoration(DollPart.HEAD, FEMALE_HEADS[roller.Roll(0, FEMALE_HEADS.Length)]);
         }
         #endregion
 
@@ -365,18 +425,23 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
+        /// <summary>
+        /// Chain wire and IS jumpable
+        /// </summary>
         protected static MapObject MakeObjFence(string fenceImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("chain wire fence", fenceImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 10) //@@MP - appended 'chain wire' for clarity (Release 5-4)
+            return new MapObject("chain wire fence", fenceImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 10)
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
-                //GivesWood = true, //@@MP - metal fences shouldn't give wood (Release 5-4)
                 IsMetal = true, //@@MP (Release 5-4)
                 StandOnFovBonus = true
             };
         }
 
+        /// <summary>
+        /// Chain wire but is NOT jumpable
+        /// </summary>
         protected static MapObject MakeObjKennelFence(string fenceImageID) //@@MP (Release 7-5)
         {
             return new MapObject("chain wire fence", fenceImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 10)
@@ -392,8 +457,18 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
-                GivesWood = true,
-                StandOnFovBonus = true
+                GivesWood = true
+            };
+        }
+
+        protected static MapObject MakeObjIronRailing(string fenceImageID) //@@MP (Release 7-6)
+        {
+            return new MapObject("iron railing", fenceImageID)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                IsAn = true,
+                IsMetal = true
             };
         }
 
@@ -402,10 +477,8 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new MapObject("iron fence", fenceImageID)
             {
                 IsMaterialTransparent = true,
-                JumpLevel = 1, //@@MP (Release 5-6)
                 IsAn = true,
-                IsMetal = true, //@@MP (Release 5-4)
-                StandOnFovBonus = true //@@MP (Release 5-6)
+                IsMetal = true //@@MP (Release 5-4)
             };
         }
 
@@ -439,22 +512,31 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public static string[] PARK_TREES = { GameImages.OBJ_TREE1, GameImages.OBJ_TREE2, GameImages.OBJ_TREE3, GameImages.OBJ_TREE4 }; //@@MP (Release 7-3)
+        protected static string[] PARK_TREES = { GameImages.OBJ_TREE1, GameImages.OBJ_TREE2, GameImages.OBJ_TREE3, GameImages.OBJ_TREE4 }; //@@MP (Release 7-3)
 
-        protected static MapObject MakeObjParkTree(DiceRoller roller) //@@MP (Release 7-3)
+        public static MapObject MakeObjParkTree(DiceRoller roller) //@@MP (Release 7-3)
         {
             return MakeObjTree(PARK_TREES[roller.Roll(0, PARK_TREES.Length)]);
         }
 
         protected static MapObject MakeObjTree(string treeImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("tree", treeImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 20) //@@MP - made unbreakable (Release 6-2)
+            return new MapObject("tree", treeImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 20) //@@MP - made breakable (Release 7-6)
             {
                 GivesWood = true
             };
         }
 
-        static string[] CARS = { GameImages.OBJ_CAR1, GameImages.OBJ_CAR2, GameImages.OBJ_CAR3, GameImages.OBJ_CAR4 };
+        public static MapObject MakeObjTreeStump(string treeImageID) //@@MP (Release 7-6)
+        {
+            return new MapObject("tree stump", treeImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS * 20)
+            {
+                IsMaterialTransparent = true,
+                IsWalkable = true
+            };
+        }
+
+        static string[] CARS = { GameImages.OBJ_CAR_BLUE_PHASE0, GameImages.OBJ_CAR_GREEN_PHASE0, GameImages.OBJ_CAR_RED_PHASE0, GameImages.OBJ_CAR_WHITE_PHASE0, GameImages.OBJ_POLICE_CAR_PHASE0 }; //@@MP - added police cars (Release 7-6)
 
         /// <summary>
         /// Makes a new wrecked car of a random model.
@@ -508,6 +590,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
+        protected static MapObject MakeObjClothesDisplay(string shelfImageID) //@@MP - added (Release 7-6)
+        {
+            return new MapObject("clothes display", shelfImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                GivesWood = true,
+                IsMovable = true,
+                Weight = 6,
+                HoverDescription = "Bump into it to change your outfit."
+            };
+        }
+
         protected static MapObject MakeObjBench(string benchImageID) //@@MP - made static (Release 5-7)
         {
             return new MapObject("bench", benchImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 2)
@@ -515,7 +608,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsMaterialTransparent = true,
                 JumpLevel = 1,
                 IsCouch = true,
-                GivesWood = true
+                IsMovable = true,
+                GivesWood = true,
+                Weight = 6
             };
         }
 
@@ -527,6 +622,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 JumpLevel = 1,
                 IsCouch = true,
                 IsAn = true,
+                IsMovable = true,
                 IsMetal = true //@@MP (Release 5-4)
             };
         }
@@ -577,7 +673,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 JumpLevel = 1,
                 GivesWood = true,
                 IsMovable = true,
-                Weight = 2
+                Weight = 6
             };
         }
 
@@ -618,14 +714,16 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         protected static MapObject MakeObjJunk(string junkImageID) //@@MP - made static (Release 5-7)
         {
-            return new MapObject("junk", junkImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            return new MapObject("junk", junkImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS * 3)
             {
                 IsPlural = true,
                 IsMaterialTransparent = true,
+                JumpLevel = 1, //@@MP (Release 7-6)
+                StandOnFovBonus = true,
                 IsMovable = true,
                 IsContainer = true, //@@MP (Release 5-3)
                 GivesWood = true,
-                Weight = 6
+                Weight = 15
             };
         }
 
@@ -635,11 +733,43 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             {
                 IsPlural = true,
                 IsMaterialTransparent = true,
-                IsMovable = true,
+                IsMovable = false, //@@MP (Release 7-6)
                 IsContainer = true, //@@MP (Release 5-3)
-                GivesWood = true,
-                Weight = 10,
                 IsMetal = true //@@MP (Release 5-4)
+            };
+        }
+
+        /// <summary>
+        /// If you want to spawn one of these as already on fire, use RogueGame.ApplyOnFire() rather than set it yourself
+        /// </summary>
+        protected static Barrel MakeObjFireBarrel(string barrelImageID) //@@MP - added (Release 7-6)
+        {
+            return new Barrel("receptacle", barrelImageID, MapObject.Break.UNBREAKABLE, 0)
+            {
+                IsMaterialTransparent = true,
+                IsContainer = true, //in case items where left there when the barrel was unlit
+                IsMovable = true,
+                IsWalkable = true,
+                Weight = 4,
+                FireState = MapObject.Fire.BURNABLE,
+                IsMetal = true,
+                HoverDescription = "Use matches to start the fire. Bump to add more wood once alight."
+            };
+        }
+
+        /// <summary>
+        /// If you want to spawn one of these as already on fire, use RogueGame.ApplyOnFire() rather than set it yourself
+        /// </summary>
+        public static Campfire MakeObjCampfire(string campfireImageID) //@@MP - added (Release 7-6)
+        {
+            return new Campfire("campfire", campfireImageID, MapObject.Break.BREAKABLE, 0)
+            {
+                IsMaterialTransparent = true,
+                IsContainer = true, //in case items where left there when the fire was unlit
+                IsMovable = false,
+                IsWalkable = true,
+                FireState = MapObject.Fire.BURNABLE,
+                HoverDescription = "Use matches to start the fire. Bump to add more wood once alight."
             };
         }
 
@@ -673,6 +803,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 JumpLevel = 1,
                 GivesWood = true,
                 IsMovable = true,
+                Weight = 10
             };
         }
 
@@ -731,6 +862,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsMaterialTransparent = true,
                 IsMovable = true,
                 Weight = 3,
+                JumpLevel = 1,  //@@MP (Release 7-6)
                 GivesWood = true  //@@MP (Release 5-3)
             };
         }
@@ -849,7 +981,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        protected static MapObject MakeObjOpenBankSafe(string banksafeImageID) //@@MP (Release 6-5)
+        public MapObject MakeObjOpenBankSafe(string banksafeImageID) //@@MP (Release 6-5)
         {
             return new MapObject("open bank safe", banksafeImageID)
             {
@@ -857,6 +989,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsWalkable = true,
                 IsMovable = false,
                 StandOnFovBonus = false,
+                HoverDescription = "You can securely hide your items from NPCs here." //@@MP (Release 7-6)
             };
         }
 
@@ -877,6 +1010,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 IsWalkable = true,
                 IsMovable = false,
                 StandOnFovBonus = false,
+                HoverDescription = "You're securely hiding your items from NPCs here." //@@MP (Release 7-6)
             };
         }
 
@@ -942,9 +1076,13 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
+        /// <summary>
+        /// A 96x32 pixel image, dissected into 3 pieces and then arranged as:  1-2-3
+        /// </summary>
+        /// <param name="heliImageID"></param>
+        /// <returns></returns>
         public MapObject MakeObjHelicopter(string heliImageID) //@@MP (Release 6-4), made smaller (Release 7-3)
         {
-            //A 96x32 pixel image, dissected into 3 pieces and then arranged as:  1-2-3
             return new MapObject("helicopter", heliImageID)
             {
                 IsMetal = true
@@ -1099,6 +1237,54 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new MapObject("screen", screenImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS);
         }
+
+        //@@MP (Release 7-6)
+        protected static MapObject MakeObjDisplayCase(string caseImageID)
+        {
+            return new MapObject("display case", caseImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                IsContainer = true,
+                GivesWood = true,
+                IsMovable = true,
+                IsMaterialTransparent = true,
+                BreaksWhenFiredThrough = true,
+                Weight = 10
+            };
+        }
+
+        public MapObject MakeObjBurialCross(string crossImageID, string hoverDescription)
+        {
+            return new MapObject("burial cross", crossImageID, MapObject.Break.UNBREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                JumpLevel = 1,
+                IsMaterialTransparent = true,
+                HoverDescription = hoverDescription
+            };
+        }
+
+        protected static MapObject MakeObjWigsDisplay(string tableImageID)
+        {
+            return new MapObject("wigs display", tableImageID, MapObject.Break.BREAKABLE, MapObject.Fire.BURNABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                IsMaterialTransparent = true,
+                GivesWood = true,
+                IsMovable = true,
+                Weight = 2,
+                HoverDescription = "Bump into it to change your hairstyle."
+            };
+        }
+
+        protected static MapObject MakeObjCHARtrolley(string trolleyImageID)
+        {
+            return new MapObject("CHAR trolley", trolleyImageID, MapObject.Break.BREAKABLE, MapObject.Fire.UNINFLAMMABLE, DoorWindow.BASE_HITPOINTS)
+            {
+                IsMaterialTransparent = true,
+                JumpLevel = 1,
+                IsMetal = true,
+                IsMovable = true
+            };
+        }
+
         #endregion
 
         #region Common tile decorations
@@ -1121,17 +1307,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #endregion
 
         #region Common items
-        public Item MakeItemBandages()
+        public Item MakeItemSmallMedikit()
         {
-            return new ItemMedicine(m_Game.GameItems.BANDAGE)
+            return new ItemMedicine(m_Game.GameItems.SMALL_MEDIKIT)
             {
-                Quantity = m_Rules.Roll(1, m_Game.GameItems.BANDAGE.StackingLimit)
+                Quantity = m_Rules.Roll(1, m_Game.GameItems.SMALL_MEDIKIT.StackingLimit)
             };
         }
 
-        public Item MakeItemMedikit()
+        public Item MakeItemLargeMedikit()
         {
-            return new ItemMedicine(m_Game.GameItems.MEDIKIT);
+            return new ItemMedicine(m_Game.GameItems.LARGE_MEDIKIT);
         }
 
         public Item MakeItemPillsSTA()
@@ -1171,11 +1357,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             // FIXME: should be map local time.
             int timeNow = m_Game.Session.WorldTime.TurnCounter;
 
-            int max = WorldTime.TURNS_PER_DAY * m_Game.GameItems.GROCERIES.BestBeforeDays;
+            /*
+            int max = WorldTime.TURNS_PER_DAY * m_Game.GameItems.RAW_FISH.BestBeforeDays;
             int min = max / 2;
             int freshUntil = timeNow + m_Rules.Roll(min, max);
+            */
 
-            return new ItemFood(m_Game.GameItems.GROCERIES, freshUntil);
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.GROCERIES.BestBeforeDays); //@@MP - removed randomised freshUntil, because who cares (Release 7-6)
+
+            return new ItemFood(m_Game.GameItems.GROCERIES, freshUntil, false, false);
         }
 
         public Item MakeItemCannedFood()
@@ -1278,14 +1468,14 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new ItemRangedWeapon(m_Game.GameItems.PISTOL);
         }
 
-        public Item MakeItemKoltRevolver()
+        public Item MakeItemRevolver()
         {
-            return new ItemRangedWeapon(m_Game.GameItems.KOLT_REVOLVER);
+            return new ItemRangedWeapon(m_Game.GameItems.REVOLVER);
         }
 
         public Item MakeItemRandomPistol()
         {
-            return m_Game.Rules.RollChance(50) ? MakeItemPistol() : MakeItemKoltRevolver();
+            return m_Game.Rules.RollChance(50) ? MakeItemPistol() : MakeItemRevolver();
         }
 
         public Item MakeItemLightPistolAmmo()
@@ -1356,7 +1546,18 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                     throw new InvalidOperationException("unhandled roll");
             }
 
-            return new ItemSprayPaint(paintModel);
+            return new ItemSprayPaint(paintModel)
+            {
+                IsForbiddenToAI = true //@@MP - no point in them having these (Release 7-6)
+            };
+        }
+
+        public Item MakeItemPaintThinner()  //@@MP (Release 7-6)
+        {
+            return new ItemSprayPaint(m_Game.GameItems.PAINT_THINNER)
+            {
+                IsForbiddenToAI = true //@@MP - no point in them having these (Release 7-6)
+            };
         }
 
         public Item MakeItemStenchKiller()
@@ -1374,9 +1575,19 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new ItemAmmo(m_Game.GameItems.AMMO_PRECISION_RIFLE);
         }
 
-        public Item MakeItemArmyRifle()
+        public Item MakeItemArmyRifle() //@@MP - added 3 new types (Release 7-6)
         {
-            return new ItemRangedWeapon(m_Game.GameItems.ARMY_RIFLE);
+            // random model.
+            int roll = m_Game.Rules.Roll(0, 4);
+            switch (roll)
+            {
+                case 0: return new ItemRangedWeapon(m_Game.GameItems.ARMY_RIFLE1);
+                case 1: return new ItemRangedWeapon(m_Game.GameItems.ARMY_RIFLE2);
+                case 2: return new ItemRangedWeapon(m_Game.GameItems.ARMY_RIFLE3);
+                case 3: return new ItemRangedWeapon(m_Game.GameItems.ARMY_RIFLE4);
+                default:
+                    throw new InvalidOperationException("unhandled roll");
+            }
         }
 
         public Item MakeItemHeavyRifleAmmo()
@@ -1416,6 +1627,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         public Item MakeItemBigFlashlight()
         {
             return new ItemLight(m_Game.GameItems.BIG_FLASHLIGHT);
+        }
+
+        public Item MakeItemRandomFlashlight() //@@MP (Release 7-6)
+        {
+            return new ItemLight(m_Rules.RollChance(50) ? m_Game.GameItems.BIG_FLASHLIGHT : m_Game.GameItems.FLASHLIGHT);
         }
 
         public Item MakeItemZTracker()
@@ -1462,16 +1678,26 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public Item MakeItemBook()
+        public Item MakeItemCHARBook() //@@MP (Release 7-6)
         {
-            return new ItemEntertainment(m_Game.GameItems.BOOK);
+            return new ItemEntertainment(m_Game.GameItems.BOOK_CHAR);
         }
 
-        public Item MakeItemMagazines()
+        public Item MakeItemBook(DiceRoller roller)
         {
-            return new ItemEntertainment(m_Game.GameItems.MAGAZINE)
+            ItemModel[] NOVELS = { m_Game.GameItems.BOOK_BLUE, m_Game.GameItems.BOOK_GREEN, m_Game.GameItems.BOOK_RED }; //@@MP - added more sprites for books (Release 7-6)
+
+            return new ItemEntertainment(NOVELS[roller.Roll(0, NOVELS.Length)]);
+        }
+
+        public Item MakeItemMagazines(DiceRoller roller)
+        {
+            ItemModel[] COVERS = { m_Game.GameItems.MAGAZINE1, m_Game.GameItems.MAGAZINE2, m_Game.GameItems.MAGAZINE3, m_Game.GameItems.MAGAZINE4 }; //@@MP - added more sprites for mags (Release 7-6)
+            ItemModel model = (COVERS[roller.Roll(0, COVERS.Length)]);
+
+            return new ItemEntertainment(model)
             {
-                Quantity = m_Rules.Roll(1, m_Game.GameItems.MAGAZINE.StackingLimit)
+                Quantity = m_Rules.Roll(1, model.StackingLimit)
             };
         }
 
@@ -1555,7 +1781,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             int timeNow = m_Game.Session.WorldTime.TurnCounter;
             int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.WILD_BERRIES.BestBeforeDays);
-            return new ItemFood(m_Game.GameItems.WILD_BERRIES, freshUntil)
+            return new ItemFood(m_Game.GameItems.WILD_BERRIES, freshUntil, false, false)
             {
                 Quantity = 3
             };
@@ -1577,7 +1803,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             int timeNow = m_Game.Session.WorldTime.TurnCounter;
             int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.VEGETABLES.BestBeforeDays);
-            return new ItemFood(m_Game.GameItems.VEGETABLES, freshUntil)
+            return new ItemFood(m_Game.GameItems.VEGETABLES, freshUntil, false, false)
             {
                 Quantity = 3
             };
@@ -1599,7 +1825,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeItemC4Explosive()
         {
-            return new ItemExplosive(m_Game.GameItems.C4,m_Game.GameItems.C4_PRIMED);
+            return new ItemExplosive(m_Game.GameItems.C4,m_Game.GameItems.C4_PRIMED)
+            {
+                IsForbiddenToAI = true  //@@MP (Release 7-6)
+            };
         }
 
         //@@MP (Release 7-1)
@@ -1619,14 +1848,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             };
         }
 
-        public Item MakeItemMatches() //unused. reserved for future use
-        {
-            return new ItemExplosive(m_Game.GameItems.MATCHES, m_Game.GameItems.MATCHES_PRIMED)
-            {
-                Quantity = 20
-            };
-        }
-
         public Item MakeItemEnergyDrink()
         {
             return new ItemMedicine(m_Game.GameItems.ENERGY_DRINK)
@@ -1637,7 +1858,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeItemBinoculars()
         {
-            return new ItemLight(m_Game.GameItems.BINOCULARS); //code under DoTakeItem() will switch to male type if required
+            return new ItemLight(m_Game.GameItems.BINOCULARS) //code under DoTakeItem() will switch to male type if required
+            {
+                IsForbiddenToAI = true
+            };
         }
 
         public Item MakeItemSiphonKit()
@@ -1774,16 +1998,329 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         }
 
         //@@MP (Release 7-3)
-        public Item MakeItemFuelPumpExplosive()
-        {
-            return new ItemExplosive(m_Game.GameItems.FUEL_PUMP, m_Game.GameItems.FUEL_PUMP_PRIMED);
-        }
-
         public Item MakeItemSleepingBag()
         {
             return new Item(m_Game.GameItems.SLEEPING_BAG)
             {
                 IsForbiddenToAI = true //TODO in the future?
+            };
+        }
+
+        //@@MP (Release 7-6)
+        public Item MakeItemSMG()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.SMG);
+        }
+
+        public Item MakeItemDoubleBarrel()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.DOUBLE_BARREL);
+        }
+
+        public Item MakeItemMinigun()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.MINIGUN)
+            {
+                IsForbiddenToAI = true //because there is only 1 per game, and because they can't be used in single-shot fire mode, only rapid fire
+            };
+        }
+
+        public Item MakeItemMinigunAmmo()
+        {
+            return new ItemAmmo(m_Game.GameItems.AMMO_MINIGUN)
+            {
+                IsForbiddenToAI = true //because there is only 1 minigun per game
+            };
+        }
+
+        public Item MakeItemTacticalShotgun()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.TACTICAL_SHOTGUN);
+        }
+
+        public Item MakeItemCleaver()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.CLEAVER);
+        }
+
+        public Item MakeItemBrassKnuckles()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.BRASS_KNUCKLES);
+        }
+
+        public Item MakeItemFlail()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.FLAIL);
+        }
+
+        public Item MakeItemKitchenKnife()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.KITCHEN_KNIFE);
+        }
+
+        public Item MakeItemScimitar()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.SCIMITAR);
+        }
+
+        public Item MakeItemMace()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.MACE);
+        }
+
+        public Item MakeItemNunchaku()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.NUNCHAKU);
+        }
+
+        public Item MakeItemFryingPan()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.FRYING_PAN);
+        }
+
+        public Item MakeItemPitchFork()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.PITCH_FORK);
+        }
+
+        public Item MakeItemScythe()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.SCYTHE);
+        }
+
+        public Item MakeItemSickle()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.SICKLE);
+        }
+
+        public Item MakeItemSpear()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.SPEAR);
+        }
+
+        public Item MakeItemSpikedMace()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.SPIKED_MACE);
+        }
+
+        public Item MakeItemFireAxe()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.FIRE_AXE);
+        }
+
+        public Item MakeItemArmyPrecisionRifle()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.ARMY_PRECISION_RIFLE);
+        }
+
+        public Item MakeItemGrenadeLauncher()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.GRENADE_LAUNCHER)
+            {
+                IsForbiddenToAI = true //because there is only 1 per game
+            };
+        }
+
+        public Item MakeItemGrenadeLauncherAmmo()
+        {
+            return new ItemAmmo(m_Game.GameItems.AMMO_GRENADES)
+            {
+                IsForbiddenToAI = true //because there is only 1 launcher per game
+            };
+        }
+
+        public Item MakeItemRandomCommonAmmo()
+        {
+            int randomItem = m_Game.Rules.Roll(0, 6);
+            switch (randomItem)
+            {
+                case 0: return MakeItemHeavyRifleAmmo();
+                case 1: return MakeItemPrecisionRifleAmmo();
+                case 2: return MakeItemLightPistolAmmo();
+                case 3: return MakeItemLightRifleAmmo();
+                case 4: return MakeItemHeavyPistolAmmo();
+                case 5: return MakeItemShotgunAmmo();
+                default:
+                    throw new InvalidOperationException("unhandled roll");
+            }
+        }
+
+        public Item MakeItemRandomAntiqueWeapon()
+        {
+            int roll = m_Game.Rules.Roll(0, 8);
+            switch (roll)
+            {
+                case 0: return MakeItemFlail();
+                case 1: return MakeItemScimitar();
+                case 2: return MakeItemMace();
+                case 3: return MakeItemSpikedMace();
+                case 4: return MakeItemSpear();
+                case 5: return MakeItemSickle();
+                case 6: return MakeItemHolyHandGrenade();
+                case 7: return MakeItemUniqueBookOfArmaments();
+                default:
+                    throw new InvalidOperationException("unhandled roll");
+            }
+        }
+
+        public Item MakeItemHolyHandGrenade()
+        {
+            return new ItemGrenade(m_Game.GameItems.HOLY_HAND_GRENADE, m_Game.GameItems.HOLY_HAND_GRENADE_PRIMED)
+            {
+                Quantity = m_Rules.Roll(1, m_Game.GameItems.HOLY_HAND_GRENADE.StackingLimit)
+            };
+        }
+
+        public Item MakeItemFishingRod()
+        {
+            return new Item(m_Game.GameItems.FISHING_ROD);
+        }
+
+        public Item MakeItemRawFish()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.RAW_FISH.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.RAW_FISH, freshUntil, true, true);
+        }
+
+        public Item MakeItemCookedFish()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.COOKED_FISH.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.COOKED_FISH, freshUntil, false, false);
+        }
+
+        public Item MakeItemRawRabbit()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.RAW_RABBIT.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.RAW_RABBIT, freshUntil, true, true);
+        }
+
+        public Item MakeItemCookedRabbit()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.COOKED_RABBIT.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.COOKED_RABBIT, freshUntil, false, false);
+        }
+
+        public Item MakeItemRawChicken()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.RAW_CHICKEN.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.RAW_CHICKEN, freshUntil, true, true);
+        }
+
+        public Item MakeItemCookedChicken()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.COOKED_CHICKEN.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.COOKED_CHICKEN, freshUntil, false, false);
+        }
+
+        public Item MakeItemRawDogMeat()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.RAW_DOG_MEAT.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.RAW_DOG_MEAT, freshUntil, true, true);
+        }
+
+        public Item MakeItemCookedDogMeat()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.COOKED_DOG_MEAT.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.COOKED_DOG_MEAT, freshUntil, false, false);
+        }
+
+        public Item MakeItemRawHumanFlesh()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.RAW_HUMAN_FLESH.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.RAW_HUMAN_FLESH, freshUntil, true, true);
+        }
+
+        public Item MakeItemCookedHumanFlesh()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.RAW_HUMAN_FLESH.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.COOKED_HUMAN_FLESH, freshUntil, false, false);
+        }
+
+        public Item MakeItemChickenEgg()
+        {
+            // FIXME: should be map local time.
+            int timeNow = m_Game.Session.WorldTime.TurnCounter;
+            int freshUntil = timeNow + (WorldTime.TURNS_PER_DAY * m_Game.GameItems.CHICKEN_EGG.BestBeforeDays);
+
+            return new ItemFood(m_Game.GameItems.CHICKEN_EGG, freshUntil, false, false);
+        }
+
+        public Item MakeItemUniqueBookOfArmaments()
+        {
+            return new Item(m_Game.GameItems.UNIQUE_BOOK_OF_ARMAMENTS)
+            {
+                IsForbiddenToAI = true
+            };
+        }
+
+        public Item MakeItemFireExtinguisher()
+        {
+            return new ItemSprayPaint(m_Game.GameItems.FIRE_EXTINGUISHER)
+            {
+                IsForbiddenToAI = true //@@MP - no point in them having these, as there's no code to handle it (Release 7-6)
+            };
+        }
+
+        public Item MakeItemMatches()
+        {
+            return new Item(m_Game.GameItems.MATCHES)
+            {
+                Quantity = 20
+            };
+        }
+
+        public Item MakeItemBioForceGun()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.BIO_FORCE_GUN)
+            {
+                IsForbiddenToAI = true //because there is only 1 per game
+            };
+        }
+
+        public Item MakeItemBioForceGunAmmo()
+        {
+            return new ItemAmmo(m_Game.GameItems.AMMO_PLASMA)
+            {
+                IsForbiddenToAI = true, //because there is only 1 BFG per game
+                Quantity = 1 //only ever spawn one at a time, to avoid it being too plentiful. it must be super rare
+            };
+        }
+
+        public Item MakeItemBiohazardSuit()
+        {
+            return new ItemBodyArmor(m_Game.GameItems.BIOHAZARD_SUIT)
+            {
+                IsForbiddenToAI = true,
             };
         }
         #endregion

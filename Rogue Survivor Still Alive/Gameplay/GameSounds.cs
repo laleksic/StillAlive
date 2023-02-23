@@ -40,6 +40,16 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ARMY_RIFLE_SINGLE_SHOT_PLAYER_FILE = PATH + "army_rifle_single-shot_player";
         public const string ARMY_RIFLE_RAPID_FIRE_PLAYER = "player fires army rifle burst";
         public const string ARMY_RIFLE_RAPID_FIRE_PLAYER_FILE = PATH + "army_rifle_rapid-fire_player";
+        public const string SMG_SINGLE_SHOT_PLAYER = "player fires SMG";
+        public const string SMG_SINGLE_SHOT_PLAYER_FILE = PATH + "SMG_single-shot_player";
+        public const string SMG_RAPID_FIRE_PLAYER = "player fires SMG burst";
+        public const string SMG_RAPID_FIRE_PLAYER_FILE = PATH + "SMG_rapid-fire_player";
+        public const string MINIGUN_RAPID_FIRE_PLAYER = "player fires minigun burst";
+        public const string MINIGUN_RAPID_FIRE_PLAYER_FILE = PATH + "minigun_rapid-fire_player";
+        public const string GRENADE_LAUNCHER_SINGLE_SHOT_PLAYER = "player fires grenade launcher";
+        public const string GRENADE_LAUNCHER_SINGLE_SHOT_PLAYER_FILE = PATH + "grenade_launcher_single-shot_player";
+        public const string BIO_FORCE_GUN_PLAYER = "player fires bio force gun";
+        public const string BIO_FORCE_GUN_PLAYER_FILE = PATH + "bio_force_gun_player";
         #endregion
 
         #region Nearby
@@ -63,6 +73,14 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ARMY_RIFLE_SINGLE_SHOT_NEARBY_FILE = PATH + "army_rifle_single-shot_nearby";
         public const string ARMY_RIFLE_RAPID_FIRE_NEARBY = "army rifle burst nearby";
         public const string ARMY_RIFLE_RAPID_FIRE_NEARBY_FILE = PATH + "army_rifle_rapid-fire_nearby";
+        public const string SMG_SINGLE_SHOT_NEARBY = "SMG firing nearby";
+        public const string SMG_SINGLE_SHOT_NEARBY_FILE = PATH + "SMG_single-shot_nearby";
+        public const string SMG_RAPID_FIRE_NEARBY = "SMG burst nearby";
+        public const string SMG_RAPID_FIRE_NEARBY_FILE = PATH + "SMG_rapid-fire_nearby";
+        public const string MINIGUN_RAPID_FIRE_NEARBY = "minigun burst nearby";
+        public const string MINIGUN_RAPID_FIRE_NEARBY_FILE = PATH + "minigun_rapid-fire_nearby";
+        public const string GRENADE_LAUNCHER_SINGLE_SHOT_NEARBY = "grenade launcher firing nearby";
+        public const string GRENADE_LAUNCHER_SINGLE_SHOT_NEARBY_FILE = PATH + "grenade_launcher_single-shot_nearby";
         #endregion
 
         #region Far
@@ -84,6 +102,12 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ARMY_RIFLE_SINGLE_SHOT_FAR_FILE = PATH + "army_rifle_single-shot_far";
         public const string ARMY_RIFLE_RAPID_FIRE_FAR = "army rifle burst somewhere";
         public const string ARMY_RIFLE_RAPID_FIRE_FAR_FILE = PATH + "army_rifle_rapid-fire_far";
+        public const string SMG_SINGLE_SHOT_FAR = "SMG firing somewhere";
+        public const string SMG_SINGLE_SHOT_FAR_FILE = PATH + "SMG_single-shot_far";
+        public const string SMG_RAPID_FIRE_FAR = "SMG burst somewhere";
+        public const string SMG_RAPID_FIRE_FAR_FILE = PATH + "SMG_rapid-fire_far";
+        public const string MINIGUN_RAPID_FIRE_FAR = "minigun burst somewhere";
+        public const string MINIGUN_RAPID_FIRE_FAR_FILE = PATH + "minigun_rapid-fire_far";
         #endregion
         #endregion
 
@@ -148,6 +172,10 @@ namespace djack.RogueSurvivor.Gameplay
         //06 was removed. too low quality //@@MP (Release 7-4)
         public const string SCREAM_NEARBY_07 = "scream nearby 07";
         public const string SCREAM_NEARBY_07_FILE = PATH + "scream_nearby_07";
+        public const string SCREAM_NEARBY_08 = "scream nearby 08";
+        public const string SCREAM_NEARBY_08_FILE = PATH + "scream_nearby_08";
+        public const string SCREAM_NEARBY_09 = "scream nearby 09";
+        public const string SCREAM_NEARBY_09_FILE = PATH + "scream_nearby_09";
 
         public const string SCREAM_FAR_01 = "scream far 01";
         public const string SCREAM_FAR_01_FILE = PATH + "scream_far_01";
@@ -162,6 +190,10 @@ namespace djack.RogueSurvivor.Gameplay
         //06 was removed. too low quality //@@MP (Release 7-4)
         public const string SCREAM_FAR_07 = "scream far 07";
         public const string SCREAM_FAR_07_FILE = PATH + "scream_far_07";
+        public const string SCREAM_FAR_08 = "scream far 08";
+        public const string SCREAM_FAR_08_FILE = PATH + "scream_far_08";
+        public const string SCREAM_FAR_09 = "scream far 09";
+        public const string SCREAM_FAR_09_FILE = PATH + "scream_far_09";
 
         //@@MP (Release 3)
         public const string BASH_WOOD_PLAYER = "bash something wooden";
@@ -296,8 +328,8 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string DRINK = "drinks";
         public const string DRINK_FILE = PATH + "drink";
-        public const string PLANT_SEEDS = "plants seeds";
-        public const string PLANT_SEEDS_FILE = PATH + "plant_seeds";
+        public const string DIG_GROUND = "dig ground"; //@@MP - was called 'PLANT_SEEDS' before also being used when burying corpses (Release 7-6)
+        public const string DIG_GROUND_FILE = PATH + "dig_ground";
         public const string PLACE_TRAP = "places trap";
         public const string PLACE_TRAP_FILE = PATH + "place_trap";
         public const string MAKE_MOLOTOV = "makes molotov";
@@ -387,5 +419,31 @@ namespace djack.RogueSurvivor.Gameplay
         public const string METAL_DOOR_OPEN_FILE = PATH + "metal_door_open";
         public const string METAL_DOOR_CLOSE = "closing metal door";
         public const string METAL_DOOR_CLOSE_FILE = PATH + "metal_door_close";
+
+        //@@MP (Release 7-6)
+        public const string FISHING_CAST_PLAYER = "fishing cast";
+        public const string FISHING_CAST_PLAYER_FILE = PATH + "fishing_cast_player";
+        public const string FISHING_CAST_NEARBY = "fishing cast nearby";
+        public const string FISHING_CAST_NEARBY_FILE = PATH + "fishing_cast_nearby";
+        public const string FISHING_REEL_PLAYER = "fishing reel";
+        public const string FISHING_REEL_PLAYER_FILE = PATH + "fishing_reel_player";
+        public const string FISHING_REEL_NEARBY = "fishing reel nearby";
+        public const string FISHING_REEL_NEARBY_FILE = PATH + "fishing_reel_nearby";
+        public const string COOKING_SIZZLE_PLAYER = "cooking sizzle";
+        public const string COOKING_SIZZLE_PLAYER_FILE = PATH + "cooking_sizzle_player";
+        public const string COOKING_SIZZLE_NEARBY = "cooking sizzle nearby";
+        public const string COOKING_SIZZLE_NEARBY_FILE = PATH + "cooking_sizzle_nearby";
+        public const string FIRE_EXTINGUISHER_PLAYER = "fire extinguisher";
+        public const string FIRE_EXTINGUISHER_PLAYER_FILE = PATH + "fire_extinguisher_player";
+        public const string FIRE_EXTINGUISHER_NEARBY = "fire extinguisher nearby";
+        public const string FIRE_EXTINGUISHER_NEARBY_FILE = PATH + "fire_extinguisher_nearby";
+        public const string MATCH_STRIKE_START_FIRE_PLAYER = "matches start fire";
+        public const string MATCH_STRIKE_START_FIRE_PLAYER_FILE = PATH + "match_strike_start_fire_player";
+        public const string EQUIP_BFG_PLAYER = "equips BFG";
+        public const string EQUIP_BFG_PLAYER_FILE = PATH + "equip_BFG_player";
+        public const string PLASMA_BURST_VISIBLE = "plasma burst";
+        public const string PLASMA_BURST_VISIBLE_FILE = PATH + "plasma_burst_visible";
+        public const string PLASMA_BURST_AUDIBLE = "plasma burst nearby";
+        public const string PLASMA_BURST_AUDIBLE_FILE = PATH + "plasma_burst_audible";
     }
 }

@@ -95,7 +95,7 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Running.
         /// </summary>
-        MOVE_RUN,
+        //MOVE_RUN,  //merged with MOVE_BASIC
 
         /// <summary>
         /// Resting.
@@ -120,7 +120,7 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Unequiping an item.
         /// </summary>
-        ITEM_UNEQUIP,
+        //ITEM_UNEQUIP,   //disabled
 
         /// <summary>
         /// Equiping an item.
@@ -146,6 +146,16 @@ namespace djack.RogueSurvivor.Engine
         /// Flashlights.
         /// </summary>
         FLASHLIGHT,
+
+        /// <summary>
+        /// Ate raw meat
+        /// </summary>
+        FOOD_POISONING, //@@MP (Release 7-6)
+
+        /// <summary>
+        /// Warning about eating raw meat
+        /// </summary>
+        RAW_MEAT, //@@MP (Release 7-6)
 
         /// <summary>
         /// Cellphones.
@@ -185,7 +195,7 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Closing a door/window.
         /// </summary>
-        DOORWINDOW_CLOSE,
+        //DOORWINDOW_CLOSE,  //merged with DOORWINDOW_OPEN
 
         /// <summary>
         /// Pushing/Pulling objects/actors.
@@ -260,7 +270,7 @@ namespace djack.RogueSurvivor.Engine
         /// <summary>
         /// Leading : switching place.
         /// </summary>
-        LEADING_SWITCH_PLACE,
+        //LEADING_SWITCH_PLACE,  //merged with GIVE_ORDERS
 
         /// <summary>
         /// Saving/Loading.
@@ -332,6 +342,41 @@ namespace djack.RogueSurvivor.Engine
         /// Weapon effect of stunning victims
         /// </summary>
         INCAPACITATION, //@@MP (Release 7-2)
+
+        /// <summary>
+        /// Not worth using in single-shot mode
+        /// </summary>
+        SMG, //@@MP (Release 7-6)
+
+        /// <summary>
+        /// Can only be used in rapid-fire mode
+        /// </summary>
+        MINIGUN, //@@MP (Release 7-6)
+
+        /// <summary>
+        /// Player is on fire. What to do next
+        /// </summary>
+        ON_FIRE, //@@MP (Release 7-6)
+
+        /// <summary>
+        /// Clothes can be changed at the shopping mall
+        /// </summary>
+        CHANGE_CLOTHING, //@@MP (Release 7-6)
+
+        /// <summary>
+        /// Hairstyle can be changed at the shopping mall
+        /// </summary>
+        CHANGE_HAIRSTYLE, //@@MP (Release 7-6)
+        
+        /// <summary>
+        /// Fishing rods can be used on ponds
+        /// </summary>
+        FISHING, //@@MP (Release 7-6)
+
+        /// <summary>
+        /// Matches make campfires and light fire barrels
+        /// </summary>
+        MAKE_FIRE_FOR_COOKING, //@@MP (Release 7-6)
 
         _COUNT
     }

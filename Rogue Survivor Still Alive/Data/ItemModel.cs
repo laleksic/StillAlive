@@ -22,7 +22,7 @@ namespace djack.RogueSurvivor.Data
         bool m_IsFlameWeapon; //@@MP (Release 5-7)
         bool m_IsThrowable; //@@MP (Release 7-1)
         bool m_IsBatteryPowered; //@@MP (Release 7-1)
-        bool m_CausesFires; //@@MP (Release 7-3)
+        bool m_CausesTileFires; //@@MP (Release 7-3)
         #endregion
 
         #region Properties
@@ -119,16 +119,16 @@ namespace djack.RogueSurvivor.Data
         }
 
         /// <summary>
-        /// Chance to set tile on fire with explosions (eg fuel pumps)
+        /// Chance to set tile on fire with explosions (eg fuel pumps), ie. not the direct attack but a secondary effect
         /// </summary>
-        public bool CausesFires //@@MP (Release 7-3)
+        public bool CausesTileFires //@@MP (Release 7-3)
         {
-            get { return m_CausesFires; }
-            set { m_CausesFires = value; }
+            get { return m_CausesTileFires; }
+            set { m_CausesTileFires = value; }
         }
 
         /// <summary>
-        /// Allows player to use item even if it's wasteful ie RogueGame.DoUseMedicineItem
+        /// Allows player to use item even if it's wasteful, ie. RogueGame.DoUseMedicineItem()
         /// </summary>
         public bool IsRecreational //@@MP (Release 5-7)
         {

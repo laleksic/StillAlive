@@ -1,8 +1,19 @@
-﻿The following are the third party media files used by this game. Where an attribution doesn't exist, the media was originally created by the game's authors or contributors.
-Each and every file attributed below has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links.
-All files are public domain or licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
+﻿***********CONTENTS***********
+(press a number key to go straight to that section)
+0. Intro
+1. SOUND CREDITS
+2. IMAGE CREDITS
+3. MUSIC CREDITS
+******************************
 
- 
+** INTRO **
+The following are the third party media files used by this game. Where an attribution doesn't exist, the media was originally created by the game's authors or contributors.
+Each and every file attributed below has been modified from the original in some manner. You can find the author, original sound and associated license at the relevant links.
+All files are public domain (CC0) or licensed under CC-BY 3.0 (https://creativecommons.org/licenses/by/3.0/) unless otherwise specified.
+Note: all files have been modified from the original material. Some have been remixed, cropped, or combined. All have had their amplification changed for normalisation.
+The following list is accesible in a text file (CREDITS.txt) in the game's folder on your hard drive.
+
+<SECTION>
 ** SOUND CREDITS **
 
 -Melee attack : https://freesound.org/people/Pinball_Wiz/sounds/394874/ by Pinball_Wiz
@@ -36,7 +47,7 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Wooden door open : https://freesound.org/people/skyumori/sounds/104533/ by skyumori
 -Wooden door close : https://freesound.org/people/CastIronCarousel/sounds/216872/ by CastIronCarousel
 -Glass door : https://freesound.org/people/BMacZero/sounds/94134/ by BMacZero
--Medkit / bandage : https://freesound.org/people/JakLocke/sounds/261397/ by JakLocke
+-Medikits : https://freesound.org/people/JakLocke/sounds/261397/ by JakLocke
 -Pills : https://freesound.org/people/gneube/sounds/315836/ by gneube
 -Page turn : https://freesound.org/people/alixgaus/sounds/383542/ by alixgaus
 -Shove : https://freesound.org/people/Reitanna/sounds/344004/ by Reitanna
@@ -73,7 +84,9 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Dog howl : https://freesound.org/people/btalbot/sounds/252678/ by btalbot
 -Wolf howl : https://freesound.org/people/Robinhood76/sounds/66398/ by Robinhood76
 -Owl : https://freesound.org/people/howebzar/sounds/415153/ by howebzar
--Plant seeds : https://freesound.org/people/doorajar/sounds/427074/ by doorajar
+-Dig ground :
+	dig: https://freesound.org/people/f3bbbo/sounds/651292/ by f3bbbo
+	toss: https://freesound.org/people/doorajar/sounds/427074/ by doorajar
 -Church bells : https://freesound.org/people/SometimesJasmine/sounds/399678/ by SometimesJasmine
 -Hurt by trap (female) : https://freesound.org/people/Reitanna/sounds/344033/ by Reitanna
 -Hurt by trap (male) : https://freesound.org/people/Under7dude/sounds/163441/ by Under7dude
@@ -114,11 +127,23 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Sewers thing : https://opengameart.org/content/15-monster-gruntpaindeath-sounds by Michel Baradari
 -Zombie master : https://opengameart.org/content/15-monster-gruntpaindeath-sounds by Michel Baradari
 -Man shouts "hey" : https://freesound.org/people/jukkis111/sounds/45605/ by jukkis111
--Female shouts "hey" : https://www.sounddogs.com/sound-effects/yell-female-hey-11092618 (purchased, https://www.sounddogs.com/sound-effects-eula)
+-Female shouts "hey" : https://www.sounddogs.com/sound-effects/yell-female-hey-11092618 [purchased by the author, MP (https://www.sounddogs.com/sound-effects-eula)]
 -Metal door close : https://freesound.org/people/Q.K./sounds/56257/ by Q.K.
 -Metal door open : https://freesound.org/people/MaxDemianAGL/sounds/183605/ by MaxDemianAGL
+-SMG & minigun : https://freesound.org/people/tehlordoswag420/sounds/240377/ by tehlordoswag420
+-Grenade launcher : https://freesound.org/people/LeMudCrab/sounds/163458/ by LeMudCrab
+-Fishing cast : https://freesound.org/people/BranndyBottle/sounds/464697/ by BranndyBottle
+-Fishing reel : https://freesound.org/people/paulprit/sounds/507068/ by paulprit
+-Cooking sizzle : https://freesound.org/people/LG/sounds/77922/ by LG
+-Match strike to make fire: https://freesound.org/people/Bertsz/sounds/524306/ by Bertsz
+-Bio Force Gun reload/equip: https://freesound.org/people/18hiltc/sounds/210604/ by 18hiltc [CC-BY 4.0]
+-Bio Force Gun: https://freesound.org/people/Anomaex/sounds/490245/ by Anomaex
+-Plasma burst: https://freesound.org/people/newlocknew/sounds/514024/ by newlocknew [CC-BY 4.0]
+The following sounds all carry the Pixabay License (https://pixabay.com/service/terms/#license), retrieved 16/2/2023:
+-080167 Female scream 02 : https://pixabay.com/sound-effects/080167-female-scream-02-89290/ by pixabay
+-Male Extreme Scream : https://pixabay.com/sound-effects/male-extreme-scream-123078/ by Universfield
 
-
+<SECTION>
 ** IMAGE CREDITS **
 
 -Vat : https://opengameart.org/content/potion-phial by TCRChi3ftan / Jao247
@@ -135,9 +160,12 @@ All files are public domain or licensed under CC-BY 3.0 https://creativecommons.
 -Helicopter : https://opengameart.org/content/helicopter-3 by knik1985
 -Tractor : https://opengameart.org/content/tractor-png by jcrown41
 -Trees : https://opengameart.org/content/lpc-plant-repack by Liberated Pixel Cup participants (http://opengameart.org/lpc-art-entries)
--Mobile shop signage https://opengameart.org/content/box-symbols by mold
+-Mobile shop signage : https://opengameart.org/content/box-symbols by mold
+-Barbershop scissors : http://cliparts.co/clipart/2326272
+-Incorporates some of Deon's 'Deonapocalypse' tileset. Grab the whole set for vanilla RS: http://roguesurvivor.proboards.com/thread/264/alpha-9-deonapocalypse
+-Medikits, magazines (#2-4), novels, minigun, SMG, burial crosses, brass knuckles, cleaver, fire axe, flail, frying pan, grenade launcher, double barrel, kitchen knife, mace, nunchaku, pitch fork, scimitar, scythe, sickle, spear, spiked mace, and campfire, all by community forum contributor Jess (https://roguesurvivor.proboards.com/user/517).
 
-
+<SECTION>
 ** MUSIC CREDITS **
 
 -Black Ops : https://opengameart.org/content/commando-team-action-loop-cut by Grégoire Lourme

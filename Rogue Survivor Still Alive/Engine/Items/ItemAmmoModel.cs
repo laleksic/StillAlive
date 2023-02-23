@@ -18,6 +18,9 @@ namespace djack.RogueSurvivor.Engine.Items
         PRECISION_RIFLE, //@@MP (Release 6-6)
         FUEL, //@@MP (Release 7-1)
         CHARGE, //@@MP (Release 7-2)
+        MINIGUN, //@@MP (Release 7-6)
+        GRENADES, //@@MP (Release 7-6)
+        PLASMA, //@@MP (Release 7-6)
 
         _COUNT
     }

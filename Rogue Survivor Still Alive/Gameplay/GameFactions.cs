@@ -26,6 +26,7 @@ namespace djack.RogueSurvivor.Gameplay
             ThePsychopaths,
             TheSurvivors,
             TheFerals,
+            TheUnintelligentAnimals, //@@MP (Release 7-6)
 
             _COUNT
         }
@@ -61,6 +62,8 @@ namespace djack.RogueSurvivor.Gameplay
         public Faction ThePsychopaths { get { return this[IDs.ThePsychopaths]; } }
         public Faction TheSurvivors { get { return this[IDs.TheSurvivors]; } }
         public Faction TheFerals { get { return this[IDs.TheFerals]; } }
+        public Faction TheUnintelligentAnimals { get { return this[IDs.TheUnintelligentAnimals]; } }
+
         #endregion
 
         public static readonly GameItems.IDs[] BAD_POLICE_OUTFITS = new GameItems.IDs[] 
@@ -89,6 +92,7 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.ThePsychopaths] = new Faction("Psychopaths", "psychopath");
             this[IDs.TheSurvivors] = new Faction("Survivors", "survivor");
             this[IDs.TheFerals] = new Faction("Ferals", "feral") { LeadOnlyBySameFaction = true };
+            this[IDs.TheUnintelligentAnimals] = new Faction("animals", "animal") { LeadOnlyBySameFaction = true };
 
             // relations.
             this[IDs.TheArmy].AddEnemy(this[IDs.TheBikers]);
@@ -96,7 +100,7 @@ namespace djack.RogueSurvivor.Gameplay
             this[IDs.TheArmy].AddEnemy(this[IDs.TheGangstas]);
             this[IDs.TheArmy].AddEnemy(this[IDs.TheUndeads]);
             this[IDs.TheArmy].AddEnemy(this[IDs.ThePsychopaths]);
-            
+
             this[IDs.TheBikers].AddEnemy(this[IDs.TheArmy]);
             this[IDs.TheBikers].AddEnemy(this[IDs.TheBlackOps]);
             this[IDs.TheBikers].AddEnemy(this[IDs.TheCHARCorporation]);
@@ -167,11 +171,28 @@ namespace djack.RogueSurvivor.Gameplay
 
             this[IDs.TheFerals].AddEnemy(this[IDs.TheUndeads]);
 
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.TheArmy]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.TheBikers]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.TheBlackOps]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.TheCHARCorporation]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.TheCivilians]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.TheGangstas]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.ThePolice]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.ThePsychopaths]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.TheSurvivors]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.TheFerals]);
+            this[IDs.TheUnintelligentAnimals].AddEnemy(this[IDs.TheUndeads]);
+
             // make sure relations are symetric!
             foreach (Faction f in m_Factions)
             {
                 foreach (Faction fe in f.Enemies)
                 {
+                    //@MP - TheUnintelligentAnimals aren't enemies with any faction, they exist just as a source of food (Release 7-6)
+                    //they have enemies only so that they can run away from anyone and everyone
+                    if (f == this[IDs.TheUnintelligentAnimals])
+                        continue;
+
                     if (!fe.IsEnemyOf(f)) //@@MP - fixed bug, was fe (Release 7-3)
                         fe.AddEnemy(f);
                 }

@@ -17,6 +17,10 @@ namespace djack.RogueSurvivor.Data
             BROKEN
         }
 
+        //MP: evidently RoguedJack had partially designed and catered for object fires (and rain putting them out), but had only got as far as implenting it
+        //for cars, and only as a static thing (ie. can't be extinguished, others can't be set alight).
+        //I use the FireState.Burnable and OnFire properties for the new object classes, Barrels and Cars. My code ignores any other objects, even if they're Burnable too.
+        //If the fire system is to be fully realised, such as having IsFlameWeapon models be able to set Burnable objects alight, it will need an overhaul.
         [Serializable]
         public enum Fire : byte
         {
@@ -60,6 +64,8 @@ namespace djack.RogueSurvivor.Data
         int m_HitPoints;
 
         Fire m_FireState = Fire.UNINFLAMMABLE;
+
+        string m_HoverDescription; //@@MP (Release 7-6)
 
         Location m_Location;
         #endregion
@@ -111,8 +117,9 @@ namespace djack.RogueSurvivor.Data
         {
             get
             {
+                //@@MP - currently cars are the only objects to use ONFIRE, and I want them to be transparent for FoV purposes, but this REALLY needs to be fixed (Release 6-5)
                 if (m_FireState == Fire.ONFIRE)
-                    return true; //@@MP - currently cars are the only objects to use ONFIRE, and I want them to be transparent for FoV purposes (Release 6-5)
+                    return true;
                 if (m_BreakState == Break.BROKEN)
                     return true;
                 if (m_FireState == Fire.ASHES)
@@ -242,6 +249,14 @@ namespace djack.RogueSurvivor.Data
             get { return m_MaxHitPoints; }
         }
 
+        /// <summary>
+        /// Text shown to the player when they hover over this object. Initially designed for text on burial crosses.
+        /// </summary>
+        public string HoverDescription  //@@MP (Release 7-6)
+        {
+            get { return m_HoverDescription; }
+            set { m_HoverDescription = value; }
+        }
         #endregion
 
         #region Init

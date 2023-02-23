@@ -56,6 +56,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ICON_ODOR_SUPPRESSED = @"Icons\odor_suppressed";  // alpha10
         public const string ICON_OUT_OF_AMMO = @"Icons\out_of_ammo";
         public const string ICON_OUT_OF_BATTERIES = @"Icons\out_of_batteries";
+        public const string ICON_PLASMA_BURST = @"Icons\plasma_burst"; //@@MP (Release 7-1)
         public const string ICON_RANGED_ATTACK = @"Icons\ranged_attack";
         public const string ICON_RANGED_MISS = @"Icons\ranged_miss";
         public const string ICON_RANGED_DAMAGE = @"Icons\ranged_damage";
@@ -359,18 +360,226 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_SHOP_MOBILES = @"Tiles\Decoration\shop_mobiles";
         public const string DECO_SHOP_ELECTRONICS = @"Tiles\Decoration\shop_electronics";
         public const string DECO_SHOP_CLOTHES_STORE = @"Tiles\Decoration\shop_clothes_store";
+        public const string DECO_SHOP_BARBER = @"Tiles\Decoration\shop_barber"; //@@MP (Release 7-6)
         public const string DECO_CINEMA_SIGN = @"Tiles\Decoration\cinema_sign";
         public const string DECO_CINEMA1 = @"Tiles\Decoration\cinema1";
         public const string DECO_CINEMA2 = @"Tiles\Decoration\cinema2";
         public const string DECO_GENERIC_OFFICE = @"Tiles\Decoration\generic_offices";
+
+        #region World decay
+        //@@MP (Release 7-6)
+
+        #region floors
+        //walkway
+        public const string DECO_FLOOR_WALKWAY_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\walkway_v1_phase1";
+        public const string DECO_FLOOR_WALKWAY_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\walkway_v1_phase2";
+        public const string DECO_FLOOR_WALKWAY_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\walkway_v1_phase3";
+        public const string DECO_FLOOR_WALKWAY_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\walkway_v2_phase1";
+        public const string DECO_FLOOR_WALKWAY_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\walkway_v2_phase2";
+        public const string DECO_FLOOR_WALKWAY_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\walkway_v2_phase3";
+        public const string DECO_FLOOR_WALKWAY_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\walkway_v3_phase1";
+        public const string DECO_FLOOR_WALKWAY_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\walkway_v3_phase2";
+        public const string DECO_FLOOR_WALKWAY_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\walkway_v3_phase3";
+        //road NS (asphalt)
+        public const string DECO_FLOOR_ROAD_NS_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\road_asphalt_NS_v1_phase1";
+        public const string DECO_FLOOR_ROAD_NS_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\road_asphalt_NS_v1_phase2";
+        public const string DECO_FLOOR_ROAD_NS_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\road_asphalt_NS_v1_phase3";
+        public const string DECO_FLOOR_ROAD_NS_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\road_asphalt_NS_v2_phase1";
+        public const string DECO_FLOOR_ROAD_NS_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\road_asphalt_NS_v2_phase2";
+        public const string DECO_FLOOR_ROAD_NS_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\road_asphalt_NS_v2_phase3";
+        public const string DECO_FLOOR_ROAD_NS_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\road_asphalt_NS_v3_phase1";
+        public const string DECO_FLOOR_ROAD_NS_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\road_asphalt_NS_v3_phase2";
+        public const string DECO_FLOOR_ROAD_NS_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\road_asphalt_NS_v3_phase3";
+        //road EW (asphalt)
+        public const string DECO_FLOOR_ROAD_EW_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\road_asphalt_EW_v1_phase1";
+        public const string DECO_FLOOR_ROAD_EW_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\road_asphalt_EW_v1_phase2";
+        public const string DECO_FLOOR_ROAD_EW_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\road_asphalt_EW_v1_phase3";
+        public const string DECO_FLOOR_ROAD_EW_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\road_asphalt_EW_v2_phase1";
+        public const string DECO_FLOOR_ROAD_EW_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\road_asphalt_EW_v2_phase2";
+        public const string DECO_FLOOR_ROAD_EW_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\road_asphalt_EW_v2_phase3";
+        public const string DECO_FLOOR_ROAD_EW_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\road_asphalt_EW_v3_phase1";
+        public const string DECO_FLOOR_ROAD_EW_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\road_asphalt_EW_v3_phase2";
+        public const string DECO_FLOOR_ROAD_EW_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\road_asphalt_EW_v3_phase3";
+        //asphalt (non-road)
+        public const string DECO_FLOOR_ASPHALT_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\asphalt_floor_v1_phase1";
+        public const string DECO_FLOOR_ASPHALT_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\asphalt_floor_v1_phase2";
+        public const string DECO_FLOOR_ASPHALT_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\asphalt_floor_v1_phase3";
+        public const string DECO_FLOOR_ASPHALT_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\asphalt_floor_v2_phase1";
+        public const string DECO_FLOOR_ASPHALT_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\asphalt_floor_v2_phase2";
+        public const string DECO_FLOOR_ASPHALT_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\asphalt_floor_v2_phase3";
+        public const string DECO_FLOOR_ASPHALT_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\asphalt_floor_v3_phase1";
+        public const string DECO_FLOOR_ASPHALT_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\asphalt_floor_v3_phase2";
+        public const string DECO_FLOOR_ASPHALT_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\asphalt_floor_v3_phase3";
+        //office
+        public const string DECO_FLOOR_OFFICE_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\office_floor_v1_phase1";
+        public const string DECO_FLOOR_OFFICE_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\office_floor_v1_phase2";
+        public const string DECO_FLOOR_OFFICE_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\office_floor_v2_phase1";
+        public const string DECO_FLOOR_OFFICE_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\office_floor_v2_phase2";
+        public const string DECO_FLOOR_OFFICE_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\office_floor_v3_phase1";
+        public const string DECO_FLOOR_OFFICE_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\office_floor_v3_phase2";
+        //floor planks
+        public const string DECO_FLOOR_PLANKS_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\planks_floor_v1_phase1";
+        public const string DECO_FLOOR_PLANKS_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\planks_floor_v1_phase2";
+        public const string DECO_FLOOR_PLANKS_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\planks_floor_v2_phase1";
+        public const string DECO_FLOOR_PLANKS_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\planks_floor_v2_phase2";
+        public const string DECO_FLOOR_PLANKS_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\planks_floor_v3_phase1";
+        public const string DECO_FLOOR_PLANKS_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\planks_floor_v3_phase2";
+        //shop tiles
+        public const string DECO_FLOOR_SHOP_TILE_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\shop_tile_v1_phase1";
+        public const string DECO_FLOOR_SHOP_TILE_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\shop_tile_v1_phase2";
+        public const string DECO_FLOOR_SHOP_TILE_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\shop_tile_v2_phase1";
+        public const string DECO_FLOOR_SHOP_TILE_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\shop_tile_v2_phase2";
+        public const string DECO_FLOOR_SHOP_TILE_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\shop_tile_v3_phase1";
+        public const string DECO_FLOOR_SHOP_TILE_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\shop_tile_v3_phase2";
+        //concrete
+        public const string DECO_FLOOR_CONCRETE_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\concrete_floor_v1_phase1";
+        public const string DECO_FLOOR_CONCRETE_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\concrete_floor_v1_phase2";
+        public const string DECO_FLOOR_CONCRETE_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\concrete_floor_v1_phase3";
+        public const string DECO_FLOOR_CONCRETE_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\concrete_floor_v2_phase1";
+        public const string DECO_FLOOR_CONCRETE_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\concrete_floor_v2_phase2";
+        public const string DECO_FLOOR_CONCRETE_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\concrete_floor_v2_phase3";
+        public const string DECO_FLOOR_CONCRETE_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\concrete_floor_v3_phase1";
+        public const string DECO_FLOOR_CONCRETE_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\concrete_floor_v3_phase2";
+        public const string DECO_FLOOR_CONCRETE_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\concrete_floor_v3_phase3";
+        //white tile (shopping mall)
+        public const string DECO_FLOOR_WHITE_TILE_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\white_floor_tile_v1_phase1";
+        public const string DECO_FLOOR_WHITE_TILE_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\white_floor_tile_v1_phase2";
+        public const string DECO_FLOOR_WHITE_TILE_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\white_floor_tile_v2_phase1";
+        public const string DECO_FLOOR_WHITE_TILE_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\white_floor_tile_v2_phase2";
+        public const string DECO_FLOOR_WHITE_TILE_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\white_floor_tile_v3_phase1";
+        public const string DECO_FLOOR_WHITE_TILE_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\white_floor_tile_v3_phase2";
+        //basketball court
+        public const string DECO_FLOOR_BASKETBALL_COURT_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\basketball_court_v1_phase1";
+        public const string DECO_FLOOR_BASKETBALL_COURT_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\basketball_court_v1_phase2";
+        public const string DECO_FLOOR_BASKETBALL_COURT_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\basketball_court_v1_phase3";
+        public const string DECO_FLOOR_BASKETBALL_COURT_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\basketball_court_v2_phase1";
+        public const string DECO_FLOOR_BASKETBALL_COURT_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\basketball_court_v2_phase2";
+        public const string DECO_FLOOR_BASKETBALL_COURT_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\basketball_court_v2_phase3";
+        public const string DECO_FLOOR_BASKETBALL_COURT_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\basketball_court_v3_phase1";
+        public const string DECO_FLOOR_BASKETBALL_COURT_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\basketball_court_v3_phase2";
+        public const string DECO_FLOOR_BASKETBALL_COURT_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\basketball_court_v3_phase3";
+        //tennis court
+        public const string DECO_FLOOR_TENNIS_COURT_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\tennis_court_v1_phase1";
+        public const string DECO_FLOOR_TENNIS_COURT_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\tennis_court_v1_phase2";
+        public const string DECO_FLOOR_TENNIS_COURT_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\tennis_court_v1_phase3";
+        public const string DECO_FLOOR_TENNIS_COURT_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\tennis_court_v2_phase1";
+        public const string DECO_FLOOR_TENNIS_COURT_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\tennis_court_v2_phase2";
+        public const string DECO_FLOOR_TENNIS_COURT_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\tennis_court_v2_phase3";
+        public const string DECO_FLOOR_TENNIS_COURT_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\tennis_court_v3_phase1";
+        public const string DECO_FLOOR_TENNIS_COURT_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\tennis_court_v3_phase2";
+        public const string DECO_FLOOR_TENNIS_COURT_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\tennis_court_v3_phase3";
+        #endregion
+
+        #region walls
+        public const string DECO_WALL_GENERIC_INTERIOR_DECAY_PHASE1 = @"Tiles\Decoration\decay\interior_walls_generic_decay_phase1";
+        public const string DECO_WALL_GENERIC_INTERIOR_DECAY_PHASE2 = @"Tiles\Decoration\decay\interior_walls_generic_decay_phase2";
+        public const string DECO_WALL_GENERIC_INTERIOR_DECAY_PHASE3 = @"Tiles\Decoration\decay\interior_walls_generic_decay_phase3";
+        //brick
+        public const string DECO_WALL_BRICK_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\brick_wall_v1_phase1";
+        public const string DECO_WALL_BRICK_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\brick_wall_v1_phase2";
+        public const string DECO_WALL_BRICK_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\brick_wall_v1_phase3";
+        public const string DECO_WALL_BRICK_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\brick_wall_v2_phase1";
+        public const string DECO_WALL_BRICK_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\brick_wall_v2_phase2";
+        public const string DECO_WALL_BRICK_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\brick_wall_v2_phase3";
+        public const string DECO_WALL_BRICK_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\brick_wall_v3_phase1";
+        public const string DECO_WALL_BRICK_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\brick_wall_v3_phase2";
+        public const string DECO_WALL_BRICK_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\brick_wall_v3_phase3";
+        //CHAR office
+        public const string DECO_WALL_CHAR_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\CHAR_wall_v1_phase1";
+        public const string DECO_WALL_CHAR_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\CHAR_wall_v1_phase2";
+        public const string DECO_WALL_CHAR_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\CHAR_wall_v1_phase3";
+        public const string DECO_WALL_CHAR_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\CHAR_wall_v2_phase1";
+        public const string DECO_WALL_CHAR_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\CHAR_wall_v2_phase2";
+        public const string DECO_WALL_CHAR_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\CHAR_wall_v2_phase3";
+        public const string DECO_WALL_CHAR_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\CHAR_wall_v3_phase1";
+        public const string DECO_WALL_CHAR_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\CHAR_wall_v3_phase2";
+        public const string DECO_WALL_CHAR_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\CHAR_wall_v3_phase3";
+        //stone
+        public const string DECO_WALL_STONE_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\stone_wall_v1_phase1";
+        public const string DECO_WALL_STONE_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\stone_wall_v1_phase2";
+        public const string DECO_WALL_STONE_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\stone_wall_v1_phase3";
+        public const string DECO_WALL_STONE_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\stone_wall_v2_phase1";
+        public const string DECO_WALL_STONE_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\stone_wall_v2_phase2";
+        public const string DECO_WALL_STONE_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\stone_wall_v2_phase3";
+        //light brown
+        public const string DECO_WALL_LIGHT_BROWN_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\light_brown_wall_v1_phase1";
+        public const string DECO_WALL_LIGHT_BROWN_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\light_brown_wall_v1_phase2";
+        public const string DECO_WALL_LIGHT_BROWN_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\light_brown_wall_v1_phase3";
+        public const string DECO_WALL_LIGHT_BROWN_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\light_brown_wall_v2_phase1";
+        public const string DECO_WALL_LIGHT_BROWN_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\light_brown_wall_v2_phase2";
+        public const string DECO_WALL_LIGHT_BROWN_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\light_brown_wall_v2_phase3";
+        public const string DECO_WALL_LIGHT_BROWN_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\light_brown_wall_v3_phase1";
+        public const string DECO_WALL_LIGHT_BROWN_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\light_brown_wall_v3_phase2";
+        public const string DECO_WALL_LIGHT_BROWN_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\light_brown_wall_v3_phase3";
+        //concrete (non-CHAR offices)
+        public const string DECO_WALL_CONCRETE_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\concrete_wall_v1_phase1";
+        public const string DECO_WALL_CONCRETE_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\concrete_wall_v1_phase2";
+        public const string DECO_WALL_CONCRETE_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\concrete_wall_v1_phase3";
+        public const string DECO_WALL_CONCRETE_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\concrete_wall_v2_phase1";
+        public const string DECO_WALL_CONCRETE_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\concrete_wall_v2_phase2";
+        public const string DECO_WALL_CONCRETE_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\concrete_wall_v2_phase3";
+        public const string DECO_WALL_CONCRETE_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\concrete_wall_v3_phase1";
+        public const string DECO_WALL_CONCRETE_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\concrete_wall_v3_phase2";
+        public const string DECO_WALL_CONCRETE_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\concrete_wall_v3_phase3";
+        //army wall
+        public const string DECO_WALL_ARMY_BASE_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\army_base_wall_v1_phase1";
+        public const string DECO_WALL_ARMY_BASE_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\army_base_wall_v1_phase2";
+        public const string DECO_WALL_ARMY_BASE_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\army_base_wall_v1_phase3";
+        public const string DECO_WALL_ARMY_BASE_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\army_base_wall_v2_phase1";
+        public const string DECO_WALL_ARMY_BASE_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\army_base_wall_v2_phase2";
+        public const string DECO_WALL_ARMY_BASE_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\army_base_wall_v2_phase3";
+        public const string DECO_WALL_ARMY_BASE_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\army_base_wall_v3_phase1";
+        public const string DECO_WALL_ARMY_BASE_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\army_base_wall_v3_phase2";
+        public const string DECO_WALL_ARMY_BASE_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\army_base_wall_v3_phase3";
+        //fuel station wall
+        public const string DECO_WALL_FUEL_STATION_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\fuel_station_wall_v1_phase1";
+        public const string DECO_WALL_FUEL_STATION_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\fuel_station_wall_v1_phase2";
+        public const string DECO_WALL_FUEL_STATION_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\fuel_station_wall_v1_phase3";
+        public const string DECO_WALL_FUEL_STATION_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\fuel_station_wall_v2_phase1";
+        public const string DECO_WALL_FUEL_STATION_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\fuel_station_wall_v2_phase2";
+        public const string DECO_WALL_FUEL_STATION_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\fuel_station_wall_v2_phase3";
+        public const string DECO_WALL_FUEL_STATION_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\fuel_station_wall_v3_phase1";
+        public const string DECO_WALL_FUEL_STATION_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\fuel_station_wall_v3_phase2";
+        public const string DECO_WALL_FUEL_STATION_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\fuel_station_wall_v3_phase3";
+        //wood (farm shed)
+        public const string DECO_WALL_PLANKS_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\planks_wall_v1_phase1";
+        public const string DECO_WALL_PLANKS_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\planks_wall_v1_phase2";
+        public const string DECO_WALL_PLANKS_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\planks_wall_v1_phase3";
+        public const string DECO_WALL_PLANKS_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\planks_wall_v2_phase1";
+        public const string DECO_WALL_PLANKS_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\planks_wall_v2_phase2";
+        public const string DECO_WALL_PLANKS_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\planks_wall_v2_phase3";
+        //hospital
+        public const string DECO_WALL_HOSPITAL_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\hospital_wall_v1_phase1";
+        public const string DECO_WALL_HOSPITAL_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\hospital_wall_v1_phase2";
+        public const string DECO_WALL_HOSPITAL_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\hospital_wall_v1_phase3";
+        public const string DECO_WALL_HOSPITAL_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\hospital_wall_v2_phase1";
+        public const string DECO_WALL_HOSPITAL_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\hospital_wall_v2_phase2";
+        public const string DECO_WALL_HOSPITAL_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\hospital_wall_v2_phase3";
+        public const string DECO_WALL_HOSPITAL_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\hospital_wall_v3_phase1";
+        public const string DECO_WALL_HOSPITAL_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\hospital_wall_v3_phase2";
+        public const string DECO_WALL_HOSPITAL_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\hospital_wall_v3_phase3";
+        //mall
+        public const string DECO_WALL_MALL_DECAY_V1_PHASE1 = @"Tiles\Decoration\decay\mall_wall_v1_phase1";
+        public const string DECO_WALL_MALL_DECAY_V1_PHASE2 = @"Tiles\Decoration\decay\mall_wall_v1_phase2";
+        public const string DECO_WALL_MALL_DECAY_V1_PHASE3 = @"Tiles\Decoration\decay\mall_wall_v1_phase3";
+        public const string DECO_WALL_MALL_DECAY_V2_PHASE1 = @"Tiles\Decoration\decay\mall_wall_v2_phase1";
+        public const string DECO_WALL_MALL_DECAY_V2_PHASE2 = @"Tiles\Decoration\decay\mall_wall_v2_phase2";
+        public const string DECO_WALL_MALL_DECAY_V2_PHASE3 = @"Tiles\Decoration\decay\mall_wall_v2_phase3";
+        public const string DECO_WALL_MALL_DECAY_V3_PHASE1 = @"Tiles\Decoration\decay\mall_wall_v3_phase1";
+        public const string DECO_WALL_MALL_DECAY_V3_PHASE2 = @"Tiles\Decoration\decay\mall_wall_v3_phase2";
+        public const string DECO_WALL_MALL_DECAY_V3_PHASE3 = @"Tiles\Decoration\decay\mall_wall_v3_phase3";
+        #endregion
+
+        #endregion
+
         #endregion
 
         #region Map objects
-        public const string OBJ_TREE = @"MapObjects\tree";
         public const string OBJ_TREE1 = @"MapObjects\tree1";
         public const string OBJ_TREE2 = @"MapObjects\tree2";
         public const string OBJ_TREE3 = @"MapObjects\tree3";
         public const string OBJ_TREE4 = @"MapObjects\tree4";
+        public const string OBJ_TREE_STUMP = @"MapObjects\tree_stump";
 
         //@@MP (Release 4)
         public const string OBJ_PLAIN_TOMBSTONE = @"MapObjects\plain_tombstone";
@@ -425,12 +634,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_CLINIC_DESK = @"MapObjects\clinic_desk";
         public const string OBJ_CLINIC_MACHINERY = @"MapObjects\clinic_machinery";
 
-        public const string OBJ_CAR1 = @"MapObjects\car1";
-        public const string OBJ_CAR2 = @"MapObjects\car2";
-        public const string OBJ_CAR3 = @"MapObjects\car3";
-        public const string OBJ_CAR4 = @"MapObjects\car4";
-        public const string OBJ_VAN = @"MapObjects\van";//@@MP (Release 7-3)
-
         //@@MP (Release 6-4)
         public const string OBJ_HELICOPTER1 = @"MapObjects\helicopter1";
         public const string OBJ_HELICOPTER2 = @"MapObjects\helicopter2";
@@ -468,6 +671,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_CHAR_TABLE = @"MapObjects\char_table";
         public const string OBJ_CHAR_DESKTOP = @"MapObjects\char_desktop";//@@MP (Release 3)
         public const string OBJ_CHAR_VAT = @"MapObjects\piped_vat";//@@MP (Release 3)
+        public const string OBJ_CHAR_TROLLEY = @"MapObjects\char_trolley";//@@MP (Release 7-6)
 
         public const string OBJ_IRON_BENCH = @"MapObjects\iron_bench";
         public const string OBJ_IRON_DOOR_OPEN = @"MapObjects\iron_door_open";
@@ -477,6 +681,9 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string OBJ_BENCH = @"MapObjects\bench";
         public const string OBJ_BARRELS = @"MapObjects\barrels";
+        public const string OBJ_EMPTY_BARREL = @"MapObjects\empty_barrel"; //@@MP (Release 7-6)
+        public const string OBJ_EMPTY_BIN = @"MapObjects\empty_bin"; //@@MP (Release 7-6)
+        public const string OBJ_CAMPFIRE = @"MapObjects\campfire"; //@@MP (Release 7-6)
         public const string OBJ_JUNK = @"MapObjects\junk";
         public const string OBJ_BOARD = @"MapObjects\announcement_board";
         public const string OBJ_SMALL_WOODEN_FORTIFICATION = @"MapObjects\wooden_small_fortification";
@@ -484,7 +691,6 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string OBJ_POWERGEN_OFF = @"MapObjects\power_generator_off";
         public const string OBJ_POWERGEN_ON = @"MapObjects\power_generator_on";
-        public const string OBJ_FIRE_EXTINGUISHER_REFILLER = @"MapObjects\fire_extinguisher_refiller"; //@@MP (Release 7-1)
 
         public const string OBJ_GATE_CLOSED = @"MapObjects\gate_closed";
         public const string OBJ_GATE_OPEN = @"MapObjects\gate_open";      
@@ -541,6 +747,83 @@ namespace djack.RogueSurvivor.Gameplay
         public const string OBJ_FOOD_COURT_COUNTER3 = @"MapObjects\food_court_counter3";
         public const string OBJ_FOOD_COURT_COUNTER4 = @"MapObjects\food_court_counter4";
         public const string OBJ_FOOD_COURT_COUNTER5 = @"MapObjects\food_court_counter5";
+
+        //@@MP (Release 7-6)
+        public const string OBJ_WIGS_DISPLAY1 = @"MapObjects\wigs_display1";
+        public const string OBJ_WIGS_DISPLAY2 = @"MapObjects\wigs_display2";
+        public const string OBJ_WIGS_DISPLAY3 = @"MapObjects\wigs_display3";
+        public const string OBJ_BARBER_CHAIR = @"MapObjects\barber_chair";
+        public const string OBJ_DISPLAY_CASE = @"MapObjects\display_case";
+        public const string OBJ_BURIAL_CROSS_DIRT = @"MapObjects\burial_cross_dirt";
+        public const string OBJ_BURIAL_CROSS_GRASS = @"MapObjects\burial_cross_grass";
+
+        //@@MP - re-worked with decay states (Release 7-6)
+        //the trailing number indicates its level of decay state
+        public const string OBJ_CAR_RED_PHASE0 = @"MapObjects\car_red_phase0";
+        public const string OBJ_CAR_RED_PHASE1 = @"MapObjects\car_red_phase1";
+        public const string OBJ_CAR_RED_PHASE2 = @"MapObjects\car_red_phase2";
+        public const string OBJ_CAR_RED_PHASE3 = @"MapObjects\car_red_phase3";
+        public const string OBJ_CAR_WHITE_PHASE0 = @"MapObjects\car_white_phase0";
+        public const string OBJ_CAR_WHITE_PHASE1 = @"MapObjects\car_white_phase1";
+        public const string OBJ_CAR_WHITE_PHASE2 = @"MapObjects\car_white_phase2";
+        public const string OBJ_CAR_WHITE_PHASE3 = @"MapObjects\car_white_phase3";
+        public const string OBJ_CAR_GREEN_PHASE0 = @"MapObjects\car_green_phase0";
+        public const string OBJ_CAR_GREEN_PHASE1 = @"MapObjects\car_green_phase1";
+        public const string OBJ_CAR_GREEN_PHASE2 = @"MapObjects\car_green_phase2";
+        public const string OBJ_CAR_GREEN_PHASE3 = @"MapObjects\car_green_phase3";
+        public const string OBJ_CAR_BLUE_PHASE0 = @"MapObjects\car_blue_phase0";
+        public const string OBJ_CAR_BLUE_PHASE1 = @"MapObjects\car_blue_phase1";
+        public const string OBJ_CAR_BLUE_PHASE2 = @"MapObjects\car_blue_phase2";
+        public const string OBJ_CAR_BLUE_PHASE3 = @"MapObjects\car_blue_phase3";
+        public const string OBJ_VAN_PHASE0 = @"MapObjects\van_phase0";
+        public const string OBJ_VAN_PHASE1 = @"MapObjects\van_phase1";
+        public const string OBJ_VAN_PHASE2 = @"MapObjects\van_phase2";
+        public const string OBJ_VAN_PHASE3 = @"MapObjects\van_phase3";
+        public const string OBJ_POLICE_CAR_PHASE0 = @"MapObjects\police_car_phase0"; //@@MP - added (Release 7-6)
+        public const string OBJ_POLICE_CAR_PHASE1 = @"MapObjects\police_car_phase1";
+        public const string OBJ_POLICE_CAR_PHASE2 = @"MapObjects\police_car_phase2";
+        public const string OBJ_POLICE_CAR_PHASE3 = @"MapObjects\police_car_phase3";
+
+        #region Decay
+        //@@MP (Release 7-6)
+
+        //picket fences
+        public const string OBJ_PICKET_FENCE_EW_V1_PHASE1 = @"MapObjects\decay\picket_fence_EW_v1_phase1";
+        public const string OBJ_PICKET_FENCE_EW_V1_PHASE2 = @"MapObjects\decay\picket_fence_EW_v1_phase2";
+        public const string OBJ_PICKET_FENCE_EW_V1_PHASE3 = @"MapObjects\decay\picket_fence_EW_v1_phase3";
+        public const string OBJ_PICKET_FENCE_NS_LEFT_V1_PHASE1 = @"MapObjects\decay\picket_fence_NS_left_v1_phase1";
+        public const string OBJ_PICKET_FENCE_NS_LEFT_V1_PHASE2 = @"MapObjects\decay\picket_fence_NS_left_v1_phase2";
+        public const string OBJ_PICKET_FENCE_NS_LEFT_V1_PHASE3 = @"MapObjects\decay\picket_fence_NS_left_v1_phase3";
+        public const string OBJ_PICKET_FENCE_NS_RIGHT_V1_PHASE1 = @"MapObjects\decay\picket_fence_NS_right_v1_phase1";
+        public const string OBJ_PICKET_FENCE_NS_RIGHT_V1_PHASE2 = @"MapObjects\decay\picket_fence_NS_right_v1_phase2";
+        public const string OBJ_PICKET_FENCE_NS_RIGHT_V1_PHASE3 = @"MapObjects\decay\picket_fence_NS_right_v1_phase3";
+
+        //chainwire fences
+        public const string OBJ_CHAINWIRE_FENCE_V1_PHASE1 = @"MapObjects\decay\fence_v1_phase1";
+        public const string OBJ_CHAINWIRE_FENCE_V1_PHASE2 = @"MapObjects\decay\fence_v1_phase2";
+        public const string OBJ_CHAINWIRE_FENCE_V1_PHASE3 = @"MapObjects\decay\fence_v1_phase3";
+        public const string OBJ_CHAINWIRE_FENCE_V2_PHASE1 = @"MapObjects\decay\fence_v2_phase1";
+        public const string OBJ_CHAINWIRE_FENCE_V2_PHASE2 = @"MapObjects\decay\fence_v2_phase2";
+        public const string OBJ_CHAINWIRE_FENCE_V2_PHASE3 = @"MapObjects\decay\fence_v2_phase3";
+        public const string OBJ_CHAINWIRE_FENCE_V3_PHASE1 = @"MapObjects\decay\fence_v3_phase1";
+        public const string OBJ_CHAINWIRE_FENCE_V3_PHASE2 = @"MapObjects\decay\fence_v3_phase2";
+        public const string OBJ_CHAINWIRE_FENCE_V3_PHASE3 = @"MapObjects\decay\fence_v3_phase3";
+        public const string OBJ_CHAINWIRE_FENCE_V4_PHASE1 = @"MapObjects\decay\fence_v4_phase1";
+        public const string OBJ_CHAINWIRE_FENCE_V4_PHASE2 = @"MapObjects\decay\fence_v4_phase2";
+        public const string OBJ_CHAINWIRE_FENCE_V4_PHASE3 = @"MapObjects\decay\fence_v4_phase3";
+
+        //chainwire fence gates
+        public const string OBJ_CHAINWIRE_FENCE_GATE_V1_PHASE1 = @"MapObjects\decay\fence_gate_v1_phase1";
+        public const string OBJ_CHAINWIRE_FENCE_GATE_V1_PHASE2 = @"MapObjects\decay\fence_gate_v1_phase2";
+        public const string OBJ_CHAINWIRE_FENCE_GATE_V1_PHASE3 = @"MapObjects\decay\fence_gate_v1_phase3";
+        public const string OBJ_CHAINWIRE_FENCE_GATE_V2_PHASE1 = @"MapObjects\decay\fence_gate_v2_phase1";
+        public const string OBJ_CHAINWIRE_FENCE_GATE_V2_PHASE2 = @"MapObjects\decay\fence_gate_v2_phase2";
+        public const string OBJ_CHAINWIRE_FENCE_GATE_V2_PHASE3 = @"MapObjects\decay\fence_gate_v2_phase3";
+        public const string OBJ_CHAINWIRE_FENCE_GATE_V3_PHASE1 = @"MapObjects\decay\fence_gate_v3_phase1";
+        public const string OBJ_CHAINWIRE_FENCE_GATE_V3_PHASE2 = @"MapObjects\decay\fence_gate_v3_phase2";
+        public const string OBJ_CHAINWIRE_FENCE_GATE_V3_PHASE3 = @"MapObjects\decay\fence_gate_v3_phase3";
+        #endregion
+
         #endregion
 
         #region Actors
@@ -606,6 +889,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string MALE_SHOES1 = @"Actors\Decoration\male_shoes1";
         public const string MALE_SHOES2 = @"Actors\Decoration\male_shoes2";
         public const string MALE_SHOES3 = @"Actors\Decoration\male_shoes3";
+        public const string MALE_SHOES4 = @"Actors\Decoration\male_shoes4"; //@@MP (Release 7-6)
+        public const string MALE_SHOES5 = @"Actors\Decoration\male_shoes5"; //@@MP (Release 7-6)
         public const string MALE_EYES1 = @"Actors\Decoration\male_eyes1";
         public const string MALE_EYES2 = @"Actors\Decoration\male_eyes2";
         public const string MALE_EYES3 = @"Actors\Decoration\male_eyes3";
@@ -629,6 +914,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string FEMALE_SHIRT2 = @"Actors\Decoration\female_shirt2";
         public const string FEMALE_SHIRT3 = @"Actors\Decoration\female_shirt3";
         public const string FEMALE_SHIRT4 = @"Actors\Decoration\female_shirt4";
+        public const string FEMALE_SHIRT5 = @"Actors\Decoration\female_shirt5"; //@@MP (Release 7-6)
         public const string FEMALE_PANTS1 = @"Actors\Decoration\female_pants1";
         public const string FEMALE_PANTS2 = @"Actors\Decoration\female_pants2";
         public const string FEMALE_PANTS3 = @"Actors\Decoration\female_pants3";
@@ -637,6 +923,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string FEMALE_SHOES1 = @"Actors\Decoration\female_shoes1";
         public const string FEMALE_SHOES2 = @"Actors\Decoration\female_shoes2";
         public const string FEMALE_SHOES3 = @"Actors\Decoration\female_shoes3";
+        public const string FEMALE_SHOES4 = @"Actors\Decoration\female_shoes4"; //@@MP (Release 7-6)
+        public const string FEMALE_SHOES5 = @"Actors\Decoration\female_shoes5"; //@@MP (Release 7-6)
         public const string FEMALE_EYES1 = @"Actors\Decoration\female_eyes1";
         public const string FEMALE_EYES2 = @"Actors\Decoration\female_eyes2";
         public const string FEMALE_EYES3 = @"Actors\Decoration\female_eyes3";
@@ -683,6 +971,15 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DOG_SKIN1_WEST = @"Actors\Decoration\dog_skin1_west";
         public const string DOG_SKIN2_WEST = @"Actors\Decoration\dog_skin2_west";
         public const string DOG_SKIN3_WEST = @"Actors\Decoration\dog_skin3_west";
+
+        //@@MP (Release 7-6)
+        public const string RABBIT_SKIN_EAST = @"Actors\Decoration\rabbit_skin_east";
+        public const string RABBIT_SKIN_WEST = @"Actors\Decoration\rabbit_skin_west";
+        public const string CHICKEN_SKIN_EAST = @"Actors\Decoration\chicken_skin_east";
+        public const string CHICKEN_SKIN_WEST = @"Actors\Decoration\chicken_skin_west";
+        public const string PRISONER_UNIFORM = @"Actors\Decoration\prisoner_uniform";
+        public const string PRISONER_PANTS = @"Actors\Decoration\prisoner_pants";
+        public const string PRISONER_SHOES = @"Actors\Decoration\prisoner_shoes";
         #endregion
 
         #region Items
@@ -698,25 +995,37 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_AMMO_NAILS = @"Items\item_ammo_nail_gun"; //@@MP (Release 5-1)
         public const string ITEM_AMMO_PRECISION_RIFLE = @"Items\item_ammo_precision_rifle"; //@@MP (Release 6-6)
         public const string ITEM_AMMO_FUEL = @"Items\item_ammo_fuel"; //@@MP (Release 7-1)
+        public const string ITEM_AMMO_MINIGUN = @"Items\item_ammo_minigun"; //@@MP (Release 7-6)
+        public const string ITEM_AMMO_GRENADES = @"Items\item_ammo_grenades"; //@@MP (Release 7-6)
+        public const string ITEM_AMMO_PLASMA = @"Items\item_ammo_plasma"; //@@MP (Release 7-6)
 
         public const string ITEM_ARMY_BODYARMOR = @"Items\item_army_bodyarmor";
         public const string ITEM_ARMY_PISTOL = @"Items\item_army_pistol";
+        public const string ITEM_ARMY_PRECISION_RIFLE = @"Items\item_army_precision_rifle"; //@@MP (Release 7-6)
         public const string ITEM_ARMY_RATION = @"Items\item_army_ration";
-        public const string ITEM_ARMY_RIFLE = @"Items\item_army_rifle";
-        public const string ITEM_BANDAGES = @"Items\item_bandages";
+        public const string ITEM_ARMY_RIFLE1 = @"Items\item_army_rifle1";
+        public const string ITEM_ARMY_RIFLE2 = @"Items\item_army_rifle2"; //@@MP (Release 7-6)
+        public const string ITEM_ARMY_RIFLE3 = @"Items\item_army_rifle3"; //@@MP (Release 7-6)
+        public const string ITEM_ARMY_RIFLE4 = @"Items\item_army_rifle4"; //@@MP (Release 7-6)
         public const string ITEM_BARBED_WIRE = @"Items\item_barbed_wire";
-        public const string ITEM_BASEBALL_BAT = @"Items\item_baseballbat";
+        public const string ITEM_BASEBALL_BAT = @"Items\item_baseball_bat";
         public const string ITEM_BEAR_TRAP = @"Items\item_bear_trap";
         public const string ITEM_BEER_BOTTLE_BROWN = @"Items\item_beer_bottle_brown"; //@@MP (Release 4)
         public const string ITEM_BEER_BOTTLE_GREEN = @"Items\item_beer_bottle_green"; //@@MP (Release 4)
         public const string ITEM_BEER_CAN_BLUE = @"Items\item_beer_can_blue"; //@@MP (Release 4)
         public const string ITEM_BEER_CAN_RED = @"Items\item_beer_can_red"; //@@MP (Release 4)
-        public const string ITEM_BIGBEAR_BAT = @"Items\item_bigbear_bat";
+        public const string ITEM_BIGBEAR_BAT = @"Items\item_BigBear_bat";
         public const string ITEM_BIG_FLASHLIGHT = @"Items\item_big_flashlight";
         public const string ITEM_BIG_FLASHLIGHT_OUT = @"Items\item_big_flashlight_out";
         public const string ITEM_BINOCULARS = @"Items\item_binoculars"; //@MP (Release 7-1)
-        public const string ITEM_BOOK = @"Items\item_book";
+        public const string ITEM_BIO_FORCE_GUN = @"Items\item_bio_force_gun"; //@@MP (Release 7-6)
+        public const string ITEM_BIOHAZARD_SUIT = @"Items\item_biohazard_suit"; //@@MP (Release 7-6)
         public const string ITEM_BLACKOPS_GPS = @"Items\item_blackops_gps";
+        public const string ITEM_BOOK_CHAR = @"Items\item_book_CHAR";
+        public const string ITEM_BOOK_BLUE = @"Items\item_book_blue"; //@@MP (Release 7-6)
+        public const string ITEM_BOOK_GREEN = @"Items\item_book_green"; //@@MP (Release 7-6)
+        public const string ITEM_BOOK_RED = @"Items\item_book_red"; //@@MP (Release 7-6)
+        public const string ITEM_BRASS_KNUCKLES = @"Items\item_brass_knuckles"; //@@MP (Release 7-6)
         public const string ITEM_C4 = @"Items\item_c4"; //@@MP (Release 6-3)
         public const string ITEM_C4_PRIMED = @"Items\item_c4_primed"; //@@MP (Release 6-3)
         public const string ITEM_CANDLES_BOX = @"Items\item_candles_box"; //@@MP (Release 7-1)
@@ -725,16 +1034,27 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_CHAINSAW = @"Items\item_chainsaw"; //@@MP (Release 7-1)
         public const string ITEM_CHAR_DOCUMENT = @"Items\item_CHAR_document"; //@@MP (Release 3)
         public const string ITEM_CHAR_LIGHT_BODYARMOR = @"Items\item_CHAR_light_bodyarmor";
+        public const string ITEM_CHICKEN_EGG = @"Items\item_chicken_egg"; //@@MP (Release 7-6)
         public const string ITEM_CIGARETTES = @"Items\item_cigarettes"; //@@MP (Release 4)
-        public const string ITEM_CROWBAR = @"Items\item_crowbar";
+        public const string ITEM_CLEAVER = @"Items\item_cleaver"; //@@MP (Release 7-6)
         public const string ITEM_COMBAT_KNIFE = @"Items\item_combat_knife";
+        public const string ITEM_COOKED_CHICKEN = @"Items\item_cooked_chicken"; //@@MP (Release 7-6)
+        public const string ITEM_COOKED_DOG_MEAT = @"Items\item_cooked_dog_meat"; //@@MP (Release 7-6)
+        public const string ITEM_COOKED_FISH = @"Items\item_cooked_fish"; //@@MP (Release 7-6)
+        public const string ITEM_COOKED_HUMAN_FLESH = @"Items\item_cooked_human_flesh"; //@@MP (Release 7-6)
+        public const string ITEM_COOKED_RABBIT = @"Items\item_cooked_rabbit"; //@@MP (Release 7-6)
+        public const string ITEM_CROWBAR = @"Items\item_crowbar";
+        public const string ITEM_DOUBLE_BARREL = @"Items\item_double_barrel"; //@@MP (Release 7-6)
         public const string ITEM_DYNAMITE = @"Items\item_dynamite"; //@@MP (Release 4)
         public const string ITEM_DYNAMITE_PRIMED = @"Items\item_dynamite_primed"; //@@MP (Release 4)
         public const string ITEM_EMPTY_CAN = @"Items\item_empty_can";
         public const string ITEM_ENERGY_DRINK = @"Items\item_energy_drink"; //@@MP (Release 7-1)
-        public const string ITEM_FAMU_FATARU_KATANA = @"Items\item_famu_fataru_katana";
+        public const string ITEM_FAMU_FATARU_KATANA = @"Items\item_FamuFataru_katana";
+        public const string ITEM_FIRE_AXE = @"Items\item_fire_axe"; //@@MP (Release 7-6)
         public const string ITEM_FIRE_EXTINGUISHER = @"Items\item_fire_extinguisher"; //@@MP (Release 7-1)
         public const string ITEM_FIRE_HAZARD_SUIT = @"Items\item_fire_hazard_suit"; //@@MP (Release 7-1)
+        public const string ITEM_FISHING_ROD = @"Items\item_fishing_rod"; //@@MP (Release 7-6)
+        public const string ITEM_FLAIL = @"Items\item_flail"; //@@MP (Release 7-6)
         public const string ITEM_FLAMETHROWER = @"Items\item_flamethrower"; //@@MP (Release 7-1)
         public const string ITEM_FLARES_KIT = @"Items\item_flares_kit"; //@@MP (Release 7-1)
         public const string ITEM_FLASHBANG = @"Items\item_flashbang"; //@@MP (Release 7-2)
@@ -742,37 +1062,48 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_FLASHLIGHT = @"Items\item_flashlight";
         public const string ITEM_FLASHLIGHT_OUT = @"Items\item_flashlight_out";
         public const string ITEM_FREE_ANGELS_JACKET = @"Items\item_free_angels_jacket";
+        public const string ITEM_FRYING_PAN = @"Items\item_frying_pan"; //@@MP (Release 7-6)
         public const string ITEM_GLOWSTICKS_BOX = @"Items\item_glowsticks_box"; //@@MP (Release 7-1)
-        public const string ITEM_GOLF_CLUB = @"Items\item_golfclub";
+        public const string ITEM_GOLF_CLUB = @"Items\item_golf_club";
         public const string ITEM_GRAPES = @"Items\item_grapes"; //@@MP (Release 7-3)
         public const string ITEM_GRENADE = @"Items\item_grenade";
         public const string ITEM_GRENADE_PRIMED = @"Items\item_grenade_primed";
+        public const string ITEM_GRENADE_LAUNCHER = @"Items\item_grenade_launcher"; //@@MP (Release 7-6)
         public const string ITEM_GROCERIES = @"Items\item_groceries";
-        public const string ITEM_HANS_VON_HANZ_PISTOL = @"Items\item_hans_von_hanz_pistol";
+        public const string ITEM_HANS_VON_HANZ_PISTOL = @"Items\item_Hans_von_Hanz_pistol";
         public const string ITEM_HELLS_SOULS_JACKET = @"Items\item_hells_souls_jacket";
         public const string ITEM_HOCKEY_STICK = @"Items\item_hockey_stick"; //@@MP (Release 3)
+        public const string ITEM_HOLY_HAND_GRENADE = @"Items\item_Holy_Hand_Grenade"; //@@MP (Release 7-6)
+        public const string ITEM_HOLY_HAND_GRENADE_PRIMED = @"Items\item_Holy_Hand_Grenade_primed"; //@@MP (Release 7-6)
         public const string ITEM_HUGE_HAMMER = @"Items\item_huge_hammer";
         public const string ITEM_HUNTER_VEST = @"Items\item_hunter_vest";
         public const string ITEM_HUNTING_CROSSBOW = @"Items\item_hunting_crossbow";
         public const string ITEM_HUNTING_RIFLE = @"Items\item_hunting_rifle";
         public const string ITEM_IMPROVISED_CLUB = @"Items\item_improvised_club";
         public const string ITEM_IMPROVISED_SPEAR = @"Items\item_improvised_spear";
-        public const string ITEM_IRON_GOLF_CLUB = @"Items\item_iron_golfclub";
+        public const string ITEM_IRON_GOLF_CLUB = @"Items\item_iron_golf_club";
         public const string ITEM_JASON_MYERS_AXE = @"Items\item_jason_myers_axe";
-        public const string ITEM_KOLT_REVOLVER = @"Items\item_kolt_revolver";
+        public const string ITEM_KITCHEN_KNIFE = @"Items\item_kitchen_knife"; //@@MP (Release 7-6)
+        public const string ITEM_LARGE_MEDIKIT = @"Items\item_large_medikit";
         public const string ITEM_LIQUOR_BOTTLE_AMBER = @"Items\item_liquor_bottle_amber"; //@@MP (Release 4)
         public const string ITEM_LIQUOR_BOTTLE_CLEAR = @"Items\item_liquor_bottle_clear"; //@@MP (Release 4)
         public const string ITEM_LIT_FLARE = @"Items\item_lit_flare"; //@@MP (Release 7-1)
         public const string ITEM_LIT_GLOWSTICK = @"Items\item_lit_glowstick"; //@@MP (Release 7-1)
+        public const string ITEM_MACE = @"Items\item_mace"; //@@MP (Release 7-6)
         public const string ITEM_MACHETE = @"Items\item_machete"; //@@MP (Release 3)
-        public const string ITEM_MAGAZINE = @"Items\item_magazine";
+        public const string ITEM_MAGAZINE1 = @"Items\item_magazine1";
+        public const string ITEM_MAGAZINE2 = @"Items\item_magazine2"; //@@MP (Release 7-6)
+        public const string ITEM_MAGAZINE3 = @"Items\item_magazine3"; //@@MP (Release 7-6)
+        public const string ITEM_MAGAZINE4 = @"Items\item_magazine4"; //@@MP (Release 7-6)
         public const string ITEM_MATCHES = @"Items\item_matchbox"; //@@MP (Release 7-1)
         public const string ITEM_MATCHES_PRIMED = @"Items\item_match_primed"; //@@MP (Release 7-1)
-        public const string ITEM_MEDIKIT = @"Items\item_medikit";
+        public const string ITEM_MINIGUN = @"Items\item_minigun"; //@@MP (Release 7-6)
         public const string ITEM_MOLOTOV = @"Items\item_molotov"; //@@MP (Release 4)
         public const string ITEM_MOLOTOV_PRIMED = @"Items\item_molotov_primed"; //@@MP (Release 4)
         public const string ITEM_NAIL_GUN = @"Items\item_nail_gun"; //@@MP (Release 5-1)
         public const string ITEM_NIGHT_VISION = @"Items\item_night_vision"; //@MP (Release 6-3)
+        public const string ITEM_NUNCHAKU = @"Items\item_nunchaku"; //@@MP (Release 7-6)
+        public const string ITEM_PAINT_THINNER = @"Items\item_paint_thinner"; //@@MP (Release 7-6)
         public const string ITEM_PEANUTS = @"Items\item_peanuts"; //@@MP (Release 7-3)
         public const string ITEM_PICKAXE = @"Items\item_pickaxe"; //@@MP (Release 3)
         public const string ITEM_PILLS_ANTIVIRAL = @"Items\item_pills_antiviral";
@@ -781,22 +1112,37 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_PILLS_SAN = @"Items\item_pills_san";
         public const string ITEM_PIPE_WRENCH = @"Items\item_pipe_wrench"; //@@MP (Release 3)
         public const string ITEM_PISTOL = @"Items\item_pistol";
+        public const string ITEM_PITCH_FORK = @"Items\item_pitch_fork"; //@@MP (Release 7-6)
+        public const string ITEM_PLASMA_BURST_PRIMED = @"Items\item_plasma_burst_primed"; //@@MP (Release 7-6)
         public const string ITEM_POLICE_JACKET = @"Items\item_police_jacket";
         public const string ITEM_POLICE_RADIO = @"Items\item_police_radio";
         public const string ITEM_POLICE_RIOT_ARMOR = @"Items\item_police_riot_armor";
         public const string ITEM_POLICE_RIOT_SHIELD = @"Items\item_police_riot_shield"; //@@MP (Release 7-2)
         public const string ITEM_PRECISION_RIFLE = @"Items\item_precision_rifle";
-        public const string ITEM_ROGUEDJACK_KEYBOARD = @"Items\item_roguedjack_keyboard";
-        public const string ITEM_SANTAMAN_SHOTGUN = @"Items\item_santaman_shotgun";
+        public const string ITEM_RAW_CHICKEN = @"Items\item_raw_chicken"; //@@MP (Release 7-6)
+        public const string ITEM_RAW_DOG_MEAT = @"Items\item_raw_dog_meat"; //@@MP (Release 7-6)
+        public const string ITEM_RAW_FISH = @"Items\item_raw_fish"; //@@MP (Release 7-6)
+        public const string ITEM_RAW_HUMAN_FLESH = @"Items\item_raw_human_flesh"; //@@MP (Release 7-6)
+        public const string ITEM_RAW_RABBIT = @"Items\item_raw_rabbit"; //@@MP (Release 7-6)
+        public const string ITEM_REVOLVER = @"Items\item_revolver";
+        public const string ITEM_ROGUEDJACK_KEYBOARD = @"Items\item_RoguedJack_keyboard";
+        public const string ITEM_SANTAMAN_SHOTGUN = @"Items\item_Santaman_shotgun";
+        public const string ITEM_SCIMITAR = @"Items\item_scimitar"; //@@MP (Release 7-6)
+        public const string ITEM_SCYTHE = @"Items\item_scythe"; //@@MP (Release 7-6)
         public const string ITEM_SHORT_SHOVEL = @"Items\item_short_shovel";
         public const string ITEM_SHOTGUN = @"Items\item_shotgun";
         public const string ITEM_SHOVEL = @"Items\item_shovel";
+        public const string ITEM_SICKLE = @"Items\item_sickle"; //@@MP (Release 7-6)
         public const string ITEM_SIPHON_KIT = @"Items\item_siphon_kit"; //@@MP (Release 7-1)
         public const string ITEM_SLEEPING_BAG = @"Items\item_sleeping_bag"; //@@MP (Release 7-3)
         public const string ITEM_SMALL_HAMMER = @"Items\item_small_hammer";
+        public const string ITEM_SMALL_MEDIKIT = @"Items\item_small_medikit";
+        public const string ITEM_SMG = @"Items\item_SMG"; //@@MP (Release 7-6)
         public const string ITEM_SMOKE_GRENADE = @"Items\item_smoke_grenade"; //@@MP (Release 7-2)
         public const string ITEM_SMOKE_GRENADE_PRIMED = @"Items\item_smoke_grenade_primed"; //@@MP (Release 7-2)
         public const string ITEM_SNACK_BAR = @"Items\item_snack_bar"; //@@MP (Release 7-1)
+        public const string ITEM_SPEAR = @"Items\item_spear"; //@@MP (Release 7-6)
+        public const string ITEM_SPIKED_MACE = @"Items\item_spiked_mace"; //@@MP (Release 7-6)
         public const string ITEM_SPIKES = @"Items\item_spikes";
         public const string ITEM_SPRAYPAINT = @"Items\item_spraypaint";
         public const string ITEM_SPRAYPAINT2 = @"Items\item_spraypaint2";
@@ -806,8 +1152,10 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_STENCH_KILLER = @"Items\item_stench_killer";
         public const string ITEM_STUN_GUN = @"Items\item_stun_gun"; //@@MP (Release 7-2)
         public const string ITEM_SUBWAY_BADGE = @"Items\item_subway_badge";
+        public const string ITEM_TACTICAL_SHOTGUN = @"Items\item_tactical_shotgun"; //@@MP (Release 7-6)
         public const string ITEM_TENNIS_RACKET = @"Items\item_tennis_racket"; //@@MP (Release 3)
         public const string ITEM_TRUNCHEON = @"Items\item_truncheon";
+        public const string ITEM_UNIQUE_BOOK = @"Items\item_unique_book"; //@@MP (Release 7-6)
         public const string ITEM_VEGETABLE_SEEDS = @"Items\item_vegetable_seeds"; //@@MP (Release 5-5)
         public const string ITEM_VEGETABLES = @"Items\item_vegetables"; //@@MP (Release 5-5)
         public const string ITEM_WILD_BERRIES = @"Items\item_wild_berries"; //@@MP (Release 4)
@@ -817,7 +1165,9 @@ namespace djack.RogueSurvivor.Gameplay
 
         #region Effects
         public const string EFFECT_BARRICADED = @"Effects\barricaded";
-        public const string EFFECT_ONFIRE = @"Effects\onFire";
+        public const string EFFECT_BARREL_ONFIRE = @"Effects\barrel_onFire"; //for fire barrels    //@@MP - added (Release 7-6)
+        public const string EFFECT_CAMPFIRE_ONFIRE = @"Effects\campfire_onFire";     //@@MP - added (Release 7-6)
+        public const string EFFECT_ONFIRE = @"Effects\onFire"; //for cars, doors, and other vanilla RS .IsOnFire elements that were never implemented
         public const string EFFECT_ROT1_1 = @"Effects\rot1_1";
         public const string EFFECT_ROT1_2 = @"Effects\rot1_2";
         public const string EFFECT_ROT2_1 = @"Effects\rot2_1";
@@ -871,6 +1221,8 @@ namespace djack.RogueSurvivor.Gameplay
 
         public const string ICONS_LEGEND = @"icons_legend"; //@@MP (Release 6-1)
         public const string INSPECTION_MODE_HIGHLIGHT = @"inspection_mode_highlight"; //@@MP (Release 7-1)
+
+        public const string MENU_TITLE = @"menu_title"; //@@MP (Release 7-6)
         #endregion
 
         #endregion
@@ -928,6 +1280,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ICON_LINE_BLOCKED);
             Load(ICON_LINE_CLEAR);
             Load(ICON_BLAST);
+            Load(ICON_PLASMA_BURST); //@@MP (Release 7-6)
             Load(ICON_HEALING);
             Load(ICON_INCAPACITATED); //@@MP (Release 7-2)
             Load(ICON_IS_TARGET);
@@ -1230,189 +1583,473 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_SHOP_DEALERSHIP);
             Load(DECO_SHOP_ELECTRONICS);
             Load(DECO_SHOP_CLOTHES_STORE);
+            Load(DECO_SHOP_BARBER); //@@MP (Release 7-6)
             Load(DECO_CINEMA_SIGN);
             Load(DECO_CINEMA1);
             Load(DECO_CINEMA2);
             Load(DECO_GENERIC_OFFICE);
+
+            #region World decay
+            //@@MP (Release 7-6)
+
+            #region floors
+            //walkway
+            Load(DECO_FLOOR_WALKWAY_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_WALKWAY_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_WALKWAY_DECAY_V1_PHASE3);
+            Load(DECO_FLOOR_WALKWAY_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_WALKWAY_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_WALKWAY_DECAY_V2_PHASE3);
+            Load(DECO_FLOOR_WALKWAY_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_WALKWAY_DECAY_V3_PHASE2);
+            Load(DECO_FLOOR_WALKWAY_DECAY_V3_PHASE3);
+            //road NS (asphalt)
+            Load(DECO_FLOOR_ROAD_NS_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_ROAD_NS_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_ROAD_NS_DECAY_V1_PHASE3);
+            Load(DECO_FLOOR_ROAD_NS_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_ROAD_NS_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_ROAD_NS_DECAY_V2_PHASE3);
+            Load(DECO_FLOOR_ROAD_NS_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_ROAD_NS_DECAY_V3_PHASE2);
+            Load(DECO_FLOOR_ROAD_NS_DECAY_V3_PHASE3);
+            //road ES (asphalt)
+            Load(DECO_FLOOR_ROAD_EW_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_ROAD_EW_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_ROAD_EW_DECAY_V1_PHASE3);
+            Load(DECO_FLOOR_ROAD_EW_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_ROAD_EW_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_ROAD_EW_DECAY_V2_PHASE3);
+            Load(DECO_FLOOR_ROAD_EW_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_ROAD_EW_DECAY_V3_PHASE2);
+            Load(DECO_FLOOR_ROAD_EW_DECAY_V3_PHASE3);
+            //asphalt
+            Load(DECO_FLOOR_ASPHALT_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_ASPHALT_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_ASPHALT_DECAY_V1_PHASE3);
+            Load(DECO_FLOOR_ASPHALT_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_ASPHALT_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_ASPHALT_DECAY_V2_PHASE3);
+            Load(DECO_FLOOR_ASPHALT_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_ASPHALT_DECAY_V3_PHASE2);
+            Load(DECO_FLOOR_ASPHALT_DECAY_V3_PHASE3);
+            //office
+            Load(DECO_FLOOR_OFFICE_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_OFFICE_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_OFFICE_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_OFFICE_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_OFFICE_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_OFFICE_DECAY_V3_PHASE2);
+            //floor planks
+            Load(DECO_FLOOR_PLANKS_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_PLANKS_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_PLANKS_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_PLANKS_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_PLANKS_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_PLANKS_DECAY_V3_PHASE2);
+            //shop tiles
+            Load(DECO_FLOOR_SHOP_TILE_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_SHOP_TILE_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_SHOP_TILE_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_SHOP_TILE_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_SHOP_TILE_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_SHOP_TILE_DECAY_V3_PHASE2);
+            //concrete
+            Load(DECO_FLOOR_CONCRETE_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_CONCRETE_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_CONCRETE_DECAY_V1_PHASE3);
+            Load(DECO_FLOOR_CONCRETE_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_CONCRETE_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_CONCRETE_DECAY_V2_PHASE3);
+            Load(DECO_FLOOR_CONCRETE_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_CONCRETE_DECAY_V3_PHASE2);
+            Load(DECO_FLOOR_CONCRETE_DECAY_V3_PHASE3);
+            //white tile (shopping mall)
+            Load(DECO_FLOOR_WHITE_TILE_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_WHITE_TILE_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_WHITE_TILE_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_WHITE_TILE_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_WHITE_TILE_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_WHITE_TILE_DECAY_V3_PHASE2);
+            //basketball court
+            Load(DECO_FLOOR_BASKETBALL_COURT_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_BASKETBALL_COURT_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_BASKETBALL_COURT_DECAY_V1_PHASE3);
+            Load(DECO_FLOOR_BASKETBALL_COURT_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_BASKETBALL_COURT_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_BASKETBALL_COURT_DECAY_V2_PHASE3);
+            Load(DECO_FLOOR_BASKETBALL_COURT_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_BASKETBALL_COURT_DECAY_V3_PHASE2);
+            Load(DECO_FLOOR_BASKETBALL_COURT_DECAY_V3_PHASE3);
+            //tennis court
+            Load(DECO_FLOOR_TENNIS_COURT_DECAY_V1_PHASE1);
+            Load(DECO_FLOOR_TENNIS_COURT_DECAY_V1_PHASE2);
+            Load(DECO_FLOOR_TENNIS_COURT_DECAY_V1_PHASE3);
+            Load(DECO_FLOOR_TENNIS_COURT_DECAY_V2_PHASE1);
+            Load(DECO_FLOOR_TENNIS_COURT_DECAY_V2_PHASE2);
+            Load(DECO_FLOOR_TENNIS_COURT_DECAY_V2_PHASE3);
+            Load(DECO_FLOOR_TENNIS_COURT_DECAY_V3_PHASE1);
+            Load(DECO_FLOOR_TENNIS_COURT_DECAY_V3_PHASE2);
+            Load(DECO_FLOOR_TENNIS_COURT_DECAY_V3_PHASE3);
+            #endregion
+
+            #region walls
+            Load(DECO_WALL_GENERIC_INTERIOR_DECAY_PHASE1);
+            Load(DECO_WALL_GENERIC_INTERIOR_DECAY_PHASE2);
+            Load(DECO_WALL_GENERIC_INTERIOR_DECAY_PHASE3);
+            //brick
+            Load(DECO_WALL_BRICK_DECAY_V1_PHASE1);
+            Load(DECO_WALL_BRICK_DECAY_V1_PHASE2);
+            Load(DECO_WALL_BRICK_DECAY_V1_PHASE3);
+            Load(DECO_WALL_BRICK_DECAY_V2_PHASE1);
+            Load(DECO_WALL_BRICK_DECAY_V2_PHASE2);
+            Load(DECO_WALL_BRICK_DECAY_V2_PHASE3);
+            Load(DECO_WALL_BRICK_DECAY_V3_PHASE1);
+            Load(DECO_WALL_BRICK_DECAY_V3_PHASE2);
+            Load(DECO_WALL_BRICK_DECAY_V3_PHASE3);
+            //CHAR office
+            Load(DECO_WALL_CHAR_DECAY_V1_PHASE1);
+            Load(DECO_WALL_CHAR_DECAY_V1_PHASE2);
+            Load(DECO_WALL_CHAR_DECAY_V1_PHASE3);
+            Load(DECO_WALL_CHAR_DECAY_V2_PHASE1);
+            Load(DECO_WALL_CHAR_DECAY_V2_PHASE2);
+            Load(DECO_WALL_CHAR_DECAY_V2_PHASE3);
+            Load(DECO_WALL_CHAR_DECAY_V3_PHASE1);
+            Load(DECO_WALL_CHAR_DECAY_V3_PHASE2);
+            Load(DECO_WALL_CHAR_DECAY_V3_PHASE3);
+            //stone
+            Load(DECO_WALL_STONE_DECAY_V1_PHASE1);
+            Load(DECO_WALL_STONE_DECAY_V1_PHASE2);
+            Load(DECO_WALL_STONE_DECAY_V1_PHASE3);
+            Load(DECO_WALL_STONE_DECAY_V2_PHASE1);
+            Load(DECO_WALL_STONE_DECAY_V2_PHASE2);
+            Load(DECO_WALL_STONE_DECAY_V2_PHASE3);
+            //light brown
+            Load(DECO_WALL_LIGHT_BROWN_DECAY_V1_PHASE1);
+            Load(DECO_WALL_LIGHT_BROWN_DECAY_V1_PHASE2);
+            Load(DECO_WALL_LIGHT_BROWN_DECAY_V1_PHASE3);
+            Load(DECO_WALL_LIGHT_BROWN_DECAY_V2_PHASE1);
+            Load(DECO_WALL_LIGHT_BROWN_DECAY_V2_PHASE2);
+            Load(DECO_WALL_LIGHT_BROWN_DECAY_V2_PHASE3);
+            Load(DECO_WALL_LIGHT_BROWN_DECAY_V3_PHASE1);
+            Load(DECO_WALL_LIGHT_BROWN_DECAY_V3_PHASE2);
+            Load(DECO_WALL_LIGHT_BROWN_DECAY_V3_PHASE3);
+            //concrete (non-CHAR offices)
+            Load(DECO_WALL_CONCRETE_DECAY_V1_PHASE1);
+            Load(DECO_WALL_CONCRETE_DECAY_V1_PHASE2);
+            Load(DECO_WALL_CONCRETE_DECAY_V1_PHASE3);
+            Load(DECO_WALL_CONCRETE_DECAY_V2_PHASE1);
+            Load(DECO_WALL_CONCRETE_DECAY_V2_PHASE2);
+            Load(DECO_WALL_CONCRETE_DECAY_V2_PHASE3);
+            Load(DECO_WALL_CONCRETE_DECAY_V3_PHASE1);
+            Load(DECO_WALL_CONCRETE_DECAY_V3_PHASE2);
+            Load(DECO_WALL_CONCRETE_DECAY_V3_PHASE3);
+            //army wall
+            Load(DECO_WALL_ARMY_BASE_DECAY_V1_PHASE1);
+            Load(DECO_WALL_ARMY_BASE_DECAY_V1_PHASE2);
+            Load(DECO_WALL_ARMY_BASE_DECAY_V1_PHASE3);
+            Load(DECO_WALL_ARMY_BASE_DECAY_V2_PHASE1);
+            Load(DECO_WALL_ARMY_BASE_DECAY_V2_PHASE2);
+            Load(DECO_WALL_ARMY_BASE_DECAY_V2_PHASE3);
+            Load(DECO_WALL_ARMY_BASE_DECAY_V3_PHASE1);
+            Load(DECO_WALL_ARMY_BASE_DECAY_V3_PHASE2);
+            Load(DECO_WALL_ARMY_BASE_DECAY_V3_PHASE3);
+            //fuel station wall
+            Load(DECO_WALL_FUEL_STATION_DECAY_V1_PHASE1);
+            Load(DECO_WALL_FUEL_STATION_DECAY_V1_PHASE2);
+            Load(DECO_WALL_FUEL_STATION_DECAY_V1_PHASE3);
+            Load(DECO_WALL_FUEL_STATION_DECAY_V2_PHASE1);
+            Load(DECO_WALL_FUEL_STATION_DECAY_V2_PHASE2);
+            Load(DECO_WALL_FUEL_STATION_DECAY_V2_PHASE3);
+            Load(DECO_WALL_FUEL_STATION_DECAY_V3_PHASE1);
+            Load(DECO_WALL_FUEL_STATION_DECAY_V3_PHASE2);
+            Load(DECO_WALL_FUEL_STATION_DECAY_V3_PHASE3);
+            //wood (farm shed)
+            Load(DECO_WALL_PLANKS_DECAY_V1_PHASE1);
+            Load(DECO_WALL_PLANKS_DECAY_V1_PHASE2);
+            Load(DECO_WALL_PLANKS_DECAY_V1_PHASE3);
+            Load(DECO_WALL_PLANKS_DECAY_V2_PHASE1);
+            Load(DECO_WALL_PLANKS_DECAY_V2_PHASE2);
+            Load(DECO_WALL_PLANKS_DECAY_V2_PHASE3);
+            //hospital
+            Load(DECO_WALL_HOSPITAL_DECAY_V1_PHASE1);
+            Load(DECO_WALL_HOSPITAL_DECAY_V1_PHASE2);
+            Load(DECO_WALL_HOSPITAL_DECAY_V1_PHASE3);
+            Load(DECO_WALL_HOSPITAL_DECAY_V2_PHASE1);
+            Load(DECO_WALL_HOSPITAL_DECAY_V2_PHASE2);
+            Load(DECO_WALL_HOSPITAL_DECAY_V2_PHASE3);
+            Load(DECO_WALL_HOSPITAL_DECAY_V3_PHASE1);
+            Load(DECO_WALL_HOSPITAL_DECAY_V3_PHASE2);
+            Load(DECO_WALL_HOSPITAL_DECAY_V3_PHASE3);
+            //mall
+            Load(DECO_WALL_MALL_DECAY_V1_PHASE1);
+            Load(DECO_WALL_MALL_DECAY_V1_PHASE2);
+            Load(DECO_WALL_MALL_DECAY_V1_PHASE3);
+            Load(DECO_WALL_MALL_DECAY_V2_PHASE1);
+            Load(DECO_WALL_MALL_DECAY_V2_PHASE2);
+            Load(DECO_WALL_MALL_DECAY_V2_PHASE3);
+            Load(DECO_WALL_MALL_DECAY_V3_PHASE1);
+            Load(DECO_WALL_MALL_DECAY_V3_PHASE2);
+            Load(DECO_WALL_MALL_DECAY_V3_PHASE3);
+            #endregion
+
+            #endregion
+
             #endregion
 
             #region Map objects
             Notify(ui, "map objects...");
-            Load(OBJ_TREE);
-            Load(OBJ_TREE1);
-            Load(OBJ_TREE2);
-            Load(OBJ_TREE3);
-            Load(OBJ_TREE4);
-            //@@MP (Release 4)
-            Load(OBJ_PLAIN_TOMBSTONE);
-            Load(OBJ_CROSS_TOMBSTONE);
+                Load(OBJ_TREE1);
+                Load(OBJ_TREE2);
+                Load(OBJ_TREE3);
+                Load(OBJ_TREE4);
+                Load(OBJ_TREE_STUMP);
+                //@@MP (Release 4)
+                Load(OBJ_PLAIN_TOMBSTONE);
+                Load(OBJ_CROSS_TOMBSTONE);
 
-            Load(OBJ_WOODEN_DOOR_CLOSED);
-            Load(OBJ_WOODEN_DOOR_OPEN);
-            Load(OBJ_WOODEN_DOOR_BROKEN);
+                Load(OBJ_WOODEN_DOOR_CLOSED);
+                Load(OBJ_WOODEN_DOOR_OPEN);
+                Load(OBJ_WOODEN_DOOR_BROKEN);
 
-            Load(OBJ_GLASS_DOOR_CLOSED);
-            Load(OBJ_GLASS_DOOR_OPEN);
-            Load(OBJ_GLASS_DOOR_BROKEN);
+                Load(OBJ_GLASS_DOOR_CLOSED);
+                Load(OBJ_GLASS_DOOR_OPEN);
+                Load(OBJ_GLASS_DOOR_BROKEN);
 
-            Load(OBJ_CHAR_DOOR_BROKEN);
-            Load(OBJ_CHAR_DOOR_CLOSED);
-            Load(OBJ_CHAR_DOOR_OPEN);
+                Load(OBJ_CHAR_DOOR_BROKEN);
+                Load(OBJ_CHAR_DOOR_CLOSED);
+                Load(OBJ_CHAR_DOOR_OPEN);
 
-            Load(OBJ_WINDOW_CLOSED);
-            Load(OBJ_WINDOW_OPEN);
-            Load(OBJ_WINDOW_BROKEN);
+                Load(OBJ_WINDOW_CLOSED);
+                Load(OBJ_WINDOW_OPEN);
+                Load(OBJ_WINDOW_BROKEN);
 
-            //@@MP (Release 4)
-            Load(OBJ_ROLLER_DOOR_CLOSED);
-            Load(OBJ_ROLLER_DOOR_OPEN);
-            Load(OBJ_ROLLER_DOOR_BROKEN);
+                //@@MP (Release 4)
+                Load(OBJ_ROLLER_DOOR_CLOSED);
+                Load(OBJ_ROLLER_DOOR_OPEN);
+                Load(OBJ_ROLLER_DOOR_BROKEN);
 
-            Load(OBJ_PICKET_FENCE_EW); //@@MP - based on alpha10 (Release 6-1)
-            Load(OBJ_PICKET_FENCE_NS_RIGHT); //@@MP (Release 7-3)
-            Load(OBJ_PICKET_FENCE_NS_LEFT); //@@MP (Release 7-3)
-            Load(OBJ_BENCH);
-            Load(OBJ_CHAINWIRE_FENCE);
-            Load(OBJ_CHAINWIRE_GATE_OPEN); //@@MP (Release 7-3)
-            Load(OBJ_CHAINWIRE_GATE_CLOSED); //@@MP (Release 7-3)
-            Load(OBJ_CHAINWIRE_GATE_BROKEN); //@@MP (Release 7-3)
-            Load(OBJ_FARM_FENCE_EW); //@@MP (Release 7-3)
-            Load(OBJ_FARM_FENCE_NS_LEFT); //@@MP (Release 7-3)
-            Load(OBJ_FARM_FENCE_NS_RIGHT); //@@MP (Release 7-3)
-            //@@MP (Release 4)
-            Load(OBJ_GRAVEYARD_FENCE);
-            Load(OBJ_CHURCH_PEW);
-            Load(OBJ_LECTERN);
-            Load(OBJ_BAR_STOOL);
-            Load(OBJ_BAR_SHELVES);
-            Load(OBJ_WORKBENCH);
-            Load(OBJ_BANK_TELLER);
-            Load(OBJ_BERRY_BUSH);
-            Load(OBJ_CLINIC_BED);
-            Load(OBJ_CLINIC_CUPBOARD);
-            Load(OBJ_CLINIC_CURTAIN);
-            Load(OBJ_CLINIC_DESK);
-            Load(OBJ_CLINIC_MACHINERY);
+                Load(OBJ_PICKET_FENCE_EW); //@@MP - based on alpha10 (Release 6-1)
+                Load(OBJ_PICKET_FENCE_NS_RIGHT); //@@MP (Release 7-3)
+                Load(OBJ_PICKET_FENCE_NS_LEFT); //@@MP (Release 7-3)
+                Load(OBJ_BENCH);
+                Load(OBJ_CHAINWIRE_FENCE);
+                Load(OBJ_CHAINWIRE_GATE_OPEN); //@@MP (Release 7-3)
+                Load(OBJ_CHAINWIRE_GATE_CLOSED); //@@MP (Release 7-3)
+                Load(OBJ_CHAINWIRE_GATE_BROKEN); //@@MP (Release 7-3)
+                Load(OBJ_FARM_FENCE_EW); //@@MP (Release 7-3)
+                Load(OBJ_FARM_FENCE_NS_LEFT); //@@MP (Release 7-3)
+                Load(OBJ_FARM_FENCE_NS_RIGHT); //@@MP (Release 7-3)
+                //@@MP (Release 4)
+                Load(OBJ_GRAVEYARD_FENCE);
+                Load(OBJ_CHURCH_PEW);
+                Load(OBJ_LECTERN);
+                Load(OBJ_BAR_STOOL);
+                Load(OBJ_BAR_SHELVES);
+                Load(OBJ_WORKBENCH);
+                Load(OBJ_BANK_TELLER);
+                Load(OBJ_BERRY_BUSH);
+                Load(OBJ_CLINIC_BED);
+                Load(OBJ_CLINIC_CUPBOARD);
+                Load(OBJ_CLINIC_CURTAIN);
+                Load(OBJ_CLINIC_DESK);
+                Load(OBJ_CLINIC_MACHINERY);
 
-            Load(OBJ_CAR1);
-            Load(OBJ_CAR2);
-            Load(OBJ_CAR3);
-            Load(OBJ_CAR4);
-            Load(OBJ_VAN); //@@MP (Release 7-3)
+                //@MP (Release 7-6)
+                Load(OBJ_CAMPFIRE);
+                Load(OBJ_DISPLAY_CASE);
+                Load(OBJ_BURIAL_CROSS_DIRT);
+                Load(OBJ_BURIAL_CROSS_GRASS);
 
-            //@@MP (Release 6-4)
-            Load(OBJ_HELICOPTER1);
-            Load(OBJ_HELICOPTER2);
-            Load(OBJ_HELICOPTER3);
+                //@@MP (Release 6-4)
+                Load(OBJ_HELICOPTER1);
+                Load(OBJ_HELICOPTER2);
+                Load(OBJ_HELICOPTER3);
 
-            //@@MP (Release 7-3)
-            Load(OBJ_FIRE_TRUCK_EW_BACK);
-            Load(OBJ_FIRE_TRUCK_EW_FRONT);
-            Load(OBJ_FIRE_TRUCK_NS_BACK);
-            Load(OBJ_FIRE_TRUCK_NS_FRONT);
+                //@@MP (Release 7-3)
+                Load(OBJ_FIRE_TRUCK_EW_BACK);
+                Load(OBJ_FIRE_TRUCK_EW_FRONT);
+                Load(OBJ_FIRE_TRUCK_NS_BACK);
+                Load(OBJ_FIRE_TRUCK_NS_FRONT);
 
-            Load(OBJ_SHOP_SHELF);
-            Load(OBJ_BED);
-            Load(OBJ_WARDROBE);
-            Load(OBJ_TABLE);
-            Load(OBJ_FRIDGE);
-            Load(OBJ_DRAWER);
-            Load(OBJ_CHAIR);
-            Load(OBJ_NIGHT_TABLE);
-            //@@MP (Release 3)
-            Load(OBJ_HOUSE_DRAWERS);
-            Load(OBJ_HOUSE_SHELVES);
-            Load(OBJ_PIANO);
-            Load(OBJ_POTTED_PLANT);
-            Load(OBJ_TELEVISION);
-            Load(OBJ_STANDING_LAMP);
-            Load(OBJ_BOOK_SHELVES);
-            Load(OBJ_STOVEOVEN);
-            Load(OBJ_KITCHEN_SINK);
-            Load(OBJ_COUCH);
-            Load(OBJ_KITCHEN_COUNTER);
-            Load(OBJ_CASH_REGISTER);
+                Load(OBJ_SHOP_SHELF);
+                Load(OBJ_BED);
+                Load(OBJ_WARDROBE);
+                Load(OBJ_TABLE);
+                Load(OBJ_FRIDGE);
+                Load(OBJ_DRAWER);
+                Load(OBJ_CHAIR);
+                Load(OBJ_NIGHT_TABLE);
+                //@@MP (Release 3)
+                Load(OBJ_HOUSE_DRAWERS);
+                Load(OBJ_HOUSE_SHELVES);
+                Load(OBJ_PIANO);
+                Load(OBJ_POTTED_PLANT);
+                Load(OBJ_TELEVISION);
+                Load(OBJ_STANDING_LAMP);
+                Load(OBJ_BOOK_SHELVES);
+                Load(OBJ_STOVEOVEN);
+                Load(OBJ_KITCHEN_SINK);
+                Load(OBJ_COUCH);
+                Load(OBJ_KITCHEN_COUNTER);
+                Load(OBJ_CASH_REGISTER);
 
-            Load(OBJ_CHAR_CHAIR);
-            Load(OBJ_CHAR_TABLE);
-            Load(OBJ_CHAR_DESKTOP);//@@MP (Release 3)
-            Load(OBJ_CHAR_VAT);//@@MP (Release 3)
+                Load(OBJ_CHAR_CHAIR);
+                Load(OBJ_CHAR_TABLE);
+                Load(OBJ_CHAR_DESKTOP);//@@MP (Release 3)
+                Load(OBJ_CHAR_VAT);//@@MP (Release 3)
+                Load(OBJ_CHAR_TROLLEY);//@@MP (Release 7-6)
 
-            Load(OBJ_IRON_BENCH);
-            Load(OBJ_IRON_FENCE);
-            Load(OBJ_IRON_DOOR_BROKEN);
-            Load(OBJ_IRON_DOOR_CLOSED);
-            Load(OBJ_IRON_DOOR_OPEN);
+                Load(OBJ_IRON_BENCH);
+                Load(OBJ_IRON_FENCE);
+                Load(OBJ_IRON_DOOR_BROKEN);
+                Load(OBJ_IRON_DOOR_CLOSED);
+                Load(OBJ_IRON_DOOR_OPEN);
 
-            Load(OBJ_BARRELS);
-            Load(OBJ_JUNK);
-            Load(OBJ_BOARD);
-            Load(OBJ_SMALL_WOODEN_FORTIFICATION);
-            Load(OBJ_LARGE_WOODEN_FORTIFICATION);
+                Load(OBJ_BARRELS);
+                Load(OBJ_EMPTY_BARREL); //@@MP (Release 7-6)
+                Load(OBJ_EMPTY_BIN); //@@MP (Release 7-6)
+                Load(OBJ_JUNK);
+                Load(OBJ_BOARD);
+                Load(OBJ_SMALL_WOODEN_FORTIFICATION);
+                Load(OBJ_LARGE_WOODEN_FORTIFICATION);
 
-            Load(OBJ_POWERGEN_OFF);
-            Load(OBJ_POWERGEN_ON);
-            Load(OBJ_FIRE_EXTINGUISHER_REFILLER); //@@MP (Release 7-1)
+                Load(OBJ_POWERGEN_OFF);
+                Load(OBJ_POWERGEN_ON);
 
-            Load(OBJ_GATE_CLOSED);
-            Load(OBJ_GATE_OPEN);
+                Load(OBJ_GATE_CLOSED);
+                Load(OBJ_GATE_OPEN);
 
-            Load(OBJ_HOSPITAL_BED);
-            Load(OBJ_HOSPITAL_CHAIR);
-            Load(OBJ_HOSPITAL_DOOR_BROKEN);
-            Load(OBJ_HOSPITAL_DOOR_CLOSED);
-            Load(OBJ_HOSPITAL_DOOR_OPEN);
-            Load(OBJ_HOSPITAL_NIGHT_TABLE);
-            Load(OBJ_HOSPITAL_WARDROBE);
+                Load(OBJ_HOSPITAL_BED);
+                Load(OBJ_HOSPITAL_CHAIR);
+                Load(OBJ_HOSPITAL_DOOR_BROKEN);
+                Load(OBJ_HOSPITAL_DOOR_CLOSED);
+                Load(OBJ_HOSPITAL_DOOR_OPEN);
+                Load(OBJ_HOSPITAL_NIGHT_TABLE);
+                Load(OBJ_HOSPITAL_WARDROBE);
 
-            //@@MP (Release 6-4)
-            Load(OBJ_ARMY_RADIO_CUPBOARD);
-            Load(OBJ_ARMY_COMPUTER_STATION);
-            Load(OBJ_ARMY_BUNK_BED);
-            Load(OBJ_ARMY_FOOTLOCKER);
-            Load(OBJ_ARMY_TABLE);
+                //@@MP (Release 6-4)
+                Load(OBJ_ARMY_RADIO_CUPBOARD);
+                Load(OBJ_ARMY_COMPUTER_STATION);
+                Load(OBJ_ARMY_BUNK_BED);
+                Load(OBJ_ARMY_FOOTLOCKER);
+                Load(OBJ_ARMY_TABLE);
 
-            //@@MP (Release 6-5)
-            Load(OBJ_BANK_SAFE_CLOSED);
-            Load(OBJ_BANK_SAFE_OPEN);
-            Load(OBJ_BANK_SAFE_OPEN_OWNED);
+                //@@MP (Release 6-5)
+                Load(OBJ_BANK_SAFE_CLOSED);
+                Load(OBJ_BANK_SAFE_OPEN);
+                Load(OBJ_BANK_SAFE_OPEN_OWNED);
 
-            //@@MP (Release 7-3)
-            Load(OBJ_FUEL_PRICE_BOARD);
-            Load(OBJ_PEANUT_PLANT);
-            Load(OBJ_GRAPE_VINE);
-            Load(OBJ_TRACTOR);
-            Load(OBJ_BASKETBALL_RING);
-            Load(OBJ_FUEL_PUMP);
-            Load(OBJ_FUEL_PUMP_BROKEN);
-            Load(OBJ_TOILET);
-            Load(OBJ_BATHROOM_BASIN);
-            Load(OBJ_CLOTHES_WALL1);
-            Load(OBJ_CLOTHES_WALL2);
-            Load(OBJ_SHOES_WALL);
-            Load(OBJ_MOBILES_TABLE);
-            Load(OBJ_LAPTOPS_TABLE);
-            Load(OBJ_DISHWASHER);
-            Load(OBJ_WASHING_MACHINE);
-            Load(OBJ_DRYER);
-            Load(OBJ_CINEMA_SEAT);
-            Load(OBJ_FOOD_COURT_CHAIR);
-            Load(OBJ_FOOD_COURT_TABLE);
-            Load(OBJ_FOOD_COURT_PALM_TREE);
-            Load(OBJ_SUPERMARKET_CHECKOUT);
-            Load(OBJ_CINEMA_SCREEN);
-            Load(OBJ_RAILING);
-            Load(OBJ_DESKTOP_COMPUTER);
+                //@@MP (Release 7-3)
+                Load(OBJ_FUEL_PRICE_BOARD);
+                Load(OBJ_PEANUT_PLANT);
+                Load(OBJ_GRAPE_VINE);
+                Load(OBJ_TRACTOR);
+                Load(OBJ_BASKETBALL_RING);
+                Load(OBJ_FUEL_PUMP);
+                Load(OBJ_FUEL_PUMP_BROKEN);
+                Load(OBJ_TOILET);
+                Load(OBJ_BATHROOM_BASIN);
+                Load(OBJ_CLOTHES_WALL1);
+                Load(OBJ_CLOTHES_WALL2);
+                Load(OBJ_SHOES_WALL);
+                Load(OBJ_MOBILES_TABLE);
+                Load(OBJ_LAPTOPS_TABLE);
+                Load(OBJ_DISHWASHER);
+                Load(OBJ_WASHING_MACHINE);
+                Load(OBJ_DRYER);
+                Load(OBJ_CINEMA_SEAT);
+                Load(OBJ_FOOD_COURT_CHAIR);
+                Load(OBJ_FOOD_COURT_TABLE);
+                Load(OBJ_FOOD_COURT_PALM_TREE);
+                Load(OBJ_SUPERMARKET_CHECKOUT);
+                Load(OBJ_CINEMA_SCREEN);
+                Load(OBJ_RAILING);
+                Load(OBJ_DESKTOP_COMPUTER);
 
-            Load(OBJ_FOOD_COURT_COUNTER1);
-            Load(OBJ_FOOD_COURT_COUNTER2);
-            Load(OBJ_FOOD_COURT_COUNTER3);
-            Load(OBJ_FOOD_COURT_COUNTER4);
-            Load(OBJ_FOOD_COURT_COUNTER5);
-            #endregion
+                Load(OBJ_FOOD_COURT_COUNTER1);
+                Load(OBJ_FOOD_COURT_COUNTER2);
+                Load(OBJ_FOOD_COURT_COUNTER3);
+                Load(OBJ_FOOD_COURT_COUNTER4);
+                Load(OBJ_FOOD_COURT_COUNTER5);
+
+                //@@MP (Release 7-6)
+                Load(OBJ_WIGS_DISPLAY1);
+                Load(OBJ_WIGS_DISPLAY2);
+                Load(OBJ_WIGS_DISPLAY3);
+                Load(OBJ_BARBER_CHAIR);
+
+                //@@MP - re-worked with decay states (Release 7-6)
+                Load(OBJ_CAR_RED_PHASE0);
+                Load(OBJ_CAR_RED_PHASE1);
+                Load(OBJ_CAR_RED_PHASE2);
+                Load(OBJ_CAR_RED_PHASE3);
+                Load(OBJ_CAR_WHITE_PHASE0);
+                Load(OBJ_CAR_WHITE_PHASE1);
+                Load(OBJ_CAR_WHITE_PHASE2);
+                Load(OBJ_CAR_WHITE_PHASE3);
+                Load(OBJ_CAR_GREEN_PHASE0);
+                Load(OBJ_CAR_GREEN_PHASE1);
+                Load(OBJ_CAR_GREEN_PHASE2);
+                Load(OBJ_CAR_GREEN_PHASE3);
+                Load(OBJ_CAR_BLUE_PHASE0);
+                Load(OBJ_CAR_BLUE_PHASE1);
+                Load(OBJ_CAR_BLUE_PHASE2);
+                Load(OBJ_CAR_BLUE_PHASE3);
+                Load(OBJ_VAN_PHASE0);
+                Load(OBJ_VAN_PHASE1);
+                Load(OBJ_VAN_PHASE2);
+                Load(OBJ_VAN_PHASE3);
+                Load(OBJ_POLICE_CAR_PHASE0);
+                Load(OBJ_POLICE_CAR_PHASE1);
+                Load(OBJ_POLICE_CAR_PHASE2);
+                Load(OBJ_POLICE_CAR_PHASE3);
+
+                #region Decay
+                //@@MP (Release 7-6)
+
+                //picket fences
+                Load(OBJ_PICKET_FENCE_EW_V1_PHASE1);
+                Load(OBJ_PICKET_FENCE_EW_V1_PHASE2);
+                Load(OBJ_PICKET_FENCE_EW_V1_PHASE3);
+                Load(OBJ_PICKET_FENCE_NS_LEFT_V1_PHASE1);
+                Load(OBJ_PICKET_FENCE_NS_LEFT_V1_PHASE2);
+                Load(OBJ_PICKET_FENCE_NS_LEFT_V1_PHASE3);
+                Load(OBJ_PICKET_FENCE_NS_RIGHT_V1_PHASE1);
+                Load(OBJ_PICKET_FENCE_NS_RIGHT_V1_PHASE2);
+                Load(OBJ_PICKET_FENCE_NS_RIGHT_V1_PHASE3);
+
+                //chainwire fences
+                Load(OBJ_CHAINWIRE_FENCE_V1_PHASE1);
+                Load(OBJ_CHAINWIRE_FENCE_V1_PHASE2);
+                Load(OBJ_CHAINWIRE_FENCE_V1_PHASE3);
+                Load(OBJ_CHAINWIRE_FENCE_V2_PHASE1);
+                Load(OBJ_CHAINWIRE_FENCE_V2_PHASE2);
+                Load(OBJ_CHAINWIRE_FENCE_V2_PHASE3);
+                Load(OBJ_CHAINWIRE_FENCE_V3_PHASE1);
+                Load(OBJ_CHAINWIRE_FENCE_V3_PHASE2);
+                Load(OBJ_CHAINWIRE_FENCE_V3_PHASE3);
+                Load(OBJ_CHAINWIRE_FENCE_V4_PHASE1);
+                Load(OBJ_CHAINWIRE_FENCE_V4_PHASE2);
+                Load(OBJ_CHAINWIRE_FENCE_V4_PHASE3);
+
+                //chainwire fence gates
+                Load(OBJ_CHAINWIRE_FENCE_GATE_V1_PHASE1);
+                Load(OBJ_CHAINWIRE_FENCE_GATE_V1_PHASE2);
+                Load(OBJ_CHAINWIRE_FENCE_GATE_V1_PHASE3);
+                Load(OBJ_CHAINWIRE_FENCE_GATE_V2_PHASE1);
+                Load(OBJ_CHAINWIRE_FENCE_GATE_V2_PHASE2);
+                Load(OBJ_CHAINWIRE_FENCE_GATE_V2_PHASE3);
+                Load(OBJ_CHAINWIRE_FENCE_GATE_V3_PHASE1);
+                Load(OBJ_CHAINWIRE_FENCE_GATE_V3_PHASE2);
+                Load(OBJ_CHAINWIRE_FENCE_GATE_V3_PHASE3);
+
+                #endregion
+
+                #endregion
 
             #region Actors
-            Notify(ui, "actors...");
+        Notify(ui, "actors...");
             Load(PLAYER_FOLLOWER);
             Load(PLAYER_FOLLOWER_TRUST);
             Load(PLAYER_FOLLOWER_BOND);
@@ -1477,6 +2114,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(MALE_SHOES1);
             Load(MALE_SHOES2);
             Load(MALE_SHOES3);
+            Load(MALE_SHOES4);
+            Load(MALE_SHOES5);
             Load(MALE_EYES1);
             Load(MALE_EYES2);
             Load(MALE_EYES3);
@@ -1493,6 +2132,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(FEMALE_SHIRT2);
             Load(FEMALE_SHIRT3);
             Load(FEMALE_SHIRT4);
+            Load(FEMALE_SHIRT5);
             Load(FEMALE_HAIR1);
             Load(FEMALE_HAIR2);
             Load(FEMALE_HAIR3);
@@ -1508,6 +2148,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(FEMALE_SHOES1);
             Load(FEMALE_SHOES2);
             Load(FEMALE_SHOES3);
+            Load(FEMALE_SHOES4);
+            Load(FEMALE_SHOES5);
             Load(FEMALE_EYES1);
             Load(FEMALE_EYES2);
             Load(FEMALE_EYES3);
@@ -1553,6 +2195,14 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DOG_SKIN1_WEST);
             Load(DOG_SKIN2_WEST);
             Load(DOG_SKIN3_WEST);
+
+            Load(RABBIT_SKIN_WEST);
+            Load(RABBIT_SKIN_EAST);
+            Load(CHICKEN_SKIN_WEST);
+            Load(CHICKEN_SKIN_EAST);
+            Load(PRISONER_PANTS);
+            Load(PRISONER_SHOES);
+            Load(PRISONER_UNIFORM);
             #endregion
 
             #region Items
@@ -1561,66 +2211,93 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_EQUIPPED);
 
             Load(ITEM_AMMO_BOLTS);
-            Load(ITEM_AMMO_FUEL); //@@MP (Release 7-1)
+            Load(ITEM_AMMO_FUEL);
             Load(ITEM_AMMO_HEAVY_PISTOL);
             Load(ITEM_AMMO_HEAVY_RIFLE);
+            Load(ITEM_AMMO_GRENADES);
             Load(ITEM_AMMO_LIGHT_PISTOL);
             Load(ITEM_AMMO_LIGHT_RIFLE);
-            Load(ITEM_AMMO_NAILS); //@@MP (Release 5-1)
-            Load(ITEM_AMMO_PRECISION_RIFLE); //@@MP (Release 6-6)
+            Load(ITEM_AMMO_MINIGUN);
+            Load(ITEM_AMMO_NAILS);
+            Load(ITEM_AMMO_PLASMA);
+            Load(ITEM_AMMO_PRECISION_RIFLE);
             Load(ITEM_AMMO_SHOTGUN);
             Load(ITEM_ARMY_BODYARMOR);
             Load(ITEM_ARMY_PISTOL);
+            Load(ITEM_ARMY_PRECISION_RIFLE);
             Load(ITEM_ARMY_RATION);
-            Load(ITEM_ARMY_RIFLE);
-            Load(ITEM_BANDAGES);
+            Load(ITEM_ARMY_RIFLE1);
+            Load(ITEM_ARMY_RIFLE2);
+            Load(ITEM_ARMY_RIFLE3);
+            Load(ITEM_ARMY_RIFLE4);
             Load(ITEM_BARBED_WIRE);
             Load(ITEM_BASEBALL_BAT);
             Load(ITEM_BEAR_TRAP);
-            Load(ITEM_BEER_BOTTLE_BROWN); //@@MP (Release 4)
-            Load(ITEM_BEER_BOTTLE_GREEN); //@@MP (Release 4)
-            Load(ITEM_BEER_CAN_BLUE); //@@MP (Release 4)
-            Load(ITEM_BEER_CAN_RED); //@@MP (Release 4)
+            Load(ITEM_BEER_BOTTLE_BROWN);
+            Load(ITEM_BEER_BOTTLE_GREEN);
+            Load(ITEM_BEER_CAN_BLUE);
+            Load(ITEM_BEER_CAN_RED);
             Load(ITEM_BIGBEAR_BAT);
             Load(ITEM_BIG_FLASHLIGHT);
             Load(ITEM_BIG_FLASHLIGHT_OUT);
-            Load(ITEM_BINOCULARS); //@@MP (Release 7-1)
+            Load(ITEM_BINOCULARS);
+            Load(ITEM_BIO_FORCE_GUN);
+            Load(ITEM_BIOHAZARD_SUIT);
             Load(ITEM_BLACKOPS_GPS);
-            Load(ITEM_BOOK);
-            Load(ITEM_C4); //@@MP (Release 6-3)
-            Load(ITEM_C4_PRIMED); //@@MP (Release 6-3)
-            Load(ITEM_CANDLES_BOX); //@@MP (Release 7-1)
+            Load(ITEM_BOOK_CHAR);
+            Load(ITEM_BOOK_BLUE);
+            Load(ITEM_BOOK_GREEN);
+            Load(ITEM_BOOK_RED);
+            Load(ITEM_BRASS_KNUCKLES);
+            Load(ITEM_C4);
+            Load(ITEM_C4_PRIMED);
+            Load(ITEM_CANDLES_BOX);
             Load(ITEM_CANNED_FOOD);
             Load(ITEM_CELL_PHONE);
-            Load(ITEM_CHAINSAW); //@@MP (Release 7-1)
-            Load(ITEM_CHAR_DOCUMENT); //@@MP (Release 3)
+            Load(ITEM_CHAINSAW);
+            Load(ITEM_CHAR_DOCUMENT);
             Load(ITEM_CHAR_LIGHT_BODYARMOR);
-            Load(ITEM_CIGARETTES); //@@MP (Release 4)
+            Load(ITEM_CHICKEN_EGG);
+            Load(ITEM_CIGARETTES);
+            Load(ITEM_CLEAVER);
             Load(ITEM_COMBAT_KNIFE);
+            Load(ITEM_COOKED_CHICKEN);
+            Load(ITEM_COOKED_DOG_MEAT);
+            Load(ITEM_COOKED_FISH);
+            Load(ITEM_COOKED_HUMAN_FLESH);
+            Load(ITEM_COOKED_RABBIT);
             Load(ITEM_CROWBAR);
-            Load(ITEM_DYNAMITE); //@@MP (Release 4)
-            Load(ITEM_DYNAMITE_PRIMED); //@@MP (Release 4)
+            Load(ITEM_DOUBLE_BARREL);
+            Load(ITEM_DYNAMITE);
+            Load(ITEM_DYNAMITE_PRIMED);
             Load(ITEM_EMPTY_CAN);
-            Load(ITEM_ENERGY_DRINK); //@@MP (Release 7-1)
+            Load(ITEM_ENERGY_DRINK);
             Load(ITEM_FAMU_FATARU_KATANA);
-            Load(ITEM_FIRE_EXTINGUISHER); //@@MP (Release 7-1)
-            Load(ITEM_FIRE_HAZARD_SUIT); //@@MP (Release 7-1)
-            Load(ITEM_FLAMETHROWER); //@@MP (Release 7-1)
-            Load(ITEM_FLARES_KIT); //@@MP (Release 7-1)
-            Load(ITEM_FLASHBANG); //@@MP (Release 7-2)
-            Load(ITEM_FLASHBANG_PRIMED); //@@MP (Release 7-2)
+            Load(ITEM_FIRE_AXE);
+            Load(ITEM_FIRE_EXTINGUISHER);
+            Load(ITEM_FIRE_HAZARD_SUIT);
+            Load(ITEM_FISHING_ROD);
+            Load(ITEM_FLAIL);
+            Load(ITEM_FLAMETHROWER);
+            Load(ITEM_FLARES_KIT);
+            Load(ITEM_FLASHBANG);
+            Load(ITEM_FLASHBANG_PRIMED);
             Load(ITEM_FLASHLIGHT);
             Load(ITEM_FLASHLIGHT_OUT);
             Load(ITEM_FREE_ANGELS_JACKET);
-            Load(ITEM_GLOWSTICKS_BOX); //@@MP (Release 7-1)
+            Load(ITEM_FRYING_PAN);
+            Load(ITEM_GLOWSTICKS_BOX);
             Load(ITEM_GOLF_CLUB);
-            Load(ITEM_GRAPES); //@@MP (Release 7-3)
+            Load(ITEM_GRAPES);
             Load(ITEM_GRENADE);
             Load(ITEM_GRENADE_PRIMED);
+            Load(ITEM_GRENADE_LAUNCHER);
             Load(ITEM_GROCERIES);
             Load(ITEM_HANS_VON_HANZ_PISTOL);
             Load(ITEM_HELLS_SOULS_JACKET);
-            Load(ITEM_HOCKEY_STICK); //@@MP (Release 3)
+            Load(ITEM_HOCKEY_STICK);
+            Load(ITEM_HOLY_HAND_GRENADE);
+            Load(ITEM_HOLY_HAND_GRENADE_PRIMED);
             Load(ITEM_HUGE_HAMMER);
             Load(ITEM_HUNTER_VEST);
             Load(ITEM_HUNTING_CROSSBOW);
@@ -1629,57 +2306,81 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_IMPROVISED_SPEAR);
             Load(ITEM_IRON_GOLF_CLUB);
             Load(ITEM_JASON_MYERS_AXE);
-            Load(ITEM_KOLT_REVOLVER);
-            Load(ITEM_LIQUOR_BOTTLE_AMBER); //@@MP (Release 4)
-            Load(ITEM_LIQUOR_BOTTLE_CLEAR); //@@MP (Release 4)
-            Load(ITEM_LIT_FLARE); //@@MP (Release 7-1)
-            Load(ITEM_LIT_GLOWSTICK); //@@MP (Release 7-1)
-            Load(ITEM_MACHETE); //@@MP (Release 3)
-            Load(ITEM_MATCHES); //@@MP (Release 7-1)
-            Load(ITEM_MAGAZINE);
-            Load(ITEM_MEDIKIT);
-            Load(ITEM_MOLOTOV); //@@MP (Release 4)
-            Load(ITEM_MOLOTOV_PRIMED); //@@MP (Release 4)
-            Load(ITEM_NAIL_GUN); //@@MP (Release 5-1)
-            Load(ITEM_NIGHT_VISION); //@@MP (Release 6-3)
-            Load(ITEM_PEANUTS); //@@MP (Release 7-3)
-            Load(ITEM_PICKAXE); //@@MP (Release 3)
+            Load(ITEM_KITCHEN_KNIFE);
+            Load(ITEM_REVOLVER);
+            Load(ITEM_LARGE_MEDIKIT);
+            Load(ITEM_LIQUOR_BOTTLE_AMBER);
+            Load(ITEM_LIQUOR_BOTTLE_CLEAR);
+            Load(ITEM_LIT_FLARE);
+            Load(ITEM_LIT_GLOWSTICK);
+            Load(ITEM_MACE);
+            Load(ITEM_MACHETE);
+            Load(ITEM_MATCHES);
+            Load(ITEM_MAGAZINE1);
+            Load(ITEM_MAGAZINE2);
+            Load(ITEM_MAGAZINE3);
+            Load(ITEM_MAGAZINE4);
+            Load(ITEM_MINIGUN);
+            Load(ITEM_MOLOTOV);
+            Load(ITEM_MOLOTOV_PRIMED);
+            Load(ITEM_NAIL_GUN);
+            Load(ITEM_NUNCHAKU);
+            Load(ITEM_NIGHT_VISION);
+            Load(ITEM_PAINT_THINNER);
+            Load(ITEM_PEANUTS);
+            Load(ITEM_PICKAXE);
             Load(ITEM_PILLS_ANTIVIRAL);
             Load(ITEM_PILLS_BLUE);
             Load(ITEM_PILLS_GREEN);
             Load(ITEM_PILLS_SAN);
-            Load(ITEM_PIPE_WRENCH); //@@MP (Release 3)
+            Load(ITEM_PIPE_WRENCH);
             Load(ITEM_PISTOL);
+            Load(ITEM_PITCH_FORK);
+            Load(ITEM_PLASMA_BURST_PRIMED);
             Load(ITEM_POLICE_JACKET);
             Load(ITEM_POLICE_RADIO);
             Load(ITEM_POLICE_RIOT_ARMOR);
-            Load(ITEM_POLICE_RIOT_SHIELD); //@@MP (Release 7-2)
+            Load(ITEM_POLICE_RIOT_SHIELD);
             Load(ITEM_PRECISION_RIFLE);
+            Load(ITEM_RAW_CHICKEN);
+            Load(ITEM_RAW_DOG_MEAT);
+            Load(ITEM_RAW_FISH);
+            Load(ITEM_RAW_HUMAN_FLESH);
+            Load(ITEM_RAW_RABBIT);
             Load(ITEM_ROGUEDJACK_KEYBOARD);
             Load(ITEM_SANTAMAN_SHOTGUN);
+            Load(ITEM_SCIMITAR);
+            Load(ITEM_SCYTHE);
             Load(ITEM_SHORT_SHOVEL);
             Load(ITEM_SHOTGUN);
             Load(ITEM_SHOVEL);
-            Load(ITEM_SIPHON_KIT); //@@MP (Release 7-1)
-            Load(ITEM_SLEEPING_BAG); //@@MP (Release 7-3)
+            Load(ITEM_SICKLE);
+            Load(ITEM_SIPHON_KIT);
+            Load(ITEM_SLEEPING_BAG);
             Load(ITEM_SMALL_HAMMER);
-            Load(ITEM_SMOKE_GRENADE); //@@MP (Release 7-2)
-            Load(ITEM_SMOKE_GRENADE_PRIMED); //@@MP (Release 7-2)
-            Load(ITEM_SNACK_BAR); //@@MP (Release 7-1)
+            Load(ITEM_SMALL_MEDIKIT);
+            Load(ITEM_SMG);
+            Load(ITEM_SMOKE_GRENADE);
+            Load(ITEM_SMOKE_GRENADE_PRIMED);
+            Load(ITEM_SNACK_BAR);
+            Load(ITEM_SPEAR);
+            Load(ITEM_SPIKED_MACE);
             Load(ITEM_SPIKES);
             Load(ITEM_SPRAYPAINT);
             Load(ITEM_SPRAYPAINT2);
             Load(ITEM_SPRAYPAINT3);
             Load(ITEM_SPRAYPAINT4);
-            Load(ITEM_STANDARD_AXE); //@@MP (Release 3)
+            Load(ITEM_STANDARD_AXE);
             Load(ITEM_STENCH_KILLER);
-            Load(ITEM_STUN_GUN); //@@MP (Release 7-2)
+            Load(ITEM_STUN_GUN);
             Load(ITEM_SUBWAY_BADGE);
-            Load(ITEM_TENNIS_RACKET); //@@MP (Release 3)
+            Load(ITEM_TACTICAL_SHOTGUN);
+            Load(ITEM_TENNIS_RACKET);
             Load(ITEM_TRUNCHEON);
-            Load(ITEM_VEGETABLE_SEEDS); //@@MP (Release 5-5)
-            Load(ITEM_VEGETABLES); //@@MP (Release 5-5)
-            Load(ITEM_WILD_BERRIES); //@@MP (Release 4)
+            Load(ITEM_UNIQUE_BOOK);
+            Load(ITEM_VEGETABLE_SEEDS);
+            Load(ITEM_VEGETABLES);
+            Load(ITEM_WILD_BERRIES);
             Load(ITEM_WOODEN_PLANK);
             Load(ITEM_ZTRACKER);
             #endregion
@@ -1688,6 +2389,8 @@ namespace djack.RogueSurvivor.Gameplay
             Notify(ui, "effects...");
 
             Load(EFFECT_BARRICADED);
+            Load(EFFECT_BARREL_ONFIRE);
+            Load(EFFECT_CAMPFIRE_ONFIRE);
             Load(EFFECT_ONFIRE);
             Load(EFFECT_ROT1_1);
             Load(EFFECT_ROT1_2);
@@ -1699,26 +2402,26 @@ namespace djack.RogueSurvivor.Gameplay
             Load(EFFECT_ROT4_2);
             Load(EFFECT_ROT5_1);
             Load(EFFECT_ROT5_2);
-            Load(EFFECT_FLASHBANG_020); //@@MP (Release 7-2)
-            Load(EFFECT_FLASHBANG_040); //@@MP (Release 7-2)
-            Load(EFFECT_FLASHBANG_060); //@@MP (Release 7-2)
-            Load(EFFECT_FLASHBANG_080); //@@MP (Release 7-2)
-            Load(EFFECT_FLASHBANG_100); //@@MP (Release 7-2)
-            Load(EFFECT_LIGHT_TINT_CANDLE); //@@MP (Release 7-1)
-            Load(EFFECT_LIGHT_TINT_FLARE); //@@MP (Release 7-1)
-            Load(EFFECT_LIGHT_TINT_GLOWSTICK); //@@MP (Release 7-1)
-            Load(EFFECT_NIGHTVISION); //@@MP (Release 7-2)
-            Load(EFFECT_SMOKE_SCREEN); //@@MP (Release 7-2)
+            Load(EFFECT_FLASHBANG_020);
+            Load(EFFECT_FLASHBANG_040);
+            Load(EFFECT_FLASHBANG_060);
+            Load(EFFECT_FLASHBANG_080);
+            Load(EFFECT_FLASHBANG_100);
+            Load(EFFECT_LIGHT_TINT_CANDLE);
+            Load(EFFECT_LIGHT_TINT_FLARE);
+            Load(EFFECT_LIGHT_TINT_GLOWSTICK);
+            Load(EFFECT_NIGHTVISION);
+            Load(EFFECT_SMOKE_SCREEN);
             Load(EFFECT_WEATHER_RAIN1);
             Load(EFFECT_WEATHER_RAIN2);
             Load(EFFECT_WEATHER_HEAVY_RAIN1);
             Load(EFFECT_WEATHER_HEAVY_RAIN2);
-            Load(EFFECT_DISTURBED_LOW); //@@MP (Release 7-3)
-            Load(EFFECT_DISTURBED_MED); //@@MP (Release 7-3)
-            Load(EFFECT_DISTURBED_HIGH); //@@MP (Release 7-3)
-            Load(EFFECT_TIPSY); //@@MP (Release 7-3)
-            Load(EFFECT_DRUNK); //@@MP (Release 7-3)
-            Load(EFFECT_HAMMERED); //@@MP (Release 7-3)
+            Load(EFFECT_DISTURBED_LOW);
+            Load(EFFECT_DISTURBED_MED);
+            Load(EFFECT_DISTURBED_HIGH);
+            Load(EFFECT_TIPSY);
+            Load(EFFECT_DRUNK);
+            Load(EFFECT_HAMMERED);
             #endregion
 
             #region Misc
@@ -1739,8 +2442,9 @@ namespace djack.RogueSurvivor.Gameplay
             Load(TRACK_POLICE_POSITION);
             Load(TRACK_UNDEAD_POSITION);
             Load(CORPSE_DRAGGED);
-            Load(ICONS_LEGEND);  //@@MP (Release 6-1)
-            Load(INSPECTION_MODE_HIGHLIGHT); //@@MP (Release 7-1)
+            Load(ICONS_LEGEND);
+            Load(INSPECTION_MODE_HIGHLIGHT);
+            Load(MENU_TITLE);
             #endregion
 
             Notify(ui, "done!");

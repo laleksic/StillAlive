@@ -11,6 +11,7 @@ namespace djack.RogueSurvivor.Engine.Items
         AmmoType m_AmmoType;
         bool m_IsSingleShot; //@@MP (Release 6-6)
         bool m_IsOneHanded; //@@MP (Release 7-2)
+        int m_Weight; //@@MP (Release 7-6)
         #endregion
 
         #region Properties
@@ -44,6 +45,11 @@ namespace djack.RogueSurvivor.Engine.Items
             get { return m_IsOneHanded; }
         }
 
+        public int Weight  //@@MP (Release 7-6)
+        {
+            get { return m_Weight; }
+        }
+
         // alpha10
         public int RapidFireHit1Value
         {
@@ -57,13 +63,14 @@ namespace djack.RogueSurvivor.Engine.Items
         #endregion
 
         #region Init
-        public ItemRangedWeaponModel(string aName, string theNames, string imageID, Attack attack, int maxAmmo, AmmoType ammoType, bool isSingleShot, bool isOneHanded) //@@MP - added isSingleShot (Release 6-6), added isOneHanded (Release 7-2)
+        public ItemRangedWeaponModel(string aName, string theNames, string imageID, Attack attack, int maxAmmo, AmmoType ammoType, bool isSingleShot, bool isOneHanded, int weight) //@@MP - added isSingleShot (Release 6-6), added isOneHanded (Release 7-2)
             : base(aName, theNames, imageID, attack)
         {
             m_MaxAmmo = maxAmmo;
             m_AmmoType = ammoType;
             m_IsSingleShot = isSingleShot;
-            m_IsOneHanded = isOneHanded;
+            m_IsOneHanded = isOneHanded; //@@MP (Release 7-2)
+            m_Weight = weight;  //@@MP (Release 7-6)
         }
         #endregion
     }

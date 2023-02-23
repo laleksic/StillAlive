@@ -1,5 +1,115 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
+STILL ALIVE 2.9.17.31 (aka Release 7-6, 23/2/2023) [Author: MP]
+---------------------
+
+Features:
+-Added fishing. (see section 9 of the manual)
+-Corpses now drop raw meat when butchered.
+-Added a chance to get food poisoning from uncooked meat.
+-Cannibalism now has much more significant consequences (see section 9 of the manual).
+-Raw meats can be cooked on fires.
+-Added receptacles that can be used as fire barrels. (see section 9 of the manual)
+-Added the ability to make campfires.^ (see section 9 of the manual)
+-Added fire extinguishers.
+-Added paint thinner, for removing unwanted sprayed tags.*
+-Added new weapons and sprites: cleaver, brass knuckles, flail, kitchen knife, scimitar, mace, nunchaku, frying pan, pitch fork,
+ scythe, sickle, spear, spiked mace, SMG, standard axe, double barrel shotgun, minigun (unique), tactical shotgun, army pistol,
+ flamethrower, pistol, shotgun, hunting rfile, revolver, precision rifle, army precision rifle, army rifle (3 variants), fire axe,
+ grenade launcher (unique).^*
+-Added display cases to churches, which is where rare antique weapons may spawn.
+-Added a grenade that with it thou mayst blow thine enemies to tiny bits, in thy mercy.
+-NPCs and the player now have a chance to extinguish fires on self by Waiting (stop-drop-and-roll).
+-Corpses now list cause of death when hovering over them.*
+-Players can now bury corpses. This will leave behind a burial cross with the deceased's name.*^
+-Players can now destroy items from their inventory, removing them from the world permanently.
+-Items that are dropped by NPCs and go untouched for 4 days are despawned from the game for performance optimisation (configurable in Options).
+-Players can now change their clothing outfit, shoes, and hairstyle in the relevant stores at the shopping mall.
+-Added an option to configure how frequently undead and dogs will growl when doing actions (eg. attacking).
+-Added section 9 of the manual to explain all the RS:SA-specific changes and additions.
+-Prisoners now wear a distinctive uniform.*^
+-Improved the sprites for the following items: books, magazines, dynamite, medikit, bandages.*^
+-The world now decays as time passes (configurable in Options).*^
+-Players can unload the ammo from their equipped ranged weapon.*
+-Livings now scream when they are killed by undead.*
+-Added a Bio Force Gun. CHAR and their shady weapons R&D...
+-Screams SFXs now play relevant to the NPC's gender. Death at the hands of an undead has a distinct SFX for each gender.
+-Melee and ranged weapons now have weight, which can reduce one's speed (-0.01 SPD = 1 turn skipped in every 100).
+-Added an infection resistance value to body armor. Provides a chance to avoid infection increases from undead attacks.
+-Added biohazard suits. Poor as armor, but offers decent protection against infection.
+-Items now indicate when they're forbidden to AI actors ("NPCs aren't interested in this item").
+
+Fixes:
+-Killing gang members that acosted you (ie. self-defence) no longer counts as murder.*
+-Buffed flame weapons, nailguns, and crossbows, and balanced all ranged weapons.*
+-Fixed RS Alpha 10 bug that made "the prisonner" invincible.*
+-Guard booth door in the police station jails level is now locked.
+-Fixed the cause of "the prisoner" dialog not being initiated.*
+-Corrected logic when dropping items (now will drop on the spot rather than beside it, unless absolutely necessary).
+-Fixed issues with banks safes not working as intended.
+-Added missing actions to the keyrebind menu.
+-Fixed NPCs taking forbidden to AI items.
+-Improved logic of NPCs rating the value of certain types of items when trading.
+-Perishable stuff (eg. undead corpses, blood splatters, etc) no longer render when out of FOV.*
+-Fixed cause of corpses infinitely appearing to be on fire under certain circumstances.*
+-Alleviated some of the priority towards NPCs endlessly trading amongst each other.
+-Fixed church bells not ringing loud enough when in a district with a church after loading a saved game.
+-Exploding fuel cans no longer destroy walls.
+-Fires no longer travel through walls.
+-Fixed fire resistance of armor, and the encumberance of the fire hazard suit.
+-When Immediate Zombification (Std mode) is on, NPCs zombified by a hit from an undead now have their corpse removed.
+-NPCs no longer get stuck in an endless loop of opening and closing doors.
+-Unique ranged weapons have their sound effects fixed.*
+-Can no longer reincarnate as a trapped NPC (prisoners in jails and nurses in the hospital storage area).*
+-Fixed items not spawning in army offices.
+-Fixed minor issues with a number of sprites (fire hzard suit, various actor skins).
+
+Misc:
+-Adjusted the items spawned at stores, junkyards, houses, army and CHAR locations, churches, and farms.
+-Reduced the accuracy penalty when uses ranged weapons whilst having a shield equipped.
+-Added more items to army supplies drops.
+-Added advisor hint and message notifications regarding extinguishing fires on oneself.
+-Reduced the decay of blood splatters from 5 days to 3. Added decay for explosion & fire scorches, and piles of vomit.
+-Items that solely restore sanity are no longer spawned if the sanity system is disabled at new game creation.
+-Benches are now movable.
+-Autosaves now occur every 540 turns rather than 360.
+-Tweaked the advisor hints to not spam quite so much on the first few turns.
+-Permadeath no longer gives a scoring multiplier.
+-Less likely to vomit when siphoning fuel now.
+-Increased the FOO and SLP penalty from vomiting.
+-Can now cut down trees for planks (an appropraite melee weapon is required).
+-A bladed weapon is now required in order to butcher corpses.
+-Dogs now only spawn in certain conditions (mostly based on district - you're unlikely to find them in Green districts).
+-Maximum Dogs option is now Maximum Animals (applies to chickens, rabbits and dogs, but not fish).
+-Reduced the default daily zombie invasion increase from 5 to 1, and default max undeads cap from 100 to 80.
+-Expanded the radius of lit area around object fires an extra tile (configurable in Options).
+-Tidied up the game manual to remove line wrapping cutting off words.
+-Added a few extra clothing items.
+-Removed the chance of heavy rain when starting a new game.
+-Added police cars.^*
+-Reduced the chance for dynamite to spawn.
+-Defending oneself from aggresively hungry civilians is now only self-defense.*
+-Tweaks to the kennels and jail cells.
+-Tile fires now damage corpses.
+-Buffed the Light Feet skill.
+-Added antiviral pills to army supply drops.
+-Buffed medikits and cigarettes.
+-Added a main menu item for the list of all resource file credits.
+-Halved the weight penalty of armor.
+
+DEVELOPMENT:
+-Moved HARDY to last Living skill position in the CSV, as it now needs two lines to fit its description on the skill selection screen.
+-Add a timer task for adding MapObjects.
+-An issue (assumed pre-existing) has been discovered whereby the game may crash on distrct change if District Simulation is set to Off.
+	The cause is unknown. Bug tracker entry: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/-/issues/91
+
+*denotes an idea proposed by or a bug reported by Jess on the RS forums. 
+^denotes sprites contributed by Jess on the RS forums.
+Jess's amazing artwork has brought more atmosphere to a collapsed and decaying world, and it adds immeasurably to the game. I'm very grateful
+ that Jess found the RS forums and was keen to contribute to Still Alive. Thanks Jess.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.5.15.3 (aka Release 7-5, 18/12/2022) [Author: MP]
 ---------------------
 
@@ -38,7 +148,7 @@ Fixes:
 -Popups when hovering the mouse should no longer be cut off by the bottom of the screen.
 -Trackers, radios and phones can be recharged at power generators.
 -Worked around multiple AI issues resulting from lack of FOV in darkness by hard-coding non-undead NPCs to have a floor of 1 FOV.
--NPCs no longer get stuck in an endless loop of opening and closing the same cage door in animal shelters.
+-Kennel fences in the animal pound lower level are no longer climbable.
 
 Misc:
 -Swapped keybindings for City Info (map) and Info Mode.
@@ -48,7 +158,6 @@ Misc:
 |-chance for fired bolts to rip through an undead, ending up on the ground beside them.
 |-chance for fired bolts to land around the target on a miss.
 |-chance when a living is hit by a bolt that it may stick in them, and they may pull it out and drop it.
--Kennel fences in the animal pound lower level are no longer climbable.
 
 Development:
 -Exception will be thrown if items are placed on a non-walkable tile such as walls (debug mode only)

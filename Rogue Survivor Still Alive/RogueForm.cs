@@ -211,6 +211,16 @@ namespace djack.RogueSurvivor
                     return;
                 else if (tile.IsInside)
                     m_Game.Player.SleepPoints = (m_Game.Rules.ActorMaxSleep(m_Game.Player) / 2);*/
+
+                /*Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0} murders.", m_Game.Player.MurdersCounter.ToString()));
+                foreach (Actor a in m_Game.Player.Location.Map.Actors)
+                {
+                    if (m_Game.Player.IsSelfDefenceFrom(a))
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Self-defense from: {0}.", a.TheName));
+
+                    if (m_Game.Rules.AreGroupEnemies(m_Game.Player, a))
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("Group enemy: {0}.", a.TheName));
+                }*/
             }
             // F7 - DEV - toggle FPS
             if (e.KeyCode == Keys.F7)
@@ -230,8 +240,10 @@ namespace djack.RogueSurvivor
             {
                 m_Game.DEV_ToggleShowActorsStats();
                 UI_Repaint();
+                //m_Game.Session.World.Weather = Weather.CLEAR;
+                //m_Game.DEV_KillAllActorsInMap();
 
-                m_Game.DEV_KillAllActorsInMap(); //@@MP (Release 6-3)
+                //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}", m_Game.Player.Location.Map.CountAntiviralPills(m_Game)));
             }
             // F10 - DEV DEBUG - Reveal secret locations
             if (e.KeyCode == Keys.F10)

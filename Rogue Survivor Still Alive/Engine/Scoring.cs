@@ -582,15 +582,15 @@ namespace djack.RogueSurvivor.Engine
             float kUndeads_Day0 = (float)(options.DayZeroUndeadsPercent - GameOptions.DEFAULT_DAY_ZERO_UNDEADS_PERCENT) / (float)GameOptions.DEFAULT_DAY_ZERO_UNDEADS_PERCENT;
             float kUndeads_Inv = (float)(options.ZombieInvasionDailyIncrease - GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE) / (float)GameOptions.DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE;
             if (side == DifficultySide.FOR_SURVIVOR)
-                rating += 0.30f * kUndeads_Nb + 0.05f * kUndeads_Day0 + 0.15f * kUndeads_Inv;
+                rating += 0.30f * kUndeads_Nb + 0.05f * kUndeads_Day0 + 0.01f * kUndeads_Inv;
             else
-                rating -= 0.30f * kUndeads_Nb + 0.05f * kUndeads_Day0 + 0.15f * kUndeads_Inv;
+                rating -= 0.30f * kUndeads_Nb + 0.05f * kUndeads_Day0 + 0.01f * kUndeads_Inv;
 
             // - Civilians          : f(zombification%, canstarve&starvedzomb%), +/- 50%
             float kDefaultCivZombification = (float)GameOptions.DEFAULT_MAX_CIVILIANS * (float)GameOptions.DEFAULT_ZOMBIFICATION_CHANCE;
             float kCivZombification = (float)(options.MaxCivilians * options.ZombificationChance - kDefaultCivZombification) / kDefaultCivZombification;
 
-            //TODO: improve this method //@@MP
+            //FIXME: improve this method. it doesn't take into account modes that don't utilise ZombificationChance   //@@MP
             float kCivStarvation = (float)(options.MaxCivilians / GameOptions.DEFAULT_MAX_CIVILIANS); //@@MP - starvation zombification now bool rather than % chance (Release 7-3)
 
             if (!options.NPCCanStarveToDeath)
@@ -609,10 +609,10 @@ namespace djack.RogueSurvivor.Engine
             // Scaling factors.
             // - Disable undeads evolution  : x0.5 / x2
             // - Enable Combat Assistant    : x0.75
-            // - Enable permadeath          : x2
-            // - Disable Sanity             : x0.5 / x0.95 //@@MP (Release 1)
+            //// - Enable permadeath          : x2              //@@MP (Release 7-6)
+            // - Disable Sanity             : x0.5 / x0.95      //@@MP (Release 1)
             // - Aggressive Hungry Civs     : x0.5 / x2
-            //// - Rats Upgrade               : x1.10 / x0.90 //@@MP - removed this option (Release 5-7)
+            //// - Rats Upgrade               : x1.10 / x0.90   //@@MP - removed this option (Release 5-7)
             // - Skeletons Upgrade          : x1.20 / x0.80
             // - Shamblers Upgrade          : x1.25 / x0.75
             // - Resources Availability     : x1.5 / x 0.5      //@@MP (Release 7-4)
@@ -620,7 +620,7 @@ namespace djack.RogueSurvivor.Engine
             ////////////
             #region
             // - Disable undeads evolution: x0.5 / x2
-            if (!options.AllowUndeadsEvolution)
+            if (!options.AllowUndeadsEvolution && gameMode != Engine.GameMode.GM_VINTAGE) //@@MP - forgot to do this after I made the Vtg mode stop forcing options off (Release 7-6)
             {
                 if (side == DifficultySide.FOR_SURVIVOR)
                     rating *= 0.5f;
@@ -632,9 +632,9 @@ namespace djack.RogueSurvivor.Engine
             if (options.IsCombatAssistantOn)
                 rating *= 0.75f;
 
-            // - Enable permadeath          : x2
+            /*// - Enable permadeath          : x2          /@@MP - disabled as pointless: someone could just copy out the save file and back in after death (Release 7-6)
             if (options.IsPermadeathOn)
-                rating *= 2.0f;
+                rating *= 2.0f;*/
 
             // - Disabled Sanity loss  //@@MP (Release 1)
             if (!options.IsSanityEnabled)
@@ -651,8 +651,8 @@ namespace djack.RogueSurvivor.Engine
                 else
                     rating *= 2f;
             }
-            /*// - Rats Upgrade    //@@MP (Release 5-7)
-            if (options.RatsUpgrade)
+            /*// - Rats Upgrade                      //@@MP - removed entirely (Release 5-7)
+            if (options.RatsUpgrade && gameMode != Engine.GameMode.GM_VINTAGE)
             {
                 if (side == DifficultySide.FOR_SURVIVOR)
                     rating *= 1.10f;
@@ -660,7 +660,7 @@ namespace djack.RogueSurvivor.Engine
                     rating *= 0.90f;
             }*/
             // - Skeletons Upgrade
-            if (options.SkeletonsUpgrade)
+            if (options.SkeletonsUpgrade && gameMode != Engine.GameMode.GM_VINTAGE) //@@MP - forgot to do this after I made the Vtg mode stop forcing options off (Release 7-6)
             {
                 if (side == DifficultySide.FOR_SURVIVOR)
                     rating *= 1.20f;
@@ -668,7 +668,7 @@ namespace djack.RogueSurvivor.Engine
                     rating *= 0.80f;
             }
             // - Shamblers Upgrade  
-            if (options.ShamblersUpgrade)
+            if (options.ShamblersUpgrade && gameMode != Engine.GameMode.GM_VINTAGE) //@@MP - forgot to do this after I made the Vtg mode stop forcing options off (Release 7-6)
             {
                 if (side == DifficultySide.FOR_SURVIVOR)
                     rating *= 1.25f;
@@ -688,9 +688,9 @@ namespace djack.RogueSurvivor.Engine
             // - VTG Anti-viral pills   //@@MP (Release 7-4)
             if (gameMode == Engine.GameMode.GM_VINTAGE)
             {
-                if (options.VTGAntiviralPills && side == DifficultySide.FOR_SURVIVOR)
+                if (options.AntiviralPills && side == DifficultySide.FOR_SURVIVOR)
                     rating *= 0.2f;  //survivor, pills on = easier
-                else if (!options.VTGAntiviralPills && side == DifficultySide.FOR_UNDEAD)
+                else if (!options.AntiviralPills && side == DifficultySide.FOR_UNDEAD)
                     rating *= 0.2f;  //undead, pills off = easier
             }
 

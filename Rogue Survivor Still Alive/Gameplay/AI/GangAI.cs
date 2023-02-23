@@ -27,7 +27,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         const int DONT_LEAVE_BEHIND_EMOTE_CHANCE = 50;
 
-        static string[] FIGHT_EMOTES = 
+        readonly static string[] FIGHT_EMOTES = 
         {
             "Fuck you",
             "Fuck it I'm trapped!",
@@ -75,25 +75,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction determinedAction = null;
             Map map = m_Actor.Location.Map;
 
-            // A. Extinguish self  //@@MP (Release 6-1)
-            if (m_Actor.IsOnFire)
-            {
-                m_Actor.IsRunning = true;
-                ActorAction goToWaterAction = BehaviorGoToNearestVisibleWater(game, m_LOSSensor.FOV);
-                if (goToWaterAction != null)
-                {
-                    m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
-                    return goToWaterAction;
-                }
-            }
-
-            // 0. Equip best item
+            // 0. Equip best item         // end alpha10
+            #region
             ActorAction bestEquip = BehaviorEquipBestItems(game, true, true);
             if (bestEquip != null)
             {
                 return bestEquip;
             }
-            // end alpha10
+            #endregion
 
             // 1. Follow order
             #region
@@ -117,7 +106,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // "courageous" : always if not tired.
             // - RULES
             // 0.1 run away from primed explosives (and fires //@@MP (Release 5-2))
-            // 0.2 if underground in total darkness, find nearest exit //@@MP (Release 6-5)
+            // 0.2 try to extinguish oneself if on fire.     //@@MP (Release 7-6)
+            // 0.3 if underground in total darkness, find nearest exit.    //@@MP (Release 6-5)
             // alpha10 OBSOLETE 1 equip weapon/armor
             // 2 fire at nearest.
             // 3 shout/fight/flee.
@@ -164,7 +154,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
             if (runFromFires != null)
             {
-                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                m_Actor.Activity = Activity.FLEEING;
                 return runFromFires;
             }
 
@@ -176,7 +166,16 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 0.2 if in total darkness //@@MP - addded (Release 6-5)
+            // 0.2 try to extinguish oneself if on fire.     //@@MP (Release 7-6)
+            #region
+            if (m_Actor.IsOnFire) //stop-drop-and-roll
+            {
+                m_Actor.Activity = Activity.FLEEING;
+                return new ActionWait(m_Actor, game);
+            }
+            #endregion
+
+            // 0.3 if in total darkness      //@@MP - addded (Release 6-5)
             #region
             int fov = game.Rules.ActorFOV(m_Actor, map.LocalTime, game.Session.World.Weather);
             if (fov <= 0) //can't see anything, too dark

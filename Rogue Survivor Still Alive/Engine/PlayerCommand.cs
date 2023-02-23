@@ -34,8 +34,11 @@ namespace djack.RogueSurvivor.Engine
         WAIT_LONG,
 
         BREAK_MODE,
+        BURY_CORPSE, //@@MP (Release 7-6)
         BUILD_MODE,
         CLOSE_DOOR,
+        COOK_FOOD, //@@MP (Release 7-6)
+        DESTROY_ITEM, //@@MP (Release 7-6)
         EAT_CORPSE,
         FIRE_MODE,
         GIVE_ITEM,
@@ -43,6 +46,7 @@ namespace djack.RogueSurvivor.Engine
         NEGOTIATE_TRADE, // alpha 10 renamed
         LEAD_MODE,
         INSPECTION_MODE, //@@MP (Release 7-1)
+        MAKE_COOKING_FIRE, //@@MP (Release 7-6)
         MARK_ENEMIES_MODE,
         ORDER_MODE,
         PULL_MODE, // alpha 10
@@ -51,6 +55,7 @@ namespace djack.RogueSurvivor.Engine
         SHOUT,
         SLEEP,
         SWITCH_PLACE,
+        UNLOAD_AMMO, //@@MP (Release 7-6)
         USE_EXIT,
         USE_SPRAY,
 

@@ -132,9 +132,10 @@ namespace djack.RogueSurvivor.Data
         public bool IsRotting { get; set; }
 
         /// <summary>
-        /// Is a living animal, such as a dog.  //@@MP (Release 7-5)
+        /// Is a living animal, such as a dog. "Living" refers to whether its undead, not it being deceased or alive.
+        /// ie. true = it's an animal and it is not undead.
         /// </summary>
-        public bool IsLivingAnimal { get; set; }
+        public bool IsLivingAnimal { get; set; }  //@@MP (Release 7-5)
 
         // alpha10
         public bool CanDisarm { get; set; }

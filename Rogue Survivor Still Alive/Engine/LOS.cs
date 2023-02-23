@@ -171,7 +171,7 @@ namespace djack.RogueSurvivor.Engine
             return Direction.FromVector(line[0]);
         }
 
-        public static bool CanTraceViewLine(Location fromLocation, Point toPosition, int maxRange) //@@MP - unused parameter (Release 5-7)
+        /*public static bool CanTraceViewLine(Location fromLocation, Point toPosition, int maxRange) //@@MP - unused parameter (Release 5-7)
         {
             Map map = fromLocation.Map;
             Point goal = toPosition;
@@ -186,11 +186,27 @@ namespace djack.RogueSurvivor.Engine
                     if (x == goal.X && y == goal.Y) return true;
                     return false;
                 });
+        }*/
+
+        public static bool CanTraceViewLine(Location fromLocation, Point toPosition, int maxRange = Int32.MaxValue)
+        {
+            return CanTraceViewLine(fromLocation.Map, fromLocation.Position, toPosition, maxRange); //@MP - changed the default to a Position, this is now the override if you want to call with Location (Release 7-6)
         }
 
-        public static bool CanTraceViewLine(Location fromLocation, Point toPosition)
+        public static bool CanTraceViewLine(Map map, Point fromPosition, Point toPosition, int maxRange = Int32.MaxValue) //@@MP - made this default sans override to allow Point instead of Location (Release 7-6)
         {
-            return CanTraceViewLine(fromLocation, toPosition, Int32.MaxValue);
+            Point goal = toPosition;
+
+            return AsymetricBresenhamTrace(maxRange,
+                fromPosition.X, fromPosition.Y,
+                toPosition.X, toPosition.Y,
+                null,
+                (x, y) =>
+                {
+                    if (map.IsTransparent(x, y)) return true;
+                    if (x == goal.X && y == goal.Y) return true;
+                    return false;
+                });
         }
 
         /// <summary>
@@ -411,7 +427,7 @@ namespace djack.RogueSurvivor.Engine
                         Point spot = new Point(x, y);
 
                         /*****************************************
-                         * DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
+                            * DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
                         //add a tint for it (as required)  //@@MP (Release 7-1)
                         if (game.Rules.GridDistance(actor.Location.Position, spot) <= tintRangeOnPlayer && tintImageOnPlayer != null)
                             AddTintToTile(map, spot, tintImageOnPlayer);
@@ -426,11 +442,11 @@ namespace djack.RogueSurvivor.Engine
                                 continue; //this spot is not in LOS, skip it
                         }
 
-                        //MapObjects: car fires
+                        //MapObjects: car and barrel fires
                         MapObject mapObj = map.GetMapObjectAt(spot);
                         if (mapObj != null && mapObj.IsOnFire)
                         {
-                            visibleSet.Add(spot);
+                            if (!visibleSet.Contains(spot)) visibleSet.Add(spot);
 
                             foreach (Direction d in Direction.COMPASS)
                             {
@@ -439,6 +455,67 @@ namespace djack.RogueSurvivor.Engine
                                 if (map.IsInBounds(next))
                                 {
                                     visibleSet.Add(next);
+                                    #region also add the next tile over too.
+                                    //@@MP - added (Release 7-6)
+                                    if (!RogueGame.Options.ReducedMapObjectLighting)
+                                    {
+                                        foreach (Direction NSEW in Direction.COMPASS_NSEW)
+                                        {
+                                            if (NSEW == d)
+                                            {
+                                                Point twoOver = next + d;
+
+                                                if (ExtendedIsInViewLineCheck(map, spot, twoOver, 3))
+                                                {
+                                                    if (!visibleSet.Contains(twoOver))
+                                                        visibleSet.Add(twoOver);
+                                                }
+
+                                                //do a spiral to get everything but the NE, SE, SW and NW corners
+                                                //in other words, light the three-point bearings: NNE, ENE, ESE, SSE, SSW, WSW, WNW and NNW
+                                                Point threePoint = twoOver; //placeholder
+                                                if (NSEW == Direction.N)
+                                                {
+                                                    threePoint = twoOver + Direction.E; //NNE
+                                                    if (!visibleSet.Contains(threePoint) && ExtendedIsInViewLineCheck(map, spot, threePoint, 2))
+                                                        visibleSet.Add(threePoint);
+                                                    threePoint = twoOver + Direction.W; //NNW
+                                                    if (!visibleSet.Contains(threePoint) && ExtendedIsInViewLineCheck(map, spot, threePoint, 2))
+                                                        visibleSet.Add(threePoint);
+                                                }
+                                                else if (NSEW == Direction.E)
+                                                {
+                                                    threePoint = twoOver + Direction.N; //ENE
+                                                    if (!visibleSet.Contains(threePoint) && ExtendedIsInViewLineCheck(map, spot, threePoint, 2))
+                                                        visibleSet.Add(threePoint);
+                                                    threePoint = twoOver + Direction.S; //ESE
+                                                    if (!visibleSet.Contains(threePoint) && ExtendedIsInViewLineCheck(map, spot, threePoint, 2))
+                                                        visibleSet.Add(threePoint);
+                                                }
+                                                else if (NSEW == Direction.S)
+                                                {
+                                                    threePoint = twoOver + Direction.E; //SSE
+                                                    if (!visibleSet.Contains(threePoint) && ExtendedIsInViewLineCheck(map, spot, threePoint, 2))
+                                                        visibleSet.Add(threePoint);
+                                                    threePoint = twoOver + Direction.W; //SSW
+                                                    if (!visibleSet.Contains(threePoint) && ExtendedIsInViewLineCheck(map, spot, threePoint, 2))
+                                                        visibleSet.Add(threePoint);
+                                                }
+                                                else if (NSEW == Direction.W)
+                                                {
+                                                    threePoint = twoOver + Direction.S; //WSW
+                                                    if (!visibleSet.Contains(threePoint) && ExtendedIsInViewLineCheck(map, spot, threePoint, 2))
+                                                        visibleSet.Add(threePoint);
+                                                    threePoint = twoOver + Direction.N; //WNW
+                                                    if (!visibleSet.Contains(threePoint) && ExtendedIsInViewLineCheck(map, spot, threePoint, 2))
+                                                        visibleSet.Add(threePoint);
+                                                }
+
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                    #endregion
                                 }
                             }
                             continue; //already lit up this tile and adjacents, no need to chek for other light sources
@@ -449,7 +526,7 @@ namespace djack.RogueSurvivor.Engine
                             TileModel tileModel = map.GetTileAt(spot).Model; //@@MP - not on walls because it makes them transparent (Release 6-6)
                             if (!game.GameTiles.IsWallModel(tileModel))
                             {
-                                visibleSet.Add(spot);
+                                if (!visibleSet.Contains(spot)) visibleSet.Add(spot);
 
                                 foreach (Direction d in Direction.COMPASS)
                                 {
@@ -457,10 +534,10 @@ namespace djack.RogueSurvivor.Engine
                                     Point next = spot + d;
                                     if (map.IsInBounds(next))
                                     {
-                                        visibleSet.Add(next);
+                                        if (!visibleSet.Contains(next)) visibleSet.Add(next);
                                     }
                                 }
-                                continue;
+                                continue; //already lit up this tile and adjacents, no need to chek for other light sources
                             }
                         }
                         //Actors: carrying ItemLights eg torches
@@ -473,7 +550,7 @@ namespace djack.RogueSurvivor.Engine
                                 //string tintImage = GetTintForItemLight(game, heldLight);
                                 //AddTintToTile(map, spot, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
 
-                                visibleSet.Add(spot);
+                                if (!visibleSet.Contains(spot)) visibleSet.Add(spot);
 
                                 foreach (Direction d in Direction.COMPASS)
                                 {
@@ -481,17 +558,17 @@ namespace djack.RogueSurvivor.Engine
                                     Point next = spot + d;
                                     if (map.IsInBounds(next))
                                     {
-                                        visibleSet.Add(next);
+                                        if (!visibleSet.Contains(next)) visibleSet.Add(next);
                                         //AddTintToTile(map, next, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
                                     }
                                 }
-                                continue;
+                                continue; //already lit up this tile and adjacents, no need to chek for other light sources
                             }
                         }
                         //Tile Decorations eg lit candles //@MP (Release 7-1)
                         if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.DECO_LIT_CANDLE))
                         {
-                            visibleSet.Add(spot);
+                            if (!visibleSet.Contains(spot)) visibleSet.Add(spot);
 
                             foreach (Direction d in Direction.COMPASS)
                             {
@@ -499,10 +576,10 @@ namespace djack.RogueSurvivor.Engine
                                 Point next = spot + d;
                                 if (map.IsInBounds(next))
                                 {
-                                    visibleSet.Add(next);
+                                    if (!visibleSet.Contains(next)) visibleSet.Add(next);
                                 }
                             }
-                            continue;
+                            continue; //already lit up this tile and adjacents, no need to chek for other light sources
                         }
                         //ground inventory items  //@MP (Release 7-1)
                         Inventory inv = map.GetItemsAt(spot);
@@ -516,7 +593,7 @@ namespace djack.RogueSurvivor.Engine
                                     //we only want to check flares and candles (throwables), as torches should be off if not euqipped by an actor   //@@MP (Release 7-5)
                                     if (light.Model.IsThrowable)
                                     {
-                                        visibleSet.Add(spot);
+                                        if (!visibleSet.Contains(spot)) visibleSet.Add(spot);
                                         //string tintImage = GetTintForItemLight(game, light);
                                         //AddTintToTile(map, spot, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
 
@@ -526,7 +603,7 @@ namespace djack.RogueSurvivor.Engine
                                             Point next = spot + d;
                                             if (map.IsInBounds(next))
                                             {
-                                                visibleSet.Add(next);
+                                                if (!visibleSet.Contains(next)) visibleSet.Add(next);
                                                 //AddTintToTile(map, next, tintImage); //DID NOT OVERLAP SOME GFX (eg water cover). LEFT IN FOR FUTURE CONSIDERATION
                                             }
                                         }
@@ -540,6 +617,22 @@ namespace djack.RogueSurvivor.Engine
             }
 
             return visibleSet;
+        }
+
+        /// <summary>
+        /// For checking whether FOV extends to squares adjacent to the ones 
+        /// </summary>
+        private static bool ExtendedIsInViewLineCheck(Map map, Point from, Point to, int tilesRange = 1) //@@MP (Release 7-6)
+        {
+            if (map.IsInBounds(to))
+            {
+                if (CanTraceViewLine(map, from, to, tilesRange))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         static string GetTintForItemLight(RogueGame game, Item light) //@@MP (Release 7-1)

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Rogue Survivor: Still Alive")]
-[assembly: AssemblyDescription("a fork of Rogue Survivor Alpha 9a. GNU GPL v3")]
+[assembly: AssemblyDescription("a fork of Rogue Survivor Alpha 10.1 - GNU GPL v3")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Rogue Survivor: Still Alive")]
@@ -34,7 +34,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.5.15.3")]
-[assembly: AssemblyFileVersion("2.5.15.3")]
+[assembly: AssemblyVersion("2.9.17.31")]
+[assembly: AssemblyFileVersion("2.9.17.31")]
 [assembly: NeutralResourcesLanguage("en")]
 

@@ -93,6 +93,15 @@ namespace djack.RogueSurvivor.Data
             get;
             set;
         }
+
+        /// <summary>
+        /// This tracks when it was last dropped by an NPC for the purposes of removing items that have existed too long.
+        /// </summary>
+        public int? DroppedOnTurnNumber   //@@MP (Release 7-6)
+        {
+            get;
+            set;
+        }
         #endregion
 
         #region Init

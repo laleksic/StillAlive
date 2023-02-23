@@ -5,7 +5,7 @@ namespace djack.RogueSurvivor.Data
     class TileModel
     {
         #region Blank tile model
-        public static readonly TileModel UNDEF = new TileModel("", Color.Pink, false, true);
+        public static readonly TileModel UNDEF = new TileModel("", Color.Pink, false, true, false);
         #endregion
 
         #region Fields
@@ -14,6 +14,7 @@ namespace djack.RogueSurvivor.Data
         bool m_IsWalkable;
         bool m_IsTransparent;
         Color m_MinimapColor;
+        bool m_IsFlammable; //@@MP (Release 7-6)
         #endregion
 
         #region Properties
@@ -55,15 +56,30 @@ namespace djack.RogueSurvivor.Data
             set;
         }
 
+        /// <summary>
+        /// Is a model of tile that is prone to decay as time goes by in the world
+        /// </summary>
+        public bool CanDecay //@@MP (Release 7-6)
+        {
+            get;
+            set;
+        }
+
+        public bool IsFlammable //@@MP (Release 7-6)
+        {
+            get { return m_IsFlammable; }
+        }
+
         #endregion
 
         #region Init
-        public TileModel(string imageID, Color minimapColor, bool IsWalkable, bool IsTransparent)
+        public TileModel(string imageID, Color minimapColor, bool IsWalkable, bool IsTransparent, bool IsFlammable)
         {
             m_ImageID = imageID;
             m_IsWalkable = IsWalkable;
             m_IsTransparent = IsTransparent;
             m_MinimapColor = minimapColor;
+            m_IsFlammable = IsFlammable; //@@MP (Release 7-6)
         }
         #endregion
     }

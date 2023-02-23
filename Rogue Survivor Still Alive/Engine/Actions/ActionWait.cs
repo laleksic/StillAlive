@@ -9,10 +9,15 @@ namespace djack.RogueSurvivor.Engine.Actions
 {
     class ActionWait : ActorAction
     {
+        #region Fields
+        bool m_IsFishing;
+        #endregion
+
         #region Init
-        public ActionWait(Actor actor, RogueGame game)
+        public ActionWait(Actor actor, RogueGame game, bool isFishing = false) //@@MP - added a flag for fishing (Release 7-6)
             : base(actor, game)
         {
+            m_IsFishing = isFishing;
         }
         #endregion
 
@@ -24,7 +29,7 @@ namespace djack.RogueSurvivor.Engine.Actions
 
         public override void Perform()
         {
-            m_Game.DoWait(m_Actor);
+            m_Game.DoWait(m_Actor, m_IsFishing);
         }
         #endregion
     }

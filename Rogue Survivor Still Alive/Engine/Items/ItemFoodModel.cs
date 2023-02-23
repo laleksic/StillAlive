@@ -13,6 +13,8 @@ namespace djack.RogueSurvivor.Engine.Items
         int m_Nutrition;
         bool m_IsPerishable;
         int m_BestBeforeDays;
+        bool m_CanCauseFoodPoisoning; //@@MP - added meats to the game (Release 7-6)
+        bool m_CanBeCooked; //@@MP - added meats to the game (Release 7-6)
         #endregion
 
         #region Properties
@@ -30,6 +32,16 @@ namespace djack.RogueSurvivor.Engine.Items
         {
             get { return m_BestBeforeDays; }
         }
+
+        public bool CanCauseFoodPoisoning //@@MP - added meats to the game (Release 7-6)
+        {
+            get { return m_CanCauseFoodPoisoning; }
+        }
+
+        public bool CanBeCooked //@@MP - added meats to the game (Release 7-6)
+        {
+            get { return m_CanBeCooked; }
+        }
         #endregion
 
         #region Init
@@ -41,7 +53,9 @@ namespace djack.RogueSurvivor.Engine.Items
         /// <param name="imageID"></param>
         /// <param name="nutrition"></param>
         /// <param name="bestBeforeDays">-1 for non perishable food.</param>
-        public ItemFoodModel(string aName, string theNames, string imageID, int nutrition, int bestBeforeDays)
+        /// <param name="canCauseFoodPoisoning">eg. raw meats</param>
+        /// <param name="canBeCooked">eg. raw meats</param>
+        public ItemFoodModel(string aName, string theNames, string imageID, int nutrition, int bestBeforeDays, bool canCauseFoodPoisoning, bool canBeCooked)
             : base(aName, theNames, imageID)
         {
             m_Nutrition = nutrition;
@@ -52,6 +66,9 @@ namespace djack.RogueSurvivor.Engine.Items
                 m_IsPerishable = true;
                 m_BestBeforeDays = bestBeforeDays;
             }
+
+            m_CanCauseFoodPoisoning = canCauseFoodPoisoning; //@@MP (Release 7-6)
+            m_CanBeCooked = canBeCooked; //@@MP (Release 7-6)
         }
         #endregion
     }

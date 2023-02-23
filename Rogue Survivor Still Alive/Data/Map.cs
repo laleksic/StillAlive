@@ -55,6 +55,9 @@ namespace djack.RogueSurvivor.Data
         string m_BgMusic;  // alpha10
         Lighting m_Lighting;
         WorldTime m_LocalTime;
+        bool m_HasChurch; //@@MP (Release 7-6)
+        bool m_HasFishing; //@@MP (Release 7-6)
+        bool m_HasWaterTiles; //@@MP (Release 7-6)
 
         int m_Width;
         int m_Height;
@@ -132,10 +135,22 @@ namespace djack.RogueSurvivor.Data
             set;
         }
 
-        public bool HasChurch //@@MP (Release 6-6)
+        public bool HasChurch //@@MP (Release 6-6), made serialized (Release 7-6)
         {
-            get;
-            set;
+            get { return m_HasChurch; }
+            set { m_HasChurch = value; }
+        }
+
+        public bool HasFishing //@@MP (Release 7-6)
+        {
+            get { return m_HasFishing; }
+            set { m_HasFishing = value; }
+        }
+
+        public bool HasWaterTiles //@@MP (Release 7-6)
+        {
+            get { return m_HasWaterTiles; }
+            set { m_HasWaterTiles = value; }
         }
 
         public Lighting Lighting
@@ -254,6 +269,9 @@ namespace djack.RogueSurvivor.Data
             m_LocalTime = new WorldTime();
             this.Lighting = Lighting.OUTSIDE;
             this.IsSecret = false;
+            this.HasChurch = false;
+            this.HasFishing = false;
+            this.HasWaterTiles = false;
 
             m_Tiles = new Tile[width, height];
             for (int x = 0; x < width; x++)
@@ -763,6 +781,47 @@ namespace djack.RogueSurvivor.Data
                         carriedNutrition += game.Rules.FoodItemNutrition(itemFood, this.LocalTime.TurnCounter);//it as ItemFood, map.LocalTime.TurnCounter);
 
                     itemFood = null;
+                }
+            }
+
+            return groundNutrition + carriedNutrition;
+        }
+
+        public int CountAntiviralPills(RogueGame game) //@@MP (Release 7-6)
+        {
+            ItemMedicine itemMedicine = null;
+
+            // food items on ground.
+            int groundNutrition = 0;
+            foreach (Inventory inv in m_aux_GroundItemsList)
+            {
+                if (inv.IsEmpty)
+                    continue;
+
+                foreach (Item it in inv.Items)
+                {
+                    itemMedicine = it as ItemMedicine;
+                    if (itemMedicine != null && itemMedicine.Model.ID == (int)GameItems.IDs.MEDICINE_PILLS_ANTIVIRAL)
+                        ++groundNutrition;
+
+                    itemMedicine = null;
+                }
+            }
+            // food items carried by actors.
+            int carriedNutrition = 0;
+            foreach (Actor a in m_ActorsList)
+            {
+                Inventory inv = a.Inventory;
+                if (inv == null || inv.IsEmpty)
+                    continue;
+
+                foreach (Item it in inv.Items)
+                {
+                    itemMedicine = it as ItemMedicine;
+                    if (itemMedicine != null && itemMedicine.Model.ID == (int)GameItems.IDs.MEDICINE_PILLS_ANTIVIRAL)
+                        ++carriedNutrition;
+
+                    itemMedicine = null;
                 }
             }
 
@@ -1581,17 +1640,14 @@ namespace djack.RogueSurvivor.Data
         }
 
         /// <summary>
-        /// Certain tiles may not be flammable at any given time
+        /// Certain tiles may not be flammable at any given time. ie Fire can't spread to tiles that don't provide any fuel (eg concrete)
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
         /// <param name="checkForScorching">In case you want to set fire to tiles already scorched</param>
-        public bool IsInflammableTile(int x, int y, bool checkForScorching) //@@MP - check whether there's a flammable type of tile here (Release 5-2), (Release 6-1)
+        public bool IsInflammableTile(Point pt, bool checkForScorching) //@@MP - check whether there's a flammable type of tile here (Release 5-2)(Release 6-1)(Release 7-6)
         {
-            Point pt = new Point(x, y);
-            Tile tile = GetTileAt(pt);
+            Tile tile = this.GetTileAt(pt);
 
-            if (tile.Model.IsWater) //@@MP (Release 6-1)
+            if (!tile.Model.IsFlammable) //@@MP (Release 7-6)
                 return true;
 
             if (checkForScorching && tile.IsScorched)
@@ -1600,35 +1656,10 @@ namespace djack.RogueSurvivor.Data
             if (tile.IsOnFire) //added (Release 6-1)
                 return true;
 
-            //moved tile type check to CanFireSpreadToTile() (Release 6-1)
+            if (tile.Model.IsWater) //@@MP (Release 6-1)
+                return true;
 
             return false;
-        }
-
-        /// <summary>
-        /// Fire can't spread to tiles that don't provide any fuel (eg concrete)
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="checkForScorching">In case you want to set fire to tiles already scorched</param>
-        public bool CanFireSpreadToTile(int x, int y, bool checkForScorching) //@@MP (Release 6-1)
-        {
-            Point pt = new Point(x, y);
-            Tile tile = GetTileAt(pt);
-
-            if (IsInflammableTile(x, y, checkForScorching))
-                return false;
-
-            switch (tile.Model.ImageID)
-            {
-                case @"Tiles\floor_grass":
-                case @"Tiles\floor_planks":
-                case @"Tiles\floor_red_carpet":
-                case @"Tiles\floor_blue_carpet":
-                    return true;
-                default:
-                    return false;
-            }
         }
         #endregion
 
@@ -1661,6 +1692,9 @@ namespace djack.RogueSurvivor.Data
             m_Scents = (List<OdorScent>)info.GetValue("m_Scents", typeof(List<OdorScent>));
             m_Timers = (List<TimedTask>)info.GetValue("m_Timers", typeof(List<TimedTask>));
             m_BgMusic = (string)info.GetValue("m_BgMusic", typeof(string)); // alpha10
+            m_HasChurch = (bool)info.GetValue("m_HasChurch", typeof(bool)); //@@MP (Release 7-6)
+            m_HasFishing = (bool)info.GetValue("m_HasFishing", typeof(bool)); //@@MP (Release 7-6)
+            m_HasWaterTiles = (bool)info.GetValue("m_HasWaterTiles", typeof(bool)); //@@MP (Release 7-6)
         }
 
         public void ReconstructAuxiliaryFields()
@@ -1730,6 +1764,9 @@ namespace djack.RogueSurvivor.Data
             info.AddValue("m_Scents", m_Scents);
             info.AddValue("m_Timers", m_Timers);
             info.AddValue("m_BgMusic", m_BgMusic); // alpha10
+            info.AddValue("m_HasChurch", m_HasChurch); //@@MP (Release 7-6)
+            info.AddValue("m_HasFishing", m_HasFishing); //@@MP (Release 7-6)
+            info.AddValue("m_HasWaterTiles", m_HasWaterTiles); //@@MP (Release 7-6)
         }
 
         #region Pre-saving

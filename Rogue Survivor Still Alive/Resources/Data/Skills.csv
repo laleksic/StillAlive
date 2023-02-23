@@ -5,12 +5,11 @@
 "CARPENTRY","Carpentry",0.15,1,0,0
 "CHARISMATIC","Charismatic",2,10,0,0
 "FIREARMS","Firearms",10,2,0,0
-"HARDY","Hardy",1,0,0,0
 "HAULER","Hauler",1,0,0,0
 "HIGH_STAMINA","High Stamina",8,0,0,0
 "LEADERSHIP","Leadership",1,0,0,0
 "LIGHT_EATER","Light Eater",0.15,0.10,0,0
-"LIGHT_FEET","Light Feet",15,0,0,0
+"LIGHT_FEET","Light Feet",20,0,0,0
 "LIGHT_SLEEPER","Light Sleeper",20,0,0,0
 "MARTIAL_ARTS","Martial Arts",6,2,10,5
 "MEDIC","Medic",0.3,10,0,0
@@ -18,7 +17,8 @@
 "STRONG","Strong",3,1,0,0
 "STRONG_PSYCHE","Strong Psyche",0.15,0.15,0,0
 "TOUGH","Tough",6,0,0,0
-"UNSUSPICIOUS","Unsuspicious",25,0,0,0
+"UNSUSPICIOUS","Unsuspicious",20,1,0,0
+"HARDY","Hardy",1,1,0,0
 "_FIRST_UNDEAD","Z-Agile",1,2,0,0
 "Z_EATER","Z-Eater",0.15,0,0,0
 "Z_GRAB","Z-Grab",2,0,0,0

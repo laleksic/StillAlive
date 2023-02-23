@@ -50,7 +50,10 @@ namespace djack.RogueSurvivor.Engine
 
             Set(PlayerCommand.ABANDON_GAME, Keys.A | Keys.Shift);
             Set(PlayerCommand.ADVISOR, Keys.H | Keys.Shift);
+            Set(PlayerCommand.BURY_CORPSE, Keys.B | Keys.Shift); //@@MP (Release 7-6)
             Set(PlayerCommand.CITY_INFO, Keys.M);
+            Set(PlayerCommand.COOK_FOOD, Keys.C | Keys.Control); //@@MP (Release 7-6)
+            Set(PlayerCommand.DESTROY_ITEM, Keys.D | Keys.Control); //@@MP (Release 7-6)
             Set(PlayerCommand.EAT_CORPSE, Keys.E | Keys.Shift);
             Set(PlayerCommand.ESC, Keys.Escape); //@@MP (Release 7-4)
             Set(PlayerCommand.GIVE_ITEM, Keys.G);
@@ -80,8 +83,10 @@ namespace djack.RogueSurvivor.Engine
             Set(PlayerCommand.SCREENSHOT, Keys.N | Keys.Shift);
             Set(PlayerCommand.SHOUT, Keys.S);
             Set(PlayerCommand.SLEEP, Keys.Z);
+            Set(PlayerCommand.MAKE_COOKING_FIRE, Keys.F | Keys.Control); //@@MP (Release 7-6)
             Set(PlayerCommand.SWITCH_PLACE, Keys.S | Keys.Control);
             Set(PlayerCommand.LEAD_MODE, Keys.T);
+            Set(PlayerCommand.UNLOAD_AMMO, Keys.U); //@@MP (Release 7-6)
             Set(PlayerCommand.USE_SPRAY, Keys.A);
             Set(PlayerCommand.USE_EXIT, Keys.X);
             Set(PlayerCommand.WAIT_OR_SELF, Keys.NumPad5);

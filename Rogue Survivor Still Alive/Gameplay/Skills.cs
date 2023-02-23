@@ -51,11 +51,6 @@ namespace djack.RogueSurvivor.Gameplay
             FIREARMS,
 
             /// <summary>
-            /// Can sleep heal anywhere, increase sleep healing chance.
-            /// </summary>
-            HARDY,
-
-            /// <summary>
             /// Bonus to inventory capacity.
             /// </summary>
             HAULER,
@@ -116,11 +111,16 @@ namespace djack.RogueSurvivor.Gameplay
             TOUGH,
 
             /// <summary>
-            /// Bonus to evade murders.
+            /// Bonus to evade murders and chance to catch fish.
             /// </summary>
-            UNSUSPICIOUS,
+            UNSUSPICIOUS, //@@MP - expanded to include fishing chance (Release 7-6)
 
-            _LAST_LIVING = UNSUSPICIOUS,
+            /// <summary>
+            /// Can sleep heal anywhere, increase sleep healing chance, increase chance to recover faster from food poisoning.
+            /// </summary>
+            HARDY,
+
+            _LAST_LIVING = HARDY, //@@MP - moved Hardy to last because it's description needs two lines (Release 7-6)
 
             #endregion
 
@@ -312,9 +312,9 @@ namespace djack.RogueSurvivor.Gameplay
             SkillData[] data;
 
             LoadDataFromCSV<SkillData>(ui, path, "skills", SkillData.COUNT_FIELDS, SkillData.FromCSVLine,
-                new IDs[] { IDs.AGILE, IDs.AWAKE, IDs.BOWS_EXPLOSIVES, IDs.CARPENTRY, IDs.CHARISMATIC, IDs.FIREARMS, IDs.HARDY, IDs.HAULER,
+                new IDs[] { IDs.AGILE, IDs.AWAKE, IDs.BOWS_EXPLOSIVES, IDs.CARPENTRY, IDs.CHARISMATIC, IDs.FIREARMS, IDs.HAULER,
                             IDs.HIGH_STAMINA, IDs.LEADERSHIP, IDs.LIGHT_EATER, IDs.LIGHT_FEET, IDs.LIGHT_SLEEPER, IDs.MARTIAL_ARTS, IDs.MEDIC,
-                            IDs.NECROLOGY, IDs.STRONG, IDs.STRONG_PSYCHE, IDs.TOUGH, IDs.UNSUSPICIOUS,
+                            IDs.NECROLOGY, IDs.STRONG, IDs.STRONG_PSYCHE, IDs.TOUGH, IDs.UNSUSPICIOUS, IDs.HARDY,
                             IDs.Z_AGILE, IDs.Z_EATER, IDs.Z_GRAB, IDs.Z_INFECTOR, IDs.Z_LIGHT_EATER, IDs.Z_LIGHT_FEET, IDs.Z_STRONG, IDs.Z_TOUGH, IDs.Z_TRACKER },
                 out data);
 
@@ -349,9 +349,6 @@ namespace djack.RogueSurvivor.Gameplay
             s = data[(int)IDs.FIREARMS];
             Rules.SKILL_FIREARMS_ATK_BONUS = (int)s.VALUE1;
             Rules.SKILL_FIREARMS_DMG_BONUS = (int)s.VALUE2;
-
-            s = data[(int)IDs.HARDY];
-            Rules.SKILL_HARDY_HEAL_CHANCE_BONUS = (int)s.VALUE1;
 
             s = data[(int)IDs.HAULER];
             Rules.SKILL_HAULER_INV_BONUS = (int)s.VALUE1;
@@ -399,6 +396,11 @@ namespace djack.RogueSurvivor.Gameplay
 
             s = data[(int)IDs.UNSUSPICIOUS];
             Rules.SKILL_UNSUSPICIOUS_BONUS = (int)s.VALUE1;
+            Rules.SKILL_UNSUSPICIOUS_FISHING_BONUS = (int)s.VALUE2; //@@MP - 1% boost to catch fish chance (Release 7-6)
+
+            s = data[(int)IDs.HARDY]; //@@MP - moved to last Living skill in the CSV, as it needs two lines to fit its description on the skill selection page (Release 7-6)
+            Rules.SKILL_HARDY_HEAL_CHANCE_BONUS = (int)s.VALUE1;
+            Rules.SKILL_HARDY_FOOD_POISONING_RECOVERY_CHANCE_BONUS = (int)s.VALUE2;
 
             s = data[(int)IDs.Z_AGILE];
             Rules.SKILL_ZAGILE_ATK_BONUS = (int)s.VALUE1;

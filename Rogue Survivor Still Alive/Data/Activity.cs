@@ -132,6 +132,24 @@ namespace djack.RogueSurvivor.Data
         /// <summary>
         /// Stamina
         /// </summary>
-        RESTING
+        RESTING,
+
+        //@@MP (Release 7-6)
+        /// <summary>
+        /// Fishing
+        /// </summary>
+        FISHING,
+
+        //@@MP (Release 7-6)
+        /// <summary>
+        /// Cooking raw meat
+        /// </summary>
+        COOKING,
+
+        //@@MP (Release 7-6)
+        /// <summary>
+        /// Trying to catch simple animals
+        /// </summary>
+        HUNTING
     }
 }

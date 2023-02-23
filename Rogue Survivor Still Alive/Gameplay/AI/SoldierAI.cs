@@ -99,7 +99,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             /////////////////////////////////////
             // 0.1 run away from primed explosives (and fires //@@MP (Release 5-2))
-            // 0.2 if underground in total darkness, find nearest exit //@@MP (Release 6-5)
+            // 0.2 try to extinguish oneself if on fire.     //@@MP (Release 7-6)
+            // 0.3 if underground in total darkness, find nearest exit.    //@@MP (Release 6-5)
             // 1 throw grenades at enemies.
             // alpha10 OBSOLETE 2 equip weapon/armor.
             // 3 shout, fire/hit at nearest enemy.
@@ -126,12 +127,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // exploration.
             m_Exploration.Update(m_Actor.Location);
 
-            // 0.1 run away from primed explosives //@@MP - and fires added (Release 5-2)
+            // 0.1 run away from fires and primed explosives      //@@MP - and fires added (Release 5-2)
             #region
             ActorAction runFromFires = BehaviorFleeFromFires(game, m_Actor.Location);
             if (runFromFires != null)
             {
-                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                m_Actor.Activity = Activity.FLEEING;
                 return runFromFires;
             }
             
@@ -143,7 +144,16 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 0.2 if in total darkness //@@MP - added (Release 6-5)
+            // 0.2 try to extinguish oneself if on fire.     //@@MP (Release 7-6)
+            #region
+            if (m_Actor.IsOnFire) //stop-drop-and-roll
+            {
+                m_Actor.Activity = Activity.FLEEING;
+                return new ActionWait(m_Actor, game);
+            }
+            #endregion
+
+            // 0.3 if in total darkness    //@@MP - added (Release 6-5)
             #region
             int fov = game.Rules.ActorFOV(m_Actor, map.LocalTime, game.Session.World.Weather);
             if (fov <= 0) //can't see anything, too dark

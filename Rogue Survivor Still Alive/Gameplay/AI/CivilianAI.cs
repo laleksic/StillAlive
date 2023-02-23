@@ -48,6 +48,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         const int DONT_LEAVE_BEHIND_EMOTE_CHANCE = 50;
 
+        const int TRADE_CHANCE = 15; //@@MP (Release 7-6)
+
         static string[] FIGHT_EMOTES = 
         {
             "Get away from me",         // flee
@@ -161,6 +163,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         protected override ActorAction SelectAction(RogueGame game, List<Percept> percepts)
         {
             List<Percept> mapPercepts = FilterSameMap(percepts); //@@MP - unused parameter (Release 5-7)
+            Map map = m_Actor.Location.Map;
 
             // DEBUG BOT
 #if DEBUG
@@ -177,37 +180,49 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // hold the action that we determine to be applicable
             ActorAction determinedAction = null; //@@MP - created to reduce local variables, to keep all within this method enregistered (Release 5-7), moved (Release 6-1)
 
+            // don't run by default.    // alpha10
+            m_Actor.IsRunning = false;
+
             ///////////////////////
-            // A. Extinguish self
+            // A  Complete fishing.     //@@MP (Release 7-6)
             // B. Equip best item.  // alpha10
             // C. Follow order
             // D. Normal behavior.
             ///////////////////////
 
-            // A. Extinguish self  //@@MP (Release 6-1)
-            if (m_Actor.IsOnFire)
+
+            // A complete fishing.     //@@MP (Release 7-6)
+            #region
+            //the reason why this is top priority is because we block the AI from equipping anything else to left_hand once they start fishing
+            //fishing takes only 2 turns: 1 to unequip a non-fishing rod left_hand item and to then equip the rod, and 1 wait to "catch" the fish
+            if (m_Actor.Activity == Activity.FISHING)
             {
-                m_Actor.IsRunning = true;
-                determinedAction = BehaviorGoToNearestVisibleWater(game, m_LOSSensor.FOV);
+                /*string eqName = "nothing";
+                Item equipped = m_Actor.GetEquippedItem(DollPart.LEFT_HAND);
+                if (equipped != null)
+                    eqName = equipped.AName;
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0} should catch, equipped: {1}", m_Actor.Name, eqName)); //DELETETHIS*/
+
+                determinedAction = BehaviorGoFish(game);
                 if (determinedAction != null)
                 {
-                    m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                    m_Actor.Activity = Activity.WAITING;
                     return determinedAction;
                 }
             }
+            else if (IsEquipmentSlotTaboo(DollPart.LEFT_HAND))
+                UnmarkEquipmentSlotAsTaboo(DollPart.LEFT_HAND); //fail-safe in case something distracted the NPC (it happens, though I don't know why given that this is the first checked)
+            #endregion
 
-            // alpha10
-            // don't run by default.
-            m_Actor.IsRunning = false;
-
-            // B. Equip best item
+            // B. Equip best item     // alpha10
+            #region
             ActorAction bestEquip = BehaviorEquipBestItems(game, true, true);
             if (bestEquip != null)
             {
                 m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return bestEquip;
             }
-            // end alpha10
+            #endregion
 
             // C. Follow order
             #region
@@ -231,8 +246,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // - FLAGS
             // "courageous" : has leader, see leader, he is fighting and actor not tired.
             // - RULES
-            // 0.1 run away from primed explosives (and fires //@@MP (Release 4)).
-            // 0.2 if underground in total darkness, find nearest exit //@@MP (Release 6-5)
+            // 0.1 run away from primed explosives. (and fires //@@MP (Release 4)).
+            // 0.2 Extinguish self
+            // 0.3 if underground in total darkness, find nearest exit.    //@@MP (Release 6-5)
             // 1 throw grenades at enemies.
             // alpha10 OBSOLETE 2 equip weapon/armor
             // 3 fire at nearest (always if has leader, half of the time if not)  - check directives
@@ -241,44 +257,50 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 6 rest if tired
             // 7 head towards the rescue helicopter
             // alpha10 obsolete and redundant with rule 4! 7 charge enemy if courageous
-            // 8 eat when hungry (also eat corpses)
-            // 9 sleep when almost sleepy and safe.
-            //// 10 recharge lights //@@MP - added (Release 6-2), removed (Release 6-4)
-            // 11 drop light/tracker with no batteries
-            // alpha10 OBSOLETE 12 equip light/tracker/scent spray
-            // 13 make room for food items if needed.
-            // 14 get nearby item/trade (not if seeing enemy) - check directives.
-            // 15 if hungry and no food, charge at people for food (option, not follower or law enforcer)
+            // 8 eat when hungry
+            // 9 cook food
+            // 10 sleep when almost sleepy and safe.
+            //// 11 recharge lights.   //@@MP - added (Release 6-2), removed (Release 6-4)
+            // 12 drop light/tracker with no batteries
+            // alpha10 OBSOLETE 13 equip light/tracker/scent spray
+            // 14 get nearby item. make room for food items if needed [check directives].
+            // 15 if hungry and no food:
+            //    15a if have the fishing rod, go fish
+            //    15b hunt and butcher animals
+            //    15c charge at people for food (option; not follower or law enforcer)
+            //    15d tear down barricades & push objects.
+            //    15e eat corpses if desperate/crazy
             // 16 use stench killer.
             // 17 close door behind me.
             // 18 use entertainment
             // 19 build trap or fortification.
             // 20 follow leader.
             // 21 take lead (if leadership)
-            // 22 if hungry, tear down barricades & push objects.
-            // 23 go revive corpse.
-            // 24 use exit.
-            // 25 tell friend about latest raid.
-            // 26 tell friend about latest friendly soldier.
-            // 27 tell friend about latest enemy.
-            // 28 tell friend about latest items.
-            // 29 (law enforcer) watch for murderers.
-            // 30 (leader) don't leave followers behind.
+            // 22 go revive corpse.
+            // 23 use exit.
+            // 24 tell friend about latest raid.
+            // 25 tell friend about latest friendly soldier.
+            // 26 tell friend about latest enemy.
+            // 27 tell friend about latest items.
+            // 28 (law enforcer) watch for murderers.
+            // 29 (leader) don't leave followers behind.
+            // 30 trade with nearby NPCs [check directives].
             // 31 make molotovs
             // 32 explore.
-            // 33 wander.
+            // 33 wander or wait.
             //////////////////////////////////////////////////////////////////////
 
             // get data.
             List<Percept> enemies = FilterEnemies(game, mapPercepts);
             bool hasEnemies = enemies != null && enemies.Count > 0;
+            bool hasNoFoodItems = HasNoFoodItems(m_Actor); //@@MP (Release 7-6)
+            bool isHungry = game.Rules.IsActorHungry(m_Actor);
             bool checkOurLeader = m_Actor.HasLeader && !DontFollowLeader;
             //bool seeLeader = checkOurLeader && m_LOSSensor.FOV.Contains(m_Actor.Leader.Location.Position); //@@MP - unused (Release 6-1)
             bool isLeaderFighting = checkOurLeader && IsAdjacentToEnemy(game, m_Actor.Leader);
             //bool isCourageous = checkOurLeader && seeLeader && isLeaderFighting && !game.Rules.IsActorTired(m_Actor);  //@@MP - unused (Release 6-1)
             //@@MP - these below are used in multiple steps, so make it reusable (Release 6-1)
             HashSet<Point> FOV = m_LOSSensor.FOV;
-            Map map = m_Actor.Location.Map;
 
             //setup
             #region setup
@@ -303,12 +325,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_LastEnemySaw = enemies[game.Rules.Roll(0, enemies.Count)];
             #endregion
 
-            // 0.1 run away from primed explosives and fires //@@MP - fires added (Release 4).
+            // 0.1 run away from primed explosives and fires          //@@MP - fires added (Release 4).
             #region
             determinedAction = BehaviorFleeFromFires(game, m_Actor.Location);
             if (determinedAction != null)
             {
-                m_Actor.Activity = Activity.FLEEING_FROM_EXPLOSIVE;
+                m_Actor.Activity = Activity.FLEEING;
                 return determinedAction;
             }
 
@@ -320,10 +342,31 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            // 0.2 if in total darkness //@@MP (Release 6-2)
+            // 0.2 extinguish self       //@@MP (Release 6-1)
+            #region
+            if (m_Actor.IsOnFire)
+            {
+                if (map.HasWaterTiles)
+                {
+                    determinedAction = BehaviorGoToNearestVisibleWater(game, m_LOSSensor.FOV);
+                    if (determinedAction != null)
+                    {
+                        m_Actor.IsRunning = true;
+                        m_Actor.Activity = Activity.FLEEING;
+                        return determinedAction;
+                    }
+                }
+
+                //stop-drop-and-roll       //@@MP (Release 7-6)
+                m_Actor.Activity = Activity.FLEEING;
+                return new ActionWait(m_Actor, game);
+            }
+            #endregion
+
+            // 0.3 if in total darkness         //@@MP (Release 6-2)
             #region
             int fov = game.Rules.ActorFOV(m_Actor, map.LocalTime, game.Session.World.Weather); //@@MP m_Actor.Location.Map (Release 6-2)
-            if (fov <=0) //can't see anything, too dark
+            if (fov <=1) //can't see anything, too dark
             {
                 if (!game.Rules.CanActorSeeSky(m_Actor)) //if underground find nearest exit
                 {
@@ -539,7 +582,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 7 head towards the rescue helicopter
             #region
             //check if the heli is here first
-            if (map == game.Session.ArmyHelicopterRescue_Map && map.LocalTime.Day == game.Session.ArmyHelicopterRescue_Day && !map.LocalTime.IsNight)
+            if (map.LocalTime.Day == game.Session.ArmyHelicopterRescue_Day && map == game.Session.ArmyHelicopterRescue_Map && !map.LocalTime.IsNight)
             {
                 //do something else if near it already. hopefully they will help defend it from undead
                 if (game.Rules.StdDistance(m_Actor.Location.Position, game.Session.ArmyHelicopterRescue_Coordinates) >= 8)
@@ -550,7 +593,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         ActorAction getToTheChopper = BehaviorIntelligentBumpToward(game, game.Session.ArmyHelicopterRescue_Coordinates, true, false);
                         if (getToTheChopper != null)
                         {
-                            m_Actor.IsRunning = false;
+                            m_Actor.IsRunning = true;
                             m_Actor.Activity = Activity.EXPLORING;
                             return getToTheChopper;
                         }
@@ -574,30 +617,44 @@ namespace djack.RogueSurvivor.Gameplay.AI
             //}
             #endregion
 
-            // 8 eat when hungry (also eat corpses)
+            // 8 eat when hungry
+            // 9 cook raw food
             #region
-            if (game.Rules.IsActorHungry(m_Actor))
+            if (!hasNoFoodItems)
             {
-                determinedAction = BehaviorEat(game);
-                if (determinedAction != null)
+                if (isHungry)
                 {
-                    m_Actor.Activity = Activity.EATING;
-                    return determinedAction;
-                }
-                if (game.Rules.IsActorStarving(m_Actor) || game.Rules.IsActorInsane(m_Actor))
-                {
-                    determinedAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts), out int x, out int y); //@@MP - x y only relevant for FeralDogAI (Release 7-3)
+                    determinedAction = BehaviorEat(game);
                     if (determinedAction != null)
                     {
                         m_Actor.Activity = Activity.EATING;
                         return determinedAction;
                     }
                 }
-                //TODO: flag to explore for food if none in inv //@@MP
+
+                if (HasCookableFoodItem(m_Actor))          //@@MP - added (Release 7-6)
+                {
+                    //next to a MapObject fire
+                    determinedAction = BehaviorCookFood(game);
+                    if (determinedAction != null)
+                    {
+                        m_Actor.Activity = Activity.COOKING;
+                        return determinedAction;
+                    }
+
+                    //need to find a MapObject fire
+                    determinedAction = BehaviorGoToNearestVisibleMapObjectFire(game, m_LOSSensor.FOV);
+                    if (determinedAction != null)
+                    {
+                        //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} is looking for somewhere to cook", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name)); //DELETETHIS
+                        m_Actor.Activity = Activity.COOKING;
+                        return determinedAction;
+                    }
+                }
             }
             #endregion
 
-            // 9 sleep when almost sleepy and safe.
+            // 10 sleep when almost sleepy and safe.
             #region
             if (m_SafeTurns >= MIN_TURNS_SAFE_TO_SLEEP && WouldLikeToSleep(game, m_Actor) && game.Rules.CanActorSleep(m_Actor) && this.Directives.CanSleep)
             {
@@ -636,7 +693,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
             #endregion
 
-            //// 10 recharge lights //@@MP - added (Release 6-2)
+            //// 11 recharge lights             //@@MP - added (Release 6-2)
             #region
             #if false //@@MP - simplified by making AI's batteries never lose charge, making #10 redundant (Release 7-5)
             //ItemLight equippedLight = GetEquippedLight();
@@ -668,7 +725,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             #endif
             #endregion
 
-            // 11 drop useless light/tracker/spray
+            // 12 drop useless light/tracker/spray
 #region
             determinedAction = BehaviorDropUselessItem(game);
             if (determinedAction != null)
@@ -676,10 +733,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_Actor.Activity = Activity.MANAGING_INVENTORY;
                 return determinedAction;
             }
-#endregion
+            #endregion
 
-            // 12 equip light/tracker/spray.  // alpha10 obsolete
-#region
+            // 13 equip light/tracker/spray.        // alpha10 obsolete
+            #region
             //// tracker : if has leader or is a leader.
             //bool needCellPhone = m_Actor.HasLeader || m_Actor.CountFollowers > 0;
             //// then light.
@@ -727,123 +784,207 @@ namespace djack.RogueSurvivor.Gameplay.AI
             //        return eqScentSpray;
             //    }
             //}
-#endregion
+            #endregion
 
-            // 13 make room for food items if needed.
-            // &&
-            // 14 get nearby item/trade (not if seeing enemy)
-            // ignore not currently visible items & blocked items.
+            // 14 get nearby item (not if seeing enemy)
 #region
+            // make room for food items if needed.
+            // ignore not currently visible items & blocked items.
             if (!hasEnemies && this.Directives.CanTakeItems)
             {
-#region Get items
-                // 13. alpha10 new common behaviour code, also used by GangAI
+                // alpha10 new common behaviour code, also used by GangAI
                 ActorAction getItemAction = BehaviorGoGetInterestingItems(game, mapPercepts, false, false, CANT_GET_ITEM_EMOTE, true, ref m_LastItemsSaw);
 
                 if (getItemAction != null)
                     return getItemAction;
+            }
 #endregion
 
-#region Trade
-                // 14
-                if (Directives.CanTrade)
+            // 15 if has no food
+#region
+            if (hasNoFoodItems)//if (isHungry && hasNoFoodItems)
+            {
+                // 15a have a fishing rod, go fish          //@@MP - added (Release 7-6)
+                #region
+                if (map.HasFishing && HasItemOfModel(game.GameItems.FISHING_ROD))
                 {
-                    // get actors we want to trade with.
-                    List<Percept> tradingActors = FilterOut(FilterNonEnemies(game, mapPercepts), //@@MP - unused parameter (Release 5-7)
-                        (p) =>
-                        {
-                            if (p.Turn != map.LocalTime.TurnCounter) return true;
-                            Actor other = p.Percepted as Actor;
-                            // dont bother player or someone we can't trade with or already did trade.
-                            if (other.IsPlayer) return true;
-                            if (!game.Rules.CanActorInitiateTradeWith(m_Actor, other)) return true;
-                            if (IsActorTabooTrade(other)) return true;
-                            // alpha10 dont bother someone who is fighting or fleeing
-                            if (other.IsFightingOrFleeing)
-                                return true;
-                            // dont bother if no interesting items.
-                            if (!HasAnyInterestingItem(game, other.Inventory, ItemSource.ANOTHER_ACTOR)) return true;
-                            if (!((other.Controller as BaseAI).HasAnyInterestingItem(game, m_Actor.Inventory, ItemSource.ANOTHER_ACTOR))) return true;
-                            // alpha10 reject if unreachable by baseai simple behaviours
-                            if (!CanReachSimple(game, other.Location.Position, Tools.RouteFinder.SpecialActions.DOORS | Tools.RouteFinder.SpecialActions.JUMP))
-                                return true;
-                            // don't reject.
-                            return false;
-                        });
-                    // trade with nearest.
-                    if (tradingActors != null)
-                    {
-                        Actor tradeTarget = FilterNearest(game, tradingActors).Percepted as Actor;
-                        if (game.Rules.IsAdjacent(m_Actor.Location, tradeTarget.Location))
-                        {
-                            determinedAction = new ActionTrade(m_Actor, game, tradeTarget);
-                            if (determinedAction.IsLegal())
-                            {
-                                // remember we tried to trade.
-                                MarkActorAsRecentTrade(tradeTarget);
-                                // say, so we make sure we spend a turn and won't loop.
-                                game.DoSay(m_Actor, tradeTarget, String.Format("Hey {0}, let's make a deal!", tradeTarget.Name), RogueGame.Sayflags.NONE);
-                                m_Actor.Activity = Activity.TRADING;
-                                return determinedAction;
-                            }
-                        }
-                        else
-                        {
-                            // TODO -- consider moving this to DropUselessItems() //alpha 10
-                            determinedAction = BehaviorIntelligentBumpToward(game, tradeTarget.Location.Position, false, false);
-                            if (determinedAction != null)
-                            {
-                                // alpha10 announce it to make it clear to the player whats happening but dont spend AP (free action)
-                                // might spam for a few turns, but its better than not understanding whats going on.
-                                game.DoSay(m_Actor, tradeTarget, String.Format("Hey {0}, let's make a deal!", tradeTarget.Name), RogueGame.Sayflags.IS_FREE_ACTION);
+                    //be hungry
+                    //have no food
+                    //have fishing rod
+                    //find pond
+                    //stand next to pond (if not already)
+                    //equip fishing rod (if not equipped)
+                    //wait (to land the fish)
 
-                                m_Actor.Activity = Activity.TRADING;
-                                m_Actor.TargetActor = tradeTarget;
-                                return determinedAction;
+                    //next to a pond?
+                    determinedAction = BehaviorGoFish(game);
+                    if (determinedAction != null)
+                    {
+                        /*string eqName = "nothing";
+                        Item equipped = m_Actor.GetEquippedItem(DollPart.LEFT_HAND);
+                        if (equipped != null)
+                            eqName = equipped.AName;
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0} should wait, equipped: {1}", m_Actor.Name, eqName)); //DELETETHIS */
+
+                        m_Actor.Activity = Activity.FISHING;
+                        return determinedAction;
+                    }
+
+                    //head towards the pond
+                    determinedAction = BehaviorGoToNearestVisibleWater(game, m_LOSSensor.FOV);
+                    if (determinedAction != null)
+                    {
+                        //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} is moving towards a fishing spot", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name)); //DELETETHIS
+                        m_Actor.Activity = Activity.SEARCHING;
+                        return determinedAction;
+                    }
+
+                    //need to find a pond
+                    for (int x = 0; x < map.Width; x++)
+                    {
+                        for (int y = 0; y < map.Height; y++)
+                        {
+                            Point pt = new Point(x, y);
+                            if (map.GetTileAt(pt).Model.IsWater) //the first tile that's water is good enough. thanks to Map.HasFishing, this will only apply to ponds, and not shopping mall fountains
+                            {
+                                ActorAction moveTowardsThePond = BehaviorIntelligentBumpToward(game, pt, false, false);
+                                if (moveTowardsThePond != null)
+                                {
+                                    //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} is looking for somewhere to fish", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name)); //DELETETHIS
+                                    m_Actor.Activity = Activity.SEARCHING;
+                                    return moveTowardsThePond;
+                                }
                             }
                         }
                     }
                 }
-#endregion
-            }
-#endregion
+                #endregion
 
-            // 15 if hungry and no food, charge at people for food (option, not follower or law enforcer)
-#region
-            if (RogueGame.Options.IsAggressiveHungryCiviliansOn && 
-                mapPercepts != null && !m_Actor.HasLeader && !m_Actor.Model.Abilities.IsLawEnforcer &&
-                game.Rules.IsActorHungry(m_Actor) && HasNoFoodItems(m_Actor))
-            {
-                Percept targetForFood = FilterNearest(game, FilterActors(mapPercepts, //@@MP - unused parameter (Release 5-7)
-                    (a) =>
-                    {
-                        // reject self, dead and leader/follower.
-                        if (a == m_Actor) return false;
-                        if (a.IsDead) return false;
-                        if (a.Inventory == null || a.Inventory.IsEmpty) return false;
-                        if (a.Leader == m_Actor || m_Actor.Leader == a) return false;
-
-                        // actor has food or is standing on food.
-                        if (a.Inventory.HasItemOfType(typeof(ItemFood))) return true;
-                        Inventory groundInv = a.Location.Map.GetItemsAt(a.Location.Position);
-                        if (groundInv == null || groundInv.IsEmpty) return false;
-                        return groundInv.HasItemOfType(typeof(ItemFood));
-                    }));
-
-                if (targetForFood != null)
+                if (isHungry)
                 {
-                    determinedAction = BehaviorChargeEnemy(game, targetForFood, true, true); // alpha10 added hungry civs can break and push
+                    // 15b hunt and butcher animals          //@@MP - added (Release 7-6)
+                    #region
+                    if (mapPercepts != null)
+                    {
+                        //placed it behind the IsHungry check so that if the player is nearby they have slightly more chance to hunt
+                        //civilians will only hunt 'unintelligent' animals (ie chickens and rabbits), but they will butcher a dog corpse if they come across one
+
+                        // butcher
+                        determinedAction = BehaviorGoButcherAnimalCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
+                        if (determinedAction != null)
+                        {
+                            m_Actor.Activity = Activity.HUNTING;
+                            return determinedAction;
+                        }
+
+                        // hunt
+                        Percept targetForFood = FilterNearest(game, FilterActors(mapPercepts,
+                            (a) =>
+                            {
+                                // we want live simple animals
+                                if (a.IsDead) return false;
+                                if (a.Faction != game.GameFactions.TheUnintelligentAnimals) return false;
+
+                                return true;
+                            }));
+
+                        if (targetForFood != null)
+                        {
+                            determinedAction = BehaviorChargeEnemy(game, targetForFood, false, false);
+                            if (determinedAction != null)
+                            {
+                                // chaaarge!
+                                m_Actor.Activity = Activity.HUNTING;
+                                m_Actor.TargetActor = targetForFood.Percepted as Actor;
+                                //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} is trying to catch {2}.", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name, m_Actor.TargetActor.Name)); //DELETETHIS
+                                return determinedAction;
+                            }
+                        }
+                    }
+                    #endregion
+
+                    // 15c charge at people for food (option, not follower or law enforcer)
+                    #region
+                    if (RogueGame.Options.IsAggressiveHungryCiviliansOn && mapPercepts != null && !m_Actor.HasLeader && !m_Actor.Model.Abilities.IsLawEnforcer)
+                    {
+                        Percept targetForFood = FilterNearest(game, FilterActors(mapPercepts, //@@MP - unused parameter (Release 5-7)
+                            (a) =>
+                            {
+                            // reject self, dead and leader/follower.
+                            if (a == m_Actor) return false;
+                                if (a.IsDead) return false;
+                                if (a.Inventory == null || a.Inventory.IsEmpty) return false;
+                                if (a.Leader == m_Actor || m_Actor.Leader == a) return false;
+
+                            // actor has food or is standing on food.
+                            if (a.Inventory.HasItemOfType(typeof(ItemFood))) return true;
+                                Inventory groundInv = a.Location.Map.GetItemsAt(a.Location.Position);
+                                if (groundInv == null || groundInv.IsEmpty) return false;
+                                return groundInv.HasItemOfType(typeof(ItemFood));
+                            }));
+
+                        if (targetForFood != null)
+                        {
+                            determinedAction = BehaviorChargeEnemy(game, targetForFood, true, true); // alpha10 added hungry civs can break and push
+                            if (determinedAction != null)
+                            {
+                                // randomly emote.
+                                if (game.Rules.RollChance(HUNGRY_CHARGE_EMOTE_CHANCE))
+                                    game.DoSay(m_Actor, targetForFood.Percepted as Actor, "HEY! YOU! SHARE SOME FOOD!", RogueGame.Sayflags.IS_FREE_ACTION | RogueGame.Sayflags.IS_DANGER);
+
+                                // chaaarge!
+                                m_Actor.Activity = Activity.CHASING;
+                                m_Actor.TargetActor = targetForFood.Percepted as Actor;
+                                game.DoMakeAggression(m_Actor, m_Actor.TargetActor); //@@MP (Release 7-6)
+                                return determinedAction;
+                            }
+                        }
+                    }
+                    #endregion
+
+                    // 15d tear down barricades & push objects.
+                    #region
+                    determinedAction = BehaviorAttackBarricade(game);
                     if (determinedAction != null)
                     {
-                        // randomly emote.
-                        if (game.Rules.RollChance(HUNGRY_CHARGE_EMOTE_CHANCE))
-                            game.DoSay(m_Actor, targetForFood.Percepted as Actor, "HEY! YOU! SHARE SOME FOOD!", RogueGame.Sayflags.IS_FREE_ACTION | RogueGame.Sayflags.IS_DANGER);
+                        // emote.
+                        game.DoEmote(m_Actor, "Open damn it! I know there's food in there!", true);
 
-                        // chaaarge!
-                        m_Actor.Activity = Activity.CHASING;
-                        m_Actor.TargetActor = targetForFood.Percepted as Actor;
+                        // go!
+                        m_Actor.Activity = Activity.SEARCHING;
                         return determinedAction;
                     }
+                    if (game.Rules.RollChance(HUNGRY_PUSH_OBJECTS_CHANCE))
+                    {
+                        // alpha10.1 do that only inside where food is more likely to be hidden, pushing cars outside is stupid -_-
+                        if (map.GetTileAt(m_Actor.Location.Position).IsInside)
+                        {
+                            determinedAction = BehaviorPushNonWalkableObject(game);
+                            if (determinedAction != null)
+                            {
+                                // emote.
+                                game.DoEmote(m_Actor, "Where's all the damn food?!", true);
+
+                                // go!
+                                m_Actor.Activity = Activity.SEARCHING;
+                                return determinedAction;
+                            }
+                        }
+                    }
+                    #endregion
+
+                    // 15e eat corpses in desperation/insanity
+                    #region
+                    if (game.Rules.IsActorStarving(m_Actor) || game.Rules.IsActorInsane(m_Actor))
+                    {
+                        determinedAction = BehaviorGoEatCorpse(game, FilterCorpses(mapPercepts), out int x, out int y); //@@MP - x y only relevant for FeralDogAI (Release 7-3)
+                        if (determinedAction != null)
+                        {
+                            m_Actor.Activity = Activity.EATING;
+                            return determinedAction;
+                        }
+                    }
+                    #endregion
                 }
             }
 #endregion
@@ -891,11 +1032,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return determinedAction;
                 }
             }
-#endregion
+            #endregion
 
             // 19 build trap or fortification.
-            // alpha10.1 moved trap/fortification rule before following leader rule so they will do it much more often
 #region
+            // alpha10.1 moved trap/fortification rule before following leader rule so they will do it much more often
             //build trap
             if (game.Rules.RollChance(BUILD_TRAP_CHANCE))
             {
@@ -970,43 +1111,9 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     }
                 }
             }
-#endregion
+            #endregion
 
-            // 22 if hungry, tear down barricades & push objects.
-#region
-            if (game.Rules.IsActorHungry(m_Actor))
-            {
-                determinedAction = BehaviorAttackBarricade(game);
-                if (determinedAction != null)
-                {
-                    // emote.
-                    game.DoEmote(m_Actor, "Open damn it! I know there's food in there!", true);
-
-                    // go!
-                    m_Actor.Activity = Activity.SEARCHING;
-                    return determinedAction;
-                }
-                if (game.Rules.RollChance(HUNGRY_PUSH_OBJECTS_CHANCE))
-                {
-                    // alpha10.1 do that only inside where food is more likely to be hidden, pushing cars outside is stupid -_-
-                    if (map.GetTileAt(m_Actor.Location.Position).IsInside) //@@MP m_Actor.Location.Map (Release 6-2)
-                    {
-                        determinedAction = BehaviorPushNonWalkableObject(game);
-                        if (determinedAction != null)
-                        {
-                            // emote.
-                            game.DoEmote(m_Actor, "Where's all the damn food?!", true);
-
-                            // go!
-                            m_Actor.Activity = Activity.SEARCHING;
-                            return determinedAction;
-                        }
-                    }
-                }
-            }
-#endregion
-
-            // 23 go revive corpse.
+            // 22 go revive corpse.
 #region
             determinedAction = BehaviorGoReviveCorpse(game, FilterCorpses(mapPercepts)); //@@MP - unused parameter (Release 5-7)
             if (determinedAction != null)
@@ -1014,11 +1121,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_Actor.Activity = Activity.REVIVING;
                 return determinedAction;
             }
-#endregion
+            #endregion
 
-            // 24 use exit.
+            // 23 use exit.
 #region
-            if (game.Rules.RollChance(USE_EXIT_CHANCE))
+            if (game.Rules.RollChance(USE_EXIT_CHANCE))// && !m_Actor.IsPlayer) //useful for testing, stop the bot from exiting
             {
                 determinedAction = BehaviorUseExit(game, UseExitFlags.DONT_BACKTRACK);
                 if (determinedAction != null)
@@ -1029,7 +1136,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 #endregion
 
-            // 25 tell friend about latest raid.
+            // 24 tell friend about latest raid.
 #region
             // tell?
             if (m_LastRaidHeard != null && game.Rules.RollChance(TELL_FRIEND_ABOUT_RAID_CHANCE))
@@ -1037,13 +1144,14 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorTellFriendAboutPercept(game, m_LastRaidHeard);
                 if (determinedAction != null)
                 {
+                    game.RegenActorSanity(m_Actor, WorldTime.TURNS_PER_HOUR);    //@@MP - added (Release 7-6)
                     m_Actor.Activity = Activity.CHATTING;
                     return determinedAction;
                 }
             }
 #endregion
 
-            // 26 tell friend about latest soldier.
+            // 25 tell friend about latest soldier.
 #region
             // update percept.
             Percept seeingSoldier = FilterFirst(mapPercepts,  //@@MP - unused parameter (Release 5-7)
@@ -1062,39 +1170,42 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 determinedAction = BehaviorTellFriendAboutPercept(game, m_LastSoldierSaw);
                 if (determinedAction != null)
                 {
+                    game.RegenActorSanity(m_Actor, WorldTime.TURNS_PER_HOUR);    //@@MP - added (Release 7-6)
                     m_Actor.Activity = Activity.CHATTING;
                     return determinedAction;
                 }
             }
 #endregion
 
-            // 27 tell friend about latest enemy.
+            // 26 tell friend about latest enemy.
 #region
             if (game.Rules.RollChance(TELL_FRIEND_ABOUT_ENEMY_CHANCE) && m_LastEnemySaw != null)
             {
                 determinedAction = BehaviorTellFriendAboutPercept(game, m_LastEnemySaw);
                 if (determinedAction != null)
                 {
+                    game.RegenActorSanity(m_Actor, WorldTime.TURNS_PER_HOUR);    //@@MP - added (Release 7-6)
                     m_Actor.Activity = Activity.CHATTING;
                     return determinedAction;
                 }
             }
 #endregion
 
-            // 28 tell friend about latest items.
+            // 27 tell friend about latest items.
 #region
             if (game.Rules.RollChance(TELL_FRIEND_ABOUT_ITEMS_CHANCE) && m_LastItemsSaw != null)
             {
                 determinedAction = BehaviorTellFriendAboutPercept(game, m_LastItemsSaw);
                 if (determinedAction != null)
                 {
+                    game.RegenActorSanity(m_Actor, WorldTime.TURNS_PER_HOUR);    //@@MP - added (Release 7-6)
                     m_Actor.Activity = Activity.CHATTING;
                     return determinedAction;
                 }
             }
 #endregion
 
-            // 29 (law enforcer) watch for murderers.
+            // 28 (law enforcer) watch for murderers.
 #region
             if (m_Actor.Model.Abilities.IsLawEnforcer && mapPercepts != null && game.Rules.RollChance(LAW_ENFORCE_CHANCE))
             {
@@ -1109,7 +1220,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             }
 #endregion
 
-            // 30 (leader) don't leave followers behind.
+            // 29 (leader) don't leave followers behind.
 #region
             if (m_Actor.CountFollowers > 0)
             {
@@ -1134,6 +1245,75 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     // go!
                     m_Actor.Activity = Activity.WAITING;
                     return determinedAction;
+                }
+            }
+            #endregion
+
+            // 30 trade with nearby NPCs (not if seeing enemy)
+            #region Trade
+            //@@MP - moved this a long way down the ordered compared to vanilla RS, and put it being a dice roll, as the NPCs were getting stuuck in endless loops of trading amongst one another (Release 7-6)
+            if (!hasEnemies && this.Directives.CanTrade && game.Rules.RollChance(TRADE_CHANCE))
+            {
+                // get actors we want to trade with.
+                List<Percept> tradingActors = FilterOut(FilterNonEnemies(game, mapPercepts), //@@MP - unused parameter (Release 5-7)
+                    (p) =>
+                    {
+                        if (p.Turn != map.LocalTime.TurnCounter) return true;
+                        Actor other = p.Percepted as Actor;
+                        // dont bother player or someone we can't trade with or already did trade.
+                        if (other.IsPlayer) return true;
+                        if (!game.Rules.CanActorInitiateTradeWith(m_Actor, other)) return true;
+                        if (IsActorTabooTrade(other)) return true;
+                        // alpha10 dont bother someone who is fighting or fleeing
+                        if (other.IsFightingOrFleeing)
+                            return true;
+                        // dont bother if no interesting items.
+                        if (!HasAnyInterestingItem(game, other.Inventory, ItemSource.ANOTHER_ACTOR)) return true;
+                        if (!((other.Controller as BaseAI).HasAnyInterestingItem(game, m_Actor.Inventory, ItemSource.ANOTHER_ACTOR))) return true;
+                        // alpha10 reject if unreachable by baseai simple behaviours
+                        if (!CanReachSimple(game, other.Location.Position, Tools.RouteFinder.SpecialActions.DOORS | Tools.RouteFinder.SpecialActions.JUMP))
+                            return true;
+                        // don't reject.
+                        return false;
+                    });
+                // trade with nearest.
+                if (tradingActors != null)
+                {
+                    Actor tradeTarget = FilterNearest(game, tradingActors).Percepted as Actor;
+                    if (game.Rules.IsAdjacent(m_Actor.Location, tradeTarget.Location))
+                    {
+                        determinedAction = new ActionTrade(m_Actor, game, tradeTarget);
+                        if (determinedAction.IsLegal())
+                        {
+                            //if (m_Actor.Location.Map == game.Player.Location.Map)
+                                //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("[{0}]: {1} tries to trade with {2}.", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name, tradeTarget.Name)); //DELETETHIS
+
+                            // remember we tried to trade.
+                            MarkActorAsRecentTrade(tradeTarget);
+                            // say, so we make sure we spend a turn and won't loop.
+                            game.DoSay(m_Actor, tradeTarget, String.Format("Hey {0}, let's make a deal!", tradeTarget.Name), RogueGame.Sayflags.NONE);
+                            m_Actor.Activity = Activity.TRADING;
+                            return determinedAction;
+                        }
+                    }
+                    else
+                    {
+                        // TODO -- consider moving this to DropUselessItems() //alpha 10
+                        determinedAction = BehaviorIntelligentBumpToward(game, tradeTarget.Location.Position, false, false);
+                        if (determinedAction != null)
+                        {
+                            //if (m_Actor.Location.Map == game.Player.Location.Map)
+                                //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("[{0}]: {1} moves to trade with {2}.", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name, tradeTarget.Name)); //DELETETHIS
+
+                            // alpha10 announce it to make it clear to the player whats happening but dont spend AP (free action)
+                            // might spam for a few turns, but its better than not understanding whats going on.
+                            game.DoSay(m_Actor, tradeTarget, String.Format("Hey {0}, let's make a deal!", tradeTarget.Name), RogueGame.Sayflags.IS_FREE_ACTION);
+
+                            m_Actor.Activity = Activity.TRADING;
+                            m_Actor.TargetActor = tradeTarget;
+                            return determinedAction;
+                        }
+                    }
                 }
             }
             #endregion

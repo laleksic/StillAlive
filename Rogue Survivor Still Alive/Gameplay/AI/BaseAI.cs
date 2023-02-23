@@ -131,6 +131,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_prevLocation = m_Actor.Location;
             m_Actor.TargetActor = null;
             ActorAction bestAction = SelectAction(game, percepts);
+            /*if (m_Actor.IsPlayer) //for troubleshooting in bot mode //DELETETHIS
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}, activity: {1} then {2}", bestAction.ToString(), m_Actor.ActivityInProgress, m_Actor.Activity));*/
             m_prevLocation = m_Actor.Location;
             if (bestAction == null)
             {
@@ -609,7 +611,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
                         // alpha10.1 prefer inside when almost sleepy
                         if (game.Rules.IsAlmostSleepy(m_Actor) && next.Map.GetTileAt(next.Position).IsInside)
-                        score += 100;
+                            score += 100;
                     }
                     return score;
                 },
@@ -623,7 +625,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
 #endif
                 return new ActionBump(m_Actor, game, chooseRandomDir.Choice);
             }
-            
             else
             {
 #if DEBUGAILOOPING
@@ -638,6 +639,74 @@ namespace djack.RogueSurvivor.Gameplay.AI
         protected ActorAction BehaviorWander(RogueGame game)
         {
             return BehaviorWander(game, null);
+        }
+
+        /// <summary>
+        /// Designed for unintelligent animals (rabbits, chickens)
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="goodWanderLocFn"></param>
+        /// <returns></returns>
+        protected ActorAction BehaviorSimpleAnimalWander(RogueGame game, Predicate<Location> goodWanderLocFn) //@@MP - added (Release 7-6)
+        {
+            Map map = m_Actor.Location.Map;
+            ChoiceEval<Direction> chooseRandomDir = Choose<Direction>(game,
+                Direction.COMPASS_LIST,
+                (dir) =>
+                {
+                    Location next = m_Actor.Location + dir;
+                    if (goodWanderLocFn != null && !goodWanderLocFn(next))
+                        return false;
+                    ActorAction bumpAction = game.Rules.IsBumpableFor(m_Actor, game, next);
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorWander() bumpAction: " + bumpAction.ToString();
+#endif
+                    return IsValidWanderAction(game, bumpAction);
+                },
+                (dir) =>
+                {
+                    int score = game.Rules.Roll(0, 50);
+
+                    Location next = m_Actor.Location + dir; //discourage backtracking. based on alpha10.1
+                    if (next == m_prevLocation)
+                        score -= 50;
+
+                    if (map.IsAnyTileWaterThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position))
+                        score -= 100; //don't wander into water for no good reason
+                    else if (map.IsAnyTileFireThere(m_Actor.Location.Map, (m_Actor.Location + dir).Position)) //avoid fires on walkable tiles
+                        score -= 2000;
+
+                    //try to keep them on grass, which is where they were originally spawned
+                    Tile tile = map.GetTileAt((m_Actor.Location + dir).Position);
+                    if (tile.Model.ID == (int)GameTiles.IDs.FLOOR_GRASS || tile.Model.ID == (int)GameTiles.IDs.FLOOR_PLANTED || tile.Model.ID == (int)GameTiles.IDs.FLOOR_DIRT)
+                        score += 200;
+                    else
+                        score -= 1000;
+
+                    return score;
+                },
+                (a, b) => a > b);
+
+            m_Actor.IsRunning = false;
+            if (chooseRandomDir != null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWander() random dir: " + chooseRandomDir.Choice.ToString();
+#endif
+                return new ActionBump(m_Actor, game, chooseRandomDir.Choice);
+            }
+
+            else
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorWander() no random dir possible";
+#endif
+                return null;
+            }
+
         }
 
         /// <summary>
@@ -1081,7 +1150,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
 #if DEBUGAILOOPING
                     if (m_Actor.IsLooping)
-                        m_Actor.ActivityInProgress = "BehaviorGoToVisibleGenerator() moveThere: " + waterPos.Value.ToString();
+                        m_Actor.ActivityInProgress = "BehaviorGoToNearestVisibleWater() moveThere: " + waterPos.Value.ToString();
 #endif
                     return moveThere;
                 }
@@ -1092,6 +1161,47 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 m_Actor.ActivityInProgress = "BehaviorGoToNearestVisibleWater() no water visible";
 #endif
             return null; //no water i can see
+        }
+
+        protected ActorAction BehaviorGoToNearestVisibleMapObjectFire(RogueGame game, HashSet<Point> FOV) //@@MP (Release 7-6)
+        {
+            Map map = m_Actor.Location.Map;
+
+            // find nearest MapObject fire.
+            Point? firePos = null;
+            float nearestDist = float.MaxValue;
+            foreach (Point p in FOV)
+            {
+                MapObject mapObj = map.GetMapObjectAt(p);
+                if (mapObj != null && mapObj.IsOnFire)
+                {
+                    float dist = game.Rules.StdDistance(m_Actor.Location.Position, p);
+                    if (dist < nearestDist)
+                    {
+                        nearestDist = dist;
+                        firePos = p;
+                    }
+                }
+            }
+            // if we see a fire, try to get there.
+            if (firePos != null)
+            {
+                ActorAction moveThere = BehaviorIntelligentBumpToward(game, firePos.Value, false, false);
+                if (moveThere != null)
+                {
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorGoToNearestVisibleMapOjbectFire() moveThere: " + firePos.Value.ToString();
+#endif
+                    return moveThere;
+                }
+            }
+
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorGoToNearestVisibleMapOjbectFire() no mapobj fire visible";
+#endif
+            return null; //no fires i can see
         }
         #endregion
 
@@ -2133,6 +2243,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 // alpha10 empty cans!
                 else if (it.Model == game.GameItems.EMPTY_CAN) // comparing model instead of attributes is bad but makes sense in this case
                     dropIt = true;
+                // avoid human meat (NPCs can still eat corpses)     //@@MP (Release 7-6)
+                else if (it.Model == game.GameItems.COOKED_HUMAN_FLESH || it.Model == game.GameItems.RAW_HUMAN_FLESH)
+                {
+                    if (!game.Rules.IsActorInsane(m_Actor) && !game.Rules.IsActorStarving(m_Actor))
+                        dropIt = true; //don't even consider cannibalism
+                }
 
                 if (dropIt)
                 {
@@ -3877,15 +3993,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #region Advanced movement
         protected ActorAction BehaviorCloseDoorBehindMe(RogueGame game, Location previousLocation)
         {
+            if (m_Actor.HasLeader && m_Actor.Leader.IsPlayer)
+            {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}'s map: {1}", m_Actor.Name, m_Actor.Location.Map.Name));
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}'s prev pov: {1}", m_Actor.Name, previousLocation.Position.ToString()));
+            }
+
             // if we've gone through a door, try to close it.
             DoorWindow prevDoor = previousLocation.Map.GetMapObjectAt(previousLocation.Position) as DoorWindow;
             if (prevDoor == null)
-                return null;
-
-            //@@MP (Release 7-5)
-            //lazy workaround for a bug that I could never trace whereby NPCs would sometimes become obsessed with endlessly opening and closing doors
-            //it was most likely to happen in the kennels level of an animal pound. bug tracker: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/-/issues/68
-            if (m_Actor.Location.Map.Name == "Animal shelter")
                 return null;
 
             if (game.Rules.IsClosableFor(m_Actor, prevDoor))
@@ -3909,6 +4025,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 2. Barricade unbarricaded windows.
             /////////////////////////////////////
             Map map = m_Actor.Location.Map;
+
+            //@@MP - added (Release 7-6)
+            //lazy workaround for a bug whereby NPCs would sometimes become obsessed with endlessly opening and closing doors
+            //it was most likely to happen in the kennels level of an animal pound. bug tracker: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/-/issues/68
+            if (!game.Rules.CanActorSeeSky(m_Actor))//(m_Actor.Location.Map.Name == "Animal shelter")
+                return null;
 
             foreach (Point pt in fov)
             {
@@ -4343,7 +4465,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (m_Actor.RepetitiveNoAPCostActionsThisTurnCount >= Rules.AI_REPETITIVE_NOAPCOST_ACTION_LIMIT) // don't allow if excessive use of AP-free actions this turn (avoids looping)  //@@MP (Release 7-1)
                 return null;
 
-            // don't bother if no grenade in inventory.
             Inventory inv = m_Actor.Inventory;
             if (inv == null || inv.IsEmpty)
                 return null;
@@ -4392,8 +4513,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (inv == null)
                     continue;
 
-                if (inv.HasItemOfType(typeof(ItemFood)))
+                foreach (Item it in inv.Items)
                 {
+                    if (it.Model == game.GameItems.COOKED_HUMAN_FLESH || it.Model == game.GameItems.RAW_HUMAN_FLESH)
+                    {
+                        // avoid human meat (NPCs can still eat corpses)     //@@MP (Release 7-6)
+                        if (!game.Rules.IsActorInsane(m_Actor) && !game.Rules.IsActorStarving(m_Actor))
+                            continue; //don't even consider cannibalism
+                    }
+
                     hasFoodVisible = true;
                     break;
                 }
@@ -5173,7 +5301,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         }
 
         /// <summary>
-        /// TrRy to revive non-enemy corpses.
+        /// Try to revive non-enemy corpses.
         /// </summary>
         /// <param name="game"></param>
         /// <param name="corpsesPercepts"></param>
@@ -5187,7 +5315,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // make sure we have the basics : medic skill & medikit item.
             if (m_Actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.MEDIC) == 0)
                 return null;
-            if (!HasItemOfModel(game.GameItems.MEDIKIT))
+            if (!HasItemOfModel(game.GameItems.LARGE_MEDIKIT))
                 return null;
 
             // keep only corpses stacks where we can revive at least one corpse.
@@ -5237,9 +5365,150 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
         #endregion
 
+        #region Cooking & fishing
+        protected ActorAction BehaviorGoFish(RogueGame game)  //@@MP (Release 7-6)
+        {
+            // is fishing rod equipped?
+            Item fishingRod = null;
+            foreach (Item it in m_Actor.Inventory.Items)
+            {
+                if (it.Model == game.GameItems.FISHING_ROD)
+                {
+                    fishingRod = it;
+                    if (it.IsEquipped)
+                        break;
+                }
+            }
+
+            string reason;
+            bool isFishing = false;
+            if (fishingRod == null)
+                return null; //we should never hit this, as the calling paths should have a pre-check for a rod
+            else if (!fishingRod.IsEquipped)
+            {
+                if (!game.Rules.CanActorEquipFishingRod(m_Actor, fishingRod, out reason))
+                {
+                    //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} can't fish: {2}.", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name, reason)); //DELETETHIS
+                    return null;
+                }
+
+                // alpha10 mark hand as taboo so behavior BehaviorEquipBestItems will not undo us and loop forever
+                MarkEquipmentSlotAsTaboo(DollPart.LEFT_HAND);
+
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorGoFish() equip fishing rod";
+#endif
+                //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} casts a fishing line!", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name)); //DELETETHIS
+
+                game.DoEquipItem(m_Actor, fishingRod);
+                return new ActionWait(m_Actor, game, false);
+                //we only want to wait one turn for NPCs, because if we lock them into fishing they might get attacked, etc
+                //and if they are free to quit fishing and do something else, testing shows that they will pretty much always leave fishing immediately
+            }
+            else
+                isFishing = true;
+
+            //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} is waiting for a fish", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name)); //DELETETHIS
+            // we have an equipped rod, which means we started fishing on a previous turn.
+            // we haven't caught a fish yet, because this ActorAction is only called if the actor has no food items.
+            // so keep waiting for a fish to land.
+            //UnmarkEquipmentSlotAsTaboo(DollPart.LEFT_HAND);
+            return new ActionWait(m_Actor, game, isFishing);
+        }
+
+        protected ActorAction BehaviorCookFood(RogueGame game)  //@@MP (Release 7-6)
+        {
+            // has a cookable food?
+            ItemFood rawMeat = null;
+            foreach (Item it in m_Actor.Inventory.Items)
+            {
+                ItemFood food = it as ItemFood;
+                if (food != null && food.CanBeCooked)
+                {
+                    rawMeat = food;
+                    break;
+                }
+            }
+
+            string reason;
+            if (rawMeat == null)
+                return null;
+
+            if (game.Rules.CanActorCookFoodItem(m_Actor, rawMeat, out reason))
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorCookFood() ActionCookFood";
+#endif
+                //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} cooked {2}.", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name, rawMeat.AName)); //DELETETHIS
+
+                return new ActionCookFood(m_Actor, game, rawMeat, m_Actor.Location.Position);
+            }
+
+            return null;
+        }
+
+        protected ActorAction BehaviorGoButcherAnimalCorpse(RogueGame game, List<Percept> corpsesPercepts)  //@@MP (Release 7-6)
+        {
+            // nope if no percepts.
+            if (corpsesPercepts == null)
+                return null;
+
+            // make sure we have the basics : bladed weapon
+            /*if (!m_Rules.CanActorButcherCorpse(m_Actor, c, out reason)
+                return null;*/
+            //decided not to enforce this for NPCs, as having them prioritise bladed weapons seemed like too much of a faff. may be revisited
+
+            // keep only corpses stacks where we can butcher at least one corpse.
+            List<Percept> animals = Filter(corpsesPercepts, (p) =>
+            {
+                List<Corpse> corpsesThere = p.Percepted as List<Corpse>;
+                foreach (Corpse c in corpsesThere)
+                {
+                    if (c.DeadGuy.Model.Abilities.IsLivingAnimal)
+                        return true;
+                }
+                return false;
+            });
+            if (animals == null)
+                return null;
+
+            // either 1) butcher corpse or 2) go get them.
+
+            // 1) check corpses here.
+            List<Corpse> corpses = m_Actor.Location.Map.GetCorpsesAt(m_Actor.Location.Position);
+            if (corpses != null)
+            {
+                // get the first animal corpse we can butcher.
+                foreach (Corpse c in corpses)
+                {
+                    if (c.DeadGuy.Model.Abilities.IsLivingAnimal)
+                    {
+#if DEBUGAILOOPING
+                        if (m_Actor.IsLooping)
+                            m_Actor.ActivityInProgress = "BehaviorGoButcherAnimalCorpse() butcher corpse @ " + c.Position.ToString();
+#endif
+                        //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} is butchering {2}.", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name, c.DeadGuy.Name)); //DELETETHIS
+                        return new ActionButcherCorpse(m_Actor, game, c);
+                    }
+                }
+            }
+            // 2) go to nearest corpse that we can butcher.
+            Percept nearest = FilterNearest(game, animals);
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorGoButcherAnimalCorpse() go to corpse @ " + nearest.Location.Position.ToString();
+#endif
+            //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} wants to butcher at {2}.", game.Session.WorldTime.TurnCounter.ToString(), m_Actor.Name, nearest.Location.Position.ToString())); //DELETETHIS
+            return m_Actor.Model.Abilities.IsIntelligent ?
+                    BehaviorIntelligentBumpToward(game, nearest.Location.Position, false, false) :
+                    BehaviorStupidBumpToward(game, nearest.Location.Position, false, false);
+        }
+        #endregion
         #endregion
 
-#region Behaviors helpers
+        #region Behaviors helpers
 
         #region Messages
         static string MakeCentricLocationDirection(RogueGame game, Location from, Location to) //@@MP - made static (Release 5-7)
@@ -5548,6 +5817,26 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (!foodIt.IsPerishable)
                     score -= nutrition;
 
+                // - avoid human meat (NPCs can still eat corpses)     //@@MP (Release 7-6)
+                if (foodIt.Model == game.GameItems.COOKED_HUMAN_FLESH || foodIt.Model == game.GameItems.RAW_HUMAN_FLESH)
+                {
+                    if (game.Rules.IsActorInsane(m_Actor) || game.Rules.IsActorStarving(m_Actor))
+                        score -= 10000; //pick a number even lower than for food poisoning
+                    else
+                        continue; //don't even consider cannibalism
+                }
+
+                // - avoid eating raw meat      //@@MP (Release 7-6)
+                if (foodIt.CanCauseFoodPoisoning)
+                {
+                    //this check must come after human flesh, as the raw type can cause food poisoning
+
+                    if (game.Rules.IsActorStarving(m_Actor))
+                        score -= 5000; //just picked a big number that will always been larger than nutrition and waste values
+                    else
+                        continue;
+                }
+
                 // best?
                 if (bestFood == null || score > bestScore)
                 {
@@ -5616,6 +5905,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (game.Rules.IsSafeFromTrap(itTrap, m_Actor))
                     return false;
             }
+
+            //avoid human meat (NPCs can still eat corpses)     //@@MP (Release 7-6)
+            if (it.Model == game.GameItems.COOKED_HUMAN_FLESH || it.Model == game.GameItems.RAW_HUMAN_FLESH)
+                return false;
 
             // then use normal rating as if was trading and accept anything non-junk.
             ItemRating rating = RateItem(game, it, false);
@@ -5914,7 +6207,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (it is ItemBarricadeMaterial)
             {
                 if (CountItemsOfSameType(typeof(ItemBarricadeMaterial), it) == 0)
-                    return ItemRating.NEED;
+                    return ItemRating.OKAY;
 
                 // one full stack of barricading material is enough
                 if (CountItemsFullStacksOfSameType(typeof(ItemBarricadeMaterial), it) >= 1)
@@ -5928,6 +6221,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // Food if hungry or not enough food in inventory.
             if (it is ItemFood)
             {
+                //avoid human meat (NPCs can still eat corpses)     //@@MP (Release 7-6)
+                if (it.Model == game.GameItems.COOKED_HUMAN_FLESH || it.Model == game.GameItems.RAW_HUMAN_FLESH)
+                    return ItemRating.JUNK;
+
                 if (game.Rules.IsActorHungry(m_Actor))
                     return ItemRating.NEED;
                 int nutritionPoints = GetTotalNutritionInInventory(game);
@@ -5965,10 +6262,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // Light out of batteries or if has already enough
             if (it is ItemLight)
             {
-                ItemLight itLight = it as ItemLight;
-
-                // light is junk if actor already has 6+ hours of batteries worth.
-                int totalLightsBatteries = 0;
+                // light is junk if actor already has 6+ hours of batteries worth.   //@@MP - which they will, as NPCs have infinitely auto-recharging lights now in RS:SA. commented out uncessary code in light of this
+                //int totalLightsBatteries = 0;
                 int totalLights = 0;
                 m_Actor.Inventory.ForEach((i) =>
                 {
@@ -5977,15 +6272,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     ItemLight l = i as ItemLight;
                     if (l == null)
                         return;
-                    totalLightsBatteries += l.Batteries;
+                    //totalLightsBatteries += l.Batteries;
                     totalLights++;
                 });
 
-                if (totalLightsBatteries > 0) //@@MP - actor already has a light, which auto recharges for AIs (Release 6-4)
+                /*if (totalLightsBatteries > 0) //@@MP - actor already has a light, which auto recharges for AIs (Release 6-4)
                     return ItemRating.JUNK;
                 else if (itLight.Batteries <= 0)
-                    return ItemRating.JUNK;
-                else if (totalLights == 0 && itLight.Batteries > 0) //@@MP - don't have a light. lights are now very important given the darkness revamp (Release 6-2)
+                    return ItemRating.JUNK;*/
+                if (totalLights == 0)// && itLight.Batteries > 0) //@@MP - don't have a light. lights are now very important given the darkness revamp (Release 6-2)
                     return ItemRating.NEED;
             }
 
@@ -6116,6 +6411,38 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (it is ItemSprayPaint)
                 return ItemRating.JUNK;
 
+            // Matches    //@@MP (Release 7-6)
+            if (it.Model == game.GameItems.MATCHES)
+            {
+                if (HasItemOfModel(it.Model))
+                    return ItemRating.JUNK;
+
+                //has raw meat to cook?
+                bool hasRawMeat = false;
+                hasRawMeat = m_Actor.Inventory.HasItemMatching((i) =>
+                {
+                    if (i == it)
+                        return false;
+                    ItemFood t = i as ItemFood;
+                    return t != null && t.CanBeCooked;
+                });
+                if (hasRawMeat)
+                    return ItemRating.NEED;
+                else
+                    return ItemRating.OKAY;
+            }
+
+            // Fishing rod    //@@MP (Release 7-6)
+            if (it.Model == game.GameItems.FISHING_ROD)
+            {
+                if (HasItemOfModel(it.Model))
+                    return ItemRating.JUNK;
+                else if (game.Rules.IsActorHungry(m_Actor) || m_Actor.Location.Map.HasFishing) //actor wants to catch some fish
+                    return ItemRating.NEED;
+                else
+                    return ItemRating.OKAY;
+            }
+
             // Shield    //@@MP (Release 7-2)
             if (it.Model.EquipmentPart == DollPart.LEFT_ARM) //assume shield
             {
@@ -6132,6 +6459,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
             {
                 if (CountItemsOfSameType(typeof(ItemExplosive), it) == 0)
                     return ItemRating.NEED;
+                else
+                    return ItemRating.JUNK; //@@MP - added (Release 7-6)
             }
 
             // Primed explosives.
@@ -6273,6 +6602,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (oFood != null)
             {
                 ItemFood nFood = nIt as ItemFood;
+
+                //avoid human meat (NPCs can still eat corpses)     //@@MP (Release 7-6)
+                if (nFood.Model.ID == (int)GameItems.IDs.FOOD_RAW_HUMAN_FLESH)
+                    return TradeRating.REFUSE;
 
                 // prefer food with more nutrition
                 int oNut = GetItemNutritionValue(game, oFood);
@@ -6417,6 +6750,38 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 return TradeRating.REFUSE;
             }
 
+            // Matches    //@@MP (Release 7-6)
+            if (oIt.Model == game.GameItems.MATCHES)
+            {
+                if (HasItemOfModel(oIt.Model))
+                    return TradeRating.REFUSE;
+
+                //has raw meat to cook?
+                bool hasRawMeat = false;
+                hasRawMeat = m_Actor.Inventory.HasItemMatching((i) =>
+                {
+                    if (i == oIt)
+                        return false;
+                    ItemFood t = i as ItemFood;
+                    return t != null && t.CanBeCooked;
+                });
+                if (hasRawMeat)
+                    return TradeRating.ACCEPT;
+                else
+                    return TradeRating.MAYBE;
+            }
+
+            // Fishing rod    //@@MP (Release 7-6)
+            if (oIt.Model == game.GameItems.FISHING_ROD)
+            {
+                if (HasItemOfModel(oIt.Model))
+                    return TradeRating.REFUSE;
+                else if (game.Rules.IsActorHungry(m_Actor))
+                    return TradeRating.ACCEPT;
+                else
+                    return TradeRating.MAYBE;
+            }
+
             // Shield    //@@MP (Release 7-2)
             if (oIt.Model.EquipmentPart == DollPart.LEFT_ARM) //assume shield
             {
@@ -6455,6 +6820,13 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 ItemFood food = it as ItemFood;
                 if (food != null)
                 {
+                    // - avoid human meat (NPCs can still eat corpses)     //@@MP (Release 7-6)
+                    if (it.Model == game.GameItems.COOKED_HUMAN_FLESH || it.Model == game.GameItems.RAW_HUMAN_FLESH)
+                    {
+                        if (!game.Rules.IsActorInsane(m_Actor) && !game.Rules.IsActorStarving(m_Actor))
+                            continue; //don't even consider cannibalism
+                    }
+
                     nutritionTotal += game.Rules.FoodItemNutrition(food, turnCounter);
                     if (nutritionTotal >= nutritionNeed) // exit asap
                         return true;
@@ -7159,6 +7531,24 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (inv == null || inv.IsEmpty)
                 return true;
             return !inv.HasItemOfType(typeof(ItemFood));
+        }
+
+        protected static bool HasCookableFoodItem(Actor actor) //@@MP - added (Release 7-6)
+        {
+            Inventory inv = actor.Inventory;
+            if (inv == null || inv.IsEmpty)
+                return false;
+
+            foreach (Item it in actor.Inventory.Items)
+            {
+                ItemFood food = it as ItemFood;
+                if (food != null && food.CanBeCooked)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         protected static bool IsSoldier(Actor actor) //@@MP - made static (Release 5-7)

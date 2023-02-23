@@ -1,4 +1,4 @@
-***CONTENTS***
+***********CONTENTS***********
 (press a number key to go straight to that section)
 0. DEFAULT HOTKEYS
 1. THE GAME
@@ -6,28 +6,30 @@
 3. THE PLAYER SHEET
 4. KEY BINDINGS
 5. SKILLS
-6. ITEMS
-7. FOLLOWERS
-8. FRIENDS & FOES
-9. OPTIONS & HINTS
-*******************
+6. FOLLOWERS
+7. FRIENDS & FOES
+8. OPTIONS & HINTS
+9. Rogue Survior: Still Alive
+******************************
 
 0. DEFAULT HOTKEYS
 ---------------
 
-ICONS LEGEND : F1
+ICONS LEGEND : F1               HELP : H  (this manual)         MAP / CITY INFO : M
+
 MOVE : Numpad 1-4,6-9           ITEM SLOTS : 1-10               RUN : R		
 SLEEP : Z                       WAIT 1 TURN : Numpad 5          WAIT 1 HOUR : W
-MAP / CITY INFO : M             MESSAGES LOG : Shift + M        USE SPRAY : A
-FIRE : F                        MARK ENEMIES : Ctrl + E         INFO MODE : I (mouse alternative)
-CLOSE : C                       BREAK : K                       USE LADDER/STAIRS : X
-PUSH : P                        BUILD FORTIFICATION : N
-PULL : Ctrl + P                 BARRICADE : B
-INITIATE TRADE : E              GIVE : G                        SHOUT : S
-RECRUIT FOLLOWER : T            ORDER FOLLOWER : O              SWITCH PLACE : Ctrl + S
-ABANDON GAME : Shift + A        QUIT GAME : Shift + Q           SAVE GAME : Shift + S
-OPTIONS : Shift + O             ADVISOR HINT : Shift + H        HELP : H
-REDEFINE KEYS : Shift + K       SCREENSHOT : Shift + N          LOAD GAME : Shift + L
+INITIATE TRADE : E              USE LADDER/STAIRS : X           FIRE : F
+CLOSE : C                       MARK ENEMIES : Ctrl + E         MESSAGES LOG : Shift + M
+PUSH : P                        BREAK : K                       INFO MODE : I  (mouse alternative)
+PULL : Ctrl + P                 BUILD FORTIFICATION : N         ADVISOR HINT : Shift + H
+USE SPRAY : A                   BARRICADE : B                   OPTIONS : Shift + O
+SHOUT : S                       GIVE : G                        REDEFINE KEYS : Shift + K
+RECRUIT FOLLOWER : T            ORDER FOLLOWER : O              SCREENSHOT : Shift + N
+SWITCH PLACE : Ctrl + S         EAT CORPSE : Shift + E          SAVE GAME : Shift + S
+UNLOAD AMMO : U                 REVIVE CORPSE : Shift + R       LOAD GAME : Shift + L
+DESTROY ITEM : Ctrl + D         BURY CORPSE : Shift + B         ABANDON GAME : Shift + A
+MAKE A FIRE : Ctrl + F          COOK MEAT : Ctrl + C            QUIT GAME : Shift + Q
 
 
 
@@ -39,7 +41,8 @@ Note: This manual is mainly written with playing a living survivor in mind.
  SETTING & OBJECTIVE
  -------------------
 It's an undead apocalypse. You have to find ways to survive: food, shelter, weapons and companions.
-Your town is known for being the headquarters of the world famous C.H.A.R. Corporation. You've heard strange rumors about them...
+Your town is known for being the headquarters of the world famous C.H.A.R. Corporation. You've heard strange rumors
+about them...
 The army have established a safe zone and are evacuating towns all around the region.
 You must find a way to survive until helicopter rescue arrives. But you'll need to work out where that will be...
 You don't have to make it to the helicopter, but after that point you'll be on your own.
@@ -66,13 +69,14 @@ Livings and undeads progress differently.
 Rogue Survivor handles combat and progression differently than most roguelikes.
 The game doesn't change the difficulty depending on your skill levels, and there is no obvious difficulty progression.
 Don't expect to be able to bash zombies left and right recklessly, even with lots of skill upgrades.
-You should fear for your life and make use of the Run action. Don't hesitate to flee and hide; you don't HAVE to kill every undead in sight. 
+You should fear for your life and make use of the Run action. Don't hesitate to flee and hide; you don't HAVE to kill
+every undead in sight. 
 Undeads, however, play very differently from livings...
 
 
  EVENTS
  ------
-From time to time special events will happen. The game will inform you when relevant, and you will learn them as you play.
+From time to time special events will happen. The game will inform you when relevant, and you'll learn them as you play.
 You can miss some events when sleeping or being in the wrong district. Life goes on without you.
 
 
@@ -91,7 +95,7 @@ Infected corpses might rise as new undeads. They are more likely to rise if they
  ADVISOR
  -------
 The game has a hint system for new players called the Advisor. You can enable or disable the Advisor in the options.
-The hints will teach you most game controls and the gameplay basics. The advisor is focused on learning the game as a survivor.
+Hints will teach you most game controls and the gameplay basics, and arefocussed on playing the game as a survivor.
 
 
  REINCARNATION
@@ -107,7 +111,7 @@ You get a variety of choices, but not all of which may not be available at the t
 - Your Zombie Self : if zombified, your ex-character turned zombie
 
 You then reincarnate into the body of the avatar and continue the game from there.
-It's a choice given to you to explore new ways to play the game. If you want a 'pure' permadeath you can disable reincarnation.
+It's a choice given to you to explore new ways to play the game. Alternatively, you can disable reincarnation.
 You can set some options to control how reincarnation works (see the options section).
 
 
@@ -118,13 +122,14 @@ You can set some options to control how reincarnation works (see the options sec
 You can see what you know about the city by using the City Info command (default I).
 
 > DISTRICTS
-The City is divided into Districts. Districts are numbered by their coordinates on the city map starting at 0-0 for the northwest district.
+The City is divided into Districts, arranged into a inter-connected square.
+Districts are numbered by their coordinates on the city map, starting at 0-0 for the northwest district.
 Each District is a different map. You can move around the city by exiting a district at the borders.
-When entering a district the game will simulate the district if you have the option enabled. See Options for more details.
+When entering a district the game will simulate the district if you have the option enabled.
 There are different kinds of districts, each being likely to have different types of buildings.
 
-- District             : generic district, a bit of everything
-- Business Districts   : mostly CHAR Corp offices and houses
+- General District     : generic district, a bit of everything
+- Business Districts   : mostly CHAR Corp offices and businesses
 - Green District       : mostly parks and houses
 - Residential District : mostly houses
 - Shopping District    : mostly shops and houses
@@ -137,7 +142,7 @@ Oh, and you've heard the urban legend about a monster lurking down there...
 
 
 > SUBWAY
-A Subway line runs through the middle of the city from the west to the east. Only those districts are linked by the subway.
+A Subway line runs from west to the east through the middle of the city. Only those districts are linked by the subway.
 You can visit the subway by finding a station on the surface and going down stairs. Like sewers it's dark down there.
 
 
@@ -167,19 +172,21 @@ Weather can change daily. Some weather types have an effect.
 - Rain             : livings FoV - 1, scents decay faster
 - Heavy rain       : livings FoV - 2, scents decay even faster
 
-Undeads are not affected by FoV changes, but undeads using smell will have more trouble following their prey when scents fade faster.
+Undeads are not affected by FoV changes, but undeads using smell will have more trouble following their prey when
+scents fade faster.
 Rain has also a chance to put out fires, such as burning cars.
 
 
 > OTHER LIVINGS
-You will come across other people trying to survive too. You may attempt group with them. Even if you don't, having people around is often
-handy, as they may help to fight, and even wake you if there are enemies or fires appear nearby. But remember, it is a life-or-death
-situation, and not everyone will be so gracious.
+You'll come across other people trying to survive too. You can attempt group with them. Even if you don't, having people
+around is often handy, as they may help to fight, and even wake you if there are enemies or fires appear nearby.
+But remember, it is a life-or-death situation, and not everyone will be so gracious.
 
 
 > PERSONAL ENEMIES
-Most livings are normally friendly with each other, but might become personal enemies, at which point are treated like normal enemies by the game.
-Personal enemies are for life, you can't make peace with them. It is generally not a good idea to make an enemy of a cop or a soldier.
+Most livings are normally friendly with each other, but might become personal enemies, at which point are treated like
+normal enemies by the game. Personal enemies are for life, you can't make peace with them. It is generally not a good
+idea to make an enemy of a cop or a soldier.
 A leader will share personal enemies with his followers, and vice-versa, but followers won't share enemies between them.
 
 
@@ -193,7 +200,28 @@ As soon as they can get food they will stop being aggressive. But once fighting 
 Cops are law enforcers and are on the look out for murderers. Cops have a licence to kill murderers.
 Cops might recognize a murderer when they see him and will always spot a murder being committed if they see it.
 Murderers who move closer to cops and who have committed more murders are more likely to be recognized.
-Times are tough, and sometimes you will have no choice but to commit murder to save your own life or defend your possessions.
+Times are tough, and sometimes you will have no choice but to commit murder to save your own life or your possessions.
+
+
+> ITEMS
+Around the city you will find various types of useable items.
+- Ammo items         : Use to reload.
+- Barricade material : Reinforce doors and windows; use the barricade action.
+- Body armor         : Reduces damage but can hinder your movements; has a chance to break; use to equip.
+- Food               : Use to eat.
+- Liquor             : Can be made into molotovs.
+- Flashlight         : See farther in the dark; use to equip. Recharge at power generators.
+- Night vision       : See farther in the dark; use to equip. Recharge at power generators.
+- Medicines          : Use to heal or re-energize.
+- Melee weapon       : Has a chance to break; use to equip.
+- Ranged weapon      : Use to equip; fire action to fire.
+  - Firearms         : The best ranged weapons.
+  - Bows             : Weaker and shorter range but ammunition is more available. Can also fire flaming arrows.
+- Seeds              : Use a shovel to plant seeds on grassy ground and grow vegetables.
+- Explosives         : Have a fuse that last x turns before exploding; fire action to throw. 
+- Spray paint        : Tag places you want to remember; use the tag action.
+- Spray scent        : Neutralize odors, typically to erase your tracks.
+- Tracker            : Keep contact with your people; use to equip.
 
 
 
@@ -203,13 +231,13 @@ Times are tough, and sometimes you will have no choice but to commit murder to s
 
 > HIT POINTS (HP)
 How much hurt you can take. Damage dealt to your HP is also dealt to your STA. At zero or less HP you die.
-Sleeping on a couch or bed will slowly heal you, as does use of bandages and medical kits.
+Sleeping on a couch or bed will slowly heal you, as does use of medical kits.
 
 
 > STAMINA (STA)
 Some actions tire you, represented as a cost to STA. Below a certain level you become Tired and your Speed decrease.
 You automatically recover a small amount of STA each turn. Waiting recovers more STA. Some items help you recover STA.
-To perform certain actions you need enough stamina. Performing tiring actions during the night cost more than during the day.
+To perform certain actions you need enough stamina. Performing tiring actions during the night costs more than the day.
 
 
 > FOOD (FOO)
@@ -229,21 +257,21 @@ Use of some medicines recovers SLP. Sleeping recovers SLP. See the Sleeping acti
 
 
 > SANITY (SAN)
-Sanity points slowly descrease each turn. You can read books and magazines, revive livings, or kill undead to regain sanity.
+Sanity points slowly decrease each turn. Read books/magazines, trade, revive livings, or kill undead to regain sanity.
 Witnessing deaths, and watching corpses turn into zombies reduces your sanity.
 When you run out of Sanity completely you are insane, and might find yourself losing control of you mind and body.
 Sanity can be disabled in the options.
 
 
 > INFECTION (INF)
-In C&I and VTG game modes some undeads deal Infection damage. Your infection "hit points" is the sum of your max HPs and max STA.
+In C&I and VTG game modes some undeads deal Infection damage. Your Infection bar is the sum of your max HPs and max STA.
 As your infection % increase, you feel more and more sick. When infection reaches 100% you may die.
 
 
 > MELEE STATS (Atk, Dmg)
 Atk : influence how likely you are to score a hit vs an enemy defence value.
 Dmg : maximum damage you can do in a hit vs livings/undeads.
-Attacking is a tiring action and costs STA. Use of Melee Weapons increase your Melee Atk and Melee Dmg, but might cost additional STA.
+Attacking costs STA. Use of Melee Weapons increase your Melee Atk and Melee Dmg, but might cost additional STA.
 
 
 > RANGED STATS (Atk, Dmg, Rng, Amo)
@@ -258,19 +286,21 @@ You have a natural base value for Defence (Def). Used when defending from all ki
 
 
 > ARMOR (Arm)
-Reduces amount of damage dealt to you when hit or shot at. You have no natural protection. Equiping some items improves your armor ratings.
+Reduces amount of damage dealt to you when hit or shot at. Equiping certain items improves your armor rating.
 
 
 > SPEED (Spd)
 How fast you are. The higher the better. In certain circumstances your Spd will temporary increase or decrease.
 You start with a base value of 1.0, meaning you can perform one standard action per turn.
 Undeads are generally slower than livings.
-Under the hood the game use an Action Points (AP) system : every action cost a number of AP and Spd measure how much AP you recover each turn.
+The game uses an Action Points (AP) system, whereby every action costs a number of AP, and Spd measures how much AP you
+recover each turn.
+Melee and ranged weapons, and armor have weight, which can reduce speed (-0.01 SPD = 1 turn skipped in every 100).
 
 
 > FIELD OF VIEW (FOV)
 How far you can see. Weather can diminish your FoV. Certain items can increase 
-During the night your FoV will progressively diminish. During the day your FoV will progressively increase back to its maximum value.
+During the night your FoV will diminish. During the day your FoV will progressively increase back to its maximum value.
 
 
 > SMELL (SML) - Undeads only.
@@ -282,7 +312,8 @@ How many followers are in your party. See the Followers section for more details
 
 
 > INVENTORY
-You have a limited number of slots in your inventory but you can stack some items together. Items highlighted in green are currently equiped.
+You have a limited number of slots in your inventory but you can stack some items together. 
+Items highlighted in green are currently equipped.
 Ranged weapons are shown with an ammo loaded gauge. Stackable items are shown with a quantity number.
 Manage your items with using the mouse over items, or use/equip one item by using the item slot shortcut.
 To equip/unequip or use an item : Left-Click.
@@ -328,7 +359,7 @@ Walk or run around. If you try to move where you cannot you might "bump" into so
 -Jumping on or over an obstacle
 -Opening doors
 -Taking items from shelves and containers
--Chatting or trading with an actor
+-Chatting or trading with an NPC
 -Attacking an actor or a barricade
 -Recharging electronic equipment at a generator
 
@@ -356,12 +387,13 @@ Closes an adjacent door or window.
 
 > SLEEPING  (default Z)
 You can sleep anywhere, but sleeping on a couch or bed recovers your SLP points faster and will slowly heal you.
-A sleeping bag recovers your SLP points faster but won't heal you.
+A sleeping bag recovers your SLP points faster, but won't heal you like a proper bed does.
 You cannot sleep while Hungry. You will wake up when your SLP points are fully restored or when you become hungry.
+The world keeps going whilst you sleep, so you may miss certain things that happen in the meantime.
 While sleeping you are vulnerable to attacks. An attack will wake you up immediately.
 Loud noises within a close distance have a chance to wake you up. The closer the noise the higher the chances.
-You should be careful where and when you sleep. It's safer and healthier to find a bed and barricade the room for the night.
-The game performs some simulations while you sleep if you have the option enabled. You may miss some special events if they happen during your sleep.
+You should be careful where and when you sleep. It's safer to find a bed and barricade the room for the night.
+The game performs some simulations while you sleep if you have the option enabled.
 
 
 > JUMPING  (Bumping)
@@ -369,35 +401,37 @@ Jump or climb on something that is marked as jumpable. Jumping is a tiring actio
 
 
 > QUICK-TRADING  (Bumping)
-The actor must be willing to trade and have an item to offer. Look for the "can trade" ($) icon on the actor.
+The NPC must be willing to trade and have an item to offer. Look for the "can trade" ($) icon on the NPC.
 They will offer you an exchange of items and you can accept or decline the deal.
 Before trading you should inspect the person to see what items they are carrying.
-You can try trading as many times as you want. Some actors will not be interested in any of your items and will refuse to trade.
+You can try trading as many times as you want. Some NPCs won't be interested in any of your items and refuse to trade.
 It's a fast and easy way to trade, but the items you are offered might not be ideal.
 Use the negociating trade command if you want more control and better deals.
 
 
-> NEGOTIATING TRADE WITH AN ACTOR (default E)
+> NEGOTIATING TRADE WITH AN NPC (default E)
 You can initiate a more controlled trade negotiation with this command.
 Press the hotkey and with the direction keys select an adjacent person to trade with.
-This works like normal trading, except you chose which items you want to exhange instead of getting a semi-random offer from the other person.
+This works like normal trading, except you chose which items you want to exhange instead of getting a semi-random offer
+from the other person.
 You can select an item to offer and see what items you can ask for in exhange, or the other way around.
-If you have the Charismatic skill you have better chances to convince the actor to give up items it would not give away otherwise.
-If you are the leader of the actor and he trusts you, he will accept all your offers.
+With the Charismatic skill you have better chances to convince the NPC to give up items they wouldn't otherwise.
+If you are the leader of the NPC and he trusts you, he will accept all your offers.
 
 
 > MARK ENEMIES  (default Ctrl-E)
-Enter the mark as enemies mode. Allows you to declare some nearby actors as personal enemies.
+Enter the mark as enemies mode. Allows you to declare some nearby NPCs as personal enemies.
 Takes effect immediatly and is a free action. Be careful, remember you can't cancel the personnal enemy status.
 
 
-> ATTACKING AN ACTOR  (Bumping)
+> ATTACKING AN ENEMY  (Bumping)
 Perform a melee attack on an enemy. This is a tiring action and costs STA.
 Melee weapons increase your Atk and Dmg. Most weapons cost additional STA to handle.
 
 
 > ATTACKING A BARRICADE  (Bumping)
-Perform a melee attack on a barricade to eventually break it. The material used to build the barricade is lost because of the destruction.
+Perform a melee attack on a barricade to eventually break it.
+The material used to build the barricade is lost because of the destruction.
 
 
 > FIRING  (default F)
@@ -409,15 +443,18 @@ When firing the line of fire is drawn:
 - in green when the target is within the efficient range and easier to hit.
 A ranged weapon has an Efficient Range which is usually half its maximum range.
 Your aiming accuracy is penalized if you are sleepy, exhausted, tired, or your stamina bar is not full.
-You can switch fire mode to "rapid". In rapid fire mode you shoot twice with the same action but each shot has less chance of hitting, depending on the weapon used.
+You can switch fire mode to "rapid". In rapid-fire mode you shoot twice on the same turn, but each shot has less chance
+of hitting, depending on the weapon used.
 
 
 > THROWING EXPLOSIVES  (Firing)
-Equip an explosive and use the Fire action, targeting a tile. The distance of the throw depends on the item and your Strong skill.
+Equip an explosive and use the Fire action, targeting a tile.
+The distance of the throw depends on the item and your Strong skill.
 The throw is blocked only by walls and larger objects. You can lob some explosives over people and some objects.
 You do not need to have a view on the targeted tile; in other words you can often throw farther than your FoV.
-The explosion always hits people or objects in the blast radius. It does more damage the closer one is to the center of the blast.
-Dynamite has a huge blast radius and will blow holes in walls, but can't be thrown. Molotovs start spreading fires around the impact.
+Explosions always hit people or objects in the blast radius. It does more damage the closer to the center of the blast.
+Dynamite has a huge blast radius and will blow holes in walls, but can't be thrown. 
+Molotovs spread fires around the impact. They're designed to set enemies on fire rather than deal direct damage.
 
 
 > TAKING AND DROPING ITEMS  (mouse)
@@ -427,12 +464,13 @@ To drop items on your current tile, right-click the item in your inventory.
 
 
 > EQUIPING/UNEQUIPING AND USING ITEMS  (mouse, default shortcuts Control-<number>)
-To use/equip/unquip an item, left-click it in your inventory. Equiping/unequiping an item doesn't cost a turn, but using an item does.
+To use/equip/unquip an item, left-click it in your inventory. 
+Equiping/unequiping an item doesn't cost a turn, but using an item does.
 
 
 > GIVING ITEMS  (mouse, then default G)
 Move the mouse over the item in your inventory, press the key, then choose someone next to you in a direction.
-Giving item ends both your turn and the other actor's turn. The other actor must be awake and not an enemy.
+Giving item ends both your turn and the other NPC's turn. The NPC must be awake and not an enemy.
 
 
 > BREAKING OBJECTS  (default K)
@@ -484,25 +522,26 @@ Give orders or directives to your followers. See the Followers section for more 
 
 
 > SHOUTING  (default S)
-Make a lot of noise. Useful to try to wake up nearby sleepers. The closer you are when shouting the more chance they have to wake up.
+Make a lot of noise. Useful to try to wake up nearby sleepers. 
+The closer you are when shouting the more chance they have to wake up.
 
 
 > INSPECTION MODE  (default M)
-Press M to enter Inspection Mode, where the movement keys can be used to view in-map info rather than having to use the mouse.
+Press M to enter Inspection Mode, where the movement keys can be used to view in-map info rather than using the mouse.
 
 
 > PLANT SEEDS
-When you have seeds and a shovel or pickaxe, find some grassy ground and click to use the seeds. Come back the first thing in the morning
-and reap the rewards. But be quick; the early bird gets the worm!
+When you have seeds and a shovel or pickaxe, find some grassy ground and click to use the seeds. Come back the first
+thing in the morning and reap the rewards. But be quick; the early bird gets the worm!
 
 
 > USE SPRAY  (default A)
-Use the spray you have equipped in your left hand. The action depends on the type of spray. See below for the different actions.
-
+Use the spray you have equipped in your left hand. The action depends on the type of spray, per the following:
 
 > SPRAY A TAG  (Use Spray with a Spray Paint item equipped)
-Tag a symbol on a wall or the floor. If the option is enabled, the tag will also appear on your minimap as a colored dot.
-You need to have some spray paint equipped. Tagging uses one quantity of paint. Useful to mark places in a district that you want to remember.
+Tag a symbol on a wall or floor. If the option is enabled, the tag will also appear on your minimap as a colored dot.
+You need to have some spray paint equipped.
+Tagging uses one quantity of paint. Useful to mark places in a district that you want to remember.
 
 
 > SPRAY OR ERASE A SCENT  (Use Spray with a Spray Scent item equipped)
@@ -535,7 +574,8 @@ You have only one save slot.
 
 > OPTIONS & KEYBINDINGS  (default Shift-O, Shift-K)
 You can set some game options and redefine the keys. Your options and keys preferences are automatically saved.
-Options are applied immediatly but some take effect only when starting a new game. See the Options sections for more information.
+Options are applied immediatly but some take effect only when starting a new game.
+See the Options section (#8) for more information.
 
 
 > SCREENSHOT  (default Shift-N)
@@ -561,7 +601,7 @@ Helps you staying awake longer. Increases your maximum SLP points and your SLP r
 
 
 > BOWS & EXPLOSIVES
-Improve your proficiency with bows and explosives. Increases the Atk and Dmg value when shooting bows and throwing explosives.
+Improves your proficiency with bows and explosives. Increases the Atk and Dmg value of these items when used.
 Allows the use of fuel cans to make flaming bolts (an alternative fire mode, default M when targeting).
 
 
@@ -582,6 +622,7 @@ Improves your proficiency with firearms. Increases the Atk and Dmg value when sh
 
 > HARDY
 Sleeping anywhere can heal you - no more bed needed. Increased chance of healing while sleeping.
+Provides a small boost to your chances of avoiding food poisoning, and recovering from it faster.
 
 
 > HAULER
@@ -605,11 +646,13 @@ Improves your ability to avoid triggering traps.
 
 
 > LIGHT SLEEPER
-More prone to waking up. When sleeping, increases distance at which you notice loud noises and the chance of such noises waking you up.
+More prone to waking up to noises that might indicate danger. 
+When sleeping, increases distance at which you notice loud noises and the chance of such noises waking you up.
 
 
 > MARTIAL ARTS
 Helps you fight better when unarmed, and increases your chance to disarm your opponent.
+Increases you chance of successfully blocking melee attacks when you have a shield equipped.
 
 
 > MEDIC
@@ -635,35 +678,12 @@ Helps you stay alive a bit longer. Increases the maximum value of your HP.
 
 > UNSUSPICIOUS
 Increase the chances for a nearby law enforcer or gang member to ignore you.
+Provides a small boost to your chances of catching a fish sooner.
 
 
 
 <SECTION>
-6. ITEMS
---------
-
-- Ammo items         : Use to reload.
-- Barricade material : Reinforce doors and windows; use the barricade action.
-- Body armor         : Reduces damage but can hinder your movements; has a chance to break; use to equip.
-- Food               : Use to eat.
-- Liquor             : Can be made into molotovs.
-- Flashlight         : See farther in the dark; use to equip. Recharge at power generators.
-- Night vision       : See farther in the dark; use to equip. Recharge at power generators.
-- Medicines          : Use to heal or re-energize.
-- Melee weapon       : Has a chance to break; use to equip.
-- Ranged weapon      : Use to equip; fire action to fire.
-  - Firearms         : The best ranged weapons.
-  - Bows             : Weaker and shorter range but ammunition is more available; chance for target to drop an inventory item on hit.
-- Seeds              : Use a shovel to plant seeds on grassy ground and grow vegetables.
-- Explosives         : Have a fuse that last x turns before exploding; fire action to throw. 
-- Spray paint        : Tag places you want to remember; use the tag action.
-- Spray scent        : Neutralize odors, typically to erase your tracks.
-- Tracker            : Keep contact with your people; use to equip.
-
-
-
-<SECTION>
-7. FOLLOWERS
+6. FOLLOWERS
 ------------
 This section describes followers and what you can expect from them. Player undeads do not get followers.
 
@@ -683,7 +703,8 @@ Followers level up with you.
 
 > EXITING DISTRICTS WITH YOU
 When you leave a district your followers will try to go with you.
-To travel with you a follower must be adjacent to you when you leave the district, and must have an accessible spot next to you in the new district.
+To travel with you a follower must be adjacent to you when you leave the district, and must have an accessible spot next
+to you in the new district.
 If he can't follow you (perhaps a car blocks the tile next to you in the new district) he will leave you.
 
 
@@ -693,15 +714,17 @@ Followers have to trust you before accepting your orders or directives. The foll
 -Giving them items, especially items they feel they need. 
 -Killing their target or an adjacent enemy also increase trust.
 Ordering them to give or drop items decreases trust.
-If a follower trusts you, you can see the number of murders they've commited in their actor description (they've told you).
+If a follower trusts you, you can see the number of murders they've commited in their character description.
 
 
 > CIVILIAN FOLLOWERS DIRECTIVES AND ORDERS
-You can set directives for your civilian followers. Directives allow or disallow a specific behavior. All the behaviors are allowed by default.
+You can set directives for your civilian followers.
+Directives allow or disallow a specific behavior. All the behaviors are allowed by default.
 You can also order your civilian followers to execute specific tasks.
-When giving directives or orders you and the follower must be visible to each other, or you both must have a tracker equipped (such as a cell phone).
+When giving directives or orders, you and the follower must be visible to each other, or you both must have a
+tracker equipped (such as a cell phone).
 A follower can handle only one task at a time. If the task is no longer possible the follower will abandon it.
-When performing a task a follower will focus on the task at hand and will ignore everything else, including his own safety...
+When performing a task a follower will focus solely on that and will ignore everything else, including his own safety...
 When giving orders the target position must be visible by both you and the follower.
 
 Directives
@@ -750,8 +773,9 @@ Your followers will most of the time stick with you, but those guys have their o
 Sometimes they will help you fight, other times they will attempt to flee from danger.
 If they see an interesting item they might go and pick it up, unless told not to.
 If they need to eat or sleep they will do so, unless your directives disallow it.
-You can give items to them with the Give action. You can also still trade items with them like a normal civilian or ask them to drop all their items.
-From time to time you will see other people hanging with followers too. You're not the only wanna be hero in town you know.
+You can give items to them with the Give action.
+You can also still trade items with them like a normal civilian or ask them to drop all their items.
+From time to time you'll see other people hanging with followers too. You're not the only wanna be hero in town.
 
 
 > LEADER STRATEGIES
@@ -761,13 +785,14 @@ As a Leader you can use followers to your advantage. Here are four typical uses 
 You don't have to care about them too much. Find ways to make them fight in your place or distract your enemies. 
 
 * MULES
-Living backpacks, if risky. Use the directives to disallow them everything, let them sleep only when you want.
-Give them whatever you want, for instance a bunch of planks, and later trade them back. When they die, go get the items back later.
+Living backpacks. Is risky. Use the directives to disallow them everything, let them sleep only when you want.
+Give them whatever you want, such as bunch of planks, and later trade them back. When they die, go get the items back.
 
 * COMPANIONS
-You want to keep the same few folks around and make them highly skilled. It might be a challenging task but potentially very rewarding.
-To keep them alive longer you should give them items they are lacking -such as fireweapons, medicine and food- and avoid exposing them to unnecessary dangers.
-If they are in trouble seriously consider helping them rather than selfishly fleeing. If they lag behind wait for them. If they are sleeping cover them.
+You want to keep the same few folks around and make them highly skilled. It might be a challenging task but potentially
+very rewarding. To keep them alive longer you should give them items they are lacking -such as fireweapons, medicine and
+food- and avoid exposing them to unnecessary dangers. If they are in trouble seriously consider helping them rather than
+selfishly fleeing. If they lag behind wait for them. If they are sleeping cover them.
 
 * FARMING
 The idea here is to train a lot of civilians to make them stronger, which will indirectly make your survival easier. 
@@ -777,12 +802,12 @@ Having a bunch of strong gun-toting civilians running around is bad news for Zom
 
 
 <SECTION>
-8. FRIENDS & FOES
+7. FRIENDS & FOES
 -----------------
 
 UNDEADS
 -------
-Most of them are slower that living humans, but they never tire and are quite resistant to damage, because you know, they are already dead.
+Most of them are slower than living humans, but they never tire and are quite resistant to damage.
 Some of them are dumb. Some of them can follow tracks or remember where they last saw that tasty meatbag. 
 Some of them can break doors, windows and furniture to get to you. Some of them attract other undeads. 
 Some of them can turn your dead friends into zombies, and some of them are your ex-friends.
@@ -795,7 +820,7 @@ LIVINGS
 Civilians want one thing; survive. They generally do their own thing. They have different names and different looks.
 
 > CHAR EMPLOYEES
-They seem to be very agressive and don't hesistate to shoot anyone near their offices. Don't go near them unless prepared.
+They're very agressive and don't hesistate to shoot anyone near their offices. Don't go near them unless prepared.
 
 > NATIONAL GUARDS
 They are doing their duty to clean this mess and don't have time for your requests.
@@ -806,14 +831,14 @@ You might encounter some other people. Friendly or hostile, it's for you to find
 
 
 <SECTION>
-9. OPTIONS & HINTS
+8. OPTIONS & HINTS
 ------------------
 
 OPTIONS
 -------
 
 > "Music", "Ambient" and "Sound Effects"
-Audio is not essential for gameplay. If you can't hear audio, try the configuration program in the installation directory.
+Audio is not essential for gameplay. If you can't hear audio, try the RSConfig.exe tool in the game directory.
 
 
 > "Animations Delay"
@@ -835,11 +860,11 @@ In practice when next to an enemy :
 - the red indicator means the enemy can retaliate more than one time if you hit him now.
 
 > "City Size"
-Size of the city map. The city is a square grid of districts. Larger cities rapidly increases game save size and loading time.
+Size of the city map. The city is a square grid of districts. Larger cities increase game save and loading times.
 
 
 > "District Map Size"
-How large are the Districts within the city. Larger maps means more buildings and more items, but increases save size and loading time.
+Size of the Districts within the city. Larger means more buildings and more items, but increases save and loading times.
 
 
 > "Max Civilians"
@@ -855,16 +880,17 @@ Percent of Max Undeads spawned when the game starts.
 
 
 > "Invasion Daily Increase"
-The zombie horde grows in size each day, up to Max Undeads value. Controls the percentage of Max Undeads that are added at each invasion.
+The zombie horde grows in size each day, up to Max Undeads value.
+Controls the percentage of Max Undeads that are spawned at each invasion.
 
 
 > "Zombification Chance"
 Some undeads have the ability to turn their living victims into zombies after killing them.
-This option controls the chances of such zombifications occuring. Changing this value has a large impact on game difficulty.
+This option controls the chances of such zombifications occuring. Changing this value has a large impact on difficulty.
 
 
 > "NPCs can starve to death"
-Allow or disallow NPCs (mostly other civilians) to starve to death like the player. Disabling means they will never die from hunger.
+Allow or disallow human NPCs and dogs to starve to death like the player. Disabling means they'll never die from hunger.
 
 
 > "Starved Zombification"
@@ -872,20 +898,23 @@ If living NPCs can starve to death, the chance of them turning into a zombie.
 
 
 > "Synchronous Simulation"
-If enabled, activity in the nearby districts is simulated while you are playing in your district. This aims for reduced or removed calculation
-delays when changing district. Disable this option if the game feels unresponsive or too sluggish, especially on low end computers.
+If enabled, activity in the nearby districts is simulated while you are playing in your district. 
+This aims for reduced or removed calculation delays when changing district. Disable this option if the game feels
+unresponsive or too sluggish, especially on low end computers.
 When enabled, this option disables "Simulate when Sleeping" as it is then not relevant.
 
 
 > "Districts Simulation"
 Set the amount of detail performed to simulate what happened in the district you're entering whilst you were not there.
 Higher percentages are slower to process, though you can abort the simulation by keeping ESC pressed.
-You can disable this option if you don't care about this feature, but it's an important part of the gameplay and you should keep it enabled if possible.
+You can disable this option if you don't care about this feature, but it's an important part of the gameplay and you
+should keep it enabled if possible (lower the percentage if you prefer).
 
 
 > "Simulate when Sleeping"
-Enable or disable simulation of adjacent districts when you are sleeping. This is useful if you intend to travel around the city regularly and 
-don't want to use "Synchronous Simulation", as it will speed up changing districts. It will slow down sleeping cycles though.
+Enable or disable simulation of adjacent districts when you are sleeping. This is useful if you intend to travel around
+the city regularly and don't want to use "Synchronous Simulation", as it will speed up changing districts. It will slow
+down sleeping cycles a tad though.
 This option is unnecessary when using "Synchronous Simulation" and will therefore be disabled.
 
 
@@ -899,7 +928,7 @@ Deletes your saved game when your character dies. Gives a significant scoring bo
 
 
 > "Death Screenshot"
-Automatically takes a screenshot upon your death. Stored within your My Documents\Rogue Survivor\Still Alive\Config\Screenshots\
+Automatically takes a screenshot upon your death. Stored in \Documents\Rogue Survivor\Still Alive\Config\Screenshots
 
 
 > "Antiviral Pills"
@@ -947,7 +976,7 @@ The game is much harder as undead. Early on you can die very easily, but you nee
 Your best bet is to keep a low profile and go only for the easy kills. You have to think like a predator!
 - Follow a Zombie Master to form a horde and steal finishing blows.
 - Lay traps by lurking. Basements in high traffic areas are good.
-- Try to avoid actors carrying ranged weapons at all cost - cops in the early game are your worst enemies.
+- Try to avoid NPCs who are carrying ranged weapons at all cost - cops in the early game are your worst enemies.
 - Use the night and dark places to your advantage.
 
 * LIVING
@@ -993,5 +1022,184 @@ A few typical good starting builds. Note that the suggested 2nd skills may not b
    2nd skill: 
      High Stamina to keep fighting or running.
      Any of Strong/Martial Arts/Agile/Though to improve your attack or durability.
+
+
+<SECTION>
+9. Rogue Survior: Still Alive
+------------------------------
+
+You are currently playing a fork of vanilla Rogue Survivor, which is based on RS Alpha 10.1 of 2018.
+As vanilla still exists and is still highly enjoyable, RS:SA sets out to provide a similar yet different experience.
+The following section describes unique aspects of this fork that you should know in order to get the most out of it.
+
+> ICONS LEGEND
+Press F1 to view a popup that lists all of the icons that appear in-game and what they mean.
+
+> HELICOPTER RESCUE
+Introduced is an optional end-game goal. The original objective was simply to see how long you could survive, and go
+for a high score. Now, you can seek out the clues to learn the date and location of the helicopter rescue - the day
+number is configurable at new game start. If you miss or disregard the rescue, the game will continue on as per before.
+
+> SAVES
+RS:SA adds an autosave every 18 hours of in-game time (540 turns). You can disable autosaves in the Options menu.
+The most recent save (auto or manual) is backed up, in case the game crashes. If the primary save is corrupted, you can
+launch the backup save from the main menu.
+
+> FIRES
+Certain weapons can set both enemies and squares on fire. Being on the receiving end or stepping on a flaming tile could
+set you alight. If you are set alight, either find a pond to leap into, walk around in the rain, or press the Wait key
+to attempt a stop-drop-and-roll.
+Certain undead types can't be set alight. Undead won't try to extinguish themselves, but NPCs will stop-drop-and-roll.
+Fires cam spread on flammable surfaces such as wooden floors, grass, and carpet.
+
+> AUDIO
+Sound effects and ambients sounds have been significantly expanded from vanilla Rogue Survivor.
+SFX, ambients, and music can all be volume adjusted or disabled individually in the Options menu.
+Most sound effects get quieter the further away from the player that they originate.
+SFML is the default RS:SA audio engine. It resolves audio glitches when multiple sounds play at once.
+Hint: someone rings church bells just before sundown, a warning to hurry up and find a safe place to stay for the night.
+IMPORTANT: If you experience the game frequently hanging, it may be because you have no audio output device attached to
+your PC. You should either connect speakers or a headset, or disable all in-game audio.
+
+> DESTROY WALLS
+You may be able to find an item or two that can destroy walls. They may be useful for getting into secure locations...
+
+> DYNAMITE
+You can only place it rather than throw it. The game will warn that you're in the blast radius - place it and run, far!
+Dynamite is a very rare spawn, and may not spawn at all in any given life.
+
+> BANK SAFES
+Each bank has a vault behind a secure door. It contains a number of safes, some of which you will find open.
+You can store items in open safes so that no one else can touch them. 
+A colourful outline will appear around a secured safe that you own.
+Just stand on a tile with an open safe and drop any items there. They'll stay there indefinitely, inaccessible to NPCs.
+
+> BURY CORPSES
+To bury a corpse you need a shovel or pickaxe, and to drag the body to a square that's dirt or grass.
+Equip the tool when you're at the spot you want and press Shift+B. The corpse will be replaced with a memorial cross.
+Burying a corpse grants a significant boost to sanity (if sanity is enabled at new game creation).
+
+> FUEL
+Fuel is used as ammo for chainsaws and flamethrowers. You can gather fuel from cars using a siphon kit.
+Fuel is stored in jerry cans, which can be shot in order to blow them up.
+When using a crossbow, if you have fuel in your inventory you can use the 'flaming shot' fire mode.
+
+> MOLOTOVS
+Bottles of liquor can be crafted into molotovs. When thrown, they set fire to adjacent tiles, and may set certain undead
+and NPCs alight also.
+
+> RAPID FIRE
+Some weapons can only fire in single-shot or rapid-fire modes, and some weapons can do both.
+
+> RECHARGING ELECTRONIC DEVICES
+Flashlights, radios, phones, GPS trackers, night vision goggles, and so on can all be recharged at power generators by
+equipping the item and then bumping into the generator.
+
+> DIFFICULTY OPTIONS
+These are now set during the new game creation process. They cannot be set within the Options menu as in vanilla RS.
+Difficult options do skill affect high score calculations, which you can preview by changing an option back and forth.
+
+> SHIELDS
+Provide a chance to block melee attacks, but also hurt your ranged and melee accuracy.
+They can't be used with two-handed weapons.
+Each level of the Martial Arts skill adds an extra 5% chance to block per attack.
+
+> ARMOR: FIRE AND INFECTION RESISTANCE VALUES
+Armor has infection and fire resistance values. Provides a chance to avoid infection increases from undead attacks in
+the case of the former, and a chance to avoid catching on fire for the latter.
+
+> SPRAY TAGS
+Can now be removed using paint thinner.
+
+> PLANTING SEEDS
+To plant edible crops you need a shovel or pickaxe, seeds, and a clear patch of grass.
+Equip the tool when you have arrived at the spot you want and the use the seeds. In 24 hours that plant will bear fruit.
+Watch out, as NPCs may get to the produce before you do.
+
+> DARKNESS / FOV
+RS:SA has a more in-depth lighting system than vanilla Rogue Survivor. Fires will give off light in the dark.
+Underground and windowless rooms are pitch black at all times unless the lights are powered on.
+You can see the light given off by certain items held by NPCs or left on the ground, including flashlights, candles,
+glowsticks, and flares.
+Certain actions cannot be done whilst in total darkness, including reading, building fortifications, and aiming guns.
+It is always wise to carry a light source with you, and to keep it well charged if it is battery-powered.
+You may find boxes of candles, glowsticks and flares. These can be carried or placed on the ground to provide light.
+Binoculars extend FOV during the day and in fully lit environments, but you cannot move or attack whilst using them.
+
+> INFO MODE
+Whilst some things do still require the mouse (eg. interacting with corpses), you can use the keyboard rather than
+hovering the mouse over tiles to view a popup of who and what's there.
+
+> RESOURCES AVAILABILITY
+Added a Resources Availability difficulty option, which amongst others influences:
+ -the number of items spawned in the CHAR and army undergrounds at world generation.
+ -the player's starting inventory.
+ -the number of days before plants will fruit again.
+ -the availability of dynamite.
+
+> SLEEPING BAGS
+Sleeping on beds gives the biggest regen effect, couches less so, and just sleeping on the ground the least.
+Sleeping bags let you regen about as much as a couch and anywhere you choose.
+
+> ITEMS & STAINS DECAY OVER TIME
+Corpses always decay over time, eventually disappearing. By default, the game will also remove stains (blood splatter
+and explosion scorch marks) after some time. Certain items will also eventually despawn if they haven't been touched in
+quite some time. Items that the player or their followers touched last or stored in a bank safe will never be removed.
+This background cleanup process helps to keep the game running smoother after days or weeks of in-game time passing.
+You can choose how many days must pass before an NPC-abandoned item or stain will be removed in the Options menu.
+
+> DESTROY ITEMS
+You can manually remove items from the game permanently by picking them up, hovering over them with the mouse, and then
+pressing Ctrl + D. (Hint: don't delete any access cards or badges - you might regret it)
+
+> CLOTHING & HAIRSTYLE
+You can change these at the shopping mall. Find the store you want and then bump into it's shelves/displays.
+
+> FISHING
+Find a fishing rod and then go stand by a body of water, then equip the rod to start fishing.
+Press the Wait key to fish, or Long-Wait to let it fish automatically for an in-game hour or until a fish is caught.
+Levels in the Unsuspicious skill provide a small boost to your chances of catching a fish sooner.
+NPCs will also fish, if they find a rod and a nearby pond.
+
+> BUTCHERING CORPSES / MEAT
+Humans can butcher animal and other humans corpses to gather meat. You need a blade of some sort in order to do it.
+The more rotten the corpse, the sooner meat harvested from it will expire, and the higher the chance of food poisoning.
+Eating raw meat may give you food poisoning, which can only be cured with medkits, antiviral pills, or by time passing.
+It's always best to cook meat before eating it, as this avoids food poisoning. Burnt corpses provide pre-cooked meat.
+Levels in the Hardy skill give a small boost to your chances of avoiding food poisoning, and recovering from it faster.
+Butchering corpses can also be used to destroy bodies, even if you don't want the meat.
+NPCs will also hunt animals and butcher them for meat.
+
+> COOKING, CAMPFIRES & FIRE BARRELS
+Matches can be used to make campfires and ignite receptacles (barrels and bins). You need also need wood for these.
+Lighting a match will prompt for the direction of a receptacle or the spot where you wish to make a campfire.
+To cook a piece of raw meat: stand next to a fire, hover the mouse over the meat, then press Ctrl + C.
+Cooking meat takes a number of turns before it's done. You can also use burning cars to cook food.
+You can set an empty barrel alight if you have wood and matches in your inventory. These will burn for a very long time.
+You can also create a small campfire with the same items but on an empty square. Cook fast, as these won't last long.
+Fire barrels and burning bins are useful in other ways too. For example, unlit ones can be moved...
+NPCs will also cook meat, if they get some.
+
+> CANNIBALISM
+It should be an absolute last resort. Humans who eat human meat will suffer consequences, including:
+ -a big sanity reduction.
+ -followers may start to abandon you if they see you do it.
+ -you could lose levels of Leadership, Charisma, Unsuspicious, Awake or Light Eater skills.
+ -non-followers who see you doing it will attack you.
+
+> TREES
+Can be cut down for lots of wood, but you need some sort of axe or a chainsaw in order to do it.
+
+> WORLD DECAY
+The world will gradually appear to decay as days go by. This is thematic only, and does not affect gameplay.
+You can disable decay in the Options menu. You can also choose after how many days it starts when enabled.
+
+> UNLOADING AMMO
+Players can extract the ammo from a weapon. It must first be equipped in order to do so.
+
+> BIO FORCE GUN
+Super destructive. Be very careful where you fire this, as it kills indiscriminantly.
+Maybe save first (Shift + S) before firing it...
+
 
 <end of manual>

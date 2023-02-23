@@ -14,13 +14,16 @@ namespace djack.RogueSurvivor.Engine.Items
         public int Nutrition { get; private set; }
         public bool IsPerishable { get; private set; }
         public WorldTime BestBefore { get; private set; }
+        public bool CanCauseFoodPoisoning { get; private set; } //@@MP - added meats to the game (Release 7-6)
+        public bool CanBeCooked { get; private set; } //@@MP - added meats to the game (Release 7-6)
+        public int CookedDegree { get; set; } //@@MP - added meats to the game (Release 7-6)
+        public int MaxCookedDegree { get; set; } //@@MP - added meats to the game (Release 7-6)
         #endregion
 
         #region Init
         /// <summary>
         /// Not perishable.
         /// </summary>
-        /// <param name="model"></param>
         public ItemFood(ItemModel model)
             : base(model)
         {
@@ -32,15 +35,18 @@ namespace djack.RogueSurvivor.Engine.Items
             //this.Nutrition = (model as ItemFoodModel).Nutrition;
             this.Nutrition = itemModel.Nutrition;
             this.IsPerishable = false;
-
+            this.CanCauseFoodPoisoning = false;
+            this.CanBeCooked = false;
         }
 
         /// <summary>
         /// Perishable food.
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="bestBefore"></param>
-        public ItemFood(ItemModel model, int bestBefore)
+        /// <param name="model">ItemFoodModel</param>
+        /// <param name="bestBefore">-1 for non perishable food.</param>
+        /// <param name="canCauseFoodPoisoning">eg. raw meats</param>
+        /// <param name="canBeCooked">eg. raw meats</param>
+        public ItemFood(ItemModel model, int bestBefore, bool canCauseFoodPoisoning, bool canBeCooked)
             : base(model)
         {
             ItemFoodModel itemModel = model as ItemFoodModel;
@@ -52,6 +58,13 @@ namespace djack.RogueSurvivor.Engine.Items
             this.Nutrition = itemModel.Nutrition;
             this.BestBefore = new WorldTime(bestBefore);
             this.IsPerishable = true;
+            this.CanCauseFoodPoisoning = canCauseFoodPoisoning;
+            this.CanBeCooked = canBeCooked;
+            if (canBeCooked)
+            {
+                this.CookedDegree = 0;
+                this.MaxCookedDegree = 4; //it takes four turns to turn raw meat into cooked meat on a fire
+            }
         }
         #endregion
     }

@@ -65,35 +65,28 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // 10 wander
             /////////////////////////////////////////////////////////////
 
-            // 1 defend our leader
-            if (m_Actor.HasLeader)
-            {
-                Actor target = m_Actor.Leader.TargetActor;
-                if(target != null && target.Location.Map == m_Actor.Location.Map)
-                {
-                    // emote: bark
-                    game.DoSay(m_Actor, target, "GRRRRRR WAF WAF", RogueGame.Sayflags.IS_FREE_ACTION | RogueGame.Sayflags.IS_DANGER);
-                    // charge.
-                    ActorAction chargeEnemy = BehaviorStupidBumpToward(game, target.Location.Position, true, false);
-                    if (chargeEnemy != null)
-                    {
-                        FaceSpriteForDirection(target.Location.Position.X, target.Location.Position.Y); //@@MP (Release 7-3)
-                        RunToIfCloseTo(game, target.Location.Position, RUN_TO_TARGET_DISTANCE);
-                        m_Actor.Activity = Activity.FIGHTING;
-                        m_Actor.TargetActor = target;
-                        return chargeEnemy;
-                    }
-                }
-            }
-
             List<Percept> enemies = FilterEnemies(game, mapPercepts);
             bool isLeaderVisible = m_Actor.HasLeader && m_LOSSensor.FOV.Contains(m_Actor.Leader.Location.Position);
             bool isLeaderFighting = m_Actor.HasLeader && IsAdjacentToEnemy(game, m_Actor.Leader);
 
+            // 1 defend our leader
             // 2 attack or flee enemies.
             #region
-            if (enemies != null)
+            bool defendLeader = false;
+            if (m_Actor.HasLeader)
             {
+                Actor target = m_Actor.Leader.TargetActor;
+                if (target != null && target.Location.Map == m_Actor.Location.Map)
+                {
+                    defendLeader = true;
+                    // emote: bark
+                    game.DoSay(m_Actor, target, "GRRRRRR WAF WAF", RogueGame.Sayflags.IS_FREE_ACTION | RogueGame.Sayflags.IS_DANGER);
+                }
+            }
+
+            if (defendLeader || enemies != null)
+            {
+                // charge or run away?
                 ActorAction ff = BehaviorAnimalFightOrFlee(game, enemies, isLeaderVisible, isLeaderFighting, Directives.Courage, FIGHT_EMOTES, allowedChargeActions, out int dirptX, out int dirptY);
                 if (ff != null)
                 {
@@ -146,7 +139,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
 
             // 5 attack survivors if starving?
             #region
-            if (game.Rules.IsActorStarving(m_Actor))
+            if (game.Rules.IsActorStarving(m_Actor) && RogueGame.Options.IsAggressiveHungryCiviliansOn)
             {
                 List<Percept> survivors = FilterSurvivors(game, mapPercepts);
                 if (survivors != null)
@@ -162,7 +155,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         // emote: bark
                         game.DoSay(m_Actor, target, "GRRRRRR WAF WAF", RogueGame.Sayflags.IS_FREE_ACTION | RogueGame.Sayflags.IS_DANGER);
                         // charge.
-                        ActorAction chargeEnemy = BehaviorStupidBumpToward(game, target.Location.Position, true, false);
+                        Percept chargePercept = new Percept(target, m_Actor.Location.Map.LocalTime.TurnCounter, target.Location);
+                        ActorAction chargeEnemy = BehaviorChargeEnemy(game, chargePercept, false, false);
                         if (chargeEnemy != null)
                         {
                             RunToIfCloseTo(game, target.Location.Position, RUN_TO_TARGET_DISTANCE);
@@ -360,8 +354,8 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     throw new InvalidOperationException("issue: attempting to assign null skin image");
 
                 //now set whichever skin sprite is relevant for the direction it's heading
-                m_Actor.Doll.AddDecoration(DollPart.SKIN, skinImage); //add the other direction
                 m_Actor.Doll.RemoveDecoration(skin[0]); //remove the existing skin sprite
+                m_Actor.Doll.AddDecoration(DollPart.SKIN, skinImage); //add the other direction
             }
         }
 

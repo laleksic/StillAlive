@@ -358,160 +358,160 @@ namespace djack.RogueSurvivor.Gameplay
 
             #region Floors
             //@MP if you add another also add it to IsFloorModel()
-            this[IDs.FLOOR_ARMY] = new TileModel(GameImages.TILE_FLOOR_OFFICE, Color.Khaki, true, true); //@@MP - (Release 6-3)
-            this[IDs.FLOOR_ASPHALT] = new TileModel(GameImages.TILE_FLOOR_ASPHALT, Color.Gray, true, true);
-            this[IDs.FLOOR_CONCRETE] = new TileModel(GameImages.TILE_FLOOR_CONCRETE, Color.LightGray, true, true);
-            this[IDs.FLOOR_GRASS] = new TileModel(GameImages.TILE_FLOOR_GRASS, Color.Green, true, true);
-            this[IDs.FLOOR_OFFICE] = new TileModel(GameImages.TILE_FLOOR_OFFICE, Color.IndianRed, true, true); //@@MP - changed to red minimap colour (Release 4)
-            this[IDs.FLOOR_PLANKS] = new TileModel(GameImages.TILE_FLOOR_PLANKS, Color.Chocolate, true, true); //@@MP - changed from LIT_BROWN to Chocolate (Release 4)
-            this[IDs.FLOOR_PLANTED] = new TileModel(GameImages.TILE_FLOOR_PLANTED, Color.Green, true, true); //@@MP (Release 5-5)
-            this[IDs.FLOOR_SEWER_WATER] = new TileModel(GameImages.TILE_FLOOR_SEWER_WATER, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_SEWER_WATER_COVER };
-            this[IDs.FLOOR_TILES] = new TileModel(GameImages.TILE_FLOOR_TILES, Color.LightGray, true, true);
-            this[IDs.FLOOR_WALKWAY] = new TileModel(GameImages.TILE_FLOOR_WALKWAY, Color.LightGray, true, true);
-            this[IDs.FLOOR_RED_CARPET] = new TileModel(GameImages.TILE_FLOOR_RED_CARPET, DRK_RED, true, true); //@@MP (Release 4)
-            this[IDs.FLOOR_BLUE_CARPET] = new TileModel(GameImages.TILE_FLOOR_BLUE_CARPET, Color.SteelBlue, true, true); //@@MP (Release 4)
-            this[IDs.FLOOR_DIRT] = new TileModel(GameImages.TILE_FLOOR_DIRT, Color.Sienna, true, true); //@@MP (Release 4)
-            this[IDs.FLOOR_WHITE_TILE] = new TileModel(GameImages.TILE_FLOOR_WHITE_TILE, Color.Cornsilk, true, true); //@@MP (Release 7-3)
-            this[IDs.ROAD_ASPHALT_EW] = new TileModel(GameImages.TILE_ROAD_ASPHALT_EW, Color.Gray, true, true);
-            this[IDs.ROAD_ASPHALT_NS] = new TileModel(GameImages.TILE_ROAD_ASPHALT_NS, Color.Gray, true, true);
-            this[IDs.RAIL_EW] = new TileModel(GameImages.TILE_RAIL_ES, Color.Gray, true, true);
+            this[IDs.FLOOR_ARMY] = new TileModel(GameImages.TILE_FLOOR_OFFICE, Color.Khaki, true, true, false) { CanDecay = true }; //@@MP - (Release 6-3)
+            this[IDs.FLOOR_ASPHALT] = new TileModel(GameImages.TILE_FLOOR_ASPHALT, Color.Gray, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_CONCRETE] = new TileModel(GameImages.TILE_FLOOR_CONCRETE, Color.LightGray, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_GRASS] = new TileModel(GameImages.TILE_FLOOR_GRASS, Color.Green, true, true, true) { CanDecay = false };
+            this[IDs.FLOOR_OFFICE] = new TileModel(GameImages.TILE_FLOOR_OFFICE, Color.IndianRed, true, true, false) { CanDecay = true }; //@@MP - changed to red minimap colour (Release 4)
+            this[IDs.FLOOR_PLANKS] = new TileModel(GameImages.TILE_FLOOR_PLANKS, Color.Chocolate, true, true, true) { CanDecay = true }; //@@MP - changed from LIT_BROWN to Chocolate (Release 4)
+            this[IDs.FLOOR_PLANTED] = new TileModel(GameImages.TILE_FLOOR_PLANTED, Color.Green, true, true, true) { CanDecay = false }; //@@MP (Release 5-5)
+            this[IDs.FLOOR_SEWER_WATER] = new TileModel(GameImages.TILE_FLOOR_SEWER_WATER, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_SEWER_WATER_COVER, CanDecay = false };
+            this[IDs.FLOOR_TILES] = new TileModel(GameImages.TILE_FLOOR_TILES, Color.LightGray, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_WALKWAY] = new TileModel(GameImages.TILE_FLOOR_WALKWAY, Color.LightGray, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_RED_CARPET] = new TileModel(GameImages.TILE_FLOOR_RED_CARPET, DRK_RED, true, true, true) { CanDecay = false }; //@@MP (Release 4)
+            this[IDs.FLOOR_BLUE_CARPET] = new TileModel(GameImages.TILE_FLOOR_BLUE_CARPET, Color.SteelBlue, true, true, true) { CanDecay = false }; //@@MP (Release 4)
+            this[IDs.FLOOR_DIRT] = new TileModel(GameImages.TILE_FLOOR_DIRT, Color.Sienna, true, true, false) { CanDecay = false }; //@@MP (Release 4)
+            this[IDs.FLOOR_WHITE_TILE] = new TileModel(GameImages.TILE_FLOOR_WHITE_TILE, Color.Cornsilk, true, true, false) { CanDecay = true }; //@@MP (Release 7-3)
+            this[IDs.ROAD_ASPHALT_EW] = new TileModel(GameImages.TILE_ROAD_ASPHALT_EW, Color.Gray, true, true, false) { CanDecay = true };
+            this[IDs.ROAD_ASPHALT_NS] = new TileModel(GameImages.TILE_ROAD_ASPHALT_NS, Color.Gray, true, true, false) { CanDecay = true };
+            this[IDs.RAIL_EW] = new TileModel(GameImages.TILE_RAIL_ES, Color.Gray, true, true, false) { CanDecay = false };
             //@@MP (Release 6-1)
-            this[IDs.FLOOR_POND_CENTER] = new TileModel(GameImages.TILE_FLOOR_POND_CENTER, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER } ;
-            this[IDs.FLOOR_POND_NE_CORNER] = new TileModel(GameImages.TILE_FLOOR_POND_NE_CORNER, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER };
-            this[IDs.FLOOR_POND_E_EDGE] = new TileModel(GameImages.TILE_FLOOR_POND_E_EDGE, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER };
-            this[IDs.FLOOR_POND_SE_CORNER] = new TileModel(GameImages.TILE_FLOOR_POND_SE_CORNER, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER };
-            this[IDs.FLOOR_POND_S_EDGE] = new TileModel(GameImages.TILE_FLOOR_POND_S_EDGE, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER };
-            this[IDs.FLOOR_POND_SW_CORNER] = new TileModel(GameImages.TILE_FLOOR_POND_SW_CORNER, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER };
-            this[IDs.FLOOR_POND_W_EDGE] = new TileModel(GameImages.TILE_FLOOR_POND_W_EDGE, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER };
-            this[IDs.FLOOR_POND_NW_CORNER] = new TileModel(GameImages.TILE_FLOOR_POND_NW_CORNER, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER };
-            this[IDs.FLOOR_POND_N_EDGE] = new TileModel(GameImages.TILE_FLOOR_POND_N_EDGE, Color.Blue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER };
+            this[IDs.FLOOR_POND_CENTER] = new TileModel(GameImages.TILE_FLOOR_POND_CENTER, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER, CanDecay = false } ;
+            this[IDs.FLOOR_POND_NE_CORNER] = new TileModel(GameImages.TILE_FLOOR_POND_NE_CORNER, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER, CanDecay = false };
+            this[IDs.FLOOR_POND_E_EDGE] = new TileModel(GameImages.TILE_FLOOR_POND_E_EDGE, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER, CanDecay = false };
+            this[IDs.FLOOR_POND_SE_CORNER] = new TileModel(GameImages.TILE_FLOOR_POND_SE_CORNER, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER, CanDecay = false };
+            this[IDs.FLOOR_POND_S_EDGE] = new TileModel(GameImages.TILE_FLOOR_POND_S_EDGE, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER, CanDecay = false };
+            this[IDs.FLOOR_POND_SW_CORNER] = new TileModel(GameImages.TILE_FLOOR_POND_SW_CORNER, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER, CanDecay = false };
+            this[IDs.FLOOR_POND_W_EDGE] = new TileModel(GameImages.TILE_FLOOR_POND_W_EDGE, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER, CanDecay = false };
+            this[IDs.FLOOR_POND_NW_CORNER] = new TileModel(GameImages.TILE_FLOOR_POND_NW_CORNER, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER, CanDecay = false };
+            this[IDs.FLOOR_POND_N_EDGE] = new TileModel(GameImages.TILE_FLOOR_POND_N_EDGE, Color.Blue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POND_WATER_COVER, CanDecay = false };
             //@@MP (Release 7-3)
-            this[IDs.FLOOR_FOOD_COURT_POOL] = new TileModel(GameImages.TILE_FLOOR_FOOD_COURT_POOL, Color.LightBlue, true, true) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POOL_WATER_COVER };
-            this[IDs.PARKING_ASPHALT_EW] = new TileModel(GameImages.TILE_PARKING_ASPHALT_EW, Color.Gray, true, true);
-            this[IDs.PARKING_ASPHALT_NS] = new TileModel(GameImages.TILE_PARKING_ASPHALT_NS, Color.Gray, true, true);
+            this[IDs.FLOOR_FOOD_COURT_POOL] = new TileModel(GameImages.TILE_FLOOR_FOOD_COURT_POOL, Color.LightBlue, true, true, false) { IsWater = true, WaterCoverImageID = GameImages.TILE_FLOOR_POOL_WATER_COVER, CanDecay = false };
+            this[IDs.PARKING_ASPHALT_EW] = new TileModel(GameImages.TILE_PARKING_ASPHALT_EW, Color.Gray, true, true, false) { CanDecay = true };
+            this[IDs.PARKING_ASPHALT_NS] = new TileModel(GameImages.TILE_PARKING_ASPHALT_NS, Color.Gray, true, true, false) { CanDecay = true };
             #region -Tennis court
             //refer to Resources\Images\Tiles\tennis_court\floor_tennis_court_slices-map-for-devs.png for the layout
-            this[IDs.FLOOR_TENNIS_COURT_OUTER] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_OUTER, Color.SeaGreen, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_10] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_10, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_11] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_11, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_12] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_12, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_13] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_13, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_14] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_14, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_15] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_15, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_18] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_18, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_19] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_19, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_20] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_20, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_21] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_21, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_22] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_22, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_23] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_23, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_26] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_26, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_27] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_27, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_28] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_28, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_29] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_29, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_30] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_30, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_31] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_31, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_34] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_34, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_35] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_35, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_36] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_36, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_37] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_37, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_38] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_38, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_39] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_39, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_42] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_42, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_43] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_43, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_44] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_44, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_45] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_45, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_46] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_46, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_47] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_47, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_50] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_50, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_51] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_51, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_52] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_52, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_53] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_53, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_54] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_54, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_55] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_55, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_58] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_58, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_59] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_59, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_60] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_60, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_61] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_61, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_62] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_62, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_63] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_63, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_66] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_66, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_67] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_67, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_68] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_68, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_69] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_69, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_70] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_70, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_TENNIS_COURT_71] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_71, Color.CornflowerBlue, true, true);
+            this[IDs.FLOOR_TENNIS_COURT_OUTER] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_OUTER, Color.SeaGreen, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_10] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_10, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_11] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_11, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_12] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_12, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_13] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_13, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_14] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_14, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_15] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_15, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_18] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_18, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_19] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_19, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_20] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_20, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_21] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_21, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_22] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_22, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_23] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_23, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_26] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_26, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_27] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_27, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_28] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_28, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_29] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_29, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_30] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_30, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_31] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_31, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_34] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_34, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_35] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_35, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_36] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_36, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_37] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_37, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_38] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_38, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_39] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_39, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_42] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_42, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_43] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_43, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_44] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_44, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_45] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_45, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_46] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_46, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_47] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_47, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_TENNIS_COURT_50] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_50, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_51] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_51, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_52] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_52, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_53] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_53, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_54] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_54, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_55] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_55, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_58] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_58, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_59] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_59, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_60] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_60, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_61] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_61, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_62] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_62, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_63] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_63, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_66] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_66, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_67] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_67, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_68] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_68, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_69] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_69, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_70] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_70, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_TENNIS_COURT_71] = new TileModel(GameImages.TILE_FLOOR_TENNIS_COURT_71, Color.CornflowerBlue, true, true, false) { CanDecay = true };
             #endregion
             #region -Basketball court
             //refer to Resources\Images\Tiles\basketball_court\floor_basketball_court_slices-map-for-devs.png for the layout
-            this[IDs.FLOOR_BASKETBALL_COURT_OUTER] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_OUTER, Color.Gray, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_18] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_18, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_19] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_19, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_20] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_20, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_21] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_21, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_22] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_22, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_23] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_23, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_24] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_24, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_25] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_25, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_27] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_27, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_28] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_28, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_29] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_29, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_30] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_30, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_31] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_31, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_32] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_32, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_33] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_33, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_34] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_34, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_36] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_36, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_37] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_37, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_38] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_38, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_39] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_39, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_40] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_40, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_41] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_41, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_42] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_42, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_43] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_43, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_45] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_45, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_46] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_46, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_47] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_47, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_48] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_48, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_49] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_49, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_50] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_50, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_51] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_51, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_52] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_52, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_54] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_54, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_55] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_55, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_56] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_56, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_57] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_57, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_58] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_58, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_59] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_59, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_60] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_60, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_61] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_61, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_63] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_63, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_64] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_64, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_65] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_65, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_66] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_66, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_67] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_67, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_68] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_68, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_69] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_69, Color.CornflowerBlue, true, true);
-            this[IDs.FLOOR_BASKETBALL_COURT_70] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_70, Color.CornflowerBlue, true, true);
+            this[IDs.FLOOR_BASKETBALL_COURT_OUTER] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_OUTER, Color.Gray, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_18] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_18, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_19] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_19, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_20] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_20, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_21] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_21, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_22] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_22, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_23] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_23, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_24] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_24, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_25] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_25, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_27] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_27, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_28] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_28, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_29] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_29, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_30] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_30, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_31] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_31, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_32] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_32, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_33] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_33, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_34] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_34, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_36] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_36, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_BASKETBALL_COURT_37] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_37, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_38] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_38, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_39] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_39, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_40] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_40, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_41] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_41, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_42] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_42, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_43] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_43, Color.CornflowerBlue, true, true, false) { CanDecay = false };
+            this[IDs.FLOOR_BASKETBALL_COURT_45] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_45, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_46] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_46, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_47] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_47, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_48] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_48, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_49] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_49, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_50] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_50, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_51] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_51, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_52] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_52, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_54] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_54, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_55] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_55, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_56] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_56, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_57] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_57, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_58] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_58, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_59] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_59, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_60] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_60, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_61] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_61, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_63] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_63, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_64] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_64, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_65] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_65, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_66] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_66, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_67] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_67, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_68] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_68, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_69] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_69, Color.CornflowerBlue, true, true, false) { CanDecay = true };
+            this[IDs.FLOOR_BASKETBALL_COURT_70] = new TileModel(GameImages.TILE_FLOOR_BASKETBALL_COURT_70, Color.CornflowerBlue, true, true, false) { CanDecay = true };
             #endregion
             #endregion
 
             #region Walls
             //@MP if you add another also add it to IsWallModel(), IsDestructibleWallModel() and RogueGame.ReplaceDestroyedWall()
-            this[IDs.WALL_BRICK] = new TileModel(GameImages.TILE_WALL_BRICK, Color.DimGray, false, false);
-            this[IDs.WALL_CHAR_OFFICE] = new TileModel(GameImages.TILE_WALL_CHAR_OFFICE, DRK_RED, false, false);
-            this[IDs.WALL_HOSPITAL] = new TileModel(GameImages.TILE_WALL_HOSPITAL, Color.White, false, false);
-            this[IDs.WALL_POLICE_STATION] = new TileModel(GameImages.TILE_WALL_STONE, Color.CadetBlue, false, false);
-            this[IDs.WALL_SEWER] = new TileModel(GameImages.TILE_WALL_SEWER, Color.Olive, false, false); //@@MP - changed from DarkGreen to Olive (Release 4)
-            this[IDs.WALL_STONE] = new TileModel(GameImages.TILE_WALL_STONE, Color.DimGray, false, false);
-            this[IDs.WALL_SUBWAY] = new TileModel(GameImages.TILE_WALL_STONE, Color.Blue, false, false);
-            this[IDs.WALL_LIGHT_BROWN] = new TileModel(GameImages.TILE_WALL_LIGHT_BROWN, Color.BurlyWood, false, false); //@@MP (Release 4)
-            this[IDs.WALL_ARMY_BASE] = new TileModel(GameImages.TILE_WALL_ARMY_BASE, Color.OliveDrab, false, false); //@@MP (Release 6-3)
-            this[IDs.WALL_FUEL_STATION] = new TileModel(GameImages.TILE_WALL_FUEL_STATION, Color.MediumPurple, false, false); //@@MP (Release 7-3)
-            this[IDs.WALL_WOOD_PLANKS] = new TileModel(GameImages.TILE_WALL_WOOD_PLANKS, Color.Sienna, false, false); //@@MP (Release 7-3)
-            this[IDs.WALL_CONCRETE] = new TileModel(GameImages.TILE_FLOOR_CONCRETE, Color.LightGray, false, false); //@@MP (Release 7-3)
-            this[IDs.WALL_PILLAR_CONCRETE] = new TileModel(GameImages.TILE_WALL_PILLAR_CONCRETE, Color.LightGray, false, false); //@@MP (Release 7-3)
-            this[IDs.WALL_MALL] = new TileModel(GameImages.TILE_WALL_MALL, Color.BlanchedAlmond, false, false); //@@MP (Release 7-3)
-            this[IDs.WALL_RED_CURTAINS] = new TileModel(GameImages.TILE_WALL_RED_CURTAINS, DRK_RED, false, false); //@@MP (Release 7-3)
+            this[IDs.WALL_BRICK] = new TileModel(GameImages.TILE_WALL_BRICK, Color.DimGray, false, false, false) { CanDecay = true };
+            this[IDs.WALL_CHAR_OFFICE] = new TileModel(GameImages.TILE_WALL_CHAR_OFFICE, DRK_RED, false, false, false) { CanDecay = true };
+            this[IDs.WALL_HOSPITAL] = new TileModel(GameImages.TILE_WALL_HOSPITAL, Color.White, false, false, false) { CanDecay = true };
+            this[IDs.WALL_POLICE_STATION] = new TileModel(GameImages.TILE_WALL_STONE, Color.CadetBlue, false, false, false) { CanDecay = true };
+            this[IDs.WALL_SEWER] = new TileModel(GameImages.TILE_WALL_SEWER, Color.Olive, false, false, false) { CanDecay = false }; //@@MP - changed from DarkGreen to Olive (Release 4)
+            this[IDs.WALL_STONE] = new TileModel(GameImages.TILE_WALL_STONE, Color.DimGray, false, false, false) { CanDecay = true };
+            this[IDs.WALL_SUBWAY] = new TileModel(GameImages.TILE_WALL_STONE, Color.Blue, false, false, false) { CanDecay = true }; //to handle the fact that subways are also below ground and thus that bit doesn't decay, we handle this in RogueGame.ApplyWorldDecayPhase()
+            this[IDs.WALL_LIGHT_BROWN] = new TileModel(GameImages.TILE_WALL_LIGHT_BROWN, Color.BurlyWood, false, false, false) { CanDecay = true }; //@@MP (Release 4)
+            this[IDs.WALL_ARMY_BASE] = new TileModel(GameImages.TILE_WALL_ARMY_BASE, Color.OliveDrab, false, false, false) { CanDecay = true }; //@@MP (Release 6-3)
+            this[IDs.WALL_FUEL_STATION] = new TileModel(GameImages.TILE_WALL_FUEL_STATION, Color.MediumPurple, false, false, false) { CanDecay = true }; //@@MP (Release 7-3)
+            this[IDs.WALL_WOOD_PLANKS] = new TileModel(GameImages.TILE_WALL_WOOD_PLANKS, Color.Sienna, false, false, true) { CanDecay = true }; //@@MP (Release 7-3)
+            this[IDs.WALL_CONCRETE] = new TileModel(GameImages.TILE_WALL_CONCRETE, Color.LightGray, false, false, false) { CanDecay = true }; //@@MP (Release 7-3)
+            this[IDs.WALL_PILLAR_CONCRETE] = new TileModel(GameImages.TILE_WALL_PILLAR_CONCRETE, Color.LightGray, false, false, false) { CanDecay = false }; //@@MP (Release 7-3)
+            this[IDs.WALL_MALL] = new TileModel(GameImages.TILE_WALL_MALL, Color.BlanchedAlmond, false, false, false) { CanDecay = true }; //@@MP (Release 7-3)
+            this[IDs.WALL_RED_CURTAINS] = new TileModel(GameImages.TILE_WALL_RED_CURTAINS, DRK_RED, false, false, true) { CanDecay = false }; //@@MP (Release 7-3)
             #endregion
         }
 
@@ -605,6 +605,11 @@ namespace djack.RogueSurvivor.Gameplay
                 model == this[IDs.FLOOR_BASKETBALL_COURT_58] || model == this[IDs.FLOOR_BASKETBALL_COURT_59] || model == this[IDs.FLOOR_BASKETBALL_COURT_60] || model == this[IDs.FLOOR_BASKETBALL_COURT_61] ||
                 model == this[IDs.FLOOR_BASKETBALL_COURT_63] || model == this[IDs.FLOOR_BASKETBALL_COURT_64] || model == this[IDs.FLOOR_BASKETBALL_COURT_65] || model == this[IDs.FLOOR_BASKETBALL_COURT_66] ||
                 model == this[IDs.FLOOR_BASKETBALL_COURT_67] || model == this[IDs.FLOOR_BASKETBALL_COURT_68] || model == this[IDs.FLOOR_BASKETBALL_COURT_69] || model == this[IDs.FLOOR_BASKETBALL_COURT_70];
+        }
+
+        public bool CanBuryCorpseHere(TileModel model) //@@MP (Release 7-6)
+        {
+            return model == this[IDs.FLOOR_DIRT] || model == this[IDs.FLOOR_GRASS] || model == this[IDs.FLOOR_PLANTED];
         }
         #endregion
     }
