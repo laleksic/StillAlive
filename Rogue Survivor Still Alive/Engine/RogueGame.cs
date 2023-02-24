@@ -18293,12 +18293,16 @@ namespace djack.RogueSurvivor.Engine
                             }
                             if (Rules.HasInfection(m_Session.GameMode))
                             {
+                                bool infectActor = true;
                                 ItemBodyArmor armor = defender.GetEquippedArmor(); //wearing infection-resistant armor?
                                 if (armor != null)
                                 {
-                                    if (!m_Rules.RollChance(armor.Infection_Resistance)) //if there's no DMG there will be no INF, but even if there is DMG there may not be INF if armor blocks it        //@@MP - added (Release 7-6)
-                                        InfectActor(defender, Rules.InfectionForDamage(attacker, dmgRoll));
+                                    if (m_Rules.RollChance(armor.Infection_Resistance)) //if there's no DMG there will be no INF, but even if there is DMG there may not be INF if armor blocks it        //@@MP - added (Release 7-6)
+                                        infectActor = false;
                                 }
+
+                                if (infectActor)
+                                    InfectActor(defender, Rules.InfectionForDamage(attacker, dmgRoll));
                             }
                         }
 
@@ -31912,7 +31916,7 @@ namespace djack.RogueSurvivor.Engine
             return lines.ToArray();
         }
 
-        static string[] DescribeItemBodyArmor(ItemBodyArmor b) //@@MP - made static (Release 5-7)
+        string[] DescribeItemBodyArmor(ItemBodyArmor b)
         {
             List<string> lines = new List<string>();
 
@@ -31924,6 +31928,8 @@ namespace djack.RogueSurvivor.Engine
             lines.Add(string.Format("Encumbrance         : -{0} DEF", b.Encumbrance));
             lines.Add(string.Format("Weight              : -{0:F2} SPD", 0.01f * b.Weight));
             lines.Add(string.Format("Fire resistance     : +{0}%", b.Fire_Resistance));
+            if (Rules.HasInfection(m_Session.GameMode))
+                lines.Add(string.Format("INF resistance      : +{0}%", b.Infection_Resistance));
 
             // 2. Unsuspicious effects.
             List<string> unsuspicious = new List<string>();
