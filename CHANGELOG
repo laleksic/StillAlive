@@ -1,5 +1,29 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
+STILL ALIVE 2.10.2.6 (aka Release 8-1, 26/2/2023) [Author: MP]
+---------------------
+
+Features:
+-The following unique NPCs were removed: Big Bear, Famu Fataru, Hans von Hanz, Jason Myers (in name only), RoguedJack, Duckman, Santaman.
+-Added timed raids by CHAR scientist research teams (they start from day 21).*
+-Non-metallic doors can now be repaired. Broken doors can be replaced.
+
+Fixes:
+-Fixed issues with the damage calculations of flame-based weapons.
+-NPCs can no longer release the special prisoner (https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/-/issues/26).
+
+Misc:
+-The music that originally signified the arrival of a band of survivors is instead now used for the CHAR research team. The survivors have a more fitting, positive-vibes song.
+-Undead remains are now visually differentiated between fire-based deaths and everything else.
+-Reduced the frequency of rain, and increased its chance of dissipating.
+-The CHAR underground now contains scientists rather than guards.
+-Surivors no longer spawn in CHAR offices.
+
+
+*denotes an idea proposed by or a bug reported by Jess on the RS forums. 
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.9.17.31 (aka Release 7-6, 23/2/2023) [Author: MP]
 ---------------------
 
@@ -62,7 +86,7 @@ Fixes:
 -Unique ranged weapons have their sound effects fixed.*
 -Can no longer reincarnate as a trapped NPC (prisoners in jails and nurses in the hospital storage area).*
 -Fixed items not spawning in army offices.
--Fixed minor issues with a number of sprites (fire hzard suit, various actor skins).
+-Fixed minor issues with a number of sprites (fire hazard suit, various actor skins).
 
 Misc:
 -Adjusted the items spawned at stores, junkyards, houses, army and CHAR locations, churches, and farms.

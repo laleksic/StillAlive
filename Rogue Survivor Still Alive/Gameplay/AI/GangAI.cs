@@ -601,7 +601,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                             if (m_LOSSensor.FOV.Contains(target.Location.Position))
                                 game.DoEmote(m_Actor, String.Format("Hey {0}! Fucking move!", target.Name));
                             else
-                                game.DoEmote(m_Actor, String.Format("Where is that {0} retard?", target.Name));
+                                game.DoEmote(m_Actor, String.Format("Where is that {0} moron?", target.Name));
                         }
                     }
 

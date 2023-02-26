@@ -101,7 +101,7 @@ namespace djack.RogueSurvivor.Data
         public bool CanTrade { get; set; }
 
         /// <summary>
-        /// Can barricade map objects.
+        /// Can barricade map objects and repair doors.
         /// </summary>
         public bool CanBarricade { get; set; }
 

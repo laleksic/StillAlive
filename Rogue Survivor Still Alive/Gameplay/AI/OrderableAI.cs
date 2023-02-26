@@ -536,6 +536,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 case RaidType.NATGUARD: raidDesc = "the army coming"; break;
                 case RaidType.SURVIVORS: raidDesc = "honking coming"; break;
                 case RaidType.HELICOPTER_RESCUE: raidDesc = "a chopper landing"; break; //@@MP (Release 7-4)
+                case RaidType.CHAR_SCIENTISTS: raidDesc = "a vehicle coming"; break; //@@MP (Release 8-1)
                 default:
                     throw new ArgumentOutOfRangeException(String.Format("unhandled raidtype {0}", raid.ToString()));
             }

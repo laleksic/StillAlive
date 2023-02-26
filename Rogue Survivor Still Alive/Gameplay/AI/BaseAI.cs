@@ -3993,12 +3993,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
         #region Advanced movement
         protected ActorAction BehaviorCloseDoorBehindMe(RogueGame game, Location previousLocation)
         {
-            if (m_Actor.HasLeader && m_Actor.Leader.IsPlayer)
-            {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}'s map: {1}", m_Actor.Name, m_Actor.Location.Map.Name));
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}'s prev pov: {1}", m_Actor.Name, previousLocation.Position.ToString()));
-            }
-
             // if we've gone through a door, try to close it.
             DoorWindow prevDoor = previousLocation.Map.GetMapObjectAt(previousLocation.Position) as DoorWindow;
             if (prevDoor == null)
@@ -4007,6 +4001,15 @@ namespace djack.RogueSurvivor.Gameplay.AI
             if (game.Rules.IsClosableFor(m_Actor, prevDoor))
             {
 #if DEBUGAILOOPING
+                /*
+                if (m_Actor.HasLeader && m_Actor.Leader.IsPlayer) //DELETETHIS
+                {
+                    //troubleshooting excessive door closing by AIs
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}'s map: {1}", m_Actor.Name, m_Actor.Location.Map.Name));
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}'s prev pov: {1}", m_Actor.Name, previousLocation.Position.ToString()));
+                }
+                */
+
                 if (m_Actor.IsLooping)
                     m_Actor.ActivityInProgress = "BehaviorCloseDoorBehindMe() close " + prevDoor.Location.Position.ToString();
 #endif

@@ -8,32 +8,23 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ARMY = "army";
         public const string ARMY_FILE = PATH + "RS - Army";
 
-        public const string BIGBEAR_THEME_SONG = "big bear theme song";
-        public const string BIGBEAR_THEME_SONG_FILE = PATH + "RS - Big Bear Theme Song";
-
         public const string BIKER = "biker";
         public const string BIKER_FILE = PATH + "RS - Biker";
 
         public const string BLACK_OPS = "blackops"; //@@MP (Release 6-1)
         public const string BLACK_OPS_FILE = PATH + "Black Ops"; //@@MP (Release 6-1)
 
+        public const string CHAR_RESEARCHERS = "researchers"; //@@MP (Release 8-1)
+        public const string CHAR_RESEARCHERS_FILE = PATH + "RS - CHAR researchers";
+
         public const string CHAR_UNDERGROUND_FACILITY = "char underground facility";
         public const string CHAR_UNDERGROUND_FACILITY_FILE = PATH + "RS - CUF";
-
-        public const string DUCKMAN_THEME_SONG = "duckman theme song";
-        public const string DUCKMAN_THEME_SONG_FILE = PATH + "RS - Duckman Theme Song";
-
-        public const string FAMU_FATARU_THEME_SONG = "famu fataru theme song";
-        public const string FAMU_FATARU_THEME_SONG_FILE = PATH + "RS - Famu Fataru Theme Song";
 
         public const string FIGHT = "fight";
         public const string FIGHT_FILE = PATH + "RS - Fight";
 
         public const string GANGSTA = "gangsta";
         public const string GANGSTA_FILE = PATH + "RS - Gangsta";
-
-        public const string HANS_VON_HANZ_THEME_SONG = "hans von hanz theme song";
-        public const string HANS_VON_HANZ_THEME_SONG_FILE = PATH + "RS - Hans von Hanz Theme Song";
 
         public const string HEYTHERE = "heythere";
         public const string HEYTHERE_FILE = PATH + "RS - Hey There";
@@ -59,12 +50,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string POST_RESCUE = "Post-rescue"; //@@MP (Release 6-4)
         public const string POST_RESCUE_FILE = PATH + "Post-rescue"; //@@MP (Release 6-4)
 
-        public const string ROGUEDJACK_THEME_SONG = "roguedjack theme song";
-        public const string ROGUEDJACK_THEME_SONG_FILE = PATH + "RS - Roguedjack Theme Song";
-
-        public const string SANTAMAN_THEME_SONG = "santaman theme song";
-        public const string SANTAMAN_THEME_SONG_FILE = PATH + "RS - Santaman Theme Song";
-
         public const string SEWERS = "sewers";
         public const string SEWERS_FILE = PATH + "RS - Sewers";
 
@@ -80,8 +65,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string SURFACE = "surface"; // alpha10
         public const string SURFACE_FILE = PATH + "RS - Surface"; // alpha10
 
-        public const string SURVIVORS = "survivors";
-        public const string SURVIVORS_FILE = PATH + "RS - Survivors";
+        public const string SURVIVORS = "survivors"; //@@MP - was the music that is now used for CHAR researchers (Release 8-1)
+        public const string SURVIVORS_FILE = PATH + "Survivors";
 
         public const string TEST_MUSIC = "test_music"; //@@MP (Release 7-3)
         public const string TEST_MUSIC_FILE = PATH + "test_music";

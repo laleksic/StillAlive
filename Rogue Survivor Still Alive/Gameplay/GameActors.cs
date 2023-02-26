@@ -56,7 +56,9 @@ namespace djack.RogueSurvivor.Gameplay
             BLACKOPS_MAN,
 
             SEWERS_THING,
-            JASON_MYERS,
+            DERANGED_PATIENT,
+
+            CHAR_SCIENTIST, //@@MP (Release 8-1)
 
             _COUNT
         }
@@ -126,7 +128,9 @@ namespace djack.RogueSurvivor.Gameplay
 
         public ActorModel BlackOps { get { return this[IDs.BLACKOPS_MAN]; } }
 
-        public ActorModel JasonMyers { get { return this[IDs.JASON_MYERS]; } }
+        public ActorModel DerangedPatient { get { return this[IDs.DERANGED_PATIENT]; } }  //@@MP - was Jason Myers (Release 8-1)
+
+        public ActorModel CHARScientist { get { return this[IDs.CHAR_SCIENTIST]; } }  //@@MP - added (Release 8-1)
         #endregion
 
         #region Data stats
@@ -222,6 +226,7 @@ namespace djack.RogueSurvivor.Gameplay
         ActorData DATA_POLICEMAN;
 
         ActorData DATA_CHAR_GUARD;
+        ActorData DATA_CHAR_SCIENTIST; //@@MP (Release 8-1)
 
         ActorData DATA_NATGUARD;
 
@@ -233,7 +238,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Unique Livings
-        ActorData DATA_JASON_MYERS;
+        ActorData DATA_DERANGED_PATIENT;
         #endregion
 
         #endregion
@@ -754,6 +759,35 @@ namespace djack.RogueSurvivor.Gameplay
                      {
                          FlavorDescription = DATA_CHAR_GUARD.FLAVOR
                      };
+
+            this[IDs.CHAR_SCIENTIST] = new ActorModel(null, // skinned & dressed
+                     DATA_CHAR_SCIENTIST.NAME, DATA_CHAR_SCIENTIST.PLURAL,
+                     DATA_CHAR_SCIENTIST.SCORE,
+                     new DollBody(true, DATA_CHAR_SCIENTIST.SPD),
+                     new Abilities()
+                     {
+                         HasInventory = true,
+                         CanUseMapObjects = true,
+                         CanBreakObjects = true,
+                         CanJump = true,
+                         CanTire = true,
+                         CanRun = true,
+                         CanUseItems = true,
+                         HasToSleep = true,
+                         HasSanity = true,
+                         CanTalk = true,
+                         CanPush = true,
+                         CanBarricade = true,
+                         IsIntelligent = true
+                     },
+                     new ActorSheet(DATA_CHAR_SCIENTIST.HP, DATA_CHAR_SCIENTIST.STA, HUMAN_HUN, HUMAN_SLP, HUMAN_SAN,
+                         new Attack(AttackKind.PHYSICAL, VERB_PUNCH, DATA_CHAR_SCIENTIST.ATK, DATA_CHAR_SCIENTIST.DMG),
+                         new Defence(DATA_CHAR_SCIENTIST.DEF, DATA_CHAR_SCIENTIST.PRO_HIT, DATA_CHAR_SCIENTIST.PRO_SHOT),
+                         DATA_CHAR_SCIENTIST.FOV, DATA_CHAR_SCIENTIST.AUDIO, NO_SMELL, HUMAN_INVENTORY),
+                     typeof(CHARGuardAI))
+            {
+                FlavorDescription = DATA_CHAR_SCIENTIST.FLAVOR
+            };
             #endregion
 
             #region Army
@@ -1006,11 +1040,12 @@ namespace djack.RogueSurvivor.Gameplay
             #endregion
             #endregion
 
-            #region Jason Myers
-            this[IDs.JASON_MYERS] = new ActorModel(null,  // skinned.
-                      DATA_JASON_MYERS.NAME, DATA_JASON_MYERS.PLURAL,
-                      DATA_JASON_MYERS.SCORE,
-                      new DollBody(true, DATA_JASON_MYERS.SPD),
+            #region Deranged Patient
+            //@@MP - was Jason Myers (Release 8-1)
+            this[IDs.DERANGED_PATIENT] = new ActorModel(null,  // skinned.
+                      DATA_DERANGED_PATIENT.NAME, DATA_DERANGED_PATIENT.PLURAL,
+                      DATA_DERANGED_PATIENT.SCORE,
+                      new DollBody(true, DATA_DERANGED_PATIENT.SPD),
                       new Abilities()
                       {
                           HasInventory = true,
@@ -1027,13 +1062,13 @@ namespace djack.RogueSurvivor.Gameplay
                           CanBarricade = true,
                           AI_CanUseAIExits = true
                       },
-                      new ActorSheet(DATA_JASON_MYERS.HP, DATA_JASON_MYERS.STA, HUMAN_HUN, HUMAN_SLP, NO_SANITY,
-                          new Attack(AttackKind.PHYSICAL, VERB_PUNCH, DATA_JASON_MYERS.ATK, DATA_JASON_MYERS.DMG),
-                          new Defence(DATA_JASON_MYERS.DEF, DATA_JASON_MYERS.PRO_HIT, DATA_JASON_MYERS.PRO_SHOT),
-                          DATA_JASON_MYERS.FOV, DATA_JASON_MYERS.AUDIO, NO_SMELL, HUMAN_INVENTORY),
+                      new ActorSheet(DATA_DERANGED_PATIENT.HP, DATA_DERANGED_PATIENT.STA, HUMAN_HUN, HUMAN_SLP, NO_SANITY,
+                          new Attack(AttackKind.PHYSICAL, VERB_PUNCH, DATA_DERANGED_PATIENT.ATK, DATA_DERANGED_PATIENT.DMG),
+                          new Defence(DATA_DERANGED_PATIENT.DEF, DATA_DERANGED_PATIENT.PRO_HIT, DATA_DERANGED_PATIENT.PRO_SHOT),
+                          DATA_DERANGED_PATIENT.FOV, DATA_DERANGED_PATIENT.AUDIO, NO_SMELL, HUMAN_INVENTORY),
                       typeof(InsaneHumanAI))
             {
-                FlavorDescription = DATA_JASON_MYERS.FLAVOR
+                FlavorDescription = DATA_DERANGED_PATIENT.FLAVOR
             };
             #endregion
         }
@@ -1118,7 +1153,9 @@ namespace djack.RogueSurvivor.Gameplay
 
             DATA_BLACKOPS_MAN = GetDataFromCSVTable(table, IDs.BLACKOPS_MAN);
 
-            DATA_JASON_MYERS = GetDataFromCSVTable(table, IDs.JASON_MYERS);
+            DATA_DERANGED_PATIENT = GetDataFromCSVTable(table, IDs.DERANGED_PATIENT);
+
+            DATA_CHAR_SCIENTIST = GetDataFromCSVTable(table, IDs.CHAR_SCIENTIST);
             #endregion
 
             /////////////////

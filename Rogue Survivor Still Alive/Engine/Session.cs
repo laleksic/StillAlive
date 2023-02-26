@@ -54,6 +54,11 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         HELICOPTER_RESCUE, //@@MP (Release 7-4)
 
+        /// <summary>
+        /// A new raid type, but pretty much the same as band of survivors
+        /// </summary>
+        CHAR_SCIENTISTS, //@@MP (Release 8-1)
+
         _COUNT
     }
 
@@ -394,14 +399,8 @@ namespace djack.RogueSurvivor.Engine
     [Serializable]
     class UniqueActors
     {
-        public UniqueActor BigBear { get; set; }
-        public UniqueActor Duckman { get; set; }
-        public UniqueActor FamuFataru { get; set; }
-        public UniqueActor HansVonHanz { get; set; }
-        public UniqueActor JasonMyers { get; set; }
+        public UniqueActor DerangedPatient { get; set; }
         public UniqueActor PoliceStationPrisonner { get; set; }
-        public UniqueActor Roguedjack { get; set; }
-        public UniqueActor Santaman { get; set; }
         public UniqueActor TheSewersThing { get; set; }
 
         /// <summary>
@@ -409,7 +408,7 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         public UniqueActor[] ToArray() // TODO -- consider caching it.
         {
-            return new UniqueActor[] { BigBear, Duckman, FamuFataru, HansVonHanz, PoliceStationPrisonner, Roguedjack, Santaman, TheSewersThing, JasonMyers }; // JasonMyers (alpha 10)
+            return new UniqueActor[] { PoliceStationPrisonner, TheSewersThing, DerangedPatient }; //@@MP - removed most uniques (Release 8-1)
         }
     }
 

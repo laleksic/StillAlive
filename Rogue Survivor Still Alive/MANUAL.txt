@@ -1201,5 +1201,17 @@ Players can extract the ammo from a weapon. It must first be equipped in order t
 Super destructive. Be very careful where you fire this, as it kills indiscriminantly.
 Maybe save first (Shift + S) before firing it...
 
+> CHAR SCIENTISTS RESEARCH TEAM
+They will eventually arrive in the city, much like Black Ops, gangs, bikers, and bands of survivors.
+These research teams will not attack you, unless you provoke them. Best to steer clear of them in any case.
+Note: The music that originally signified the arrival of a band of survivors is instead now used for the CHAR research
+team. The survivors have a more fitting, positive-vibes song. Sorry for any confusion this make cause for veteran
+players of vanilla Rogue Survivor.
+
+> REPAIR DOORS
+You can use build mode (default key: B) to repair doors and windows.
+Metal doors can only be replaced, not repaired, and even then only when they're fully broken. 
+Wooden doors can be replaced when broken, and repaired when their hit points are damaged.
+
 
 <end of manual>

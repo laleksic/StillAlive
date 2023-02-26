@@ -54,7 +54,7 @@ namespace djack.RogueSurvivor.Gameplay
             MELEE_BASEBALLBAT,
             MELEE_COMBAT_KNIFE,
             MELEE_CROWBAR,
-            UNIQUE_JASON_MYERS_AXE,
+            MELEE_BONESAW, //@@MP (Release 8-1)
             MELEE_HUGE_HAMMER,
             MELEE_SMALL_HAMMER,
             MELEE_GOLFCLUB,
@@ -88,6 +88,10 @@ namespace djack.RogueSurvivor.Gameplay
             MELEE_SPEAR,
             MELEE_SPIKED_MACE,
             MELEE_FIRE_AXE,
+            //@@MP (Release 8-1)
+            MELEE_KATANA,
+            MELEE_BARBED_WIRE_BAT,
+            MELEE_KEYBOARD,
 
             RANGED_ARMY_PISTOL,
             RANGED_ARMY_PRECISION_RIFLE, //@@MP (Release 7-6)
@@ -111,6 +115,7 @@ namespace djack.RogueSurvivor.Gameplay
             RANGED_ARMY_RIFLE4,
             RANGED_GRENADE_LAUNCHER,
             RANGED_BIO_FORCE_GUN, //@@MP (Release 7-2)
+            RANGED_VINTAGE_PISTOL, //@@MP (Release 8-1)
 
             EXPLOSIVE_GRENADE,
             EXPLOSIVE_GRENADE_PRIMED,
@@ -150,6 +155,7 @@ namespace djack.RogueSurvivor.Gameplay
             SLEEPING_BAG, //@@MP (Release 7-3)
             FISHING_ROD, //@@MP (Release 7-6)
             MATCHES, //@@MP (Release 7-6)
+            CHAR_LAPTOP, //@@MP (Release 8-1)
 
             ARMOR_ARMY_BODYARMOR,
             ARMOR_CHAR_LIGHT_BODYARMOR,
@@ -210,11 +216,6 @@ namespace djack.RogueSurvivor.Gameplay
             ENT_MAGAZINE4, //@@MP (Release 7-6)
 
             UNIQUE_SUBWAY_BADGE,
-            UNIQUE_FAMU_FATARU_KATANA,
-            UNIQUE_BIGBEAR_BAT,
-            UNIQUE_ROGUEDJACK_KEYBOARD,
-            UNIQUE_SANTAMAN_SHOTGUN,
-            UNIQUE_HANS_VON_HANZ_PISTOL,
             UNIQUE_ARMY_ACCESS_BADGE, //@@MP (Release 6-3)
             UNIQUE_BOOK_OF_ARMAMENTS, //@@MP (Release 7-6)
 
@@ -424,8 +425,8 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemMeleeWeaponModel BASEBALLBAT { get { return this[IDs.MELEE_BASEBALLBAT] as ItemMeleeWeaponModel; } }
         MeleeWeaponData DATA_MELEE_COMBAT_KNIFE;
         public ItemMeleeWeaponModel COMBAT_KNIFE { get { return this[IDs.MELEE_COMBAT_KNIFE] as ItemMeleeWeaponModel; } }
-        MeleeWeaponData DATA_MELEE_UNIQUE_JASON_MYERS_AXE;
-        public ItemMeleeWeaponModel UNIQUE_JASON_MYERS_AXE { get { return this[IDs.UNIQUE_JASON_MYERS_AXE] as ItemMeleeWeaponModel; } }
+        MeleeWeaponData DATA_MELEE_BONESAW;
+        public ItemMeleeWeaponModel BONESAW { get { return this[IDs.MELEE_BONESAW] as ItemMeleeWeaponModel; } }
         MeleeWeaponData DATA_MELEE_GOLFCLUB;
         public ItemMeleeWeaponModel GOLFCLUB { get { return this[IDs.MELEE_GOLFCLUB] as ItemMeleeWeaponModel; } }
         MeleeWeaponData DATA_MELEE_HUGE_HAMMER;
@@ -444,12 +445,12 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemMeleeWeaponModel IMPROVISED_CLUB { get { return this[IDs.MELEE_IMPROVISED_CLUB] as ItemMeleeWeaponModel; } }
         MeleeWeaponData DATA_MELEE_IMPROVISED_SPEAR;
         public ItemMeleeWeaponModel IMPROVISED_SPEAR { get { return this[IDs.MELEE_IMPROVISED_SPEAR] as ItemMeleeWeaponModel; } }
-        MeleeWeaponData DATA_MELEE_UNIQUE_FAMU_FATARU_KATANA;
-        public ItemMeleeWeaponModel UNIQUE_FAMU_FATARU_KATANA { get { return this[IDs.UNIQUE_FAMU_FATARU_KATANA] as ItemMeleeWeaponModel; } }
-        MeleeWeaponData DATA_MELEE_UNIQUE_BIGBEAR_BAT;
-        public ItemMeleeWeaponModel UNIQUE_BIGBEAR_BAT { get { return this[IDs.UNIQUE_BIGBEAR_BAT] as ItemMeleeWeaponModel; } }
-        MeleeWeaponData DATA_MELEE_UNIQUE_ROGUEDJACK_KEYBOARD;
-        public ItemMeleeWeaponModel UNIQUE_ROGUEDJACK_KEYBOARD { get { return this[IDs.UNIQUE_ROGUEDJACK_KEYBOARD] as ItemMeleeWeaponModel; } }
+        MeleeWeaponData DATA_MELEE_KATANA;
+        public ItemMeleeWeaponModel KATANA { get { return this[IDs.MELEE_KATANA] as ItemMeleeWeaponModel; } }
+        MeleeWeaponData DATA_MELEE_BARBED_WIRE_BAT;
+        public ItemMeleeWeaponModel BARBED_WIRE_BAT { get { return this[IDs.MELEE_BARBED_WIRE_BAT] as ItemMeleeWeaponModel; } }
+        MeleeWeaponData DATA_MELEE_KEYBOARD;
+        public ItemMeleeWeaponModel KEYBOARD { get { return this[IDs.MELEE_KEYBOARD] as ItemMeleeWeaponModel; } }
         //@@MP (Release 3)
         MeleeWeaponData DATA_MELEE_TENNIS_RACKET;
         public ItemMeleeWeaponModel TENNIS_RACKET { get { return this[IDs.MELEE_TENNIS_RACKET] as ItemMeleeWeaponModel; } }
@@ -549,10 +550,8 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemRangedWeaponModel PRECISION_RIFLE { get { return this[IDs.RANGED_PRECISION_RIFLE] as ItemRangedWeaponModel; } }
         RangedWeaponData DATA_RANGED_SHOTGUN;
         public ItemRangedWeaponModel SHOTGUN { get { return this[IDs.RANGED_SHOTGUN] as ItemRangedWeaponModel; } }
-        RangedWeaponData DATA_UNIQUE_SANTAMAN_SHOTGUN;
-        public ItemRangedWeaponModel UNIQUE_SANTAMAN_SHOTGUN { get { return this[IDs.UNIQUE_SANTAMAN_SHOTGUN] as ItemRangedWeaponModel; } }
-        RangedWeaponData DATA_UNIQUE_HANS_VON_HANZ_PISTOL;
-        public ItemRangedWeaponModel UNIQUE_HANS_VON_HANZ_PISTOL { get { return this[IDs.UNIQUE_HANS_VON_HANZ_PISTOL] as ItemRangedWeaponModel; } }
+        RangedWeaponData DATA_RANGED_VINTAGE_PISTOL;
+        public ItemRangedWeaponModel VINTAGE_PISTOL { get { return this[IDs.RANGED_VINTAGE_PISTOL] as ItemRangedWeaponModel; } }
         RangedWeaponData DATA_RANGED_NAIL_GUN; //@@MP (Release 5-1)
         public ItemRangedWeaponModel NAIL_GUN { get { return this[IDs.RANGED_NAIL_GUN] as ItemRangedWeaponModel; } }
         RangedWeaponData DATA_RANGED_FLAMETHROWER; //@@MP (Release 7-1)
@@ -1009,6 +1008,7 @@ namespace djack.RogueSurvivor.Gameplay
         public ItemModel SLEEPING_BAG { get { return this[IDs.SLEEPING_BAG]; } } //@MP (Release 7-3)
         public ItemModel FISHING_ROD { get { return this[IDs.FISHING_ROD]; } } //@MP (Release 7-6)
         public ItemModel MATCHES { get { return this[IDs.MATCHES]; } } //@MP (Release 7-6)
+        public ItemModel CHAR_LAPTOP { get { return this[IDs.CHAR_LAPTOP]; } } //@MP (Release 8-1)
         #endregion
         #endregion
 
@@ -1340,12 +1340,11 @@ namespace djack.RogueSurvivor.Gameplay
                 IsOneHanded = true //@@MP (Release 7-2)
             };
 
-            mwdata = DATA_MELEE_UNIQUE_JASON_MYERS_AXE;
-            this[IDs.UNIQUE_JASON_MYERS_AXE] = new ItemMeleeWeaponModel(mwdata.NAME, mwdata.PLURAL, GameImages.ITEM_JASON_MYERS_AXE,
-                Attack.MeleeAttack(new Verb("chop"), mwdata.ATK, mwdata.DMG, mwdata.STA, mwdata.DISARM))
+            mwdata = DATA_MELEE_BONESAW;
+            this[IDs.MELEE_BONESAW] = new ItemMeleeWeaponModel(mwdata.NAME, mwdata.PLURAL, GameImages.ITEM_BONESAW,
+                Attack.MeleeAttack(new Verb("saw"), mwdata.ATK, mwdata.DMG, mwdata.STA, mwdata.DISARM))
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
-                IsProper = true,
                 FlavorDescription = mwdata.FLAVOR,
                 IsUnbreakable = true,
                 ToolBashDamageBonus = mwdata.TOOLBASHDMGBONUS, // alpha10
@@ -1493,8 +1492,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsOneHanded = true //@@MP (Release 7-2)
             };
 
-            mwdata = DATA_MELEE_UNIQUE_FAMU_FATARU_KATANA;
-            this[IDs.UNIQUE_FAMU_FATARU_KATANA] = new ItemMeleeWeaponModel(mwdata.NAME, mwdata.PLURAL, GameImages.ITEM_FAMU_FATARU_KATANA,
+            mwdata = DATA_MELEE_KATANA;
+            this[IDs.MELEE_KATANA] = new ItemMeleeWeaponModel(mwdata.NAME, mwdata.PLURAL, GameImages.ITEM_KATANA,
                 Attack.MeleeAttack(new Verb("slash", "slashes"), mwdata.ATK, mwdata.DMG, mwdata.STA, mwdata.DISARM))
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
@@ -1508,8 +1507,8 @@ namespace djack.RogueSurvivor.Gameplay
                 CanUseForButchering = true //@@MP (Release 7-6)
             };
 
-            mwdata = DATA_MELEE_UNIQUE_BIGBEAR_BAT;
-            this[IDs.UNIQUE_BIGBEAR_BAT] = new ItemMeleeWeaponModel(mwdata.NAME, mwdata.PLURAL, GameImages.ITEM_BIGBEAR_BAT,
+            mwdata = DATA_MELEE_BARBED_WIRE_BAT;
+            this[IDs.MELEE_BARBED_WIRE_BAT] = new ItemMeleeWeaponModel(mwdata.NAME, mwdata.PLURAL, GameImages.ITEM_BARBED_WIRE_BAT,
                 Attack.MeleeAttack(new Verb("smash", "smashes"), mwdata.ATK, mwdata.DMG, mwdata.STA, mwdata.DISARM))
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
@@ -1522,8 +1521,8 @@ namespace djack.RogueSurvivor.Gameplay
                 IsOneHanded = false //@@MP (Release 7-2)
             };
 
-            mwdata = DATA_MELEE_UNIQUE_ROGUEDJACK_KEYBOARD;
-            this[IDs.UNIQUE_ROGUEDJACK_KEYBOARD] = new ItemMeleeWeaponModel(mwdata.NAME, mwdata.PLURAL, GameImages.ITEM_ROGUEDJACK_KEYBOARD,
+            mwdata = DATA_MELEE_KEYBOARD;
+            this[IDs.MELEE_KEYBOARD] = new ItemMeleeWeaponModel(mwdata.NAME, mwdata.PLURAL, GameImages.ITEM_KEYBOARD,
                 Attack.MeleeAttack(new Verb("bash", "bashes"), mwdata.ATK, mwdata.DMG, mwdata.STA, mwdata.DISARM))
             {
                 EquipmentPart = DollPart.RIGHT_HAND,
@@ -1959,19 +1958,8 @@ namespace djack.RogueSurvivor.Gameplay
                     FlavorDescription = rwp.FLAVOR
                 };
 
-            rwp = DATA_UNIQUE_SANTAMAN_SHOTGUN;
-            this[IDs.UNIQUE_SANTAMAN_SHOTGUN] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_SANTAMAN_SHOTGUN,
-                Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
-                    rwp.MAXAMMO, AmmoType.SHOTGUN, true, false, rwp.WEIGHT)
-            {
-                EquipmentPart = DollPart.RIGHT_HAND,
-                FlavorDescription = rwp.FLAVOR,
-                IsProper = true,
-                IsUnbreakable = true
-            };
-
-            rwp = DATA_UNIQUE_HANS_VON_HANZ_PISTOL;
-            this[IDs.UNIQUE_HANS_VON_HANZ_PISTOL] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_HANS_VON_HANZ_PISTOL,
+            rwp = DATA_RANGED_VINTAGE_PISTOL;
+            this[IDs.RANGED_VINTAGE_PISTOL] = new ItemRangedWeaponModel(rwp.NAME, rwp.FLAVOR, GameImages.ITEM_VINTAGE_PISTOL,
                 Attack.RangedAttack(AttackKind.FIREARM, new Verb("shoot"), rwp.ATK, rwp.RAPID1, rwp.RAPID2, rwp.DMG, rwp.RANGE),
                     rwp.MAXAMMO, AmmoType.LIGHT_PISTOL, false, true, rwp.WEIGHT)
             {
@@ -2879,6 +2867,12 @@ namespace djack.RogueSurvivor.Gameplay
                 EquipmentPart = DollPart.LEFT_HAND,
                 IsPlural = true
             };
+
+            this[IDs.CHAR_LAPTOP] = new ItemModel("CHAR laptop", "CHAR laptops", GameImages.ITEM_CHAR_LAPTOP) //@@MP (Release 8-1)
+            {
+                FlavorDescription = @"It looks like they were doing some sort of research...",
+                IsStackable = false
+            };
             #endregion
 
             #region Fixes/Post processing
@@ -3062,8 +3056,8 @@ namespace djack.RogueSurvivor.Gameplay
 
             LoadDataFromCSV<MeleeWeaponData>(ui, path, "melee weapons items", MeleeWeaponData.COUNT_FIELDS, MeleeWeaponData.FromCSVLine,
                 new IDs[] { IDs.MELEE_BASEBALLBAT, IDs.MELEE_COMBAT_KNIFE, IDs.MELEE_CROWBAR, IDs.MELEE_GOLFCLUB, IDs.MELEE_HUGE_HAMMER, IDs.MELEE_IRON_GOLFCLUB,
-                            IDs.MELEE_SHOVEL, IDs.MELEE_SHORT_SHOVEL, IDs.MELEE_TRUNCHEON, IDs.UNIQUE_JASON_MYERS_AXE, IDs.MELEE_IMPROVISED_CLUB, IDs.MELEE_IMPROVISED_SPEAR,
-                            IDs.MELEE_SMALL_HAMMER, IDs.UNIQUE_FAMU_FATARU_KATANA, IDs.UNIQUE_BIGBEAR_BAT, IDs.UNIQUE_ROGUEDJACK_KEYBOARD, IDs.MELEE_TENNIS_RACKET,
+                            IDs.MELEE_SHOVEL, IDs.MELEE_SHORT_SHOVEL, IDs.MELEE_TRUNCHEON, IDs.MELEE_BONESAW, IDs.MELEE_IMPROVISED_CLUB, IDs.MELEE_IMPROVISED_SPEAR,
+                            IDs.MELEE_SMALL_HAMMER, IDs.MELEE_KATANA, IDs.MELEE_BARBED_WIRE_BAT, IDs.MELEE_KEYBOARD, IDs.MELEE_TENNIS_RACKET,
                             IDs.MELEE_HOCKEY_STICK, IDs.MELEE_MACHETE, IDs.MELEE_STANDARD_AXE, IDs.MELEE_PICKAXE, IDs.MELEE_PIPE_WRENCH, IDs.MELEE_CHAINSAW,
                             IDs.MELEE_CLEAVER, IDs.MELEE_BRASS_KNUCKLES, IDs.MELEE_FLAIL, IDs.MELEE_KITCHEN_KNIFE, IDs.MELEE_SCIMITAR, IDs.MELEE_MACE, IDs.MELEE_NUNCHAKU,
                             IDs.MELEE_FRYING_PAN, IDs.MELEE_PITCH_FORK, IDs.MELEE_SCYTHE, IDs.MELEE_SICKLE, IDs.MELEE_SPEAR, IDs.MELEE_SPIKED_MACE, IDs.MELEE_FIRE_AXE},
@@ -3078,13 +3072,13 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_MELEE_SHOVEL = data[6];
             DATA_MELEE_SHORT_SHOVEL = data[7];
             DATA_MELEE_TRUNCHEON = data[8];
-            DATA_MELEE_UNIQUE_JASON_MYERS_AXE = data[9];
+            DATA_MELEE_BONESAW = data[9];
             DATA_MELEE_IMPROVISED_CLUB = data[10];
             DATA_MELEE_IMPROVISED_SPEAR = data[11];
             DATA_MELEE_SMALL_HAMMER = data[12];
-            DATA_MELEE_UNIQUE_FAMU_FATARU_KATANA = data[13];
-            DATA_MELEE_UNIQUE_BIGBEAR_BAT = data[14];
-            DATA_MELEE_UNIQUE_ROGUEDJACK_KEYBOARD = data[15];
+            DATA_MELEE_KATANA = data[13];
+            DATA_MELEE_BARBED_WIRE_BAT = data[14];
+            DATA_MELEE_KEYBOARD = data[15];
             //@@MP (Release 3)
             DATA_MELEE_TENNIS_RACKET = data[16];
             DATA_MELEE_HOCKEY_STICK = data[17];
@@ -3121,10 +3115,9 @@ namespace djack.RogueSurvivor.Gameplay
 
             LoadDataFromCSV<RangedWeaponData>(ui, path, "ranged weapons items", RangedWeaponData.COUNT_FIELDS, RangedWeaponData.FromCSVLine,
                 new IDs[] { IDs.RANGED_ARMY_PISTOL, IDs.RANGED_ARMY_PRECISION_RIFLE, IDs.RANGED_ARMY_RIFLE1, IDs.RANGED_HUNTING_CROSSBOW, IDs.RANGED_HUNTING_RIFLE,
-                            IDs.RANGED_PISTOL, IDs.RANGED_REVOLVER, IDs.RANGED_PRECISION_RIFLE, IDs.RANGED_SHOTGUN, IDs.UNIQUE_SANTAMAN_SHOTGUN,
-                            IDs.UNIQUE_HANS_VON_HANZ_PISTOL, IDs.RANGED_NAIL_GUN, IDs.RANGED_FLAMETHROWER, IDs.RANGED_STUN_GUN, IDs.RANGED_SMG, IDs.RANGED_DOUBLE_BARREL,
-                            IDs.RANGED_MINIGUN, IDs.RANGED_TACTICAL_SHOTGUN, IDs.RANGED_ARMY_RIFLE2, IDs.RANGED_ARMY_RIFLE3, IDs.RANGED_ARMY_RIFLE4, IDs.RANGED_GRENADE_LAUNCHER,
-                            IDs.RANGED_BIO_FORCE_GUN },
+                            IDs.RANGED_PISTOL, IDs.RANGED_REVOLVER, IDs.RANGED_PRECISION_RIFLE, IDs.RANGED_SHOTGUN, IDs.RANGED_VINTAGE_PISTOL, IDs.RANGED_NAIL_GUN,
+                            IDs.RANGED_FLAMETHROWER, IDs.RANGED_STUN_GUN, IDs.RANGED_SMG, IDs.RANGED_DOUBLE_BARREL, IDs.RANGED_MINIGUN, IDs.RANGED_TACTICAL_SHOTGUN,
+                            IDs.RANGED_ARMY_RIFLE2, IDs.RANGED_ARMY_RIFLE3, IDs.RANGED_ARMY_RIFLE4, IDs.RANGED_GRENADE_LAUNCHER, IDs.RANGED_BIO_FORCE_GUN },
                 out data);
 
             DATA_RANGED_ARMY_PISTOL = data[0];
@@ -3136,21 +3129,20 @@ namespace djack.RogueSurvivor.Gameplay
             DATA_RANGED_REVOLVER = data[6];
             DATA_RANGED_PRECISION_RIFLE = data[7];
             DATA_RANGED_SHOTGUN = data[8];
-            DATA_UNIQUE_SANTAMAN_SHOTGUN = data[9];
-            DATA_UNIQUE_HANS_VON_HANZ_PISTOL = data[10];
-            DATA_RANGED_NAIL_GUN = data[11]; //@@MP (Release 5-1)
-            DATA_RANGED_FLAMETHROWER = data[12]; //@@MP (Release 7-1)
-            DATA_RANGED_STUN_GUN = data[13]; //@@MP (Release 5-1)
+            DATA_RANGED_VINTAGE_PISTOL = data[9];
+            DATA_RANGED_NAIL_GUN = data[10]; //@@MP (Release 5-1)
+            DATA_RANGED_FLAMETHROWER = data[11]; //@@MP (Release 7-1)
+            DATA_RANGED_STUN_GUN = data[12]; //@@MP (Release 5-1)
             //@@MP (Release 7-6)
-            DATA_RANGED_SMG = data[14];
-            DATA_RANGED_DOUBLE_BARREL = data[15];
-            DATA_RANGED_MINIGUN = data[16];
-            DATA_RANGED_TACTICAL_SHOTGUN = data[17];
-            DATA_RANGED_ARMY_RIFLE2 = data[18];
-            DATA_RANGED_ARMY_RIFLE3 = data[19];
-            DATA_RANGED_ARMY_RIFLE4 = data[20];
-            DATA_RANGED_GRENADE_LAUNCHER = data[21];
-            DATA_RANGED_BIO_FORCE_GUN = data[22];
+            DATA_RANGED_SMG = data[13];
+            DATA_RANGED_DOUBLE_BARREL = data[14];
+            DATA_RANGED_MINIGUN = data[15];
+            DATA_RANGED_TACTICAL_SHOTGUN = data[16];
+            DATA_RANGED_ARMY_RIFLE2 = data[17];
+            DATA_RANGED_ARMY_RIFLE3 = data[18];
+            DATA_RANGED_ARMY_RIFLE4 = data[19];
+            DATA_RANGED_GRENADE_LAUNCHER = data[20];
+            DATA_RANGED_BIO_FORCE_GUN = data[21];
 
             return true;
         }

@@ -7883,6 +7883,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int i = 0; i < MAX_CHAR_GUARDS_PER_OFFICE; i++)
             {
                 Actor newGuard = CreateNewCHARGuard(0);
+                newGuard.Inventory.AddAll(MakeItemShotgun());
+                newGuard.Inventory.AddAll(MakeItemShotgunAmmo());
+                newGuard.Inventory.AddAll(MakeItemShotgunAmmo());
+                newGuard.Inventory.AddAll(MakeItemShotgunAmmo());
                 ActorPlace(m_DiceRoller, 100, map, newGuard, b.InsideRect.Left, b.InsideRect.Top, b.InsideRect.Width, b.InsideRect.Height);
             }
 
@@ -8374,11 +8378,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 ActorPlace(m_DiceRoller, underground.Width * underground.Height, underground, undead, (pt) => underground.GetExitAt(pt) == null);
             }         
    
-            // CHAR Guards.
-            int nbGuards = underground.Width / 10; // 10 for 100.
-            for (int i = 0; i < nbGuards; i++)
+            // CHAR scientists.
+            int nbScientists = underground.Width / 10; // 10 for 100.
+            for (int i = 0; i < nbScientists; i++)
             {
-                Actor guard = CreateNewCHARGuard(0);
+                Actor guard = CreateNewCHARScientist(0);
                 ActorPlace(m_DiceRoller, underground.Width * underground.Height, underground, guard, (pt) => underground.GetExitAt(pt) == null);
             }
 #endregion
@@ -9554,11 +9558,11 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 });
 
             // 3. Populate.
-            // enraged patient!
-            ActorModel model = m_Game.GameActors.JasonMyers;
-            Actor jason = model.CreateNamed(m_Game.GameFactions.ThePsychopaths, "Jason Myers", false, 0);
+            // deranged patient!
+            ActorModel model = m_Game.GameActors.DerangedPatient;
+            Actor jason = model.CreateNamed(m_Game.GameFactions.ThePsychopaths, "deranged patient", false, 0);
             jason.IsUnique = true;
-            jason.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_JASON_MYERS);
+            jason.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_DERANGED_PATIENT);
             GiveStartingSkillToActor(jason, Skills.IDs.TOUGH);
             GiveStartingSkillToActor(jason, Skills.IDs.TOUGH);
             GiveStartingSkillToActor(jason, Skills.IDs.TOUGH);
@@ -9571,9 +9575,9 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             GiveStartingSkillToActor(jason, Skills.IDs.HIGH_STAMINA);
             GiveStartingSkillToActor(jason, Skills.IDs.HIGH_STAMINA);
             GiveStartingSkillToActor(jason, Skills.IDs.HIGH_STAMINA);
-            jason.Inventory.AddAll(MakeItemJasonMyersAxe());
+            jason.Inventory.AddAll(MakeItemBonesaw());
             map.PlaceActorAt(jason, new Point(map.Width / 2, map.Height / 2));
-            m_Game.Session.UniqueActors.JasonMyers = new UniqueActor()
+            m_Game.Session.UniqueActors.DerangedPatient = new UniqueActor()
             {
                 TheActor = jason,
                 IsSpawned = true
@@ -11661,13 +11665,22 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             base.GiveNameToActor(m_DiceRoller, newGuard);
             newGuard.Name = "Gd. " + newGuard.Name;
 
+            // starting skills.        //@@MP (Release 8-1)
+            base.GiveStartingSkillToActor(newGuard, Skills.IDs.HAULER); 
+            base.GiveStartingSkillToActor(newGuard, Skills.IDs.HAULER);
+            base.GiveStartingSkillToActor(newGuard, Skills.IDs.HAULER);
+            base.GiveStartingSkillToActor(newGuard, Skills.IDs.AWAKE);
+            base.GiveStartingSkillToActor(newGuard, Skills.IDs.AWAKE);
+            base.GiveStartingSkillToActor(newGuard, Skills.IDs.STRONG_PSYCHE);
+            base.GiveStartingSkillToActor(newGuard, Skills.IDs.STRONG_PSYCHE);
+
             // give items.
-            newGuard.Inventory.AddAll(MakeItemShotgun());
-            newGuard.Inventory.AddAll(MakeItemShotgunAmmo());
-            newGuard.Inventory.AddAll(MakeItemShotgunAmmo()); //@@MP (Release 7-2)
-            newGuard.Inventory.AddAll(MakeItemShotgunAmmo()); //@@MP (Release 7-2)
+            //@@MP - removed guns to make this function more generic. guns & ammo are now added at the calling parent (Release 8-1)
+            newGuard.Inventory.AddAll(MakeItemArmyRation()); //@@MP (Release 8-1)
+            newGuard.Inventory.AddAll(MakeItemArmyRation()); //@@MP (Release 8-1)
+            newGuard.Inventory.AddAll(MakeItemArmyRation()); //@@MP (Release 8-1)
             newGuard.Inventory.AddAll(MakeItemCHARLightBodyArmor());
-            newGuard.Inventory.AddAll(MakeItemFlashlight()); //@@MP (Release 7-2)
+            newGuard.Inventory.AddAll(MakeItemBigFlashlight()); //@@MP (Release 7-2)
             if (Rules.HasAntiviralPills(m_Game.Session.GameMode)) //@@MP (Release 7-2)
                 newGuard.Inventory.AddAll(MakeItemPillsAntiviral());
             else
@@ -11675,6 +11688,50 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // done.
             return newGuard;
+        }
+
+        public Actor CreateNewCHARScientist(int spawnTime) //@@MP - added (Release 8-1)
+        {
+            // model.
+            ActorModel model = m_Game.GameActors.CHARScientist;
+
+            // create.
+            Actor newScientist = model.CreateNumberedName(m_Game.GameFactions.TheCHARCorporation, spawnTime);
+
+            // setup.
+            DressCHARScientist(m_DiceRoller, newScientist);
+            base.GiveNameToActor(m_DiceRoller, newScientist);
+            newScientist.Name = "Dr. " + newScientist.Name;
+
+            // starting skills.
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.HAULER);
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.HAULER);
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.HAULER);
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.NECROLOGY);
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.NECROLOGY);
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.NECROLOGY);
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.NECROLOGY);
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.NECROLOGY);
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.STRONG_PSYCHE);
+            base.GiveStartingSkillToActor(newScientist, Skills.IDs.STRONG_PSYCHE);
+
+            // give items.
+            newScientist.Inventory.AddAll(MakeItemCHARLaptop());
+            newScientist.Inventory.AddAll(MakeItemZTracker());
+            newScientist.Inventory.AddAll(MakeItemPistol());
+            newScientist.Inventory.AddAll(MakeItemLightPistolAmmo());
+            newScientist.Inventory.AddAll(MakeItemArmyRation());
+            newScientist.Inventory.AddAll(MakeItemArmyRation());
+            newScientist.Inventory.AddAll(MakeItemArmyRation());
+            newScientist.Inventory.AddAll(MakeItemBiohazardSuit());
+            newScientist.Inventory.AddAll(MakeItemBigFlashlight());
+            if (Rules.HasAntiviralPills(m_Game.Session.GameMode))
+                newScientist.Inventory.AddAll(MakeItemPillsAntiviral());
+            else
+                newScientist.Inventory.AddAll(MakeItemLargeMedikit());
+
+            // done.
+            return newScientist;
         }
 
         public Actor CreateNewArmyNationalGuard(int spawnTime, string rankName)
@@ -11737,7 +11794,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             newBiker.Controller = new GangAI();
 
             // give items.
-            newBiker.Inventory.AddAll(m_DiceRoller.RollChance(50) ? MakeItemCrowbar() : MakeItemBaseballBat());
+            newBiker.Inventory.AddAll(m_DiceRoller.RollChance(50) ? MakeItemCrowbar() : MakeItemBarbedWireBat());
             newBiker.Inventory.AddAll(MakeItemBikerGangJacket(gangId));
             newBiker.Inventory.AddAll(MakeItemLiquorForMolotov()); //@@MP (Release 7-2)
             newBiker.Inventory.AddAll(MakeItemCigarettes()); //@@MP (Release 7-2)
@@ -11799,7 +11856,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             base.GiveNameToActor(m_DiceRoller, newBO);
             newBO.Name = rankName + " " + newBO.Name;
 
-            // starting skills    //@@MP (Release 7-2)
+            // starting skills.    //@@MP (Release 7-2)
             GiveStartingSkillToActor(newBO, Skills.IDs.AGILE);
             GiveStartingSkillToActor(newBO, Skills.IDs.AWAKE);
             GiveStartingSkillToActor(newBO, Skills.IDs.AWAKE);
@@ -11809,6 +11866,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             GiveStartingSkillToActor(newBO, Skills.IDs.BOWS_EXPLOSIVES);
             GiveStartingSkillToActor(newBO, Skills.IDs.HAULER);
             GiveStartingSkillToActor(newBO, Skills.IDs.HAULER); //@@MP (Release 7-6)
+            GiveStartingSkillToActor(newBO, Skills.IDs.HAULER); //@@MP (Release 8-1)
             GiveStartingSkillToActor(newBO, Skills.IDs.HIGH_STAMINA);
             GiveStartingSkillToActor(newBO, Skills.IDs.LIGHT_FEET);
             GiveStartingSkillToActor(newBO, Skills.IDs.LIGHT_FEET);
@@ -11829,6 +11887,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             newBO.Inventory.AddAll(MakeItemLargeMedikit()); //@@MP (Release 7-2)
             newBO.Inventory.AddAll(MakeItemNightVisionGoggles()); //@@MP (Release 7-2)
             newBO.Inventory.AddAll(MakeItemArmyRation()); //@@MP (Release 7-6)
+            newBO.Inventory.AddAll(MakeItemArmyRation()); //@@MP (Release 8-1)
 
             // done.
             return newBO;

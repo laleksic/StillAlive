@@ -107,12 +107,13 @@ namespace djack.RogueSurvivor.Engine
         readonly string[] THROW_MODE_TEXT = new string[] { "THROW MODE - directions to select, F to throw,  ESC cancels" };
         readonly string[] MARK_ENEMIES_MODE = new string[] { "MARK ENEMIES MODE - E to make enemy, T next actor, ESC cancels" };
         readonly string[] BUILD_FORT_MODE = new string[] { "BUILD FORTIFICATIONS MODE - build a (L)arge or (S)mall fortification? ESC cancels" }; //@@MP (Release 6-6)
-        readonly string[] BUILD_MODE = new string[] { "BUILD MODE - build a (B)arricade or (F)ortification? ESC cancels" }; //@@MP (Release 6-6)
+        readonly string[] BUILD_MODE = new string[] { "BUILD MODE - (R)epair door, build a (B)arricade or (F)ortification? ESC cancels" }; //@@MP (Release 6-6)(Release 8-1)
         readonly string[] TRADING_DIALOG_MODE_TEXT = new string[] { "TRADING MODE - TAB switch mode, 0..9 select, ESC cancels" }; // alpha10
         readonly string[] DROP_FUEL_TEXT = new string[] { "DROPPING FUEL CANS - place (O)ne or drop (A)ll cans? ESC cancels" }; //@@MP (Release 7-1)
         readonly string[] DROP_CANDLES_TEXT = new string[] { "DROPPING CANDLES - place (O)ne lit candle or drop (A)ll candles? ESC cancels" }; //@@MP (Release 7-1)
         readonly string[] THROWABLE_LIGHT_TEXT = new string[] { "USING THROWABLE LIGHTS - (C)arry or (T)hrow a lit one? ESC cancels" }; //@@MP (Release 7-1)
         readonly string[] INSPECTION_MODE_TEXT = new string[] { "USING INSPECTION MODE - directions to move highlighted cell, ESC cancels" }; //@@MP (Release 7-1)
+        readonly string[] REPAIR_DOOR_MODE_TEXT = new string[] { "REPAIR DOOR MODE - directions to repair, ESC cancels" }; //@@MP (Release 8-1)
         readonly Color MODE_TEXTCOLOR = Color.Yellow;
         readonly Color MODE_BORDERCOLOR = Color.Yellow;
         readonly Color MODE_FILLCOLOR = Color.FromArgb(192, Color.Gray);
@@ -186,7 +187,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Unique NPC refugees
-        const int UNIQUE_REFUGEE_CHECK_CHANCE = 10;
+        //const int UNIQUE_REFUGEE_CHECK_CHANCE = 10;    //@@MP - unique NPCs removed (Release 8-1)
         #endregion
 
         #region National Guard Squad
@@ -328,6 +329,15 @@ namespace djack.RogueSurvivor.Engine
         const int SURVIVORS_BAND_SIZE = 5;
         const int SURVIVORS_BAND_CHANCE_PER_TURN = 1;
         const int SURVIVORS_BAND_DAY_GAP = 5;
+        #endregion
+
+        #region CHAR scientists research team
+        //@@MP - added (Release 8-1)
+        const int SCIENTISTS_TEAM_DAY = 21;
+        const int SCIENTISTS_TEAM_SCIENTISTS = 4;
+        const int SCIENTISTS_TEAM_GUARDS = 3;
+        const int SCIENTISTS_TEAM_CHANCE_PER_TURN = 1;
+        const int SCIENTISTS_TEAM_DAY_GAP = 5;
         #endregion
 
         #endregion
@@ -4290,12 +4300,6 @@ namespace djack.RogueSurvivor.Engine
                 m_UI.UI_Repaint();
             }
             m_Session.UniqueActors.TheSewersThing = SpawnUniqueSewersThing(world);
-            m_Session.UniqueActors.BigBear = CreateUniqueBigBear();
-            m_Session.UniqueActors.FamuFataru = CreateUniqueFamuFataru();
-            m_Session.UniqueActors.Santaman = CreateUniqueSantaman();
-            m_Session.UniqueActors.Roguedjack = CreateUniqueRoguedjack();
-            m_Session.UniqueActors.Duckman = CreateUniqueDuckman();
-            m_Session.UniqueActors.HansVonHanz = CreateUniqueHansVonHanz();
 
             // alpha10 Make all uniques npcs invincible until spotted
             foreach (UniqueActor uniqueActor in m_Session.UniqueActors.ToArray())
@@ -4711,303 +4715,6 @@ namespace djack.RogueSurvivor.Engine
             // done.
             //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("sewer thing spawned at {0}", actor.Location.Map.District.Name));
             return new UniqueActor() { TheActor = actor, IsSpawned = true };
-        }
-
-        UniqueActor CreateUniqueBigBear() //@@MP - unused parameter (Release 5-7)
-        {
-            #region
-            ActorModel model = GameActors.MaleCivilian;
-            Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Big Bear", false, 0);
-            actor.IsUnique = true;
-            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
-
-            actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_BIG_BEAR);
-
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);  //@@MP eg gives him all 3 levels of Hauler 
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.TOUGH);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.TOUGH);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.TOUGH);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.TOUGH);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.TOUGH);
-
-            Item bat = new ItemMeleeWeapon(GameItems.UNIQUE_BIGBEAR_BAT) { IsUnique = true };
-            actor.Inventory.AddAll(bat);
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            #endregion
-
-            // done.
-            return new UniqueActor()
-            {
-                TheActor = actor,
-                IsSpawned = false,
-                IsWithRefugees = true,
-                EventMessage = "You hear an angry man shouting 'FOOLS!'",
-                EventThemeMusic = GameMusics.BIGBEAR_THEME_SONG
-            };
-        }
-
-        UniqueActor CreateUniqueFamuFataru() //@@MP - unused parameter (Release 5-7)
-        {
-
-            #region
-            ActorModel model = GameActors.FemaleCivilian;
-            Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Famu Fataru", false, 0);
-            actor.IsUnique = true;
-            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
-
-            actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_FAMU_FATARU);
-
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AGILE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AGILE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AGILE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AGILE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AGILE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-
-            Item katana = new ItemMeleeWeapon(GameItems.UNIQUE_FAMU_FATARU_KATANA) { IsUnique = true };
-            actor.Inventory.AddAll(katana);
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            #endregion
-
-            // done.
-            return new UniqueActor()
-            {
-                TheActor = actor,
-                IsSpawned = false,
-                IsWithRefugees = true,
-                EventMessage = "You hear a woman laughing.",
-                EventThemeMusic = GameMusics.FAMU_FATARU_THEME_SONG
-            };
-        }
-
-        UniqueActor CreateUniqueSantaman() //@@MP - unused parameter (Release 5-7)
-        {
-            #region
-            ActorModel model = GameActors.MaleCivilian;
-            Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Santaman", false, 0);
-            actor.IsUnique = true;
-            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
-
-            actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_SANTAMAN);
-
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AWAKE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AWAKE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AWAKE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AWAKE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.AWAKE);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-
-            Item shotty = new ItemRangedWeapon(GameItems.UNIQUE_SANTAMAN_SHOTGUN) { IsUnique = true };
-            actor.Inventory.AddAll(shotty);
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemShotgunAmmo());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemShotgunAmmo());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemShotgunAmmo());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            #endregion
-
-            // done.
-            return new UniqueActor()
-            {
-                TheActor = actor,
-                IsSpawned = false,
-                IsWithRefugees = true,
-                EventMessage = "You hear christmas music and drunken vomitting.",
-                EventThemeMusic = GameMusics.SANTAMAN_THEME_SONG
-            };
-        }
-
-        UniqueActor CreateUniqueRoguedjack() //@@MP - unused parameter (Release 5-7)
-        {
-            #region
-            ActorModel model = GameActors.MaleCivilian;
-            Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Roguedjack", false, 0);
-            actor.IsUnique = true;
-            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
-
-            actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_ROGUEDJACK);
-
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HARDY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-
-            Item basher = new ItemMeleeWeapon(GameItems.UNIQUE_ROGUEDJACK_KEYBOARD) { IsUnique = true };
-            actor.Inventory.AddAll(basher);
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            #endregion
-
-            // done.
-            return new UniqueActor()
-            {
-                TheActor = actor,
-                IsSpawned = false,
-                IsWithRefugees = true,
-                EventMessage = "You hear a man shouting in French.",
-                EventThemeMusic = GameMusics.ROGUEDJACK_THEME_SONG
-            };
-        }
-
-        UniqueActor CreateUniqueDuckman() //@@MP - unused parameter (Release 5-7)
-        {
-            #region
-            ActorModel model = GameActors.MaleCivilian;
-            Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Duckman", false, 0);
-            actor.IsUnique = true;
-            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
-
-            actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_DUCKMAN);
-
-            // awesome superhero!
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.CHARISMATIC);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.STRONG);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HIGH_STAMINA);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.MARTIAL_ARTS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.MARTIAL_ARTS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.MARTIAL_ARTS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.MARTIAL_ARTS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.MARTIAL_ARTS);
-
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            #endregion
-
-            return new UniqueActor()
-            {
-                TheActor = actor,
-                IsSpawned = false,
-                IsWithRefugees = true,
-                EventMessage = "You hear loud demented QUACKS.",
-                EventThemeMusic = GameMusics.DUCKMAN_THEME_SONG
-            };
-        }
-
-        UniqueActor CreateUniqueHansVonHanz() //@@MP - unused parameter (Release 5-7)
-        {
-            #region
-            ActorModel model = GameActors.MaleCivilian;
-            Actor actor = model.CreateNamed(GameFactions.TheCivilians, "Hans von Hanz", false, 0);
-            actor.IsUnique = true;
-            // actor.Controller = new CivilianAI();// alpha10.1 defined by model like other actors
-
-            actor.Doll.AddDecoration(DollPart.SKIN, GameImages.ACTOR_HANS_VON_HANZ);
-
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.HAULER);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.FIREARMS);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.LEADERSHIP);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.NECROLOGY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.NECROLOGY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.NECROLOGY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.NECROLOGY);
-            m_TownGenerator.GiveStartingSkillToActor(actor, Skills.IDs.NECROLOGY);
-
-            Item pistol = new ItemRangedWeapon(GameItems.UNIQUE_HANS_VON_HANZ_PISTOL) { IsUnique = true };
-            actor.Inventory.AddAll(pistol);
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            actor.Inventory.AddAll(m_TownGenerator.MakeItemCannedFood());
-            #endregion
-
-            // done.
-            return new UniqueActor()
-            {
-                TheActor = actor,
-                IsSpawned = false,
-                IsWithRefugees = true,
-                EventMessage = "You hear a man barking orders in German.",
-                EventThemeMusic = GameMusics.HANS_VON_HANZ_THEME_SONG
-            };
         }
 
         UniqueItem SpawnUniqueSubwayWorkerBadge(World world)
@@ -5526,15 +5233,12 @@ namespace djack.RogueSurvivor.Engine
 
             #region MUSIC - event or location-specific
             m_MusicManager.Load(GameMusics.ARMY, GameMusics.ARMY_FILE);
-            m_MusicManager.Load(GameMusics.BIGBEAR_THEME_SONG, GameMusics.BIGBEAR_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.BIKER, GameMusics.BIKER_FILE);
             m_MusicManager.Load(GameMusics.BLACK_OPS, GameMusics.BLACK_OPS_FILE);
+            m_MusicManager.Load(GameMusics.CHAR_RESEARCHERS, GameMusics.CHAR_RESEARCHERS_FILE);
             m_MusicManager.Load(GameMusics.CHAR_UNDERGROUND_FACILITY, GameMusics.CHAR_UNDERGROUND_FACILITY_FILE);
-            m_MusicManager.Load(GameMusics.DUCKMAN_THEME_SONG, GameMusics.DUCKMAN_THEME_SONG_FILE);
-            m_MusicManager.Load(GameMusics.FAMU_FATARU_THEME_SONG, GameMusics.FAMU_FATARU_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.FIGHT, GameMusics.FIGHT_FILE);
             m_MusicManager.Load(GameMusics.GANGSTA, GameMusics.GANGSTA_FILE);
-            m_MusicManager.Load(GameMusics.HANS_VON_HANZ_THEME_SONG, GameMusics.HANS_VON_HANZ_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.HEYTHERE, GameMusics.HEYTHERE_FILE);
             m_MusicManager.Load(GameMusics.HOSPITAL, GameMusics.HOSPITAL_FILE);
             m_MusicManager.Load(GameMusics.INSANE, GameMusics.INSANE_FILE);
@@ -5543,8 +5247,6 @@ namespace djack.RogueSurvivor.Engine
             m_MusicManager.Load(GameMusics.LIMBO, GameMusics.LIMBO_FILE);
             m_MusicManager.Load(GameMusics.PLAYER_DEATH, GameMusics.PLAYER_DEATH_FILE);
             m_MusicManager.Load(GameMusics.POST_RESCUE, GameMusics.POST_RESCUE_FILE);
-            m_MusicManager.Load(GameMusics.ROGUEDJACK_THEME_SONG, GameMusics.ROGUEDJACK_THEME_SONG_FILE);
-            m_MusicManager.Load(GameMusics.SANTAMAN_THEME_SONG, GameMusics.SANTAMAN_THEME_SONG_FILE);
             m_MusicManager.Load(GameMusics.SEWERS, GameMusics.SEWERS_FILE);
             m_MusicManager.Load(GameMusics.SHOPPING_MALL, GameMusics.SHOPPING_MALL_FILE);
             m_MusicManager.Load(GameMusics.SLEEP, GameMusics.SLEEP_FILE);
@@ -5994,6 +5696,11 @@ namespace djack.RogueSurvivor.Engine
                 if (CheckForEvent_BandOfSurvivors(district.EntryMap))
                 {
                     FireEvent_BandOfSurvivors(district.EntryMap);
+                }
+                // 9 CHAR scientists research team?
+                if (CheckForEvent_CHARScientists(district.EntryMap))
+                {
+                    FireEvent_CHARScientists(district.EntryMap);
                 }
                 #endregion
 
@@ -7572,6 +7279,7 @@ namespace djack.RogueSurvivor.Engine
             // music.
             m_AmbientSFXManager.StopAll(); //@@MP (Release 6-1)
             m_MusicManager.StopAll();
+            m_SFXManager.StopAll();
             m_MusicManager.Play(GameMusics.PLAYER_DEATH, AudioPriority.PRIORITY_EVENT);
 
             ///////////
@@ -7647,6 +7355,8 @@ namespace djack.RogueSurvivor.Engine
 
             // music.
             m_MusicManager.StopAll();
+            m_MusicManager.StopAll();
+            m_SFXManager.StopAll();
 
             // alpha10.1 bot release control
 #if DEBUG
@@ -8722,6 +8432,8 @@ namespace djack.RogueSurvivor.Engine
         void HandleReincarnation()
         {
             m_MusicManager.StopAll();
+            m_SFXManager.StopAll();
+            m_AmbientSFXManager.StopAll();
 
             // Reincarnate?
             // don't bother if option set to zero.
@@ -8884,24 +8596,19 @@ namespace djack.RogueSurvivor.Engine
             // Cleanup and refresh.
             m_MusicManager.StopAll();
             m_SFXManager.StopAll();
+            m_AmbientSFXManager.StopAll();
             UpdatePlayerFOV(m_Player);
             ComputeViewRect(m_Player.Location.Position);
+            CheckAmbientSFX(m_Player.Location.Map);
             ClearMessages();
             AddMessage(new Message(String.Format("{0} feels disoriented for a second...", m_Player.Name), m_Session.WorldTime.TurnCounter, Color.Yellow));
             RedrawPlayScreen();
 
             // Play reinc sfx or special music for actor.
-            string sound = null;  //@@MP - was MusicManager only; made agnostic (Release 6-1)
-            if (m_Player == m_Session.UniqueActors.JasonMyers.TheActor)
-            {
-                sound = GameMusics.INSANE;
-                m_MusicManager.Play(sound, AudioPriority.PRIORITY_EVENT);
-            }
+            if (m_Player == m_Session.UniqueActors.DerangedPatient.TheActor)
+                m_MusicManager.Play(GameMusics.INSANE, AudioPriority.PRIORITY_EVENT);
             else
-            {
-                sound = GameSounds.REINCARNATE;
-                m_SFXManager.Play(sound, AudioPriority.PRIORITY_EVENT);
-            }
+                m_SFXManager.Play(GameSounds.REINCARNATE, AudioPriority.PRIORITY_EVENT);
 
             // restart sim thread.
             StopSimThread(false);  // alpha10 stop-start
@@ -10572,7 +10279,7 @@ namespace djack.RogueSurvivor.Engine
                         desc = "Clouds are hiding the sky.";
                         break;
                     case Weather.CLOUDY:
-                        if (m_Rules.RollChance(50))
+                        if (m_Rules.RollChance(66))
                         {
                             newWeather = Weather.CLEAR;
                             desc = "The sky is clear again.";
@@ -10584,7 +10291,7 @@ namespace djack.RogueSurvivor.Engine
                         }
                         break;
                     case Weather.RAIN:
-                        if (m_Rules.RollChance(50))
+                        if (m_Rules.RollChance(66))  //@@MP - was 50 (Release 8-1)
                         {
                             newWeather = Weather.CLOUDY;
                             desc = "The rain has stopped.";
@@ -10596,7 +10303,7 @@ namespace djack.RogueSurvivor.Engine
                         }
                         break;
                     case Weather.HEAVY_RAIN:
-                        if (m_Rules.RollChance(75)) //@@MP - gave slight chance for rain to stop (Release 6-1)
+                        if (m_Rules.RollChance(33)) //@@MP - gave slight chance for rain to stop (Release 6-1), fixed (Release 8-1)
                         {
                             newWeather = Weather.RAIN;
                             desc = "The rain is less heavy.";
@@ -12790,6 +12497,8 @@ namespace djack.RogueSurvivor.Engine
                 buildType = "barricade";
             else if (inKey.KeyCode == Keys.F)
                 buildType = "fortification";
+            else if (inKey.KeyCode == Keys.R) //@@MP - added (Release 8-1)
+                buildType = "repair door";
             else
             {
                 AddMessage(MakeErrorMessage("Unhandled key error when choosing build type."));
@@ -12805,6 +12514,8 @@ namespace djack.RogueSurvivor.Engine
                 return HandlePlayerBarricade(player);
             else if (buildType == "fortification")
                 return HandlePlayerBuildFortification(player);
+            else if (buildType == "repair door")
+                return HandlePlayerRepairDoor(player);
             else
                 throw new InvalidOperationException("invalid buildType");
         }
@@ -14681,6 +14392,92 @@ namespace djack.RogueSurvivor.Engine
                         {
                             AddMessage(MakeErrorMessage(String.Format("Cannot pull there : {0}.", reason)));
                         }
+                    }
+                }
+            }
+            while (loop);
+
+            // cleanup.
+            ClearOverlays();
+
+            // return if we did an action.
+            return actionDone;
+        }
+
+        bool HandlePlayerRepairDoor(Actor player) //@@MP (Release 8-1)
+        {
+            bool loop = true;
+            bool actionDone = false;
+
+            ClearOverlays();
+            AddOverlay(new OverlayPopup(REPAIR_DOOR_MODE_TEXT, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, new Point(0, 0)));
+
+            do
+            {
+                ///////////////////
+                // 1. Redraw
+                // 2. Get input.
+                // 3. Handle input
+                ///////////////////
+
+                // 1. Redraw
+                RedrawPlayScreen();
+
+                // 2. Get input.
+                Direction dir = WaitDirectionOrCancel();
+
+                // 3. Handle input
+                if (dir == null)
+                {
+                    loop = false;
+                }
+                else if (dir != Direction.NEUTRAL)
+                {
+                    Point pos = player.Location.Position + dir;
+                    if (player.Location.Map.IsInBounds(pos))
+                    {
+                        MapObject mapObj = player.Location.Map.GetMapObjectAt(pos);
+                        if (mapObj != null)
+                        {
+                            // repairing a door.
+                            if (mapObj is DoorWindow)
+                            {
+                                DoorWindow door = mapObj as DoorWindow;
+                                string reason;
+                                if (m_Rules.CanActorRepairDoor(player, door, m_Session.World.Weather, out reason))
+                                {
+                                    DoRepairDoor(player, door);
+                                    RedrawPlayScreen();
+                                    loop = false;
+                                    actionDone = true;
+                                }
+                                else
+                                {
+                                    AddMessage(MakeErrorMessage(String.Format("Cannot repair {0} : {1}.", door.TheName, reason)));
+                                }
+                            }
+                            // repairing a fortification.
+                            else if (mapObj is Fortification)
+                            {
+                                Fortification fort = mapObj as Fortification;
+                                string reason;
+                                if (m_Rules.CanActorRepairFortification(player, m_Session.World.Weather, out reason))
+                                {
+                                    DoRepairFortification(player, fort);
+                                    RedrawPlayScreen();
+                                    loop = false;
+                                    actionDone = true;
+                                }
+                                else
+                                {
+                                    AddMessage(MakeErrorMessage(String.Format("Cannot repair {0} : {1}.", fort.TheName, reason)));
+                                }
+                            }
+                            else
+                                AddMessage(MakeErrorMessage(String.Format("{0} cannot be repaired.", mapObj.TheName)));
+                        }
+                        else
+                            AddMessage(MakeErrorMessage("Nothing to repair there."));
                     }
                 }
             }
@@ -18603,14 +18400,19 @@ namespace djack.RogueSurvivor.Engine
                     //special damage cases
                     if (GameActors.IsSkeletonBranch(defender.Model))
                         dmgRoll = 0;  //flames can't hurt skeletons
-                    else
+                    else //@@MP - fixed damage calculation (Release 8-1)
                     {
+                        int dmg = m_Rules.RollDamage(defender.IsSleeping ? attack.DamageValue * 2 : attack.DamageValue);
+                        dmgRoll = dmg;
+
+                        //fire resistant armor?
                         Item torsoItem = defender.GetEquippedItem(DollPart.TORSO);
                         ItemBodyArmor armor = torsoItem as ItemBodyArmor;
-                        if (torsoItem != null) //fire resistant armor?
+                        if (torsoItem != null)
                         {
-                            int dmg = m_Rules.RollDamage(defender.IsSleeping ? attack.DamageValue * 2 : attack.DamageValue);
-                            dmgRoll -= (dmg * (armor.Fire_Resistance / 100));
+                            double dbl = armor.Fire_Resistance / 100.0f;
+                            dmgRoll -= (int)(dbl * dmg);
+                            //dmgRoll -= (dmg * (armor.Fire_Resistance / 100));
                         }
                     }
 
@@ -18651,7 +18453,7 @@ namespace djack.RogueSurvivor.Engine
                         Item crossbowBolt = new ItemAmmo(GameItems.AMMO_BOLTS);
                         crossbowBolt.Quantity = 1;
                         
-                        if ((defender.Model.Abilities.HasInventory) && (!defender.Inventory.IsEmpty)) //undeads have no inventory
+                        if (defender.Model.Abilities.HasInventory && !defender.Inventory.IsEmpty) //undeads have no inventory
                         { //their invetory is not empty, chance to force them to 'drop' an item. this makes bows more powerful
                             int randomDropChance = m_Rules.Roll(0, 10);
                             if (randomDropChance <= 0) //10% chance to force the defender to drop an item
@@ -18734,7 +18536,7 @@ namespace djack.RogueSurvivor.Engine
                             case AmmoType.GRENADES: cause = "hit by an explosive"; break;
                             case AmmoType.MINIGUN: cause = "shredded by bullets"; break;
                         };
-                        KillActor(attacker, defender, cause);
+                        KillActor(attacker, defender, cause, rm.IsFlameWeapon);
                     }
                     else //defender still alive
                     {
@@ -19765,7 +19567,7 @@ namespace djack.RogueSurvivor.Engine
                             cause = "incinerated";
                         else if (itemModel == m_GameItems.PLASMA_CHARGE_PRIMED) //@@MP - special case for BFGs (Release 7-6)
                             cause = "disintegrated";
-                        KillActor(null, victim, cause);
+                        KillActor(null, victim, cause, fireCausedIt);
 
                         // message?
                         if (IsVisibleToPlayer(victim))
@@ -22120,6 +21922,52 @@ namespace djack.RogueSurvivor.Engine
             int barricadingCost = Rules.BASE_ACTION_COST;
             SpendActorActionPoints(actor, barricadingCost);
         }
+
+        public void DoRepairDoor(Actor actor, DoorWindow door) //@@MP (Release 8-1)
+        {
+            // consume barricading material
+            int consumed = 0;
+            int materialBarricadingValue = 0;
+            while (consumed < 2)
+            {
+                // get barricading item.
+                ItemBarricadeMaterial it = actor.Inventory.GetSmallestStackByType(typeof(ItemBarricadeMaterial)) as ItemBarricadeMaterial; // alpha10, smallest stack first
+                ItemBarricadeMaterialModel m = it.Model as ItemBarricadeMaterialModel;
+                materialBarricadingValue = m.BarricadingValue;
+                actor.Inventory.Consume(it);
+                ++consumed;
+            }
+
+            // do it.
+            if (door.State != DoorWindow.STATE_BROKEN)
+                door.HitPoints = Math.Min(door.HitPoints + m_Rules.ActorBarricadingPoints(actor, materialBarricadingValue), Rules.BARRICADING_MAX);
+            else
+            {
+                Map map = door.Location.Map;
+                Point doorPT = door.Location.Position;
+                map.RemoveMapObjectAt(doorPT.X, doorPT.Y);
+                DoorWindow newDoor = m_TownGenerator.MakeObjWoodenDoor();
+                actor.Location.Map.PlaceMapObjectAt(newDoor, doorPT);
+                newDoor.HitPoints = Math.Min(m_Rules.ActorBarricadingPoints(actor, materialBarricadingValue), Rules.BARRICADING_MAX);
+            }
+
+            // message.
+            bool isVisible = IsVisibleToPlayer(actor) || IsVisibleToPlayer(door);
+            if (isVisible)
+            {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING_PLAYER, AudioPriority.PRIORITY_EVENT);
+                AddMessage(MakeMessage(actor, Conjugate(actor, VERB_BARRICADE), door));
+            }
+            else if (IsAudibleToPlayer(door.Location, Rules.MODERATE_NOISE_RADIUS))
+            {
+                m_SFXManager.PlayIfNotAlreadyPlaying(GameSounds.BUILDING_NEARBY, AudioPriority.PRIORITY_EVENT);
+                AddMessage(MakePlayerCentricMessage("You hear some sort of construction work", door.Location.Position));
+            }
+
+            // spend AP.
+            int repairingCost = Rules.BASE_ACTION_COST;
+            SpendActorActionPoints(actor, repairingCost);
+        }
 #endregion
 
 #region -Building & Repairing
@@ -23506,7 +23354,7 @@ namespace djack.RogueSurvivor.Engine
                 DoWakeUp(victim);
         }
 
-        public void KillActor(Actor killer, Actor deadGuy, string reason, bool canDropCorpse = true) // alpha10, drop corpse optional
+        public void KillActor(Actor killer, Actor deadGuy, string reason, bool causedByFire = false, bool canDropCorpse = true) // alpha10, drop corpse optional. //@@MP- added causedByFire (Release 8-1)
         {
             /*// Sanity check.
 #if false
@@ -23644,7 +23492,7 @@ namespace djack.RogueSurvivor.Engine
             // Remains
             // note: corpses cause larger saved games and slow turn processing
             if (deadGuy.Model.Abilities.IsUndead)
-                UndeadRemains(deadGuy.Location.Map, deadGuy.Location.Position, deadGuy.TheName);
+                UndeadRemains(deadGuy.Location.Map, deadGuy.Location.Position, deadGuy.TheName, causedByFire);
             else if (canDropCorpse)
                 DropCorpse(deadGuy);
 
@@ -24180,7 +24028,10 @@ namespace djack.RogueSurvivor.Engine
             }
         }
 
-        public static void UndeadRemains(Map map, Point position, string thename) //@@MP - drop remains for a destroyed undead. //@@MP - made static (Release 5-7)
+        /// <summary>
+        /// drop remains for a destroyed undead
+        /// </summary>
+        public static void UndeadRemains(Map map, Point position, string thename, bool causedByFire) //@@MP - made static (Release 5-7), distinct sprite when the death came by fire (Release 8-1)
         {
             thename = thename.ToLower();
             Tile tile = map.GetTileAt(position.X,position.Y);
@@ -24202,12 +24053,20 @@ namespace djack.RogueSurvivor.Engine
                         map.AddTimer(new TaskRemoveDecoration((WorldTime.TURNS_PER_DAY * 4), position.X, position.Y, GameImages.DECO_RAT_ZOMBIE_REMAINS)); //@@MP (Release 5-7)
                     }
                 }
+                else if (causedByFire) //@@MP (Release 8-1)
+                {
+                    if (!tile.HasDecoration(GameImages.DECO_ZOMBIE_REMAINS_BURNED))
+                    {
+                        tile.AddDecoration(GameImages.DECO_ZOMBIE_REMAINS_BURNED);
+                        map.AddTimer(new TaskRemoveDecoration((WorldTime.TURNS_PER_DAY * 4), position.X, position.Y, GameImages.DECO_ZOMBIE_REMAINS_BURNED));
+                    }
+                }
                 else
                 {
-                    if (!tile.HasDecoration(GameImages.DECO_ZOMBIE_REMAINS))
+                    if (!tile.HasDecoration(GameImages.DECO_ZOMBIE_REMAINS_RAW))
                     {
-                        tile.AddDecoration(GameImages.DECO_ZOMBIE_REMAINS);
-                        map.AddTimer(new TaskRemoveDecoration((WorldTime.TURNS_PER_DAY * 4), position.X, position.Y, GameImages.DECO_ZOMBIE_REMAINS)); //@@MP (Release 5-7)
+                        tile.AddDecoration(GameImages.DECO_ZOMBIE_REMAINS_RAW);
+                        map.AddTimer(new TaskRemoveDecoration((WorldTime.TURNS_PER_DAY * 4), position.X, position.Y, GameImages.DECO_ZOMBIE_REMAINS_RAW)); //@@MP (Release 5-7)
                     }
                 }
             }
@@ -24460,7 +24319,7 @@ namespace djack.RogueSurvivor.Engine
                     RedrawPlayScreen();
                     AnimDelay(DELAY_SHORT, false);
                 }
-                KillActor(null, actor, "burned alive");
+                KillActor(null, actor, "burned alive", true);
                 
                 if (!actor.Model.Abilities.IsUndead)
                     SeeingCauseInsanity(actor.Location, Rules.SANITY_HIT_EATEN_ALIVE, String.Format("{0} burnt alive", actor.Name));
@@ -24493,7 +24352,7 @@ namespace djack.RogueSurvivor.Engine
                             RedrawPlayScreen();
                             AnimDelay(DELAY_SHORT, false);
                         }
-                        KillActor(null, actor, "died in flames");
+                        KillActor(null, actor, "died in flames", true);
                         
                         if (!actor.Model.Abilities.IsUndead) //@@MP - had this check in the wrong spot in R5-3 (Release 5-7)
                             SeeingCauseInsanity(actor.Location, Rules.SANITY_HIT_EATEN_ALIVE, String.Format("{0} burnt alive", actor.Name));
@@ -25557,9 +25416,9 @@ namespace djack.RogueSurvivor.Engine
                 if (tile.HasDecorations)
                     foreach (string deco in tile.Decorations)
                     {
-                        List<string> donotrenderthese = new List<string> { GameImages.DECO_ZOMBIE_REMAINS, GameImages.DECO_SKELETON_REMAINS, GameImages.DECO_RAT_ZOMBIE_REMAINS,
-                            GameImages.DECO_LIT_CANDLE, GameImages.DECO_VOMIT, GameImages.DECO_BLOODIED_FLOOR, GameImages.DECO_BLOODIED_FLOOR_SMALL, GameImages.DECO_BLOODIED_WALL,
-                            GameImages.DECO_BLOODIED_WALL_SMALL } ;
+                        List<string> donotrenderthese = new List<string> { GameImages.DECO_ZOMBIE_REMAINS_RAW, GameImages.DECO_ZOMBIE_REMAINS_BURNED, GameImages.DECO_SKELETON_REMAINS,
+                            GameImages.DECO_RAT_ZOMBIE_REMAINS, GameImages.DECO_LIT_CANDLE, GameImages.DECO_VOMIT, GameImages.DECO_BLOODIED_FLOOR, GameImages.DECO_BLOODIED_FLOOR_SMALL,
+                            GameImages.DECO_BLOODIED_WALL, GameImages.DECO_BLOODIED_WALL_SMALL } ;
                         if (!donotrenderthese.Contains(deco)) //@@MP - added a filter for perishable stuff (Release 7-6)
                             DrawGrayLevelHandler(deco, screen.X, screen.Y, grayLevelType);
                     }
@@ -27699,6 +27558,7 @@ namespace djack.RogueSurvivor.Engine
             }
             #endregion
 
+            /*    //@@MP - unique NPCs removed (Release 8-1)
             // check for uniques, always in surface.
             if (m_Rules.RollChance(UNIQUE_REFUGEE_CHECK_CHANCE))
             {
@@ -27717,6 +27577,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
+            */
         }
 
         void FireEvent_UniqueActorArrive(Map map, UniqueActor unique)
@@ -28355,7 +28216,7 @@ namespace djack.RogueSurvivor.Engine
                 // message.
                 ClearMessages();
                 AddMessage(new Message("You hear shooting and honking in the distance.", m_Session.WorldTime.TurnCounter, Color.LightGreen));
-                AddMessage(MakePlayerCentricMessage("A van has stopped", bandScout.Location.Position));
+                AddMessage(MakePlayerCentricMessage("A vehicle has stopped", bandScout.Location.Position));
                 if (!m_Player.IsBotPlayer) //alpha 10.1 check
                 {
                     AddMessagePressEnter();
@@ -28369,7 +28230,88 @@ namespace djack.RogueSurvivor.Engine
                 m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "A band of survivors entered the district.");
             }
         }
+        #endregion
+
+#region --CHAR scientists
+        //@@MP - added (Release 8-1)
+
+        bool CheckForEvent_CHARScientists(Map map)
+        {
+            // date.
+            if (map.LocalTime.Day < SCIENTISTS_TEAM_DAY)
+                return false;
+
+            // last time : at least N day
+            if (HasRaidHappenedSince(RaidType.CHAR_SCIENTISTS, map.District, map.LocalTime, SCIENTISTS_TEAM_DAY_GAP * WorldTime.TURNS_PER_DAY))
+                return false;
+
+            // check chance.
+            if (!m_Rules.RollChance(SCIENTISTS_TEAM_CHANCE_PER_TURN))
+                return false;
+
+            // clear.
+            return true;
+        }
+
+        void FireEvent_CHARScientists(Map map)
+        {
+            // remember time.
+            m_Session.SetLastRaidTime(RaidType.CHAR_SCIENTISTS, map.District, map.LocalTime.TurnCounter);
+
+            // do it.
+            // spawn team leader then colleagues.
+            Actor teamLeader = SpawnNewCHARScientistLeader(map);
+            if (teamLeader != null)
+            {
+                for (int i = 0; i < SCIENTISTS_TEAM_SCIENTISTS - 1; i++)
+                {
+                    // spawn colleague.
+                    Actor colleague = SpawnNewCHARScientist(map, teamLeader.Location.Position);
+                    // add to leader.
+                    if (colleague != null)
+                        teamLeader.AddFollower(colleague);
+                }
+                for (int i = 0; i < SCIENTISTS_TEAM_GUARDS - 1; i++)
+                {
+                    // spawn guard.
+                    Actor guard = SpawnNewCHARGuard(map, teamLeader.Location.Position);
+                    // add to leader.
+                    if (guard != null)
+                        teamLeader.AddFollower(guard);
+                }
+            }
+            if (teamLeader == null)
+                return;
+
+            // notify AI.
+            NotifyOrderablesAI(map, RaidType.CHAR_SCIENTISTS, teamLeader.Location.Position);
+
+            // announce.
+            if (map == m_Player.Location.Map && !m_Player.IsSleeping && !m_Player.Model.Abilities.IsUndead)
+            {
+                // music.
+                m_MusicManager.StopAll();
+                m_MusicManager.Play(GameMusics.CHAR_RESEARCHERS, AudioPriority.PRIORITY_EVENT);
+
+                // message.
+                ClearMessages();
+                AddMessage(new Message("You hear a strange, electronic whirring in the distance.", m_Session.WorldTime.TurnCounter, Color.LightGreen));
+                AddMessage(MakePlayerCentricMessage("A vehicle has stopped", teamLeader.Location.Position));
+                if (!m_Player.IsBotPlayer) //alpha 10.1 check
+                {
+                    AddMessagePressEnter();
+                    ClearMessages();
+                }
+            }
+
+            // scoring event.
+            if (map == m_Player.Location.Map)
+            {
+                m_Session.Scoring.AddEvent(m_Session.WorldTime.TurnCounter, "A CHAR research team entered the district.");
+            }
+        }
 #endregion
+
         static void NotifyOrderablesAI(Map map, RaidType raid, Point position) //@@MP - made static (Release 5-7)
         {
             foreach (Actor a in map.Actors)
@@ -28944,6 +28886,71 @@ namespace djack.RogueSurvivor.Engine
 
             // done.
             return spawned ? newBO : null;
+        }
+
+        Actor SpawnNewCHARScientistLeader(Map map) //@@MP (Release 8-1)
+        {
+            ////////////////
+            // Create actor.
+            ////////////////
+            Actor newCHARScientistLeader = m_TownGenerator.CreateNewCHARScientist(map.LocalTime.TurnCounter);
+
+            // skills.
+            m_TownGenerator.GiveStartingSkillToActor(newCHARScientistLeader, Skills.IDs.LEADERSHIP);
+
+            ///////////////////
+            // Try to spawn it.
+            ///////////////////
+            bool spawned = SpawnActorOnMapBorder(map, newCHARScientistLeader, SPAWN_DISTANCE_TO_PLAYER, true);
+
+            // done.
+            return spawned ? newCHARScientistLeader : null;
+        }
+
+        Actor SpawnNewCHARScientist(Map map, Point leaderPos) //@@MP (Release 8-1)
+        {
+            ////////////////
+            // Create actor.
+            ////////////////
+            Actor newCHARScientist = m_TownGenerator.CreateNewCHARScientist(map.LocalTime.TurnCounter);
+
+            // skills.
+            m_TownGenerator.GiveStartingSkillToActor(newCHARScientist, Skills.IDs.LEADERSHIP);
+
+            ///////////////////
+            // Try to spawn it.
+            ///////////////////
+            bool spawned = SpawnActorNear(map, newCHARScientist, SPAWN_DISTANCE_TO_PLAYER, leaderPos, 4);
+
+            // done.
+            return spawned ? newCHARScientist : null;
+        }
+
+        Actor SpawnNewCHARGuard(Map map, Point leaderPos) //@@MP (Release 8-1)
+        {
+            ////////////////
+            // Create actor.
+            ////////////////
+            Actor newCHARGuard = m_TownGenerator.CreateNewCHARGuard(map.LocalTime.TurnCounter);
+
+            // items.
+            newCHARGuard.Inventory.AddAll(m_TownGenerator.MakeItemTacticalShotgun());
+            newCHARGuard.Inventory.AddAll(m_TownGenerator.MakeItemShotgunAmmo());
+            newCHARGuard.Inventory.AddAll(m_TownGenerator.MakeItemShotgunAmmo());
+            newCHARGuard.Inventory.AddAll(m_TownGenerator.MakeItemShotgunAmmo());
+
+            // skills.
+            m_TownGenerator.GiveStartingSkillToActor(newCHARGuard, Skills.IDs.AGILE);
+            m_TownGenerator.GiveStartingSkillToActor(newCHARGuard, Skills.IDs.FIREARMS);
+            m_TownGenerator.GiveStartingSkillToActor(newCHARGuard, Skills.IDs.TOUGH);
+
+            ///////////////////
+            // Try to spawn it.
+            ///////////////////
+            bool spawned = SpawnActorNear(map, newCHARGuard, SPAWN_DISTANCE_TO_PLAYER, leaderPos, 4);
+
+            // done.
+            return spawned ? newCHARGuard : null;
         }
 
         Actor SpawnNewFeralDog(Map map) //@@MP (Release 7-3)
@@ -30640,7 +30647,7 @@ namespace djack.RogueSurvivor.Engine
 
                                 // transformation.
                                 // - zombify.
-                                KillActor(null, prisoner, "transformation", false);  // alpha10 don't drop corpse!
+                                KillActor(null, prisoner, "transformation", false, false);  // alpha10 don't drop corpse!
                                 Actor monster = Zombify(null, prisoner, prisoner.Location.Map, prisoner.Location.Position, false);
                                 // - turn into a ZP.
                                 monster.Model = m_GameActors.ZombiePrince;
@@ -30669,13 +30676,13 @@ namespace djack.RogueSurvivor.Engine
             }
 #endregion
 
-            // 5. Sighting Jason Myer : !jasonmyers
+            // 5. Sighting the deranged patient : !jasonmyers
 #region
-            if (player != m_Session.UniqueActors.JasonMyers.TheActor)
+            if (player != m_Session.UniqueActors.DerangedPatient.TheActor)
             {
-                if (!m_Session.UniqueActors.JasonMyers.TheActor.IsDead)
+                if (!m_Session.UniqueActors.DerangedPatient.TheActor.IsDead)
                 {
-                    if (IsVisibleToPlayer(m_Session.UniqueActors.JasonMyers.TheActor))
+                    if (IsVisibleToPlayer(m_Session.UniqueActors.DerangedPatient.TheActor))
                     {
                         lock (m_Session) // thread safe
                         {
@@ -30687,10 +30694,10 @@ namespace djack.RogueSurvivor.Engine
                             }
 
                             // message if 1st time.
-                            if (!m_Session.Scoring.HasSighted(m_Session.UniqueActors.JasonMyers.TheActor.Model.ID))
+                            if (!m_Session.Scoring.HasSighted(m_Session.UniqueActors.DerangedPatient.TheActor.Model.ID))
                             {
                                 ClearMessages();
-                                AddMessage(new Message("Who they hell are you!?", m_Session.WorldTime.TurnCounter, Color.Yellow));
+                                AddMessage(new Message("Who the hell are you!?", m_Session.WorldTime.TurnCounter, Color.Yellow));
                                 if (!m_Player.IsBotPlayer) //alpha 10.1
                                     AddMessagePressEnter();
                             }
@@ -32475,7 +32482,7 @@ namespace djack.RogueSurvivor.Engine
             foreach (Actor actor in m_Player.Location.Map.Actors.ToList()) //tolist allows modifying the set within the loop
             {
                 if (!actor.IsPlayer)
-                    KillActor(actor, actor, "testing", true);
+                    KillActor(actor, actor, "testing", true, true);
             }
         }
 

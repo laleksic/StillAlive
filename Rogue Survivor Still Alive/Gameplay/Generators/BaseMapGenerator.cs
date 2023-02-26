@@ -31,7 +31,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         static readonly string[] MALE_EYES = new string[] { GameImages.MALE_EYES1, GameImages.MALE_EYES2, GameImages.MALE_EYES3, GameImages.MALE_EYES4, GameImages.MALE_EYES5, GameImages.MALE_EYES6 };
 
         static readonly string[] FEMALE_SKINS = new string[] { GameImages.FEMALE_SKIN1, GameImages.FEMALE_SKIN2, GameImages.FEMALE_SKIN3, GameImages.FEMALE_SKIN4, GameImages.FEMALE_SKIN5 };
-        static readonly string[] FEMALE_HEADS = new string[] { GameImages.FEMALE_HAIR1, GameImages.FEMALE_HAIR2, GameImages.FEMALE_HAIR3, GameImages.FEMALE_HAIR4, GameImages.FEMALE_HAIR5, GameImages.FEMALE_HAIR6, GameImages.FEMALE_HAIR7 };
+        static readonly string[] FEMALE_HEADS = new string[] { GameImages.FEMALE_HAIR1, GameImages.FEMALE_HAIR2, GameImages.FEMALE_HAIR3, GameImages.FEMALE_HAIR4, GameImages.FEMALE_HAIR5, GameImages.FEMALE_HAIR6, GameImages.FEMALE_HAIR7, GameImages.FEMALE_HAIR8 };
         static readonly string[] FEMALE_TORSOS = new string[] { GameImages.FEMALE_SHIRT1, GameImages.FEMALE_SHIRT2, GameImages.FEMALE_SHIRT3, GameImages.FEMALE_SHIRT4, GameImages.FEMALE_SHIRT5 };
         static readonly string[] FEMALE_LEGS = new string[] { GameImages.FEMALE_PANTS1, GameImages.FEMALE_PANTS2, GameImages.FEMALE_PANTS3, GameImages.FEMALE_PANTS4, GameImages.FEMALE_PANTS5 };
         static readonly string[] FEMALE_SHOES = new string[] { GameImages.FEMALE_SHOES1, GameImages.FEMALE_SHOES2, GameImages.FEMALE_SHOES3, GameImages.FEMALE_SHOES4, GameImages.FEMALE_SHOES5 };
@@ -43,6 +43,10 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         static readonly string[] CHARGUARD_HEADS = new string[] { GameImages.CHARGUARD_HAIR };
         static readonly string[] CHARGUARD_LEGS = new string[] { GameImages.CHARGUARD_PANTS };
+
+        static readonly string[] CHARSCIENTIST_HEAD = new string[] { GameImages.CHARSCIENTIST_HEAD }; //@@MP (Release 8-1)
+        static readonly string[] CHARSCIENTIST_TORSO = new string[] { GameImages.CHARSCIENTIST_SHIRT }; //@@MP (Release 8-1)
+        static readonly string[] CHARSCIENTIST_LEGS = new string[] { GameImages.CHARSCIENTIST_PANTS }; //@@MP (Release 8-1)
 
         static readonly string[] PRISONER_TORSO = new string[] { GameImages.PRISONER_UNIFORM }; //@@MP (Release 7-6)
         static readonly string[] PRISONER_LEGS = new string[] { GameImages.PRISONER_PANTS }; //@@MP (Release 7-6)
@@ -162,6 +166,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             actor.Doll.AddDecoration(DollPart.SKIN, MALE_SKINS[roller.Roll(0, MALE_SKINS.Length)]);
             actor.Doll.AddDecoration(DollPart.HEAD, CHARGUARD_HEADS[roller.Roll(0, CHARGUARD_HEADS.Length)]);
             actor.Doll.AddDecoration(DollPart.LEGS, CHARGUARD_LEGS[roller.Roll(0, CHARGUARD_LEGS.Length)]);
+        }
+
+        public static void DressCHARScientist(DiceRoller roller, Actor actor) //@@MP (Release 8-1)
+        {
+            actor.Doll.RemoveAllDecorations();
+            actor.Doll.AddDecoration(DollPart.SKIN, MALE_SKINS[roller.Roll(0, MALE_SKINS.Length)]);
+            actor.Doll.AddDecoration(DollPart.TORSO, GameImages.CHARSCIENTIST_SHIRT);
+            actor.Doll.AddDecoration(DollPart.HEAD, GameImages.CHARSCIENTIST_HEAD);
+            actor.Doll.AddDecoration(DollPart.LEGS, GameImages.CHARSCIENTIST_PANTS);
         }
 
         public static void DressBlackOps(DiceRoller roller, Actor actor) //@@MP - made static (Release 5-7)
@@ -363,7 +376,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         #endregion
 
         #region Common map objects
-        protected static DoorWindow MakeObjWoodenDoor() //@@MP - made static (Release 5-7)
+        public DoorWindow MakeObjWoodenDoor()
         {
             return new DoorWindow("wooden door", GameImages.OBJ_WOODEN_DOOR_CLOSED, GameImages.OBJ_WOODEN_DOOR_OPEN, GameImages.OBJ_WOODEN_DOOR_BROKEN, DoorWindow.BASE_HITPOINTS, DoorWindow.STATE_CLOSED)
             {
@@ -1420,14 +1433,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             return new ItemMeleeWeapon(m_Game.GameItems.SMALL_HAMMER);
         }
 
-        public Item MakeItemJasonMyersAxe()
-        {
-            return new ItemMeleeWeapon(m_Game.GameItems.UNIQUE_JASON_MYERS_AXE)
-            {
-                IsUnique = true
-            };
-        }
-
         public Item MakeItemShovel()
         {
             return new ItemMeleeWeapon(m_Game.GameItems.SHOVEL);
@@ -1475,7 +1480,15 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeItemRandomPistol()
         {
-            return m_Game.Rules.RollChance(50) ? MakeItemPistol() : MakeItemRevolver();
+            int randomItem = m_Game.Rules.Roll(0, 3);
+            switch (randomItem)
+            {
+                case 0: return new ItemRangedWeapon(m_Game.GameItems.PISTOL);
+                case 1: return new ItemRangedWeapon(m_Game.GameItems.REVOLVER);
+                case 2: return new ItemRangedWeapon(m_Game.GameItems.VINTAGE_PISTOL);
+                default:
+                    throw new InvalidOperationException("unhandled roll");
+            }
         }
 
         public Item MakeItemLightPistolAmmo()
@@ -2147,7 +2160,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
         public Item MakeItemRandomAntiqueWeapon()
         {
-            int roll = m_Game.Rules.Roll(0, 8);
+            int roll = m_Game.Rules.Roll(0, 9);
             switch (roll)
             {
                 case 0: return MakeItemFlail();
@@ -2158,6 +2171,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 case 5: return MakeItemSickle();
                 case 6: return MakeItemHolyHandGrenade();
                 case 7: return MakeItemUniqueBookOfArmaments();
+                case 8: return MakeItemKatana();
                 default:
                     throw new InvalidOperationException("unhandled roll");
             }
@@ -2320,8 +2334,42 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new ItemBodyArmor(m_Game.GameItems.BIOHAZARD_SUIT)
             {
-                IsForbiddenToAI = true,
+                //IsForbiddenToAI = true,   //@@MP - removed, as CHAR scientists will wear them (Release 8-1)
             };
+        }
+
+        //@@MP (Release 8-1)
+        public Item MakeItemBarbedWireBat()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.BARBED_WIRE_BAT);
+        }
+
+        public Item MakeItemKatana()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.KATANA);
+        }
+
+        public Item MakeItemKeyboard()
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.KEYBOARD);
+        }
+
+        public Item MakeItemVintagePistol()
+        {
+            return new ItemRangedWeapon(m_Game.GameItems.VINTAGE_PISTOL);
+        }
+
+        public Item MakeItemBonesaw()  //replaces Jason Myer's axe
+        {
+            return new ItemMeleeWeapon(m_Game.GameItems.BONESAW)
+            {
+                IsUnique = true
+            };
+        }
+
+        public Item MakeItemCHARLaptop()
+        {
+            return new Item(m_Game.GameItems.CHAR_LAPTOP);
         }
         #endregion
 

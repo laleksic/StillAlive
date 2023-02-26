@@ -60,44 +60,6 @@ namespace djack.RogueSurvivor.Gameplay.AI
         // alpha10
         const string CANT_GET_ITEM_EMOTE = "Mmmh. Looks like I can't reach what I want.";
 
-        // Unique emotes.
-        static string[] BIG_BEAR_EMOTES =
-        {
-            "You fool",                 // flee
-            "I'm fooled!",              // trapped
-            "Be a man"                  // fight
-        };
-        static string[] FAMU_FATARU_EMOTES =
-        {
-            "Bakemono",       // flee
-            "Nani!?",         // trapped
-            "Kawaii"      // fight
-        };
-        static string[] SANTAMAN_EMOTES =
-        {
-            "DEM BLOODY KIDS!",                          // flee
-            "LEAVE ME ALONE I AIN'T HAVE NO PRESENTS!",  // trapped
-            "MERRY FUCKIN' CHRISTMAS"                   // fight
-        };
-        static string[] ROGUEDJACK_EMOTES =
-        {
-            "Sorry butt I am le busy,",                 // flee
-            "I should have redone ze AI rootines!",     // trapped
-            "Let me test le something on you"           // fight
-        };
-        static string[] DUCKMAN_EMOTES =
-        {
-            "I'LL QUACK YOU BACK",     // flee
-            "THIS IS MY FINAL QUACK",  // trapped
-            "I'M GONNA QUACK YOU"      // fight
-        };
-        static string[] HANS_VON_HANZ_EMOTES =
-        {
-            "RAUS",             // flee
-            "MEIN FUHRER!",     // trapped
-            "KOMM HIER BITE"    // fight
-        };        
-
         #endregion
 
         #region Fields
@@ -133,28 +95,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
         {
             // emotes!
             if (m_Emotes == null)
-            {
-                // FIXME: ugly code.
-                if (m_Actor.IsUnique)
-                {
-                    if (m_Actor == game.Session.UniqueActors.BigBear.TheActor)
-                        m_Emotes = BIG_BEAR_EMOTES;
-                    else if (m_Actor == game.Session.UniqueActors.FamuFataru.TheActor)
-                        m_Emotes = FAMU_FATARU_EMOTES;
-                    else if (m_Actor == game.Session.UniqueActors.Santaman.TheActor)
-                        m_Emotes = SANTAMAN_EMOTES;
-                    else if (m_Actor == game.Session.UniqueActors.Roguedjack.TheActor)
-                        m_Emotes = ROGUEDJACK_EMOTES;
-                    else if (m_Actor == game.Session.UniqueActors.Duckman.TheActor)
-                        m_Emotes = DUCKMAN_EMOTES;
-                    else if (m_Actor == game.Session.UniqueActors.HansVonHanz.TheActor)
-                        m_Emotes = HANS_VON_HANZ_EMOTES;
-                    else
-                        m_Emotes = FIGHT_EMOTES;
-                }
-                else
-                    m_Emotes = FIGHT_EMOTES;
-            }
+                m_Emotes = FIGHT_EMOTES;
 
             // sense.
             return m_LOSSensor.Sense(game, m_Actor);

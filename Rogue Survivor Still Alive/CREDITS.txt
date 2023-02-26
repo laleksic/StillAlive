@@ -174,3 +174,5 @@ The following sounds all carry the Pixabay License (https://pixabay.com/service/
 -Shopping mall : https://opengameart.org/content/bossa-nova by Joth
 -Options music volume preview : https://freesound.org/people/Scrampunk/sounds/424416/ by Scrampunk
 -Options ambients volume preview : https://freesound.org/people/DWOBoyle/sounds/136691/ by DWOBoyle
+-Survivors wave : https://freesound.org/people/uEffects/sounds/381394/ by uEffects
+Note: all other musics not listed here were created and under the copyright of Jacques Ruiz (aka RoguedJack).

@@ -254,7 +254,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string DECO_BLOODIED_WALL = @"Tiles\Decoration\bloodied_wall";
         public const string DECO_BLOODIED_FLOOR_SMALL = @"Tiles\Decoration\bloodied_floor_small"; //@@MP (Release 2)
         public const string DECO_BLOODIED_WALL_SMALL = @"Tiles\Decoration\bloodied_wall_small"; //@@MP (Release 2)
-        public const string DECO_ZOMBIE_REMAINS = @"Tiles\Decoration\zombie_remains";
+        public const string DECO_ZOMBIE_REMAINS_RAW = @"Tiles\Decoration\zombie_remains_raw";
+        public const string DECO_ZOMBIE_REMAINS_BURNED = @"Tiles\Decoration\zombie_remains_burned"; //@@MP (Release 8-1)
         public const string DECO_SKELETON_REMAINS = @"Tiles\Decoration\skeleton_remains"; //@@MP (Release 2)
         public const string DECO_VOMIT = @"Tiles\Decoration\vomit";
         public const string DECO_RAT_ZOMBIE_REMAINS = @"Tiles\Decoration\rat_zombie_remains"; //@@MP (Release 5-4)
@@ -846,13 +847,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ACTOR_ZOMBIE_PRINCE = @"Actors\zombie_prince";
         public const string ACTOR_RAT_ZOMBIE = @"Actors\rat_zombie";
         public const string ACTOR_SEWERS_THING = @"Actors\sewers_thing";
-        public const string ACTOR_JASON_MYERS = @"Actors\jason_myers";
-        public const string ACTOR_BIG_BEAR = @"Actors\big_bear";
-        public const string ACTOR_FAMU_FATARU = @"Actors\famu_fataru";
-        public const string ACTOR_SANTAMAN = @"Actors\santaman";
-        public const string ACTOR_ROGUEDJACK = @"Actors\roguedjack";
-        public const string ACTOR_DUCKMAN = @"Actors\duckman";
-        public const string ACTOR_HANS_VON_HANZ = @"Actors\hans_von_hanz";
+        public const string ACTOR_DERANGED_PATIENT = @"Actors\deranged_patient";  //@@MP - replaces Jason Myers (Release 8-1)
         #endregion
 
         #region Actor decorations
@@ -910,6 +905,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string FEMALE_HAIR5 = @"Actors\Decoration\female_hair5";
         public const string FEMALE_HAIR6 = @"Actors\Decoration\female_hair6";
         public const string FEMALE_HAIR7 = @"Actors\Decoration\female_hair7";
+        public const string FEMALE_HAIR8 = @"Actors\Decoration\female_hair8"; //@@MP (Release 8-1)
         public const string FEMALE_SHIRT1 = @"Actors\Decoration\female_shirt1";
         public const string FEMALE_SHIRT2 = @"Actors\Decoration\female_shirt2";
         public const string FEMALE_SHIRT3 = @"Actors\Decoration\female_shirt3";
@@ -980,6 +976,12 @@ namespace djack.RogueSurvivor.Gameplay
         public const string PRISONER_UNIFORM = @"Actors\Decoration\prisoner_uniform";
         public const string PRISONER_PANTS = @"Actors\Decoration\prisoner_pants";
         public const string PRISONER_SHOES = @"Actors\Decoration\prisoner_shoes";
+
+        //@@MP (Release 8-1)
+        public const string CHARSCIENTIST_HEAD = @"Actors\Decoration\charscientist_head";
+        public const string CHARSCIENTIST_SHIRT = @"Actors\Decoration\charscientist_shirt";
+        public const string CHARSCIENTIST_PANTS = @"Actors\Decoration\charscientist_pants";
+
         #endregion
 
         #region Items
@@ -1008,19 +1010,20 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_ARMY_RIFLE3 = @"Items\item_army_rifle3"; //@@MP (Release 7-6)
         public const string ITEM_ARMY_RIFLE4 = @"Items\item_army_rifle4"; //@@MP (Release 7-6)
         public const string ITEM_BARBED_WIRE = @"Items\item_barbed_wire";
+        public const string ITEM_BARBED_WIRE_BAT = @"Items\item_barbed_wire_bat"; //@@MP (Release 8-1)
         public const string ITEM_BASEBALL_BAT = @"Items\item_baseball_bat";
         public const string ITEM_BEAR_TRAP = @"Items\item_bear_trap";
         public const string ITEM_BEER_BOTTLE_BROWN = @"Items\item_beer_bottle_brown"; //@@MP (Release 4)
         public const string ITEM_BEER_BOTTLE_GREEN = @"Items\item_beer_bottle_green"; //@@MP (Release 4)
         public const string ITEM_BEER_CAN_BLUE = @"Items\item_beer_can_blue"; //@@MP (Release 4)
         public const string ITEM_BEER_CAN_RED = @"Items\item_beer_can_red"; //@@MP (Release 4)
-        public const string ITEM_BIGBEAR_BAT = @"Items\item_BigBear_bat";
         public const string ITEM_BIG_FLASHLIGHT = @"Items\item_big_flashlight";
         public const string ITEM_BIG_FLASHLIGHT_OUT = @"Items\item_big_flashlight_out";
         public const string ITEM_BINOCULARS = @"Items\item_binoculars"; //@MP (Release 7-1)
         public const string ITEM_BIO_FORCE_GUN = @"Items\item_bio_force_gun"; //@@MP (Release 7-6)
         public const string ITEM_BIOHAZARD_SUIT = @"Items\item_biohazard_suit"; //@@MP (Release 7-6)
         public const string ITEM_BLACKOPS_GPS = @"Items\item_blackops_gps";
+        public const string ITEM_BONESAW = @"Items\item_bonesaw"; //@@MP (Release 8-1)
         public const string ITEM_BOOK_CHAR = @"Items\item_book_CHAR";
         public const string ITEM_BOOK_BLUE = @"Items\item_book_blue"; //@@MP (Release 7-6)
         public const string ITEM_BOOK_GREEN = @"Items\item_book_green"; //@@MP (Release 7-6)
@@ -1033,6 +1036,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_CELL_PHONE = @"Items\item_cellphone";
         public const string ITEM_CHAINSAW = @"Items\item_chainsaw"; //@@MP (Release 7-1)
         public const string ITEM_CHAR_DOCUMENT = @"Items\item_CHAR_document"; //@@MP (Release 3)
+        public const string ITEM_CHAR_LAPTOP = @"Items\item_CHAR_laptop"; //@@MP (Release 8-1)
         public const string ITEM_CHAR_LIGHT_BODYARMOR = @"Items\item_CHAR_light_bodyarmor";
         public const string ITEM_CHICKEN_EGG = @"Items\item_chicken_egg"; //@@MP (Release 7-6)
         public const string ITEM_CIGARETTES = @"Items\item_cigarettes"; //@@MP (Release 4)
@@ -1049,7 +1053,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_DYNAMITE_PRIMED = @"Items\item_dynamite_primed"; //@@MP (Release 4)
         public const string ITEM_EMPTY_CAN = @"Items\item_empty_can";
         public const string ITEM_ENERGY_DRINK = @"Items\item_energy_drink"; //@@MP (Release 7-1)
-        public const string ITEM_FAMU_FATARU_KATANA = @"Items\item_FamuFataru_katana";
         public const string ITEM_FIRE_AXE = @"Items\item_fire_axe"; //@@MP (Release 7-6)
         public const string ITEM_FIRE_EXTINGUISHER = @"Items\item_fire_extinguisher"; //@@MP (Release 7-1)
         public const string ITEM_FIRE_HAZARD_SUIT = @"Items\item_fire_hazard_suit"; //@@MP (Release 7-1)
@@ -1070,7 +1073,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_GRENADE_PRIMED = @"Items\item_grenade_primed";
         public const string ITEM_GRENADE_LAUNCHER = @"Items\item_grenade_launcher"; //@@MP (Release 7-6)
         public const string ITEM_GROCERIES = @"Items\item_groceries";
-        public const string ITEM_HANS_VON_HANZ_PISTOL = @"Items\item_Hans_von_Hanz_pistol";
         public const string ITEM_HELLS_SOULS_JACKET = @"Items\item_hells_souls_jacket";
         public const string ITEM_HOCKEY_STICK = @"Items\item_hockey_stick"; //@@MP (Release 3)
         public const string ITEM_HOLY_HAND_GRENADE = @"Items\item_Holy_Hand_Grenade"; //@@MP (Release 7-6)
@@ -1082,7 +1084,8 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_IMPROVISED_CLUB = @"Items\item_improvised_club";
         public const string ITEM_IMPROVISED_SPEAR = @"Items\item_improvised_spear";
         public const string ITEM_IRON_GOLF_CLUB = @"Items\item_iron_golf_club";
-        public const string ITEM_JASON_MYERS_AXE = @"Items\item_jason_myers_axe";
+        public const string ITEM_KATANA = @"Items\item_katana"; //@@MP (Release 8-1)
+        public const string ITEM_KEYBOARD = @"Items\item_keyboard"; //@@MP (Release 8-1)
         public const string ITEM_KITCHEN_KNIFE = @"Items\item_kitchen_knife"; //@@MP (Release 7-6)
         public const string ITEM_LARGE_MEDIKIT = @"Items\item_large_medikit";
         public const string ITEM_LIQUOR_BOTTLE_AMBER = @"Items\item_liquor_bottle_amber"; //@@MP (Release 4)
@@ -1125,8 +1128,6 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_RAW_HUMAN_FLESH = @"Items\item_raw_human_flesh"; //@@MP (Release 7-6)
         public const string ITEM_RAW_RABBIT = @"Items\item_raw_rabbit"; //@@MP (Release 7-6)
         public const string ITEM_REVOLVER = @"Items\item_revolver";
-        public const string ITEM_ROGUEDJACK_KEYBOARD = @"Items\item_RoguedJack_keyboard";
-        public const string ITEM_SANTAMAN_SHOTGUN = @"Items\item_Santaman_shotgun";
         public const string ITEM_SCIMITAR = @"Items\item_scimitar"; //@@MP (Release 7-6)
         public const string ITEM_SCYTHE = @"Items\item_scythe"; //@@MP (Release 7-6)
         public const string ITEM_SHORT_SHOVEL = @"Items\item_short_shovel";
@@ -1158,6 +1159,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_UNIQUE_BOOK = @"Items\item_unique_book"; //@@MP (Release 7-6)
         public const string ITEM_VEGETABLE_SEEDS = @"Items\item_vegetable_seeds"; //@@MP (Release 5-5)
         public const string ITEM_VEGETABLES = @"Items\item_vegetables"; //@@MP (Release 5-5)
+        public const string ITEM_VINTAGE_PISTOL = @"Items\item_vintage_pistol"; //@@MP (Release 8-1)
         public const string ITEM_WILD_BERRIES = @"Items\item_wild_berries"; //@@MP (Release 4)
         public const string ITEM_WOODEN_PLANK = @"Items\item_wooden_plank";
         public const string ITEM_ZTRACKER = @"Items\item_ztracker";
@@ -1476,7 +1478,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(DECO_BLOODIED_WALL);
             Load(DECO_BLOODIED_FLOOR_SMALL); //@@MP (Release 2)
             Load(DECO_BLOODIED_WALL_SMALL); //@@MP (Release 2)
-            Load(DECO_ZOMBIE_REMAINS);
+            Load(DECO_ZOMBIE_REMAINS_RAW);
+            Load(DECO_ZOMBIE_REMAINS_BURNED); //@@MP (Release 8-1)
             Load(DECO_SKELETON_REMAINS); //@@MP (Release 2)
             Load(DECO_VOMIT);
             Load(DECO_RAT_ZOMBIE_REMAINS); //@@MP (Release 5-4)
@@ -2069,13 +2072,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ACTOR_ZOMBIE_PRINCE);
             Load(ACTOR_RAT_ZOMBIE);
             Load(ACTOR_SEWERS_THING);
-            Load(ACTOR_JASON_MYERS);
-            Load(ACTOR_BIG_BEAR);
-            Load(ACTOR_FAMU_FATARU);
-            Load(ACTOR_SANTAMAN);
-            Load(ACTOR_ROGUEDJACK);
-            Load(ACTOR_DUCKMAN);
-            Load(ACTOR_HANS_VON_HANZ);
+            Load(ACTOR_DERANGED_PATIENT);
             #endregion
 
             #region Actor decorations
@@ -2140,6 +2137,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(FEMALE_HAIR5);
             Load(FEMALE_HAIR6);
             Load(FEMALE_HAIR7);
+            Load(FEMALE_HAIR8);
             Load(FEMALE_PANTS1);
             Load(FEMALE_PANTS2);
             Load(FEMALE_PANTS3);
@@ -2174,6 +2172,10 @@ namespace djack.RogueSurvivor.Gameplay
 
             Load(CHARGUARD_HAIR);
             Load(CHARGUARD_PANTS);
+
+            Load(CHARSCIENTIST_HEAD);
+            Load(CHARSCIENTIST_PANTS);
+            Load(CHARSCIENTIST_SHIRT);
 
             Load(POLICE_HAT);
             Load(POLICE_PANTS);
@@ -2231,19 +2233,20 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_ARMY_RIFLE3);
             Load(ITEM_ARMY_RIFLE4);
             Load(ITEM_BARBED_WIRE);
+            Load(ITEM_BARBED_WIRE_BAT);
             Load(ITEM_BASEBALL_BAT);
             Load(ITEM_BEAR_TRAP);
             Load(ITEM_BEER_BOTTLE_BROWN);
             Load(ITEM_BEER_BOTTLE_GREEN);
             Load(ITEM_BEER_CAN_BLUE);
             Load(ITEM_BEER_CAN_RED);
-            Load(ITEM_BIGBEAR_BAT);
             Load(ITEM_BIG_FLASHLIGHT);
             Load(ITEM_BIG_FLASHLIGHT_OUT);
             Load(ITEM_BINOCULARS);
             Load(ITEM_BIO_FORCE_GUN);
             Load(ITEM_BIOHAZARD_SUIT);
             Load(ITEM_BLACKOPS_GPS);
+            Load(ITEM_BONESAW);
             Load(ITEM_BOOK_CHAR);
             Load(ITEM_BOOK_BLUE);
             Load(ITEM_BOOK_GREEN);
@@ -2256,6 +2259,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_CELL_PHONE);
             Load(ITEM_CHAINSAW);
             Load(ITEM_CHAR_DOCUMENT);
+            Load(ITEM_CHAR_LAPTOP);
             Load(ITEM_CHAR_LIGHT_BODYARMOR);
             Load(ITEM_CHICKEN_EGG);
             Load(ITEM_CIGARETTES);
@@ -2272,7 +2276,6 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_DYNAMITE_PRIMED);
             Load(ITEM_EMPTY_CAN);
             Load(ITEM_ENERGY_DRINK);
-            Load(ITEM_FAMU_FATARU_KATANA);
             Load(ITEM_FIRE_AXE);
             Load(ITEM_FIRE_EXTINGUISHER);
             Load(ITEM_FIRE_HAZARD_SUIT);
@@ -2293,7 +2296,6 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_GRENADE_PRIMED);
             Load(ITEM_GRENADE_LAUNCHER);
             Load(ITEM_GROCERIES);
-            Load(ITEM_HANS_VON_HANZ_PISTOL);
             Load(ITEM_HELLS_SOULS_JACKET);
             Load(ITEM_HOCKEY_STICK);
             Load(ITEM_HOLY_HAND_GRENADE);
@@ -2305,7 +2307,8 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_IMPROVISED_CLUB);
             Load(ITEM_IMPROVISED_SPEAR);
             Load(ITEM_IRON_GOLF_CLUB);
-            Load(ITEM_JASON_MYERS_AXE);
+            Load(ITEM_KATANA);
+            Load(ITEM_KEYBOARD);
             Load(ITEM_KITCHEN_KNIFE);
             Load(ITEM_REVOLVER);
             Load(ITEM_LARGE_MEDIKIT);
@@ -2347,8 +2350,6 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_RAW_FISH);
             Load(ITEM_RAW_HUMAN_FLESH);
             Load(ITEM_RAW_RABBIT);
-            Load(ITEM_ROGUEDJACK_KEYBOARD);
-            Load(ITEM_SANTAMAN_SHOTGUN);
             Load(ITEM_SCIMITAR);
             Load(ITEM_SCYTHE);
             Load(ITEM_SHORT_SHOVEL);
@@ -2380,6 +2381,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_UNIQUE_BOOK);
             Load(ITEM_VEGETABLE_SEEDS);
             Load(ITEM_VEGETABLES);
+            Load(ITEM_VINTAGE_PISTOL);
             Load(ITEM_WILD_BERRIES);
             Load(ITEM_WOODEN_PLANK);
             Load(ITEM_ZTRACKER);

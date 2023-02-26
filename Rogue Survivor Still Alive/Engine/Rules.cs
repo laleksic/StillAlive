@@ -1848,7 +1848,7 @@ namespace djack.RogueSurvivor.Engine
                     return new ActionGetFromContainer(actor, game, to);
 
                 // 3.3 Power Generator?
-                if (!actor.Model.Abilities.IsUndead) //@@MP - undead won't have rechargeable objects (Release 6-6)
+                if (!actor.Model.Abilities.IsUndead && !actor.Model.Abilities.IsLivingAnimal) //@@MP - undead won't have rechargeable objects (Release 6-6), nor animals (Release 8-1)
                 {
                     PowerGenerator powGen = mapObj as PowerGenerator;
                     if (powGen != null)
@@ -1856,6 +1856,7 @@ namespace djack.RogueSurvivor.Engine
                         // Recharge battery powered item?
                         if (powGen.IsOn)
                         {
+                            //@@MP - NPCs should have no need to mess with generators since they got infinitely recharging lights in R6-2
                             Item rightItem = actor.GetEquippedItem(DollPart.RIGHT_HAND); //@@MP - moved to top. weapons must have priority, because on lights/trackers lose charge each turn, meaning they are infinitely recharged
                             if (rightItem != null && CanActorRechargeItemBattery(actor, rightItem, out reason))
                                 return new ActionRechargeItemBattery(actor, game, rightItem);
@@ -1866,11 +1867,12 @@ namespace djack.RogueSurvivor.Engine
                             if (eyesItem != null && CanActorRechargeItemBattery(actor, eyesItem, out reason))
                                 return new ActionRechargeItemBattery(actor, game, eyesItem);
                         }
-
-                        // Switch?
-                        if (IsSwitchableFor(actor, powGen, out reason))
-                            // switch it.
+                        // Switch it on?
+                        else if (IsSwitchableFor(actor, powGen, out reason) && map != game.Session.UniqueMaps.PoliceStation_JailsLevel.TheMap) //@@MP - don't want them releasing the special prisoner (Release 8-1)
+                        {
+                            // switch it on.
                             return new ActionSwitchPowerGenerator(actor, game, powGen);
+                        }
                     }
                 }
 
@@ -1991,7 +1993,6 @@ namespace djack.RogueSurvivor.Engine
                 reason = "is sleeping";
                 return false;
             }
-
 
             // all clear.
             reason = "";
@@ -2372,14 +2373,90 @@ namespace djack.RogueSurvivor.Engine
             // 6. No barricading material.
             if (actor.Inventory == null || actor.Inventory.IsEmpty)
             {
-                reason = "no items";
+                reason = "no wooden planks";
                 return false;
             }
             if (!actor.Inventory.HasItemOfType(typeof(ItemBarricadeMaterial)))
             {
-                reason = "no barricading material";
+                reason = "no wooden planks";
                 return false;
             }          
+
+            // all clear.
+            reason = "";
+            return true;
+        }
+
+        public bool CanActorRepairDoor(Actor actor, DoorWindow door, Weather weather) //@@MP (Release 8-1)
+        {
+            string reason;
+            return CanActorRepairDoor(actor, door, weather, out reason);
+        }
+
+        public bool CanActorRepairDoor(Actor actor, DoorWindow door, Weather weather, out string reason) //@@MP (Release 8-1)
+        {
+            if (actor == null)
+                throw new ArgumentNullException("actor");
+            if (door == null)
+                throw new ArgumentNullException("door");
+
+            ////////////////////////////////////
+            // Not possible if any is true:
+            // 1. Actor cannot barricade doors.
+            // 2. It's too dark to see.
+            // 3. Door is not broken.
+            // 4. It's a not-broken, metal door.
+            // 5. An actor is there.
+            // 6. Not enough barricading material.
+            ////////////////////////////////////
+
+            // 1. Actor cannot barricade doors.
+            if (!actor.Model.Abilities.CanBarricade)
+            {
+                reason = "no ability to repair";
+                return false;
+            }
+
+            // 2. Too dark to see
+            if (ActorFOV(actor, actor.Location.Map.LocalTime, weather) == 0)
+            {
+                reason = "it's too dark too see";
+                return false;
+            }
+
+            // 3. Door is not broken.
+            if (door.State != DoorWindow.STATE_BROKEN && door.HitPoints == door.MaxHitPoints)
+            {
+                reason = "the door isn't broken";
+                return false;
+            }
+
+            // 4. It's an intact but damaged, metal door. (broken metal doors will be replaced with wooden ones)
+            if (door.State != DoorWindow.STATE_BROKEN && door.IsMetal)
+            {
+                reason = "the door is made of metal";
+                return false;
+            }
+
+            // 5. An actor is there.
+            if (door.Location.Map.GetActorAt(door.Location.Position) != null)
+            {
+                reason = "someone is there";
+                return false;
+            }
+
+            // 6. Not enough barricading material.
+            int material = CountBarricadingMaterial(actor);
+            if (material <= 0)
+            {
+                reason = "no wooden planks";
+                return false;
+            }
+            else if (material < 2) //has to be at least 2, otherwise players can dupe wooden planks
+            {
+                reason = "need at least 2 wooden planks";
+                return false;
+            }
 
             // all clear.
             reason = "";

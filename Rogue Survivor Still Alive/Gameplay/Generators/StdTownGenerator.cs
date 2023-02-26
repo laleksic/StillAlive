@@ -36,10 +36,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 {
                     // create civilian with 1 skill.
                     Actor civilian = CreateNewCivilian(0, 5, 1); //@@MP - upped items to 5 (Release 7-3)
-                    // civilian starts inside,
+                    // civilians no longer only start indoors          //@@MP (Release 8-1)
                     // but not in army offices, as those are behind locked doors and the player could otherwise reincarnate as one of them          //@@MP (Release 7-6)
-                    // army offices are already populated enough thanks to BaseTownGenerator.PopulateArmyOfficeBuilding()
-                    base.ActorPlace(m_DiceRoller, maxTries, map, civilian, (pt) => (map.GetTileAt(pt.X, pt.Y).IsInside && !map.HasZonePartiallyNamedAt(new System.Drawing.Point (pt.X, pt.Y), ZoneAttributes.IS_ARMY_OFFICE)));
+                    // ( army offices are already populated enough thanks to BaseTownGenerator.PopulateArmyOfficeBuilding() )
+                    // also not in CHAR offices. mainly because I have seen the civs kill all the guards protecting the CHAR underground's office               //@@MP (Release 8-1)
+                    base.ActorPlace(m_DiceRoller, maxTries, map, civilian, (pt) => (!map.HasZonePartiallyNamedAt(new System.Drawing.Point(pt.X, pt.Y), ZoneAttributes.IS_CHAR_OFFICE) &&
+                            !map.HasZonePartiallyNamedAt(new System.Drawing.Point (pt.X, pt.Y), ZoneAttributes.IS_ARMY_OFFICE)));
                 }
             }
 
