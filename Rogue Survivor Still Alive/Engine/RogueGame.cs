@@ -7279,7 +7279,7 @@ namespace djack.RogueSurvivor.Engine
             // music.
             m_AmbientSFXManager.StopAll(); //@@MP (Release 6-1)
             m_MusicManager.StopAll();
-            m_SFXManager.StopAll();
+            //m_SFXManager.StopAll();
             m_MusicManager.Play(GameMusics.PLAYER_DEATH, AudioPriority.PRIORITY_EVENT);
 
             ///////////
