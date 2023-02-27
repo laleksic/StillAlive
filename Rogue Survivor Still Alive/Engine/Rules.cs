@@ -1866,12 +1866,18 @@ namespace djack.RogueSurvivor.Engine
                             Item eyesItem = actor.GetEquippedItem(DollPart.EYES); //@@MP (Release 6-3)
                             if (eyesItem != null && CanActorRechargeItemBattery(actor, eyesItem, out reason))
                                 return new ActionRechargeItemBattery(actor, game, eyesItem);
+
+                            // switch it off?
+                            if (actor.IsPlayer) //@@MP (Release 8-1)
+                                return new ActionSwitchPowerGenerator(actor, game, powGen); // switch it off.
                         }
                         // Switch it on?
-                        else if (IsSwitchableFor(actor, powGen, out reason) && map != game.Session.UniqueMaps.PoliceStation_JailsLevel.TheMap) //@@MP - don't want them releasing the special prisoner (Release 8-1)
+                        else if (IsSwitchableFor(actor, powGen, out reason))
                         {
-                            // switch it on.
-                            return new ActionSwitchPowerGenerator(actor, game, powGen);
+                            if (actor.IsPlayer || map != game.Session.UniqueMaps.PoliceStation_JailsLevel.TheMap) //@@MP - don't want NPCs releasing the special prisoner (Release 8-1)
+                            {
+                                return new ActionSwitchPowerGenerator(actor, game, powGen); // switch it on.
+                            }
                         }
                     }
                 }
