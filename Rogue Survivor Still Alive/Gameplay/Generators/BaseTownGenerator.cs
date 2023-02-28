@@ -9040,6 +9040,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 // room.
                 Rectangle cellRoom = new Rectangle(x, yCells, cellWidth, cellHeight);
                 cells.Add(cellRoom);
+                map.AddZone(MakeUniqueZone(RogueGame.NAME_POLICE_STATION_JAILS_CELL, cellRoom));
                 TileFill(map, m_Game.GameTiles.FLOOR_CONCRETE, cellRoom);
                 TileRectangle(map, m_Game.GameTiles.WALL_POLICE_STATION, cellRoom);
 
@@ -9061,9 +9062,6 @@ namespace djack.RogueSurvivor.Gameplay.Generators
                 Point gatePos = new Point(x + 1, yCells);
                 map.SetTileModelAt(gatePos.X, gatePos.Y, m_Game.GameTiles.FLOOR_CONCRETE);
                 map.PlaceMapObjectAt(MakeObjIronGate(GameImages.OBJ_GATE_CLOSED), gatePos);
-
-                // zone.
-                map.AddZone(MakeUniqueZone(RogueGame.NAME_POLICE_STATION_JAILS_CELL, cellRoom));
             }
             // - corridor.
             Rectangle corridor = Rectangle.FromLTRB(1, 1, map.Width, yCells);
@@ -9478,7 +9476,7 @@ namespace djack.RogueSurvivor.Gameplay.Generators
 
             // 1 corridor to storage rooms, locked by an iron gate.
             const int corridorHeight = 4;
-            Rectangle centralCorridorRect = Rectangle.FromLTRB(0, northCorridorRect.Bottom - 1, map.Width, northCorridorRect.Bottom - 1 + corridorHeight);
+            Rectangle centralCorridorRect = Rectangle.FromLTRB(2, northCorridorRect.Bottom - 1, map.Width, northCorridorRect.Bottom - 1 + corridorHeight);
             TileRectangle(map, m_Game.GameTiles.WALL_HOSPITAL, centralCorridorRect);
             map.SetTileModelAt(1, centralCorridorRect.Top, m_Game.GameTiles.FLOOR_TILES);
             map.PlaceMapObjectAt(MakeObjIronGate(GameImages.OBJ_GATE_CLOSED), new Point(1, centralCorridorRect.Top));
@@ -9490,12 +9488,12 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int roomX = storageCentral.Left; roomX <= map.Width - storageWidth; roomX += storageWidth - 1)
             {
                 Rectangle room = new Rectangle(roomX, storageCentral.Top, storageWidth, storageHeight);
-                MakeHospitalStorageRoom(map, "storage", room);
+                MakeHospitalStorageRoom(map, "storeroom", room);
             }
             map.SetTileModelAt(1, storageCentral.Top, m_Game.GameTiles.FLOOR_TILES);
 
             // 1 south corridor to other storage rooms.
-            Rectangle southCorridorRect = Rectangle.FromLTRB(0, storageCentral.Bottom - 1, map.Width, storageCentral.Bottom - 1 + corridorHeight);
+            Rectangle southCorridorRect = Rectangle.FromLTRB(2, storageCentral.Bottom - 1, map.Width, storageCentral.Bottom - 1 + corridorHeight);
             TileRectangle(map, m_Game.GameTiles.WALL_HOSPITAL, southCorridorRect);
             map.SetTileModelAt(1, southCorridorRect.Top, m_Game.GameTiles.FLOOR_TILES);
             map.AddZone(MakeUniqueZone("south corridor", southCorridorRect));
@@ -9504,9 +9502,17 @@ namespace djack.RogueSurvivor.Gameplay.Generators
             for (int roomX = storageSouth.Left; roomX <= map.Width - storageWidth; roomX += storageWidth - 1)
             {
                 Rectangle room = new Rectangle(roomX, storageSouth.Top, storageWidth, storageHeight);
-                MakeHospitalStorageRoom(map, "storage", room);
+                MakeHospitalStorageRoom(map, "storeroom", room);
             }
             map.SetTileModelAt(1, storageSouth.Top, m_Game.GameTiles.FLOOR_TILES);
+
+            // fill gaps in the zoning     //@@MP - added (Release 8-1)
+            Rectangle westCorridorRect = Rectangle.FromLTRB(0, northCorridorRect.Bottom - 1, 2, map.Height);
+            map.AddZone(MakeUniqueZone("west corridor", westCorridorRect));
+            map.SetTileModelAt(2, 4, m_Game.GameTiles.FLOOR_TILES);
+            map.SetTileModelAt(2, 5, m_Game.GameTiles.FLOOR_TILES);
+            map.SetTileModelAt(2, 10, m_Game.GameTiles.FLOOR_TILES);
+            map.SetTileModelAt(2, 11, m_Game.GameTiles.FLOOR_TILES);
 
             // done.
             return map;

@@ -147,7 +147,7 @@ namespace djack.RogueSurvivor.Engine
         public const string NAME_SUBWAY_STATION = "Subway Station";
         public const string NAME_SEWERS_MAINTENANCE = "Sewers Maintenance";
         public const string NAME_SUBWAY_RAILS = "rails";
-        public const string NAME_POLICE_STATION_JAILS_CELL = "jail";
+        public const string NAME_POLICE_STATION_JAILS_CELL = "cell"; //@@MP - was "jail" (Release 8-1)
         #endregion
 
         #region -EVENTS
@@ -8702,10 +8702,28 @@ namespace djack.RogueSurvivor.Engine
             // forbid in hospital storage room when the power is off (because nurses spawn behind the locked gate)         //@@MP (Release 7-6)
             if (a.Location.Map == m_Session.UniqueMaps.Hospital_Storage.TheMap)
             {
+                bool gateIsLocked = false;
                 foreach (MapObject obj in a.Location.Map.MapObjects)
                 {
                     if (obj.ImageID == GameImages.OBJ_GATE_CLOSED)
+                    {
+                        gateIsLocked = true;
                         break;
+                    }
+                }
+
+                if (gateIsLocked) //don't want to reinc as a trapped nurse
+                {
+                    List<Zone> zones = a.Location.Map.GetZonesAt(a.Location.Position.X, a.Location.Position.Y); //@@MP - improved method (Release 8-1)
+                    if (zones != null && zones.Count > 0)
+                    {
+                        foreach (Zone z in zones)
+                        {
+                            if (z.Name.Contains(String.Format("{0}@", "central corridor")) || z.Name.Contains(String.Format("{0}@", "south corridor")) ||
+                                z.Name.Contains(String.Format("{0}@", "west corridor")) || z.Name.Contains(String.Format("{0}@", "storeroom")))
+                                return false;
+                        }
+                    }
                 }
             }
 
@@ -8724,12 +8742,12 @@ namespace djack.RogueSurvivor.Engine
 
                 if (cellsAreLocked) //don't want to reinc as a trapped prisoner
                 {
-                    List<string> clothes = a.Doll.GetDecorations(DollPart.TORSO);
-                    if (clothes != null)
+                    List<Zone> zones = a.Location.Map.GetZonesAt(a.Location.Position.X, a.Location.Position.Y); //@@MP - improved method (Release 8-1)
+                    if (zones != null && zones.Count > 0)
                     {
-                        foreach (string image in clothes)
+                        foreach (Zone z in zones)
                         {
-                            if (image == GameImages.PRISONER_UNIFORM)
+                            if (z.Name.Contains(String.Format("{0}@", NAME_POLICE_STATION_JAILS_CELL)))
                                 return false;
                         }
                     }
@@ -8834,7 +8852,10 @@ namespace djack.RogueSurvivor.Engine
                                 foreach (Map map in district.Maps)
                                     foreach (Actor a in map.Actors)
                                         if (IsSuitableReincarnation(a, asLiving))
+                                        {
                                             allSuitables.Add(a);
+                                            Logger.WriteLine(Logger.Stage.RUN_MAIN, a.Name);
+                                        }
                             }
 
                         // pick one at random.
