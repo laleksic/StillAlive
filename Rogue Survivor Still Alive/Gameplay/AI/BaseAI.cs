@@ -6796,6 +6796,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                     return TradeRating.REFUSE;
             }
 
+            // Items not usable by NPCs         //@@MP (Release 8-1)
+            if (oIt.Model == game.GameItems.SIPHON_KIT || oIt.Model == game.GameItems.CHAR_LAPTOP)
+            {
+                return TradeRating.REFUSE;
+            }
+
             if (oIt is ItemPrimedExplosive) // also ItemGrenadePrimed
             {
                 // refuse any primed explosive
