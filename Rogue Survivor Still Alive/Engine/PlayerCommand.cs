@@ -54,6 +54,7 @@ namespace djack.RogueSurvivor.Engine
         REVIVE_CORPSE,
         SHOUT,
         SLEEP,
+        SWAP_INVENTORY, //@@MP (Release 8-2)
         SWITCH_PLACE,
         UNLOAD_AMMO, //@@MP (Release 7-6)
         USE_EXIT,

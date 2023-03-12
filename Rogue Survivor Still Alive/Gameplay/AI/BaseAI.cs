@@ -2061,7 +2061,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
                         return true;
                     if (IsTileTaboo(p.Location.Position))
                         return true;
-                    MapObject mapObj = map.GetMapObjectAt(p.Location.Position); //@@MP - can't take items from a (player-owned) 'locked' bank safe (Release 6-5)
+                    MapObject mapObj = map.GetMapObjectAt(p.Location.Position); //@@MP - can't take items from a player-owned bank safe (Release 6-5)
                     if (mapObj != null && mapObj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED)
                         return true;
                     if (!HasAnyInterestingItem(game, p.Percepted as Inventory, ItemSource.GROUND_STACK))
@@ -2133,9 +2133,187 @@ namespace djack.RogueSurvivor.Gameplay.AI
 #endif
             return null;
         }
-#endregion
 
-#region Droping items
+        protected ActorAction BehaviorInspectBackpackForInterestingItems(RogueGame game, List<Percept> mapPercepts, bool canBreak, bool canPush, string cantGetItemEmote, bool setLastItemsSaw, ref Percept lastItemsSaw)
+        {
+            RouteFinder.SpecialActions allowedActions = RouteFinder.SpecialActions.JUMP | RouteFinder.SpecialActions.DOORS;
+
+            Map map = m_Actor.Location.Map;
+
+            List<Percept> interestingReachableStacks = FilterOut(FilterStacks(mapPercepts),
+                (p) =>
+                {
+                    if (p.Turn != map.LocalTime.TurnCounter)
+                        return true;
+                    if (IsOccupiedByOther(map, p.Location.Position))
+                        return true;
+                    if (map.IsAnyTileFireThere(map, p.Location.Position)) //@MP (Release 6-6)
+                        return true;
+                    if (IsTileTaboo(p.Location.Position))
+                        return true;
+                    MapObject mapObj = map.GetMapObjectAt(p.Location.Position); //@@MP - can't take items from a player-owned bank safe (Release 6-5)
+                    if (mapObj != null && mapObj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED)
+                        return true;
+                    Inventory invThere = map.GetItemsAt(p.Location.Position);
+                    if (invThere != null)
+                    {
+                        ItemBackpack backPack = invThere.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack;
+                        if (backPack != null && backPack.Inventory != null && backPack.Inventory.CountItems > 0)
+                        {
+                            if (!HasAnyInterestingItem(game, backPack.Inventory, ItemSource.BACKPACK))
+                                return true;
+                        }
+                        else
+                            return true;
+                    }
+                    else
+                        return true;
+                    // alpha10 check reachability
+                    RouteFinder.SpecialActions a = allowedActions;
+                    if (map.IsWalkable(p.Location.Position.X, p.Location.Position.Y))
+                        a |= RouteFinder.SpecialActions.JUMP | RouteFinder.SpecialActions.DOORS;
+                    if (!CanReachSimple(game, p.Location.Position, a))
+                        return true;
+                    // can and wants to get it
+                    return false;
+                });
+
+            if (interestingReachableStacks == null)
+                return null;
+
+            // update last percept saw.
+            Percept nearestStack = FilterNearest(game, interestingReachableStacks);
+            if (setLastItemsSaw)
+                lastItemsSaw = nearestStack;
+
+            // make room for food if needed.
+            ActorAction makeRoomForFood = BehaviorMakeRoomForFood(game, interestingReachableStacks);
+            if (makeRoomForFood != null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorInspectBackpackForInterestingItems() making room for food";
+#endif
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
+                return makeRoomForFood;
+            }
+
+            // try to grab.
+            Inventory invAtChosenSpot = map.GetItemsAt(nearestStack.Location.Position);
+            ItemBackpack backPackAtChosenSpot = invAtChosenSpot.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack;
+            ActorAction grabAction = BehaviorGrabFromBackpack(game, nearestStack.Location.Position, backPackAtChosenSpot.Inventory, canBreak, canPush);
+            if (grabAction != null)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorInspectBackpackForInterestingItems() grabbing: " + grabAction.ToString();
+#endif
+                m_Actor.Activity = Activity.MANAGING_INVENTORY;
+                return grabAction;
+            }
+            else //@@MP (Release 6-6)
+            {
+                // emote
+                if (!m_Actor.Inventory.IsFull)
+                {
+                    game.DoEmote(m_Actor, cantGetItemEmote);
+#if DEBUGAILOOPING
+                    if (m_Actor.IsLooping)
+                        m_Actor.ActivityInProgress = "BehaviorInspectBackpackForInterestingItems() can't grab item";
+#elif DEBUGBOTMODE
+                    if (m_Actor.IsBotPlayer) //@@MP (Release 6-6)
+                        Logger.WriteLine(Logger.Stage.RUN_MAIN, "[turn#" + m_Actor.Location.Map.LocalTime.TurnCounter.ToString() + "] I couldnt grab something from " + nearestStack.Location.Position.ToString());
+#endif
+                }
+            }
+
+            // we can't grab the item. mark the tile as taboo.
+            MarkTileAsTaboo(nearestStack.Location.Position);
+
+            // failed
+#if DEBUGAILOOPING
+            if (m_Actor.IsLooping)
+                m_Actor.ActivityInProgress = "BehaviorInspectBackpackForInterestingItems() failed";
+#endif
+            return null;
+        }
+
+        protected ActorAction BehaviorGrabFromBackpack(RogueGame game, Point position, Inventory backpack, bool canBreak, bool canPush)
+        {
+            // ignore empty backpacks.
+            if (backpack == null || backpack.IsEmpty)
+                return null;
+
+            // fix: don't try to get items under blocking map objects - bumping will say "yes can move" but we actually cannot take it.
+            MapObject objThere = m_Actor.Location.Map.GetMapObjectAt(position);
+            if (objThere != null)
+            {
+                // un-walkable fortification
+                Fortification fort = objThere as Fortification;
+                if (fort != null && !fort.IsWalkable)
+                    return null;
+                // barricaded door/window
+                DoorWindow door = objThere as DoorWindow;
+                if (door != null && door.IsBarricaded)
+                    return null;
+            }
+
+            // for each item in the stack, consider only the takeable and interesting ones.
+            Item goodItem = null;
+            foreach (Item it in backpack.Items)
+            {
+                // if can't take, ignore.
+                if (!game.Rules.CanActorGetItem(m_Actor, it))
+                    continue;
+                // if not interesting, ignore.
+                if (!IsInterestingItemToOwn(game, it, ItemSource.BACKPACK))
+                    continue;
+                // gettable and interesting, get it.
+                goodItem = it;
+                break;
+            }
+
+            // if no good item, ignore.
+            if (goodItem == null)
+                return null;
+
+            // take it!
+            Item takeIt = goodItem;
+
+            // emote?
+            if (game.Rules.RollChance(EMOTE_GRAB_ITEM_CHANCE))
+                game.DoEmote(m_Actor, String.Format("{0}! Great!", takeIt.AName));
+
+            // try to move/get one.
+            if (position == m_Actor.Location.Position)
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorGrabFromBackpack() trying to grab " + goodItem.AName;
+#elif DEBUGBOTMODE
+                if (m_Actor.IsBotPlayer)
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Location.Map.LocalTime.TurnCounter.ToString() + " trying to grab " + goodItem.AName);
+#endif
+#if DEBUG
+                //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}: {1} trying to grab {2}", m_Actor.Location.Map.LocalTime.TurnCounter.ToString(), m_Actor.Name, goodItem.AName)); //DELETETHIS
+#endif
+                return new ActionTakeItem(m_Actor, game, position, takeIt);
+            }
+            else
+            {
+#if DEBUGAILOOPING
+                if (m_Actor.IsLooping)
+                    m_Actor.ActivityInProgress = "BehaviorGrabFromBackpack() going over to grab " + goodItem.AName;
+#elif DEBUGBOTMODE
+                if (m_Actor.IsBotPlayer) //@@MP (Release 6-6)
+                    Logger.WriteLine(Logger.Stage.RUN_MAIN, m_Actor.Location.Map.LocalTime.TurnCounter.ToString() + " going over to grab " + goodItem.AName);
+#endif
+                return BehaviorIntelligentBumpToward(game, position, canBreak, canPush);
+            }
+        }
+        #endregion
+
+        #region Dropping items
         protected ActorAction BehaviorDropItem(RogueGame game, Item it)
         {
             if (it == null)
@@ -5865,7 +6043,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
             /// <summary>
             /// Item is in another actor inventory.
             /// </summary>
-            ANOTHER_ACTOR
+            ANOTHER_ACTOR,
+            /// <summary>
+            /// Item is in a backpack's inventory.
+            /// </summary>
+            BACKPACK //@@MP (Release 8-2)
         }
 
         /// <summary>
@@ -5891,7 +6073,7 @@ namespace djack.RogueSurvivor.Gameplay.AI
             // with BehaviorMakeRoomForFood() or the npc will cycle drop-take-drop...
 
             // taboo
-            if (IsItemTaboo(it) || it.IsForbiddenToAI) //@@MP - lazy add forbidden check (Release 6-6)
+            if (IsItemTaboo(it) || it.IsForbiddenToAI) //@@MP - added forbidden check (Release 6-6)
                 return false;
 
             // consistent with BehaviorMakeRoomForFood (was already in alpha9)

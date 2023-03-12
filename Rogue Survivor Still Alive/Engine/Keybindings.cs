@@ -62,6 +62,7 @@ namespace djack.RogueSurvivor.Engine
             Set(PlayerCommand.NEGOTIATE_TRADE, Keys.E);
             Set(PlayerCommand.LOAD_GAME, Keys.L | Keys.Shift);
             Set(PlayerCommand.INSPECTION_MODE, Keys.I); //@@MP (Release 7-1)
+            Set(PlayerCommand.MAKE_COOKING_FIRE, Keys.F | Keys.Control); //@@MP (Release 7-6)
             Set(PlayerCommand.MARK_ENEMIES_MODE, Keys.E | Keys.Control);
             Set(PlayerCommand.MESSAGE_LOG, Keys.M | Keys.Shift);
             Set(PlayerCommand.MOVE_E, Keys.NumPad6);
@@ -83,8 +84,8 @@ namespace djack.RogueSurvivor.Engine
             Set(PlayerCommand.SCREENSHOT, Keys.N | Keys.Shift);
             Set(PlayerCommand.SHOUT, Keys.S);
             Set(PlayerCommand.SLEEP, Keys.Z);
-            Set(PlayerCommand.MAKE_COOKING_FIRE, Keys.F | Keys.Control); //@@MP (Release 7-6)
             Set(PlayerCommand.SWITCH_PLACE, Keys.S | Keys.Control);
+            Set(PlayerCommand.SWAP_INVENTORY, Keys.Y); //@@MP (Release 8-2)
             Set(PlayerCommand.LEAD_MODE, Keys.T);
             Set(PlayerCommand.UNLOAD_AMMO, Keys.U); //@@MP (Release 7-6)
             Set(PlayerCommand.USE_SPRAY, Keys.A);

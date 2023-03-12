@@ -1,0 +1,6 @@
+"ID","NAME","PLURAL","INV_SLOTS","ENC","WEIGHT","FLAVOR"
+"BACKPACK_WAIST_POUCH","waist pouch","waist pouches",2,1,1,"Back in fashion."
+"BACKPACK_SATCHEL","satchel","satchels",4,2,2,"The messenger's choice."
+"BACKPACK_DAYPACK","daypack","daypacks",6,3,3,"Versatile, ubiquitous."
+"BACKPACK_HIKING_PACK","hiking pack","hiking packs",8,4,4,"Hit the trail."
+"BACKPACK_ARMY_RUCKSACK","army rucksack","army rucksacks",10,5,5,"For long marches."

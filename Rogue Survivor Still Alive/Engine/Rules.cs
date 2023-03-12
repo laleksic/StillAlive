@@ -611,30 +611,17 @@ namespace djack.RogueSurvivor.Engine
             {
                 ////////////////////////////////////
                 // Can't if any is true:
-                // X 1. Is a locked door - MOVED TO RogueGame : DoPlayerBump() (Release 5-3)
-                // X 2. They're exhausted - MOVED TO RogueGame : DoPlayerBump() (Release 5-3)
-                // X 3. Map object is not a container. - REMOVED, not helpful for the player (Release 5-3)
-                // 4. There is no items there.
-                // 5. Inventory is full. //@@MP (Release 5-5)
-                // 6. Actor cannot take the item. (was #5)
+                // X 1. Map object is not a container. - REMOVED, not helpful for the player (Release 5-3)
+                // 2. There is no items there.
+                // 3. Actor cannot take the item.
+                // 4. Inventory is full. //@@MP (Release 5-5)
+                // 5. Already carrying a backpack.  //@@MP (Release 8-2)
+                // 6. Forbidden to AI.
+                // 7. Player-owned bank safe.  //@@MP (Release 8-2)
                 ////////////////////////////////////
 
-                /* @@MP FIXME: THE FOLLOWING ARE LEFT IN FOR REFERENCE ONLY. CLEAN UP IN THE FUTURE
-                // 1. it's a well locked door, like a bank vault //@@MP (Release 4)
-                if (mapObj.AName == "a locked door")
-                {
-                    reason = "this door cannot be opened";
-                    return false;
-                }
-
-                // 2. too exhausted to climb //@@MP (Release 4)
-                if (mapObj.IsJumpable && actor.StaminaPoints < STAMINA_MIN_FOR_ACTIVITY)
-                {
-                    reason = "not enough stamina to climb on that";
-                    return false;
-                }
-
-                // 3. Map object is not a container.
+                /*
+                // 1. Map object is not a container.
                 if (!mapObj.IsContainer) //@@MP - removed null check (Release 5-3)
                 {
                     reason = "object is not a container";
@@ -642,7 +629,7 @@ namespace djack.RogueSurvivor.Engine
                 }
                 */
 
-                // 4. There is no items there.
+                // 2. There is no items there.
                 Inventory invThere = actor.Location.Map.GetItemsAt(position);
                 if (invThere == null || invThere.IsEmpty)
                 {
@@ -650,17 +637,41 @@ namespace djack.RogueSurvivor.Engine
                     return false;
                 }
 
-                // 5. Inventory is full. //@@MP (Release 5-5)
-                if (!CanActorGetItem(actor, invThere.TopItem))
+                // 3. Actor cannot take the item. //@@MP - was #5
+                if (!actor.Model.Abilities.HasInventory || !actor.Model.Abilities.CanUseMapObjects || actor.Inventory == null)
+                {
+                    reason = "cannot take an item";
+                    return false;
+                }
+
+                // 4. Inventory is full. //@@MP (Release 5-5)(Release 8-2)
+                if (actor.Inventory.IsFull && !actor.Inventory.CanAddAtLeastOne(invThere.TopItem))
                 {
                     reason = "your inventory is full";
                     return false;
                 }
 
-                // 6. Actor cannot take the item. //@@MP - was #5
-                if (!actor.Model.Abilities.HasInventory || !actor.Model.Abilities.CanUseMapObjects || actor.Inventory == null)
+                // 5. Taking backpacks from containers                //@@MP (Release 8-2)
+                if (actor.IsPlayer)  //no need to check for NPCs, as backpacks are IsForbiddenToAI
                 {
-                    reason = "cannot take an item";
+                    if (invThere != null && invThere.HasItemOfType(typeof(ItemBackpack)) && actor.Inventory.HasItemOfType(typeof(ItemBackpack)))
+                    {
+                        reason = "you can only carry one backpack at a time";
+                        return false;
+                    }
+                }
+
+                // 6. Forbidden to AI.
+                if (invThere.TopItem.IsForbiddenToAI && !actor.IsPlayer) //@@MP - forgot to add this when IsForbiddenToAI was implemented (Release 7-6)
+                {
+                    reason = "forbidden to AI";
+                    return false;
+                }
+
+                // 7. Can't take items from a player-owned bank safe.       //@@MP (Release 8-2)
+                if (mapObj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED)
+                {
+                    reason = "secured bank safe";
                     return false;
                 }
 
@@ -671,6 +682,84 @@ namespace djack.RogueSurvivor.Engine
 
             reason = "";
             return false; //@@MP - fall through (Release 5-3)
+        }
+
+        public bool CanActorGetItemFromBackpack(Actor actor, Point position, out string reason) //@@MP (Release 8-2)
+        {
+            if (actor == null)
+                throw new ArgumentNullException("actor");
+
+            ////////////////////////////////////
+            // Can't if any is true:
+            // 1. Not reachable.
+            // 2. There is no items there.
+            // 3. Actor cannot take the item.
+            // 4. Inventory is full.
+            // 5. Is player.
+            // 6. Player-owned bank safe.
+            ////////////////////////////////////
+
+            // 1. Not reachable.
+            if (!actor.Location.Map.IsWalkable(position))
+            {
+                reason = "cannot reach it";
+                return false;
+            }
+
+            // 2. There is no items in it.
+            Inventory invThere = actor.Location.Map.GetItemsAt(position);
+            if (invThere == null || invThere.IsEmpty)
+            {
+                reason = "no backpack there";
+                return false;
+            }
+            else
+            {
+                ItemBackpack backPack = invThere.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack;
+                if (backPack == null)
+                {
+                    reason = "no backpack there";
+                    return false;
+                }
+                else if (backPack.Inventory.IsEmpty)
+                {
+                    reason = "nothing in the backpack";
+                    return false;
+                }
+            }
+
+            // 3. Actor cannot take the item.
+            if (!actor.Model.Abilities.HasInventory || !actor.Model.Abilities.CanUseMapObjects || actor.Inventory == null)
+            {
+                reason = "cannot take an item";
+                return false;
+            }
+
+            // 4. Inventory is full.
+            if (actor.Inventory.IsFull)
+            {
+                reason = "your inventory is full";
+                return false;
+            }
+
+            // 5. Is player
+            if (actor.IsPlayer)
+            {
+                reason = "must pick up the backpack";
+                return false;
+            }
+
+            // 6. Can't take items from a player-owned bank safe.
+            MapObject mapObj = actor.Location.Map.GetMapObjectAt(position);
+            if (mapObj != null && mapObj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED)
+            {
+                reason = "secured bank safe";
+                return false;
+            }
+
+            // all clear.
+            reason = "";
+            return true;
         }
 
         public bool CanActorGetItem(Actor actor, Item it)
@@ -718,7 +807,7 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
-            // Forbidden to AI.
+            // 4. Forbidden to AI.
             if (it.IsForbiddenToAI && !actor.IsPlayer) //@@MP - forgot to add this when IsForbiddenToAI was implemented (Release 7-6)
             {
                 reason = "forbidden to AI";
@@ -1159,9 +1248,38 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        public bool CanActorTakeBackpack(Actor actor, ItemBackpack backPack, out string reason) //@@MP (Release 8-2)
+        {
+            if (actor.Inventory.HasItemOfType(typeof(ItemBackpack)))
+            {
+                reason = "can only carry one backpack at a time";
+                return false;
+            }
+            else
+            {
+                int levelsOfHauler = actor.Sheet.SkillTable.GetSkillLevel((int)Skills.IDs.HAULER);
+                int slots = backPack.Inventory_Slots;
+                if ((slots >= 5 && slots < 7) && levelsOfHauler < 1)
+                {
+                    reason = "need Hauler skill level 1 for that type of pack";
+                    return false;
+                }
+                else if ((slots >= 7 && slots < 9) && levelsOfHauler < 2)
+                {
+                    reason = "need Hauler skill level 2 for that type of pack";
+                    return false;
+                }
+                else if (slots >= 9 && levelsOfHauler < 3)
+                {
+                    reason = "need Hauler skill level 3 for that type of pack";
+                    return false;
+                }
+            }
+
+            reason = "";
+            return true;
+        }
+
         public bool IsItemAlcoholForDrinking(Item item) //@@MP (Release 7-1)
         {
             if (item == null)
@@ -1385,6 +1503,59 @@ namespace djack.RogueSurvivor.Engine
             }
 
             // all clear.
+            return true;
+        }
+
+        public bool CanActorMoveItemToBackpack(Actor actor, Item item, ItemBackpack backPack, bool checkIsFull, out string reason) //@@MP (Release 8-2)
+        {
+            if (actor == null)
+                throw new ArgumentNullException("actor");
+            if (item == null)
+                throw new ArgumentNullException("item");
+            if (backPack == null)
+                throw new ArgumentNullException("backPack");
+
+            /////////////////////////////////
+            // Can't if any is true:
+            // 1. Item is equipped.
+            // 2. Item can't go in backpacks.
+            // 3. Backpack is equiped (ie. not open).
+            // 4. Inventory is full and cannot stack item.
+            /////////////////////////////////
+
+            // 1. Item is equipped.
+            if (item.IsEquipped)
+            {
+                reason = "item is equipped";
+                return false;
+            }
+
+            // 2. Item can't go in backpacks.
+            if (!item.Model.CanGoInBackpacks) //can't swap if inv item is not allowed in backpacks
+            {
+                reason = "cannot go in backpacks";
+                return false;
+            }
+
+            // 3. Backpack is equiped (ie. not open).
+            if (backPack.IsEquipped)
+            {
+                reason = "backpack isn't open";
+                return false;
+            }
+
+            // 4. Inventory is full and cannot stack item
+            if (checkIsFull)
+            {
+                if (backPack.Inventory.IsFull && !backPack.Inventory.CanAddAtLeastOne(item))
+                {
+                    reason = "backpack is full";
+                    return false;
+                }
+            }
+
+            // all clear.
+            reason = "";
             return true;
         }
 

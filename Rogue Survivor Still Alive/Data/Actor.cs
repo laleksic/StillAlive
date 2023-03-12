@@ -1142,6 +1142,14 @@ namespace djack.RogueSurvivor.Data
         {
             return GetEquippedItem(DollPart.TORSO) as ItemBodyArmor;
         }
+
+        /// <summary>
+        /// Assumed to be equiped on the back.
+        /// </summary>
+        public ItemBackpack GetEquippedBackpack()  //@@MP (Release 8-2)
+        {
+            return GetEquippedItem(DollPart.BACK) as ItemBackpack;
+        }
         #endregion
 
         #region BloodAlcohol helpers  //@@MP (Release 7-1)

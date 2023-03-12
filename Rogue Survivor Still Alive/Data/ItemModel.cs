@@ -23,6 +23,7 @@ namespace djack.RogueSurvivor.Data
         bool m_IsThrowable; //@@MP (Release 7-1)
         bool m_IsBatteryPowered; //@@MP (Release 7-1)
         bool m_CausesTileFires; //@@MP (Release 7-3)
+        bool m_CanGoInBackpacks; //@@MP (Release 8-2)
         #endregion
 
         #region Properties
@@ -149,6 +150,12 @@ namespace djack.RogueSurvivor.Data
         {
             get { return m_IsBatteryPowered; }
             set { m_IsBatteryPowered = value; }
+        }
+
+        public bool CanGoInBackpacks //@@MP (Release 8-2)
+        {
+            get { return m_CanGoInBackpacks; }
+            set { m_CanGoInBackpacks = value; }
         }
         #endregion
 

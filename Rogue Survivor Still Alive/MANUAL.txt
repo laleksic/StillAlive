@@ -30,6 +30,7 @@ SWITCH PLACE : Ctrl + S         EAT CORPSE : Shift + E          SAVE GAME : Shif
 UNLOAD AMMO : U                 REVIVE CORPSE : Shift + R       LOAD GAME : Shift + L
 DESTROY ITEM : Ctrl + D         BURY CORPSE : Shift + B         ABANDON GAME : Shift + A
 MAKE A FIRE : Ctrl + F          COOK MEAT : Ctrl + C            QUIT GAME : Shift + Q
+SWAP ITEM TO/FROM INVENTORY TO BACKPACK: Y
 
 
 
@@ -1212,6 +1213,20 @@ players of vanilla Rogue Survivor.
 You can use build mode (default key: B) to repair doors and windows.
 Metal doors can only be replaced, not repaired, and even then only when they're fully broken. 
 Wooden doors can be replaced when broken, and repaired when their hit points are damaged.
+
+> BACKPACKS
+There are five models of backpack, each providing an additional 2 inventory slots to the last.
+In order to carry the bigger backpacks, you must have the required level of the Hauler skill.
+  no skill : waist pack - 2 slots.
+  no skill : satchel - 4 slots.
+  Hauler 1 : daypack - 6 slots.
+  Hauler 2 : hiking pack - 8 slots.
+  Hauler 3 : army rucksack - 10 slots.
+Use the hotkey (default: Y) to move items between your current backpack and your on-person inventory.
+You can only move items to or from your backpack when it is open (ie. unequiped).
+If you try to move an item and the receiving side is full, it will prompt you to pick an item to switch it with.
+Left mouse click will also move an item out of the backpack to your inventory.
+Warning: dropped backpacks can be raided by NPCs. Remember, bank safes are the only truly secure storage.
 
 
 <end of manual>

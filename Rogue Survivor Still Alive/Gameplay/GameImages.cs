@@ -987,6 +987,7 @@ namespace djack.RogueSurvivor.Gameplay
         #region Items
         public const string ITEM_SLOT = @"Items\itemslot";
         public const string ITEM_EQUIPPED = @"Items\itemequipped";
+        public const string ITEM_BACKPACK_SLOT = @"Items\backpack_itemslot"; //@@MP (Release 8-2)
 
         public const string ITEM_AMMO_LIGHT_PISTOL = @"Items\item_ammo_light_pistol";
         public const string ITEM_AMMO_HEAVY_PISTOL = @"Items\item_ammo_heavy_pistol";
@@ -1009,6 +1010,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_ARMY_RIFLE2 = @"Items\item_army_rifle2"; //@@MP (Release 7-6)
         public const string ITEM_ARMY_RIFLE3 = @"Items\item_army_rifle3"; //@@MP (Release 7-6)
         public const string ITEM_ARMY_RIFLE4 = @"Items\item_army_rifle4"; //@@MP (Release 7-6)
+        public const string ITEM_ARMY_RUCKSACK = @"Items\item_army_rucksack"; //@@MP (Release 8-2)
         public const string ITEM_BARBED_WIRE = @"Items\item_barbed_wire";
         public const string ITEM_BARBED_WIRE_BAT = @"Items\item_barbed_wire_bat"; //@@MP (Release 8-1)
         public const string ITEM_BASEBALL_BAT = @"Items\item_baseball_bat";
@@ -1048,6 +1050,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_COOKED_HUMAN_FLESH = @"Items\item_cooked_human_flesh"; //@@MP (Release 7-6)
         public const string ITEM_COOKED_RABBIT = @"Items\item_cooked_rabbit"; //@@MP (Release 7-6)
         public const string ITEM_CROWBAR = @"Items\item_crowbar";
+        public const string ITEM_DAYPACK = @"Items\item_daypack"; //@@MP (Release 8-2)
         public const string ITEM_DOUBLE_BARREL = @"Items\item_double_barrel"; //@@MP (Release 7-6)
         public const string ITEM_DYNAMITE = @"Items\item_dynamite"; //@@MP (Release 4)
         public const string ITEM_DYNAMITE_PRIMED = @"Items\item_dynamite_primed"; //@@MP (Release 4)
@@ -1074,6 +1077,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_GRENADE_LAUNCHER = @"Items\item_grenade_launcher"; //@@MP (Release 7-6)
         public const string ITEM_GROCERIES = @"Items\item_groceries";
         public const string ITEM_HELLS_SOULS_JACKET = @"Items\item_hells_souls_jacket";
+        public const string ITEM_HIKING_PACK = @"Items\item_hiking_pack"; //@@MP (Release 8-2)
         public const string ITEM_HOCKEY_STICK = @"Items\item_hockey_stick"; //@@MP (Release 3)
         public const string ITEM_HOLY_HAND_GRENADE = @"Items\item_Holy_Hand_Grenade"; //@@MP (Release 7-6)
         public const string ITEM_HOLY_HAND_GRENADE_PRIMED = @"Items\item_Holy_Hand_Grenade_primed"; //@@MP (Release 7-6)
@@ -1128,6 +1132,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_RAW_HUMAN_FLESH = @"Items\item_raw_human_flesh"; //@@MP (Release 7-6)
         public const string ITEM_RAW_RABBIT = @"Items\item_raw_rabbit"; //@@MP (Release 7-6)
         public const string ITEM_REVOLVER = @"Items\item_revolver";
+        public const string ITEM_SATCHEL = @"Items\item_satchel"; //@@MP (Release 8-2)
         public const string ITEM_SCIMITAR = @"Items\item_scimitar"; //@@MP (Release 7-6)
         public const string ITEM_SCYTHE = @"Items\item_scythe"; //@@MP (Release 7-6)
         public const string ITEM_SHORT_SHOVEL = @"Items\item_short_shovel";
@@ -1160,6 +1165,7 @@ namespace djack.RogueSurvivor.Gameplay
         public const string ITEM_VEGETABLE_SEEDS = @"Items\item_vegetable_seeds"; //@@MP (Release 5-5)
         public const string ITEM_VEGETABLES = @"Items\item_vegetables"; //@@MP (Release 5-5)
         public const string ITEM_VINTAGE_PISTOL = @"Items\item_vintage_pistol"; //@@MP (Release 8-1)
+        public const string ITEM_WAIST_POUCH = @"Items\item_waist_pouch"; //@@MP (Release 8-2)
         public const string ITEM_WILD_BERRIES = @"Items\item_wild_berries"; //@@MP (Release 4)
         public const string ITEM_WOODEN_PLANK = @"Items\item_wooden_plank";
         public const string ITEM_ZTRACKER = @"Items\item_ztracker";
@@ -2211,6 +2217,7 @@ namespace djack.RogueSurvivor.Gameplay
             Notify(ui, "items...");
             Load(ITEM_SLOT);
             Load(ITEM_EQUIPPED);
+            Load(ITEM_BACKPACK_SLOT);
 
             Load(ITEM_AMMO_BOLTS);
             Load(ITEM_AMMO_FUEL);
@@ -2232,6 +2239,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_ARMY_RIFLE2);
             Load(ITEM_ARMY_RIFLE3);
             Load(ITEM_ARMY_RIFLE4);
+            Load(ITEM_ARMY_RUCKSACK);
             Load(ITEM_BARBED_WIRE);
             Load(ITEM_BARBED_WIRE_BAT);
             Load(ITEM_BASEBALL_BAT);
@@ -2271,6 +2279,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_COOKED_HUMAN_FLESH);
             Load(ITEM_COOKED_RABBIT);
             Load(ITEM_CROWBAR);
+            Load(ITEM_DAYPACK);
             Load(ITEM_DOUBLE_BARREL);
             Load(ITEM_DYNAMITE);
             Load(ITEM_DYNAMITE_PRIMED);
@@ -2297,6 +2306,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_GRENADE_LAUNCHER);
             Load(ITEM_GROCERIES);
             Load(ITEM_HELLS_SOULS_JACKET);
+            Load(ITEM_HIKING_PACK);
             Load(ITEM_HOCKEY_STICK);
             Load(ITEM_HOLY_HAND_GRENADE);
             Load(ITEM_HOLY_HAND_GRENADE_PRIMED);
@@ -2350,6 +2360,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_RAW_FISH);
             Load(ITEM_RAW_HUMAN_FLESH);
             Load(ITEM_RAW_RABBIT);
+            Load(ITEM_SATCHEL);
             Load(ITEM_SCIMITAR);
             Load(ITEM_SCYTHE);
             Load(ITEM_SHORT_SHOVEL);
@@ -2382,6 +2393,7 @@ namespace djack.RogueSurvivor.Gameplay
             Load(ITEM_VEGETABLE_SEEDS);
             Load(ITEM_VEGETABLES);
             Load(ITEM_VINTAGE_PISTOL);
+            Load(ITEM_WAIST_POUCH);
             Load(ITEM_WILD_BERRIES);
             Load(ITEM_WOODEN_PLANK);
             Load(ITEM_ZTRACKER);

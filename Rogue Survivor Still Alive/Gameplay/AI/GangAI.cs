@@ -468,6 +468,11 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 if (getItemAction != null)
                     return getItemAction;
 
+                //@@MP (Release 8-2)
+                ActorAction inspectBackpackAction = BehaviorInspectBackpackForInterestingItems(game, mapPercepts, false, false, CANT_GET_ITEM_EMOTE, true, ref m_LastItemsSaw);
+                if (inspectBackpackAction != null)
+                    return inspectBackpackAction;
+
                 /* prev gang code, much simpler, grabbed any item it could //alpha 10
                 Map map = m_Actor.Location.Map;
                 List<Percept> stacks = FilterOut(FilterStacks(mapPercepts), //@@MP - unused parameter (Release 5-7)

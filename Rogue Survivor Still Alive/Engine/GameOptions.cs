@@ -66,6 +66,7 @@ namespace djack.RogueSurvivor.Engine
             DIFFICULTY_SKELETONS_UPGRADE,
             DIFFICULTY_SHAMBLERS_UPGRADE,
             DIFFICULTY_ANTIVIRAL_PILLS, //@@MP (Release 7-6)
+            DIFFICULTY_BACKPACKS, //@@MP (Release 8-2)
             DIFFICULTY_RESOURCES_AVAILABILITY, //@@MP (Release 7-4)
             DIFFICULTY_UNDEAD_DAMAGE_PERCENT, //@@MP (Release 7-4)
             DIFFICULTY_LIVING_DAMAGE_PERCENT, //@@MP (Release 7-4)
@@ -159,7 +160,7 @@ namespace djack.RogueSurvivor.Engine
         public const int DEFAULT_DISTRICT_SIZE = 50;
         public const int DEFAULT_MAX_CIVILIANS = 25;
         public const int DEFAULT_MAX_ANIMALS = 4; //@@MP (Release 7-6)
-        public const int DEFAULT_MAX_UNDEADS = 80; //@@MP - was 100 (Release 7-6)
+        public const int DEFAULT_MAX_UNDEADS = 100;
         public const int DEFAULT_SPAWN_SKELETON_CHANCE = 60;
         public const int DEFAULT_SPAWN_ZOMBIE_CHANCE = 30;
         public const int DEFAULT_SPAWN_ZOMBIE_MASTER_CHANCE = 10;
@@ -168,7 +169,7 @@ namespace djack.RogueSurvivor.Engine
         public const SimCap DEFAULT_DISTRCT_SIM_CAP = SimCap.MED; //@@MP (Release 7-3)
         public const int DEFAULT_ZOMBIFICATION_CHANCE = 100;
         public const int DEFAULT_DAY_ZERO_UNDEADS_PERCENT = 30;
-        public const int DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE = 1; //@@MP - was 5 (Release 7-6)
+        public const int DEFAULT_ZOMBIE_INVASION_DAILY_INCREASE = 3; //@@MP - was 5 (Release 8-2)
         public const bool DEFAULT_STARVED_ZOMBIFICATION = false; //@@MP - changed from % chance to bool (Release 7-3)
         public const int DEFAULT_MAX_REINCARNATIONS = 7; //@@MP - upped after I forgot when removing the max reinc option (Release 6-6)
         public const int DEFAULT_NATGUARD_FACTOR = 100;
@@ -245,6 +246,7 @@ namespace djack.RogueSurvivor.Engine
         bool m_ReducedMapObjectLighting; //@@MP (Release 7-6)
         bool m_WorldDecay; //@@MP (Release 7-6)
         int m_DaysBeforeWorldDecays; //@@MP (Release 7-6)
+        bool m_Backpacks; //@@MP (Release 8-2)
         #endregion
 
         #region Properties
@@ -779,6 +781,12 @@ namespace djack.RogueSurvivor.Engine
                 m_DaysBeforeWorldDecays = value;
             }
         }
+
+        public bool BackpacksEnabled //@@MP (Release 8-2)
+        {
+            get { return m_Backpacks; }
+            set { m_Backpacks = value; }
+        }
         #endregion
 
         #region Dev only options (hidden)
@@ -850,6 +858,7 @@ namespace djack.RogueSurvivor.Engine
                 m_ResourcesAvailability = GameOptions.Resources.MED; //@@MP (Release 7-4)
                 m_UndeadDamagePercent = DEFAULT_UNDEAD_DAMAGE_PERCENT; //@@MP (Release 7-4)
                 m_LivingDamagePercent = DEFAULT_LIVING_DAMAGE_PERCENT; //@@MP (Release 7-4)
+                m_Backpacks = true; //@@MP (Release 8-2)
             }
         }
         #endregion
@@ -901,6 +910,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.DIFFICULTY_ZOMBIE_INVASION_DAILY_INCREASE:   return "(Undead) Invasion daily increase";
                 case IDs.DIFFICULTY_UNDEAD_DAMAGE_PERCENT:            return "(Undead) Undeads damage percent"; //@@MP (Release 7-4)
                 case IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT:            return "(Living) Livings damage percent"; //@@MP (Release 7-4)
+                case IDs.DIFFICULTY_BACKPACKS:                        return "(Living) Backpacks available"; //@@MP (Release 8-2)
                 case IDs.UI_ANIM_DELAY:                               return "   (Gfx) Animations delay";
                 case IDs.UI_MUSIC:                                    return "   (Sfx) Music enabled";
                 case IDs.UI_MUSIC_VOLUME:                             return "   (Sfx) Music volume";
@@ -1038,6 +1048,8 @@ namespace djack.RogueSurvivor.Engine
                     return "How much damage undead deal when attacking other undead and livings, as a percentage of their base damage.";
                 case IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT: //@@MP (Release 7-4)
                     return "How much damage livings deal when attacking other livings and undead, as a percentage of their base damage.";
+                case IDs.DIFFICULTY_BACKPACKS: //@@MP (Release 8-2)
+                    return "Backpacks can be found throughout the city. They increase the player's carrying capacity.\nNote: They are not usable by NPCs.";
                 default:
                     throw new ArgumentOutOfRangeException("option","unhandled option");
             }
@@ -1305,6 +1317,8 @@ namespace djack.RogueSurvivor.Engine
                     return String.Format("{0:D3}%  (default {1})", UndeadDamagePercent, GameOptions.DEFAULT_UNDEAD_DAMAGE_PERCENT);
                 case IDs.DIFFICULTY_LIVING_DAMAGE_PERCENT: //@@MP (Release 7-4)
                     return String.Format("{0:D3}%  (default {1})", LivingDamagePercent, GameOptions.DEFAULT_LIVING_DAMAGE_PERCENT);
+                case IDs.DIFFICULTY_BACKPACKS: //@@MP (Release 8-2)
+                    return BackpacksEnabled ? "ON    (default ON)" : "OFF   (default ON)";
                 default:
                     return "???";
             }

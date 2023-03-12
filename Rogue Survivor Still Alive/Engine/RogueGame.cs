@@ -49,10 +49,11 @@ namespace djack.RogueSurvivor.Engine
         const int RIGHTPANEL_TEXT_Y = RIGHTPANEL_Y + 4; //=4 total
 
         const int INVENTORYPANEL_X = RIGHTPANEL_TEXT_X; //=680 total
-        const int INVENTORYPANEL_Y = RIGHTPANEL_TEXT_Y + 156; //=160 total //@MP - looks like RJ might have had it at 142 prior to implementing sanity
+        const int INVENTORYPANEL_Y = RIGHTPANEL_TEXT_Y + 156; //=160 total     //@MP - looks like RJ might have had it at 142 prior to implementing sanity
         const int GROUNDINVENTORYPANEL_Y = INVENTORYPANEL_Y + 64; //=224 total
         const int CORPSESPANEL_Y = GROUNDINVENTORYPANEL_Y + 64; //=288 total
         const int INVENTORY_SLOTS_PER_LINE = 10;
+        const int BACKPACKPANEL_Y = GROUNDINVENTORYPANEL_Y; //+124 to have it above the Inventory             //@MP (Release 8-2)
 
         const int SKILLTABLE_Y = CORPSESPANEL_Y + 64; //=352 total
         const int SKILLTABLE_LINES = 10;
@@ -114,6 +115,8 @@ namespace djack.RogueSurvivor.Engine
         readonly string[] THROWABLE_LIGHT_TEXT = new string[] { "USING THROWABLE LIGHTS - (C)arry or (T)hrow a lit one? ESC cancels" }; //@@MP (Release 7-1)
         readonly string[] INSPECTION_MODE_TEXT = new string[] { "USING INSPECTION MODE - directions to move highlighted cell, ESC cancels" }; //@@MP (Release 7-1)
         readonly string[] REPAIR_DOOR_MODE_TEXT = new string[] { "REPAIR DOOR MODE - directions to repair, ESC cancels" }; //@@MP (Release 8-1)
+        readonly string[] SWAP_ITEM_INVENTORY_MODE_TEXT = new string[] { "SWAP INVENTORY MODE - key for Inventory slot number, ESC cancels" }; //@@MP (Release 8-2)
+        readonly string[] SWAP_ITEM_BACKPACK_MODE_TEXT = new string[] { "SWAP INVENTORY MODE - key for Backpack slot number, ESC cancels" }; //@@MP (Release 8-2)
         readonly Color MODE_TEXTCOLOR = Color.Yellow;
         readonly Color MODE_BORDERCOLOR = Color.Yellow;
         readonly Color MODE_FILLCOLOR = Color.FromArgb(192, Color.Gray);
@@ -384,10 +387,11 @@ namespace djack.RogueSurvivor.Engine
         const int CAUSE_GRUESOME_DEATH_SANITY_PENALTY = 50; //@@MP (Release 7-2)
         const int MAX_THROWABLE_DISTANCE = 5; //@@MP - for non-standard throwables eg flares (Release 7-1)
         public const int MAX_ITEMLIGHT_TINT_RANGE = 3; //@@MP - the distance that lights that tint the surroundings (eg flares) apply the colour (Release 7-1)
-        const string BINOCULARS_DENIED_MESSAGE = "Can't do that with binoculars equipped"; //@@MP (Release 7-1)
+        const string BINOCULARS_DENIED_MESSAGE = "Can't do that with binoculars equipped."; //@@MP (Release 7-1)
         const int STUN_WEAPON_EFFECT_TURNS = 5; //@@MP - eg stun guns. actually makes 4 turns, because the first turn is when they get hit (Release 7-2)
         const int CATCHING_FISH_BASE_CHANCE = 2; //@@MP - percentage. can't be less than 2. is affected by s_Options.ResourcesAvailability (Release 7-6)
         const int FIRE_FUEL_PER_WOOD_PLANK = 90; //@@MP (Release 7-6)
+        const string BACKPACK_DENIED_MESSAGE = "Can't do that with the backpack open (ie. unequipped)."; //@@MP (Release 8-2)
         #endregion
 
         #region NPC player sleeping snoring message chance
@@ -1778,7 +1782,6 @@ namespace djack.RogueSurvivor.Engine
                     "Move NW",
                     "Wait",
                     "Wait 1 hour",
-                    "Advisor Hint",
                     "Break",
                     "Build Mode",
                     "Bury Corpse", //@MP (Release 7-6)
@@ -1806,15 +1809,14 @@ namespace djack.RogueSurvivor.Engine
                     "Inspection Mode", //@MP - was missing from original R7-1 release (Release 7-6)
                     "Mark Enemies",
                     "Messages Log",
-                    "Options",
                     "Order",
                     "Pull",  // alpha10
                     "Push",
-                    "Redefine Keys",
                     "Revive Corpse", //@MP - was missing from vanilla (Release 7-6)
                     "Run",
                     "Shout",
                     "Sleep",
+                    "Swap inventory", //@@MP (Release 8-2)
                     "Switch Place",
                     "Unload Ammo", //@MP (Release 7-6)
                     "Use Exit",
@@ -1830,47 +1832,46 @@ namespace djack.RogueSurvivor.Engine
                 const int O_MOVE_NW = 7;
                 const int O_WAIT = 8;
                 const int O_WAIT_LONG = 9;
-                const int O_ADVISOR = 10;
-                const int O_BREAK = 11;
-                const int O_BUILD_MODE = 12; //@MP - combined barricade, build small and build large fortications (Release 6-6)
-                const int O_BURY_CORPSE = 13;
-                const int O_CITYINFO = 14;
-                const int O_CLOSE = 15;
-                const int O_COOK_FOOD = 16;
-                const int O_MAKE_A_FIRE = 17;
-                const int O_DESTROY_ITEM = 18;
-                const int O_EAT_CORPSE = 19;
-                const int O_FIRE = 20;
-                const int O_GIVE = 21;
-                const int O_HELP = 22;
-                const int O_INIT_TRADE = 23; //negotiate
-                const int O_ITEM_1 = 24;
-                const int O_ITEM_2 = 25;
-                const int O_ITEM_3 = 26;
-                const int O_ITEM_4 = 27;
-                const int O_ITEM_5 = 28;
-                const int O_ITEM_6 = 29;
-                const int O_ITEM_7 = 30;
-                const int O_ITEM_8 = 31;
-                const int O_ITEM_9 = 32;
-                const int O_ITEM_10 = 33;
-                const int O_LEAD = 34;
-                const int O_INSPECTION_MODE = 35; //@@MP (Release 7-1), shifted all down 1 below in alpha 10 (was 50)
-                const int O_MARKENEMY = 36;
-                const int O_LOG = 37;
-                const int O_OPTIONS = 38;
-                const int O_ORDER = 39;
-                const int O_PULL = 40;  // alpha10 inserted and shifted all below
-                const int O_PUSH = 41;
-                const int O_REDEFKEYS = 42;
-                const int O_REVIVE_CORPSE = 43;
-                const int O_RUN = 44;
-                const int O_SHOUT = 45;
-                const int O_SLEEP = 46;
-                const int O_SWITCH = 47;
-                const int O_UNLOAD_AMMO = 48;
-                const int O_USE_EXIT = 49;
-                const int O_USE_SPRAY = 50; //MP: 50 is the magic number. any more than that and the list doesn't fit in the Redefine Keys menu
+                const int O_BREAK = 10;
+                const int O_BUILD_MODE = 11; //@MP - combined barricade, build small and build large fortications (Release 6-6)
+                const int O_BURY_CORPSE = 12;
+                const int O_CITYINFO = 13;
+                const int O_CLOSE = 14;
+                const int O_COOK_FOOD = 15;
+                const int O_MAKE_A_FIRE = 16;
+                const int O_DESTROY_ITEM = 17;
+                const int O_EAT_CORPSE = 18;
+                const int O_FIRE = 19;
+                const int O_GIVE = 20;
+                const int O_HELP = 21;
+                const int O_INIT_TRADE = 22; //negotiate
+                const int O_ITEM_1 = 23;
+                const int O_ITEM_2 = 24;
+                const int O_ITEM_3 = 25;
+                const int O_ITEM_4 = 26;
+                const int O_ITEM_5 = 27;
+                const int O_ITEM_6 = 28;
+                const int O_ITEM_7 = 29;
+                const int O_ITEM_8 = 30;
+                const int O_ITEM_9 = 31;
+                const int O_ITEM_10 = 32;
+                const int O_LEAD = 33;
+                const int O_INSPECTION_MODE = 34; //@@MP (Release 7-1), shifted all down 1 below in alpha 10 (was 50)
+                const int O_MARKENEMY = 35;
+                const int O_LOG = 36;
+                const int O_ORDER = 37;
+                const int O_PULL = 38;  // alpha10 inserted and shifted all below
+                const int O_PUSH = 39;
+                const int O_REVIVE_CORPSE = 40;
+                const int O_RUN = 41;
+                const int O_SHOUT = 42;
+                const int O_SLEEP = 43;
+                const int o_SWAP_INVENTORY = 44;
+                const int O_SWITCH = 45;
+                const int O_UNLOAD_AMMO = 46;
+                const int O_USE_EXIT = 47;
+                const int O_USE_SPRAY = 48;
+                //MP: 50 is the magic number. any more than that and the list doesn't fit in the Redefine Keys menu
                 string[] values = new string[]
                 {
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_N).ToString(),
@@ -1883,7 +1884,6 @@ namespace djack.RogueSurvivor.Engine
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.MOVE_NW).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.WAIT_OR_SELF).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.WAIT_LONG).ToString(),
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.ADVISOR).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.BREAK_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.BUILD_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.BURY_CORPSE).ToString(),
@@ -1911,15 +1911,14 @@ namespace djack.RogueSurvivor.Engine
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.INSPECTION_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.MARK_ENEMIES_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.MESSAGE_LOG).ToString(),
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.OPTIONS_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.ORDER_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.PULL_MODE).ToString(), // alpha10
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.PUSH_MODE).ToString(),
-                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.KEYBINDING_MODE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.REVIVE_CORPSE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.RUN_TOGGLE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.SHOUT).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.SLEEP).ToString(),
+                    s_KeyBindings.GetFriendlyFormat(PlayerCommand.SWAP_INVENTORY).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.SWITCH_PLACE).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.UNLOAD_AMMO).ToString(),
                     s_KeyBindings.GetFriendlyFormat(PlayerCommand.USE_EXIT).ToString(),
@@ -1999,7 +1998,6 @@ namespace djack.RogueSurvivor.Engine
                             case O_MOVE_NW: command = PlayerCommand.MOVE_NW; break;
                             case O_WAIT: command = PlayerCommand.WAIT_OR_SELF; break;
                             case O_WAIT_LONG: command = PlayerCommand.WAIT_LONG; break;
-                            case O_ADVISOR: command = PlayerCommand.ADVISOR; break;
                             case O_BREAK: command = PlayerCommand.BREAK_MODE; break;
                             case O_BUILD_MODE: command = PlayerCommand.BUILD_MODE; break;
                             case O_BURY_CORPSE: command = PlayerCommand.BURY_CORPSE; break;
@@ -2027,15 +2025,14 @@ namespace djack.RogueSurvivor.Engine
                             case O_INSPECTION_MODE: command = PlayerCommand.INSPECTION_MODE; break;
                             case O_MARKENEMY: command = PlayerCommand.MARK_ENEMIES_MODE; break;
                             case O_LOG: command = PlayerCommand.MESSAGE_LOG; break;
-                            case O_OPTIONS: command = PlayerCommand.OPTIONS_MODE; break;
                             case O_ORDER: command = PlayerCommand.ORDER_MODE; break;
                             case O_PULL: command = PlayerCommand.PULL_MODE; break;  // alpha10
                             case O_PUSH: command = PlayerCommand.PUSH_MODE; break;
-                            case O_REDEFKEYS: command = PlayerCommand.KEYBINDING_MODE; break;
                             case O_REVIVE_CORPSE: command = PlayerCommand.REVIVE_CORPSE; break;
                             case O_RUN: command = PlayerCommand.RUN_TOGGLE; break;
                             case O_SHOUT: command = PlayerCommand.SHOUT; break;
                             case O_SLEEP: command = PlayerCommand.SLEEP; break;
+                            case o_SWAP_INVENTORY: command = PlayerCommand.SWAP_INVENTORY; break;
                             case O_SWITCH: command = PlayerCommand.SWITCH_PLACE; break;
                             case O_UNLOAD_AMMO: command = PlayerCommand.UNLOAD_AMMO; break;
                             case O_USE_EXIT: command = PlayerCommand.USE_EXIT; break;
@@ -2795,6 +2792,7 @@ namespace djack.RogueSurvivor.Engine
             m_GameItems.LoadScentspraysFromCSV(m_UI, @"Resources\Data\Items_Scentsprays.csv");
             m_GameItems.LoadTrapsFromCSV(m_UI, @"Resources\Data\Items_Traps.csv");
             m_GameItems.LoadEntertainmentFromCSV(m_UI, @"Resources\Data\Items_Entertainment.csv");
+            m_GameItems.LoadBackpacksFromCSV(m_UI, @"Resources\Data\Items_Backpacks.csv");
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading Items data files... done!");
 
             // create.
@@ -3798,6 +3796,7 @@ namespace djack.RogueSurvivor.Engine
                 GameOptions.IDs.DIFFICULTY_ZOMBIFICATION_CHANCE,
                 GameOptions.IDs.DIFFICULTY_NPC_CAN_STARVE_TO_DEATH,
                 GameOptions.IDs.DIFFICULTY_STARVED_ZOMBIFICATION,
+                GameOptions.IDs.DIFFICULTY_BACKPACKS, //@@MP (Release 8-2)
                 GameOptions.IDs.DIFFICULTY_MAX_CIVILIANS,
                 // undeads
                 GameOptions.IDs.DIFFICULTY_MAX_UNDEADS,
@@ -3815,7 +3814,7 @@ namespace djack.RogueSurvivor.Engine
                 // events
                 GameOptions.IDs.DIFFICULTY_NATGUARD_FACTOR,
                 GameOptions.IDs.DIFFICULTY_BLACKOPS_RAIDS, //@@MP (Release 7-5)
-                GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR
+                GameOptions.IDs.DIFFICULTY_SUPPLIESDROP_FACTOR,
             };
             #endregion
 
@@ -3980,6 +3979,7 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.DIFFICULTY_SKELETONS_UPGRADE:
                                 s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade;
                                 break;
+                            case GameOptions.IDs.DIFFICULTY_BACKPACKS: s_Options.BackpacksEnabled = !s_Options.BackpacksEnabled; break; //@@MP (Release 8-2)
                         }
                         break;
                     case Keys.Right:
@@ -4018,6 +4018,7 @@ namespace djack.RogueSurvivor.Engine
                             case GameOptions.IDs.DIFFICULTY_SKELETONS_UPGRADE:
                                 s_Options.SkeletonsUpgrade = !s_Options.SkeletonsUpgrade;
                                 break;
+                            case GameOptions.IDs.DIFFICULTY_BACKPACKS: s_Options.BackpacksEnabled = !s_Options.BackpacksEnabled; break; //@@MP (Release 8-2)
                         }
                         break;
                 }
@@ -4072,6 +4073,8 @@ namespace djack.RogueSurvivor.Engine
             m_Player.Inventory.AddAll(binoc);*/
             Item gun = new ItemRangedWeapon(GameItems.MINIGUN);
             m_Player.Inventory.AddAll(gun);
+            Item backpack = new ItemBackpack(GameItems.WAIST_POUCH);
+            m_Player.Inventory.AddAll(backpack);
             /*Item ammo = new ItemAmmo(GameItems.AMMO_FUEL);
             m_Player.Inventory.AddAll(ammo);
             Item set = new Item(GameItems.SIPHON_KIT);
@@ -5452,6 +5455,7 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.Load(GameSounds.BIO_FORCE_GUN_PLAYER, GameSounds.BIO_FORCE_GUN_PLAYER_FILE);
             m_SFXManager.Load(GameSounds.PLASMA_BURST_AUDIBLE, GameSounds.PLASMA_BURST_AUDIBLE_FILE);
             m_SFXManager.Load(GameSounds.PLASMA_BURST_VISIBLE, GameSounds.PLASMA_BURST_VISIBLE_FILE);
+            m_SFXManager.Load(GameSounds.OPEN_BACKPACK, GameSounds.OPEN_BACKPACK_FILE);
             #endregion
 
             #region AMBIENT SOUND
@@ -5636,18 +5640,24 @@ namespace djack.RogueSurvivor.Engine
                                 m_AmbientSFXManager.PlayIfNotAlreadyPlaying(GameAmbients.CHURCH_BELLS_OUTSIDE_MAP, AudioPriority.PRIORITY_BGM);
                         }
 
-                        //NPC-discarded items cleanup          //@@MP (Release 7-6)
                         if (m_Session.WorldTime.TurnCounter > (s_Options.DaysBeforeDiscardedItemDespawns * WorldTime.TURNS_PER_DAY))
                         {
                             foreach (Map map in district.Maps)
-                                DeleteItemsSittingIdle(map, map.LocalTime.TurnCounter);
-                        }
+                            {
+                                //empty player-dropped backpacks         //@@MP (Release 8-2)
+                                //EmptyBackpacksSittingIdle(map, map.LocalTime.TurnCounter); //opted not to use this in the end
 
+                                //NPC-discarded items cleanup          //@@MP (Release 7-6)
+                                DeleteItemsSittingIdle(map, map.LocalTime.TurnCounter);
+                            }
+                        }
                     }
                 }
-                else if (wasNight && !m_Session.WorldTime.IsNight && (m_Session.WorldTime.Day % 2 == 0)) //@@MP - a new day in the other districts (Release 5-5), now only happens every 2nd day (Release 6-1)
+                else if (wasNight && !m_Session.WorldTime.IsNight)// && (m_Session.WorldTime.Day % 2 == 0))
                 {
-                    //this won't work for districts checked before the player's one, but that won't occur because the entry point from GameLoop() is m_Session.CurrentMap.District, and then each is simulated from that
+                    //@@MP - a new day in the other districts (Release 5-5), now only happens every 2nd day (Release 6-1), not sure why I set it to 2 when 1 makes sense (Release 8-2)
+
+                    //this won't work for districts checked before the player's one, but that won't occur because the entry point from GameLoop() is m_Session.CurrentMap.District, and then each is simulated from that.
                     //this piece of code is only relevant when AdvancePlay() is called by SimulateNearbyDistricts()
                     CheckIfPlantsFruit(district.EntryMap); //@@MP - added a restriction to only process entrymaps (Release 7-6)
                 }
@@ -9049,6 +9059,7 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         void DeleteItemsSittingIdle(Map map, int currentTurn) //@@MP (Release 7-6)
         {
+            DateTime start = DateTime.Now;
             int deletedCount = 0;
             //loop each tile in the map
             for (int x = 0; x < map.Width; x++)
@@ -9062,7 +9073,7 @@ namespace djack.RogueSurvivor.Engine
                         {
                             foreach (Item it in inv.Items.ToList())
                             {
-                                if (it.DroppedOnTurnNumber != null)
+                                if (it.DroppedOnTurnNumber != null && !(it is ItemBackpack)) //@@MP - exemption for the newly added backpacks (Release 8-2)
                                 {
                                     int? idleTurns = currentTurn - it.DroppedOnTurnNumber;
                                     if (idleTurns >= (s_Options.DaysBeforeDiscardedItemDespawns * WorldTime.TURNS_PER_DAY))
@@ -9077,7 +9088,50 @@ namespace djack.RogueSurvivor.Engine
                 }
             }
 #if DEBUG
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("cleaned up idle items: {0}", deletedCount.ToString()));
+            DateTime end = DateTime.Now;
+            TimeSpan duration = end - start;
+            //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("cleaned up idle items: {0}, in {1} milliseconds", deletedCount.ToString(), duration.TotalMilliseconds.ToString()));
+#endif
+        }
+
+        /// <summary>
+        /// Opted not to use this. Instead chose to enforce that only one backpack can occupy a tile, to make stashing items in backpacks less exploitable
+        /// </summary>
+        void EmptyBackpacksSittingIdle(Map map, int currentTurn) //@@MP (Release 8-2)
+        {
+            DateTime start = DateTime.Now;
+            int deletedCount = 0;
+            foreach (Inventory groundInv in map.GroundInventories)
+            {
+                if (groundInv != null && groundInv.CountItems > 0)
+                {
+                    Point pt = (Point)map.GetGroundInventoryPosition(groundInv);
+                    if (pt != null && !IsVisibleToPlayer(map, pt))
+                    {
+                        ItemBackpack backPack = groundInv.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack;
+                        if (backPack != null && backPack.DroppedOnTurnNumber != null)
+                        {
+                            int? idleTurns = currentTurn - backPack.DroppedOnTurnNumber;
+                            if (idleTurns >= (WorldTime.TURNS_PER_DAY * 2)) //after two days items quickly disappear from backpacks
+                            {
+                                if (backPack.Inventory != null && backPack.Inventory.CountItems > 0)
+                                {
+                                    //doing it this way, running it at every DayPhase change will gradually remove items
+                                    backPack.Inventory.RemoveAllQuantity(backPack.Inventory.RandomItem);
+                                    ++deletedCount;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+#if DEBUG
+            if (deletedCount > 0)
+            {
+                DateTime end = DateTime.Now;
+                TimeSpan duration = end - start;
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("cleaned up backpack items: {0}, in {1} milliseconds", deletedCount.ToString(), duration.TotalMilliseconds.ToString()));
+            }
 #endif
         }
 
@@ -10575,14 +10629,6 @@ namespace djack.RogueSurvivor.Engine
             bool loop = true;
             do
             {
-                // special rules for binoculars  //@@MP (Release 7-1)
-                // we have to check within the loop because the player could unequip them, which costs no AP
-                // and therefore the player will do something else on this same turn but with the light now unequipped
-                bool binocularsEquipped = false;
-                ItemLight loopEyesLight = m_Player.GetEquippedItem(DollPart.EYES) as ItemLight;
-                if (loopEyesLight != null)
-                    binocularsEquipped = m_Rules.IsItemBinoculars(loopEyesLight);
-
                 ///////////////////
                 // 1. Redraw
                 // 2. Get input.
@@ -10718,6 +10764,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                     else
                     {
+                        string blockedReason;
                         switch (command)
                         {
 #region options, menu etc...
@@ -10803,54 +10850,54 @@ namespace djack.RogueSurvivor.Engine
                                 break;
 
                             case PlayerCommand.MOVE_N:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true, Direction.N)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !DoPlayerBump(player, Direction.N); }
                                 break;
 
                             case PlayerCommand.MOVE_NE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true, Direction.NE)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !DoPlayerBump(player, Direction.NE); }
                                 break;
 
                             case PlayerCommand.MOVE_E:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true, Direction.E)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !DoPlayerBump(player, Direction.E); }
                                 break;
 
                             case PlayerCommand.MOVE_SE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true, Direction.SE)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !DoPlayerBump(player, Direction.SE); }
                                 break;
 
                             case PlayerCommand.MOVE_S:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true, Direction.S)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !DoPlayerBump(player, Direction.S); }
                                 break;
 
                             case PlayerCommand.MOVE_SW:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true, Direction.SW)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !DoPlayerBump(player, Direction.SW); }
                                 break;
 
                             case PlayerCommand.MOVE_W:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true, Direction.W)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !DoPlayerBump(player, Direction.W); }
                                 break;
                             case PlayerCommand.MOVE_NW:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true, Direction.NW)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !DoPlayerBump(player, Direction.NW); }
                                 break;
 
                             case PlayerCommand.USE_EXIT:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !DoUseExit(player, player.Location.Position); }
                                 break;
@@ -10911,19 +10958,19 @@ namespace djack.RogueSurvivor.Engine
                                 break;
 
                             case PlayerCommand.CLOSE_DOOR:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerCloseDoor(player); }
                                 break;
 
                             case PlayerCommand.BREAK_MODE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerBreak(player); }
                                 break;
 
                             case PlayerCommand.BUILD_MODE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerBuildMode(player); }
                                 break;
@@ -10934,19 +10981,19 @@ namespace djack.RogueSurvivor.Engine
                                 break;
 
                             case PlayerCommand.PULL_MODE: // alpha10
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerPull(player); }
                                 break;
 
                             case PlayerCommand.PUSH_MODE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerPush(player); }
                                 break;
 
                             case PlayerCommand.FIRE_MODE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerFireMode(player); }
                                 break;
@@ -10962,31 +11009,31 @@ namespace djack.RogueSurvivor.Engine
                                 break;
 
                             case PlayerCommand.SWITCH_PLACE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, true)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerSwitchPlace(player); }
                                 break;
 
                             case PlayerCommand.USE_SPRAY:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerUseSpray(player); }
                                 break;
 
                             case PlayerCommand.LEAD_MODE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerTakeLead(player); }
                                 break;
 
                             case PlayerCommand.GIVE_ITEM:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerGiveItem(player, mousePos); }
                                 break;
 
                             case PlayerCommand.NEGOTIATE_TRADE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerNegotiateTrade(player); }
                                 break;
@@ -10996,19 +11043,19 @@ namespace djack.RogueSurvivor.Engine
                                 break;
 
                             case PlayerCommand.EAT_CORPSE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerEatCorpse(player, mousePos); }
                                 break;
 
                             case PlayerCommand.REVIVE_CORPSE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerReviveCorpse(player, mousePos); }
                                 break;
 
                             case PlayerCommand.BURY_CORPSE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerBuryCorpse(player, mousePos); }
                                 break;
@@ -11018,20 +11065,25 @@ namespace djack.RogueSurvivor.Engine
                                 break;
 
                             case PlayerCommand.COOK_FOOD:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerCookFood(player, mousePos); }
                                 break;
 
                             case PlayerCommand.MAKE_COOKING_FIRE:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerMakeFireForCooking(player); }
                                 break;
                             case PlayerCommand.UNLOAD_AMMO:
-                                if (binocularsEquipped) { AddMessage(new Message(String.Format(BINOCULARS_DENIED_MESSAGE), 0, Color.Red)); }
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
                                 else if (TryPlayerControlAlteringEffects()) { loop = false; }
                                 else { loop = !HandlePlayerUnloadAmmo(player); }
+                                break;
+                            case PlayerCommand.SWAP_INVENTORY:
+                                if (BlockAction(out blockedReason, true, false)) { AddMessage(new Message(String.Format(blockedReason), 0, Color.Red)); }
+                                else if (TryPlayerControlAlteringEffects()) { loop = false; }
+                                else { loop = !HandlePlayerSwapItemInventory(player, mousePos); }
                                 break;
                             #endregion
 
@@ -11220,7 +11272,8 @@ namespace djack.RogueSurvivor.Engine
             Inventory inv;
             Point itemPos;
             int iSlot; //alpha 10
-            Item it = MouseToInventoryItem(mousePos, out inv, out itemPos, out iSlot);
+            bool isBackpack; //@@MP (Release 8-2)
+            Item it = MouseToInventoryItem(mousePos, out inv, out itemPos, out iSlot, out isBackpack);
             if (inv == null)
             {
                 hasDoneAction = false;
@@ -11235,7 +11288,7 @@ namespace djack.RogueSurvivor.Engine
             AddOverlay(new OverlayRect(Color.Cyan, new Rectangle(itemPos.X + 1, itemPos.Y + 1, 30, 30)));
             if (it != null)
             {
-                string[] lines = DescribeItemLong(it, isPlayerInventory, iSlot);
+                string[] lines = DescribeItemLong(it, isPlayerInventory, iSlot, isBackpack);
                 int longestLine = 1 + FindLongestLine(lines);
                 int ovX = itemPos.X - 7 * longestLine;
                 int ovY = itemPos.Y + 32;
@@ -11246,7 +11299,7 @@ namespace djack.RogueSurvivor.Engine
                 if (mouseButtons.HasValue)
                 {
                     if (mouseButtons == MouseButtons.Left)
-                        hasDoneAction = OnLMBItem(inv, it);
+                        hasDoneAction = OnLMBItem(inv, it, itemPos, isBackpack);
                     else if (mouseButtons == MouseButtons.Right)
                         hasDoneAction = OnRMBItem(inv, it);
                 }
@@ -11256,15 +11309,19 @@ namespace djack.RogueSurvivor.Engine
             return true;
         }
 
-        Item MouseToInventoryItem(Point screen, out Inventory inv, out Point itemPos, out int iSlot)
+        Item MouseToInventoryItem(Point screen, out Inventory inv, out Point itemPos, out int iSlot, out bool isBackpack, bool testing = false)
         {
             inv = null;
             itemPos = Point.Empty;
             iSlot = -1; // alpha10
+            isBackpack = false; //@@MP (Release 8-2)
 
             if (m_Player == null)
                 return null;
 
+            int mouseX = (int)(screen.X / m_UI.UI_GetCanvasScaleX());
+
+            //INVENTORY
             Inventory playerInv = m_Player.Inventory;
             Point playerSlot = MouseToInventorySlot(INVENTORYPANEL_X, INVENTORYPANEL_Y, screen.X, screen.Y);
             int playerItemIndex = playerSlot.X + playerSlot.Y * INVENTORY_SLOTS_PER_LINE;
@@ -11276,23 +11333,44 @@ namespace djack.RogueSurvivor.Engine
                 return playerInv[playerItemIndex];
             }
 
-            Inventory groundInv = m_Player.Location.Map.GetItemsAt(m_Player.Location.Position);
-            Point groundSlot = MouseToInventorySlot(INVENTORYPANEL_X, GROUNDINVENTORYPANEL_Y, screen.X, screen.Y);
-            itemPos = InventorySlotToScreen(INVENTORYPANEL_X, GROUNDINVENTORYPANEL_Y, groundSlot.X, groundSlot.Y);
-            if (groundInv == null)
-                return null;
-            int groundItemIndex = groundSlot.X + groundSlot.Y * INVENTORY_SLOTS_PER_LINE;
-            if (groundItemIndex >= 0 && groundItemIndex < groundInv.MaxCapacity)
+            //BACKPACK            //@@MP - added (Release 8-2)
+            ItemBackpack backpack = m_Player.Inventory.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack; //the rule is that they can only ever carry 1 backpack at a time
+            if (backpack != null && !backpack.IsEquipped)
             {
-                inv = groundInv;
-                iSlot = groundItemIndex; // alpha10
-                return groundInv[groundItemIndex];
+                Inventory backpackInv = backpack.Inventory;
+                if (backpackInv == null)
+                    return null;
+                Point backpackSlot = MouseToInventorySlot(INVENTORYPANEL_X, BACKPACKPANEL_Y, screen.X, screen.Y);
+                int backpackItemIndex = backpackSlot.X + backpackSlot.Y * INVENTORY_SLOTS_PER_LINE;
+                if (backpackItemIndex >= 0 && backpackItemIndex < backpackInv.MaxCapacity)
+                {
+                    inv = backpackInv;
+                    itemPos = InventorySlotToScreen(INVENTORYPANEL_X, BACKPACKPANEL_Y, backpackSlot.X, backpackSlot.Y);
+                    iSlot = backpackItemIndex; // alpha10
+                    isBackpack = true;
+                    return backpackInv[backpackItemIndex];
+                }
+            }
+
+            //GROUND INVENTORY
+            Inventory groundInv = m_Player.Location.Map.GetItemsAt(m_Player.Location.Position);
+            if (groundInv != null)
+            {
+                Point groundSlot = MouseToInventorySlot(INVENTORYPANEL_X, GROUNDINVENTORYPANEL_Y, screen.X, screen.Y);
+                itemPos = InventorySlotToScreen(INVENTORYPANEL_X, GROUNDINVENTORYPANEL_Y, groundSlot.X, groundSlot.Y);
+                int groundItemIndex = groundSlot.X + groundSlot.Y * INVENTORY_SLOTS_PER_LINE;
+                if (groundItemIndex >= 0 && groundItemIndex < groundInv.MaxCapacity)
+                {
+                    inv = groundInv;
+                    iSlot = groundItemIndex; // alpha10
+                    return groundInv[groundItemIndex];
+                }
             }
 
             return null;
         }
 
-        bool OnLMBItem(Inventory inv, Item it)
+        bool OnLMBItem(Inventory inv, Item it, Point itemPos, bool invIsBackpack)
         {
             if (inv == m_Player.Inventory)
             {
@@ -11357,12 +11435,27 @@ namespace djack.RogueSurvivor.Engine
                     }
                 }
             }
+            else if (invIsBackpack) //backpack inventory        //@@MP (Release 8-2)
+            {
+                Point mousePos = new Point(-1, -1);
+                mousePos = m_UI.UI_GetMousePosition();
+                HandlePlayerSwapItemInventory(m_Player, mousePos);
+            }
             else // ground inventory
             {
                 // LMB in ground inv = take
                 string reason;
                 if (m_Rules.CanActorGetItem(m_Player, it, out reason))
                 {
+                    // special rules for backpacks       //@@MP (Release 8-2)
+                    ItemBackpack backPack = it as ItemBackpack;
+                    if (backPack != null && !m_Rules.CanActorTakeBackpack(m_Player, backPack, out reason))
+                    {
+                        AddMessage(MakeErrorMessage(String.Format("Cannot take {0} : {1}.", it.TheName, reason)));
+                        return false;
+                    }
+                    
+                    //return or fall through
                     DoTakeItem(m_Player, m_Player.Location.Position, it);
                     return true;
                 }
@@ -11383,6 +11476,20 @@ namespace djack.RogueSurvivor.Engine
                 string reason;
                 if (m_Rules.CanActorDropItem(m_Player, it, out reason))
                 {
+                    if (it is ItemBackpack) //@@MP - stops players from creating a stash that's easy to hide behind a few fortifications (Release 8-2)
+                    {
+                        Inventory itemsThere = m_Player.Location.Map.GetItemsAt(m_Player.Location.Position);
+                        if (itemsThere != null && itemsThere.CountItems > 0)
+                        {
+                            ItemBackpack groundBP = itemsThere.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack;
+                            if (groundBP != null)
+                            {
+                                AddMessage(MakeErrorMessage(String.Format("Cannot drop {0} : only one backpack per tile allowed.", it.TheName)));
+                                return false;
+                            }
+                        }
+                    }
+
                     DoDropItem(m_Player, it);
                     return true;
                 }
@@ -11936,6 +12043,7 @@ namespace djack.RogueSurvivor.Engine
         bool DoPlayerItemSlotTake(Actor player, int slot)
         {
             Inventory inv = player.Location.Map.GetItemsAt(player.Location.Position);
+            string reason;
 
             // if no items on ground, nothing to do.
             if (inv == null || inv.IsEmpty)
@@ -11952,8 +12060,15 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
 
+            // special rules for backpacks       //@@MP (Release 8-2)
+            ItemBackpack backPack = it as ItemBackpack;
+            if (backPack != null && !m_Rules.CanActorTakeBackpack(m_Player, backPack, out reason))
+            {
+                AddMessage(MakeErrorMessage(String.Format("Cannot take {0} : {1}.", it.TheName, reason)));
+                return false;
+            }
+
             // try to take.
-            string reason;
             if (m_Rules.CanActorGetItem(player, it, out reason))
             {
                 DoTakeItem(player, player.Location.Position, it);
@@ -12011,7 +12126,8 @@ namespace djack.RogueSurvivor.Engine
             Inventory inv;
             Point itemPos;
             int iSlot; // alpha 10
-            Item gift = MouseToInventoryItem(screen, out inv, out itemPos, out iSlot);
+            bool isBackpack; //@@MP (Release 8-2)
+            Item gift = MouseToInventoryItem(screen, out inv, out itemPos, out iSlot, out isBackpack);
             if (inv == null || inv != player.Inventory || gift == null)
                 return false;
 
@@ -13013,7 +13129,8 @@ namespace djack.RogueSurvivor.Engine
             Inventory inv;
             Point itemPos;
             int iSlot; // alpha 10
-            Item item = MouseToInventoryItem(mousepos, out inv, out itemPos, out iSlot);
+            bool isBackpack; //@@MP (Release 8-2)
+            Item item = MouseToInventoryItem(mousepos, out inv, out itemPos, out iSlot, out isBackpack);
             if (inv == null || inv != player.Inventory || item == null)
                 return false;
 
@@ -13071,15 +13188,18 @@ namespace djack.RogueSurvivor.Engine
             Inventory inv;
             Point itemPos;
             int iSlot; // alpha 10
-            Item it = MouseToInventoryItem(mousepos, out inv, out itemPos, out iSlot);
-            if (inv == null || inv != player.Inventory || it == null)
+            bool isBackpack; //@@MP (Release 8-2)
+            Item it = MouseToInventoryItem(mousepos, out inv, out itemPos, out iSlot, out isBackpack);
+            if (inv == null || it == null)
+                return;
+            if (inv != player.Inventory && !isBackpack) //@@MP (Release 8-2)
                 return;
 
             AddMessage(MakeYesNoMessage(String.Format("Permanently destroy {0}", it.TheName)));
             RedrawPlayScreen();
             if (WaitYesOrNo())
             {
-                player.Inventory.RemoveAllQuantity(it);
+                inv.RemoveAllQuantity(it);
             }
             ClearMessages();
             RedrawPlayScreen();
@@ -13726,6 +13846,204 @@ namespace djack.RogueSurvivor.Engine
             m_SFXManager.StopAll(); //@@MP (Release 6-6)
             m_MusicManager.PlayLooping(GameMusics.SLEEP, AudioPriority.PRIORITY_EVENT);
             return true;
+        }
+
+        bool HandlePlayerSwapItemInventory(Actor player, Point screen) //@@MP (Release 8-2)
+        {
+            bool actionDone = false;
+            // get player/backpack inventory item under mouse.
+            Inventory inv;
+            Point itemPos;
+            int iSlot; // alpha 10
+            bool isBackpack; //@@MP (Release 8-2)
+            Item it = MouseToInventoryItem(screen, out inv, out itemPos, out iSlot, out isBackpack, true);
+            if (inv == null || it == null)
+                return false;
+            if (inv != player.Inventory && !isBackpack)
+                return false;
+            else if (!player.Inventory.HasItemOfType(typeof(ItemBackpack)))
+            {
+                AddMessage(MakeErrorMessage("You aren't carrying a backpack."));
+                return false;
+            }
+            ItemBackpack backPack = player.Inventory.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack;
+
+            // try swap item.
+            bool promptForSwap = false;
+            if (!isBackpack) //inventory -> backpack
+            {
+                string reason;
+                if (!backPack.Inventory.IsFull || backPack.Inventory.CanAddAtLeastOne(it))
+                {
+                    if (m_Rules.CanActorMoveItemToBackpack(player, it, backPack, false, out reason))
+                    {
+                        // do it.
+                        //DoGiveItemTo(player, other, gift);
+                        //backPack.Inventory.AddAll(it);
+                        //inv.RemoveAllQuantity(it);
+
+                        //TODO: this needs to handle adding to stacks whilst leaving a remainder
+                        // add to inventory.
+                        int quantityAdded;
+                        int quantityBefore = it.Quantity;
+                        backPack.Inventory.AddAsMuchAsPossible(it, out quantityAdded);
+
+                        // if added all, remove from inv.
+                        if (quantityAdded == quantityBefore)
+                        {
+                            //Inventory itemsThere = map.GetItemsAt(position);
+                            //if (itemsThere != null && itemsThere.Contains(it))
+                            if (player.Inventory.Contains(it))
+                                player.Inventory.RemoveAllQuantity(it);
+                        }
+
+                        actionDone = true;
+                    }
+                    else
+                    {
+                        AddMessage(MakeErrorMessage(String.Format("Can't move {0} to {1} : {2}.", it.TheName, backPack.TheName, reason)));
+                        actionDone = false;
+                    }
+                }
+                else
+                    promptForSwap = true;
+            }
+            else //backpack -> inventory
+            {
+                if (!player.Inventory.IsFull || player.Inventory.CanAddAtLeastOne(it))
+                {
+                    //inv.AddAll(it);
+                    //backPack.Inventory.RemoveAllQuantity(it);
+
+                    //TODO: this needs to handle adding to stacks whilst leaving a remainder. for example, they may be trying to top up their ammo from their backpack
+                    // add to inventory.
+                    int quantityAdded;
+                    int quantityBefore = it.Quantity;
+                    player.Inventory.AddAsMuchAsPossible(it, out quantityAdded);
+
+                    // if added all, remove from inv.
+                    if (quantityAdded == quantityBefore)
+                    {
+                        //Inventory itemsThere = map.GetItemsAt(position);
+                        //if (itemsThere != null && itemsThere.Contains(it))
+                        if (backPack.Inventory.Contains(it))
+                            backPack.Inventory.RemoveAllQuantity(it);
+                    }
+
+                    actionDone = true;
+                }
+                else
+                    promptForSwap = true;
+            }
+
+            if (promptForSwap)
+            {
+                //TODO: To swap items to or from, you first select the item to move, then the corresponding item to swap with if the destination is full.
+                // the player's inventory is full, so we'll ask them if they want to swap the item from their backpack with one from their inventory.
+                bool loop = true;
+                ClearOverlays();
+                if (isBackpack)
+                    AddOverlay(new OverlayPopup(SWAP_ITEM_INVENTORY_MODE_TEXT, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, new Point(0, 0)));
+                else
+                    AddOverlay(new OverlayPopup(SWAP_ITEM_BACKPACK_MODE_TEXT, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, new Point(0, 0)));
+                RedrawPlayScreen();
+                do
+                {
+                    KeyEventArgs key = m_UI.UI_WaitKey();
+                    int choice = KeyToChoiceNumber(key.KeyCode);
+                    if (key.KeyCode == Keys.Escape)
+                    {
+                        loop = false;
+                    }
+                    else if (choice != -1) // select an item
+                    {
+                        int slot = choice;
+                        if (slot == 0) slot = 9;
+                        else slot--;
+
+                        if (isBackpack)
+                        {
+                            Item swapItem = null;
+                            if (slot < player.Inventory.CountItems)
+                            {
+                                swapItem = player.Inventory[slot];
+                            }
+
+                            //player has selected an item slot from their inventory
+                            if (swapItem != null)
+                            {
+                                string reason;
+                                if (swapItem is ItemBackpack) //can't swap if user picks inv slot of the backpack itself
+                                    AddMessage(MakeErrorMessage("That's your backpack. Choose a different item."));
+                                else if (m_Rules.CanActorMoveItemToBackpack(player, swapItem, backPack, false, out reason))
+                                {
+                                    // do it.
+                                    int quantityAdded;
+                                    Inventory temp = new Inventory(1);
+                                    temp.AddAsMuchAsPossible(swapItem, out quantityAdded);
+                                    player.Inventory.RemoveAllQuantity(swapItem);
+
+                                    player.Inventory.AddAll(it);
+                                    backPack.Inventory.RemoveAllQuantity(it);
+
+                                    backPack.Inventory.AddAll(swapItem);
+                                    temp.RemoveAllQuantity(swapItem);
+
+                                    actionDone = true;
+                                    loop = false;
+                                }
+                                else
+                                    AddMessage(MakeErrorMessage(String.Format("Can't swap {0} to {1} : {2}.", swapItem.TheName, backPack.TheName, reason)));
+                            }
+                        }
+                        else
+                        {
+                            Item swapItem = null;
+                            if (slot < backPack.Inventory.CountItems)
+                            {
+                                swapItem = backPack.Inventory[slot];
+                            }
+
+                            //player has selected an item slot from their backpack
+                            if (swapItem != null)
+                            {
+                                string reason;
+                                if (m_Rules.CanActorMoveItemToBackpack(player, it, backPack, false, out reason))
+                                {
+                                    // do it.
+                                    int quantityAdded;
+                                    Inventory temp = new Inventory(1);
+                                    temp.AddAsMuchAsPossible(it, out quantityAdded);
+                                    player.Inventory.RemoveAllQuantity(it);
+
+                                    player.Inventory.AddAll(swapItem);
+                                    backPack.Inventory.RemoveAllQuantity(swapItem);
+
+                                    backPack.Inventory.AddAll(it);
+                                    temp.RemoveAllQuantity(it);
+
+                                    actionDone = true;
+                                    loop = false;
+                                }
+                                else
+                                    AddMessage(MakeErrorMessage(String.Format("Can't swap {0} to {1} : {2}.", it.TheName, backPack.TheName, reason)));
+                            }
+                        }
+                    }
+                    RedrawPlayScreen();
+                }
+                while (loop);
+            }
+
+            // cleanup.
+            ClearOverlays();
+
+            // spend APs.
+            if (actionDone)
+                SpendActorActionPoints(player, Rules.BASE_ACTION_COST);
+
+            // return if we did an action.
+            return actionDone;
         }
 
         bool HandlePlayerSwitchPlace(Actor player)
@@ -16165,11 +16483,16 @@ namespace djack.RogueSurvivor.Engine
                     map.LocalTime.TurnCounter = m_Session.WorldTime.TurnCounter;
             }
 
-            //NPC-discarded items cleanup          //@@MP (Release 7-6)
             if (m_Session.WorldTime.TurnCounter > (s_Options.DaysBeforeDiscardedItemDespawns * WorldTime.TURNS_PER_DAY))
             {
                 foreach (Map map in district.Maps)
+                {
+                    //empty player-dropped backpacks         //@@MP (Release 8-2)
+                    //EmptyBackpacksSittingIdle(map, map.LocalTime.TurnCounter); //opted not to use this in the end
+
+                    //NPC-discarded items cleanup          //@@MP (Release 7-6)
                     DeleteItemsSittingIdle(map, map.LocalTime.TurnCounter);
+                }
             }
             #endregion
         }
@@ -18475,24 +18798,14 @@ namespace djack.RogueSurvivor.Engine
                         crossbowBolt.Quantity = 1;
                         
                         if (defender.Model.Abilities.HasInventory && !defender.Inventory.IsEmpty) //undeads have no inventory
-                        { //their invetory is not empty, chance to force them to 'drop' an item. this makes bows more powerful
-                            int randomDropChance = m_Rules.Roll(0, 10);
-                            if (randomDropChance <= 0) //10% chance to force the defender to drop an item
+                        { //their invetory is not empty, chance to force them to 'drop' an equiped item. this makes bows more useful (or less useless)
+                            if (m_Rules.RollChance(10)) //10% chance to force the defender to drop an item
                             {
-                                int loops = 1;
-                                do
-                                {
-                                    loops++;
-                                    Item randomItem = defender.Inventory.RandomItem; //select random item
-                                    if (!defender.Inventory.RandomItem.IsEquipped)
-                                    {
-                                        DropItem(defender, randomItem, true); //drop an unequipped item from their inventory
-                                        //@@MP - the following was disabled now that bows are more useful with the introduction of flaming shots (Release 7-5)
-                                        //map.DropItemAt(crossbowBolt, defender.Location.Position); //create a bolt on the ground
-                                        //DoTakeItem(defender, defender.Location.Position, crossbowBolt); //now put it into the inventory space we just vacated
-                                        break;
-                                    }
-                                } while (loops <= 10); //give up after 10, RNGesus is not kind to us
+                                //@@MP - crossbow attacks can now only disarm, not cause the target to drop any random item (Release 8-2)
+                                Disarm(attacker, defender);
+                                //@@MP - the following was disabled now that bows are more useful with the introduction of flaming shots (Release 7-5)
+                                //map.DropItemAt(crossbowBolt, defender.Location.Position); //create a bolt on the ground
+                                //DoTakeItem(defender, defender.Location.Position, crossbowBolt); //now put it into the inventory space we just vacated
                             }
                             //else if (randomDropChance == 1) //10% chance for it to penetrate the defender, or they've pulled it out and dropped it
                             //{
@@ -20505,15 +20818,15 @@ namespace djack.RogueSurvivor.Engine
                 // taking a trap deactivates it.
                 trap.Deactivate(); // alpha10 // trap.IsActivated = false;
             }
-            else if (it as ItemLight != null) //@@MP (Release 6-3)
+            else if (actor.IsPlayer)
             {
-                if (actor.IsPlayer && it.Model.IsThrowable) //@@MP - always enforce that burning flares or used glowsticks stay equipped (Release 7-1)
-                    DoEquipItem(actor, it);
-            }
-            else if (actor.IsPlayer)      //@@MP - added (Release 7-6)
-            {
-                //when cooking raw meat, we marked the item as forbidden to stop NPCs from stealing it. that flag should now be reset
-                if (it is ItemFood && it.IsForbiddenToAI)
+                if (it as ItemLight != null) //@@MP (Release 6-3)
+                {
+                    if (actor.IsPlayer && it.Model.IsThrowable) //@@MP - always enforce that burning flares or used glowsticks stay equipped (Release 7-1)
+                        DoEquipItem(actor, it);
+                }
+                //when cooking raw meat, we marked the item as forbidden to stop NPCs from stealing it. that flag should now be reset      //@@MP - added (Release 7-6)
+                else if (it is ItemFood && it.IsForbiddenToAI)
                     it.IsForbiddenToAI = false; //this allows it to be traded if the player so chooses
             }
 
@@ -20526,27 +20839,38 @@ namespace djack.RogueSurvivor.Engine
             if (quantityAdded == quantityBefore)
             {
                 Inventory itemsThere = map.GetItemsAt(position);
-                if (itemsThere != null && itemsThere.Contains(it))
-                    map.RemoveItemAt(it, position);
-
-                //@@MP - if it was a 'locked safe' see if it's now empty (Release 6-5)
-                if (actor.IsPlayer) //AI don't get locked safes
+                if (itemsThere != null)
                 {
-                    MapObject mapObj = map.GetMapObjectAt(position);
-                    if (mapObj != null && mapObj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED) //yup, its an owned safe
+                    if (itemsThere.Contains(it))
                     {
-                        itemsThere = map.GetItemsAt(position);
-                        if (itemsThere == null) //the player took the last item there, so it's no longer a 'locked' safe owned by them
+                        map.RemoveItemAt(it, position);
+
+                        //@@MP - if it was a 'locked safe' see if it's now empty (Release 6-5)
+                        if (actor.IsPlayer) //AI don't get locked safes
                         {
-                            map.RemoveMapObjectAt(position.X, position.Y); //remove the existing object that signals it as belonging to the player
-                            map.PlaceMapObjectAt(m_TownGenerator.MakeObjOpenBankSafe(GameImages.OBJ_BANK_SAFE_OPEN), position); //replace it with an ordinary open one
+                            MapObject mapObj = map.GetMapObjectAt(position);
+                            if (mapObj != null && mapObj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED) //yup, its an owned safe
+                            {
+                                itemsThere = map.GetItemsAt(position);
+                                if (itemsThere == null) //the player took the last item there, so it's no longer a 'locked' safe owned by them
+                                {
+                                    map.RemoveMapObjectAt(position.X, position.Y); //remove the existing object that signals it as belonging to the player
+                                    map.PlaceMapObjectAt(m_TownGenerator.MakeObjOpenBankSafe(GameImages.OBJ_BANK_SAFE_OPEN), position); //replace it with an ordinary open one
+                                }
+                            }
                         }
+                    }
+                    else //@@MP - now caters for taking items from backpacks too (Release 8-2)
+                    {
+                        ItemBackpack backPack = itemsThere.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack;
+                        if (backPack != null && backPack.Inventory != null && backPack.Inventory.Contains(it))
+                            backPack.Inventory.RemoveAllQuantity(it);
                     }
                 }
             }
 
-            if (actor.IsPlayer) //@@MP (Release 7-6)
-                it.DroppedOnTurnNumber = null; //clear it, because we don't want the daily cleanup of old items to get rid of ones the player might have stashed
+            // clear turn tracking
+            it.DroppedOnTurnNumber = null;
 
             // message
             if (IsVisibleToPlayer(actor) || IsVisibleToPlayer(new Location(map, position)))
@@ -20750,6 +21074,11 @@ namespace djack.RogueSurvivor.Engine
             }
             #endregion
             #region misc & other
+            else if (it.Model is ItemBackpackModel)  //@@MP (Release 8-2)
+            {
+                if (actor.IsPlayer)
+                    m_SFXManager.Play(GameSounds.ARMOR_ZIPPER, AudioPriority.PRIORITY_EVENT);
+            }
             else if (it.Model == GameItems.FISHING_ROD)  //@@MP (Release 7-6)
             {
                 DoUseFishingRodItem(actor);
@@ -20777,15 +21106,17 @@ namespace djack.RogueSurvivor.Engine
                 if (actor.IsPlayer) //@@MP (Release 2)
                     m_SFXManager.Play(GameSounds.ARMOR_ZIPPER, AudioPriority.PRIORITY_EVENT);
             }
-            else if (it.Model is ItemLightModel) //@@MP (Release 2)
+            else if (actor.IsPlayer) //stuff that only applies when the player is unequipping something
             {
-                if (actor.IsPlayer)
+                if (it.Model is ItemLightModel) //@@MP (Release 2)
                 {
                     if (m_Rules.IsItemBatteryPowered(it)) //@@MP - throwable lights (flares, glowsticks) don't need the SFX (Release 7-1)
                         m_SFXManager.Play(GameSounds.TORCH_CLICK_PLAYER, AudioPriority.PRIORITY_BGM);
                     UpdatePlayerFOV(m_Player); //@@MP - update FOV now, don't wait until the next turn (Release 6-2)
                     RedrawPlayScreen(); //@@MP - this reflects any change to FOV immediately on the player's screen (Release 7-6)
                 }
+                else if (it is ItemBackpack) //@@MP (Release 8-2)
+                    m_SFXManager.Play(GameSounds.OPEN_BACKPACK, AudioPriority.PRIORITY_EVENT);
             }
         }
 
@@ -20824,43 +21155,47 @@ namespace djack.RogueSurvivor.Engine
                 if (actor.IsPlayer && it.Model.IsThrowable)
                     spendAP = false;  ///avoid the double-turn hit
             }
-            // special case for fuel cans  //@@MP (Release 7-1)
-            else if (actor.IsPlayer && !actor.IsBotPlayer && it is ItemAmmo)
+            // special cases for player-only specifics
+            else if (actor.IsPlayer)
             {
-                ItemAmmo ammo = it as ItemAmmo;
-                if (ammo != null && ammo.Model == GameItems.AMMO_FUEL)
+                // fuel cans     //@@MP (Release 7-1)
+                if (!actor.IsBotPlayer && it is ItemAmmo)
                 {
-                    AddOverlay(new OverlayPopup(DROP_FUEL_TEXT, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, Point.Empty));
-                    RedrawPlayScreen();
+                    ItemAmmo ammo = it as ItemAmmo;
+                    if (ammo != null && ammo.Model == GameItems.AMMO_FUEL)
+                    {
+                        AddOverlay(new OverlayPopup(DROP_FUEL_TEXT, MODE_TEXTCOLOR, MODE_BORDERCOLOR, MODE_FILLCOLOR, Point.Empty));
+                        RedrawPlayScreen();
 
-                    KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
-                    if (inKey.KeyCode == Keys.Escape) // Handle input
-                    {
-                        ClearOverlays();
-                        RedrawPlayScreen();
-                        return;
-                    }
-                    // get choice.
-                    else if (inKey.KeyCode == Keys.O) //drop only one, probably because they want to use it as an explosive trap
-                    {
-                        actor.Inventory.Consume(it);
+                        KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
+                        if (inKey.KeyCode == Keys.Escape) // Handle input
+                        {
+                            ClearOverlays();
+                            RedrawPlayScreen();
+                            return;
+                        }
+                        // get choice.
+                        else if (inKey.KeyCode == Keys.O) //drop only one, probably because they want to use it as an explosive trap
+                        {
+                            actor.Inventory.Consume(it);
 
-                        ItemAmmo cloneAmmo = new ItemAmmo(GameItems.AMMO_FUEL);
-                        cloneAmmo.Quantity = 1;
-                        DropItem(actor, cloneAmmo, true);
-                        ClearOverlays();
-                        RedrawPlayScreen();
-                        return;
-                    }
-                    else if (inKey.KeyCode == Keys.A) //drop all
-                        RedrawPlayScreen(); //nothing extra required, continue with normal drop
-                    else
-                    {
-                        AddMessage(MakeErrorMessage("Unhandled key error when dropping fuel cans."));
-                        AddMessage(MakeErrorMessage("Did you perhaps hit the wrong key?"));
-                        ClearOverlays();
-                        RedrawPlayScreen();
-                        return;
+                            ItemAmmo cloneAmmo = new ItemAmmo(GameItems.AMMO_FUEL);
+                            cloneAmmo.Quantity = 1;
+                            DropItem(actor, cloneAmmo, true);
+                            ClearOverlays();
+                            RedrawPlayScreen();
+                            return;
+                        }
+                        else if (inKey.KeyCode == Keys.A) //drop all
+                            RedrawPlayScreen(); //nothing extra required, continue with normal drop
+                        else
+                        {
+                            AddMessage(MakeErrorMessage("Unhandled key error when dropping fuel cans."));
+                            AddMessage(MakeErrorMessage("Did you perhaps hit the wrong key?"));
+                            ClearOverlays();
+                            RedrawPlayScreen();
+                            return;
+                        }
                     }
                 }
             }
@@ -21043,6 +21378,8 @@ namespace djack.RogueSurvivor.Engine
                     }
                     else if (obj.ImageID == GameImages.OBJ_BANK_SAFE_OPEN_OWNED)
                         AddMessage(new Message(String.Format("You lock {0} away in the safe. No one else can get at it now", it.TheName), m_Session.WorldTime.TurnCounter, Color.Yellow));
+                    /*else if (it is ItemBackpack) //@@MP - opted not to cleanup items from idle dropped backpacks (Release 8-2)
+                        ApplyItemTurnTracker(it); //prevents the player from permanently storing in stashed backpacks, as that would be exploitable*/
                 }
             }
             else if (actor.Leader != m_Player) //@@MP - items dropped by non-follower NPCs will be despawned if they sit idle for too long (Release 7-6)
@@ -21144,7 +21481,7 @@ namespace djack.RogueSurvivor.Engine
                 return;
 
             //we've made it past all the exceptions, so this one gets marked for potential deletion
-            it.DroppedOnTurnNumber = m_Session.WorldTime.TurnCounter; //clear it, because we don't want the daily cleanup of old items to get rid of ones the player might have stashed
+            it.DroppedOnTurnNumber = m_Session.WorldTime.TurnCounter;
         }
 
         public void DoUseItem(Actor actor, Item it)
@@ -25048,11 +25385,20 @@ namespace djack.RogueSurvivor.Engine
                 // inventories.
                 if (m_Player != null)
                 {
+                    bool hideGroundInv = false;
                     if (m_Player.Inventory != null && m_Player.Model.Abilities.HasInventory)
                     {
                         DrawInventory(m_Player.Inventory, "Inventory", true, INVENTORY_SLOTS_PER_LINE, m_Player.Inventory.MaxCapacity, INVENTORYPANEL_X, INVENTORYPANEL_Y);
+
+                        ItemBackpack pack = m_Player.Inventory.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack; //@@MP (Release 8-2)
+                        if (pack != null && !pack.IsEquipped) //can only ever have one backpack in one's inventory
+                        {
+                            hideGroundInv = true; //hides the ground inventory, only when the backpack's inventory is open
+                            DrawBackpackInventory(pack.Inventory, "Backpack", true, INVENTORY_SLOTS_PER_LINE, pack.Inventory.MaxCapacity, INVENTORYPANEL_X, BACKPACKPANEL_Y);
+                        }
                     }
-                    DrawInventory(m_Player.Location.Map.GetItemsAt(m_Player.Location.Position), "Items on ground", true, INVENTORY_SLOTS_PER_LINE, Map.GROUND_INVENTORY_SLOTS, INVENTORYPANEL_X, GROUNDINVENTORYPANEL_Y);
+                    if (!hideGroundInv)
+                        DrawInventory(m_Player.Location.Map.GetItemsAt(m_Player.Location.Position), "Items on ground", true, INVENTORY_SLOTS_PER_LINE, Map.GROUND_INVENTORY_SLOTS, INVENTORYPANEL_X, GROUNDINVENTORYPANEL_Y);
                     DrawCorpsesList(m_Player.Location.Map.GetCorpsesAt(m_Player.Location.Position), "Corpses on ground", INVENTORY_SLOTS_PER_LINE, INVENTORYPANEL_X, CORPSESPANEL_Y);
                 }
 
@@ -26459,7 +26805,7 @@ namespace djack.RogueSurvivor.Engine
                 return;
 
             x = gx; y = gy; slot = 0;
-            foreach (Item it in inventory.Items) //@@MP - optimized by ordering most commonly owned item types first (Release 2)
+            foreach (Item it in inventory.Items)
             {
                 if (it is ItemFood)
                 {
@@ -26517,6 +26863,116 @@ namespace djack.RogueSurvivor.Engine
                 if (it.IsEquipped) //@@MP - weapons, torches, armour, phones, trackers, sprays
                 {
                     m_UI.UI_DrawImage(GameImages.ITEM_EQUIPPED, x, y);
+                }
+
+                DrawItem(it, x, y);
+
+                if (++slot >= slotsPerLine)
+                {
+                    slot = 0;
+                    y += TILE_SIZE;
+                    x = gx;
+                }
+                else
+                    x += TILE_SIZE;
+            }
+
+            // Draw slots numbers.
+            if (drawSlotsNumbers)
+            {
+                x = gx + 4; y = gy + TILE_SIZE;
+                for (int i = 0; i < inventory.MaxCapacity; i++)
+                {
+                    m_UI.UI_DrawString(Color.White, (i + 1).ToString(), x, y);
+                    x += TILE_SIZE;
+                }
+
+            }
+        }
+
+        public void DrawBackpackInventory(Inventory inventory, string title, bool drawSlotsNumbers, int slotsPerLine, int maxSlots, int gx, int gy) //@@MP (Release 8-2)
+        {
+            int x, y;
+            int slot = 0;
+
+            // Draw title.
+            gy -= BOLD_LINE_SPACING;
+            m_UI.UI_DrawStringBold(Color.BurlyWood, title, gx, gy);
+            gy += BOLD_LINE_SPACING;
+
+            // Draw slots.
+            x = gx; y = gy; slot = 0;
+            for (int i = 0; i < maxSlots; i++)
+            {
+                m_UI.UI_DrawImage(GameImages.ITEM_BACKPACK_SLOT, x, y);
+                if (++slot >= slotsPerLine)
+                {
+                    slot = 0;
+                    y += TILE_SIZE;
+                    x = gx;
+                }
+                else
+                    x += TILE_SIZE;
+            }
+
+            // Draw items.
+            if (inventory == null)
+                return;
+
+            x = gx; y = gy; slot = 0;
+            foreach (Item it in inventory.Items)
+            {
+                if (it is ItemFood)
+                {
+                    ItemFood food = it as ItemFood;
+                    if (m_Rules.IsFoodExpired(food, m_Session.WorldTime.TurnCounter))
+                        m_UI.UI_DrawImage(GameImages.ICON_EXPIRED_FOOD, x, y);
+                    else if (m_Rules.IsFoodSpoiled(food, m_Session.WorldTime.TurnCounter))
+                        m_UI.UI_DrawImage(GameImages.ICON_SPOILED_FOOD, x, y);
+                }
+                else if (it is ItemRangedWeapon)
+                {
+                    ItemRangedWeapon w = it as ItemRangedWeapon;
+                    if (w.Ammo <= 0)
+                        m_UI.UI_DrawImage(GameImages.ICON_OUT_OF_AMMO, x, y);
+                    DrawBar(w.Ammo, w.Ammo, (w.Model as ItemRangedWeaponModel).MaxAmmo, 0, 28, 3, x + 2, y + 27, Color.Blue, Color.Blue, Color.Blue, Color.DarkGray);
+                }
+                else if (it is ItemEntertainment)
+                {
+                    if (m_Player != null && ((it as ItemEntertainment).IsBoringFor(m_Player))) // alpha10 boring items item-centric
+                        m_UI.UI_DrawImage(GameImages.ICON_BORING_ITEM, x, y);
+                }
+                else if (it is ItemLight)
+                {
+                    ItemLight lt = it as ItemLight;
+                    if (lt.MaxBatteries > 0) //@@MP - moved into this check so that binocs don't crash GDI+ with an overflow (Release 7-2)
+                    {
+                        if (lt.Batteries <= 0)
+                            m_UI.UI_DrawImage(GameImages.ICON_OUT_OF_BATTERIES, x, y);
+                        DrawBar(lt.Batteries, lt.Batteries, (lt.Model as ItemLightModel).MaxBatteries, 0, 28, 3, x + 2, y + 27, Color.Yellow, Color.Yellow, Color.Yellow, Color.DarkGray);
+                    }
+                }
+                else if (it is ItemSprayScent)
+                {
+                    ItemSprayScent sp = it as ItemSprayScent;
+                    DrawBar(sp.SprayQuantity, sp.SprayQuantity, (sp.Model as ItemSprayScentModel).MaxSprayQuantity, 0, 28, 3, x + 2, y + 27, Color.Cyan, Color.Cyan, Color.Cyan, Color.DarkGray);
+                }
+                else if (it is ItemTrap)
+                {
+                    ItemTrap trap = it as ItemTrap;
+                    DrawTrapItem(trap, x, y);  // alpha10 factorized code
+                }
+                else if (it is ItemTracker)
+                {
+                    ItemTracker tr = it as ItemTracker;
+                    if (tr.Batteries <= 0)
+                        m_UI.UI_DrawImage(GameImages.ICON_OUT_OF_BATTERIES, x, y);
+                    DrawBar(tr.Batteries, tr.Batteries, (tr.Model as ItemTrackerModel).MaxBatteries, 0, 28, 3, x + 2, y + 27, Color.Pink, Color.Pink, Color.Pink, Color.DarkGray);
+                }
+                else if (it is ItemSprayPaint)
+                {
+                    ItemSprayPaint sp = it as ItemSprayPaint;
+                    DrawBar(sp.PaintQuantity, sp.PaintQuantity, (sp.Model as ItemSprayPaintModel).MaxPaintQuantity, 0, 28, 3, x + 2, y + 27, Color.Gold, Color.Gold, Color.Gold, Color.DarkGray);
                 }
 
                 DrawItem(it, x, y);
@@ -31503,7 +31959,7 @@ namespace djack.RogueSurvivor.Engine
                 return name;
         }
 
-        string[] DescribeItemLong(Item it, bool isPlayerInventory, int iSlot) // alpha 10 added iSlot
+        string[] DescribeItemLong(Item it, bool isPlayerInventory, int iSlot, bool isBackpackInventory = false) // alpha 10 added iSlot      //@@MP - added isBackpackInventory (Release 8-2)
         {
             List<string> lines = new List<string>();
             bool isDefaultUse = true; // alpha10
@@ -31515,6 +31971,18 @@ namespace djack.RogueSurvivor.Engine
             }
             else
                 lines.Add(DescribeItemShort(it));
+
+            // for backpack inventory cut the description short             //@@MP - added (Release 8-2)
+            if (isBackpackInventory)
+            {
+                lines.Add(" ");
+                lines.Add("----");
+                lines.Add(String.Format("to destroy : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.DESTROY_ITEM).ToString()));
+                lines.Add(String.Format("to move to inventory : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.SWAP_INVENTORY).ToString()));
+
+                // done.
+                return lines.ToArray();
+            }
 
             // 2. Special flags.
             // unbreakable?
@@ -31655,6 +32123,8 @@ namespace djack.RogueSurvivor.Engine
                     lines.Add("to drop : <RMB>");
                 lines.Add(String.Format("to give : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.GIVE_ITEM).ToString()));
                 lines.Add(String.Format("to destroy : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.DESTROY_ITEM).ToString())); //@@MP (Release 7-6)
+                if (it.Model.CanGoInBackpacks && m_Player.Inventory.HasItemOfType(typeof(ItemBackpack))) //@@MP (Release 8-2)
+                    lines.Add(String.Format("to move to backpack : <{0}>", s_KeyBindings.GetFriendlyFormat(PlayerCommand.SWAP_INVENTORY).ToString()));
                 if (inInvAdditionalDesc != null)
                     lines.Add(inInvAdditionalDesc);
             }
@@ -32615,6 +33085,56 @@ namespace djack.RogueSurvivor.Engine
 
             return false;
         }
-#endregion
+
+        /// <summary>
+        /// Certain things prevent the player from performing their desired action
+        /// </summary>
+        /// <param name="checkBinos">This action can't be done when binoculars are equiped</param>
+        /// <param name="checkBackpack">This action can't be done when their backpack is open</param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
+        bool BlockAction(out string reason, bool checkBinos, bool checkBackpack, Direction dir = null) //@@MP (Release 8-2)
+        {
+            reason = "";
+
+            // are binoculars equipped?
+            if (checkBinos) //@@MP (Release 7-1)
+            {
+                // we have to check within the loop because the player could unequip them, which costs no AP
+                // and therefore the player will do something else on this same turn but with the light now unequipped
+                ItemLight loopEyesLight = m_Player.GetEquippedItem(DollPart.EYES) as ItemLight;
+                if (loopEyesLight != null && m_Rules.IsItemBinoculars(loopEyesLight) && loopEyesLight.IsEquipped)
+                {
+                    reason = BINOCULARS_DENIED_MESSAGE;
+                    return true;
+                }
+            }
+
+            // is backpack open?
+            if (checkBackpack) //@@MP (Release 8-2)
+            {
+                ItemBackpack backPack = m_Player.Inventory.GetFirstByType(typeof(ItemBackpack)) as ItemBackpack;
+                if (backPack != null && !backPack.IsEquipped)
+                {
+                    //backpack is open.
+                    if (dir != null) //check if dir will result in a move or a bump
+                    {
+                        //bump, such as taking an item from a container, or meleeing an enemy, is allowed with an open backpack. moving is not
+                        if (!m_Rules.IsWalkableFor(m_Player, m_Player.Location + dir))
+                            return false;
+                    }
+
+                    //opted to auto-equip the backpack rather than stop the player with a "no go" message
+                    DoEquipItem(m_Player, backPack, false);
+                    return false;
+                    /*reason = BACKPACK_DENIED_MESSAGE;
+                    return true;*/
+                }
+            }
+
+            //nothing preventing the go-ahead of the player's chosen action
+            return false;
+        }
+        #endregion
     }
 }

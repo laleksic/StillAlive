@@ -617,6 +617,8 @@ namespace djack.RogueSurvivor.Engine
             // - Shamblers Upgrade          : x1.25 / x0.75
             // - Resources Availability     : x1.5 / x 0.5      //@@MP (Release 7-4)
             // - VTG Anti-viral pills       : x1.5 / x 0.5      //@@MP (Release 7-4)
+            // - Backpacks disabled         : x1.5              //@@MP (Release 8-2)
+            // - Undeads / livings damage
             ////////////
             #region
             // - Disable undeads evolution: x0.5 / x2
@@ -680,7 +682,7 @@ namespace djack.RogueSurvivor.Engine
             if (side == DifficultySide.FOR_SURVIVOR)
             {
                 if (options.ResourcesAvailability == GameOptions.Resources.LOW)
-                    rating *= 2f;
+                    rating *= 1.5f;
                 else if (options.ResourcesAvailability == GameOptions.Resources.HIGH)
                     rating *= 0.5f;
             }
@@ -705,6 +707,10 @@ namespace djack.RogueSurvivor.Engine
                 rating /= ((float)options.LivingDamagePercent / (float)100);
             else
                 rating *= (1.0f + ((float)options.LivingDamagePercent / (float)100));
+
+            // - VTG Anti-viral pills   //@@MP (Release 8-2)
+            if (!options.BackpacksEnabled && side == DifficultySide.FOR_SURVIVOR)
+                rating *= 1.5f;  //survivor, disabled = more challenge
             #endregion
 
             /////////////////////////////

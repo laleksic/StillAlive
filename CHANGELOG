@@ -1,5 +1,18 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
+STILL ALIVE 2.11.0.1 (aka Release 8-2, 6/3/2023) [Author: MP]
+---------------------
+
+Features:
+-Added backpacks. They're a difficulty option, and can be disabled at new character creation.
+
+Misc:
+-Swapped the shotgun and double barrel sprites.
+-Crossbow attacks can now only disarm, not cause the target to drop any random item.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.10.2.6 (aka Release 8-1, 26/2/2023) [Author: MP]
 ---------------------
 

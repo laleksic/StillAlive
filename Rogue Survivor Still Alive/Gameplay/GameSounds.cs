@@ -445,5 +445,9 @@ namespace djack.RogueSurvivor.Gameplay
         public const string PLASMA_BURST_VISIBLE_FILE = PATH + "plasma_burst_visible";
         public const string PLASMA_BURST_AUDIBLE = "plasma burst nearby";
         public const string PLASMA_BURST_AUDIBLE_FILE = PATH + "plasma_burst_audible";
+
+        //@@MP (Release 8-2)
+        public const string OPEN_BACKPACK = "opens backpack";
+        public const string OPEN_BACKPACK_FILE = PATH + "open_backpack";
     }
 }

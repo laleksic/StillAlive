@@ -19,6 +19,7 @@ namespace djack.RogueSurvivor.Data
         SKIN,
         EYES,
         LEFT_ARM, //@@MP - for shields (Release 7-2)
+        BACK, //@@MP - for backpacks (Release 8-2)
 
         _COUNT
     }

@@ -2371,6 +2371,47 @@ namespace djack.RogueSurvivor.Gameplay.Generators
         {
             return new Item(m_Game.GameItems.CHAR_LAPTOP);
         }
+
+        //@@MP (Release 8-2)
+        public Item MakeItemWaistPouch()
+        {
+            return new ItemBackpack(m_Game.GameItems.WAIST_POUCH)
+            {
+                IsForbiddenToAI = true
+            };
+        }
+
+        public Item MakeItemSatchel()
+        {
+            return new ItemBackpack(m_Game.GameItems.SATCHEL)
+            {
+                IsForbiddenToAI = true
+            };
+        }
+
+        public Item MakeItemDaypack()
+        {
+            return new ItemBackpack(m_Game.GameItems.DAYPACK)
+            {
+                IsForbiddenToAI = true
+            };
+        }
+
+        public Item MakeItemHikingPack()
+        {
+            return new ItemBackpack(m_Game.GameItems.HIKING_PACK)
+            {
+                IsForbiddenToAI = true
+            };
+        }
+
+        public Item MakeItemArmyRucksack()
+        {
+            return new ItemBackpack(m_Game.GameItems.ARMY_RUCKSACK)
+            {
+                IsForbiddenToAI = true
+            };
+        }
         #endregion
 
         #region Common tasks

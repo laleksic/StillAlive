@@ -1,6 +1,6 @@
 ﻿REQUIREMENTS
 
-Minimum resolution: 800*600
+Minimum resolution: 1024*768
 Disk space: 300mb
 .NET Framework: 3.5
 

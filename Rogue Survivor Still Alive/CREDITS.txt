@@ -139,6 +139,7 @@ The following list is accesible in a text file (CREDITS.txt) in the game's folde
 -Bio Force Gun reload/equip: https://freesound.org/people/18hiltc/sounds/210604/ by 18hiltc [CC-BY 4.0]
 -Bio Force Gun: https://freesound.org/people/Anomaex/sounds/490245/ by Anomaex
 -Plasma burst: https://freesound.org/people/newlocknew/sounds/514024/ by newlocknew [CC-BY 4.0]
+-Open backpack: https://freesound.org/people/1bob/sounds/651515/ by 1bob [CC-BY 4.0]
 The following sounds all carry the Pixabay License (https://pixabay.com/service/terms/#license), retrieved 16/2/2023:
 -080167 Female scream 02 : https://pixabay.com/sound-effects/080167-female-scream-02-89290/ by pixabay
 -Male Extreme Scream : https://pixabay.com/sound-effects/male-extreme-scream-123078/ by Universfield
