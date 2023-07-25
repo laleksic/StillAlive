@@ -33044,31 +33044,37 @@ namespace djack.RogueSurvivor.Engine
                 return false;
         }
 
-        static bool IsActorStandingInLight(Actor actor) //@@MP (Release 7-5)
+        static bool IsActorStandingInLight(Actor actor) //@@MP (Release 7-5), tidied up the logic (Release 8-2)
         {
             // check if next to any non-equipped light sources (assumes that ambient lights from items/decorations are always only 3x3 tiles)
             Map map = actor.Location.Map;
             Point spot = actor.Location.Position;  //start by checking the actor's location, then adjacent
             foreach (Direction d in Direction.COMPASS)
             {
+                if (!map.IsInBounds(spot))
+                    continue;
+
+                // on fire objects
                 MapObject mapObj = map.GetMapObjectAt(spot);
                 if (mapObj != null && mapObj.IsOnFire)
                     return true;
 
+                // tile-based light sources
                 if (map.IsAnyTileFireThere(map, spot))
                     return true;
+                if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.DECO_LIT_CANDLE))
+                    return true;
 
-                if (map.GetActorAt(spot) != null)
+                // actors carrying lights
+                Actor act = map.GetActorAt(spot);
+                if (act != null)
                 {
-                    Actor act = map.GetActorAt(spot);
                     ItemLight heldLight = (act.GetEquippedItem(DollPart.LEFT_HAND) as ItemLight);
                     if (heldLight != null && heldLight.Batteries > 0)
                         return true;
                 }
 
-                if (map.GetTileAt(spot).HasDecoration(Gameplay.GameImages.DECO_LIT_CANDLE))
-                    return true;
-
+                // dropped lights
                 Inventory inv = map.GetItemsAt(spot);
                 if (inv != null)
                 {

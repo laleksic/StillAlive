@@ -1,5 +1,13 @@
 Outstanding known issues: https://gitlab.com/RogueSurvivor-StillAlive/StillAlive/issues
 
+STILL ALIVE 2.11.0.2 (22/7/2023) [Author: MP]
+---------------------
+
+Fixes:
+-Fixed crashes caused by checking out of bounds tiles for light sources.
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
 STILL ALIVE 2.11.0.1 (aka Release 8-2, 6/3/2023) [Author: MP]
 ---------------------
 
