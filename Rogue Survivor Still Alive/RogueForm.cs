@@ -11,6 +11,11 @@ namespace djack.RogueSurvivor
 {
     public partial class RogueForm : Form, IRogueUI
     {
+        private void DoEvents()
+        {
+            Application.DoEvents();
+        }
+
         #region Fields
         RogueGame m_Game;
         Font m_NormalFont;
@@ -131,7 +136,7 @@ namespace djack.RogueSurvivor
             m_HasKey = false;
             while (true)
             {
-                Application.DoEvents();
+                DoEvents();
                 if (m_HasKey)
                     break;
                 Thread.Sleep(1);
@@ -142,7 +147,7 @@ namespace djack.RogueSurvivor
         public KeyEventArgs UI_PeekKey()
         {
             Thread.Sleep(1);
-            Application.DoEvents();
+            DoEvents();
             if (m_HasKey)
             {
                 m_HasKey = false;
@@ -380,7 +385,7 @@ namespace djack.RogueSurvivor
         public Point UI_GetMousePosition()
         {
             Thread.Sleep(1);
-            Application.DoEvents();
+            DoEvents();
             return m_GameCanvas.MouseLocation;
         }
 
@@ -408,7 +413,7 @@ namespace djack.RogueSurvivor
                 return;
 
             this.Cursor = cursor;
-            Application.DoEvents();
+            DoEvents();
         }
         #endregion
 
@@ -426,7 +431,7 @@ namespace djack.RogueSurvivor
             /*Invalidate();
             Update();*/
             Refresh();
-            Application.DoEvents();
+            DoEvents();
         }
 
         public void UI_Clear(Color clearColor)
@@ -531,8 +536,8 @@ namespace djack.RogueSurvivor
             //////////////////
             try
             {
-                m_GameCanvas.AddFilledRect(boxFillColor, boxRect);
-                m_GameCanvas.AddRect(boxBorderColor, boxRect);
+                UI_FillRect(boxFillColor, boxRect);
+                UI_DrawRect(boxBorderColor, boxRect);
             }
             catch (Exception e)
             {
@@ -547,7 +552,7 @@ namespace djack.RogueSurvivor
             int lineY = boxPos.Y + BOX_MARGIN;
             for (int i = 0; i < lines.Length; i++)
             {
-                m_GameCanvas.AddString(m_BoldFont, textColor, lines[i], lineX, lineY);
+                UI_DrawStringBold(textColor, lines[i], lineX, lineY, null);
                 lineY += linesSize[i].Height;
             }
         }
@@ -590,8 +595,8 @@ namespace djack.RogueSurvivor
             //////////////////
             // Draw popup box
             //////////////////
-            m_GameCanvas.AddFilledRect(boxFillColor, boxRect);
-            m_GameCanvas.AddRect(boxBorderColor, boxRect);
+            UI_FillRect(boxFillColor, boxRect);
+            UI_DrawRect(boxBorderColor, boxRect);
 
             //////////////
             // Draw title
@@ -599,8 +604,8 @@ namespace djack.RogueSurvivor
             int titleX = boxPos.X + BOX_MARGIN + (longestLineWidth - titleSize.Width) / 2;
             int titleY = boxPos.Y + BOX_MARGIN;
             int titleLineY = titleY + titleSize.Height + TITLE_BAR_LINE;
-            m_GameCanvas.AddString(m_BoldFont, titleColor, title, titleX, titleY);
-            m_GameCanvas.AddLine(boxBorderColor, boxRect.Left, titleLineY, boxRect.Right, titleLineY);
+            UI_DrawStringBold(titleColor, title, titleX, titleY, null);
+            UI_DrawLine(boxBorderColor, boxRect.Left, titleLineY, boxRect.Right, titleLineY);
 
             //////////////
             // Draw lines
@@ -610,7 +615,7 @@ namespace djack.RogueSurvivor
 
             for (int i = 0; i < lines.Length; i++)
             {
-                m_GameCanvas.AddString(m_BoldFont, textColor, lines[i], lineX, lineY);
+                UI_DrawStringBold(textColor, lines[i], lineX, lineY, null);
                 lineY += linesSize[i].Height;
             }
         }
@@ -653,8 +658,8 @@ namespace djack.RogueSurvivor
             //////////////////
             // Draw popup box
             //////////////////
-            m_GameCanvas.AddFilledRect(boxFillColor, boxRect);
-            m_GameCanvas.AddRect(boxBorderColor, boxRect);
+            UI_FillRect(boxFillColor, boxRect);
+            UI_DrawRect(boxBorderColor, boxRect);
 
             //////////////
             // Draw title
@@ -662,8 +667,8 @@ namespace djack.RogueSurvivor
             int titleX = boxPos.X + BOX_MARGIN + (longestLineWidth - titleSize.Width) / 2;
             int titleY = boxPos.Y + BOX_MARGIN;
             int titleLineY = titleY + titleSize.Height + TITLE_BAR_LINE;
-            m_GameCanvas.AddString(m_BoldFont, titleColor, title, titleX, titleY);
-            m_GameCanvas.AddLine(boxBorderColor, boxRect.Left, titleLineY, boxRect.Right, titleLineY);
+            UI_DrawStringBold(titleColor, title, titleX, titleY, null);
+            UI_DrawLine(boxBorderColor, boxRect.Left, titleLineY, boxRect.Right, titleLineY);
 
             //////////////
             // Draw lines
@@ -673,7 +678,7 @@ namespace djack.RogueSurvivor
 
             for (int i = 0; i < lines.Length; i++)
             {
-                m_GameCanvas.AddString(m_BoldFont, colors[i], lines[i], lineX, lineY);
+                UI_DrawStringBold(colors[i], lines[i], lineX, lineY, null);
                 lineY += linesSize[i].Height;
             }
         }
