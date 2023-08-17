@@ -55,13 +55,8 @@
         private void InitializeComponent()
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating GameCanvas...");
-            switch (SetupConfig.Video)
-            {
-                default:
-                    Logger.WriteLine(Logger.Stage.INIT_MAIN, "GDIPlusGameCanvas implementation...");
-                    this.m_GameCanvas = new djack.RogueSurvivor.UI.GDIPlusGameCanvas();
-                    break;
-            }
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "GDIPlusGameCanvas implementation...");
+            this.m_GameCanvas = new djack.RogueSurvivor.UI.GDIPlusGameCanvas();
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "SuspendLayout...");
             this.SuspendLayout();
             // 

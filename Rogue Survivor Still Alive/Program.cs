@@ -27,7 +27,6 @@ namespace djack.RogueSurvivor
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading setup...");
             SetupConfig.Load();
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "setup : " + SetupConfig.Video.ToString() + ", " + SetupConfig.Sound.ToString());
 
             using (RogueForm form = new RogueForm())
             {

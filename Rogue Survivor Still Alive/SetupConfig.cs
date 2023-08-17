@@ -9,21 +9,6 @@ namespace djack.RogueSurvivor
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible")]
         public static string GAME_VERSION = "Still Alive " + System.Windows.Forms.Application.ProductVersion + " ALPHA"; //@@MP remember to update the Assembly info (Release 1)
 
-        public enum eVideo
-        {
-            VIDEO_INVALID,
-            VIDEO_GDI_PLUS,
-            COUNT //@@MP - removed underscore for CLS compliance (Release 5-7)
-        }
-
-        public enum eSound
-        {
-            SOUND_INVALID,
-            SOUND_SFML,
-            SOUND_NOSOUND,
-            COUNT //@@MP - removed underscore for CLS compliance (Release 5-7)
-        }
-
         public enum eWindow //@@MP (Release 5-5)
         {
             WINDOW_INVALID,
@@ -32,8 +17,6 @@ namespace djack.RogueSurvivor
             COUNT //@@MP - removed underscore for CLS compliance (Release 5-7)
         }
 
-        public static eVideo Video { get; set; }
-        public static eSound Sound { get; set; }
         public static eWindow Window { get; set; } //@@MP (Release 5-5)
         public static bool WriteLogToFile { get; set; } //@@MP (Release 6-2)
 
@@ -59,8 +42,6 @@ namespace djack.RogueSurvivor
         {
             using (StreamWriter sw = File.CreateText(FilePath))
             {
-                sw.WriteLine(SetupConfig.Video.ToString());
-                sw.WriteLine(SetupConfig.Sound.ToString());
                 sw.WriteLine(SetupConfig.Window.ToString()); //@@MP (Release 5-5)
                 sw.WriteLine(SetupConfig.WriteLogToFile.ToString()); //@@MP (Release 6-2)
             }
@@ -72,8 +53,6 @@ namespace djack.RogueSurvivor
             {
                 using (StreamReader sr = File.OpenText(FilePath))
                 {
-                    SetupConfig.Video = toVideo(sr.ReadLine());
-                    SetupConfig.Sound = toSound(sr.ReadLine());
                     SetupConfig.Window = toWindow(sr.ReadLine());//@@MP (Release 5-5)
                     SetupConfig.WriteLogToFile = toLogToFile(sr.ReadLine()); //@@MP (Release 6-2)
                 }
@@ -83,29 +62,11 @@ namespace djack.RogueSurvivor
                 if (!Directory.Exists(DirPath))
                     Directory.CreateDirectory(DirPath);
 
-                SetupConfig.Video = eVideo.VIDEO_GDI_PLUS;
-                SetupConfig.Sound = eSound.SOUND_SFML; //@@MP - changed default to SFML (Release 5-3)
                 SetupConfig.Window = eWindow.WINDOW_FULLSCREEN; //@@MP (Release 5-5)
                 SetupConfig.WriteLogToFile = false; //@@MP (Release 6-2)
 
                 Save();
             }
-        }
-
-        public static eVideo toVideo(string v)
-        {
-            if (v == eVideo.VIDEO_GDI_PLUS.ToString())
-                return eVideo.VIDEO_GDI_PLUS;
-            return eVideo.VIDEO_INVALID;
-        }
-
-        public static eSound toSound(string s)
-        {
-            if (s == eSound.SOUND_SFML.ToString())
-                return eSound.SOUND_SFML;
-            if (s == eSound.SOUND_NOSOUND.ToString())
-                return eSound.SOUND_NOSOUND;
-            return eSound.SOUND_INVALID;
         }
 
         public static eWindow toWindow(string w) //@@MP (Release 5-5)

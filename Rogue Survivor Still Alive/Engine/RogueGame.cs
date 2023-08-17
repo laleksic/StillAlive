@@ -827,37 +827,13 @@ namespace djack.RogueSurvivor.Engine
             m_UI = UI;
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating Music Manager"); //@@MP - now used for background music, rather than weather (Release 6-1)
-            switch (SetupConfig.Sound)
-            {
-                case SetupConfig.eSound.SOUND_SFML:
-                    m_MusicManager = new SFMLMusicManager(); //@@MP (Release 5-3)
-                    break;
-                default:
-                    m_MusicManager = new NullSoundManager();
-                    break;
-            }
+            m_MusicManager = new SFMLMusicManager(); //@@MP (Release 5-3)
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating Sound Manager"); //@@MP (Release 2)
-            switch (SetupConfig.Sound)
-            {
-                case SetupConfig.eSound.SOUND_SFML:
-                    m_SFXManager = new SFMLSoundManager(); //sound manager is good for short tracks called frequently, as they are kept in memory
-                    break;
-                default:
-                    m_SFXManager = new NullSoundManager();
-                    break;
-            }
+            m_SFXManager = new SFMLSoundManager(); //sound manager is good for short tracks called frequently, as they are kept in memory
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating Ambient Sound Manager"); //@@MP (Release 2)
-            switch (SetupConfig.Sound)
-            {
-                case SetupConfig.eSound.SOUND_SFML:
-                    m_AmbientSFXManager = new SFMLMusicManager(); //music manager is good for long tracks, as they are streamed from disk rather than kept in memory
-                    break;
-                default:
-                    m_AmbientSFXManager = new NullSoundManager();
-                    break;
-            }
+            m_AmbientSFXManager = new SFMLMusicManager(); //music manager is good for long tracks, as they are streamed from disk rather than kept in memory
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating MessageManager");
             m_MessageManager = new MessageManager(MESSAGES_SPACING, MESSAGES_FADEOUT, MESSAGES_HISTORY);
