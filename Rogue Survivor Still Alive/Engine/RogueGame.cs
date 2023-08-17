@@ -1955,27 +1955,20 @@ namespace djack.RogueSurvivor.Engine
                         break;
 
                     case Keys.Enter: // rebind
-                        /*
-                        SFML TODO
-
                         // say.
                         m_UI.UI_DrawStringBold(Color.Yellow, String.Format("rebinding {0}, press the new key.", menuEntries[selected]), gx, gy);
                         m_UI.UI_Repaint();
 
                         // read new key.
                         bool loopNewKey = true;
-                        Keys newKeyData = Keys.None;
+                        KeyEventArgs newKey = null;
                         do
                         {
-                            KeyEventArgs newKey = m_UI.UI_WaitKey();
-                            // ignore Shift and Control alone.
-                            if (newKey.Code == Keys.LShiftKey || newKey.Code == Keys.ControlKey)
-                                continue;
-                            // always ignore Alt.
-                            if (newKey.Alt)
+                            newKey = m_UI.UI_WaitKey();
+                            // ignore Shift, Control and Alt alone.
+                            if (newKey.Code == Keys.LShift || newKey.Code == Keys.RShift || newKey.Code == Keys.LControl || newKey.Code == Keys.RControl || newKey.Code == Keys.LAlt || newKey.Code == Keys.RAlt)
                                 continue;
                             // done!
-                            newKeyData = newKey.KeyData;
                             loopNewKey = false;
                         }
                         while (loopNewKey);
@@ -2038,8 +2031,7 @@ namespace djack.RogueSurvivor.Engine
                         }
 
                         // bind it.                      
-                        s_KeyBindings.Set(command, newKeyData);
-                        */
+                        s_KeyBindings.Set(command, newKey);
 
                         break;
 

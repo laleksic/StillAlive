@@ -48,11 +48,9 @@ namespace djack.RogueSurvivor
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating sfml window...");
             renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(800, 600), "SFML works!");
             renderWindow.KeyPressed += (sender, e) => {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "KeyPressed: " + sender.ToString() + ", " + e.ToString());
                 UI_PostKey(e);
             };
             renderWindow.Closed += (sender, e) => {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Close event");
                 UI_DoQuit();
             };
 
@@ -183,8 +181,6 @@ namespace djack.RogueSurvivor
 
         public void UI_PostKey(KeyEventArgs e)
         {
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "UI_PostKey: " + e.ToString());
-
             if (e == null) //@@MP (Release 5-7)
                 throw new ArgumentNullException("e", "null e");
 
