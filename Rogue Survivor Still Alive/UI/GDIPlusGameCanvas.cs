@@ -100,7 +100,6 @@ namespace djack.RogueSurvivor.UI
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            m_RogueForm.UI_PostKey(e);
         }
 
         protected override bool IsInputKey(Keys keyData)

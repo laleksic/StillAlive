@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>Rogue_Survivor_Still_Alive</RootNamespace>
     <AssemblyName>Rogue Survivor Still Alive</AssemblyName>
     <AssemblyTitle>Rogue Survivor: Still Alive</AssemblyTitle>

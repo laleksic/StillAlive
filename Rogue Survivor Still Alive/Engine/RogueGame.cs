@@ -20,6 +20,10 @@ using djack.RogueSurvivor.Engine.Tasks;
 using ItemRating = djack.RogueSurvivor.Gameplay.AI.BaseAI.ItemRating;
 using TradeRating = djack.RogueSurvivor.Gameplay.AI.BaseAI.TradeRating;
 
+using SFML;
+using KeyEventArgs = SFML.Window.KeyEventArgs;
+using Keys = SFML.Window.Keyboard.Key;
+
 namespace djack.RogueSurvivor.Engine
 {
     class RogueGame
@@ -1245,7 +1249,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 KeyEventArgs inKey = m_UI.UI_WaitKey();
                 PlayerCommand command = InputTranslator.KeyToCommand(inKey);
-                if (inKey.KeyCode == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
+                if (inKey.Code == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
                     return null;
                 Direction dir = CommandToDirection(command);
                 if (dir != null)
@@ -1258,7 +1262,7 @@ namespace djack.RogueSurvivor.Engine
             for (; ; )
             {
                 KeyEventArgs inKey = m_UI.UI_WaitKey();
-                if (inKey.KeyCode == Keys.Enter)
+                if (inKey.Code == Keys.Enter)
                     return;
             }
         }
@@ -1268,7 +1272,7 @@ namespace djack.RogueSurvivor.Engine
             for (; ; )
             {
                 KeyEventArgs inKey = m_UI.UI_WaitKey();
-                if (inKey.KeyCode == Keys.Escape)
+                if (inKey.Code == Keys.Escape)
                     return;
             }
         }
@@ -1282,44 +1286,44 @@ namespace djack.RogueSurvivor.Engine
         {
             switch (key)
             {
-                case Keys.NumPad0:
-                case Keys.D0:
+                case Keys.Numpad0:
+                case Keys.Num0:
                     return 0;
 
-                case Keys.NumPad1:
-                case Keys.D1:
+                case Keys.Numpad1:
+                case Keys.Num1:
                     return 1;
 
-                case Keys.NumPad2:
-                case Keys.D2:
+                case Keys.Numpad2:
+                case Keys.Num2:
                     return 2;
 
-                case Keys.NumPad3:
-                case Keys.D3:
+                case Keys.Numpad3:
+                case Keys.Num3:
                     return 3;
 
-                case Keys.NumPad4:
-                case Keys.D4:
+                case Keys.Numpad4:
+                case Keys.Num4:
                     return 4;
 
-                case Keys.NumPad5:
-                case Keys.D5:
+                case Keys.Numpad5:
+                case Keys.Num5:
                     return 5;
 
-                case Keys.NumPad6:
-                case Keys.D6:
+                case Keys.Numpad6:
+                case Keys.Num6:
                     return 6;
 
-                case Keys.NumPad7:
-                case Keys.D7:
+                case Keys.Numpad7:
+                case Keys.Num7:
                     return 7;
 
-                case Keys.NumPad8:
-                case Keys.D8:
+                case Keys.Numpad8:
+                case Keys.Num8:
                     return 8;
 
-                case Keys.NumPad9:
-                case Keys.D9:
+                case Keys.Numpad9:
+                case Keys.Num9:
                     return 9;
 
                 default:
@@ -1332,9 +1336,9 @@ namespace djack.RogueSurvivor.Engine
             for (; ; )
             {
                 KeyEventArgs inKey = m_UI.UI_WaitKey();
-                if (inKey.KeyCode == Keys.Y)
+                if (inKey.Code == Keys.Y)
                     return true;
-                else if (inKey.KeyCode == Keys.N || inKey.KeyCode == Keys.Escape)
+                else if (inKey.Code == Keys.N || inKey.Code == Keys.Escape)
                     return false;
             }
         }
@@ -1393,7 +1397,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -1610,7 +1614,7 @@ namespace djack.RogueSurvivor.Engine
                 // handle
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -1933,7 +1937,7 @@ namespace djack.RogueSurvivor.Engine
                 // handle
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -1951,6 +1955,9 @@ namespace djack.RogueSurvivor.Engine
                         break;
 
                     case Keys.Enter: // rebind
+                        /*
+                        SFML TODO
+
                         // say.
                         m_UI.UI_DrawStringBold(Color.Yellow, String.Format("rebinding {0}, press the new key.", menuEntries[selected]), gx, gy);
                         m_UI.UI_Repaint();
@@ -1962,7 +1969,7 @@ namespace djack.RogueSurvivor.Engine
                         {
                             KeyEventArgs newKey = m_UI.UI_WaitKey();
                             // ignore Shift and Control alone.
-                            if (newKey.KeyCode == Keys.ShiftKey || newKey.KeyCode == Keys.ControlKey)
+                            if (newKey.Code == Keys.LShiftKey || newKey.Code == Keys.ControlKey)
                                 continue;
                             // always ignore Alt.
                             if (newKey.Alt)
@@ -2032,6 +2039,7 @@ namespace djack.RogueSurvivor.Engine
 
                         // bind it.                      
                         s_KeyBindings.Set(command, newKeyData);
+                        */
 
                         break;
 
@@ -2153,7 +2161,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get command.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                int choice = KeyToChoiceNumber(key.Code);
 
                 if (choice >= 0)
                 {
@@ -2185,7 +2193,7 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else
                 {
-                    switch (key.KeyCode)
+                    switch (key.Code)
                     {
                         case Keys.Escape:
                             loop = false;
@@ -2968,7 +2976,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -3059,7 +3067,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -3153,7 +3161,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -3263,7 +3271,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -3404,7 +3412,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -3469,268 +3477,268 @@ namespace djack.RogueSurvivor.Engine
 
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     #region the character keys
                     case Keys.A:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "A";
                         else
                             suppliedName += "a";
                         break;
 
                     case Keys.B:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "B";
                         else
                             suppliedName += "b";
                         break;
 
                     case Keys.C:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "C";
                         else
                             suppliedName += "c";
                         break;
 
                     case Keys.D:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "D";
                         else
                             suppliedName += "d";
                         break;
 
                     case Keys.E:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "E";
                         else
                             suppliedName += "e";
                         break;
 
                     case Keys.F:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "F";
                         else
                             suppliedName += "f";
                         break;
 
                     case Keys.G:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "G";
                         else
                             suppliedName += "g";
                         break;
 
                     case Keys.H:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "H";
                         else
                             suppliedName += "h";
                         break;
 
                     case Keys.I:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "I";
                         else
                             suppliedName += "i";
                         break;
 
                     case Keys.J:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "J";
                         else
                             suppliedName += "j";
                         break;
 
                     case Keys.K:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "K";
                         else
                             suppliedName += "k";
                         break;
 
                     case Keys.L:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "L";
                         else
                             suppliedName += "l";
                         break;
 
                     case Keys.M:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "M";
                         else
                             suppliedName += "m";
                         break;
 
                     case Keys.N:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "N";
                         else
                             suppliedName += "n";
                         break;
 
                     case Keys.O:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "O";
                         else
                             suppliedName += "o";
                         break;
 
                     case Keys.P:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "P";
                         else
                             suppliedName += "p";
                         break;
 
                     case Keys.Q:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "Q";
                         else
                             suppliedName += "q";
                         break;
 
                     case Keys.R:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "R";
                         else
                             suppliedName += "r";
                         break;
 
                     case Keys.S:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "S";
                         else
                             suppliedName += "s";
                         break;
 
                     case Keys.T:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "T";
                         else
                             suppliedName += "t";
                         break;
 
                     case Keys.U:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "U";
                         else
                             suppliedName += "u";
                         break;
 
                     case Keys.V:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "V";
                         else
                             suppliedName += "v";
                         break;
 
                     case Keys.W:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "W";
                         else
                             suppliedName += "w";
                         break;
 
                     case Keys.X:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "X";
                         else
                             suppliedName += "x";
                         break;
 
                     case Keys.Y:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "Y";
                         else
                             suppliedName += "y";
                         break;
 
                     case Keys.Z:
-                        if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                        if (key.Shift)
                             suppliedName += "Z";
                         else
                             suppliedName += "z";
                         break;
 
-                    case Keys.NumPad0:
+                    case Keys.Numpad0:
                         suppliedName += "0";
                         break;
 
-                    case Keys.D0:
+                    case Keys.Num0:
                         suppliedName += "0";
                         break;
 
-                    case Keys.NumPad1:
+                    case Keys.Numpad1:
                         suppliedName += "1";
                         break;
 
-                    case Keys.D1:
+                    case Keys.Num1:
                         suppliedName += "1";
                         break;
 
-                    case Keys.NumPad2:
+                    case Keys.Numpad2:
                         suppliedName += "2";
                         break;
 
-                    case Keys.D2:
+                    case Keys.Num2:
                         suppliedName += "2";
                         break;
 
-                    case Keys.NumPad3:
+                    case Keys.Numpad3:
                         suppliedName += "3";
                         break;
 
-                    case Keys.D3:
+                    case Keys.Num3:
                         suppliedName += "3";
                         break;
 
-                    case Keys.NumPad4:
+                    case Keys.Numpad4:
                         suppliedName += "4";
                         break;
 
-                    case Keys.D4:
+                    case Keys.Num4:
                         suppliedName += "4";
                         break;
 
-                    case Keys.NumPad5:
+                    case Keys.Numpad5:
                         suppliedName += "5";
                         break;
 
-                    case Keys.D5:
+                    case Keys.Num5:
                         suppliedName += "5";
                         break;
 
-                    case Keys.NumPad6:
+                    case Keys.Numpad6:
                         suppliedName += "6";
                         break;
 
-                    case Keys.D6:
+                    case Keys.Num6:
                         suppliedName += "6";
                         break;
 
-                    case Keys.NumPad7:
+                    case Keys.Numpad7:
                         suppliedName += "7";
                         break;
 
-                    case Keys.D7:
+                    case Keys.Num7:
                         suppliedName += "7";
                         break;
 
-                    case Keys.NumPad8:
+                    case Keys.Numpad8:
                         suppliedName += "8";
                         break;
 
-                    case Keys.D8:
+                    case Keys.Num8:
                         suppliedName += "8";
                         break;
 
-                    case Keys.NumPad9:
+                    case Keys.Numpad9:
                         suppliedName += "9";
                         break;
 
-                    case Keys.D9:
+                    case Keys.Num9:
                         suppliedName += "9";
                         break;
 
@@ -3740,7 +3748,7 @@ namespace djack.RogueSurvivor.Engine
 
                     #endregion
 
-                    case Keys.Back: //backspace
+                    case Keys.Backspace: //backspace
                         if (suppliedName.Length > 0)
                             suppliedName = suppliedName.Remove(suppliedName.Length - 1);
                         break;
@@ -3908,7 +3916,7 @@ namespace djack.RogueSurvivor.Engine
                 // handle
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -8514,7 +8522,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get menu action.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Up:       // move up
                         if (selected > 0) --selected;
@@ -9924,7 +9932,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // 3. Handle input
                 //PlayerCommand command = InputTranslator.KeyToCommand(inKey); //@@MP - commented useless variable, as RJ ditched EXIT_OR_CANCEL (Release 4)
-                if (inKey.KeyCode == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
+                if (inKey.Code == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
                 {
                     loop = false;
                     if (popup != null) RemoveOverlay(popup);
@@ -9933,7 +9941,7 @@ namespace djack.RogueSurvivor.Engine
                 else
                 {
                     // get choice.
-                    int choice = KeyToChoiceNumber(inKey.KeyCode);
+                    int choice = KeyToChoiceNumber(inKey.Code);
                     if (choice >= 1 && choice <= upgradeChoices.Count)
                     {
                         // upgrade skill.
@@ -11939,7 +11947,7 @@ namespace djack.RogueSurvivor.Engine
             // Ctrl  -> equip/unequip/use item from player inv
             // Shift -> take item from ground inv
             // Alt -> drop item from player inv.
-            if ((key.Modifiers & Keys.Control) != 0)
+            if (key.Control)
                 return DoPlayerItemSlotUse(player, slot);
             else if (key.Shift)
                 return DoPlayerItemSlotTake(player, slot);
@@ -12387,7 +12395,7 @@ namespace djack.RogueSurvivor.Engine
                     // Select 1st or 2nd item
                     KeyEventArgs inKey = m_UI.UI_WaitKey();
 
-                    if (inKey.KeyCode == Keys.Escape)  // back/abort
+                    if (inKey.Code == Keys.Escape)  // back/abort
                     {
                         if (state == 0)
                             loop = false;
@@ -12401,7 +12409,7 @@ namespace djack.RogueSurvivor.Engine
                             isOnPlayerInventory = !isOnPlayerInventory;
                         }
                     }
-                    else if (inKey.KeyCode == Keys.Tab)  // switch inventory
+                    else if (inKey.Code == Keys.Tab)  // switch inventory
                     {
                         if (state == 0)
                         {
@@ -12411,7 +12419,7 @@ namespace djack.RogueSurvivor.Engine
                     }
                     else
                     {
-                        int slot = KeyToChoiceNumber(inKey.KeyCode);
+                        int slot = KeyToChoiceNumber(inKey.Code);
                         if (slot != -1) // select an item
                         {
                             if (slot == 0) slot = 9;
@@ -12611,7 +12619,7 @@ namespace djack.RogueSurvivor.Engine
 
             string buildType = "";
             KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
-            if (inKey.KeyCode == Keys.Escape) // Handle input
+            if (inKey.Code == Keys.Escape) // Handle input
             {
                 //AddMessage(new Message("Aborted build mode.", m_Session.WorldTime.TurnCounter, Color.White));
                 ClearOverlays();
@@ -12619,11 +12627,11 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
             // get choice.
-            else if (inKey.KeyCode == Keys.B)
+            else if (inKey.Code == Keys.B)
                 buildType = "barricade";
-            else if (inKey.KeyCode == Keys.F)
+            else if (inKey.Code == Keys.F)
                 buildType = "fortification";
-            else if (inKey.KeyCode == Keys.R) //@@MP - added (Release 8-1)
+            else if (inKey.Code == Keys.R) //@@MP - added (Release 8-1)
                 buildType = "repair door";
             else
             {
@@ -12858,7 +12866,7 @@ namespace djack.RogueSurvivor.Engine
 
             bool isLarge = false;
             KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
-            if (inKey.KeyCode == Keys.Escape) // Handle input
+            if (inKey.Code == Keys.Escape) // Handle input
             {
                 //AddMessage(new Message("Aborted building fortifications.", m_Session.WorldTime.TurnCounter, Color.White));
                 ClearOverlays();
@@ -12866,9 +12874,9 @@ namespace djack.RogueSurvivor.Engine
                 return false;
             }
             // get choice.
-            else if (inKey.KeyCode == Keys.L)
+            else if (inKey.Code == Keys.L)
                 isLarge = true;
-            else if (inKey.KeyCode == Keys.S)
+            else if (inKey.Code == Keys.S)
                 isLarge = false;
             else
             {
@@ -13052,14 +13060,14 @@ namespace djack.RogueSurvivor.Engine
                         // 2. Handle input
                         KeyEventArgs inKey = m_UI.UI_WaitKey();
 
-                        if (inKey.KeyCode == Keys.Escape)  // back/abort
+                        if (inKey.Code == Keys.Escape)  // back/abort
                         {
                             selectionCancelled = true;
                             loop = false;
                         }
                         else
                         {
-                            int slot = KeyToChoiceNumber(inKey.KeyCode);
+                            int slot = KeyToChoiceNumber(inKey.Code);
                             if (slot != -1) // select a corpse
                             {
                                 if (slot == 0) slot = 9;
@@ -13395,18 +13403,18 @@ namespace djack.RogueSurvivor.Engine
                 //PlayerCommand command = InputTranslator.KeyToCommand(key); //@@MP - unused (Release 5-7)
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape) //command == PlayerCommand.EXIT_OR_CANCEL)
+                if (key.Code == Keys.Escape) //command == PlayerCommand.EXIT_OR_CANCEL)
                 {
                     loop = false;
                 }
-                else if (key.KeyCode == Keys.T)  // next target
+                else if (key.Code == Keys.T)  // next target
                 {
                     //iCurrentTarget = (iCurrentTarget + 1) % totalTargetsByCount;  // <============================================== LOOP THROUGH LIST/S
                     ++iCurrentTarget;
                     if (iCurrentTarget > totalTargetsByIndex)
                         iCurrentTarget = 0;
                 }
-                else if (key.KeyCode == Keys.M)    // next mode
+                else if (key.Code == Keys.M)    // next mode
                 {
                     ItemRangedWeaponModel rWm = rangedWeapon.Model as ItemRangedWeaponModel;
                     if (rWm.IsBow) //@@MP - split out firearms and bows for the new flaming bolts (Release 7-2)
@@ -13465,7 +13473,7 @@ namespace djack.RogueSurvivor.Engine
                     // save preference to session // alpha10
                     m_Session.Player_CurrentFireMode = mode;
                 }
-                else if (key.KeyCode == Keys.F) // do fire
+                else if (key.Code == Keys.F) // do fire
                 {
                     if (canFireAtTarget) //do the attack
                     {
@@ -13629,16 +13637,16 @@ namespace djack.RogueSurvivor.Engine
                 //PlayerCommand command = InputTranslator.KeyToCommand(key); //@@MP - unused (Release 5-7)
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
+                if (key.Code == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
                 {
                     loop = false;
                 }
-                else if (key.KeyCode == Keys.T)  // next actor
+                else if (key.Code == Keys.T)  // next actor
                 {
                     iCurrentActor = (iCurrentActor + 1) % visibleActors.Count;
                 }
 
-                else if (key.KeyCode == Keys.E) // toggle.
+                else if (key.Code == Keys.E) // toggle.
                 {
                     // never make enemies of leader/follower/enemy faction.
                     // FIXME put all that into a rule Rule.CanMakeEnemyOf()
@@ -13745,11 +13753,11 @@ namespace djack.RogueSurvivor.Engine
                 PlayerCommand command = InputTranslator.KeyToCommand(key);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
+                if (key.Code == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
                 {
                     loop = false;
                 }
-                else if (key.KeyCode == Keys.F) // do throw.
+                else if (key.Code == Keys.F) // do throw.
                 {
                     if (canThrowAtTarget)
                     {
@@ -13939,8 +13947,8 @@ namespace djack.RogueSurvivor.Engine
                 do
                 {
                     KeyEventArgs key = m_UI.UI_WaitKey();
-                    int choice = KeyToChoiceNumber(key.KeyCode);
-                    if (key.KeyCode == Keys.Escape)
+                    int choice = KeyToChoiceNumber(key.Code);
+                    if (key.Code == Keys.Escape)
                     {
                         loop = false;
                     }
@@ -14937,11 +14945,11 @@ namespace djack.RogueSurvivor.Engine
                 PlayerCommand command = InputTranslator.KeyToCommand(key);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
+                if (key.Code == Keys.Escape)// command == PlayerCommand.EXIT_OR_CANCEL)
                 {
                     loop = false;
                 }
-                else if (key.KeyCode == Keys.F) // do throw.
+                else if (key.Code == Keys.F) // do throw.
                 {
                     if (canThrowAtTarget)
                     {
@@ -15011,18 +15019,18 @@ namespace djack.RogueSurvivor.Engine
             RedrawPlayScreen();
 
             KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
-            if (inKey.KeyCode == Keys.Escape) // Handle input
+            if (inKey.Code == Keys.Escape) // Handle input
             {
                 ; //do nothing
             }
             // get choice.
-            else if (inKey.KeyCode == Keys.T) //throw
+            else if (inKey.Code == Keys.T) //throw
             {
                 Point pt = new Point(player.Location.Position.X, player.Location.Position.Y);
                 if (HandlePlayerUseThrowableItem(player, item))
                     player.Inventory.Consume(pack);
             }
-            else if (inKey.KeyCode == Keys.C) //carry
+            else if (inKey.Code == Keys.C) //carry
             {
                 if (player.Inventory.IsFull && pack.Quantity > 1)
                 {
@@ -15401,10 +15409,10 @@ namespace djack.RogueSurvivor.Engine
 
                 // 2. Get input.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                int choice = KeyToChoiceNumber(key.Code);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)
+                if (key.Code == Keys.Escape)
                 {
                     loop = false;
                 }
@@ -15472,10 +15480,10 @@ namespace djack.RogueSurvivor.Engine
 
                 // 2. Get input.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                int choice = KeyToChoiceNumber(key.Code);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)
+                if (key.Code == Keys.Escape)
                 {
                     loop = false;
                 }
@@ -15571,10 +15579,10 @@ namespace djack.RogueSurvivor.Engine
 
                 // 2. Get input.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                int choice = KeyToChoiceNumber(key.Code);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)
+                if (key.Code == Keys.Escape)
                 {
                     loop = false;
                 }
@@ -15666,7 +15674,7 @@ namespace djack.RogueSurvivor.Engine
 #region
                 else
                 {
-                    switch (key.KeyCode)
+                    switch (key.Code)
                     {
                         case Keys.A:    // give items...
                             if (HandlePlayerOrderFollowerToGiveItems(player, follower))
@@ -15743,7 +15751,7 @@ namespace djack.RogueSurvivor.Engine
 
                 if (key != null)
                 {
-                    if (key.KeyCode == Keys.Escape)
+                    if (key.Code == Keys.Escape)
                         loop = false;
                 }
                 else
@@ -15834,7 +15842,7 @@ namespace djack.RogueSurvivor.Engine
 
                 if (key != null)
                 {
-                    if (key.KeyCode == Keys.Escape)
+                    if (key.Code == Keys.Escape)
                         loop = false;
                 }
                 else
@@ -15936,7 +15944,7 @@ namespace djack.RogueSurvivor.Engine
 
                 if (key != null)
                 {
-                    if (key.KeyCode == Keys.Escape)
+                    if (key.Code == Keys.Escape)
                         loop = false;
                 }
                 else
@@ -16040,7 +16048,7 @@ namespace djack.RogueSurvivor.Engine
 
                 if (key != null)
                 {
-                    if (key.KeyCode == Keys.Escape)
+                    if (key.Code == Keys.Escape)
                         loop = false;
                 }
                 else
@@ -16217,10 +16225,10 @@ namespace djack.RogueSurvivor.Engine
 
                 // 2. Get input.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                int choice = KeyToChoiceNumber(key.Code);
 
                 // 3. Handle input
-                if (key.KeyCode == Keys.Escape)
+                if (key.Code == Keys.Escape)
                 {
                     loop = false;
                 }
@@ -16404,7 +16412,7 @@ namespace djack.RogueSurvivor.Engine
                         // check for abort.
 #region
                         KeyEventArgs key = m_UI.UI_PeekKey();
-                        if (key != null && key.KeyCode == Keys.Escape)
+                        if (key != null && key.Code == Keys.Escape)
                         {
                             // jump in time for each map.
                             foreach (Map map in district.Maps)
@@ -16606,7 +16614,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get command.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                int choice = KeyToChoiceNumber(key.KeyCode);
+                int choice = KeyToChoiceNumber(key.Code);
 
                 if (choice >= 0)
                 {
@@ -16638,7 +16646,7 @@ namespace djack.RogueSurvivor.Engine
                 }
                 else
                 {
-                    switch (key.KeyCode)
+                    switch (key.Code)
                     {
                         case Keys.Escape:
                             loop = false;
@@ -16727,7 +16735,7 @@ namespace djack.RogueSurvivor.Engine
 
                 // get command.
                 KeyEventArgs key = m_UI.UI_WaitKey();
-                switch (key.KeyCode)
+                switch (key.Code)
                 {
                     case Keys.Escape:
                         loop = false;
@@ -21157,14 +21165,14 @@ namespace djack.RogueSurvivor.Engine
                         RedrawPlayScreen();
 
                         KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
-                        if (inKey.KeyCode == Keys.Escape) // Handle input
+                        if (inKey.Code == Keys.Escape) // Handle input
                         {
                             ClearOverlays();
                             RedrawPlayScreen();
                             return;
                         }
                         // get choice.
-                        else if (inKey.KeyCode == Keys.O) //drop only one, probably because they want to use it as an explosive trap
+                        else if (inKey.Code == Keys.O) //drop only one, probably because they want to use it as an explosive trap
                         {
                             actor.Inventory.Consume(it);
 
@@ -21175,7 +21183,7 @@ namespace djack.RogueSurvivor.Engine
                             RedrawPlayScreen();
                             return;
                         }
-                        else if (inKey.KeyCode == Keys.A) //drop all
+                        else if (inKey.Code == Keys.A) //drop all
                             RedrawPlayScreen(); //nothing extra required, continue with normal drop
                         else
                         {
@@ -21197,14 +21205,14 @@ namespace djack.RogueSurvivor.Engine
                     RedrawPlayScreen();
 
                     KeyEventArgs inKey = m_UI.UI_WaitKey(); //  Read input
-                    if (inKey.KeyCode == Keys.Escape) // Handle input
+                    if (inKey.Code == Keys.Escape) // Handle input
                     {
                         ClearOverlays();
                         RedrawPlayScreen();
                         return;
                     }
                     // get choice.
-                    else if (inKey.KeyCode == Keys.O) //drop only one
+                    else if (inKey.Code == Keys.O) //drop only one
                     {
                         Point pt = new Point(actor.Location.Position.X, actor.Location.Position.Y);
                         Map map = actor.Location.Map;
@@ -21237,7 +21245,7 @@ namespace djack.RogueSurvivor.Engine
                         RedrawPlayScreen();
                         return;
                     }
-                    else if (inKey.KeyCode == Keys.A) //drop all
+                    else if (inKey.Code == Keys.A) //drop all
                         RedrawPlayScreen(); //nothing extra required, continue with normal drop
                     else
                     {

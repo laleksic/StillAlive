@@ -6,12 +6,19 @@ using System.Windows.Forms;
 
 using djack.RogueSurvivor.Engine;
 
+using SFML;
+using KeyEventArgs = SFML.Window.KeyEventArgs;
+using Keys = SFML.Window.Keyboard.Key;
+
 namespace djack.RogueSurvivor.Engine
 {
     static class InputTranslator
     {
         public static PlayerCommand KeyToCommand(KeyEventArgs key)
         {
+            /*
+            SFML TODO
+
             PlayerCommand command = RogueGame.KeyBindings.Get(key.KeyData);
             if (command != PlayerCommand.NONE)
                 return command;
@@ -51,6 +58,7 @@ namespace djack.RogueSurvivor.Engine
                 if (unmodifiedKey == RogueGame.KeyBindings.Get(PlayerCommand.ITEM_SLOT_9))
                     return PlayerCommand.ITEM_SLOT_9;
             }
+            */
 
             // no command.
             return PlayerCommand.NONE;

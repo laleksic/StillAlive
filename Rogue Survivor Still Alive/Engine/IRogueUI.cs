@@ -1,5 +1,7 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
+using SFML;
+using KeyEventArgs = SFML.Window.KeyEventArgs;
 
 namespace djack.RogueSurvivor.Engine
 {

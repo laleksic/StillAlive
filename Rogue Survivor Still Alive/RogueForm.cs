@@ -6,6 +6,9 @@ using System.Windows.Forms;
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Gameplay;
+using SFML;
+using KeyEventArgs = SFML.Window.KeyEventArgs;
+using Keys = SFML.Window.Keyboard.Key;
 
 namespace djack.RogueSurvivor
 {
@@ -13,7 +16,13 @@ namespace djack.RogueSurvivor
     {
         private void DoEvents()
         {
-            Application.DoEvents();
+            if (renderWindow.IsOpen)
+            {
+                renderWindow.DispatchEvents();
+                renderWindow.Clear(SFML.Graphics.Color.Blue);
+                renderWindow.Display();
+            } 
+            //Application.DoEvents();
         }
 
         #region Fields
@@ -29,9 +38,24 @@ namespace djack.RogueSurvivor
         }
         #endregion
 
+        // SFML stuff
+        SFML.Graphics.RenderWindow renderWindow;
+        // ----------
+
         #region Init
         public RogueForm()
         {
+            Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating sfml window...");
+            renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(800, 600), "SFML works!");
+            renderWindow.KeyPressed += (sender, e) => {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "KeyPressed: " + sender.ToString() + ", " + e.ToString());
+                UI_PostKey(e);
+            };
+            renderWindow.Closed += (sender, e) => {
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "Close event");
+                UI_DoQuit();
+            };
+
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form...");
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::InitializeComponent...");
@@ -159,21 +183,20 @@ namespace djack.RogueSurvivor
 
         public void UI_PostKey(KeyEventArgs e)
         {
+            Logger.WriteLine(Logger.Stage.RUN_MAIN, "UI_PostKey: " + e.ToString());
+
             if (e == null) //@@MP (Release 5-7)
                 throw new ArgumentNullException("e", "null e");
 
             // ignore Shift/Ctrl/Alt alone.
-            switch (e.KeyCode)
+            switch (e.Code)
             {
-                case Keys.ShiftKey:
-                case Keys.Shift:
-                case Keys.LShiftKey:
-                case Keys.RShiftKey:
-                case Keys.Control:
-                case Keys.ControlKey:
-                case Keys.RControlKey:
-                case Keys.LControlKey:
-                case Keys.Alt:
+                case Keys.LShift:
+                case Keys.RShift:
+                case Keys.RControl:
+                case Keys.LControl:
+                case Keys.LAlt:
+                case Keys.RAlt:
                     return;
                 default: 
                     break;
@@ -181,14 +204,13 @@ namespace djack.RogueSurvivor
 
             m_HasKey = true;
             m_InKey = e;
-            e.Handled = true;
 
             /////////////////////
             // Cheats / Dev Tools
             /////////////////////
 #if DEBUG
             // F6 - CHEAT - reveal all. //@@MP - and refill status (basically god mode)
-            if (e.KeyCode == Keys.F6)
+            if (e.Code == Keys.F6)
             {
                 if (m_Game.Session != null && m_Game.Session.CurrentMap != null)
                 {
@@ -219,20 +241,20 @@ namespace djack.RogueSurvivor
                 }*/
             }
             // F7 - DEV - toggle FPS
-            if (e.KeyCode == Keys.F7)
+            if (e.Code == Keys.F7)
             {
                 m_GameCanvas.ShowFPS = !m_GameCanvas.ShowFPS;
                 UI_Repaint();
             }
             // F8 - DEV - resize to normal size
-            if (e.KeyCode == Keys.F8)
+            if (e.Code == Keys.F8)
             {
                 m_GameCanvas.NeedRedraw = true;
                 SetClientSizeCore(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
                 UI_Repaint();
             }
             // F9 - DEV - Show actors stats
-            if (e.KeyCode == Keys.F9)
+            if (e.Code == Keys.F9)
             {
                 m_Game.DEV_ToggleShowActorsStats();
                 UI_Repaint();
@@ -242,7 +264,7 @@ namespace djack.RogueSurvivor
                 //Logger.WriteLine(Logger.Stage.RUN_MAIN, String.Format("{0}", m_Game.Player.Location.Map.CountAntiviralPills(m_Game)));
             }
             // F10 - DEV DEBUG - Reveal secret locations
-            if (e.KeyCode == Keys.F10)
+            if (e.Code == Keys.F10)
             {
                 m_Game.Session.PlayerKnows_CHARUndergroundFacilityLocation = true;
                 m_Game.Session.CHARUndergroundFacility_Activated = true;
@@ -310,7 +332,7 @@ namespace djack.RogueSurvivor
             }
 
             // F10 - DEV STATS - Show pop graph.
-            /*if (e.KeyCode == Keys.F10)
+            /*if (e.Code == Keys.F10)
             {
                 District d = m_Game.Player.Location.Map.District;
 
@@ -346,28 +368,28 @@ namespace djack.RogueSurvivor
             }*/
 
             // F11 - DEV - Toggle player invincibility
-            if (e.KeyCode == Keys.F11)
+            if (e.Code == Keys.F11)
             {
                 m_Game.DEV_TogglePlayerInvincibility();
                 UI_Repaint();
             }
 
             // F12 - DEV - Max trust for all player followers
-            if (e.KeyCode == Keys.F12)
+            if (e.Code == Keys.F12)
             {
                 m_Game.DEV_MaxTrust();
                 UI_Repaint();
             }
 
             // INSERT - DEV - Toggle bot mode // alpha10.1
-            if (e.KeyCode == Keys.Insert)
+            if (e.Code == Keys.Insert)
             {
                 m_Game.BotToggleControl();
                 UI_Repaint();
             }
 
             // HOME - DEV misc
-            if (e.KeyCode == Keys.Home)
+            if (e.Code == Keys.Home)
             {
                 /*
                 //@@MP - drop ItemLight
