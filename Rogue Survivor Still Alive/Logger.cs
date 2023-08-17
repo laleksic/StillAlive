@@ -86,7 +86,7 @@ namespace djack.RogueSurvivor
             }
         }
 
-        static string LogFilePath()
+        public static string LogFilePath()
         {
             return SetupConfig.DirPath + @"\log.txt";
         }

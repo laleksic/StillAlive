@@ -12,7 +12,6 @@ namespace djack.RogueSurvivor
         public enum eVideo
         {
             VIDEO_INVALID,
-            VIDEO_MANAGED_DIRECTX,
             VIDEO_GDI_PLUS,
             COUNT //@@MP - removed underscore for CLS compliance (Release 5-7)
         }
@@ -20,7 +19,6 @@ namespace djack.RogueSurvivor
         public enum eSound
         {
             SOUND_INVALID,
-            SOUND_MANAGED_DIRECTX,
             SOUND_SFML,
             SOUND_NOSOUND,
             COUNT //@@MP - removed underscore for CLS compliance (Release 5-7)
@@ -85,7 +83,7 @@ namespace djack.RogueSurvivor
                 if (!Directory.Exists(DirPath))
                     Directory.CreateDirectory(DirPath);
 
-                SetupConfig.Video = eVideo.VIDEO_MANAGED_DIRECTX;
+                SetupConfig.Video = eVideo.VIDEO_GDI_PLUS;
                 SetupConfig.Sound = eSound.SOUND_SFML; //@@MP - changed default to SFML (Release 5-3)
                 SetupConfig.Window = eWindow.WINDOW_FULLSCREEN; //@@MP (Release 5-5)
                 SetupConfig.WriteLogToFile = false; //@@MP (Release 6-2)
@@ -96,8 +94,6 @@ namespace djack.RogueSurvivor
 
         public static eVideo toVideo(string v)
         {
-            if (v == eVideo.VIDEO_MANAGED_DIRECTX.ToString())
-                return eVideo.VIDEO_MANAGED_DIRECTX;
             if (v == eVideo.VIDEO_GDI_PLUS.ToString())
                 return eVideo.VIDEO_GDI_PLUS;
             return eVideo.VIDEO_INVALID;
@@ -105,8 +101,6 @@ namespace djack.RogueSurvivor
 
         public static eSound toSound(string s)
         {
-            if (s == eSound.SOUND_MANAGED_DIRECTX.ToString())
-                return eSound.SOUND_MANAGED_DIRECTX;
             if (s == eSound.SOUND_SFML.ToString())
                 return eSound.SOUND_SFML;
             if (s == eSound.SOUND_NOSOUND.ToString())

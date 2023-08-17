@@ -1,8 +1,6 @@
 ﻿REQUIREMENTS
 
 Minimum resolution: 1024*768
-Disk space: 300mb
-.NET Framework: 3.5
 
 
 TROUBLESHOOTING
@@ -10,15 +8,11 @@ TROUBLESHOOTING
 You can access the Options menu in-game using Shift+O.
 
 -(crashes) The game crashes on launch:
-	If it's a 'file not found' error you may need to install DirectX 9.0c. You can get it here: https://www.microsoft.com/en-au/download/details.aspx?id=8109
-	If you installed DirectX 9.0c and it still crashes, try right-clicking RogueGame.exe and select 'Run as administrator'.
+	Try right-clicking RogueGame.exe and select 'Run as administrator'.
 	Please report the issue on the forums if it still doesn't work.
 
 -(crashes) Crashes during gameplay:
-	If the menu is fine but you experience crashes during play, try disabling the minimap from the Options menu.
-
--(crashes) Random game crashes / alt-tab crashes:
-	Run the game configuration utility (RSConfig.exe) and try other the video and audio engines (ie. GDI, MDX, SMFL).	
+	If the menu is fine but you experience crashes during play, try disabling the minimap from the Options menu.	
 
 -(lag / freezing):
 	Try disabling all sound outputs (music, sound effects, ambient sounds) from the Options menu.
@@ -26,7 +20,6 @@ You can access the Options menu in-game using Shift+O.
 
 -(sound) I can't hear any sounds or music:
 	Check the in-game options menu to ensure you haven't turned off sounds or music, or lowered their volume.
-	If still no sound, exit the game and run the game configuration utility (RSConfing.exe) and try other the video and audio engine (SFML/MDX).
 
 -(sound) A sound is stuck playing at the start of every turn:
 	Save your progress (Shift+S) and then exit the game. The looping sound will be gone when you re-load/restart the game.
@@ -44,26 +37,9 @@ You can access the Options menu in-game using Shift+O.
 -(ffdshow) ffdshow spams instances in the task bar:
 	Open ffdshow configuration, go to DirectShow and set "Multiple ffdshow instances" to "none".
 
--(Linux/MacOS) Issues running that game in non-Windows:
-	Run the configuration utility (RSConfig.exe) and try the game in GDI+ video mode.
-
 -(modding) I've changed one of the game's image, sound or Excel files but it was overwritten:
 	The game will deploy it's own content files whenever their last modified date is more recent than that of any file using the same name.
 	To ensure your files are used instead, change their last modified date to be today. NirSoft's BulkFileChanger or Romain Petges' Attribute Changer 9 make this easy.
-
-
-*** FAQ ***
-
--How do I change to windowed mode?
-Run the game configuration utility (RSConfing.exe) from the game's folder.
-
--What is the difference between Managed DirectX (MDX) and GDI+?
-For Still Alive, the noticable differences are how certain things are rendered. You will notice that text font appears slightly differently, and that in-game tint from things such as sunset
-are not applied to everything in GDI+.
-You may find that GDI is slightly slower, but as it's available natively you don't need any extra drivers installed to run the game.
-
--What is the difference between SMFL and MDX?
-SMFL is more adept at handling multiple audio played simultaneously. With MDX you may notice sounds are cut off or don't play at all if many are playing at once.
 
 
 MORE INFO

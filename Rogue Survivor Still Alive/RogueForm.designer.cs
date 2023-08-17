@@ -6,7 +6,6 @@
     partial class RogueForm
     {
         
-        //@@MP - commented out the dispose method as it's already handled in DXGameCanvas.cs (Release 5-7)
         //@@MP - see https://stackoverflow.com/questions/16260654/code-analysis-finds-ca2213-error-in-designer-code
 
         /// <summary>
@@ -58,10 +57,6 @@
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating GameCanvas...");
             switch (SetupConfig.Video)
             {
-                case SetupConfig.eVideo.VIDEO_MANAGED_DIRECTX:
-                    Logger.WriteLine(Logger.Stage.INIT_MAIN, "DXGameCanvas implementation...");
-                    this.m_GameCanvas = new djack.RogueSurvivor.UI.DXGameCanvas();
-                    break;
                 default:
                     Logger.WriteLine(Logger.Stage.INIT_MAIN, "GDIPlusGameCanvas implementation...");
                     this.m_GameCanvas = new djack.RogueSurvivor.UI.GDIPlusGameCanvas();

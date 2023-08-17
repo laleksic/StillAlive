@@ -1,353 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6E39543E-3E7D-4BCD-B2BB-145744972C51}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Rogue_Survivor_Still_Alive</RootNamespace>
     <AssemblyName>Rogue Survivor Still Alive</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DEBUGAILOOPING</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>default</LangVersion>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <NoWarn>IDE0017;IDE0018;IDE0019;IDE0028;</NoWarn>
-    <CodeAnalysisRuleSet>..\..\CustomRuleSet.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>BasicDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
+    <AssemblyTitle>Rogue Survivor: Still Alive</AssemblyTitle>
+    <AssemblyProduct>Rogue Survivor: Still Alive</AssemblyProduct>
+    <AssemblyDescription>a fork of Rogue Survivor Alpha 10.1 - GNU GPL v3</AssemblyDescription>
+    <AssemblyCopyright>Jacques Ruiz (roguedjack) 2018</AssemblyCopyright>
+    <InformationalVersion>2.11.0.2</InformationalVersion>
+    <NeutralLanguage>en</NeutralLanguage>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>   
     <StartupObject>djack.RogueSurvivor.Program</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
     <ApplicationIcon>IconPNG.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>TRACE;DEBUG;DEBUGAILOOPING</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>  
   <ItemGroup>
-    <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DirectX.AudioVideoPlayback, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.AudioVideoPlayback.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.Direct3D.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2909.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Windows\Microsoft.NET\DirectX for Managed Code\1.0.2911.0\Microsoft.DirectX.Direct3DX.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualC" />
-    <Reference Include="sfmlnet-audio-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\sfmlnet-audio-2.dll</HintPath>
-    </Reference>
-    <Reference Include="sfmlnet-system-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\sfmlnet-system-2.dll</HintPath>
-    </Reference>
-    <Reference Include="sfmlnet-window-2, Version=2.3.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\sfmlnet-window-2.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="SFML.Net" Version="2.5.1" />    
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bugreport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Bugreport.designer.cs">
-      <DependentUpon>Bugreport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Data\Abilities.cs" />
-    <Compile Include="Data\Activity.cs" />
-    <Compile Include="Data\Actor.cs" />
-    <Compile Include="Data\ActorAction.cs" />
-    <Compile Include="Data\ActorController.cs" />
-    <Compile Include="Data\ActorDirective.cs" />
-    <Compile Include="Data\ActorModel.cs" />
-    <Compile Include="Data\ActorModelDB.cs" />
-    <Compile Include="Data\ActorOrder.cs" />
-    <Compile Include="Data\ActorSheet.cs" />
-    <Compile Include="Data\AIController.cs" />
-    <Compile Include="Data\Attack.cs" />
-    <Compile Include="Data\BlastAttack.cs" />
-    <Compile Include="Data\Corpse.cs" />
-    <Compile Include="Data\Defence.cs" />
-    <Compile Include="Data\Direction.cs" />
-    <Compile Include="Data\District.cs" />
-    <Compile Include="Data\Doll.cs" />
-    <Compile Include="Data\Faction.cs" />
-    <Compile Include="Data\FactionDB.cs" />
-    <Compile Include="Data\Inventory.cs" />
-    <Compile Include="Data\Item.cs" />
-    <Compile Include="Data\ItemModel.cs" />
-    <Compile Include="Data\ItemModelDB.cs" />
-    <Compile Include="Data\Location.cs" />
-    <Compile Include="Data\Map.cs" />
-    <Compile Include="Data\MapObject.cs" />
-    <Compile Include="Data\Message.cs" />
-    <Compile Include="Data\Models.cs" />
-    <Compile Include="Data\Odor.cs" />
-    <Compile Include="Data\PlayerController.cs" />
-    <Compile Include="Data\Skill.cs" />
-    <Compile Include="Data\StateMapObject.cs" />
-    <Compile Include="Data\Tile.cs" />
-    <Compile Include="Data\TileModel.cs" />
-    <Compile Include="Data\TileModelDB.cs" />
-    <Compile Include="Data\TimedTask.cs" />
-    <Compile Include="Data\Verb.cs" />
-    <Compile Include="Data\Weather.cs" />
-    <Compile Include="Data\World.cs" />
-    <Compile Include="Data\WorldTime.cs" />
-    <Compile Include="Data\Zone.cs" />
-    <Compile Include="Engine\Actions\ActionBarricadeDoor.cs" />
-    <Compile Include="Engine\Actions\ActionBashDoor.cs" />
-    <Compile Include="Engine\Actions\ActionBreak.cs" />
-    <Compile Include="Engine\Actions\ActionBuildFortification.cs" />
-    <Compile Include="Engine\Actions\ActionBump.cs" />
-    <Compile Include="Engine\Actions\ActionChat.cs" />
-    <Compile Include="Engine\Actions\ActionCloseDoor.cs" />
-    <Compile Include="Engine\Actions\ActionDropItem.cs" />
-    <Compile Include="Engine\Actions\ActionEatCorpse.cs" />
-    <Compile Include="Engine\Actions\ActionEatFoodOnGround.cs" />
-    <Compile Include="Engine\Actions\ActionEquipItem.cs" />
-    <Compile Include="Engine\Actions\ActionGetFromContainer.cs" />
-    <Compile Include="Engine\Actions\ActionLeaveMap.cs" />
-    <Compile Include="Engine\Actions\ActionMeleeAttack.cs" />
-    <Compile Include="Engine\Actions\ActionMoveStep.cs" />
-    <Compile Include="Engine\Actions\ActionOpenDoor.cs" />
-    <Compile Include="Engine\Actions\ActionPull.cs" />
-    <Compile Include="Engine\Actions\ActionPush.cs" />
-    <Compile Include="Engine\Actions\ActionRangedAttack.cs" />
-    <Compile Include="Engine\Actions\ActionRechargeItemBattery.cs" />
-    <Compile Include="Engine\Actions\ActionRepairFortification.cs" />
-    <Compile Include="Engine\Actions\ActionButcherCorpse.cs" />
-    <Compile Include="Engine\Actions\ActionReviveCorpse.cs" />
-    <Compile Include="Engine\Actions\ActionSay.cs" />
-    <Compile Include="Engine\Actions\ActionShout.cs" />
-    <Compile Include="Engine\Actions\ActionSleep.cs" />
-    <Compile Include="Engine\Actions\ActionSprayOdorSuppressor.cs" />
-    <Compile Include="Engine\Actions\ActionStartDragCorpse.cs" />
-    <Compile Include="Engine\Actions\ActionStopDragCorpse.cs" />
-    <Compile Include="Engine\Actions\ActionSwitchPlace.cs" />
-    <Compile Include="Engine\Actions\ActionSwitchPowerGenerator.cs" />
-    <Compile Include="Engine\Actions\ActionTakeItem.cs" />
-    <Compile Include="Engine\Actions\ActionTakeLead.cs" />
-    <Compile Include="Engine\Actions\ActionThrowGrenade.cs" />
-    <Compile Include="Engine\Actions\ActionTrade.cs" />
-    <Compile Include="Engine\Actions\ActionUnequipItem.cs" />
-    <Compile Include="Engine\Actions\ActionUseExit.cs" />
-    <Compile Include="Engine\Actions\ActionUseItem.cs" />
-    <Compile Include="Engine\Actions\ActionCookFood.cs" />
-    <Compile Include="Engine\Actions\ActionWait.cs" />
-    <Compile Include="Engine\AI\MemorizedSensor.cs" />
-    <Compile Include="Engine\AI\Percept.cs" />
-    <Compile Include="Engine\AI\Sensor.cs" />
-    <Compile Include="Engine\CSVParser.cs" />
-    <Compile Include="Engine\DiceRoller.cs" />
-    <Compile Include="Engine\GameHints.cs" />
-    <Compile Include="Engine\GameOptions.cs" />
-    <Compile Include="Engine\HiScoreTable.cs" />
-    <Compile Include="Engine\InputTranslator.cs" />
-    <Compile Include="Engine\IRogueUI.cs" />
-    <Compile Include="Engine\ISoundManager.cs" />
-    <Compile Include="Engine\Items\ItemAmmo.cs" />
-    <Compile Include="Engine\Items\ItemAmmoModel.cs" />
-    <Compile Include="Engine\Items\ItemBarricadeMaterial.cs" />
-    <Compile Include="Engine\Items\ItemBarricadeMaterialModel.cs" />
-    <Compile Include="Engine\Items\ItemBackpack.cs" />
-    <Compile Include="Engine\Items\ItemBodyArmor.cs" />
-    <Compile Include="Engine\Items\ItemBackpackModel.cs" />
-    <Compile Include="Engine\Items\ItemBodyArmorModel.cs" />
-    <Compile Include="Engine\Items\ItemEntertainment.cs" />
-    <Compile Include="Engine\Items\ItemEntertainmentModel.cs" />
-    <Compile Include="Engine\Items\ItemExplosive.cs" />
-    <Compile Include="Engine\Items\ItemExplosiveModel.cs" />
-    <Compile Include="Engine\Items\ItemFood.cs" />
-    <Compile Include="Engine\Items\ItemFoodModel.cs" />
-    <Compile Include="Engine\Items\ItemGrenade.cs" />
-    <Compile Include="Engine\Items\ItemGrenadeModel.cs" />
-    <Compile Include="Engine\Items\ItemGrenadePrimed.cs" />
-    <Compile Include="Engine\Items\ItemGrenadePrimedModel.cs" />
-    <Compile Include="Engine\Items\ItemLight.cs" />
-    <Compile Include="Engine\Items\ItemLightModel.cs" />
-    <Compile Include="Engine\Items\ItemMedicine.cs" />
-    <Compile Include="Engine\Items\ItemMedicineModel.cs" />
-    <Compile Include="Engine\Items\ItemMeleeWeapon.cs" />
-    <Compile Include="Engine\Items\ItemMeleeWeaponModel.cs" />
-    <Compile Include="Engine\Items\ItemPrimedExplosive.cs" />
-    <Compile Include="Engine\Items\ItemRangedWeapon.cs" />
-    <Compile Include="Engine\Items\ItemRangedWeaponModel.cs" />
-    <Compile Include="Engine\Items\ItemSprayPaint.cs" />
-    <Compile Include="Engine\Items\ItemSprayPaintModel.cs" />
-    <Compile Include="Engine\Items\ItemSprayScent.cs" />
-    <Compile Include="Engine\Items\ItemSprayScentModel.cs" />
-    <Compile Include="Engine\Items\ItemTracker.cs" />
-    <Compile Include="Engine\Items\ItemTrackerModel.cs" />
-    <Compile Include="Engine\Items\ItemTrap.cs" />
-    <Compile Include="Engine\Items\ItemTrapModel.cs" />
-    <Compile Include="Engine\Items\ItemWeapon.cs" />
-    <Compile Include="Engine\Items\ItemWeaponModel.cs" />
-    <Compile Include="Engine\Keybindings.cs" />
-    <Compile Include="Engine\LOS.cs" />
-    <Compile Include="Engine\MapGenerator.cs" />
-    <Compile Include="Engine\MapObjects\Campfire.cs" />
-    <Compile Include="Engine\MapObjects\Board.cs" />
-    <Compile Include="Engine\MapObjects\Barrel.cs" />
-    <Compile Include="Engine\MapObjects\Car.cs" />
-    <Compile Include="Engine\MapObjects\Door.cs" />
-    <Compile Include="Engine\MapObjects\Fortification.cs" />
-    <Compile Include="Engine\MapObjects\PowerGenerator.cs" />
-    <Compile Include="Engine\MDXSoundManager.cs" />
-    <Compile Include="Engine\MessageManager.cs" />
-    <Compile Include="Engine\NullSoundManager.cs" />
-    <Compile Include="Engine\PlayerCommand.cs" />
-    <Compile Include="Engine\RogueGame.cs" />
-    <Compile Include="Engine\Rules.cs" />
-    <Compile Include="Engine\Scoring.cs" />
-    <Compile Include="Engine\Session.cs" />
-    <Compile Include="Engine\SFMLMusicManager.cs" />
-    <Compile Include="Engine\SFMLSoundManager.cs" />
-    <Compile Include="Engine\Tasks\TaskAddMapObject.cs" />
-    <Compile Include="Engine\Tasks\TaskRemoveMapObject.cs" />
-    <Compile Include="Engine\Tasks\TaskRemoveDecoration.cs" />
-    <Compile Include="Engine\TextFile.cs" />
-    <Compile Include="Gameplay\AI\BaseAI.cs" />
-    <Compile Include="Gameplay\AI\CHARGuardAI.cs" />
-    <Compile Include="Gameplay\AI\CivilianAI.cs" />
-    <Compile Include="Gameplay\AI\ExplorationData.cs" />
-    <Compile Include="Gameplay\AI\FeralDogAI.cs" />
-    <Compile Include="Gameplay\AI\GangAI.cs" />
-    <Compile Include="Gameplay\AI\InsaneHumanAI.cs" />
-    <Compile Include="Gameplay\AI\OrderableAI.cs" />
-    <Compile Include="Gameplay\AI\UnintelligentAnimalAI.cs" />
-    <Compile Include="Gameplay\AI\RatAI.cs" />
-    <Compile Include="Gameplay\AI\Sensors\LOSSensor.cs" />
-    <Compile Include="Gameplay\AI\Sensors\SmellSensor.cs" />
-    <Compile Include="Gameplay\AI\SewersThingAI.cs" />
-    <Compile Include="Gameplay\AI\SkeletonAI.cs" />
-    <Compile Include="Gameplay\AI\SoldierAI.cs" />
-    <Compile Include="Gameplay\AI\Tools\RouteFinder.cs" />
-    <Compile Include="Gameplay\AI\ZombieAI.cs" />
-    <Compile Include="Gameplay\GameActors.cs" />
-    <Compile Include="Gameplay\GameFactions.cs" />
-    <Compile Include="Gameplay\GameGangs.cs" />
-    <Compile Include="Gameplay\GameImages.cs" />
-    <Compile Include="Gameplay\GameItems.cs" />
-    <Compile Include="Gameplay\GameMusics.cs" />
-    <Compile Include="Gameplay\GameAmbients.cs" />
-    <Compile Include="Gameplay\GameSounds.cs" />
-    <Compile Include="Gameplay\GameTiles.cs" />
-    <Compile Include="Gameplay\GameTips.cs" />
-    <Compile Include="Gameplay\Generators\BaseMapGenerator.cs" />
-    <Compile Include="Gameplay\Generators\BaseTownGenerator.cs" />
-    <Compile Include="Gameplay\Generators\StdTownGenerator.cs" />
-    <Compile Include="Gameplay\Skills.cs" />
-    <Compile Include="Gameplay\ZoneAttributes.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="PointExtensions.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RogueForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RogueForm.designer.cs">
-      <DependentUpon>RogueForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="SetupConfig.cs" />
-    <Compile Include="UI\DXGameCanvas.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\DXGameCanvas.Designer.cs">
-      <DependentUpon>DXGameCanvas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\GDIPlusGameCanvas.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI\GDIPlusGameCanvas.Designer.cs">
-      <DependentUpon>GDIPlusGameCanvas.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI\IGameCanvas.cs" />
-    <Content Include="csfml-audio-2.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DirectX redist\DirectX End User EULA.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DirectX redist\directx redist.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DirectX redist\DSETUP.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DirectX redist\dsetup32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DirectX redist\dxdllreg_x86.cab">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DirectX redist\DXSETUP.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="DirectX redist\dxupdate.cab">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="openal32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\Ambients\test_ambient.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2316,31 +1994,10 @@
     <Content Include="Resources\Sfx\zombified_groan.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SFML.NET license.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <EmbeddedResource Include="UI\DXGameCanvas.resx">
-      <DependentUpon>DXGameCanvas.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
     <Content Include="README.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -4287,18 +3944,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

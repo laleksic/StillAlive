@@ -11,6 +11,9 @@ namespace djack.RogueSurvivor.Engine
         #region IDs
         public enum IDs
         {
+            CONFIG_WINDOW,
+            CONFIG_WRITE_LOG_TO_FILE,
+
             UI_MUSIC,
             UI_MUSIC_VOLUME,
             UI_SFXS, //@@MP (Release 2)
@@ -868,6 +871,8 @@ namespace djack.RogueSurvivor.Engine
         {
             switch (option)
             {
+                case IDs.CONFIG_WINDOW:                               return "(Config) Window mode";
+                case IDs.CONFIG_WRITE_LOG_TO_FILE:                    return "(Config) Write log to file";
                 case IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS:      return "(Living) Aggressive hungry civilians";
                 case IDs.DIFFICULTY_ALLOW_UNDEADS_EVOLUTION:          return "(Undead) Allow undeads evolution (non-VTG)";
                 case IDs.GAME_CITY_SIZE:                              return "   (Map) City size";
@@ -936,6 +941,10 @@ namespace djack.RogueSurvivor.Engine
         {
             switch (option)
             {
+                case IDs.CONFIG_WINDOW:
+                    return "Switch between fullscreen and windowed.";
+                case IDs.CONFIG_WRITE_LOG_TO_FILE:
+                    return "Write information to a log file for troubleshooting.\nLog file path: " + Logger.LogFilePath();
                 case IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS:
                     return "Allows desperately hungry civilians to attack other people for food.";
                 case IDs.DIFFICULTY_ALLOW_UNDEADS_EVOLUTION:
@@ -1011,7 +1020,7 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.UI_ANIM_DELAY:
                     return "Enable or disable UI delays when actions or events take place.\nHaving it on can help when learning the game, or if you prefer to be slowed in order to\nsee events take place as they happen.";
                 case IDs.UI_MUSIC:
-                    return "Enable or disable music.\nMusics are not essential for gameplay, though it is recommended you keep them enabled.\nIf you can't hear music, try using other options in RSConfig.exe from the game folder.";
+                    return "Enable or disable music.\nMusics are not essential for gameplay, though it is recommended you keep them enabled.";
                 case IDs.UI_MUSIC_VOLUME:
                     return "Music volume.";
                 case IDs.UI_SHOW_MINIMAP:
@@ -1027,13 +1036,13 @@ namespace djack.RogueSurvivor.Engine
                 case IDs.DIFFICULTY_ANTIVIRAL_PILLS: //@@MP
                     return "Enable or disable anti-viral pills in the world.\nDisable antiviral pills for a more authenticate (and challenging) Vintage mode zombie experience.\nDeath will come sooner if you aren't very careful.";
                 case IDs.UI_SFXS: //@@MP
-                    return "Enable or disable sound effects.\nSFXs are not essential for gameplay, though it is recommended you keep them enabled.\nIf you can't hear SFXs, try using other options RSConfig.exe from the game folder.";
+                    return "Enable or disable sound effects.\nSFXs are not essential for gameplay, though it is recommended you keep them enabled.";
                 case IDs.UI_SFXS_VOLUME: //@@MP
                     return "Sound effects volume (gunfire, screams, explosions, etc)";
                 case IDs.DIFFICULTY_SANITY: //@@MP
                     return "Enabled or disable sanity. Low sanity causes a living to become restless and unpredicatable.";
                 case IDs.UI_AMBIENTSFXS: //@@MP
-                    return "Enable or disable ambient sounds.\nSFXs are not essential for gameplay, though it is recommended you keep them enabled.\nIf you can't hear SFXs, try using other options RSConfig.exe from the game folder.";
+                    return "Enable or disable ambient sounds.\nSFXs are not essential for gameplay, though it is recommended you keep them enabled.";
                 case IDs.UI_AMBIENTSFXS_VOLUME: //@@MP
                     return "Ambient sounds volume (rain, church bells, distant animals, etc)";
                 case IDs.UI_AUTOSAVE: //@@MP
@@ -1052,6 +1061,15 @@ namespace djack.RogueSurvivor.Engine
                     return "Backpacks can be found throughout the city. They increase the player's carrying capacity.\nNote: They are not usable by NPCs.";
                 default:
                     throw new ArgumentOutOfRangeException("option","unhandled option");
+            }
+        }
+
+        public static string Name(SetupConfig.eWindow mode) {
+            switch (mode) {
+                case SetupConfig.eWindow.WINDOW_FULLSCREEN: return "Fullscreen";
+                case SetupConfig.eWindow.WINDOW_WINDOWED: return "Windowed";
+                default:
+                    throw new ArgumentOutOfRangeException("mode","unhandled eWindow mode");
             }
         }
 
@@ -1199,6 +1217,10 @@ namespace djack.RogueSurvivor.Engine
         {
             switch (option)
             {
+                case IDs.CONFIG_WINDOW:
+                    return String.Format("{0,-10} (default {1})", GameOptions.Name(SetupConfig.Window)+"**", GameOptions.Name(SetupConfig.eWindow.WINDOW_FULLSCREEN));
+                case IDs.CONFIG_WRITE_LOG_TO_FILE:
+                    return SetupConfig.WriteLogToFile ? "YES** (default NO)" : "NO**  (default NO)";
                 case IDs.DIFFICULTY_AGGRESSIVE_HUNGRY_CIVILIANS:
                     return IsAggressiveHungryCiviliansOn ? "ON    (default ON)" : "OFF   (default ON)";
                 case IDs.DIFFICULTY_ALLOW_UNDEADS_EVOLUTION:

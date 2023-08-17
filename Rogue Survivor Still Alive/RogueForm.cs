@@ -35,13 +35,11 @@ namespace djack.RogueSurvivor
             this.Text = "Rogue Survivor: " + SetupConfig.GAME_VERSION + " [";
             switch (SetupConfig.Video) //@@MP (Release 5-3)
             {
-                case SetupConfig.eVideo.VIDEO_MANAGED_DIRECTX: this.Text += "MDX video,"; break;
                 case SetupConfig.eVideo.VIDEO_GDI_PLUS: this.Text += "GDI+ video,"; break;
             }
             switch (SetupConfig.Sound)
             {
                 case SetupConfig.eSound.SOUND_SFML: this.Text += " SFML sound"; break;
-                case SetupConfig.eSound.SOUND_MANAGED_DIRECTX: this.Text += " MDX sound"; break; //@@MP (Release 5-3)
                 case SetupConfig.eSound.SOUND_NOSOUND: this.Text += " no sound"; break;
             }
             this.Text += "]";

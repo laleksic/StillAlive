@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization.Formatters.Soap;
 using System.Xml.Serialization;
 
 using djack.RogueSurvivor.Data;
@@ -459,7 +458,6 @@ namespace djack.RogueSurvivor.Engine
         public enum SaveFormat
         {
             FORMAT_BIN,
-            FORMAT_SOAP,
             FORMAT_XML
         }
 
@@ -705,7 +703,6 @@ namespace djack.RogueSurvivor.Engine
             switch (format)
             {
                 case SaveFormat.FORMAT_BIN: SaveBin(session, filepath); break;
-                case SaveFormat.FORMAT_SOAP: SaveSoap(session, filepath); break;
                 case SaveFormat.FORMAT_XML: SaveXml(session, filepath); break;
             }
         }
@@ -715,7 +712,6 @@ namespace djack.RogueSurvivor.Engine
             switch (format)
             {
                 case SaveFormat.FORMAT_BIN: return LoadBin(filepath);
-                case SaveFormat.FORMAT_SOAP: return LoadSoap(filepath); 
                 case SaveFormat.FORMAT_XML: return LoadXml(filepath);
                 default: return false;
             }
@@ -771,62 +767,6 @@ namespace djack.RogueSurvivor.Engine
                 s_TheSession = null;
                 return false;
             }
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
-            return true;
-        }
-
-        static void SaveSoap(Session session, string filepath)
-        {
-            if (session == null)
-                throw new ArgumentNullException("session");
-            if (filepath == null)
-                throw new ArgumentNullException("filepath");
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session...");
-
-            IFormatter formatter = CreateSoapFormatter();
-            using (Stream stream = CreateStream(filepath, true))
-            {
-                formatter.Serialize(stream, session);
-                stream.Flush();
-                //stream.Close();
-            }
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "saving session... done!");
-        }
-
-        /// <summary>
-        /// Try to load, null if failed.
-        /// </summary>
-        /// <returns></returns>
-        static bool LoadSoap(string filepath)
-        {
-            if (filepath == null)
-                throw new ArgumentNullException("filepath");
-
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session...");
-
-            if (File.Exists(filepath))
-            {
-                // deserialize.
-                IFormatter formatter = CreateSoapFormatter();
-                using (Stream stream = CreateStream(filepath, false))
-                {
-                    s_TheSession = (Session)formatter.Deserialize(stream);
-                    //stream.Close();
-                }
-
-                // reconstruct auxiliary fields.
-                s_TheSession.ReconstructAuxiliaryFields();
-            }
-            else
-            {
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "failed to load session (no save game).");
-                s_TheSession = null;
-                return false;
-            }
-
 
             Logger.WriteLine(Logger.Stage.RUN_MAIN, "loading session... done!");
             return true;
@@ -918,11 +858,6 @@ namespace djack.RogueSurvivor.Engine
         static IFormatter CreateFormatter()
         {
             return new BinaryFormatter();
-        }
-
-        static IFormatter CreateSoapFormatter()
-        {
-            return new SoapFormatter();
         }
 
         static Stream CreateStream(string saveFileName, bool save)

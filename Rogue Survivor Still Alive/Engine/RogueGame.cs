@@ -832,9 +832,6 @@ namespace djack.RogueSurvivor.Engine
                 case SetupConfig.eSound.SOUND_SFML:
                     m_MusicManager = new SFMLMusicManager(); //@@MP (Release 5-3)
                     break;
-                case SetupConfig.eSound.SOUND_MANAGED_DIRECTX:
-                    m_MusicManager = new MDXSoundManager();
-                    break;
                 default:
                     m_MusicManager = new NullSoundManager();
                     break;
@@ -846,9 +843,6 @@ namespace djack.RogueSurvivor.Engine
                 case SetupConfig.eSound.SOUND_SFML:
                     m_SFXManager = new SFMLSoundManager(); //sound manager is good for short tracks called frequently, as they are kept in memory
                     break;
-                case SetupConfig.eSound.SOUND_MANAGED_DIRECTX:
-                    m_SFXManager = new MDXSoundManager();
-                    break;
                 default:
                     m_SFXManager = new NullSoundManager();
                     break;
@@ -859,9 +853,6 @@ namespace djack.RogueSurvivor.Engine
             {
                 case SetupConfig.eSound.SOUND_SFML:
                     m_AmbientSFXManager = new SFMLMusicManager(); //music manager is good for long tracks, as they are streamed from disk rather than kept in memory
-                    break;
-                case SetupConfig.eSound.SOUND_MANAGED_DIRECTX:
-                    m_AmbientSFXManager = new MDXSoundManager();
                     break;
                 default:
                     m_AmbientSFXManager = new NullSoundManager();
@@ -1417,7 +1408,6 @@ namespace djack.RogueSurvivor.Engine
                 gy += 3 * BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.LightSkyBlue, "Please note that Rogue Survivor: Still Alive is currently in alpha. There will be bugs.", 0, gy);
                 gy += 2 * BOLD_LINE_SPACING;
-                m_UI.UI_DrawStringBold(Color.LightSkyBlue, "To change audio and video modes use RSConfig.exe from the game directory.", 0, gy);
                 gy += 3 * BOLD_LINE_SPACING;
                 DrawGameTips(gx, gy); //@@MP (Release 6-6)
                 DrawFootnote(Color.White, "cursor to move, ENTER to select");
@@ -1524,6 +1514,9 @@ namespace djack.RogueSurvivor.Engine
             #region Order
             GameOptions.IDs[] list = new GameOptions.IDs[]  //@@MP provides the order in which they appear in the menu
             {
+                // config
+                GameOptions.IDs.CONFIG_WINDOW,
+                GameOptions.IDs.CONFIG_WRITE_LOG_TO_FILE,
                 // helpers
                 GameOptions.IDs.UI_AUTOSAVE, //@MP (Release 6-1)
                 GameOptions.IDs.UI_ADVISOR,
@@ -1631,6 +1624,8 @@ namespace djack.RogueSurvivor.Engine
                 gy += BOLD_LINE_SPACING;
                 m_UI.UI_DrawStringBold(Color.Red, "* Caution : increasing these values can make the game run slower and saving/loading longer.", gx, gy);
                 gy += BOLD_LINE_SPACING;
+                m_UI.UI_DrawStringBold(Color.Red, "** Changing these options requires restarting the game to take effect.", gx, gy);
+                gy += BOLD_LINE_SPACING;
 
                 // footnote.
                 DrawFootnote(Color.White, "Move cursor then left/right to change values, R to restore defaults, ESC to save and leave");
@@ -1653,6 +1648,9 @@ namespace djack.RogueSurvivor.Engine
 
                     case Keys.R:        // restore defaults.
                         s_Options.ResetToDefaultValues(GameOptions.OptionsCategory.GENERAL); //prevOptions; //@@MP - used to restore changes in this session, now resets defaults (Release 6-1)
+                        SetupConfig.Window = SetupConfig.eWindow.WINDOW_FULLSCREEN;
+                        SetupConfig.WriteLogToFile = false;
+                        SetupConfig.Save();
                         ApplyOptions();
                         SaveOptions();
                         break;
@@ -1665,6 +1663,13 @@ namespace djack.RogueSurvivor.Engine
                     case Keys.Left:
                         switch ((GameOptions.IDs)list[selected])
                         {
+                            case GameOptions.IDs.CONFIG_WINDOW:
+                                switch (SetupConfig.Window) {
+                                    case SetupConfig.eWindow.WINDOW_FULLSCREEN: SetupConfig.Window = SetupConfig.eWindow.WINDOW_WINDOWED; break;
+                                    case SetupConfig.eWindow.WINDOW_WINDOWED: SetupConfig.Window = SetupConfig.eWindow.WINDOW_FULLSCREEN; break;
+                                }
+                                break;
+                            case GameOptions.IDs.CONFIG_WRITE_LOG_TO_FILE: SetupConfig.WriteLogToFile = !SetupConfig.WriteLogToFile; break;
                             case GameOptions.IDs.GAME_DISTRICT_SIZE: s_Options.DistrictSize -= 5; break;
                             case GameOptions.IDs.UI_MUSIC: s_Options.PlayMusic = !s_Options.PlayMusic; break;
                             case GameOptions.IDs.UI_MUSIC_VOLUME: s_Options.MusicVolume -= 5; break;
@@ -1706,6 +1711,13 @@ namespace djack.RogueSurvivor.Engine
                     case Keys.Right:
                         switch ((GameOptions.IDs)list[selected])
                         {
+                            case GameOptions.IDs.CONFIG_WINDOW:
+                                switch (SetupConfig.Window) {
+                                    case SetupConfig.eWindow.WINDOW_FULLSCREEN: SetupConfig.Window = SetupConfig.eWindow.WINDOW_WINDOWED; break;
+                                    case SetupConfig.eWindow.WINDOW_WINDOWED: SetupConfig.Window = SetupConfig.eWindow.WINDOW_FULLSCREEN; break;
+                                }
+                                break;
+                            case GameOptions.IDs.CONFIG_WRITE_LOG_TO_FILE: SetupConfig.WriteLogToFile = !SetupConfig.WriteLogToFile; break;                            
                             case GameOptions.IDs.GAME_DISTRICT_SIZE: s_Options.DistrictSize += 5; break;
                             case GameOptions.IDs.UI_MUSIC: s_Options.PlayMusic = !s_Options.PlayMusic; break;
                             case GameOptions.IDs.UI_MUSIC_VOLUME: s_Options.MusicVolume += 5; break;
@@ -1757,6 +1769,7 @@ namespace djack.RogueSurvivor.Engine
 
             // save.
             SaveOptions();
+            SetupConfig.Save();
         }
 
         void HandleRedefineKeys()

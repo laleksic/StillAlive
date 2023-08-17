@@ -838,9 +838,6 @@ You might encounter some other people. Friendly or hostile, it's for you to find
 OPTIONS
 -------
 
-> "Music", "Ambient" and "Sound Effects"
-Audio is not essential for gameplay. If you can't hear audio, try the RSConfig.exe tool in the game directory.
-
 
 > "Animations Delay"
 Enable or disable pauses when showing actions or events on the map. Disable for a faster interface.
