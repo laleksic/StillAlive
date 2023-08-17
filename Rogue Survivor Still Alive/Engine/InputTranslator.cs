@@ -18,8 +18,6 @@ namespace djack.RogueSurvivor.Engine
         {
             PlayerCommand command = RogueGame.KeyBindings.Get(key);
 
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "Key: " + key.ToString() + " --> Command: " + command.ToString());
-
             if (command != PlayerCommand.NONE)
                 return command;
 

@@ -180,8 +180,6 @@ namespace djack.RogueSurvivor.Engine
         /// <param name="key">KeyData</param>
         public void Set(PlayerCommand command, KeyEventArgs key)
         {
-            Logger.WriteLine(Logger.Stage.RUN_MAIN, "Binding Key: " + key.ToString() + " --> Command: " + command.ToString());
-
             // remove previous bind.
             PlayerCommand prevCommand = Get(key);
             if (prevCommand != PlayerCommand.NONE)
