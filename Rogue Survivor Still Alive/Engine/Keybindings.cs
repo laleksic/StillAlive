@@ -13,9 +13,45 @@ using Keys = SFML.Window.Keyboard.Key;
 
 namespace djack.RogueSurvivor.Engine
 {
-    class KeyEventArgsComparer : IComparer<KeyEventArgs> 
+    [Serializable]
+    public class KeyCombo 
     {
-        public int Compare(KeyEventArgs x, KeyEventArgs y)
+        public Keys Code;
+        public bool Control;
+        public bool Alt;
+        public bool Shift;
+        public KeyCombo(Keys code, bool control, bool alt, bool shift)
+        {
+            Code = code;
+            Control = control;
+            Alt = alt;
+            Shift = shift;
+        }
+        public KeyCombo(KeyEventArgs args)
+        {
+            Code = args.Code;
+            Control = args.Control;
+            Alt = args.Alt;
+            Shift = args.Shift;
+        }
+        public override string ToString() 
+        {
+            string s = "";
+            if (Control)
+                s += "CTRL + ";
+            if (Alt)
+                s += "ALT + ";
+            if (Shift)
+                s += "SHIFT + ";
+            s += Code;
+            return s;
+        }
+    }
+
+    [Serializable]
+    class KeyComboComparer : IComparer<KeyCombo> 
+    {
+        public int Compare(KeyCombo x, KeyCombo y)
         {
             if (x.Code == y.Code)
             {
@@ -41,15 +77,15 @@ namespace djack.RogueSurvivor.Engine
     class Keybindings
     {
         #region Fields
-        Dictionary<PlayerCommand, KeyEventArgs> m_CommandToKeyData;
-        SortedDictionary<KeyEventArgs, PlayerCommand> m_KeyToCommand;
+        Dictionary<PlayerCommand, KeyCombo> m_CommandToKeyData;
+        SortedDictionary<KeyCombo, PlayerCommand> m_KeyToCommand;
         #endregion
 
         #region Init
         public Keybindings()
         {
-            m_CommandToKeyData = new Dictionary<PlayerCommand, KeyEventArgs>();
-            m_KeyToCommand = new SortedDictionary<KeyEventArgs, PlayerCommand>(new KeyEventArgsComparer());
+            m_CommandToKeyData = new Dictionary<PlayerCommand, KeyCombo>();
+            m_KeyToCommand = new SortedDictionary<KeyCombo, PlayerCommand>(new KeyComboComparer());
             ResetToDefaults();
         }
 
@@ -129,9 +165,9 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public KeyEventArgs Get(PlayerCommand command)
+        public KeyCombo Get(PlayerCommand command)
         {
-            KeyEventArgs key;
+            KeyCombo key;
             if (m_CommandToKeyData.TryGetValue(command, out key))
                 return key;
             else
@@ -145,7 +181,7 @@ namespace djack.RogueSurvivor.Engine
         /// <returns></returns>
         public string GetFriendlyFormat(PlayerCommand command) //@@MP (Release 6-6)
         {
-            KeyEventArgs key;
+            KeyCombo key;
             if (m_CommandToKeyData.TryGetValue(command, out key))
             {
                 string keyAsString = key.ToString();
@@ -165,7 +201,7 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         /// <param name="key">KeyData</param>
         /// <returns></returns>
-        public PlayerCommand Get(KeyEventArgs key)
+        public PlayerCommand Get(KeyCombo key)
         {
             PlayerCommand cmd;
             if (m_KeyToCommand.TryGetValue(key, out cmd))
@@ -178,7 +214,7 @@ namespace djack.RogueSurvivor.Engine
         /// </summary>
         /// <param name="command"></param>
         /// <param name="key">KeyData</param>
-        public void Set(PlayerCommand command, KeyEventArgs key)
+        public void Set(PlayerCommand command, KeyCombo key)
         {
             // remove previous bind.
             PlayerCommand prevCommand = Get(key);
@@ -186,7 +222,7 @@ namespace djack.RogueSurvivor.Engine
             {
                 m_CommandToKeyData.Remove(prevCommand);
             }
-            KeyEventArgs prevKey = Get(command);
+            KeyCombo prevKey = Get(command);
             if (prevKey != null)
             {
                 m_KeyToCommand.Remove(prevKey);
@@ -199,14 +235,7 @@ namespace djack.RogueSurvivor.Engine
 
         public void Set(PlayerCommand command, Keys code, bool control, bool alt, bool shift)
         {
-            var e = new SFML.Window.KeyEvent();
-            e.Code = code;
-            e.Control = control? 1: 0;
-            e.Alt = alt? 1: 0;
-            e.Shift = shift? 1: 0;
-            e.System = 0;
-            var key = new KeyEventArgs(e);
-            Set(command, key);
+            Set(command, new KeyCombo(code, control, alt, shift));
         }
 
         public void Set(PlayerCommand command, Keys code)
@@ -218,7 +247,7 @@ namespace djack.RogueSurvivor.Engine
         #region Checking for keys conflict
         public bool CheckForConflict()
         {
-            foreach (KeyEventArgs key1 in m_CommandToKeyData.Values)
+            foreach (KeyCombo key1 in m_CommandToKeyData.Values)
             {
                 int bound = m_KeyToCommand.Keys.Count((k) => k == key1);
                 if (bound > 1)

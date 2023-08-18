@@ -2031,7 +2031,7 @@ namespace djack.RogueSurvivor.Engine
                         }
 
                         // bind it.                      
-                        s_KeyBindings.Set(command, newKey);
+                        s_KeyBindings.Set(command, new KeyCombo(newKey));
 
                         break;
 

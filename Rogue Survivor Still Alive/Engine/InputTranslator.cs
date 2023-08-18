@@ -14,8 +14,9 @@ namespace djack.RogueSurvivor.Engine
 {
     static class InputTranslator
     {
-        public static PlayerCommand KeyToCommand(KeyEventArgs key)
+        public static PlayerCommand KeyToCommand(KeyEventArgs keyargs)
         {
+            KeyCombo key = new KeyCombo(keyargs);
             PlayerCommand command = RogueGame.KeyBindings.Get(key);
 
             if (command != PlayerCommand.NONE)
