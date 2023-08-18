@@ -277,14 +277,11 @@ namespace djack.RogueSurvivor
             // F7 - DEV - toggle FPS
             if (e.Code == Keys.F7)
             {
-                m_GameCanvas.ShowFPS = !m_GameCanvas.ShowFPS;
                 UI_Repaint();
             }
             // F8 - DEV - resize to normal size
             if (e.Code == Keys.F8)
             {
-                m_GameCanvas.NeedRedraw = true;
-                SetClientSizeCore(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
                 UI_Repaint();
             }
             // F9 - DEV - Show actors stats
