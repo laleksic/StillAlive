@@ -12,7 +12,6 @@
     <NeutralLanguage>en</NeutralLanguage>
     <TargetFramework>net6.0</TargetFramework>
     <StartupObject>djack.RogueSurvivor.Program</StartupObject>
-    <ApplicationIcon>IconPNG.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineConstants>TRACE;DEBUG;DEBUGAILOOPING</DefineConstants>
@@ -34,9 +33,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="HELP.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="IconPNG.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Rogue Survivor Still Alive saves.lnk">
