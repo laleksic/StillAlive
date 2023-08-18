@@ -129,7 +129,7 @@ namespace djack.RogueSurvivor.UI
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);
-            m_RogueForm.UI_PostMouseButtons(e.Button);
+            //m_RogueForm.UI_PostMouseButtons(e.Button);
         }
 
         protected override void OnSizeChanged(EventArgs e)

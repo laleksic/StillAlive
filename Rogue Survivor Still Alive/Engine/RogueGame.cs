@@ -23,6 +23,7 @@ using TradeRating = djack.RogueSurvivor.Gameplay.AI.BaseAI.TradeRating;
 using SFML;
 using KeyEventArgs = SFML.Window.KeyEventArgs;
 using Keys = SFML.Window.Keyboard.Key;
+using MouseButtons = SFML.Window.Mouse.Button;
 
 namespace djack.RogueSurvivor.Engine
 {

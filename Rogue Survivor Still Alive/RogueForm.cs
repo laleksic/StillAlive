@@ -14,6 +14,7 @@ using SFML.Graphics;
 using SFML.System;
 using Color = System.Drawing.Color;
 using Font = System.Drawing.Font;
+using MouseButtons = SFML.Window.Mouse.Button;
 
 namespace djack.RogueSurvivor
 {
@@ -112,6 +113,9 @@ namespace djack.RogueSurvivor
             renderWindow.MouseMoved += (sender, e) => {
                 mouseLocation.X = e.X;
                 mouseLocation.Y = e.Y;
+            };
+            renderWindow.MouseButtonPressed += (sender, e) => {
+                UI_PostMouseButtons(e.Button);
             };
 
             canvas = new RenderTexture(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
