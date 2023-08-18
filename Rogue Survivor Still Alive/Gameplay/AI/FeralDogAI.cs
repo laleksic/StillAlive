@@ -325,12 +325,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     switch (skin[0])
                     {
-                        case "Actors\\Decoration\\dog_skin1_east": return; //already the required sprite
-                        case "Actors\\Decoration\\dog_skin1_west": skinImage = GameImages.DOG_SKIN1_EAST; break;
-                        case "Actors\\Decoration\\dog_skin2_east": return;
-                        case "Actors\\Decoration\\dog_skin2_west": skinImage = GameImages.DOG_SKIN2_EAST; break;
-                        case "Actors\\Decoration\\dog_skin3_east": return;
-                        case "Actors\\Decoration\\dog_skin3_west": skinImage = GameImages.DOG_SKIN3_EAST; break;
+                        case "Actors/Decoration/dog_skin1_east": return; //already the required sprite
+                        case "Actors/Decoration/dog_skin1_west": skinImage = GameImages.DOG_SKIN1_EAST; break;
+                        case "Actors/Decoration/dog_skin2_east": return;
+                        case "Actors/Decoration/dog_skin2_west": skinImage = GameImages.DOG_SKIN2_EAST; break;
+                        case "Actors/Decoration/dog_skin3_east": return;
+                        case "Actors/Decoration/dog_skin3_west": skinImage = GameImages.DOG_SKIN3_EAST; break;
                         default: throw new InvalidOperationException("unhandled dog skin sprite");
                     }
                 }
@@ -338,12 +338,12 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     switch (skin[0])
                     {
-                        case "Actors\\Decoration\\dog_skin1_east": skinImage = GameImages.DOG_SKIN1_WEST; break;
-                        case "Actors\\Decoration\\dog_skin1_west": return;
-                        case "Actors\\Decoration\\dog_skin2_east": skinImage = GameImages.DOG_SKIN2_WEST; break;
-                        case "Actors\\Decoration\\dog_skin2_west": return;
-                        case "Actors\\Decoration\\dog_skin3_east": skinImage = GameImages.DOG_SKIN3_WEST; break;
-                        case "Actors\\Decoration\\dog_skin3_west": return;
+                        case "Actors/Decoration/dog_skin1_east": skinImage = GameImages.DOG_SKIN1_WEST; break;
+                        case "Actors/Decoration/dog_skin1_west": return;
+                        case "Actors/Decoration/dog_skin2_east": skinImage = GameImages.DOG_SKIN2_WEST; break;
+                        case "Actors/Decoration/dog_skin2_west": return;
+                        case "Actors/Decoration/dog_skin3_east": skinImage = GameImages.DOG_SKIN3_WEST; break;
+                        case "Actors/Decoration/dog_skin3_west": return;
                         default: throw new InvalidOperationException("unhandled dog skin sprite");
                     }
                 }

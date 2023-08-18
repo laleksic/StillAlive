@@ -189,10 +189,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     switch (skin[0])
                     {
-                        case "Actors\\Decoration\\rabbit_skin_east": return; //already the required sprite
-                        case "Actors\\Decoration\\rabbit_skin_west": skinImage = GameImages.RABBIT_SKIN_EAST; break;
-                        case "Actors\\Decoration\\chicken_skin_east": return;
-                        case "Actors\\Decoration\\chicken_skin_west": skinImage = GameImages.CHICKEN_SKIN_EAST; break;
+                        case "Actors/Decoration/rabbit_skin_east": return; //already the required sprite
+                        case "Actors/Decoration/rabbit_skin_west": skinImage = GameImages.RABBIT_SKIN_EAST; break;
+                        case "Actors/Decoration/chicken_skin_east": return;
+                        case "Actors/Decoration/chicken_skin_west": skinImage = GameImages.CHICKEN_SKIN_EAST; break;
                         default: throw new InvalidOperationException("unhandled dog skin sprite");
                     }
                 }
@@ -200,10 +200,10 @@ namespace djack.RogueSurvivor.Gameplay.AI
                 {
                     switch (skin[0])
                     {
-                        case "Actors\\Decoration\\rabbit_skin_east": skinImage = GameImages.RABBIT_SKIN_WEST; break;
-                        case "Actors\\Decoration\\rabbit_skin_west": return;
-                        case "Actors\\Decoration\\chicken_skin_east": skinImage = GameImages.CHICKEN_SKIN_WEST; break;
-                        case "Actors\\Decoration\\chicken_skin_west": return;
+                        case "Actors/Decoration/rabbit_skin_east": skinImage = GameImages.RABBIT_SKIN_WEST; break;
+                        case "Actors/Decoration/rabbit_skin_west": return;
+                        case "Actors/Decoration/chicken_skin_east": skinImage = GameImages.CHICKEN_SKIN_WEST; break;
+                        case "Actors/Decoration/chicken_skin_west": return;
                         default: throw new InvalidOperationException("unhandled dog skin sprite");
                     }
                 }

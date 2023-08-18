@@ -3,7 +3,7 @@ namespace djack.RogueSurvivor.Gameplay
 {
     static class GameMusics
     {
-        const string PATH = @"Resources\Music\";
+        const string PATH = @"Resources/Music/";
 
         public const string ARMY = "army";
         public const string ARMY_FILE = PATH + "RS - Army";

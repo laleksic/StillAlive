@@ -9,7 +9,7 @@ namespace djack.RogueSurvivor.Gameplay
     /// To keep better depth try MonoPlus for foobar https://hydrogenaud.io/index.php/topic,108037.0.html
     static class GameSounds
     {
-        const string PATH = @"Resources\Sfx\";
+        const string PATH = @"Resources/Sfx/";
 
         //vanilla SFX
         public const string UNDEAD_EAT_PLAYER = "player undead eats"; //@@MP - added a NEARBY (Release 3)

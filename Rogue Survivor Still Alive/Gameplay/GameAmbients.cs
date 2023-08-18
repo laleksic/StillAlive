@@ -6,7 +6,7 @@ namespace djack.RogueSurvivor.Gameplay
     /// </summary>
     static class GameAmbients //@@MP (Release 6-1)
     {
-        const string PATH = @"Resources\Ambients\";
+        const string PATH = @"Resources/Ambients/";
 
         //@@MP (Release 6-1)
         public const string RAIN_OUTSIDE = "outside whilst raining";

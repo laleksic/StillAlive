@@ -2523,7 +2523,7 @@ namespace djack.RogueSurvivor.Engine
 
         public static string GetUserSavesPath()
         {
-            return GetUserBasePath() + @"Saves\";
+            return GetUserBasePath() + @"Saves/";
         }
 
         public static string GetUserSave()
@@ -2533,7 +2533,7 @@ namespace djack.RogueSurvivor.Engine
 
         public static string GetUserGraveyardPath()
         {
-            return GetUserBasePath() + @"Graveyard\";
+            return GetUserBasePath() + @"Graveyard/";
         }
 
         /// <summary>
@@ -2562,7 +2562,7 @@ namespace djack.RogueSurvivor.Engine
 
         public static string GetUserConfigPath()
         {
-            return GetUserBasePath() + @"Config\";
+            return GetUserBasePath() + @"Config/";
         }
 
         public static string GetUserOptionsFilePath()
@@ -2572,7 +2572,7 @@ namespace djack.RogueSurvivor.Engine
 
         public static string GetUserScreenshotsPath()
         {
-            return GetUserBasePath() + @"Screenshots\";
+            return GetUserBasePath() + @"Screenshots/";
         }
 
         /// <summary>
@@ -2635,7 +2635,7 @@ namespace djack.RogueSurvivor.Engine
             else
             {
                 Logger.WriteLine(Logger.Stage.INIT_MAIN, "couldn't find manual!");
-                throw new InvalidOperationException(@"Cannot find <gamedir>\" + filename);
+                throw new InvalidOperationException(@"Cannot find <gamedir>/" + filename);
             }
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "checking for manual... done!");
@@ -2760,7 +2760,7 @@ namespace djack.RogueSurvivor.Engine
         void LoadDataActors()
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading Actors data file...");
-            m_GameActors.LoadFromCSV(m_UI, @"Resources\Data\Actors.csv");
+            m_GameActors.LoadFromCSV(m_UI, @"Resources/Data/Actors.csv");
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading Actors data file... done!");
         }
 
@@ -2768,20 +2768,20 @@ namespace djack.RogueSurvivor.Engine
         {
             // load all data.
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading Items data files...");
-            m_GameItems.LoadMedicineFromCSV(m_UI, @"Resources\Data\Items_Medicine.csv");
-            m_GameItems.LoadFoodFromCSV(m_UI, @"Resources\Data\Items_Food.csv");
-            m_GameItems.LoadMeleeWeaponsFromCSV(m_UI, @"Resources\Data\Items_MeleeWeapons.csv");
-            m_GameItems.LoadRangedWeaponsFromCSV(m_UI, @"Resources\Data\Items_RangedWeapons.csv");
-            m_GameItems.LoadExplosivesFromCSV(m_UI, @"Resources\Data\Items_Explosives.csv");
-            m_GameItems.LoadBarricadingMaterialFromCSV(m_UI, @"Resources\Data\Items_Barricading.csv");
-            m_GameItems.LoadArmorsFromCSV(m_UI, @"Resources\Data\Items_Armors.csv");
-            m_GameItems.LoadTrackersFromCSV(m_UI, @"Resources\Data\Items_Trackers.csv");
-            m_GameItems.LoadSpraypaintsFromCSV(m_UI, @"Resources\Data\Items_Spraypaints.csv");
-            m_GameItems.LoadLightsFromCSV(m_UI, @"Resources\Data\Items_Lights.csv");
-            m_GameItems.LoadScentspraysFromCSV(m_UI, @"Resources\Data\Items_Scentsprays.csv");
-            m_GameItems.LoadTrapsFromCSV(m_UI, @"Resources\Data\Items_Traps.csv");
-            m_GameItems.LoadEntertainmentFromCSV(m_UI, @"Resources\Data\Items_Entertainment.csv");
-            m_GameItems.LoadBackpacksFromCSV(m_UI, @"Resources\Data\Items_Backpacks.csv");
+            m_GameItems.LoadMedicineFromCSV(m_UI, @"Resources/Data/Items_Medicine.csv");
+            m_GameItems.LoadFoodFromCSV(m_UI, @"Resources/Data/Items_Food.csv");
+            m_GameItems.LoadMeleeWeaponsFromCSV(m_UI, @"Resources/Data/Items_MeleeWeapons.csv");
+            m_GameItems.LoadRangedWeaponsFromCSV(m_UI, @"Resources/Data/Items_RangedWeapons.csv");
+            m_GameItems.LoadExplosivesFromCSV(m_UI, @"Resources/Data/Items_Explosives.csv");
+            m_GameItems.LoadBarricadingMaterialFromCSV(m_UI, @"Resources/Data/Items_Barricading.csv");
+            m_GameItems.LoadArmorsFromCSV(m_UI, @"Resources/Data/Items_Armors.csv");
+            m_GameItems.LoadTrackersFromCSV(m_UI, @"Resources/Data/Items_Trackers.csv");
+            m_GameItems.LoadSpraypaintsFromCSV(m_UI, @"Resources/Data/Items_Spraypaints.csv");
+            m_GameItems.LoadLightsFromCSV(m_UI, @"Resources/Data/Items_Lights.csv");
+            m_GameItems.LoadScentspraysFromCSV(m_UI, @"Resources/Data/Items_Scentsprays.csv");
+            m_GameItems.LoadTrapsFromCSV(m_UI, @"Resources/Data/Items_Traps.csv");
+            m_GameItems.LoadEntertainmentFromCSV(m_UI, @"Resources/Data/Items_Entertainment.csv");
+            m_GameItems.LoadBackpacksFromCSV(m_UI, @"Resources/Data/Items_Backpacks.csv");
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading Items data files... done!");
 
             // create.
@@ -2793,7 +2793,7 @@ namespace djack.RogueSurvivor.Engine
         void LoadDataSkills()
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading Skills data file...");
-            Skills.LoadSkillsFromCSV(m_UI, @"Resources\Data\Skills.csv");
+            Skills.LoadSkillsFromCSV(m_UI, @"Resources/Data/Skills.csv");
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading Skills data file... done!");
         }
 
@@ -20124,37 +20124,37 @@ namespace djack.RogueSurvivor.Engine
             TileModel walltilemodel = map.GetTileAt(location.Position.X, location.Position.Y).Model;
             switch (walltilemodel.ImageID)
             {
-                case @"Tiles\wall_brick":
+                case @"Tiles/wall_brick":
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_BRICK_DAMAGED);
                     break;
-                case @"Tiles\wall_char_office":
+                case @"Tiles/wall_char_office":
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_CHAR_OFFICE_DAMAGED);
                     break;
-                case @"Tiles\wall_hospital":
+                case @"Tiles/wall_hospital":
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_HOSPITAL_DAMAGED);
                     break;
-                case @"Tiles\wall_sewer":
+                case @"Tiles/wall_sewer":
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_SEWER_DAMAGED);
                     break;
-                case @"Tiles\wall_stone":
+                case @"Tiles/wall_stone":
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_STONE_DAMAGED);
                     break;
-                case @"Tiles\wall_light_brown": //@@MP (Release 4)
+                case @"Tiles/wall_light_brown": //@@MP (Release 4)
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_LIGHT_BROWN_DAMAGED);
                     break;
-                case @"Tiles\wall_army_base": //@@MP (Release 6-3)
+                case @"Tiles/wall_army_base": //@@MP (Release 6-3)
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_ARMY_BASE_DAMAGED);
                     break;
-                case @"Tiles\wall_wood_planks": //@@MP (Release 7-3)
+                case @"Tiles/wall_wood_planks": //@@MP (Release 7-3)
                     map.DropItemAt(m_TownGenerator.MakeItemWoodenPlank(), location.Position.X, location.Position.Y);
                     break;
-                case @"Tiles\wall_fuel_station": //@@MP (Release 7-3)
+                case @"Tiles/wall_fuel_station": //@@MP (Release 7-3)
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_FUEL_STATION_DAMAGED);
                     break;
-                case @"Tiles\wall_mall": //@@MP (Release 7-3)
+                case @"Tiles/wall_mall": //@@MP (Release 7-3)
                     map.GetTileAt(location.Position.X, location.Position.Y).AddDecoration(GameImages.DECO_WALL_MALL_DAMAGED);
                     break;
-                case @"Tiles\wall_red_curtains": //@@MP (Release 7-3)
+                case @"Tiles/wall_red_curtains": //@@MP (Release 7-3)
                     //leaves a whole gap
                     break;
                 default:
@@ -20180,32 +20180,32 @@ namespace djack.RogueSurvivor.Engine
             //use the adjacent floor tile as the tile underneath the new damaged wall decoration (to show the player it can be walked through)
             switch (floortilemodel.ImageID)
             {
-                case @"Tiles\floor_office":
+                case @"Tiles/floor_office":
                     map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_OFFICE);
                     break;
-                case @"Tiles\floor_tiles":
+                case @"Tiles/floor_tiles":
                     map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_TILES);
                     break;
-                case @"Tiles\floor_concrete":
+                case @"Tiles/floor_concrete":
                     map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_CONCRETE);
                     break;
-                case @"Tiles\floor_walkway":
+                case @"Tiles/floor_walkway":
                     map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_WALKWAY);
                     break;
-                case @"Tiles\floor_planks":
+                case @"Tiles/floor_planks":
                     map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_PLANKS);
                     break;
-                case @"Tiles\floor_food_court_pool":
+                case @"Tiles/floor_food_court_pool":
                     map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_FOOD_COURT_POOL);
                     break;
-                case @"Tiles\floor_white_tile":
+                case @"Tiles/floor_white_tile":
                     map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_WHITE_TILE);
                     break;
-                case @"Tiles\floor_sewer_water":
-                case @"Tiles\floor_sewer_water_anim1":
-                case @"Tiles\floor_sewer_water_anim2":
-                case @"Tiles\floor_sewer_water_anim3":
-                case @"Tiles\floor_sewer_water_cover":
+                case @"Tiles/floor_sewer_water":
+                case @"Tiles/floor_sewer_water_anim1":
+                case @"Tiles/floor_sewer_water_anim2":
+                case @"Tiles/floor_sewer_water_anim3":
+                case @"Tiles/floor_sewer_water_cover":
                     map.SetTileModelAt(location.Position.X, location.Position.Y, GameTiles.FLOOR_SEWER_WATER);
                     break;
                 default:
@@ -25567,7 +25567,7 @@ namespace djack.RogueSurvivor.Engine
                     {
                         foreach (string deco in tile.Decorations)
                         {
-                            if (deco == @"Effects\onFire")
+                            if (deco == @"Effects/onFire")
                                 m_UI.UI_DrawImage(deco, toScreen.X, toScreen.Y, tint);
                         }
                     }
@@ -25745,7 +25745,7 @@ namespace djack.RogueSurvivor.Engine
                 {
                     foreach (string deco in tile.Decorations)
                     {
-                        if (deco != @"Effects\onFire") //@@MP - handled as a separate step in DrawMap() (Release 7-4)
+                        if (deco != @"Effects/onFire") //@@MP - handled as a separate step in DrawMap() (Release 7-4)
                             m_UI.UI_DrawImage(deco, screen.X, screen.Y, tint);
                     }
                 }
@@ -26180,7 +26180,7 @@ namespace djack.RogueSurvivor.Engine
                 case 4: 
                 case 3: 
                 case 2:
-                case 1: img = @"Effects\rot" + rotLevel + "_"; break;
+                case 1: img = @"Effects/rot" + rotLevel + "_"; break;
                 case 0: break;
                 default: throw new ArgumentException("unhandled rot level","c");
             }

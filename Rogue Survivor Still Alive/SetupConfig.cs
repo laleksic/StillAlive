@@ -26,7 +26,7 @@ namespace djack.RogueSurvivor
             {
                 //return Environment.CurrentDirectory + @"\Config\"; //@@MP - switched to AppData so that non-admins can run the game (Release 5-1)
                 string myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                return myDocs + @"\Rogue Survivor\" + SetupConfig.GAME_VERSION + @"\Config\";
+                return myDocs + @"/Rogue Survivor/" + SetupConfig.GAME_VERSION + @"/Config/";
             }
         }
 
@@ -34,7 +34,7 @@ namespace djack.RogueSurvivor
         {
             get
             {
-                return DirPath + @"\setup.dat";
+                return DirPath + @"/setup.dat";
             }
         }
 

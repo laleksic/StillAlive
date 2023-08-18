@@ -375,28 +375,28 @@ namespace djack.RogueSurvivor.Data
             Tile tile = GetTileAt(pt);
             switch (tile.Model.ImageID)
             {
-                case @"Tiles\floor_office":
-                case @"Tiles\floor_tiles":
-                case @"Tiles\floor_concrete":
-                case @"Tiles\floor_walkway":
-                case @"Tiles\floor_planks":
-                case @"Tiles\floor_red_carpet": //@@MP (Release 4)
-                case @"Tiles\floor_blue_carpet": //@@MP (Release 4)
-                case @"Tiles\floor_dirt": //@@MP (Release 4)
-                case @"Tiles\floor_sewer_water":
-                case @"Tiles\floor_sewer_water_anim1":
-                case @"Tiles\floor_sewer_water_anim2":
-                case @"Tiles\floor_sewer_water_anim3":
-                case @"Tiles\floor_sewer_water_cover":
-                case @"Tiles\floor_pond_center": //@@MP (Release 6-1)
-                case @"Tiles\floor_pond_north-edge": //@@MP (Release 6-1)
-                case @"Tiles\floor_pond_ne-corner": //@@MP (Release 6-1)
-                case @"Tiles\floor_pond_east-edge": //@@MP (Release 6-1)
-                case @"Tiles\floor_pond_se-corner": //@@MP (Release 6-1)
-                case @"Tiles\floor_pond_south-edge": //@@MP (Release 6-1)
-                case @"Tiles\floor_pond_sw-corner": //@@MP (Release 6-1)
-                case @"Tiles\floor_pond_west-edge": //@@MP (Release 6-1)
-                case  @"Tiles\floor_pond_nw-corner": //@@MP (Release 6-1)
+                case @"Tiles/floor_office":
+                case @"Tiles/floor_tiles":
+                case @"Tiles/floor_concrete":
+                case @"Tiles/floor_walkway":
+                case @"Tiles/floor_planks":
+                case @"Tiles/floor_red_carpet": //@@MP (Release 4)
+                case @"Tiles/floor_blue_carpet": //@@MP (Release 4)
+                case @"Tiles/floor_dirt": //@@MP (Release 4)
+                case @"Tiles/floor_sewer_water":
+                case @"Tiles/floor_sewer_water_anim1":
+                case @"Tiles/floor_sewer_water_anim2":
+                case @"Tiles/floor_sewer_water_anim3":
+                case @"Tiles/floor_sewer_water_cover":
+                case @"Tiles/floor_pond_center": //@@MP (Release 6-1)
+                case @"Tiles/floor_pond_north-edge": //@@MP (Release 6-1)
+                case @"Tiles/floor_pond_ne-corner": //@@MP (Release 6-1)
+                case @"Tiles/floor_pond_east-edge": //@@MP (Release 6-1)
+                case @"Tiles/floor_pond_se-corner": //@@MP (Release 6-1)
+                case @"Tiles/floor_pond_south-edge": //@@MP (Release 6-1)
+                case @"Tiles/floor_pond_sw-corner": //@@MP (Release 6-1)
+                case @"Tiles/floor_pond_west-edge": //@@MP (Release 6-1)
+                case  @"Tiles/floor_pond_nw-corner": //@@MP (Release 6-1)
                     return true;
                 default:
                     return false;
