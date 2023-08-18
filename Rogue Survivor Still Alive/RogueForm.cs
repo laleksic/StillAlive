@@ -115,6 +115,12 @@ namespace djack.RogueSurvivor
             renderWindow.MouseButtonPressed += (sender, e) => {
                 UI_PostMouseButtons(e.Button);
             };
+            renderWindow.Resized += (sender, e) => {
+                var size = renderWindow.Size;
+                size.X = Math.Max(size.X, RogueGame.CANVAS_WIDTH);
+                size.Y = Math.Max(size.Y, RogueGame.CANVAS_HEIGHT);
+                renderWindow.Size = size;
+            };
 
             canvas = new RenderTexture(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
             canvas.Texture.Smooth = true;
