@@ -7,7 +7,7 @@ namespace djack.RogueSurvivor
     public static class SetupConfig
     {
         //public const string GAME_VERSION = "Still Alive";
-        public static string GAME_VERSION = "Still Alive " + typeof(SetupConfig).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion + " ALPHA"; //@@MP remember to update the Assembly info (Release 1)
+        public static string GAME_VERSION = "Still Alive " + typeof(SetupConfig).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion + " ALPHA (CROSS-PLATFORM EDITION!)"; //@@MP remember to update the Assembly info (Release 1)
 
         public enum eWindow //@@MP (Release 5-5)
         {
