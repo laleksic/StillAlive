@@ -96,6 +96,7 @@ namespace djack.RogueSurvivor
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating sfml window...");
             renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1024, 768), "Rogue Survivor: " + SetupConfig.GAME_VERSION);
+            renderWindow.SetVerticalSyncEnabled(true);
             var icon = new SFML.Graphics.Image("./Resources/Images/icon.png");
             renderWindow.SetIcon(icon.Size.X, icon.Size.Y, icon.Pixels);
             renderWindow.KeyPressed += (sender, e) => {
@@ -254,14 +255,12 @@ namespace djack.RogueSurvivor
                 DoEvents();
                 if (m_HasKey)
                     break;
-                Thread.Sleep(1);
             }
             return m_InKey;
         }
 
         public KeyEventArgs UI_PeekKey()
         {
-            Thread.Sleep(1);
             DoEvents();
             if (m_HasKey)
             {
@@ -495,7 +494,6 @@ namespace djack.RogueSurvivor
 
         public Point UI_GetMousePosition()
         {
-            Thread.Sleep(1);
             DoEvents();
             return m_GameCanvas.MouseLocation;
         }
