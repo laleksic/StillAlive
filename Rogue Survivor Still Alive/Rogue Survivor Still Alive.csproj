@@ -12,6 +12,7 @@
     <NeutralLanguage>en</NeutralLanguage>
     <TargetFramework>net6.0</TargetFramework>
     <StartupObject>djack.RogueSurvivor.Program</StartupObject>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineConstants>TRACE;DEBUG;DEBUGAILOOPING</DefineConstants>
