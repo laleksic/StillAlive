@@ -3095,7 +3095,7 @@ namespace djack.RogueSurvivor.Gameplay
         #region Data loading
 
         #region Helpers
-        static void Notify(IRogueUI ui, string what, string stage) //@@MP - made static (Release 5-7)
+        static void Notify(RogueUI ui, string what, string stage) //@@MP - made static (Release 5-7)
         {
             ui.UI_Clear(Color.Black);
             ui.UI_DrawStringBold(Color.White, "Loading "+what+" data : " + stage, 0, 0);
@@ -3135,7 +3135,7 @@ namespace djack.RogueSurvivor.Gameplay
             return data;
         }
 
-        bool LoadDataFromCSV<_DATA_TYPE_>(IRogueUI ui, string path, string kind, int fieldsCount, Func<CSVLine, _DATA_TYPE_> fn, IDs[] idsToRead, out _DATA_TYPE_[] data)
+        bool LoadDataFromCSV<_DATA_TYPE_>(RogueUI ui, string path, string kind, int fieldsCount, Func<CSVLine, _DATA_TYPE_> fn, IDs[] idsToRead, out _DATA_TYPE_[] data)
         {
             //////////////////////////
             // Read & parse csv file.
@@ -3183,7 +3183,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Medicine
-        public bool LoadMedicineFromCSV(IRogueUI ui, string path)
+        public bool LoadMedicineFromCSV(RogueUI ui, string path)
         {
             MedecineData[] data;
 
@@ -3213,7 +3213,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Food
-        public bool LoadFoodFromCSV(IRogueUI ui, string path)
+        public bool LoadFoodFromCSV(RogueUI ui, string path)
         {
             FoodData[] data;
 
@@ -3248,7 +3248,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Melee weapons
-        public bool LoadMeleeWeaponsFromCSV(IRogueUI ui, string path)
+        public bool LoadMeleeWeaponsFromCSV(RogueUI ui, string path)
         {
             MeleeWeaponData[] data;
 
@@ -3307,7 +3307,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Ranged weapons
-        public bool LoadRangedWeaponsFromCSV(IRogueUI ui, string path)
+        public bool LoadRangedWeaponsFromCSV(RogueUI ui, string path)
         {
             RangedWeaponData[] data;
 
@@ -3347,7 +3347,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Explosives
-        public bool LoadExplosivesFromCSV(IRogueUI ui, string path)
+        public bool LoadExplosivesFromCSV(RogueUI ui, string path)
         {
             ExplosiveData[] data;
 
@@ -3373,7 +3373,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Barricading material
-        public bool LoadBarricadingMaterialFromCSV(IRogueUI ui, string path)
+        public bool LoadBarricadingMaterialFromCSV(RogueUI ui, string path)
         {
             BarricadingMaterialData[] data;
 
@@ -3388,7 +3388,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Armors
-        public bool LoadArmorsFromCSV(IRogueUI ui, string path)
+        public bool LoadArmorsFromCSV(RogueUI ui, string path)
         {
             ArmorData[] data;
 
@@ -3412,7 +3412,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Trackers
-        public bool LoadTrackersFromCSV(IRogueUI ui, string path)
+        public bool LoadTrackersFromCSV(RogueUI ui, string path)
         {
             TrackerData[] data;
 
@@ -3430,7 +3430,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Spray paints
-        public bool LoadSpraypaintsFromCSV(IRogueUI ui, string path)
+        public bool LoadSpraypaintsFromCSV(RogueUI ui, string path)
         {
             SprayPaintData[] data;
 
@@ -3450,7 +3450,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Lights
-        public bool LoadLightsFromCSV(IRogueUI ui, string path)
+        public bool LoadLightsFromCSV(RogueUI ui, string path)
         {
             LightData[] data;
 
@@ -3470,7 +3470,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Scentsprays
-        public bool LoadScentspraysFromCSV(IRogueUI ui, string path)
+        public bool LoadScentspraysFromCSV(RogueUI ui, string path)
         {
             ScentSprayData[] data;
 
@@ -3485,7 +3485,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Traps
-        public bool LoadTrapsFromCSV(IRogueUI ui, string path)
+        public bool LoadTrapsFromCSV(RogueUI ui, string path)
         {
             TrapData[] data;
 
@@ -3503,7 +3503,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Entertainment
-        public bool LoadEntertainmentFromCSV(IRogueUI ui, string path)
+        public bool LoadEntertainmentFromCSV(RogueUI ui, string path)
         {
             EntData[] data;
 
@@ -3525,7 +3525,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region BACKPACKS
-        public bool LoadBackpacksFromCSV(IRogueUI ui, string path)
+        public bool LoadBackpacksFromCSV(RogueUI ui, string path)
         {
             BackpackData[] data;
 

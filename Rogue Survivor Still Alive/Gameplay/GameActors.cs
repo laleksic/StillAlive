@@ -1075,7 +1075,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Data loading
-        public bool LoadFromCSV(IRogueUI ui, string path)
+        public bool LoadFromCSV(RogueUI ui, string path)
         {
             //////////////////////////
             // Read & parse csv file.
@@ -1206,7 +1206,7 @@ namespace djack.RogueSurvivor.Gameplay
             return data;
         }
 
-        static void Notify(IRogueUI ui, string stage) //@@MP - made static (Release 5-7)
+        static void Notify(RogueUI ui, string stage) //@@MP - made static (Release 5-7)
         {
             ui.UI_Clear(Color.Black);
             ui.UI_DrawStringBold(Color.White, "Loading actors data : " + stage, 0, 0);

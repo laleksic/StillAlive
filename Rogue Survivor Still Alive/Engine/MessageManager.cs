@@ -75,7 +75,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Drawing
-        public void Draw(IRogueUI ui, int freshMessagesTurn, int gx, int gy)
+        public void Draw(RogueUI ui, int freshMessagesTurn, int gx, int gy)
         {
             for(int i = 0; i < m_Messages.Count; i++)
             {

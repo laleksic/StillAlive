@@ -17,7 +17,7 @@ using MouseButtons = SFML.Window.Mouse.Button;
 
 namespace djack.RogueSurvivor
 {
-    public partial class RogueForm : IRogueUI
+    public partial class RogueUI
     {
         private void DoEvents()
         {
@@ -95,7 +95,7 @@ namespace djack.RogueSurvivor
         }
 
         #region Init
-        public RogueForm()
+        public RogueUI()
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating sfml window...");
             renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1024, 768), "Rogue Survivor: " + SetupConfig.GAME_VERSION);
@@ -183,7 +183,7 @@ namespace djack.RogueSurvivor
             m_Game.Run();
         }
 
-        #region IRogueUI implementation
+        #region RogueUI implementation
         
         #region Input
         bool m_HasKey = false;
@@ -566,6 +566,11 @@ namespace djack.RogueSurvivor
             drawables.Add(txt);
         }
 
+        public void UI_DrawString(Color color, string text, int gx, int gy)
+        {
+            UI_DrawString(color, text, gx, gy, null);
+        }
+
         public void UI_DrawStringBold(Color color, string text, int gx, int gy, Color? shadowColor)
         {
             Text txt = new Text(text, sfmlBoldFont, FONT_SIZE);
@@ -579,6 +584,11 @@ namespace djack.RogueSurvivor
             }
             drawables.Add(txt);
         }
+
+        public void UI_DrawStringBold(Color color, string text, int gx, int gy)
+        {
+            UI_DrawString(color, text, gx, gy, null);
+        }        
 
         public void UI_DrawRect(Color color, Rectangle rect)
         {

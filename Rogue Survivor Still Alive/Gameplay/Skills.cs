@@ -219,7 +219,7 @@ namespace djack.RogueSurvivor.Gameplay
         }
 
         #region Helpers
-        static void Notify(IRogueUI ui, string what, string stage)
+        static void Notify(RogueUI ui, string what, string stage)
         {
             ui.UI_Clear(Color.Black);
             ui.UI_DrawStringBold(Color.White, "Loading " + what + " data : " + stage, 0, 0);
@@ -259,7 +259,7 @@ namespace djack.RogueSurvivor.Gameplay
             return data;
         }
 
-        static bool LoadDataFromCSV<_DATA_TYPE_>(IRogueUI ui, string path, string kind, int fieldsCount, Func<CSVLine, _DATA_TYPE_> fn, IDs[] idsToRead, out _DATA_TYPE_[] data)
+        static bool LoadDataFromCSV<_DATA_TYPE_>(RogueUI ui, string path, string kind, int fieldsCount, Func<CSVLine, _DATA_TYPE_> fn, IDs[] idsToRead, out _DATA_TYPE_[] data)
         {
             //////////////////////////
             // Read & parse csv file.
@@ -307,7 +307,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Loading
-        public static bool LoadSkillsFromCSV(IRogueUI ui, string path)
+        public static bool LoadSkillsFromCSV(RogueUI ui, string path)
         {
             SkillData[] data;
 

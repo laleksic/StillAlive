@@ -502,7 +502,7 @@ namespace djack.RogueSurvivor.Engine
         #region Overlays
         abstract class Overlay
         {
-            public abstract void Draw(IRogueUI ui);
+            public abstract void Draw(RogueUI ui);
         }
 
         class OverlayImage : Overlay
@@ -516,7 +516,7 @@ namespace djack.RogueSurvivor.Engine
                 ImageID = imageID;
             }
 
-            public override void Draw(IRogueUI ui)
+            public override void Draw(RogueUI ui)
             {
                 ui.UI_DrawImage(ImageID, ScreenPosition.X, ScreenPosition.Y);
             }
@@ -535,7 +535,7 @@ namespace djack.RogueSurvivor.Engine
                 ImageID = imageID;
             }
 
-            public override void Draw(IRogueUI ui)
+            public override void Draw(RogueUI ui)
             {
                 ui.UI_DrawTransparentImage(Alpha, ImageID, ScreenPosition.X, ScreenPosition.Y);
             }
@@ -561,7 +561,7 @@ namespace djack.RogueSurvivor.Engine
                 Text = text;
             }
 
-            public override void Draw(IRogueUI ui)
+            public override void Draw(RogueUI ui)
             {
                 if (ShadowColor.HasValue)
                     ui.UI_DrawString(ShadowColor.Value, Text, ScreenPosition.X + 1, ScreenPosition.Y + 1);
@@ -582,7 +582,7 @@ namespace djack.RogueSurvivor.Engine
                 Color = color;
             }
 
-            public override void Draw(IRogueUI ui)
+            public override void Draw(RogueUI ui)
             {
                 ui.UI_DrawLine(Color, ScreenFrom.X, ScreenFrom.Y, ScreenTo.X, ScreenTo.Y);
             }
@@ -599,7 +599,7 @@ namespace djack.RogueSurvivor.Engine
                 Color = color;
             }
 
-            public override void Draw(IRogueUI ui)
+            public override void Draw(RogueUI ui)
             {
                 ui.UI_DrawRect(Color, Rectangle);
             }
@@ -626,7 +626,7 @@ namespace djack.RogueSurvivor.Engine
                 Lines = lines;
             }
 
-            public override void Draw(IRogueUI ui)
+            public override void Draw(RogueUI ui)
             {
                 ui.UI_DrawPopup(Lines, TextColor, BoxBorderColor, BoxFillColor, ScreenPosition.X, ScreenPosition.Y);
             }
@@ -654,7 +654,7 @@ namespace djack.RogueSurvivor.Engine
                 this.Lines = lines;
             }
 
-            public override void Draw(IRogueUI ui)
+            public override void Draw(RogueUI ui)
             {
                 ui.UI_DrawPopupTitle(Title, TitleColor, Lines, TextColor, BoxBorderColor, BoxFillColor, ScreenPosition.X, ScreenPosition.Y);
             }
@@ -681,7 +681,7 @@ namespace djack.RogueSurvivor.Engine
                 this.Lines = lines;
             }
 
-            public override void Draw(IRogueUI ui)
+            public override void Draw(RogueUI ui)
             {
                 ui.UI_DrawPopupTitleColors(Title, TitleColor, Lines, Colors, BoxBorderColor, BoxFillColor, ScreenPosition.X, ScreenPosition.Y);
             }
@@ -710,7 +710,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region FIELDS
-        readonly IRogueUI m_UI;
+        readonly RogueUI m_UI;
         Rules m_Rules;
         Session m_Session;
         HiScoreTable m_HiScoreTable;
@@ -774,7 +774,7 @@ namespace djack.RogueSurvivor.Engine
             get { return m_Rules; }
         }
 
-        public IRogueUI UI
+        public RogueUI UI
         {
             get { return m_UI; }
         }
@@ -824,7 +824,7 @@ namespace djack.RogueSurvivor.Engine
         //----------------
 
         #region INIT (INTERFACE)
-        public RogueGame(IRogueUI UI)
+        public RogueGame(RogueUI UI)
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "Building RogueGame()");
 
@@ -32838,7 +32838,7 @@ namespace djack.RogueSurvivor.Engine
         bool m_isBotMode = false;
         BaseAI m_botControl = null;
         const int BOT_DELAY = DELAY_SHORT;
-        readonly Object m_botLock = new Object(); // necessary because dev keys presses from RogueForm can happen at any time
+        readonly Object m_botLock = new Object(); // necessary because dev keys presses from RogueUI can happen at any time
 
         public void BotToggleControl()
         {

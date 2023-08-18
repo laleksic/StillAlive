@@ -1235,7 +1235,7 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Loading resources
-        public static void LoadResources(IRogueUI ui)
+        public static void LoadResources(RogueUI ui)
         {
             #region Icons
             Notify(ui, "icons...");
@@ -2469,7 +2469,7 @@ namespace djack.RogueSurvivor.Gameplay
             }
         }
 
-        static void Notify(IRogueUI ui, string stage)
+        static void Notify(RogueUI ui, string stage)
         {
             ui.UI_Clear(Color.Black);
             ui.UI_DrawStringBold(Color.White, "Loading resources: " + stage, 0, 0);
