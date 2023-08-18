@@ -23,12 +23,23 @@ namespace djack.RogueSurvivor
         {
             if (renderWindow.IsOpen)
             {
+                // a scale that preserves aspect ratio and pillarboxes/letterboxes the canvas on the screen
+                float scale = Math.Min((float)renderWindow.Size.X / canvas.Texture.Size.X, (float)renderWindow.Size.Y / canvas.Texture.Size.Y);
+                Logger.WriteLine(Logger.Stage.RUN_MAIN, "!!! scale = " + scale);
+
                 renderWindow.DispatchEvents();
+                
+                var view = new SFML.Graphics.View((Vector2f)renderWindow.Size / 2.0f, (Vector2f)renderWindow.Size);
+                view.Viewport = new FloatRect(0.0f, 0.0f, 1.0f, 1.0f);
+
+                renderWindow.SetView(view);
+
                 renderWindow.Clear(SFML.Graphics.Color.Black);            
+
                 var spr = new Sprite(canvas.Texture);
                 spr.Position = (Vector2f)renderWindow.Size / 2.0f;
                 spr.Origin = (Vector2f)canvas.Texture.Size / 2.0f;
-                spr.Scale = new Vector2f(1, -1);
+                spr.Scale = new Vector2f(1 * scale, -1 * scale);
                 renderWindow.Draw(spr);
                 renderWindow.Display();
             } 
@@ -56,6 +67,9 @@ namespace djack.RogueSurvivor
         RenderTexture minimap;
         List<Drawable> minimapDrawables = new List<Drawable>();
         static Shader grayLevelShader;
+        // tweak per font for best results
+        const int FONT_SIZE = 16;
+        const int FONT_Y_ADJUST = -4;
 
         class GrayLevelSprite : Drawable
         {
@@ -81,7 +95,9 @@ namespace djack.RogueSurvivor
         public RogueForm()
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating sfml window...");
-            renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1024, 768), "SFML works!", SFML.Window.Styles.Titlebar);
+            renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1024, 768), "Rogue Survivor: " + SetupConfig.GAME_VERSION);
+            var icon = new SFML.Graphics.Image("./Resources/Images/icon.png");
+            renderWindow.SetIcon(icon.Size.X, icon.Size.Y, icon.Pixels);
             renderWindow.KeyPressed += (sender, e) => {
                 UI_PostKey(e);
             };
@@ -90,6 +106,8 @@ namespace djack.RogueSurvivor
             };
 
             canvas = new RenderTexture(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
+            canvas.Texture.Smooth = true;
+
             grayLevelShader = Shader.FromString(
                 @"
                 void main()
@@ -126,8 +144,8 @@ namespace djack.RogueSurvivor
                 "
             );
 
-            sfmlFont = new SFML.Graphics.Font("./Resources/Fonts/DejaVuSansMono.ttf");
-            sfmlBoldFont = new SFML.Graphics.Font("./Resources/Fonts/DejaVuSansMono-Bold.ttf");
+            sfmlFont = new SFML.Graphics.Font("./Resources/Fonts/unifont.ttf");
+            sfmlBoldFont = sfmlFont;
             minimap = new RenderTexture(RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH, RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT);
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form...");
@@ -607,13 +625,13 @@ namespace djack.RogueSurvivor
 
         public void UI_DrawString(Color color, string text, int gx, int gy, Color? shadowColor)
         {
-            Text txt = new Text(text, sfmlFont, 12);
+            Text txt = new Text(text, sfmlFont, FONT_SIZE);
             txt.FillColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
-            txt.Position = new Vector2f(gx, gy);
+            txt.Position = new Vector2f(gx, gy + FONT_Y_ADJUST);
             if (shadowColor.HasValue) {
                 Text shadow = new Text(txt);
                 shadow.FillColor = new SFML.Graphics.Color(shadowColor.Value.R, shadowColor.Value.G, shadowColor.Value.B, shadowColor.Value.A);
-                shadow.Position = new Vector2f(gx + 1, gy + 1);
+                shadow.Position = new Vector2f(gx + 1, gy + FONT_Y_ADJUST + 1);
                 drawables.Add(shadow);
             }
             drawables.Add(txt);
@@ -621,15 +639,20 @@ namespace djack.RogueSurvivor
 
         public void UI_DrawStringBold(Color color, string text, int gx, int gy, Color? shadowColor)
         {
-            Text txt = new Text(text, sfmlBoldFont, 12);
+            Text txt = new Text(text, sfmlBoldFont, FONT_SIZE);
+            //txt.Style = SFML.Graphics.Text.Styles.Bold; //(looks awful)
             txt.FillColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
-            txt.Position = new Vector2f(gx, gy);
+            txt.Position = new Vector2f(gx, gy + FONT_Y_ADJUST);
             if (shadowColor.HasValue) {
                 Text shadow = new Text(txt);
                 shadow.FillColor = new SFML.Graphics.Color(shadowColor.Value.R, shadowColor.Value.G, shadowColor.Value.B, shadowColor.Value.A);
-                shadow.Position = new Vector2f(gx + 1, gy + 1);
+                shadow.Position = new Vector2f(gx + 1, gy + FONT_Y_ADJUST + 1);
                 drawables.Add(shadow);
             }
+            // bold by drawing again shifted to the right (works nice for pixel fonts)
+            Text copy = new Text(txt);
+            copy.Position = new Vector2f(gx + 1, gy + FONT_Y_ADJUST);
+            drawables.Add(copy);
             drawables.Add(txt);
         }
 
