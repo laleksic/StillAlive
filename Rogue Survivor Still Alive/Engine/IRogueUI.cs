@@ -34,7 +34,6 @@ namespace djack.RogueSurvivor.Engine
         void UI_DrawImageTransform(string imageID, int gx, int gy, Color tint, float rotation, float scale); //@@MP - added tint (Release 7-2)
         void UI_DrawGrayLevelImage(string imageID, int gx, int gy, string grayLevelType); //@@MP - added parameter to allow graylevels for different times of day/location (Release 6-2)
         void UI_DrawTransparentImage(float alpha, string imageID, int gx, int gy);
-        void UI_DrawPoint(Color color, int gx, int gy);
         void UI_DrawLine(Color color, int gxFrom, int gyFrom, int gxTo, int gyTo);
         void UI_DrawRect(Color color, Rectangle rect);
         void UI_FillRect(Color color, Rectangle rect);

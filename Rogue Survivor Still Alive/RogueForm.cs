@@ -3,12 +3,17 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
 using djack.RogueSurvivor.Gameplay;
 using SFML;
 using KeyEventArgs = SFML.Window.KeyEventArgs;
 using Keys = SFML.Window.Keyboard.Key;
+using SFML.Graphics;
+using SFML.System;
+using Color = System.Drawing.Color;
+using Font = System.Drawing.Font;
 
 namespace djack.RogueSurvivor
 {
@@ -19,10 +24,14 @@ namespace djack.RogueSurvivor
             if (renderWindow.IsOpen)
             {
                 renderWindow.DispatchEvents();
-                renderWindow.Clear(SFML.Graphics.Color.Blue);
+                renderWindow.Clear(SFML.Graphics.Color.Black);            
+                var spr = new Sprite(canvas.Texture);
+                spr.Position = (Vector2f)renderWindow.Size / 2.0f;
+                spr.Origin = (Vector2f)canvas.Texture.Size / 2.0f;
+                spr.Scale = new Vector2f(1, -1);
+                renderWindow.Draw(spr);
                 renderWindow.Display();
             } 
-            //Application.DoEvents();
         }
 
         #region Fields
@@ -40,19 +49,86 @@ namespace djack.RogueSurvivor
 
         // SFML stuff
         SFML.Graphics.RenderWindow renderWindow;
-        // ----------
+        RenderTexture canvas;
+        List<Drawable> drawables = new List<Drawable>();
+        SFML.Graphics.Font sfmlFont;
+        SFML.Graphics.Font sfmlBoldFont;
+        RenderTexture minimap;
+        List<Drawable> minimapDrawables = new List<Drawable>();
+        static Shader grayLevelShader;
+
+        class GrayLevelSprite : Drawable
+        {
+            Sprite spr;
+            float grayLevel;
+
+            public GrayLevelSprite(Sprite spr, float grayLevel)
+            {
+                this.spr = spr;
+                this.grayLevel = grayLevel;
+            }
+
+            public void Draw(RenderTarget target, RenderStates states)
+            {
+                var st = new RenderStates(states);
+                st.Shader = grayLevelShader;
+                st.Shader.SetUniform("grayLevel", grayLevel);
+                spr.Draw(target, st);
+            }
+        }
 
         #region Init
         public RogueForm()
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating sfml window...");
-            renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(800, 600), "SFML works!");
+            renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1024, 768), "SFML works!", SFML.Window.Styles.Titlebar);
             renderWindow.KeyPressed += (sender, e) => {
                 UI_PostKey(e);
             };
             renderWindow.Closed += (sender, e) => {
                 UI_DoQuit();
             };
+
+            canvas = new RenderTexture(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
+            grayLevelShader = Shader.FromString(
+                @"
+                void main()
+                {
+                    // transform the vertex position
+                    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+
+                    // transform the texture coordinates
+                    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+
+                    // forward the vertex color
+                    gl_FrontColor = gl_Color;
+                }
+                ",
+                null,
+                @"
+                uniform sampler2D texture;
+                uniform float grayLevel;
+
+                void main()
+                {
+                    // lookup the pixel in the texture
+                    vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
+
+                    // multiply it by the color
+                    gl_FragColor = gl_Color * pixel;
+
+                    float maxrgb = max(gl_FragColor.r, max(gl_FragColor.g, gl_FragColor.b));
+                    float minrgb = min(gl_FragColor.r, min(gl_FragColor.g, gl_FragColor.b));
+                    float brightness = (maxrgb + minrgb) / 2.0f;
+                    //float brightness = maxrgb;
+                    gl_FragColor.rgb = vec3(grayLevel * brightness);
+                }
+                "
+            );
+
+            sfmlFont = new SFML.Graphics.Font("./Resources/Fonts/DejaVuSansMono.ttf");
+            sfmlBoldFont = new SFML.Graphics.Font("./Resources/Fonts/DejaVuSansMono-Bold.ttf");
+            minimap = new RenderTexture(RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH, RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT);
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form...");
 
@@ -93,7 +169,6 @@ namespace djack.RogueSurvivor
                     //this.Bounds = Screen.PrimaryScreen.Bounds;
                     break;
                 case SetupConfig.eWindow.WINDOW_WINDOWED:
-                    this.WindowState = FormWindowState.Maximized;
                     this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
                     break;
             }
@@ -449,77 +524,131 @@ namespace djack.RogueSurvivor
             /*Invalidate();
             Update();*/
             Refresh();
+            canvas.Clear(SFML.Graphics.Color.Black);
+            foreach (var drawable in drawables)
+            {
+                canvas.Draw(drawable);
+            }
             DoEvents();
         }
 
         public void UI_Clear(Color clearColor)
         {
-            m_GameCanvas.Clear(clearColor);
+            drawables.Clear();
         }
 
         public void UI_DrawImage(string imageID, int gx, int gy)
         {
-            m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy);
+            Texture tex = GameImages.Get(imageID);
+            Sprite spr = new Sprite(tex);
+            spr.Position = new Vector2f(gx, gy);
+            drawables.Add(spr);
         }
 
         public void UI_DrawImage(string imageID, int gx, int gy, Color tint)
         {
-            m_GameCanvas.AddImage(GameImages.Get(imageID), gx, gy, tint);
+            Texture tex = GameImages.Get(imageID);
+            Sprite spr = new Sprite(tex);
+            spr.Color = new SFML.Graphics.Color(tint.R, tint.G, tint.B, tint.A);
+            spr.Position = new Vector2f(gx, gy);
+            drawables.Add(spr);
         }
 
         public void UI_DrawImageTransform(string imageID, int gx, int gy, Color tint, float rotation, float scale) //@@MP - added tint (Release 7-2)
         {
-            m_GameCanvas.AddImageTransform(GameImages.Get(imageID), gx, gy, tint, rotation, scale);
+            Texture tex = GameImages.Get(imageID);
+            Sprite spr = new Sprite(tex);
+            spr.Color = new SFML.Graphics.Color(tint.R, tint.G, tint.B, tint.A);
+            spr.Position = new Vector2f(gx + (float)RogueGame.TILE_SIZE / 2.0f, gy + (float)RogueGame.TILE_SIZE / 2.0f);
+            spr.Scale = new Vector2f(scale, scale);
+            spr.Origin = new Vector2f((float)RogueGame.TILE_SIZE / 2.0f, (float)RogueGame.TILE_SIZE / 2.0f);
+            spr.Rotation = rotation;
+            drawables.Add(spr);
         }
 
         public void UI_DrawGrayLevelImage(string imageID, int gx, int gy, string grayLevelType) //@@MP - added parameter to allow graylevels for different times of day/location (Release 6-2)
         {
-            m_GameCanvas.AddImage(GameImages.GetGrayLevel(imageID, grayLevelType), gx, gy);
+            float grayLevel;
+            switch (grayLevelType)
+            {
+                //@@MP - tiles visited but not within current FOV are now darker (Release 6-2)
+                case "daytime": grayLevel = 0.40f; break; //@@MP this was the one and only in vanilla
+                case "nighttime_clear": grayLevel = 0.20f; break;
+                case "nighttime_clouded": grayLevel = 0.15f; break;
+                case "underground_notorch": grayLevel = 0.20f; break;
+                case "underground_littorch": grayLevel = 0.10f; break;
+                default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
+            }            
+            Texture tex = GameImages.Get(imageID);
+            Sprite spr = new Sprite(tex);
+            spr.Position = new Vector2f(gx, gy);
+            drawables.Add(new GrayLevelSprite(spr, grayLevel));
         }
 
         public void UI_DrawTransparentImage(float alpha, string imageID, int gx, int gy)
         {
-            m_GameCanvas.AddTransparentImage(alpha, GameImages.Get(imageID), gx, gy);
-        }
-
-        public void UI_DrawPoint(Color color, int gx, int gy)
-        {
-            m_GameCanvas.AddPoint(color, gx, gy);
+            Texture tex = GameImages.Get(imageID);
+            Sprite spr = new Sprite(tex);
+            spr.Color = new SFML.Graphics.Color(0xff, 0xff, 0xff, (byte)((float)(0xff) * alpha));
+            spr.Position = new Vector2f(gx, gy);
+            drawables.Add(spr);
         }
 
         public void UI_DrawLine(Color color, int gxFrom, int gyFrom, int gxTo, int gyTo)
         {
-            m_GameCanvas.AddLine(color, gxFrom, gyFrom, gxTo, gyTo);
+            var sfmlColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
+            Vertex a = new Vertex(new Vector2f(gxFrom, gyFrom), sfmlColor);
+            Vertex b = new Vertex(new Vector2f(gxTo, gyTo), sfmlColor);
+            VertexArray va = new VertexArray(PrimitiveType.Lines);
+            va.Append(a);
+            va.Append(b);
+            drawables.Add(va);
         }
 
         public void UI_DrawString(Color color, string text, int gx, int gy, Color? shadowColor)
         {
-            if (shadowColor != null)
-                m_GameCanvas.AddString(m_NormalFont, shadowColor.Value, text, gx + 1, gy + 1);
-            m_GameCanvas.AddString(m_NormalFont, color, text, gx, gy);
+            Text txt = new Text(text, sfmlFont, 12);
+            txt.FillColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
+            txt.Position = new Vector2f(gx, gy);
+            if (shadowColor.HasValue) {
+                Text shadow = new Text(txt);
+                shadow.FillColor = new SFML.Graphics.Color(shadowColor.Value.R, shadowColor.Value.G, shadowColor.Value.B, shadowColor.Value.A);
+                shadow.Position = new Vector2f(gx + 1, gy + 1);
+                drawables.Add(shadow);
+            }
+            drawables.Add(txt);
         }
 
         public void UI_DrawStringBold(Color color, string text, int gx, int gy, Color? shadowColor)
         {
-            if (shadowColor != null)
-                m_GameCanvas.AddString(m_BoldFont, shadowColor.Value, text, gx + 1, gy + 1);
-            m_GameCanvas.AddString(m_BoldFont, color, text, gx, gy);
+            Text txt = new Text(text, sfmlBoldFont, 12);
+            txt.FillColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
+            txt.Position = new Vector2f(gx, gy);
+            if (shadowColor.HasValue) {
+                Text shadow = new Text(txt);
+                shadow.FillColor = new SFML.Graphics.Color(shadowColor.Value.R, shadowColor.Value.G, shadowColor.Value.B, shadowColor.Value.A);
+                shadow.Position = new Vector2f(gx + 1, gy + 1);
+                drawables.Add(shadow);
+            }
+            drawables.Add(txt);
         }
 
         public void UI_DrawRect(Color color, Rectangle rect)
         {
-            if (rect.Width <= 0 || rect.Height <= 0)
-                throw new ArgumentOutOfRangeException("rect","rectangle Width/Height <= 0");
-
-            m_GameCanvas.AddRect(color, rect);
+            RectangleShape r = new RectangleShape(new Vector2f(rect.Width, rect.Height));
+            r.OutlineColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
+            r.FillColor = SFML.Graphics.Color.Transparent;
+            r.Position = new Vector2f(rect.Left, rect.Top);
+            drawables.Add(r);
         }
 
         public void UI_FillRect(Color color, Rectangle rect)
         {
-            if (rect.Width <= 0 || rect.Height <= 0)
-                throw new ArgumentOutOfRangeException("rect","rectangle Width/Height <= 0");
-
-            m_GameCanvas.AddFilledRect(color, rect);
+            RectangleShape r = new RectangleShape(new Vector2f(rect.Width, rect.Height));
+            r.FillColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
+            r.OutlineColor = SFML.Graphics.Color.Transparent;
+            r.Position = new Vector2f(rect.Left, rect.Top);
+            drawables.Add(r);
         }
 
         public void UI_DrawPopup(string[] lines, Color textColor, Color boxBorderColor, Color boxFillColor, int gx, int gy)
@@ -703,17 +832,30 @@ namespace djack.RogueSurvivor
 
         public void UI_ClearMinimap(Color color)
         {
-            m_GameCanvas.ClearMinimap(color);
+            minimapDrawables.Clear();
         }
 
         public void UI_SetMinimapColor(int x, int y, Color color)
         {
-            m_GameCanvas.SetMinimapColor(x, y, color);
+            RectangleShape r = new RectangleShape(new Vector2f(RogueGame.MINITILE_SIZE, RogueGame.MINITILE_SIZE));
+            r.FillColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
+            r.OutlineColor = SFML.Graphics.Color.Transparent;
+            r.Position = new Vector2f(x * RogueGame.MINITILE_SIZE, y * RogueGame.MINITILE_SIZE);
+            minimapDrawables.Add(r);            
         }
 
         public void UI_DrawMinimap(int gx, int gy)
         {
-            m_GameCanvas.DrawMinimap(gx, gy);
+            minimap.Clear(SFML.Graphics.Color.Black);            
+            foreach (var drawable in minimapDrawables)
+            {
+                minimap.Draw(drawable);
+            }
+            minimap.Display();
+
+            Sprite spr = new Sprite(minimap.Texture);
+            spr.Position = new Vector2f(gx, gy);
+            drawables.Add(spr);            
         }
         
         #endregion

@@ -4,19 +4,13 @@ using System.Drawing;
 
 using djack.RogueSurvivor.Engine;
 
+using SFML;
+using Texture = SFML.Graphics.Texture;
+
 namespace djack.RogueSurvivor.Gameplay
 {
     static class GameImages
     {
-        #region Constants
-        //@@MP - tiles visited but not within current FOV are now darker (Release 6-2)
-        const float GRAYLEVEL_DIM_FACTOR_DAYTIME = 0.40f; //@@MP this was the one and only in vanilla
-        const float GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLEAR = 0.20f;
-        const float GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLOUDED = 0.15f;
-        const float GRAYLEVEL_DIM_FACTOR_UNDERGROUND_LITTORCH = 0.20f;
-        const float GRAYLEVEL_DIM_FACTOR_UNDERGROUND_NOTORCH = 0.10f;
-        #endregion
-
         #region Images IDs
 
         #region Icons
@@ -1237,12 +1231,7 @@ namespace djack.RogueSurvivor.Gameplay
 
         #region Static fields
         const string FOLDER = @"Resources\Images\";
-        static readonly Dictionary<string, Image> s_Images = new Dictionary<string, Image>();
-        static readonly Dictionary<string, Image> s_GrayLevelImages_Daytime = new Dictionary<string, Image>(); //@@MP (Release 6-2)
-        static readonly Dictionary<string, Image> s_GrayLevelImages_NighttimeClear = new Dictionary<string, Image>(); //@@MP (Release 6-2)
-        static readonly Dictionary<string, Image> s_GrayLevelImages_NighttimeClouded = new Dictionary<string, Image>(); //@@MP (Release 6-2)
-        static readonly Dictionary<string, Image> s_GrayLevelImages_UndergroundNoTorch = new Dictionary<string, Image>(); //@@MP (Release 6-2)
-        static readonly Dictionary<string, Image> s_GrayLevelImages_UndergroundLitTorch = new Dictionary<string, Image>(); //@@MP (Release 6-2)
+        static readonly Dictionary<string, Texture> s_Images = new Dictionary<string, Texture>();
         #endregion
 
         #region Loading resources
@@ -2467,61 +2456,17 @@ namespace djack.RogueSurvivor.Gameplay
         static void Load(string id)
         {
             string file = FOLDER + id + ".png";
-            Bitmap img = null;
-            Bitmap imgFixed = null;
+            Texture img = null;
             try //@@MP - try/finally ensures that the stream is always closed (Release 5-7)
             {
-                img = new Bitmap(file);
+                img = new Texture(file);
 
-                // fixes retarded GDI+ display bug with some png 32 images.
-                imgFixed = new Bitmap(img);
-
-                s_Images.Add(id, imgFixed);
-                //s_GrayLevelImages.Add(id, MakeGrayLevel(imgFixed)); //@@MP this was the one and only in vanilla (Release 6-2)
-                s_GrayLevelImages_Daytime.Add(id, MakeGrayLevel(imgFixed, "daytime"));
-                s_GrayLevelImages_NighttimeClear.Add(id, MakeGrayLevel(imgFixed, "nighttime_clear"));
-                s_GrayLevelImages_NighttimeClouded.Add(id, MakeGrayLevel(imgFixed, "nighttime_clouded"));
-                s_GrayLevelImages_UndergroundNoTorch.Add(id, MakeGrayLevel(imgFixed, "underground_notorch"));
-                s_GrayLevelImages_UndergroundLitTorch.Add(id, MakeGrayLevel(imgFixed, "underground_littorch"));
+                s_Images.Add(id, img);
             }
             catch (Exception)
             {
                 throw new ArgumentException("coud not load image id=" + id + "; file=" + file);
             }
-            finally
-            {
-                if (img != null)
-                    img.Dispose();
-                /*if (imgFixed != null)
-                    imgFixed.Dispose();*/
-            }
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        static Image MakeGrayLevel(Bitmap img, string grayLevelType) //@@MP - added parameter to allow graylevels for different times of day/location (Release 6-2)
-        {
-            Bitmap grayed = new Bitmap(img);
-
-            for(int x = 0; x < grayed.Width; x++)
-                for (int y = 0; y < grayed.Height; y++)
-                {
-                    Color pixelColor = img.GetPixel(x, y);
-                    float brightness = pixelColor.GetBrightness();
-                    int rgb;
-                    switch (grayLevelType)
-                    {
-                        case "daytime": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_DAYTIME * brightness); break;
-                        case "nighttime_clear": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLEAR * brightness); break;
-                        case "nighttime_clouded": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_NIGHTTIME_CLOUDED * brightness); break;
-                        case "underground_notorch": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_UNDERGROUND_NOTORCH * brightness); break;
-                        case "underground_littorch": rgb = (int)(255 * GRAYLEVEL_DIM_FACTOR_UNDERGROUND_LITTORCH * brightness); break;
-                        default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
-                    }
-
-                    grayed.SetPixel(x, y, Color.FromArgb(pixelColor.A, rgb, rgb, rgb));
-                }
-
-            return grayed;
         }
 
         static void Notify(IRogueUI ui, string stage)
@@ -2533,47 +2478,13 @@ namespace djack.RogueSurvivor.Gameplay
         #endregion
 
         #region Retrieving resources
-        public static Image Get(string imageID)
+        public static Texture Get(string imageID)
         {
-            Image img;
+            Texture img;
             if (s_Images.TryGetValue(imageID, out img))
                 return img;
             else
                 return s_Images[UNDEF];
-        }
-
-        public static Image GetGrayLevel(string imageID, string grayLevelType) //@@MP - added parameter to allow graylevels for different times of day/location (Release 6-2)
-        {
-            Image img;
-            switch (grayLevelType) //@@MP - returns the image with the graylevel suitable for the player time of day and location (Release 6-2)
-            {
-                case "daytime":
-                    if (s_GrayLevelImages_Daytime.TryGetValue(imageID, out img))
-                        return img;
-                    else
-                        return s_GrayLevelImages_Daytime[UNDEF];
-                case "nighttime_clear":
-                    if (s_GrayLevelImages_NighttimeClear.TryGetValue(imageID, out img))
-                        return img;
-                    else
-                        return s_GrayLevelImages_NighttimeClear[UNDEF];
-                case "nighttime_clouded":
-                    if (s_GrayLevelImages_NighttimeClouded.TryGetValue(imageID, out img))
-                        return img;
-                    else
-                        return s_GrayLevelImages_NighttimeClouded[UNDEF];
-                case "underground_notorch":
-                    if (s_GrayLevelImages_UndergroundNoTorch.TryGetValue(imageID, out img))
-                        return img;
-                    else
-                        return s_GrayLevelImages_UndergroundNoTorch[UNDEF];
-                case "underground_littorch":
-                    if (s_GrayLevelImages_UndergroundLitTorch.TryGetValue(imageID, out img))
-                        return img;
-                    else
-                        return s_GrayLevelImages_UndergroundLitTorch[UNDEF];
-                default: throw new ArgumentOutOfRangeException("grayLevelType", "unhandled grayLevelType");
-            }
         }
         #endregion
     }
