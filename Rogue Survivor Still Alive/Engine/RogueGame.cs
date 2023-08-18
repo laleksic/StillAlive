@@ -11308,7 +11308,8 @@ namespace djack.RogueSurvivor.Engine
             if (m_Player == null)
                 return null;
 
-            int mouseX = (int)(screen.X / m_UI.UI_GetCanvasScaleX());
+            Point mouse = m_UI.UI_TransformMouseCoordinates(screen);
+            int mouseX = mouse.X;
 
             //INVENTORY
             Inventory playerInv = m_Player.Inventory;
@@ -27178,17 +27179,17 @@ namespace djack.RogueSurvivor.Engine
 
         Point MouseToMap(int mouseX, int mouseY)
         {
-            mouseX = (int)(mouseX / m_UI.UI_GetCanvasScaleX());
-            mouseY = (int)(mouseY / m_UI.UI_GetCanvasScaleY());
-            return ScreenToMap(mouseX, mouseY);
+            Point mouse = new Point(mouseX, mouseY);
+            mouse = m_UI.UI_TransformMouseCoordinates(mouse);
+            return ScreenToMap(mouse.X, mouse.Y);
         }
 
         Point MouseToInventorySlot(int invX, int invY, int mouseX, int mouseY)
         {
-            mouseX = (int)(mouseX / m_UI.UI_GetCanvasScaleX());
-            mouseY = (int)(mouseY / m_UI.UI_GetCanvasScaleY());
+            Point mouse = new Point(mouseX, mouseY);
+            mouse = m_UI.UI_TransformMouseCoordinates(mouse);
 
-            return new Point((mouseX - invX) / 32, (mouseY - invY) / 32);
+            return new Point((mouse.X - invX) / 32, (mouse.Y - invY) / 32);
             //@@MP - At first this code might look odd, because 712/32=22.25, but Point uses int. A trap for new C# players like me.
             //C# inherently drops any fractions in integer arithmetic, ie. "I see you're dividing two integers; I'll give you the result as an integer".
             //Using breakpoints to inspect the values during debug will confirm this, and explains how 'Item MouseToInventoryItem(Point, Inventory, Point)'
@@ -27202,9 +27203,9 @@ namespace djack.RogueSurvivor.Engine
 
         Point MouseToPreScaledCoords(int mouseX, int mouseY) //@@MP - translates scaled canvas coordinates to unscaled (ie those used in the constants) (Release 2)
         {
-            mouseX = (int)(mouseX / m_UI.UI_GetCanvasScaleX());
-            mouseY = (int)(mouseY / m_UI.UI_GetCanvasScaleY());
-            return new Point(mouseX, mouseY);
+            Point mouse = new Point(mouseX, mouseY);
+            mouse = m_UI.UI_TransformMouseCoordinates(mouse);
+            return mouse;
         }
 
         /// <summary>For any given coordinates, are they in a given coord range. Use for confirming coordinates are on a line or within a rectangle</summary>

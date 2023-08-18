@@ -23,23 +23,26 @@ namespace djack.RogueSurvivor
         {
             if (renderWindow.IsOpen)
             {
-                // a scale that preserves aspect ratio and pillarboxes/letterboxes the canvas on the screen
-                float scale = Math.Min((float)renderWindow.Size.X / canvas.Texture.Size.X, (float)renderWindow.Size.Y / canvas.Texture.Size.Y);
-                Logger.WriteLine(Logger.Stage.RUN_MAIN, "!!! scale = " + scale);
-
                 renderWindow.DispatchEvents();
                 
-                var view = new SFML.Graphics.View((Vector2f)renderWindow.Size / 2.0f, (Vector2f)renderWindow.Size);
-                view.Viewport = new FloatRect(0.0f, 0.0f, 1.0f, 1.0f);
+                var view = new SFML.Graphics.View((Vector2f)canvas.Texture.Size / 2.0f, (Vector2f)canvas.Texture.Size);
+
+                // a scale that preserves aspect ratio and pillarboxes/letterboxes the canvas on the screen
+                float scale = Math.Min((float)renderWindow.Size.X / canvas.Texture.Size.X, (float)renderWindow.Size.Y / canvas.Texture.Size.Y);
+                float w = canvas.Texture.Size.X * scale;
+                float h = canvas.Texture.Size.Y * scale;
+                float wf = w / renderWindow.Size.X;
+                float hf = h / renderWindow.Size.Y;
+                view.Viewport = new FloatRect((1.0f - wf) / 2.0f, (1.0f - hf) / 2.0f, wf, hf);
 
                 renderWindow.SetView(view);
 
                 renderWindow.Clear(SFML.Graphics.Color.Black);            
 
                 var spr = new Sprite(canvas.Texture);
-                spr.Position = (Vector2f)renderWindow.Size / 2.0f;
+                spr.Position = (Vector2f)canvas.Texture.Size / 2.0f;
                 spr.Origin = (Vector2f)canvas.Texture.Size / 2.0f;
-                spr.Scale = new Vector2f(1 * scale, -1 * scale);
+                spr.Scale = new Vector2f(1, -1);
                 renderWindow.Draw(spr);
                 renderWindow.Display();
             } 
@@ -67,9 +70,10 @@ namespace djack.RogueSurvivor
         RenderTexture minimap;
         List<Drawable> minimapDrawables = new List<Drawable>();
         static Shader grayLevelShader;
+        Point mouseLocation = new Point(0,0);
         // tweak per font for best results
         const int FONT_SIZE = 16;
-        const int FONT_Y_ADJUST = -4;
+        const int FONT_Y_ADJUST = -5;
 
         class GrayLevelSprite : Drawable
         {
@@ -104,6 +108,10 @@ namespace djack.RogueSurvivor
             };
             renderWindow.Closed += (sender, e) => {
                 UI_DoQuit();
+            };
+            renderWindow.MouseMoved += (sender, e) => {
+                mouseLocation.X = e.X;
+                mouseLocation.Y = e.Y;
             };
 
             canvas = new RenderTexture(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
@@ -145,8 +153,8 @@ namespace djack.RogueSurvivor
                 "
             );
 
-            sfmlFont = new SFML.Graphics.Font("./Resources/Fonts/unifont.ttf");
-            sfmlBoldFont = sfmlFont;
+            sfmlFont = new SFML.Graphics.Font("./Resources/Fonts/regular.ttf");
+            sfmlBoldFont = new SFML.Graphics.Font("./Resources/Fonts/bold.ttf");
             minimap = new RenderTexture(RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH, RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT);
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form...");
@@ -495,7 +503,7 @@ namespace djack.RogueSurvivor
         public Point UI_GetMousePosition()
         {
             DoEvents();
-            return m_GameCanvas.MouseLocation;
+            return mouseLocation;
         }
 
         bool m_HasMouseButtons = false;
@@ -638,7 +646,6 @@ namespace djack.RogueSurvivor
         public void UI_DrawStringBold(Color color, string text, int gx, int gy, Color? shadowColor)
         {
             Text txt = new Text(text, sfmlBoldFont, FONT_SIZE);
-            //txt.Style = SFML.Graphics.Text.Styles.Bold; //(looks awful)
             txt.FillColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
             txt.Position = new Vector2f(gx, gy + FONT_Y_ADJUST);
             if (shadowColor.HasValue) {
@@ -647,10 +654,6 @@ namespace djack.RogueSurvivor
                 shadow.Position = new Vector2f(gx + 1, gy + FONT_Y_ADJUST + 1);
                 drawables.Add(shadow);
             }
-            // bold by drawing again shifted to the right (works nice for pixel fonts)
-            Text copy = new Text(txt);
-            copy.Position = new Vector2f(gx + 1, gy + FONT_Y_ADJUST);
-            drawables.Add(copy);
             drawables.Add(txt);
         }
 
@@ -882,26 +885,25 @@ namespace djack.RogueSurvivor
         #endregion
 
         #region Canvas scaling
-        public float UI_GetCanvasScaleX()
+        public Point UI_TransformMouseCoordinates(Point coord)
         {
-            return m_GameCanvas.ScaleX;
-        }
-
-        public float UI_GetCanvasScaleY()
-        {
-            return m_GameCanvas.ScaleY;
+            var v = renderWindow.MapPixelToCoords(new Vector2i(coord.X, coord.Y), renderWindow.GetView());
+            return new Point((int)v.X, (int)v.Y);
         }
         #endregion
 
         #region Screenshot
         public string UI_SaveScreenshot(string filePath)
         {
-            return m_GameCanvas.SaveScreenShot(filePath);
+            var img = canvas.Texture.CopyToImage();
+            img.FlipVertically();
+            img.SaveToFile(filePath+".png");
+            return filePath+".png";
         }
 
         public string UI_ScreenshotExtension()
         {
-            return m_GameCanvas.ScreenshotExtension();
+            return ".png";
         }
         #endregion
 

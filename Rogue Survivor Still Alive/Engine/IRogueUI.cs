@@ -53,8 +53,7 @@ namespace djack.RogueSurvivor.Engine
         #endregion
 
         #region Canvas scaling - to convert mouse coordinates to canvas coordinates.
-        float UI_GetCanvasScaleX();
-        float UI_GetCanvasScaleY();
+        Point UI_TransformMouseCoordinates(Point coord);
         #endregion
 
         #region Screenshots
