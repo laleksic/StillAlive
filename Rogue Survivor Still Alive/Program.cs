@@ -24,25 +24,9 @@ namespace djack.RogueSurvivor
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading setup...");
             SetupConfig.Load();
 
-            // Debug mode : don't catch exceptions, I want to debug them (optionally catch them)
-            // Release mode : catch exceptions cleanly and report.
-#if DEBUG
             var form = new RogueForm();
             form.Run();
-#else
-            try
-            {
-                var form = new RogueForm();
-                form.Run();
-            }
-            catch (Exception e)
-            {
-                using (Bugreport report = new Bugreport(e))
-                {
-                    report.ShowDialog();
-                }
-            }
-#endif
+
             Logger.WriteLine(Logger.Stage.CLEAN_MAIN, "exiting program...");
         }
     }
