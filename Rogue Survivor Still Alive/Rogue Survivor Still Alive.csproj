@@ -10,9 +10,7 @@
     <AssemblyCopyright>Jacques Ruiz (roguedjack) 2018</AssemblyCopyright>
     <InformationalVersion>2.11.0.2</InformationalVersion>
     <NeutralLanguage>en</NeutralLanguage>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>   
+    <TargetFramework>net6.0</TargetFramework>
     <StartupObject>djack.RogueSurvivor.Program</StartupObject>
     <ApplicationIcon>IconPNG.ico</ApplicationIcon>
   </PropertyGroup>

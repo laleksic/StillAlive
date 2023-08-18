@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 
 namespace djack.RogueSurvivor
 {
     public static class SetupConfig
     {
         //public const string GAME_VERSION = "Still Alive";
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2211:NonConstantFieldsShouldNotBeVisible")]
-        public static string GAME_VERSION = "Still Alive " + System.Windows.Forms.Application.ProductVersion + " ALPHA"; //@@MP remember to update the Assembly info (Release 1)
+        public static string GAME_VERSION = "Still Alive " + typeof(SetupConfig).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion + " ALPHA"; //@@MP remember to update the Assembly info (Release 1)
 
         public enum eWindow //@@MP (Release 5-5)
         {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Globalization;
 
 namespace djack.RogueSurvivor
@@ -13,9 +12,6 @@ namespace djack.RogueSurvivor
         [STAThread]
         static void Main()
         {
-#if !DEBUG
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); //@@MP
-#endif
             Logger.CreateFile();
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "starting program...");
             Logger.WriteLine(Logger.Stage.INIT_MAIN, String.Format("date : {0}.", DateTime.Now.ToString()));

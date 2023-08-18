@@ -12,7 +12,6 @@ using Keys = SFML.Window.Keyboard.Key;
 using SFML.Graphics;
 using SFML.System;
 using Color = System.Drawing.Color;
-using Font = System.Drawing.Font;
 using MouseButtons = SFML.Window.Mouse.Button;
 
 namespace djack.RogueSurvivor

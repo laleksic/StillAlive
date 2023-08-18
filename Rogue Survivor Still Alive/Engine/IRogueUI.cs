@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using System.Drawing;
+﻿using System.Drawing;
 using SFML;
 using KeyEventArgs = SFML.Window.KeyEventArgs;
 using MouseButtons = SFML.Window.Mouse.Button;
