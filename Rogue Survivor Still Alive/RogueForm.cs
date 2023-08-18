@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
+using System.Linq;
 using System.Collections.Generic;
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
@@ -465,7 +466,7 @@ namespace djack.RogueSurvivor
         public void UI_Repaint()
         {
             canvas.Clear(SFML.Graphics.Color.Black);
-            foreach (var drawable in drawables)
+            foreach (var drawable in drawables.OrderBy(x => x is SFML.Graphics.Text ? 1 : 0))
             {
                 canvas.Draw(drawable);
             }
