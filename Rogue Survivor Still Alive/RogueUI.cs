@@ -98,7 +98,11 @@ namespace djack.RogueSurvivor
         public RogueUI()
         {
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating sfml window...");
-            renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1024, 768), "Rogue Survivor: " + SetupConfig.GAME_VERSION);
+            if (SetupConfig.Window == SetupConfig.eWindow.WINDOW_FULLSCREEN) {
+                renderWindow = new SFML.Graphics.RenderWindow(SFML.Window.VideoMode.DesktopMode, "Rogue Survivor: " + SetupConfig.GAME_VERSION, SFML.Window.Styles.None);
+            } else {
+                renderWindow = new SFML.Graphics.RenderWindow(new SFML.Window.VideoMode(1024, 768), "Rogue Survivor: " + SetupConfig.GAME_VERSION);
+            }
             renderWindow.SetVerticalSyncEnabled(true);
             var icon = new SFML.Graphics.Image("./Resources/Images/icon.png");
             renderWindow.SetIcon(icon.Size.X, icon.Size.Y, icon.Pixels);
