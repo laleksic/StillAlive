@@ -21,45 +21,28 @@ namespace djack.RogueSurvivor
             Logger.WriteLine(Logger.Stage.INIT_MAIN, String.Format("date : {0}.", DateTime.Now.ToString()));
             Logger.WriteLine(Logger.Stage.INIT_MAIN, String.Format("game version : {0}.", SetupConfig.GAME_VERSION));
 
-            Application.CurrentCulture = CultureInfo.InvariantCulture;  // avoids nasty "," vs "." format confusion.
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading setup...");
             SetupConfig.Load();
 
-            using (RogueForm form = new RogueForm())
-            {
-                // Debug mode : don't catch exceptions, I want to debug them (optionally catch them)
-                // Release mode : catch exceptions cleanly and report.
+            // Debug mode : don't catch exceptions, I want to debug them (optionally catch them)
+            // Release mode : catch exceptions cleanly and report.
 #if DEBUG
-                /*try
-                {*/
-                    Application.Run(form);
-                /*}
-                catch (Exception e)
-                {
-                    using (Bugreport report = new Bugreport(e))
-                    {
-                        report.ShowDialog();
-                    }
-                    Application.Exit();
-                }*/
+            var form = new RogueForm();
+            form.Run();
 #else
-                try
-                {
-                    Application.Run(form);
-                }
-                catch (Exception e)
-                {
-                    using (Bugreport report = new Bugreport(e))
-                    {
-                        report.ShowDialog();
-                    }
-                    Application.Exit();
-                }
-#endif
+            try
+            {
+                var form = new RogueForm();
+                form.Run();
             }
+            catch (Exception e)
+            {
+                using (Bugreport report = new Bugreport(e))
+                {
+                    report.ShowDialog();
+                }
+            }
+#endif
             Logger.WriteLine(Logger.Stage.CLEAN_MAIN, "exiting program...");
         }
     }

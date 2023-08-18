@@ -20,7 +20,6 @@ namespace djack.RogueSurvivor.Engine
         MouseButtons? UI_PeekMouseButtons();
         void UI_PostMouseButtons(MouseButtons buttons);
 
-        void UI_SetCursor(Cursor cursor);
         #endregion
 
         #region Delay

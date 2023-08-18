@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
-using System.Windows.Forms;
 using System.Collections.Generic;
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
@@ -18,7 +17,7 @@ using MouseButtons = SFML.Window.Mouse.Button;
 
 namespace djack.RogueSurvivor
 {
-    public partial class RogueForm : Form, IRogueUI
+    public partial class RogueForm : IRogueUI
     {
         private void DoEvents()
         {
@@ -51,8 +50,6 @@ namespace djack.RogueSurvivor
 
         #region Fields
         RogueGame m_Game;
-        Font m_NormalFont;
-        Font m_BoldFont;
         #endregion
 
         #region Properties
@@ -62,7 +59,6 @@ namespace djack.RogueSurvivor
         }
         #endregion
 
-        // SFML stuff
         SFML.Graphics.RenderWindow renderWindow;
         RenderTexture canvas;
         List<Drawable> drawables = new List<Drawable>();
@@ -75,6 +71,8 @@ namespace djack.RogueSurvivor
         // tweak per font for best results
         const int FONT_SIZE = 16;
         const int FONT_Y_ADJUST = -5;
+        const int CHAR_WIDTH = 8;
+        const int CHAR_HEIGHT = 14;
 
         class GrayLevelSprite : Drawable
         {
@@ -159,50 +157,10 @@ namespace djack.RogueSurvivor
 
             sfmlFont = new SFML.Graphics.Font("./Resources/Fonts/regular.ttf");
             sfmlBoldFont = new SFML.Graphics.Font("./Resources/Fonts/bold.ttf");
-            minimap = new RenderTexture(RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH, RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT);
-
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form...");
-
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::InitializeComponent...");
-            InitializeComponent();
-
-            this.Text = "Rogue Survivor: " + SetupConfig.GAME_VERSION + " [";
-            this.Text += "GDI+ video,";
-            this.Text += " SFML sound";
-            this.Text += "]";
-
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::SetClientSizeCore...");
-            SetClientSizeCore(RogueGame.CANVAS_WIDTH, RogueGame.CANVAS_HEIGHT);
-            // prevent flickering (gdi conflicting with directx?)
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "Form::SetStyle...");
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque, true);
-
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "create font 1...");
-            m_NormalFont = new Font("Lucida Console", 8.25f, FontStyle.Regular);
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "create font 2...");
-            m_BoldFont = new Font("Lucida Console", 8.25f, FontStyle.Bold);
+            minimap = new RenderTexture(RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_WIDTH, RogueGame.MINITILE_SIZE * RogueGame.MAP_MAX_HEIGHT);;
 
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "create RogueGame...");
             m_Game = new RogueGame(this);
-
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "bind form...");
-            m_GameCanvas.BindForm(this);
-            //m_GameCanvas.ShowFPS = true;
-
-            Logger.WriteLine(Logger.Stage.INIT_MAIN, "creating main form done.");
-
-            //@@MP - optional fullscreen (Release 5-5)
-            switch (SetupConfig.Window)
-            {
-                case SetupConfig.eWindow.WINDOW_FULLSCREEN:
-                    this.WindowState = FormWindowState.Maximized;
-                    this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-                    //this.Bounds = Screen.PrimaryScreen.Bounds;
-                    break;
-                case SetupConfig.eWindow.WINDOW_WINDOWED:
-                    this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-                    break;
-            }
         }
 
         void LoadResources()
@@ -213,45 +171,11 @@ namespace djack.RogueSurvivor
         }
         #endregion
 
-        #region Form overloads
-        #region Disable close button
-        private const int CP_NOCLOSE_BUTTON = 0x200;
-        protected override CreateParams CreateParams
+        public void Run() 
         {
-            [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.LinkDemand, Flags = System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode)]
-            get
-            {
-            CreateParams cp = base.CreateParams;
-                cp.ClassStyle |= CP_NOCLOSE_BUTTON;
-                return cp;
-            }
-        }
-        #endregion
-
-        protected override void OnShown(EventArgs e)
-        {
-            base.OnShown(e);
-
             LoadResources();
             m_Game.Run();
         }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            m_GameCanvas.FillGameForm();
-            Invalidate(true);
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            if (m_Game.IsGameRunning)
-            {
-                e.Cancel = true;
-                MessageBox.Show(this, "The game is still running. Please quit inside the game.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, (MessageBoxOptions)0);
-            }
-        }
-        #endregion
 
         #region IRogueUI implementation
         
@@ -528,14 +452,6 @@ namespace djack.RogueSurvivor
             return m_MouseButtons;
         }
 
-        public void UI_SetCursor(Cursor cursor)
-        {
-            if (cursor == Cursor)            
-                return;
-
-            this.Cursor = cursor;
-            DoEvents();
-        }
         #endregion
 
         #region Delay
@@ -549,9 +465,6 @@ namespace djack.RogueSurvivor
         #region Canvas Painting
         public void UI_Repaint()
         {
-            /*Invalidate();
-            Update();*/
-            Refresh();
             canvas.Clear(SFML.Graphics.Color.Black);
             foreach (var drawable in drawables)
             {
@@ -692,10 +605,10 @@ namespace djack.RogueSurvivor
             Size[] linesSize = new Size[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                linesSize[i] = TextRenderer.MeasureText(lines[i], m_BoldFont);
+                linesSize[i] = new Size(lines[i].Length * CHAR_WIDTH, CHAR_HEIGHT);
                 if (linesSize[i].Width > longestLineWidth)
                     longestLineWidth = linesSize[i].Width;
-                totalLineHeight += linesSize[i].Height;                
+                totalLineHeight += CHAR_HEIGHT;                
             }
 
             ///////////////////
@@ -746,13 +659,13 @@ namespace djack.RogueSurvivor
             Size[] linesSize = new Size[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                linesSize[i] = TextRenderer.MeasureText(lines[i], m_BoldFont);
+                linesSize[i] = new Size(lines[i].Length * CHAR_WIDTH, CHAR_HEIGHT);
                 if (linesSize[i].Width > longestLineWidth)
                     longestLineWidth = linesSize[i].Width;
-                totalLineHeight += linesSize[i].Height;
+                totalLineHeight += CHAR_HEIGHT;   
             }
 
-            Size titleSize = TextRenderer.MeasureText(title, m_BoldFont);
+            Size titleSize = new Size(title.Length * CHAR_WIDTH, CHAR_HEIGHT);
             if (titleSize.Width > longestLineWidth)
                 longestLineWidth = titleSize.Width;
             totalLineHeight += titleSize.Height;
@@ -809,13 +722,13 @@ namespace djack.RogueSurvivor
             Size[] linesSize = new Size[lines.Length];
             for (int i = 0; i < lines.Length; i++)
             {
-                linesSize[i] = TextRenderer.MeasureText(lines[i], m_BoldFont);
+                linesSize[i] = new Size(lines[i].Length * CHAR_WIDTH, CHAR_HEIGHT);
                 if (linesSize[i].Width > longestLineWidth)
                     longestLineWidth = linesSize[i].Width;
-                totalLineHeight += linesSize[i].Height;
+                totalLineHeight += CHAR_HEIGHT;   
             }
 
-            Size titleSize = TextRenderer.MeasureText(title, m_BoldFont);
+            Size titleSize = new Size(title.Length * CHAR_WIDTH, CHAR_HEIGHT);
             if (titleSize.Width > longestLineWidth)
                 longestLineWidth = titleSize.Width;
             totalLineHeight += titleSize.Height;
@@ -914,7 +827,6 @@ namespace djack.RogueSurvivor
         #region Exiting
         public void UI_DoQuit()
         {
-            Close();
         }
         #endregion
         #endregion

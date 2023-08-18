@@ -7273,9 +7273,6 @@ namespace djack.RogueSurvivor.Engine
             // stop sim thread.
             StopSimThread(true);
 
-            // mouse.
-            m_UI.UI_SetCursor(null);
-
             // music.
             m_AmbientSFXManager.StopAll(); //@@MP (Release 6-1)
             m_MusicManager.StopAll();
@@ -7368,9 +7365,6 @@ namespace djack.RogueSurvivor.Engine
         {
             // stop sim thread.
             StopSimThread(true);
-
-            // mouse.
-            m_UI.UI_SetCursor(null);
 
             // audio.
             m_AmbientSFXManager.StopAll();
@@ -10626,7 +10620,6 @@ namespace djack.RogueSurvivor.Engine
                 ///////////////////
 
                 // 1. Redraw
-                m_UI.UI_SetCursor(null);
 
                 //// alpha10.1 bot mode?
 #if DEBUG
