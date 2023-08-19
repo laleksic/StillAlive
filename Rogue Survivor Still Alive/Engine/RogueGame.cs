@@ -26995,11 +26995,11 @@ namespace djack.RogueSurvivor.Engine
             if (it.Model.IsStackable)
             {
                 string q = string.Format("{0}", it.Quantity);
-                int tx = gx + TILE_SIZE - 10;
+                int tx = gx + TILE_SIZE - RogueUI.CHAR_WIDTH;
                 if (it.Quantity > 100)
-                    tx -= 10;
+                    tx -= 2 * RogueUI.CHAR_WIDTH;
                 else if (it.Quantity > 10)
-                    tx -= 4;
+                    tx -= RogueUI.CHAR_WIDTH;
                 m_UI.UI_DrawString(Color.DarkGray, q, tx + 1, gy + 1);
                 m_UI.UI_DrawString(Color.White, q, tx, gy);
             }

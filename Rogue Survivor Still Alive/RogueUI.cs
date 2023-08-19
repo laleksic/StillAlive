@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
-using System.Linq;
 using System.Collections.Generic;
 using djack.RogueSurvivor.Data;
 using djack.RogueSurvivor.Engine;
@@ -71,8 +70,8 @@ namespace djack.RogueSurvivor
         // tweak per font for best results
         const int FONT_SIZE = 16;
         const int FONT_Y_ADJUST = -5;
-        const int CHAR_WIDTH = 8;
-        const int CHAR_HEIGHT = 14;
+        public const int CHAR_WIDTH = 8;
+        public const int CHAR_HEIGHT = 14;
 
         class GrayLevelSprite : Drawable
         {
@@ -473,7 +472,7 @@ namespace djack.RogueSurvivor
         public void UI_Repaint()
         {
             canvas.Clear(SFML.Graphics.Color.Black);
-            foreach (var drawable in drawables.OrderBy(x => x is SFML.Graphics.Text ? 1 : 0))
+            foreach (var drawable in drawables)
             {
                 canvas.Draw(drawable);
             }
