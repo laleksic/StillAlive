@@ -20,8 +20,8 @@ namespace djack.RogueSurvivor
             Logger.WriteLine(Logger.Stage.INIT_MAIN, "loading setup...");
             SetupConfig.Load();
 
-            var form = new RogueUI();
-            form.Run();
+            var ui = new RogueUI();
+            ui.Run();
 
             Logger.WriteLine(Logger.Stage.CLEAN_MAIN, "exiting program...");
         }
