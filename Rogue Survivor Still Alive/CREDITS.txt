@@ -165,6 +165,7 @@ The following sounds all carry the Pixabay License (https://pixabay.com/service/
 -Barbershop scissors : http://cliparts.co/clipart/2326272
 -Incorporates some of Deon's 'Deonapocalypse' tileset. Grab the whole set for vanilla RS: http://roguesurvivor.proboards.com/thread/264/alpha-9-deonapocalypse
 -Medikits, magazines (#2-4), novels, minigun, SMG, burial crosses, brass knuckles, cleaver, fire axe, flail, frying pan, grenade launcher, double barrel, kitchen knife, mace, nunchaku, pitch fork, scimitar, scythe, sickle, spear, spiked mace, and campfire, all by community forum contributor Jess (https://roguesurvivor.proboards.com/user/517).
+-Font : by VileR https://int10h.org/oldschool-pc-fonts/ (https://creativecommons.org/licenses/by-sa/4.0/)
 
 <SECTION>
 ** MUSIC CREDITS **
