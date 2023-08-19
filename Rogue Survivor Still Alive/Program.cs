@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using djack.RogueSurvivor.Engine;
 
 namespace djack.RogueSurvivor
 {
@@ -21,11 +22,19 @@ namespace djack.RogueSurvivor
             SetupConfig.Load();
 
             var ui = new RogueUI();
-            ui.Run();
+            try 
+            {
+                ui.Run();
+            }
+            catch (Exception e) 
+            {
+                ui.Bugreport(e);
+            }
 
             ui.UI_DoQuit();
 
             Logger.WriteLine(Logger.Stage.CLEAN_MAIN, "exiting program...");
+
         }
     }
 }

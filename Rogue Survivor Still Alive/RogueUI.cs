@@ -108,7 +108,19 @@ namespace djack.RogueSurvivor
             renderWindow.KeyPressed += (sender, e) => {
                 UI_PostKey(e);
             };
+            var insideQuitDialog = false;
             renderWindow.Closed += (sender, e) => {
+                if (!insideQuitDialog)
+                {
+                    insideQuitDialog = true;
+                    var savedDrawables = new List<Drawable>(drawables);
+                    UI_DrawPopup(new string[]{"The game is still running. Please quit inside the game.", "Press any key to continue..."}, Color.Yellow, Color.White, Color.DarkBlue, 16, 16);
+                    UI_Repaint();
+                    while (UI_PeekKey() == null) {}
+                    drawables = savedDrawables;
+                    UI_Repaint();
+                    insideQuitDialog = false;
+                }
             };
             renderWindow.MouseMoved += (sender, e) => {
                 mouseLocation.X = e.X;
@@ -838,13 +850,53 @@ namespace djack.RogueSurvivor
             return ".png";
         }
         #endregion
+        #endregion
 
-        #region Exiting
+        List<string> WrapLine(string line, int maxChars)
+        {
+            List<string> lines = new List<string>();
+            while (line.Length > maxChars)
+            {
+                var s = line.Substring(0, maxChars);
+                lines.Add(s);
+                line = line.Substring(maxChars);
+            }
+            lines.Add(line);
+            return lines;
+        }
+
+        List<string> WrapText(string text, int maxChars)
+        {
+            var lines = text.Split("\n", StringSplitOptions.None);
+            var wrappedLines = new List<string>();
+            foreach (var line in lines)
+            {
+                var lines2 = WrapLine(line, maxChars);
+                foreach (var line2 in lines2)
+                {
+                    wrappedLines.Add(line2);
+                }
+            } 
+            return wrappedLines;         
+        }
+
+        public void Bugreport(Exception e) 
+        {
+            string msg = "";
+            msg += "Rogue Survivor encountered a fatal error.\n";
+            msg += "Please report all the text below to the author (screenshot it).\n\n";
+            msg += e.ToString();
+            msg += "\n\nPress any key to exit.";
+            string[] lines = WrapText(msg, (RogueGame.CANVAS_WIDTH - 32) / CHAR_WIDTH).ToArray();
+            Console.WriteLine(lines.Length);
+            UI_DrawPopup(lines, Color.Yellow, Color.White, Color.DarkBlue, 16, 16);
+            UI_Repaint();
+            UI_WaitKey();            
+        }
+
         public void UI_DoQuit()
         {
             renderWindow.Close();
         }
-        #endregion
-        #endregion
     }
 }
