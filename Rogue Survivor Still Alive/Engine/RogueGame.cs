@@ -7152,6 +7152,7 @@ namespace djack.RogueSurvivor.Engine
                     Logger.WriteLine(Logger.Stage.RUN_MAIN, "...allocating sim thread");
                     m_SimThread = new Thread(new ThreadStart(SimThreadProc));
                     m_SimThread.Name = "Simulation Thread";
+                    m_SimThread.IsBackground = true; 
                 }
                 else
                     Logger.WriteLine(Logger.Stage.RUN_MAIN, "...sim thread already allocated");
