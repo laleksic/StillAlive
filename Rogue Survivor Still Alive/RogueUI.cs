@@ -109,7 +109,6 @@ namespace djack.RogueSurvivor
                 UI_PostKey(e);
             };
             renderWindow.Closed += (sender, e) => {
-                UI_DoQuit();
             };
             renderWindow.MouseMoved += (sender, e) => {
                 mouseLocation.X = e.X;
@@ -843,6 +842,7 @@ namespace djack.RogueSurvivor
         #region Exiting
         public void UI_DoQuit()
         {
+            renderWindow.Close();
         }
         #endregion
         #endregion

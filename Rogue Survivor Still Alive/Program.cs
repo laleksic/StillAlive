@@ -23,6 +23,8 @@ namespace djack.RogueSurvivor
             var ui = new RogueUI();
             ui.Run();
 
+            ui.UI_DoQuit();
+
             Logger.WriteLine(Logger.Stage.CLEAN_MAIN, "exiting program...");
         }
     }

@@ -5492,9 +5492,6 @@ namespace djack.RogueSurvivor.Engine
             //@@MP (Release 6-1)
             m_AmbientSFXManager.StopAll();
             m_AmbientSFXManager.Dispose();
-
-            // quit.
-            m_UI.UI_DoQuit();
         }
 
         void GameLoop()
