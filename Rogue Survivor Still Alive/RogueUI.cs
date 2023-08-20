@@ -603,11 +603,17 @@ namespace djack.RogueSurvivor
 
         public void UI_DrawRect(Color color, Rectangle rect)
         {
+            /*
             RectangleShape r = new RectangleShape(new Vector2f(rect.Width, rect.Height));
             r.OutlineColor = new SFML.Graphics.Color(color.R, color.G, color.B, color.A);
             r.FillColor = SFML.Graphics.Color.Transparent;
             r.Position = new Vector2f(rect.Left, rect.Top);
             drawables.Add(r);
+            */
+            UI_DrawLine(color, rect.Left, rect.Top, rect.Left + rect.Width, rect.Top);
+            UI_DrawLine(color, rect.Left, rect.Top + rect.Height, rect.Left + rect.Width, rect.Top + rect.Height);
+            UI_DrawLine(color, rect.Left, rect.Top, rect.Left, rect.Top + rect.Height);
+            UI_DrawLine(color, rect.Left + rect.Width, rect.Top, rect.Left + rect.Width, rect.Top + rect.Height);
         }
 
         public void UI_FillRect(Color color, Rectangle rect)
