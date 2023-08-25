@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>netcoreapp2.0</TargetFramework>
+		<RootNamespace>window</RootNamespace>
+		<AssemblyName>window</AssemblyName>
+		<Configurations>Debug;Release;_WINDOWS_;_LINUX_;_OSX_</Configurations>
+		<Version>2.4.2</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\SFML.Graphics\SFML.Graphics.csproj" />
+		<ProjectReference Include="..\..\src\SFML.System\SFML.System.csproj" />
+		<ProjectReference Include="..\..\src\SFML.Window\SFML.Window.csproj" />
+	</ItemGroup>
+
+</Project>

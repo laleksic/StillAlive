@@ -22,7 +22,7 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>  
   <ItemGroup>
-    <PackageReference Include="SFML.Net" Version="2.5.1" />    
+    <ProjectReference Include="..\SFML.Net-2.5.1\src\SFML.Net\SFML.Net.csproj" />   
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\**\*.*">
