@@ -16,8 +16,4 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CSFML" Version="2.5.2" />
-  </ItemGroup>
-
 </Project>

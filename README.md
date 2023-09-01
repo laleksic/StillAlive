@@ -40,11 +40,11 @@ To build the Cross-platform edition, you need the .NET 6.0 SDK (get it here: htt
 Go to the folder containing `Rogue Survivor Still Alive.csproj` in your terminal, and to build for 64-bit Windows 7 run the following command:
 
 ```
-dotnet publish -c Release -r win7-x64 --self-contained
+dotnet build -c Release -r win7-x64 --self-contained
 
 ```
 
-and you'll get a nice little bundle you can run and distribute inside the subfolder `bin\Release\net6.0\win7-x64\publish\`. It includes all dependencies so players don't have to worry about having the right version of the .NET runtime installed or anything like that.
+and you'll get a nice little bundle you can run and distribute inside the subfolder `bin\Release\net6.0\win7-x64\`. It includes all dependencies so players don't have to worry about having the right version of the .NET runtime installed or anything like that.
 
 To build for 64-bit Linux, replace `win7-x64` above with `linux-x64`. For other platforms, see: https://learn.microsoft.com/en-us/dotnet/core/rid-catalog
 
